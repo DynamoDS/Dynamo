@@ -679,15 +679,12 @@ namespace Dynamo.Graph.Workspaces
             #region Restore trace data
             // Trace Data
             Dictionary<Guid, List<CallSite.RawTraceData>> loadedTraceData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
-            bool legacyTraceDataWarning = false;
+            bool containsTraceData = false;
             // Restore trace data if bindings are present in json
             if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
             {
-                if (AssemblyHelper.GetDynamoVersion(false) < new Version(3, 0, 0))
-                {
-                    legacyTraceDataWarning = true;
-                }
-
+                containsTraceData = true;
+                
                 JEnumerable<JToken> bindings = obj["Bindings"].Children();
 
                 // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
@@ -754,7 +751,7 @@ namespace Dynamo.Graph.Workspaces
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
             
-            ws.LegacyTraceDataWarning = legacyTraceDataWarning;
+            ws.ContainsTraceData = containsTraceData;
             
             return ws;
         }
