@@ -8,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -35,7 +34,6 @@ using Dynamo.Scheduler;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
@@ -47,7 +45,6 @@ using ProtoCore;
 using ProtoCore.Runtime;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
-using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using Utils = Dynamo.Graph.Nodes.Utilities;
@@ -229,11 +226,6 @@ namespace Dynamo.Models
         /// True if Dynamo starts up in offline mode.
         /// </summary>
         internal bool NoNetworkMode { get; }
-
-        /// <summary>
-        /// UpdateManager to handle automatic upgrade to higher version.
-        /// </summary>
-        public IUpdateManager UpdateManager { get; private set; }
 
         /// <summary>
         ///     The path manager that configures path information required for
@@ -518,7 +510,6 @@ namespace Dynamo.Models
             IPreferences Preferences { get; set; }
             IPathResolver PathResolver { get; set; }
             bool StartInTestMode { get; set; }
-            IUpdateManager UpdateManager { get; set; }
             ISchedulerThread SchedulerThread { get; set; }
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
@@ -576,7 +567,6 @@ namespace Dynamo.Models
             public IPreferences Preferences { get; set; }
             public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
-            public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
@@ -711,7 +701,7 @@ namespace Dynamo.Models
             if (UpdateManager != null)
             {
                 // For API compatibility now in Dynamo 2.0, integrators can set HostName in both ways
-                HostName = string.IsNullOrEmpty(UpdateManager.HostName) ? HostAnalyticsInfo.HostName : UpdateManager.HostName;
+                HostName = HostAnalyticsInfo.HostName;
                 HostVersion = UpdateManager.HostVersion?.ToString();
             }
 
@@ -950,12 +940,6 @@ namespace Dynamo.Models
             if (!IsServiceMode)
             {
                 AuthenticationManager = new AuthenticationManager(config.AuthProvider);
-            }
-
-            UpdateManager.Log += UpdateManager_Log;
-            if (!IsTestMode && !IsHeadless && !IsServiceMode && !config.NoNetworkMode)
-            {
-                DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }
 
             Logger.Log(string.Format("Dynamo -- Build {0}",
@@ -1398,7 +1382,6 @@ namespace Dynamo.Models
 
             EngineController.VMLibrariesReset -= ReloadDummyNodes;
 
-            UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
 
             EngineController.Dispose();
