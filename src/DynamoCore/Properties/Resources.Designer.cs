@@ -1118,7 +1118,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This workspace contains trace data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. As a result element binding will fail to work with this data. However, any new trace data generated during graph execution will work if saved with the workspace..
+        ///   Looks up a localized string similar to This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding will work however, if any new trace data generated during graph execution is saved with the workspace..
         /// </summary>
         public static string LegacyTraceDataWarning {
             get {
