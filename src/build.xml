@@ -12,7 +12,7 @@
 	
 <ItemGroup>
     <ProjectToBuild Include="$(Solution)" >
-        <Properties>Configuration=Release;Platform=$(Platform)</Properties>
+        <Properties>Configuration=Release;Platform=$(Platform);DotNet=$(DotNet)</Properties>
     </ProjectToBuild>
 </ItemGroup>
 
