@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +8,7 @@ using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Library;
 using ProtoCore;
 
@@ -282,7 +283,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>Returns a dictionary of deserialized node-data-list pairs
         /// loaded from the given XmlDocument.</returns>
         internal static IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>>
-            LoadTraceDataFromXmlDocument(XmlDocument document)
+            LoadTraceDataFromXmlDocument(XmlDocument document, out bool containsTraceData)
         {
             if (document == null)
                 throw new ArgumentNullException("document");
@@ -301,7 +302,10 @@ namespace Dynamo.Graph.Nodes
 
             var loadedData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
             if (!query.Any()) // There's no data, return empty dictionary.
+            {
+                containsTraceData = false;
                 return loadedData;
+            }
 
             XmlElement sessionElement = query.ElementAt(0);
             foreach (XmlElement nodeElement in sessionElement.ChildNodes)
@@ -313,14 +317,12 @@ namespace Dynamo.Graph.Nodes
                     var callsiteId = string.Empty;
                     if (child.HasAttribute(Configurations.CallSiteID))
                     {
-                        callsiteId = child.GetAttribute(Configurations.CallSiteID);
+                        containsTraceData = true;
+                        return loadedData;
                     }
-                    var traceData = child.InnerText;
-                    callsiteTraceData.Add(new CallSite.RawTraceData(callsiteId, traceData));
                 }
-                loadedData.Add(guid, callsiteTraceData);
             }
-
+            containsTraceData = false;
             return loadedData;
         }
 

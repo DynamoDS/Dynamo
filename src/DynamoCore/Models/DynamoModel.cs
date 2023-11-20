@@ -2321,19 +2321,15 @@ namespace Dynamo.Models
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             
 
-            // NOTE: This is to handle the case of opening a JSON file that does not have a version string
-            //       This logic may not be correct, need to decide the importance of versioning early JSON files
-            string versionString = dynamoPreferences.Version;
-            if (versionString == null) versionString = AssemblyHelper.GetDynamoVersion().ToString();
-            workspace.WorkspaceVersion = new System.Version(versionString);
+            // This is to handle the case of opening a JSON file that does not have a version string
+            if (dynamoPreferences.Version == null) workspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
             if (workspace.ContainsTraceData && workspace.WorkspaceVersion < new Version(3, 0, 0))
             {
                 OnRequestNotification(Resources.LegacyTraceDataWarning, true);
             }
 
-            HomeWorkspaceModel homeWorkspace = workspace as HomeWorkspaceModel;
-            if (homeWorkspace != null)
+            if (workspace is HomeWorkspaceModel homeWorkspace)
             {
                 homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.Instance.DefaultEnableLegacyPolyCurveBehavior;
 
@@ -2456,12 +2452,16 @@ namespace Dynamo.Models
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
             Guid deterministicId = GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
+
+            var loadedTraceData = Utils.LoadTraceDataFromXmlDocument(xmlDoc, out var containsTraceData);
+            if(containsTraceData) OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+
             var newWorkspace = new HomeWorkspaceModel(
                 deterministicId,
                 EngineController,
                 Scheduler,
                 NodeFactory,
-                Utils.LoadTraceDataFromXmlDocument(xmlDoc),
+                loadedTraceData,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
                 nodeGraph.Annotations,
