@@ -23,7 +23,8 @@
                                            ToggleDefaultBrush="{StaticResource MidBlueBrush}"
                                            ToggleHoverBrush="{StaticResource MidDarkBlueBrush}"
                                            TogglePressedBrush="{StaticResource MidLightBlueBrush}" />
-            <ControlTemplate x:Key="ToggleTemplate" TargetType="{x:Type Button}">
+            <ControlTemplate x:Key="ToggleTemplate"
+                             TargetType="{x:Type Button}">
                 <Border x:Name="border"
                         Padding="4 2"
                         Margin="3"
@@ -31,35 +32,35 @@
                         SnapsToDevicePixels="True"
                         UseLayoutRounding="True"
                         BorderThickness="2"
-                        BorderBrush="Transparent"
+                        BorderBrush="#2a2a2a"
                         Background="#494949">
                     <StackPanel Orientation="Horizontal">
                         <ContentPresenter />
-                        <Border Background="Transparent">
-                            <Viewbox Width="12"
-                                     Height="12"
-                                     SnapsToDevicePixels="True"
-                                     UseLayoutRounding="True"
-                                     VerticalAlignment="Stretch"
-                                     Margin="0 -1 5 2">
-                                <Path x:Name="remove"
-                                      Fill="#999999"
-                                      Data="M13.3996 3.39998L12.5996 2.59998L7.99961 7.29998L3.39961 2.59998L2.59961 3.39998L7.29961 7.99998L2.59961 12.6L3.39961 13.4L7.99961 8.69998L12.5996 13.4L13.3996 12.6L8.69961 7.99998L13.3996 3.39998Z"
-                                      StrokeThickness="0">
-                                 </Path>
-                            </Viewbox>
-                        </Border>
+                        <Image Source="/DynamoCoreWpf;component/UI/Images/close_16px.png"
+                               Width="16"
+                               Height="16"
+                               SnapsToDevicePixels="True"
+                               UseLayoutRounding="True"
+                               VerticalAlignment="Stretch"
+                               Margin="2 0" />
                     </StackPanel>
                 </Border>
 
                 <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter TargetName="border" Property="Background" Value="#5D5D5D" />
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter TargetName="border"
+                                Property="Background"
+                                Value="#5D5D5D" />
                     </Trigger>
                     <Trigger Property="IsPressed"
                              Value="True">
-                        <Setter TargetName="border" Property="BorderBrush" Value="#25576E" />
-                        <Setter TargetName="border" Property="Background" Value="#494949" />
+                        <Setter TargetName="border"
+                                Property="BorderBrush"
+                                Value="#25576E" />
+                        <Setter TargetName="border"
+                                Property="Background"
+                                Value="#494949" />
 
                     </Trigger>
                 </ControlTemplate.Triggers>
