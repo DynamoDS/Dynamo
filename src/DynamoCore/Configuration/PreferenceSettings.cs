@@ -698,7 +698,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// This defines if the user is agree to the ML Automcomplete Term of Use
+        /// This defines if the user is agree to the ML Automcomplete Terms of Use
         /// </summary>
         public bool IsMLAutocompleteTOUApproved
         {
