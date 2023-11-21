@@ -31,25 +31,19 @@ namespace Dynamo.UI.Prompts
 
             viewModel = dynamoViewModel;
 
+            // Resolve and load ADP Analytics Consent file
             var adpAnalyticsFile = "ADPAnalyticsConsent.rtf";
-
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
                 ADPAnalyticsConsent.File = adpAnalyticsFile;
-
-            var mlNodeAutocompleteFile = "MLNodeAutocompleteConsent.rtf";
-
-            if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
-                MLNodeAutocompleteConsent.File = mlNodeAutocompleteFile;
-
-
-            //disable adp configure dialog version check fails.
+            // disable adp configuration if version check fails.
             //also disabled below id all analytics disabled.
             configure_adp_button.IsEnabled = AnalyticsService.IsADPAvailable();
 
-            if (Analytics.DisableAnalytics)
-            {
-                configure_adp_button.IsEnabled = false;
-            }
+            // Resolve and load ML Node Autocomplete Consent file
+            var mlNodeAutocompleteFile = "MLNodeAutocompleteConsent.rtf";
+            if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
+                MLNodeAutocompleteConsent.File = mlNodeAutocompleteFile;
+            // Initialize the checkbox to the current value
             AgreeToMLAutocompleteTOUCheckbox.IsChecked = dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;
         }
 
