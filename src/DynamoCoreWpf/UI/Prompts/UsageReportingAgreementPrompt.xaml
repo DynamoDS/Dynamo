@@ -218,8 +218,8 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,20,0,10" Grid.Row="4">
-                    <CheckBox x:Name="isAgreeToMLAutocompleteTOU"/>
-                    <TextBlock x:Name="AgreeToMLAutocompleteTOU" Margin="10,0,0,0"/>
+                    <CheckBox x:Name="AgreeToMLAutocompleteTOUCheckbox"/>
+                    <TextBlock x:Name="AgreeToMLAutocompleteTOUTextbox" Margin="10,0,0,0" Text="{x:Static p:Resources.IAgreeToMLAutocompleteTOU}"/>
                 </StackPanel>
                 <!--Configure ADP Consent-->
                 <Button Grid.Row="5"

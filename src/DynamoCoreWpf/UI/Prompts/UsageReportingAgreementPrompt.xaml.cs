@@ -28,7 +28,6 @@ namespace Dynamo.UI.Prompts
             {
                 TitleTextBlock.Text = resourceProvider.GetString(ResourceNames.ConsentForm.Title);
             }
-            AgreeToMLAutocompleteTOU.Text = Wpf.Properties.Resources.IAgreeToMLAutocompleteTOU;
 
             viewModel = dynamoViewModel;
 
@@ -51,12 +50,12 @@ namespace Dynamo.UI.Prompts
             {
                 configure_adp_button.IsEnabled = false;
             }
-            isAgreeToMLAutocompleteTOU.IsChecked = dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;
+            AgreeToMLAutocompleteTOUCheckbox.IsChecked = dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            viewModel.PreferenceSettings.IsMLAutocompleteTOUApproved = (bool)isAgreeToMLAutocompleteTOU.IsChecked;
+            viewModel.PreferenceSettings.IsMLAutocompleteTOUApproved = AgreeToMLAutocompleteTOUCheckbox.IsChecked ?? false;
             Close();
         }
 
