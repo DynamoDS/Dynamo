@@ -485,8 +485,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public List<string> SelectedHosts { get; set; }
 
-        private EntryDictionary<PackageManagerSearchElement> EntryDictionary;
-        
         /// <summary>
         ///     Command to clear the completed package downloads
         /// </summary>
@@ -567,7 +565,6 @@ namespace Dynamo.PackageManager
             SearchResults = new ObservableCollection<PackageManagerSearchElementViewModel>();
             InfectedPackages = new ObservableCollection<PackageManagerSearchElement>();
             MaxNumSearchResults = 35;
-            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             SortCommand = new DelegateCommand(Sort, CanSort);
             SearchSortCommand = new DelegateCommand<object>(Sort, CanSort);
@@ -998,16 +995,6 @@ namespace Dynamo.PackageManager
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
             LastSync = pkgs;
 
-            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
-
-            foreach (var pkg in pkgs)
-            {
-                EntryDictionary.Add(pkg, pkg.Name);
-                EntryDictionary.Add(pkg, pkg.Description);
-                EntryDictionary.Add(pkg, pkg.Maintainers);
-                EntryDictionary.Add(pkg, pkg.Keywords);
-            }
-
             PopulateMyPackages();   // adding 
         }
 
@@ -1141,6 +1128,7 @@ namespace Dynamo.PackageManager
             foreach (var ele in this.SearchResults)
             {
                 ele.RequestDownload -= PackageOnExecuted;
+                ele.RequestShowFileDialog -= OnRequestShowFileDialog;
             }
             this.SearchResults.Clear();
         }
@@ -1619,8 +1607,24 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal void Dispose()
         {
+            if(LastSync != null)
+            {
+                foreach(var package in LastSync)
+                {
+                    package.UpvoteRequested -= PackageManagerClientViewModel.Model.Upvote;
+                }
+                LastSync.Clear();
+            }
+
             nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
-            if (aTimer != null) aTimer.Elapsed -= OnTimedEvent;
+            nonHostFilter.Clear();
+
+            if (aTimer != null)
+            {
+                aTimer.Stop();
+                aTimer.Elapsed -= OnTimedEvent;
+                aTimer = null;
+            }
 
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
@@ -1629,6 +1633,7 @@ namespace Dynamo.PackageManager
 
             ClearSearchResults();   // also clear all SearchResults and unsubscribe 
             ClearMySearchResults();
+
         }
     }
 }

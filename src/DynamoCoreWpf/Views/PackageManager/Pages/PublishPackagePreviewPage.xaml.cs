@@ -41,6 +41,7 @@ namespace Dynamo.PackageManager.UI
 
         public void Dispose()
         {
+            this.PublishPackageViewModel = null;
             this.DataContextChanged -= PublishPackagePublishPage_DataContextChanged;
         }
 

@@ -56,6 +56,26 @@ namespace Dynamo.PackageManager.UI
             this.Loaded -= InitializeContext;
         }
 
+        public void Dispose()
+        {
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Close,
+                Categories.PackageManagerOperations);
+
+            PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
+            PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
+
+            this.Loaded -= InitializeContext;
+
+            DisposePages();
+
+            PublishPackageViewModel = null;
+            PublishPages = null;
+            NavButtonStacks = null;
+
+            Breadcrumbs.Clear();
+        }
+
         private void InitializePages()
         {
             PublishPages = new Dictionary<int, Page>();
@@ -118,16 +138,6 @@ namespace Dynamo.PackageManager.UI
                 e.Cancel = false;
             }
 
-        }
-
-        public void Dispose()
-        {
-            Dynamo.Logging.Analytics.TrackEvent(
-                Actions.Close,
-                Categories.PackageManagerOperations);
-
-            PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
-            PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
         }
 
         /// <summary>
@@ -253,6 +263,21 @@ namespace Dynamo.PackageManager.UI
             if(NavButtonStacks.TryGetValue(page, out var buttonstack))
             {
                 buttonstack.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void DisposePages()
+        {
+            foreach(var page in PublishPages.Values)
+            {
+                if (page is PublishPackagePublishPage)
+                    (page as PublishPackagePublishPage).Dispose();
+                if (page is PublishPackageSelectPage)
+                    (page as PublishPackageSelectPage).Dispose();
+                if (page is PublishPackagePreviewPage)
+                    (page as PublishPackagePreviewPage).Dispose();
+                if (page is PublishPackageFinishPage)
+                    (page as PublishPackageFinishPage).Dispose();
             }
         }
 
