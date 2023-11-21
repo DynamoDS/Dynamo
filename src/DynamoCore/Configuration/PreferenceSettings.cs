@@ -69,7 +69,7 @@ namespace Dynamo.Configuration
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
-        private bool isAgreeToMLAutocompleteTOU;
+        private bool isMLAutocompleteTOUApproved;
 
         #region Constants
         /// <summary>
@@ -700,15 +700,15 @@ namespace Dynamo.Configuration
         /// <summary>
         /// This defines if the user is agree to the ML Automcomplete Term of Use
         /// </summary>
-        public bool AgreeToMLAutocompleteTOU
+        public bool IsMLAutocompleteTOUApproved
         {
             get
             {
-                return isAgreeToMLAutocompleteTOU;
+                return isMLAutocompleteTOUApproved;
             }
             set
             {
-                isAgreeToMLAutocompleteTOU = value;
+                isMLAutocompleteTOUApproved = value;
             }
         }        
 
@@ -948,7 +948,7 @@ namespace Dynamo.Configuration
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
             GraphChecksumItemsList = new List<GraphChecksumItem>();
-            isAgreeToMLAutocompleteTOU = false;
+            isMLAutocompleteTOUApproved = false;
         }
 
         /// <summary>

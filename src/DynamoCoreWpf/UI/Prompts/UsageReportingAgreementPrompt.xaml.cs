@@ -3,9 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using Dynamo.Logging;
-using Dynamo.Services;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 
@@ -28,9 +26,9 @@ namespace Dynamo.UI.Prompts
             InitializeComponent();
             if (resourceProvider != null)
             {
-                TitleTextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.Title);
+                TitleTextBlock.Text = resourceProvider.GetString(ResourceNames.ConsentForm.Title);
             }
-            AgreeToMLAutocompleteTOU.Text = Dynamo.Wpf.Properties.Resources.IAgreeToMLAutocompleteTOU;
+            AgreeToMLAutocompleteTOU.Text = Wpf.Properties.Resources.IAgreeToMLAutocompleteTOU;
 
             viewModel = dynamoViewModel;
 
@@ -53,12 +51,12 @@ namespace Dynamo.UI.Prompts
             {
                 configure_adp_button.IsEnabled = false;
             }
-            isAgreeToMLAutocompleteTOU.IsChecked = dynamoViewModel.PreferenceSettings.AgreeToMLAutocompleteTOU;
+            isAgreeToMLAutocompleteTOU.IsChecked = dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            viewModel.PreferenceSettings.AgreeToMLAutocompleteTOU = (bool)isAgreeToMLAutocompleteTOU.IsChecked;
+            viewModel.PreferenceSettings.IsMLAutocompleteTOUApproved = (bool)isAgreeToMLAutocompleteTOU.IsChecked;
             Close();
         }
 
