@@ -14,6 +14,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoServices;
 using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
@@ -296,9 +297,21 @@ namespace Dynamo.UI.Views
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
 
-            viewModel.Model.Logger.Log("EnsureCoreWebView2Async webView from SplashScreen on thread " + Thread.CurrentThread.ManagedThreadId);
+            //viewModel.Model.Logger.Log("EnsureCoreWebView2Async webView from SplashScreen on thread " + Thread.CurrentThread.ManagedThreadId);
 
-            await webView.EnsureCoreWebView2Async();
+            try
+            {
+                await webView.EnsureCoreWebView2Async();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                Validity.Assert(webView == null);
+                return;
+            }
+
+            if (webView == null)
+                return;
+
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             // Zoom control disabled

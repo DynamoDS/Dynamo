@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Utilities;
+using DynamoServices;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -174,19 +175,30 @@ namespace Dynamo.DocumentationBrowser
                 }
 
                 Log("await documentationBrowser.EnsureCoreWebView2Async on thread " + Thread.CurrentThread.ManagedThreadId);
-                //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
-                await documentationBrowser.EnsureCoreWebView2Async();
-                
-           
-                this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
-                comScriptingObject = new ScriptingObject(this.viewModel);
-                //register the interop object into the browser.
-                this.documentationBrowser.CoreWebView2.AddHostObjectToScript("bridge", comScriptingObject);
 
-                this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
-                this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
+                try
+                {
+                    //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
+                    await documentationBrowser.EnsureCoreWebView2Async();
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    Log(ex.Message);
+                    Validity.Assert(documentationBrowser == null);
+                    return;
+                }
+                if (documentationBrowser != null)
+                {
+                    this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
+                    comScriptingObject = new ScriptingObject(this.viewModel);
+                    //register the interop object into the browser.
+                    this.documentationBrowser.CoreWebView2.AddHostObjectToScript("bridge", comScriptingObject);
 
-                hasBeenInitialized = true;
+                    this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+                    this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
+
+                    hasBeenInitialized = true;
+                }
             }
 
             if(Directory.Exists(VirtualFolderPath))

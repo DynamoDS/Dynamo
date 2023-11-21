@@ -23,6 +23,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels;
+using DynamoServices;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
@@ -352,7 +353,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
 
             LogToDynamoConsole("EnsureCoreWebView2Async browser from LibraryView on thread " + Thread.CurrentThread.ManagedThreadId);
-            await browser.EnsureCoreWebView2Async();
+            try
+            {
+                await browser.EnsureCoreWebView2Async();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                Validity.Assert(browser == null);
+            }
+            if (browser == null) { return; }
+            
             this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
             twoWayScriptingObject = new ScriptingObject(this);
             //register the interop object into the browser.

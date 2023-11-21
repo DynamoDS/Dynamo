@@ -20,6 +20,7 @@ using Dynamo.Utilities;
 using Dynamo.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Threading;
+using DynamoServices;
 
 namespace Dynamo.Notifications
 {
@@ -84,7 +85,6 @@ namespace Dynamo.Notifications
             dynamoView.SizeChanged += DynamoView_SizeChanged;
             dynamoView.LocationChanged += DynamoView_LocationChanged;
             notificationsButton.Click += NotificationsButton_Click;
-            dynamoView.Closing += View_Closing;
 
             notificationUIPopup = new NotificationUI
             {
@@ -146,7 +146,16 @@ namespace Dynamo.Notifications
 
             logger.Log("notificationUIPopup.webView.EnsureCoreWebView2Async on thread " + Thread.CurrentThread.ManagedThreadId);
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
-            notificationUIPopup.webView.EnsureCoreWebView2Async();        
+
+            try
+            {
+                notificationUIPopup.webView.EnsureCoreWebView2Async();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                logger.Log(ex.Message);
+                Validity.Assert(notificationUIPopup.webView == null);
+            }
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
