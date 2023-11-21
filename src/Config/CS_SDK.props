@@ -90,16 +90,6 @@
   <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
     <TestDependenciesPath>$(OutputPath)\..\..\..\test\test_dependencies</TestDependenciesPath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
-    <ProjectReference>
-      <PrivateAssets>all</PrivateAssets>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
-    <PackageReference>
-      <PrivateAssets>all</PrivateAssets>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-  </ItemDefinitionGroup>
   <Target Name="CleanIntermediaryFolder" Condition="Exists('$(ProjectDir)$(BaseIntermediateOutputPath)')" BeforeTargets="Clean" >
      <RemoveDir ContinueOnError="WarnAndContinue" Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->
   </Target>
