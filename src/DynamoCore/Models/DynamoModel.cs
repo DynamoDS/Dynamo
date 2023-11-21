@@ -453,10 +453,7 @@ namespace Dynamo.Models
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
 
-            if (!AnalyticsService.KeepAlive)
-            {
-                AnalyticsService.ShutDown();
-            }
+            AnalyticsService.ShutDown();
 
             State = DynamoModelState.NotStarted;
             OnShutdownCompleted(); // Notify possible event handlers.
@@ -1042,13 +1039,13 @@ namespace Dynamo.Models
             // So we don't want to start it when splash screen or dynamo window is launched again.
             if (Analytics.client == null)
             {
-                AnalyticsService.Start(this);
+                AnalyticsService.Start();
             }
             else if (Analytics.client is DynamoAnalyticsClient dac)
             {
                 if (dac.Session == null)
                 {
-                    AnalyticsService.Start(this);
+                    AnalyticsService.Start();
                 }
             }
         }

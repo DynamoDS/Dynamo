@@ -1,4 +1,3 @@
-using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
@@ -24,7 +23,7 @@ namespace Dynamo.Logging
         /// Starts the Analytics client. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
-        internal static void Start(DynamoModel model)
+        internal static void Start()
         {
             // Initialize the concrete class only when we initialize the Service.
             // This will also load the Analytics.Net.ADP assembly
@@ -32,19 +31,6 @@ namespace Dynamo.Logging
             adpAnalyticsUI = new ADPAnalyticsUI();
 
             Analytics.Start(new DynamoAnalyticsClient(DynamoModel.HostAnalyticsInfo));
-
-            if(model != null)
-            {
-                model.WorkspaceAdded += OnWorkspaceAdded;
-            }
-        }
-
-        static void OnWorkspaceAdded(WorkspaceModel obj)
-        {
-            if (obj is CustomNodeWorkspaceModel)
-                Analytics.TrackScreenView("CustomWorkspace");
-            else
-                Analytics.TrackScreenView("Workspace");
         }
 
         /// <summary>
@@ -92,7 +78,10 @@ namespace Dynamo.Logging
         /// </summary>
         internal static void ShutDown()
         {
-            Analytics.ShutDown();
+            if (!KeepAlive)
+            {
+                Analytics.ShutDown();
+            }
         }
 
         /// <summary>
