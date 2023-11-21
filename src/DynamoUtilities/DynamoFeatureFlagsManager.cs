@@ -24,6 +24,14 @@ namespace DynamoUtilities
         private Dictionary<string, object> AllFlagsCache { get; set; }//TODO lock is likely overkill.
         private SynchronizationContext syncContext;
         internal static event Action FlagsRetrieved;
+        /// <summary>
+        /// set to true after the flags are retrieved from launch darkly.
+        /// </summary>
+        private bool flagsCacheAttempted = false;
+        /// <summary>
+        /// set to true after a null cache is logged.
+        /// </summary>
+        private bool nullCacheLogged = false;
 
         /// <summary>
         /// Constructor
@@ -54,22 +62,26 @@ namespace DynamoUtilities
         {
 
             //wait for response
-            var dataFromCLI = GetData();
+            var dataFromCLI = GetData();    
             //convert from json string to dictionary.
             try
-            {  
+            {
                 AllFlagsCache = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataFromCLI);
                 //invoke the flags retrieved event on the sync context which should be the main ui thread.
                 syncContext?.Send((_) =>
-                {   
+                {
                     FlagsRetrieved?.Invoke();
 
-                },null);
-                
+                }, null);
+
             }
             catch (Exception e)
             {
                 RaiseMessageLogged($"{e?.Message}");
+            }
+            finally
+            {
+                flagsCacheAttempted = true;
             }
         }
 
@@ -87,12 +99,21 @@ namespace DynamoUtilities
                 return defaultval;
             }
             // if we have not retrieved flags from the cli return empty
-            // and log.
+            // and log once,
            
             if(AllFlagsCache == null)
             {
-                RaiseMessageLogged("the flags cache is null, something went wrong retrieving feature flags," +
-                  " or you need to wait longer for the cache to populate, you can use the static FlagsRetrieved event for this purpose. ");
+                switch (flagsCacheAttempted)
+                {
+                    case true when !nullCacheLogged:
+                        RaiseMessageLogged("The flags cache is null, something went wrong retrieving feature flags. This message will not be logged again, and future calls to CheckFeatureFlags will return default values.");
+                        nullCacheLogged = true;
+                        break;
+                    case false:
+                        RaiseMessageLogged("Please wait longer for the cache to populate before checking a flag state, you can use the static FlagsRetrieved event for this purpose.");
+                        break;
+                }
+
                 return defaultval;
             }
             if (AllFlagsCache.ContainsKey(featureFlagKey))
