@@ -912,6 +912,6 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script.</value>
   </data>
   <data name="LegacyTraceDataWarning" xml:space="preserve">
-    <value>This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding will work however, if any new trace data generated during graph execution is saved with the workspace.</value>
+    <value>This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding data will be saved in the new format the next time you run and save this workspace.</value>
   </data>
 </root>
