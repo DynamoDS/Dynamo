@@ -20,7 +20,6 @@ jobs:
       - name: Summary # Print markdown list of closed issues or "No Issues" message if no issues were closed
         env:
           ISSUES_URL: ${{ format('{0}/{1}/issues', github.server_url, github.repository) }}
-          CLOSED_ISSUES: ${{ steps.close_issues.outputs.closed-issues-prs }}
         run: |
           echo '# Closed Issues' >> $GITHUB_STEP_SUMMARY
-          echo '${{ env.CLOSED_ISSUES }}' | jq --raw-output ' if (. == []) then "- No Issues." else .[] | "- \(.title) - [#\(.number)](\(${{ env.ISSUES_URL }})/\(.number))" end' >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.close_issues.outputs.closed-issues-prs }}' | jq --raw-output 'if (. == []) then "- No Issues." else .[] | "- \(.title) - [#\(.number)](\(env.ISSUES_URL)/\(.number))" end' >> $GITHUB_STEP_SUMMARY
