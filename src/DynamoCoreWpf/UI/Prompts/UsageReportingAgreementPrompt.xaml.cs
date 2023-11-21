@@ -53,11 +53,12 @@ namespace Dynamo.UI.Prompts
             {
                 configure_adp_button.IsEnabled = false;
             }
-           
+            isAgreeToMLAutocompleteTOU.IsChecked = dynamoViewModel.PreferenceSettings.AgreeToMLAutocompleteTOU;
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
+            viewModel.PreferenceSettings.AgreeToMLAutocompleteTOU = (bool)isAgreeToMLAutocompleteTOU.IsChecked;
             Close();
         }
 
