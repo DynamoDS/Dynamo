@@ -22,7 +22,7 @@
         <WrapperTool>tlbimp</WrapperTool>
         <Private>False</Private>
     </Reference>
-    <COMReference Include="Microsoft.Office.Core" Condition=" '$(RuntimeIdentifier)' == 'win10-x64' ">
+    <COMReference Include="Microsoft.Office.Core" Condition=" $(RuntimeIdentifier.Contains('win')) ">
         <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
         <VersionMajor>2</VersionMajor>
         <VersionMinor>8</VersionMinor>
