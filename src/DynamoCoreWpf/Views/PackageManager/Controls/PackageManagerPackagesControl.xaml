@@ -395,8 +395,11 @@
                             <!--  Publish Version Button  -->
                             <Button Name="publishButton"
                                     Content="{x:Static p:Resources.PackageManagerMyPackagesPublishVersion}"
+                                    Command="{Binding Path=PackageManagerViewModel.PublishNewVersionCommand,
+                                                      RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                    CommandParameter="{Binding}"
                                     DockPanel.Dock="Right"
-                                    ToolTipService.ShowOnDisabled="True"    
+                                    ToolTipService.ShowOnDisabled="True"
                                     IsEnabled="{Binding IsEnabledForInstall}">
                                 <Button.Style>
                                     <Style TargetType="Button">

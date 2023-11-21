@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
@@ -48,6 +49,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
 
+        public DelegateCommand PublishNewVersionCommand { get; set; }
+
         public PackageManagerViewModel(DynamoViewModel dynamoViewModel, PackageManagerSearchViewModel PkgSearchVM)
         {
             this.dynamoViewModel = dynamoViewModel;
@@ -72,6 +75,14 @@ namespace Dynamo.PackageManager
             {
                 PreferencesViewModel.SelectedPackagePathForInstall = dynamoViewModel.PreferenceSettings.SelectedPackagePathForInstall;
             }
+
+            PublishNewVersionCommand = new DelegateCommand(PublishNewPackageVersionRelayCommand);
+        }
+
+
+        private void PublishNewPackageVersionRelayCommand(object obj)
+        {
+            var test = obj;
         }
 
         private void LocalPackages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

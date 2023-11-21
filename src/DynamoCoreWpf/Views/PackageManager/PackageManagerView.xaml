@@ -32,7 +32,7 @@
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
+            
             <Style x:Key="PkgMngTextBlockStyle" TargetType="TextBlock">
                 <Setter Property="Width" Value="Auto" />
                 <Setter Property="Margin" Value="0 5" />
