@@ -148,7 +148,7 @@ namespace DynamoCoreWpfTests.PackageManager
         }
 
         [Test]
-        async public void LateLoadedViewExtensionsHaveMethodsCalled()
+        public void LateLoadedViewExtensionsHaveMethodsCalled()
         {
             var pkgviewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension");
@@ -203,7 +203,6 @@ namespace DynamoCoreWpfTests.PackageManager
 
             ViewExtensionTests.RaiseLoadedEvent(View);
             Assert.IsTrue(viewLoaded, "view was never loaded, invalid test");
-
         }
 
         [Test]

@@ -37,8 +37,8 @@
         </PackageReference>
 
         <!--moq and deps - copied to test_dependencies folder-->
-        <PackageReference Include="Moq" Version="4.18.4" GeneratePathProperty="true" />
-        <PackageReference Include="Castle.Core" Version=" 5.1.1" GeneratePathProperty="true" />
+        <PackageReference Include="Moq" Version="4.18.4" ExcludeAssets="runtime" GeneratePathProperty="true" />
+        <PackageReference Include="Castle.Core" Version=" 5.1.1" ExcludeAssets="runtime" GeneratePathProperty="true" />
 
         <PackageReference Include="JUnitTestLogger" Version="1.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -46,7 +46,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" GeneratePathProperty="true" />
+        <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" ExcludeAssets="runtime" GeneratePathProperty="true" />
     </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
