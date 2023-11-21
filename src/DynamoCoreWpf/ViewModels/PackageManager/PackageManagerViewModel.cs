@@ -1,5 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Dynamo.PackageManager.ViewModels;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using NotificationObject = Dynamo.Core.NotificationObject;
@@ -82,7 +84,14 @@ namespace Dynamo.PackageManager
 
         private void PublishNewPackageVersionRelayCommand(object obj)
         {
-            var test = obj;
+            var searchElement = obj as PackageManagerSearchElementViewModel;
+            if(searchElement != null)
+            {
+                var localPackage = LocalPackages.First(x => x.Model.Name.Equals(searchElement.Name));
+
+                if (localPackage == null) { return; }
+                localPackage.PublishNewPackageVersionCommand.Execute();
+            }
         }
 
         private void LocalPackages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
