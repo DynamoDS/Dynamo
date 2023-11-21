@@ -68,6 +68,8 @@ namespace DynamoCoreWpfTests
             Model = DynamoModel.Start(
                this.CreateStartConfiguration(pathResolver));
 
+            Model.Logger.Log("Running Test " + TestContext.CurrentContext.Test.MethodName + " on thread " + Thread.CurrentThread.ManagedThreadId);
+
             ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
@@ -76,6 +78,7 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
+            
             View.Show();
 
             // WPF controls need to be on the UI thread and async operations (that interact with the UI) need to be scheduled and return on the same UI thread.
@@ -111,6 +114,8 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
+            Model.Logger.Log("Finished Test " + TestContext.CurrentContext.Test.MethodName + " on thread " + Thread.CurrentThread.ManagedThreadId);
+
             //Ensure that we leave the workspace marked as
             //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;

@@ -2,9 +2,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using Microsoft.Web.WebView2.Core;
@@ -118,6 +120,15 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
             }
+
+            // Note to test writers
+            // Disposing the document browser will cause future tests
+            // that uses the Browser component to crash
+            if (!Models.DynamoModel.IsTestMode)
+            {
+                Log("Disposing documentationBrowser on thread " + Thread.CurrentThread.ManagedThreadId);
+                this.documentationBrowser.Dispose();
+            }
         }
 
         async void InitializeAsync()
@@ -161,6 +172,8 @@ namespace Dynamo.DocumentationBrowser
                         UserDataFolder = WebBrowserUserDataFolder
                     };
                 }
+
+                Log("await documentationBrowser.EnsureCoreWebView2Async on thread " + Thread.CurrentThread.ManagedThreadId);
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
                 

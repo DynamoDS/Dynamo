@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -350,6 +351,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 };
             }
 
+            LogToDynamoConsole("EnsureCoreWebView2Async browser from LibraryView on thread " + Thread.CurrentThread.ManagedThreadId);
             await browser.EnsureCoreWebView2Async();
             this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
             twoWayScriptingObject = new ScriptingObject(this);
@@ -734,6 +736,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
             if (this.browser != null)
             {
+                LogToDynamoConsole("Dispose browser from LibraryView on thread " + Thread.CurrentThread.ManagedThreadId);
+
+
                 browser.CoreWebView2.RemoveHostObjectFromScript("bridgeTwoWay");
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;

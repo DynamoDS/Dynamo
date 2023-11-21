@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml.Serialization;
@@ -294,6 +295,9 @@ namespace Dynamo.UI.Views
             {
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
+
+            viewModel.Model.Logger.Log("EnsureCoreWebView2Async webView from SplashScreen on thread " + Thread.CurrentThread.ManagedThreadId);
+
             await webView.EnsureCoreWebView2Async();
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
@@ -509,6 +513,7 @@ namespace Dynamo.UI.Views
 
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             DynamoModel.LanguageDetected -= DynamoModel_LanguageDetected;
+            viewModel.Model.Logger.Log("Dispose webView from SplashScreen on thread " + Thread.CurrentThread.ManagedThreadId);
             webView.Dispose();
             webView = null;
 

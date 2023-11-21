@@ -18,6 +18,8 @@ using Newtonsoft.Json;
 using Microsoft.Web.WebView2.Wpf;
 using Dynamo.Utilities;
 using Dynamo.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace Dynamo.Notifications
 {
@@ -118,6 +120,8 @@ namespace Dynamo.Notifications
 
             if (notificationUIPopup.webView.CoreWebView2 != null)
             {
+                logger.Log("notificationUIPopup.webView closing on thread " + Thread.CurrentThread.ManagedThreadId);
+
                 notificationUIPopup.webView.CoreWebView2.Stop();
                 notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
@@ -138,7 +142,9 @@ namespace Dynamo.Notifications
                 {
                     UserDataFolder = webBrowserUserDataFolder.FullName
                 };
-            }               
+            }
+
+            logger.Log("notificationUIPopup.webView.EnsureCoreWebView2Async on thread " + Thread.CurrentThread.ManagedThreadId);
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             notificationUIPopup.webView.EnsureCoreWebView2Async();        
         }
