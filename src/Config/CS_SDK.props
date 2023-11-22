@@ -4,8 +4,11 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformTarget >x64</PlatformTarget>
+    <!--Use the property DotNet to set TargetFramework from commandline without forcing it on all projects-->
+    <!--Ex. DynamoServices uses TargetFramework netstandard2.0 -->
+    <DotNet>net6.0</DotNet>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>$(DotNet)</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
@@ -49,7 +52,7 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('AnyCPU'))" >
-    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
