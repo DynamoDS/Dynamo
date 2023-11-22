@@ -528,7 +528,7 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
                     FilePath,
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
@@ -628,7 +628,7 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
                     FilePath,
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
@@ -705,7 +705,7 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
                     "In memory json file",
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
@@ -1795,7 +1795,7 @@ namespace Dynamo.Models
 
             internal override void TrackAnalytics()
             {
-                Dynamo.Logging.Analytics.TrackCommandEvent(
+                Dynamo.Logging.Analytics.TrackTaskCommandEvent(
                     CmdOperation.ToString()); // "Undo" or "Redo"
             }
 
