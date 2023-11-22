@@ -1129,6 +1129,7 @@ namespace Dynamo.PackageManager
             {
                 ele.RequestDownload -= PackageOnExecuted;
                 ele.RequestShowFileDialog -= OnRequestShowFileDialog;
+                ele?.Dispose();
             }
             this.SearchResults.Clear();
         }

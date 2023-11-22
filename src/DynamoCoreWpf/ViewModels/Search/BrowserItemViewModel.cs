@@ -11,12 +11,12 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using NotificationObject = Dynamo.Core.NotificationObject;
 using Prism.Commands;
+using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.Wpf.ViewModels
 {
-    public abstract class BrowserItemViewModel : NotificationObject
+    public abstract class BrowserItemViewModel : NotificationObject, IDisposable
     {
         public ICommand ToggleIsExpandedCommand { get; protected set; }
         public BrowserItem Model { get; private set; }
@@ -73,6 +73,11 @@ namespace Dynamo.Wpf.ViewModels
         internal static BrowserInternalElementViewModel WrapExplicit(BrowserInternalElement elem)
         {
             return new BrowserInternalElementViewModel(elem);
+        }
+
+        public void Dispose()
+        {
+            Model.Items.CollectionChanged -= ItemsOnCollectionChanged;
         }
 
         #endregion
