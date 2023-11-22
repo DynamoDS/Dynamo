@@ -15,7 +15,6 @@ namespace Md2Html
     {
         static void Main(string[] args)
         {
-            return;
             if (CheckForHelp(args))
             {
                 // Display help and exit
