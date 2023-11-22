@@ -24,14 +24,16 @@ namespace DynamoUtilities
         private Dictionary<string, object> AllFlagsCache { get; set; }//TODO lock is likely overkill.
         private SynchronizationContext syncContext;
         internal static event Action FlagsRetrieved;
+        
+        //TODO(DYN-6464)- remove this field!.
         /// <summary>
-        /// set to true after the flags are retrieved from launch darkly.
+        /// set to true after some FF issue is logged. For now we only log once to avoid clients overwhelming the logger.
         /// </summary>
-        private bool flagsCacheAttempted = false;
+        private bool loggedFFIssueOnce = false;
         /// <summary>
-        /// set to true after a null cache is logged.
+        /// Timeout in ms for feature flag communication with CLI process.
         /// </summary>
-        private bool nullCacheLogged = false;
+        private const int featureFlagTimeoutMs = 5000;
 
         /// <summary>
         /// Constructor
@@ -62,7 +64,7 @@ namespace DynamoUtilities
         {
 
             //wait for response
-            var dataFromCLI = GetData(2000).Result;    
+            var dataFromCLI = GetData(featureFlagTimeoutMs).Result;    
             //convert from json string to dictionary.
             try
             {
@@ -79,50 +81,48 @@ namespace DynamoUtilities
             {
                 RaiseMessageLogged($"{e?.Message}");
             }
-            finally
-            {
-                flagsCacheAttempted = true;
-            }
         }
 
         /// <summary>
-        /// Check feature flag value, if not exist, return defaultval
+        /// Check feature flag value, if it does not exist, return the defaultval.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="featureFlagKey"></param>
-        /// <param name="defaultval"></param>
+        /// <typeparam name="T">Must be a bool or string, only bool or string flags should be created unless this implementation is improved.</typeparam>
+        /// <param name="featureFlagKey">feature flag name</param>
+        /// <param name="defaultval">Currently the flag and default val MUST be a bool or string.</param>
         /// <returns></returns>
         internal T CheckFeatureFlag<T>(string featureFlagKey, T defaultval)
         {
             if(!(defaultval is bool || defaultval is string)){
-                RaiseMessageLogged("unsupported flag type");
-                return defaultval;
+                throw new ArgumentException("unsupported flag type", defaultval.GetType().ToString());
             }
             // if we have not retrieved flags from the cli return empty
-            // and log once,
+            // and log once.
            
             if(AllFlagsCache == null)
-            {
-                switch (flagsCacheAttempted)
+            {   //TODO(DYN-6464) Revisit this and log more when the logger is not easily overwhelmed.
+                if (!loggedFFIssueOnce)
                 {
-                    case true when !nullCacheLogged:
-                        RaiseMessageLogged("The flags cache is null, something went wrong retrieving feature flags. This message will not be logged again, and future calls to CheckFeatureFlags will return default values.");
-                        nullCacheLogged = true;
-                        break;
-                    case false:
-                        RaiseMessageLogged("Please wait longer for the cache to populate before checking a flag state, you can use the static FlagsRetrieved event for this purpose.");
-                        break;
+                    RaiseMessageLogged(
+                        $"The flags cache was null while checking {featureFlagKey}, something went wrong retrieving feature flags," +
+                        " or you need to wait longer for the cache to populate before checking for flags, you can use the static FlagsRetrieved event for this purpose." +
+                        "This message will not be logged again, and future calls to CheckFeatureFlags will return default values!!!");
                 }
 
+                loggedFFIssueOnce = true;
                 return defaultval;
             }
-            if (AllFlagsCache.ContainsKey(featureFlagKey))
+            if (AllFlagsCache.TryGetValue(featureFlagKey, out var flagVal))
             {
-                return (T)AllFlagsCache[featureFlagKey];
+                return (T)flagVal;
             }
             else
             {
-                RaiseMessageLogged($"failed to get value for feature flag key ex: {featureFlagKey},{System.Environment.NewLine} returning default value: {defaultval}");
+                if (!loggedFFIssueOnce)
+                {
+                    RaiseMessageLogged(
+                        $"failed to get value for feature flag key ex: {featureFlagKey},{System.Environment.NewLine} returning default value: {defaultval}");
+                }
+                loggedFFIssueOnce = true;
                 return defaultval;
             }
         }

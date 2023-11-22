@@ -188,6 +188,8 @@ namespace Dynamo.Utilities
     internal class Md2Html : CLIWrapper
     {
         private string relativePath = Path.Combine(@"Md2Html", @"Md2Html.exe");
+        private int processCommunicationTimeoutms = 5000;
+
         /// <summary>
         /// Constructor
         /// Start the CLI tool and keep it around
@@ -241,7 +243,7 @@ namespace Dynamo.Utilities
                 return GetCantCommunicateErrorMessage();
             }
 
-            var output = GetData(2000);
+            var output = GetData(processCommunicationTimeoutms);
 
             return output.Result;
         }
@@ -270,7 +272,7 @@ namespace Dynamo.Utilities
                 return GetCantCommunicateErrorMessage();
             }
 
-            var output = GetData(2000);
+            var output = GetData(processCommunicationTimeoutms);
 
            return output.Result;
         }
