@@ -52,7 +52,7 @@ namespace Dynamo.Utilities
             {
                 process.Start();
                 started = true;
-                //the only purspose here is to avoid deadlocks when std err gets filled up 4kb
+                //the only purpose here is to avoid deadlocks when std err gets filled up 4kb
                 //in long running processes.
                 process.ErrorDataReceived += Process_ErrorDataReceived;
                 process.BeginErrorReadLine();
