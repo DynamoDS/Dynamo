@@ -3,7 +3,8 @@ name: UI Smoke Tests
 on:
   workflow_run:
     workflows:
-      - DynamoAllNet6.0-Build
+      - Build DynamoAll.sln net6.0
+      - Build DynamoAll.sln net8.0
     types:
       - completed
 
@@ -33,13 +34,20 @@ jobs:
       - name: Install TestExecute
         shell: cmd
         run: .\TE.exe -SilentInstall
-      - name: Download Artifact
+      - name: Download Build Artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           name: DynamoSandbox
           workflow: ${{ env.WORKFLOW_ID }}
           run_id: ${{ env.RUN_ID }}
           path: ${{ github.workspace }}\build
+      - name: Download Pull Request Artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: pr_num
+          workflow: ${{ env.WORKFLOW_ID }}
+          run_id: ${{ env.RUN_ID }}
+          path: ${{ github.workspace }}\pr
       - name: Run UI Smoke Tests
         shell: cmd
         run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
@@ -50,9 +58,17 @@ jobs:
           name: UI Smoke Test Report
           path: reports/report.xml
           reporter: java-junit
+      - name: Read Pull Request Number
+        id: read_pr_number
+        run: |
+          echo "pr_number=$(cat ${{ github.workspace }}\pr\pr_number.txt)" >> "$GITHUB_OUTPUT"
       - name: Summary
+        env:
+          PR_NUMBER: ${{ steps.outputs.read_pr_number.pr_number }}
+          PR_URL: ${{ format('{0}/{1}/pull', github.server_url, github.repository) }}
         if: always()
         run: |
           Get-Content summary.md >> $env:GITHUB_STEP_SUMMARY
-          Write-Output "Actor: @${{ env.ACTOR }}" >> $env:GITHUB_STEP_SUMMARY
-          Write-Output "Workflow Run: [${{ env.RUN_NAME }}](${{ env.RUN_URL }})" >> $env:GITHUB_STEP_SUMMARY
+          Write-Output "Actor: @$env:ACTOR" >> $env:GITHUB_STEP_SUMMARY
+          Write-Output "Workflow Run: [$env:RUN_NAME]($env:RUN_URL)" >> $env:GITHUB_STEP_SUMMARY
+          Write-Output "Pull Request: [$env:PR_NUMBER]($env:PR_URL/$env:PR_NUMBER)" >> $env:GITHUB_STEP_SUMMARY
