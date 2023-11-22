@@ -61,14 +61,14 @@ jobs:
       - name: Read Pull Request Number
         id: read_pr_number
         run: |
-          echo "pr_number=$(cat ${{ github.workspace }}\pr\pr_number.txt)" >> "$GITHUB_OUTPUT"
+          "pr_number=$(Get-Content ${{ github.workspace }}\pr\pr_number.txt)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
       - name: Summary
         env:
-          PR_NUMBER: ${{ steps.outputs.read_pr_number.pr_number }}
+          PR_NUMBER: ${{ steps.read_pr_number.outputs.pr_number }}
           PR_URL: ${{ format('{0}/{1}/pull', github.server_url, github.repository) }}
         if: always()
         run: |
-          Get-Content summary.md >> $env:GITHUB_STEP_SUMMARY
-          Write-Output "Actor: @$env:ACTOR" >> $env:GITHUB_STEP_SUMMARY
-          Write-Output "Workflow Run: [$env:RUN_NAME]($env:RUN_URL)" >> $env:GITHUB_STEP_SUMMARY
-          Write-Output "Pull Request: [$env:PR_NUMBER]($env:PR_URL/$env:PR_NUMBER)" >> $env:GITHUB_STEP_SUMMARY
+          Get-Content summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "Actor: @$env:ACTOR" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "Workflow Run: [$env:RUN_NAME]($env:RUN_URL)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "Pull Request: [$env:PR_NUMBER]($env:PR_URL/$env:PR_NUMBER)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
