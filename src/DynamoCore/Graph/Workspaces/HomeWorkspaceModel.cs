@@ -664,24 +664,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         #endregion
-
-        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
-        protected override bool PopulateXmlDocument(XmlDocument document)
-        {
-            if (!base.PopulateXmlDocument(document))
-                return false;
-
-            var root = document.DocumentElement;
-            if (root == null)
-                return false;
-
-            root.SetAttribute("RunType", RunSettings.RunType.ToString());
-            root.SetAttribute("RunPeriod", RunSettings.RunPeriod.ToString(CultureInfo.InvariantCulture));
-            root.SetAttribute("HasRunWithoutCrash", HasRunWithoutCrash.ToString(CultureInfo.InvariantCulture));
-
-            return true;
-        }
-
+        
         private void PulseMakerRunStarted()
         {
             var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);

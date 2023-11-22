@@ -10,6 +10,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
@@ -43,6 +44,8 @@ namespace Dynamo.Engine
         /// The event notifies client that the VMLibraries have been reset and the VM is now ready to run the new code. 
         /// </summary>
         internal static event Action VMLibrariesReset;
+
+        internal Version WorkspaceVersion { get; set; }
 
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
@@ -153,6 +156,8 @@ namespace Dynamo.Engine
             syncDataManager = new SyncDataManager();
 
             VerboseLogging = verboseLogging;
+
+            WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
         }
 
         /// <summary>

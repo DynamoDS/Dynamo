@@ -2323,6 +2323,10 @@ namespace Dynamo.Models
             var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             currentHomeSpace.UndefineCBNFunctionDefinitions();
 
+            // This is to handle the case of opening a JSON file that does not have a version string
+            EngineController.WorkspaceVersion = dynamoPreferences.Version ==
+                                         null ? AssemblyHelper.GetDynamoVersion() : new Version(dynamoPreferences.Version);
+
             // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
             // as the fileContents are valid JSON, regardless of if all required data is present or not
             workspace = WorkspaceModel.FromJson(
@@ -2339,15 +2343,10 @@ namespace Dynamo.Models
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
-
-
-            // This is to handle the case of opening a JSON file that does not have a version string
-            workspace.WorkspaceVersion = dynamoPreferences.Version ==
-                                         null ? AssemblyHelper.GetDynamoVersion() : new Version(dynamoPreferences.Version);
-
+            
             if (!IsTestMode)
             {
-                if (workspace.ContainsTraceData && workspace.WorkspaceVersion < new Version(3, 0, 0))
+                if (workspace.ContainsLegacyTraceData)
                 {
                     OnRequestNotification(Resources.LegacyTraceDataWarning, true);
                 }
@@ -3215,7 +3214,7 @@ namespace Dynamo.Models
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
-            CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
+            EngineController.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
             this.LinterManager?.SetDefaultLinter();
 
