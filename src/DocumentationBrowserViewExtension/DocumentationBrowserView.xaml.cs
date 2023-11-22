@@ -117,6 +117,7 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
 
+            Log("DocBrowser dispose called with webview2 null: " + (this.documentationBrowser.CoreWebView2 == null));
             if (this.documentationBrowser.CoreWebView2 != null)
             {
                 this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
@@ -178,6 +179,10 @@ namespace Dynamo.DocumentationBrowser
 
                 try
                 {
+                    documentationBrowser.CoreWebView2.ProcessFailed += CoreWebView2_ProcessFailed;
+                    documentationBrowser.CoreWebView2.WindowCloseRequested += CoreWebView2_WindowCloseRequested;
+                    documentationBrowser.CoreWebView2InitializationCompleted += DocumentationBrowser_CoreWebView2InitializationCompleted; ;
+                    documentationBrowser.Unloaded += DocumentationBrowser_Unloaded;
                     //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                     await documentationBrowser.EnsureCoreWebView2Async();
                 }
@@ -214,6 +219,26 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowser.NavigateToString(htmlContent);
             }));
+        }
+
+        private void DocumentationBrowser_Unloaded(object sender, RoutedEventArgs e)
+        {
+            viewModel.MessageLogged?.Invoke(LogMessage.Info("DocumentationBrowser_Unloaded"));
+        }
+
+        private void DocumentationBrowser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            viewModel.MessageLogged?.Invoke(LogMessage.Info("DocumentationBrowser_CoreWebView2InitializationCompleted with ex " + e.InitializationException));
+        }
+
+        private void CoreWebView2_WindowCloseRequested(object sender, object e)
+        {
+            viewModel.MessageLogged?.Invoke(LogMessage.Info("CoreWebView2_WindowCloseRequested"));
+        }
+
+        private void CoreWebView2_ProcessFailed(object sender, CoreWebView2ProcessFailedEventArgs e)
+        {
+            viewModel.MessageLogged?.Invoke(LogMessage.Info("CoreWebView2_ProcessFailed" + e.Reason));
         }
 
         private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
