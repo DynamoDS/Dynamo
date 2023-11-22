@@ -11,7 +11,6 @@ env:
   TEST_EXECUTE_DOWNLOAD_URL: https://downloads.smartbear.com/TestExecute1552SLM.exe
   ACTOR: ${{ github.actor }}
   WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
-  WORKFLOW_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
   RUN_ID: ${{ github.event.workflow_run.id }}
   RUN_NAME: ${{ github.event.workflow_run.name }}
   RUN_URL: ${{ github.event.workflow_run.html_url }}
@@ -21,7 +20,7 @@ jobs:
     name: UI Smoke Tests
     timeout-minutes: 60
     runs-on: windows-latest
-    if: ${{ env.WORKFLOW_CONCLUSION == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
