@@ -563,7 +563,6 @@ namespace DynamoCoreWpfTests
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
