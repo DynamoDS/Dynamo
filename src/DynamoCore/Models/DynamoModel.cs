@@ -2475,10 +2475,10 @@ namespace Dynamo.Models
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
             Guid deterministicId = GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
 
-            var loadedTraceData = Utils.LoadTraceDataFromXmlDocument(xmlDoc, out var containsTraceData);
+            var loadedTraceData = Utils.LoadTraceDataFromXmlDocument(xmlDoc, out var containsLegacyTraceData);
             if (!IsTestMode)
             {
-                if (containsTraceData) OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+                if (containsLegacyTraceData) OnRequestNotification(Resources.LegacyTraceDataWarning, true);
             }
 
             var newWorkspace = new HomeWorkspaceModel(

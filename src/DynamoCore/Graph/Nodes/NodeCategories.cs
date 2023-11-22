@@ -281,7 +281,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>Returns a dictionary of deserialized node-data-list pairs
         /// loaded from the given XmlDocument.</returns>
         internal static IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>>
-            LoadTraceDataFromXmlDocument(XmlDocument document, out bool containsTraceData)
+            LoadTraceDataFromXmlDocument(XmlDocument document, out bool containsLegacyTraceData)
         {
             if (document == null)
                 throw new ArgumentNullException("document");
@@ -301,7 +301,7 @@ namespace Dynamo.Graph.Nodes
             var loadedData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
             if (!query.Any()) // There's no data, return empty dictionary.
             {
-                containsTraceData = false;
+                containsLegacyTraceData = false;
                 return loadedData;
             }
 
@@ -315,12 +315,12 @@ namespace Dynamo.Graph.Nodes
                     var callsiteId = string.Empty;
                     if (child.HasAttribute(Configurations.CallSiteID))
                     {
-                        containsTraceData = true;
+                        containsLegacyTraceData = true;
                         return loadedData;
                     }
                 }
             }
-            containsTraceData = false;
+            containsLegacyTraceData = false;
             return loadedData;
         }
 
