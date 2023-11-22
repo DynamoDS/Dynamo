@@ -8,6 +8,7 @@ using Dynamo.Graph.Workspaces;
 using System.Collections.Generic;
 using Dynamo.Graph;
 using Dynamo.Extensions;
+using Dynamo.Logging;
 
 namespace Dynamo.Models
 {
@@ -157,6 +158,11 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceAdded;
             if (handler != null) handler(obj);
+
+            if (obj is CustomNodeWorkspaceModel)
+                Analytics.TrackScreenView("CustomWorkspace");
+            else
+                Analytics.TrackScreenView("Workspace");
 
             WorkspaceEvents.OnWorkspaceAdded(obj.Guid, obj.Name, obj.GetType());
         }
