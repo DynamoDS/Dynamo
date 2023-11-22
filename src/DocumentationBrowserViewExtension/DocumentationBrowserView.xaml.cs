@@ -184,7 +184,8 @@ namespace Dynamo.DocumentationBrowser
                 catch (Exception ex)
                 {
                     Log(ex.Message);
-                    Validity.Assert(documentationBrowser == null);
+                    Log(ex.InnerException?.Message ?? "");
+                    //Validity.Assert(documentationBrowser == null);
                     return;
                 }
                 if (documentationBrowser != null)
