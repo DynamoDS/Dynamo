@@ -355,6 +355,11 @@ namespace Dynamo.LibraryViewExtensionWebView2
             LogToDynamoConsole("EnsureCoreWebView2Async browser from LibraryView on thread " + Thread.CurrentThread.ManagedThreadId);
             try
             {
+                browser.CoreWebView2.ProcessFailed += CoreWebView2_ProcessFailed;
+                browser.CoreWebView2.WindowCloseRequested += CoreWebView2_WindowCloseRequested;
+                browser.CoreWebView2InitializationCompleted += DocumentationBrowser_CoreWebView2InitializationCompleted; ;
+                browser.Unloaded += DocumentationBrowser_Unloaded;
+
                 await browser.EnsureCoreWebView2Async();
             }
             catch (Exception ex)
@@ -369,6 +374,27 @@ namespace Dynamo.LibraryViewExtensionWebView2
             //register the interop object into the browser.
             this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
             browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+        }
+
+
+        private void DocumentationBrowser_Unloaded(object sender, RoutedEventArgs e)
+        {
+            LogToDynamoConsole("DocumentationBrowser_Unloaded");
+        }
+
+        private void DocumentationBrowser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            LogToDynamoConsole("DocumentationBrowser_CoreWebView2InitializationCompleted with ex " + e.InitializationException);
+        }
+
+        private void CoreWebView2_WindowCloseRequested(object sender, object e)
+        {
+            LogToDynamoConsole("CoreWebView2_WindowCloseRequested");
+        }
+
+        private void CoreWebView2_ProcessFailed(object sender, CoreWebView2ProcessFailedEventArgs e)
+        {
+            LogToDynamoConsole("CoreWebView2_ProcessFailed" + e.Reason);
         }
 
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs args)

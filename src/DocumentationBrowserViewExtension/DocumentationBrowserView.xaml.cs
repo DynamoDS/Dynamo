@@ -183,6 +183,7 @@ namespace Dynamo.DocumentationBrowser
                     documentationBrowser.CoreWebView2.WindowCloseRequested += CoreWebView2_WindowCloseRequested;
                     documentationBrowser.CoreWebView2InitializationCompleted += DocumentationBrowser_CoreWebView2InitializationCompleted; ;
                     documentationBrowser.Unloaded += DocumentationBrowser_Unloaded;
+
                     //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                     await documentationBrowser.EnsureCoreWebView2Async();
                 }

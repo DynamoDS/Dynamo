@@ -21,6 +21,7 @@ using Dynamo.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using DynamoServices;
+using Microsoft.Web.WebView2.Core;
 
 namespace Dynamo.Notifications
 {
@@ -149,6 +150,11 @@ namespace Dynamo.Notifications
 
             try
             {
+                notificationUIPopup.webView.CoreWebView2.ProcessFailed += CoreWebView2_ProcessFailed; ;
+                notificationUIPopup.webView.CoreWebView2.WindowCloseRequested += CoreWebView2_WindowCloseRequested;
+                notificationUIPopup.webView.CoreWebView2InitializationCompleted += DocumentationBrowser_CoreWebView2InitializationCompleted; ;
+                notificationUIPopup.webView.Unloaded += DocumentationBrowser_Unloaded;
+
                 notificationUIPopup.webView.EnsureCoreWebView2Async();
             }
             catch (Exception ex)
@@ -156,6 +162,27 @@ namespace Dynamo.Notifications
                 logger.Log(ex.Message);
                 Validity.Assert(notificationUIPopup.webView == null);
             }
+        }
+
+
+        private void DocumentationBrowser_Unloaded(object sender, RoutedEventArgs e)
+        {
+            logger.Log(LogMessage.Info("DocumentationBrowser_Unloaded"));
+        }
+
+        private void DocumentationBrowser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            logger.Log(LogMessage.Info("DocumentationBrowser_CoreWebView2InitializationCompleted with ex " + e.InitializationException));
+        }
+
+        private void CoreWebView2_WindowCloseRequested(object sender, object e)
+        {
+            logger.Log(LogMessage.Info("CoreWebView2_WindowCloseRequested"));
+        }
+
+        private void CoreWebView2_ProcessFailed(object sender, CoreWebView2ProcessFailedEventArgs e)
+        {
+            logger.Log(LogMessage.Info("CoreWebView2_ProcessFailed" + e.Reason));
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)

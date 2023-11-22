@@ -18,6 +18,7 @@ using DynamoServices;
 using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using static Dynamo.ViewModels.SearchViewModel;
 
 namespace Dynamo.UI.Views
 {
@@ -301,6 +302,11 @@ namespace Dynamo.UI.Views
 
             try
             {
+                webView.CoreWebView2.ProcessFailed += CoreWebView2_ProcessFailed;
+                webView.CoreWebView2.WindowCloseRequested += CoreWebView2_WindowCloseRequested;
+                webView.CoreWebView2InitializationCompleted += DocumentationBrowser_CoreWebView2InitializationCompleted; ;
+                webView.Unloaded += DocumentationBrowser_Unloaded;
+
                 await webView.EnsureCoreWebView2Async();
             }
             catch (Exception ex)
@@ -365,6 +371,26 @@ namespace Dynamo.UI.Views
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime(\"{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms\")");
             }
+        }
+
+        private void DocumentationBrowser_Unloaded(object sender, RoutedEventArgs e)
+        {
+            viewModel.Model.Logger.Log(LogMessage.Info("DocumentationBrowser_Unloaded"));
+        }
+
+        private void DocumentationBrowser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            viewModel.Model.Logger.Log(LogMessage.Info("DocumentationBrowser_CoreWebView2InitializationCompleted with ex " + e.InitializationException));
+        }
+
+        private void CoreWebView2_WindowCloseRequested(object sender, object e)
+        {
+            viewModel.Model.Logger.Log(LogMessage.Info("CoreWebView2_WindowCloseRequested"));
+        }
+
+        private void CoreWebView2_ProcessFailed(object sender, CoreWebView2ProcessFailedEventArgs e)
+        {
+            viewModel.Model.Logger.Log(LogMessage.Info("CoreWebView2_ProcessFailed" + e.Reason));
         }
 
         /// <summary>
