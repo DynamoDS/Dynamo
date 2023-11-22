@@ -62,7 +62,7 @@ namespace DynamoUtilities
         {
 
             //wait for response
-            var dataFromCLI = GetData();    
+            var dataFromCLI = GetData(2000).Result;    
             //convert from json string to dictionary.
             try
             {

@@ -3,7 +3,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using DynamoUtilities.Properties;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Utilities
 {
@@ -93,53 +96,63 @@ namespace Dynamo.Utilities
             var toolPath = Path.Combine(rootPath,relativePath);
             return toolPath;
         }
-        //TODO if we see any issues with deadlocks we can try using a timeout on another thread.
         /// <summary>
         /// Read data from CLI tool
-        /// <returns>Returns data read from CLI tool</returns>
         /// </summary>
-        protected virtual string GetData()
+        /// <param name="timeoutms">will return empty string if we don't finish reading all data in the timeout provided in milliseconds.</param>
+        /// <returns></returns>
+        protected virtual async Task<string> GetData(int timeoutms)
         {
-            if (process.HasExited)
+            var readStdOutTask = Task.Factory.StartNew(() =>
             {
-                return string.Empty;
-            }
-            using (var writer = new StringWriter())
-            {
-                var done = false;
-                var start = false;
-                while (!done)
+                if (process.HasExited)
                 {
-                    try
-                    {
-                        var line = process.StandardOutput.ReadLine();
-                        MessageLogged?.Invoke(line);
-                        if (line == null || line == startofDataToken)
-                        {
-                            start = true;
-                            continue;//don't record start token to stream.
-                        }
-                        if (line == null || line == endOfDataToken)
-                        {
-                            done = true;
-                        }
-                        else
-                        {   //if we have started recieving valid data, start recording
-                            if (!string.IsNullOrWhiteSpace(line) && start)
-                            {
-                                writer.WriteLine(line);
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        KillProcess();
-                        return GetCantCommunicateErrorMessage();
-                    }
+                    return string.Empty;
                 }
 
-                return writer.ToString();
-            }
+                using (var writer = new StringWriter())
+                {
+                    var done = false;
+                    var start = false;
+                    while (!done)
+                    {
+                        try
+                        {
+                            var line = process.StandardOutput.ReadLine();
+                            MessageLogged?.Invoke(line);
+                            if (line == null || line == startofDataToken)
+                            {
+                                start = true;
+                                continue; //don't record start token to stream.
+                            }
+
+                            if (line == null || line == endOfDataToken)
+                            {
+                                done = true;
+                            }
+                            else
+                            {
+                                //if we have started recieving valid data, start recording
+                                if (!string.IsNullOrWhiteSpace(line) && start)
+                                {
+                                    writer.WriteLine(line);
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            KillProcess();
+                            return GetCantCommunicateErrorMessage();
+                        }
+                    }
+
+                    return writer.ToString();
+                }
+            });
+            var completedTask = await Task.WhenAny(readStdOutTask, Task.Delay(TimeSpan.FromMilliseconds(timeoutms)));
+            //if the completed task was our read std out task, then return the data
+            //else we timed out, so return an empty string.
+            return completedTask == readStdOutTask ? readStdOutTask.Result : string.Empty;
         }
 
         protected void RaiseMessageLogged(string message)
@@ -228,9 +241,9 @@ namespace Dynamo.Utilities
                 return GetCantCommunicateErrorMessage();
             }
 
-            var output = GetData();
+            var output = GetData(2000);
 
-            return output;
+            return output.Result;
         }
 
         /// <summary>
@@ -257,9 +270,9 @@ namespace Dynamo.Utilities
                 return GetCantCommunicateErrorMessage();
             }
 
-            var output = GetData();
+            var output = GetData(2000);
 
-           return output;
+           return output.Result;
         }
 
         /// <summary>
