@@ -2750,9 +2750,10 @@ namespace Dynamo.Models
             }
             else
             {
+                var defaultCulture = CultureInfo.DefaultThreadCurrentCulture ?? new CultureInfo("en-US");
                 // Integration default to
-                Thread.CurrentThread.CurrentUICulture = locale == "Default" ? System.Globalization.CultureInfo.DefaultThreadCurrentCulture : new CultureInfo(locale);
-                Thread.CurrentThread.CurrentCulture = locale == "Default" ? System.Globalization.CultureInfo.DefaultThreadCurrentCulture : new CultureInfo(locale);
+                Thread.CurrentThread.CurrentUICulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
+                Thread.CurrentThread.CurrentCulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
             }
         }
 
