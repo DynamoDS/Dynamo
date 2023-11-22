@@ -18,7 +18,6 @@ using Dynamo.Graph.Presets;
 using Dynamo.Library;
 using Dynamo.Linting;
 using Dynamo.Logging;
-using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
