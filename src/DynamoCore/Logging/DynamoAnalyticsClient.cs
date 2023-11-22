@@ -1,9 +1,10 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Microsoft.Win32;
 
@@ -17,7 +18,7 @@ namespace Dynamo.Logging
             SessionId = Guid.NewGuid().ToString();
         }
 
-        public void Start(DynamoModel model)
+        public void Start()
         {
             StabilityCookie.Startup();
         }
@@ -68,8 +69,11 @@ namespace Dynamo.Logging
     /// <summary>
     /// Dynamo specific implementation of IAnalyticsClient
     /// </summary>
-    class DynamoAnalyticsClient : IAnalyticsClient, IDisposable
+    internal class DynamoAnalyticsClient : IAnalyticsClient, IDisposable
     {
+        private readonly ManualResetEventSlim serviceInitialized = new ManualResetEventSlim(false);
+        private readonly object trackEventLockObj = new object();
+
         /// <summary>
         /// A dummy IDisposable class
         /// </summary>
@@ -83,8 +87,6 @@ namespace Dynamo.Logging
 #else
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 #endif
-
-        private readonly IPreferences preferences = null;
 
         public static IDisposable Disposable { get { return new Dummy(); } }
 
@@ -107,29 +109,24 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Constructs DynamoAnalyticsClient with given DynamoModel
+        /// Constructs DynamoAnalyticsClient from existing HostAnalyticsInfo
         /// </summary>
-        /// <param name="dynamoModel">DynamoModel</param>
-        public DynamoAnalyticsClient(DynamoModel dynamoModel)
+        public DynamoAnalyticsClient(HostAnalyticsInfo hostAnalyticsInfo)
         {
-            //Set the preferences, so that we can get live value of analytics 
-            //reporting approved status.
-            preferences = dynamoModel.PreferenceSettings;
-
             if (Session == null) Session = new DynamoAnalyticsSession();
 
             //Setup Analytics service, and StabilityCookie.
-            Session.Start(dynamoModel);
+            Session.Start();
 
             //Dynamo app version.
-            var appversion = dynamoModel.AppVersion;
+            var appversion = DynamoModel.AppVersion;
 
-            var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
+            var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? "Dynamo" : hostAnalyticsInfo.HostName;
 
-            hostInfo = new HostContextInfo() { ParentId = dynamoModel.HostAnalyticsInfo.ParentId, SessionId = dynamoModel.HostAnalyticsInfo.SessionId };
+            hostInfo = new HostContextInfo() { ParentId = hostAnalyticsInfo.ParentId, SessionId = hostAnalyticsInfo.SessionId };
 
             string buildId = String.Empty, releaseId = String.Empty;
-            if (Version.TryParse(dynamoModel.Version, out Version version))
+            if (Version.TryParse(DynamoModel.Version, out Version version))
             {
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
@@ -148,16 +145,9 @@ namespace Dynamo.Logging
             }
         }
 
-        /// <summary>
-        /// Starts the client when DynamoModel is created. This method initializes
-        /// the Analytics service and application life cycle start is tracked.
-        /// </summary>
-        public void Start()
+        private void StartInternal()
         {
-            // Start Analytics service regardless of optin status.
-            // Each track event will be enabled/disabled based on the corresponding optin status.
-            // Ex. ADP will manage optin status internally
-            if (preferences != null && !Analytics.DisableAnalytics)
+            if (!Analytics.DisableAnalytics)
             {
                 //Register trackers
                 var service = Service.Instance;
@@ -167,102 +157,214 @@ namespace Dynamo.Logging
                 RegisterADPTracker(service);
 
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-                Service.StartUp(product, new UserInfo(Session.UserId), hostInfo, TimeSpan.FromMinutes(30));
-                TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
+                Service.StartUp(product, new UserInfo(Session.UserId), hostInfo, TimeSpan.FromMinutes(30));                
             }
+
+            serviceInitialized.Set();
+        }
+        /// <summary>
+        /// Starts the client when DynamoModel is created. This method initializes
+        /// the Analytics service and application life cycle start is tracked.
+        /// </summary>
+        public void Start()
+        {
+            // Start Analytics service regardless of optin status.
+            // Each track event will be enabled/disabled based on the corresponding optin status.
+            // Ex. ADP will manage optin status internally
+            Task.Run(() => StartInternal());
+
+            TrackPreference("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
         }
 
         public void ShutDown()
         {
+            if (!Analytics.DisableAnalytics) serviceInitialized.Wait();
             Dispose();
         }
 
         public void TrackEvent(Actions action, Categories category, string description, int? value)
         {
-            if (!ReportingAnalytics) return;
+            if (Analytics.DisableAnalytics) return;
 
-            var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
-            e.Track();
+            Task.Run(() =>
+            {
+                serviceInitialized.Wait();
+
+                lock(trackEventLockObj)
+                {
+                    if (!ReportingAnalytics) return;
+
+                    var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
+                    e.Track();
+                }
+            });
         }
 
         public void TrackPreference(string name, string stringValue, int? metricValue)
         {
-            if (!ReportingAnalytics) return;
+            if (Analytics.DisableAnalytics) return;
 
-            TrackPreferenceInternal(name, stringValue, metricValue);
-        }
+            Task.Run(() =>
+            {
+                serviceInitialized.Wait();
 
-        private void TrackPreferenceInternal(string name, string stringValue, int? metricValue)
-        {
-            var e = AnalyticsEvent.Create(Categories.Preferences.ToString(), name, stringValue, metricValue);
-            e.Track();
+                lock (trackEventLockObj)
+                {
+                    if (!ReportingAnalytics) return;
+
+                    var e = AnalyticsEvent.Create(Categories.Preferences.ToString(), name, stringValue, metricValue);
+                    e.Track();
+                }
+            });
         }
 
         public void TrackTimedEvent(Categories category, string variable, TimeSpan time, string description = "")
         {
-            if (!ReportingAnalytics) return;
+            if (Analytics.DisableAnalytics) return;
 
-            var e = new TimedEvent(time)
+            Task.Run(() =>
             {
-                Category = category.ToString(),
-                VariableName = variable,
-                Description = description
-            };
-            e.Track();
+                serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
+                {
+                    if (!ReportingAnalytics) return;
+
+                    var e = new TimedEvent(time)
+                    {
+                        Category = category.ToString(),
+                        VariableName = variable,
+                        Description = description
+                    };
+                    e.Track();
+                }
+            });
         }
 
         public void TrackScreenView(string viewName)
         {
-            if (!ReportingAnalytics) return;
+            if (Analytics.DisableAnalytics) return;
 
-            var e = new ScreenViewEvent(viewName);
-            e.Track();
+            Task.Run(() =>
+            {
+                serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
+                {
+                    if (!ReportingAnalytics) return;
+
+                    var e = new ScreenViewEvent(viewName);
+                    e.Track();
+                }
+            });
         }
 
         public void TrackException(Exception ex, bool isFatal)
         {
-            if (!ReportingAnalytics) return;
+            if (Analytics.DisableAnalytics) return;
 
-            Service.TrackException(ex, isFatal);
-        }
-
-        public IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value)
-        {
-            if (!ReportingAnalytics) return Disposable;
-
-            var e = new TimedEvent()
+            Task.Run(() =>
             {
-                Category = category.ToString(),
-                VariableName = variable,
-                Description = description,
-                Value = value
-            };
-            //Timed event does not need startup tracking.
-            return e;
+                serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
+                {
+                    if (!ReportingAnalytics) return;
+
+                    Service.TrackException(ex, isFatal);
+                }
+            });
         }
 
+        [Obsolete("Method will become private in Dynamo 4.0, please use CreateTaskTimedEvent")]
+        public IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value)
+        {            
+            serviceInitialized.Wait();
+
+            lock (trackEventLockObj)
+            {
+                if (!ReportingAnalytics) return Disposable;
+
+                var e = new TimedEvent()
+                {
+                    Category = category.ToString(),
+                    VariableName = variable,
+                    Description = description,
+                    Value = value
+                };
+                //Timed event does not need startup tracking.
+                return e;
+            }
+        }
+
+        public Task<IDisposable> CreateTaskTimedEvent(Categories category, string variable, string description, int? value)
+        {
+            if (Analytics.DisableAnalytics) return Task.FromResult(Disposable);
+
+            return Task.Run(() => CreateTimedEvent(category, variable, description, value));
+        }
+
+        [Obsolete("Property will become private in Dynamo 4.0, please use CreateTaskCommandEvent")]
         public IDisposable CreateCommandEvent(string name, string description, int? value)
         {
-            if (!ReportingAnalytics) return Disposable;
+            serviceInitialized.Wait();
 
-            var e = new CommandEvent(name) { Description = description, Value = value };
-            e.Track();
-            return e;
+            lock (trackEventLockObj)
+            {
+                if (!ReportingAnalytics) return Disposable;
+
+                var e = new CommandEvent(name) { Description = description, Value = value };
+                e.Track();
+                return e;
+            }
         }
 
+        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value)
+        {
+            if (Analytics.DisableAnalytics) return Task.FromResult(Disposable);
+
+            return Task.Run(() => CreateCommandEvent(name, description, value));
+        }
+
+        public void EndEventTask(Task<IDisposable> taskToEnd)
+        {
+            if (Analytics.DisableAnalytics) return;
+
+            Task.Run(() =>
+            {
+                lock(trackEventLockObj)
+                {
+                    taskToEnd.Wait();
+                    taskToEnd.Result.Dispose();
+                }
+            });
+        }
+
+        [Obsolete("Property will become private in Dynamo 4.0, please use TrackTaskFileOperationEvent")]
         public IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description)
         {
+            serviceInitialized.Wait();
             if (!ReportingAnalytics) return Disposable;
 
-            var e = new FileOperationEvent()
+            lock(trackEventLockObj)
             {
-                FilePath = filepath,
-                FileSize = size,
-                FileAction = FileAction(operation),
-                Description = description
-            };
-            e.Track();
-            return e;
+                var e = new FileOperationEvent()
+                {
+                    FilePath = filepath,
+                    FileSize = size,
+                    FileAction = FileAction(operation),
+                    Description = description
+                };
+                e.Track();
+                return e;
+            }
+        }
+
+        public Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description)
+        {
+            if (Analytics.DisableAnalytics) return Task.FromResult(Disposable);
+
+            return Task.Run(() => TrackFileOperationEvent(filepath, operation, size, description));
         }
 
         private FileOperationEvent.Actions FileAction(Actions operation)
