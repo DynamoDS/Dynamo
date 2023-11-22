@@ -2325,9 +2325,12 @@ namespace Dynamo.Models
             workspace.WorkspaceVersion = dynamoPreferences.Version ==
                                          null ? AssemblyHelper.GetDynamoVersion() : new Version(dynamoPreferences.Version);
 
-            if (workspace.ContainsTraceData && workspace.WorkspaceVersion < new Version(3, 0, 0))
+            if (!IsTestMode)
             {
-                OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+                if (workspace.ContainsTraceData && workspace.WorkspaceVersion < new Version(3, 0, 0))
+                {
+                    OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+                }
             }
 
             if (workspace is HomeWorkspaceModel homeWorkspace)
@@ -2455,7 +2458,10 @@ namespace Dynamo.Models
             Guid deterministicId = GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
 
             var loadedTraceData = Utils.LoadTraceDataFromXmlDocument(xmlDoc, out var containsTraceData);
-            if(containsTraceData) OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+            if (!IsTestMode)
+            {
+                if (containsTraceData) OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+            }
 
             var newWorkspace = new HomeWorkspaceModel(
                 deterministicId,
