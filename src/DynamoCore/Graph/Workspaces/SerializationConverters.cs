@@ -522,8 +522,8 @@ namespace Dynamo.Graph.Workspaces
             var name = obj["Name"].Value<string>();
 
             var elementResolver = obj["ElementResolver"].ToObject<ElementResolver>(serializer);
-            var nmc = (NodeReadConverter)serializer.Converters.First(c => c is NodeReadConverter);
-            nmc.ElementResolver = elementResolver;
+            var nrc = (NodeReadConverter)serializer.Converters.First(c => c is NodeReadConverter);
+            nrc.ElementResolver = elementResolver;
 
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
 
@@ -717,6 +717,10 @@ namespace Dynamo.Graph.Workspaces
                     Enumerable.Empty<PresetModel>(), elementResolver,
                     info, verboseLogging, isTestMode, linterManager);
 
+                // EnableLegacyPolyCurveBehavior
+                var enable = obj[nameof(HomeWorkspaceModel.EnableLegacyPolyCurveBehavior)];
+                homeWorkspace.EnableLegacyPolyCurveBehavior = enable?.Value<bool?>();
+
                 // Thumbnail
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
                     homeWorkspace.Thumbnail = thumbnail.ToString();
@@ -850,7 +854,7 @@ namespace Dynamo.Graph.Workspaces
             // Element resolver
             writer.WritePropertyName("ElementResolver");
             serializer.Serialize(writer, ws.ElementResolver);
-
+            
             // Inputs
             writer.WritePropertyName("Inputs");
             // Find nodes which are inputs and get their inputData if its not null.
@@ -920,6 +924,10 @@ namespace Dynamo.Graph.Workspaces
 
             if (!isCustomNode && ws is HomeWorkspaceModel hws)
             {
+                // EnableLegacyPolyCurveBehavior
+                writer.WritePropertyName(nameof(HomeWorkspaceModel.EnableLegacyPolyCurveBehavior));
+                serializer.Serialize(writer, hws.EnableLegacyPolyCurveBehavior);
+
                 // Thumbnail
                 writer.WritePropertyName(nameof(HomeWorkspaceModel.Thumbnail));
                 writer.WriteValue(hws.Thumbnail);

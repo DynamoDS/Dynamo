@@ -63,7 +63,7 @@
   </ItemGroup>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)PythonNodeModelsImages.resx" OutputResources="$(ProjectDir)PythonNodeModelsImages.resources" References="$(SystemDrawingDllPath)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)PythonNodeModelsImages.resx" OutputResources="$(ProjectDir)PythonNodeModelsImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)PythonNodeModelsImages.resources" OutputAssembly="$(OutDir)PythonNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

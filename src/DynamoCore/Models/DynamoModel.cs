@@ -199,7 +199,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     This version of Dynamo.
         /// </summary>
-        public string Version
+        public static string Version
         {
             get { return DefaultUpdateManager.GetProductVersion().ToString(); }
         }
@@ -218,7 +218,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Host analytics info
         /// </summary>
-        public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
+        public static HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
         /// Boolean indication of launching Dynamo in service mode, this mode is optimized for minimal launch time, mostly leveraged by CLI or WPF CLI.
@@ -288,7 +288,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     The application version string for analytics reporting APIs
         /// </summary>
-        internal virtual string AppVersion
+        internal static string AppVersion
         {
             get
             {
@@ -740,20 +740,7 @@ namespace Dynamo.Models
             // or the feature flags client for web traffic reason.
             if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Analytics.DisableAnalytics)
             {
-                // Start the Analytics service only when a session is not present.
-                // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
-                // So we don't want to start it when splash screen or dynamo window is launched again.
-                if (Analytics.client == null)
-                {
-                    AnalyticsService.Start(this, IsHeadless, IsTestMode);
-                }
-                else if (Analytics.client is DynamoAnalyticsClient dac)
-                {
-                    if (dac.Session == null)
-                    {
-                        AnalyticsService.Start(this, IsHeadless, IsTestMode);
-                    }
-                }
+                HandleAnalytics();
 
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
@@ -1015,6 +1002,7 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
+            DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
@@ -1029,6 +1017,38 @@ namespace Dynamo.Models
             }
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        private void HandleAnalytics()
+        {
+            if (IsTestMode)
+            {
+                if (Analytics.DisableAnalytics)
+                {
+                    Logger.Log("Incompatible configuration: [IsTestMode] and [Analytics disabled] ");
+                }
+                return;
+            }
+
+            if (IsHeadless)
+            {
+                return;
+            }
+
+            // Start the Analytics service only when a session is not present.
+            // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
+            // So we don't want to start it when splash screen or dynamo window is launched again.
+            if (Analytics.client == null)
+            {
+                AnalyticsService.Start();
+            }
+            else if (Analytics.client is DynamoAnalyticsClient dac)
+            {
+                if (dac.Session == null)
+                {
+                    AnalyticsService.Start();
+                }
+            }
         }
 
         private void SearchModel_ItemProduced(NodeModel node)
@@ -1242,10 +1262,10 @@ namespace Dynamo.Models
         {
             Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp => kvp.Value).Count());
 
-            // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
+            // The orphans will come back here as a dictionary of lists of strings keyed by their callsite id.
             // This dictionary gets redistributed into a dictionary keyed by the workspace id.
 
-            var workspaceOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+            var workspaceOrphanMap = new Dictionary<Guid, List<string>>();
 
             foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
             {
@@ -1300,7 +1320,7 @@ namespace Dynamo.Models
         /// Deals with orphaned serializables.
         /// </summary>
         /// <param name="orphanedSerializables">Collection of orphaned serializables.</param>
-        public virtual void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        public virtual void PostTraceReconciliation(Dictionary<Guid, List<string>> orphanedSerializables)
         {
             // Override in derived classes to deal with orphaned serializables.
         }
@@ -1426,6 +1446,7 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
+            DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
@@ -1614,6 +1635,7 @@ namespace Dynamo.Models
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
+
 
             // Load local custom nodes and locally imported libraries
             foreach (var path in pathManager.DefinitionDirectories)
@@ -2328,6 +2350,8 @@ namespace Dynamo.Models
             HomeWorkspaceModel homeWorkspace = workspace as HomeWorkspaceModel;
             if (homeWorkspace != null)
             {
+                homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.Instance.DefaultEnableLegacyPolyCurveBehavior;
+
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
                 homeWorkspace.ReCompileCodeBlockNodesForFunctionDefinitions();

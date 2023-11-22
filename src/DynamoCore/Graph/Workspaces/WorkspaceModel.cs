@@ -1332,7 +1332,6 @@ namespace Dynamo.Graph.Workspaces
                 WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
             }
         }
-
         #endregion
 
         #region constructors
@@ -2013,7 +2012,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return !HasErrors && !HasNoneGeometryRelatedWarnings;
+                return Nodes.Count() > 1 && !HasErrors && !HasNoneGeometryRelatedWarnings;
             }
         }
 
