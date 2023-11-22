@@ -605,7 +605,7 @@ namespace Dynamo.Utilities
                 {
                     await webBrowserComponent.EnsureCoreWebView2Async();
                 }
-                catch (ObjectDisposedException odex)
+                catch (Exception odex)
                 {}
 
                 if (webBrowserComponent != null)

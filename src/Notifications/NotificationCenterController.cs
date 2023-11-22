@@ -151,7 +151,7 @@ namespace Dynamo.Notifications
             {
                 notificationUIPopup.webView.EnsureCoreWebView2Async();
             }
-            catch (ObjectDisposedException ex)
+            catch (Exception ex)
             {
                 logger.Log(ex.Message);
                 Validity.Assert(notificationUIPopup.webView == null);

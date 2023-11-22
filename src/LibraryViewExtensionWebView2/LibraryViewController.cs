@@ -357,8 +357,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 await browser.EnsureCoreWebView2Async();
             }
-            catch (ObjectDisposedException ex)
+            catch (Exception ex)
             {
+                LogToDynamoConsole(ex.Message);
                 Validity.Assert(browser == null);
             }
             if (browser == null) { return; }

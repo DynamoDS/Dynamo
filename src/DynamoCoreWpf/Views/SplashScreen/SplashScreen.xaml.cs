@@ -297,14 +297,15 @@ namespace Dynamo.UI.Views
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
 
-            //viewModel.Model.Logger.Log("EnsureCoreWebView2Async webView from SplashScreen on thread " + Thread.CurrentThread.ManagedThreadId);
+            viewModel?.Model?.Logger.Log("EnsureCoreWebView2Async webView from SplashScreen on thread " + Thread.CurrentThread.ManagedThreadId);
 
             try
             {
                 await webView.EnsureCoreWebView2Async();
             }
-            catch (ObjectDisposedException ex)
+            catch (Exception ex)
             {
+                viewModel?.Model?.Logger.Log(ex.Message);
                 Validity.Assert(webView == null);
                 return;
             }

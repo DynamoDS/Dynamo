@@ -181,7 +181,7 @@ namespace Dynamo.DocumentationBrowser
                     //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                     await documentationBrowser.EnsureCoreWebView2Async();
                 }
-                catch (ObjectDisposedException ex)
+                catch (Exception ex)
                 {
                     Log(ex.Message);
                     Validity.Assert(documentationBrowser == null);
