@@ -92,6 +92,7 @@ namespace Dynamo.PackageManager.UI
 
             foreach(var pageEntry in PublishPages) { pageEntry.Value.DataContext = PublishPackageViewModel; }
 
+            Breadcrumbs.Clear();
             Breadcrumbs.Add((string)PublishPages[0].Tag); // Initial breadcrumb
 
             NavButtonStacks = new Dictionary<int, DockPanel>();
