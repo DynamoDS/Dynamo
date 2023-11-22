@@ -103,7 +103,7 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         protected virtual async Task<string> GetData(int timeoutms)
         {
-            var readStdOutTask = Task.Factory.StartNew(() =>
+            var readStdOutTask = Task.Run(() =>
             {
                 if (process.HasExited)
                 {
