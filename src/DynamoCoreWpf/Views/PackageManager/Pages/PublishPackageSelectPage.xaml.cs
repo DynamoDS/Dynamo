@@ -61,7 +61,6 @@ namespace Dynamo.PackageManager.UI
         {
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
         }
-
         
         internal void LoadEvents()
         {
@@ -81,6 +80,7 @@ namespace Dynamo.PackageManager.UI
             this.ItemSelection.Clear();
             this.PublishPackageViewModel = null;
             this.DataContextChanged -= PublishPackagePublishPage_DataContextChanged;
+            this.customBrowserControl.Dispose();
         }
 
         private void customBrowserControl_Loaded(object sender, RoutedEventArgs e)

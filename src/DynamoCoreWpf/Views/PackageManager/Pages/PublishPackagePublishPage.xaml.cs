@@ -88,6 +88,7 @@ namespace Dynamo.PackageManager.UI
         {
             this.PublishPackageViewModel = null;
             this.DataContextChanged -= PublishPackagePublishPage_DataContextChanged;
+            this.previewBrowserControl.Dispose();
         }
 
         private void NavigationButton_Click(object sender, RoutedEventArgs e)
