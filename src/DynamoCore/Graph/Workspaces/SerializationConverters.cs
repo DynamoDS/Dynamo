@@ -683,9 +683,9 @@ namespace Dynamo.Graph.Workspaces
             // Restore trace data if bindings are present in json
             if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
             {
-                var wrc = (WorkspaceReadConverter)serializer.Converters.First(c => c is WorkspaceReadConverter);
+                var wrc = serializer.Converters.First(c => c is WorkspaceReadConverter) as WorkspaceReadConverter;
 
-                if (wrc.engine.WorkspaceVersion < new Version(3, 0, 0))
+                if (wrc.engine.CurrentWorkspaceVersion < new Version(3, 0, 0))
                 {
                     containsLegacyTraceData = true;
                 }

@@ -232,6 +232,9 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// This is true only if the workspace contains legacy SOAP formatted binding data.
+        /// </summary>
         internal bool ContainsLegacyTraceData { get; set; }
 
         internal bool ScaleFactorChanged = false;

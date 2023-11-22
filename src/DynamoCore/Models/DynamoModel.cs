@@ -2323,7 +2323,7 @@ namespace Dynamo.Models
             currentHomeSpace.UndefineCBNFunctionDefinitions();
 
             // This is to handle the case of opening a JSON file that does not have a version string
-            EngineController.WorkspaceVersion = dynamoPreferences.Version ==
+            EngineController.CurrentWorkspaceVersion = dynamoPreferences.Version ==
                                          null ? AssemblyHelper.GetDynamoVersion() : new Version(dynamoPreferences.Version);
 
             // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
@@ -3213,7 +3213,7 @@ namespace Dynamo.Models
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
-            EngineController.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
+            EngineController.CurrentWorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
             this.LinterManager?.SetDefaultLinter();
 

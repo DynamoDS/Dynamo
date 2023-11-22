@@ -44,7 +44,10 @@ namespace Dynamo.Engine
         /// </summary>
         internal static event Action VMLibrariesReset;
 
-        internal Version WorkspaceVersion { get; set; }
+        /// <summary>
+        /// Dynamo version in which the current workspace was last created or modified.
+        /// </summary>
+        internal Version CurrentWorkspaceVersion { get; set; }
 
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
@@ -156,7 +159,7 @@ namespace Dynamo.Engine
 
             VerboseLogging = verboseLogging;
 
-            WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
+            CurrentWorkspaceVersion = AssemblyHelper.GetDynamoVersion();
         }
 
         /// <summary>
