@@ -83,7 +83,7 @@ namespace Dynamo.UI.Views
                 // When view model is closed, we need to close the splash screen if it is displayed.
                 viewModel.RequestClose += SplashScreenRequestClose;
                 authManager = viewModel.Model.AuthenticationManager;
-                hostAnalyticsInfo = viewModel.Model.HostAnalyticsInfo;
+                hostAnalyticsInfo = DynamoModel.HostAnalyticsInfo;
             }
         }
 

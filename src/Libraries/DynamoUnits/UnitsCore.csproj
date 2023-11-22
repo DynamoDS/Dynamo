@@ -40,6 +40,7 @@
   <Target Name="CopyFiles" BeforeTargets="Build">
     <Copy SourceFiles="$(ProjectDir)DynamoUnits_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(PkgForgeUnits_NET)\lib\net6.0\ForgeUnitsManaged.dll" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(PkgForgeUnits_NET)\runtimes\win10-x64\native\ForgeUnits.dll" DestinationFolder="$(OutputPath)" />
   </Target>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
