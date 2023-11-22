@@ -13,11 +13,12 @@
     <AssemblyName>TestUINodes</AssemblyName>
 	  <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2">
+    <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2">
         <IncludeAssets>none</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" ExcludeAssets="runtime" />
+      </PackageReference>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1">
+      </PackageReference>
     <PackageReference Include="NUnit" Version="3.13.3">
       <IncludeAssets>none</IncludeAssets>
     </PackageReference>
@@ -44,13 +45,13 @@
       <Private>False</Private>
       <IncludeAssets>none</IncludeAssets>
     </ProjectReference>    <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
-    <Project>{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}</Project>
+      <Project>{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}</Project>
       <Name>UnitsUI</Name>
-      <Private>False</Private>
-      <IncludeAssets>none</IncludeAssets>
+          <Private>False</Private>
+          <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\src\NodeServices\DynamoServices.csproj">
-    <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
       <IncludeAssets>none</IncludeAssets>

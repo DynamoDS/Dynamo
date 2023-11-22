@@ -21,6 +21,8 @@
     <UICulture>en-US</UICulture>
     <OutputType Condition=" '$(OutputType)' == '' ">Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
+    <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
     <!--MSB3539: The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
     <!--CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member'-->
     <!--NUnit2005: Consider using Assert.That(actual, Is.EqualTo(expected)) instead of Assert.AreEqual(expected, actual)-->
@@ -65,7 +67,6 @@
   <PropertyGroup>
     <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
-    <TestDependenciesPath>$(OutputPath)\..\..\..\test\test_dependencies</TestDependenciesPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="obj\**" />
@@ -85,6 +86,19 @@
     <ProjectReference>
       <Private>false</Private>
     </ProjectReference>
+  </ItemDefinitionGroup>
+  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
+    <TestDependenciesPath>$(OutputPath)\..\..\..\test\test_dependencies</TestDependenciesPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
+    <ProjectReference>
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+    <PackageReference>
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
   </ItemDefinitionGroup>
   <Target Name="CleanIntermediaryFolder" Condition="Exists('$(ProjectDir)$(BaseIntermediateOutputPath)')" BeforeTargets="Clean" >
      <RemoveDir ContinueOnError="WarnAndContinue" Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->
