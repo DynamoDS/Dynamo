@@ -24,6 +24,21 @@ namespace Dynamo.PackageManager.UI
             tab = _Tab;
         }
     }
+
+    /// <summary>
+    /// The PackageManagerSizeEventArgs will be used only when we want to show the PackageManagerView using a specific Width and Height
+    /// </summary>
+    internal class PackageManagerSizeEventArgs : EventArgs
+    {
+        internal double Width;
+        internal double Height;
+
+        internal PackageManagerSizeEventArgs(double width, double height)
+        {
+            Width = width;
+            Height = height;
+        }
+    }
     /// <summary>
     /// Interaction logic for PackageManagerView.xaml
     /// </summary>
