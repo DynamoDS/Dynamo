@@ -476,6 +476,11 @@ namespace Dynamo.PackageManager
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
         /// <summary>
+        /// A getter boolean identifying if the user is currently logged in
+        /// </summary>
+        public bool IsLoggedIn { get { return PackageManagerClientViewModel.AuthenticationManager.IsLoggedIn(); } }
+
+        /// <summary>
         /// Current selected filter hosts
         /// </summary>
         public List<string> SelectedHosts { get; set; }
@@ -634,8 +639,6 @@ namespace Dynamo.PackageManager
             // We should have already populated the CachedPackageList by this step
             if (PackageManagerClientViewModel.CachedPackageList == null ||
                 !PackageManagerClientViewModel.CachedPackageList.Any()) return;
-            // We need the user to be logged in, otherwise there is no point in runnig this routine
-            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return;
 
             List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
 
@@ -1604,6 +1607,8 @@ namespace Dynamo.PackageManager
             SearchAndUpdateResults(String.Empty); // reset the search text property
             InitialResultsLoaded = false;
             TimedOut = false;
+
+            ClearMySearchResults();
         }
 
         /// <summary>
@@ -1612,7 +1617,7 @@ namespace Dynamo.PackageManager
         internal void Dispose()
         {
             nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
-            aTimer.Elapsed -= OnTimedEvent;
+            if (aTimer != null) aTimer.Elapsed -= OnTimedEvent;
 
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings

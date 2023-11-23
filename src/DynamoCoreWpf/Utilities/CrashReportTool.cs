@@ -228,9 +228,9 @@ namespace Dynamo.Wpf.Utilities
                 string appConfig = "";
                 if (model != null)
                 {
-                    var appName = GetHostAppName(model);
-                    appConfig = $"<ProductInformation name=\"{appName}\" build_version=\"{model.Version}\" " +
-                                $"registry_version=\"{model.Version}\" registry_localeID=\"{CultureInfo.CurrentCulture.LCID}\" uptime=\"0\" " +
+                    var appName = GetHostAppName();
+                    appConfig = $"<ProductInformation name=\"{appName}\" build_version=\"{DynamoModel.Version}\" " +
+                                $"registry_version=\"{DynamoModel.Version}\" registry_localeID=\"{CultureInfo.CurrentCulture.LCID}\" uptime=\"0\" " +
                                 $"session_start_count=\"0\" session_clean_close_count=\"0\" current_session_length=\"0\" />";
                 }
 
@@ -271,18 +271,14 @@ namespace Dynamo.Wpf.Utilities
             return false;
         }
 
-        internal static string GetHostAppName(DynamoModel model)
+        internal static string GetHostAppName()
         {
             //default to app name being process name, but prefer HostAnalyticsInfo.HostName
             //then legacy Model.HostName
             var appName = Process.GetCurrentProcess().ProcessName;
-            if (!string.IsNullOrEmpty(model.HostAnalyticsInfo.HostName))
+            if (!string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
             {
-                appName = model.HostAnalyticsInfo.HostName;
-            }
-            else if (!string.IsNullOrEmpty(model.HostName))
-            {
-                appName = model.HostName;
+                appName = DynamoModel.HostAnalyticsInfo.HostName;
             }
 
             return appName;

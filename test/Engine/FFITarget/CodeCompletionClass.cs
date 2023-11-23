@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Autodesk.DesignScript.Runtime;
@@ -126,15 +126,9 @@ namespace FFITarget
     }
 
     [IsVisibleInDynamoLibrary(false)]
-    [Serializable]
-    public class TraceableId : ISerializable
+    public class TraceableId
     {
         public int IntID { get; set; }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("intID", IntID, typeof(int));
-        }
     }
 
     [IsVisibleInDynamoLibrary(false)]

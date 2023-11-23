@@ -11,16 +11,16 @@ env:
   TEST_EXECUTE_DOWNLOAD_URL: https://downloads.smartbear.com/TestExecute1552SLM.exe
   ACTOR: ${{ github.actor }}
   WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+  RUN_ID: ${{ github.event.workflow_run.id }}
   RUN_NAME: ${{ github.event.workflow_run.name }}
   RUN_URL: ${{ github.event.workflow_run.html_url }}
-  PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
-  PR_URL: ${{ github.event.workflow_run.pull_requests[0].html_url }}
 
 jobs:
   ui_smoke_tests:
     name: UI Smoke Tests
     timeout-minutes: 60
     runs-on: windows-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,6 +38,7 @@ jobs:
         with:
           name: DynamoSandbox
           workflow: ${{ env.WORKFLOW_ID }}
+          run_id: ${{ env.RUN_ID }}
           path: ${{ github.workspace }}\build
       - name: Run UI Smoke Tests
         shell: cmd
@@ -55,4 +56,3 @@ jobs:
           Get-Content summary.md >> $env:GITHUB_STEP_SUMMARY
           Write-Output "Actor: @${{ env.ACTOR }}" >> $env:GITHUB_STEP_SUMMARY
           Write-Output "Workflow Run: [${{ env.RUN_NAME }}](${{ env.RUN_URL }})" >> $env:GITHUB_STEP_SUMMARY
-          Write-Output "Pull Request: [${{ env.PR_NUMBER }}](${{ env.PR_URL }})" >> $env:GITHUB_STEP_SUMMARY
