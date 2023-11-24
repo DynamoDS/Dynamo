@@ -190,6 +190,7 @@ namespace Dynamo.PackageManager
                 {
                     _isNewVersion = value;
                     RaisePropertyChanged("IsNewVersion");
+                    RaisePropertyChanged("CanEditName");
                 }
             }
         }

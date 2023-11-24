@@ -655,6 +655,7 @@ namespace Dynamo.PackageManager
                                                                  PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                                                                  CanInstallPackage(pkg.Name));
                 p.RequestDownload += this.PackageOnExecuted;
+                p.RequestShowFileDialog += this.OnRequestShowFileDialog;
                 p.IsOnwer = true;
 
                 myPackages.Add(p);
@@ -669,6 +670,7 @@ namespace Dynamo.PackageManager
             foreach (var ele in this.SearchMyResults)
             {
                 ele.RequestDownload -= PackageOnExecuted;
+                ele.RequestShowFileDialog -= OnRequestShowFileDialog;
             }
 
             this.SearchMyResults = null;
