@@ -24,7 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CSVNodes.cs" />
-    <Compile Include="Excel.cs" Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " />
+    <Compile Include="Excel.cs" Condition=" $(RuntimeIdentifier.Contains('win')) " />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

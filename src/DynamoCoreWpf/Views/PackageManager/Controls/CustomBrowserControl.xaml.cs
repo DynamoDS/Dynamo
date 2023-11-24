@@ -18,7 +18,7 @@ namespace Dynamo.PackageManager.UI
     /// <summary>
     /// Interaction logic for CustomBrowserControl.xaml
     /// </summary>
-    public partial class CustomBrowserControl : UserControl
+    public partial class CustomBrowserControl : UserControl, IDisposable
     {
 
         public bool DisableRemove
@@ -75,6 +75,15 @@ namespace Dynamo.PackageManager.UI
         public CustomBrowserControl()
         {
             InitializeComponent();
+        }
+
+        public void Dispose()
+        {
+            var currentRoot = this.Root;
+            if (currentRoot != null)
+            {
+                currentRoot.CollectionChanged -= Root_CollectionChanged;
+            }
         }
 
         /// <summary>

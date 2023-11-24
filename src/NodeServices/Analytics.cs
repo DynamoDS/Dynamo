@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Dynamo.Logging
 {
@@ -38,9 +40,6 @@ namespace Dynamo.Logging
         internal static void ShutDown()
         {
             if (client != null) client.ShutDown();
-
-            IDisposable disposable = client as IDisposable;
-            if (disposable != null) disposable.Dispose();
             client = null;
         }
 
@@ -154,18 +153,60 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Creates a new task timed event with start state and tracks its start.
+        /// After the task is completed, disposing the returned event will record the event completion.
+        /// </summary>
+        /// <param name="category">Event category</param>
+        /// <param name="variable">Timed varaible name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <returns>Task defined by an IDisposable event</returns>
+        public static Task<IDisposable> CreateTaskTimedEvent(Categories category, string variable, string description = "", int? value = null)
+        {
+            if (client == null)
+            {
+                return Task.FromResult(new Dummy() as IDisposable);
+            }
+
+            return client.CreateTaskTimedEvent(category, variable, description, value);
+        }
+
+        /// <summary>
         /// Creates a new command event of the given name. Start of the 
         /// command is tracked. When the event is disposed, it's completion is tracked.
         /// </summary>
         /// <param name="name">Command name</param>
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
-        /// <returns>Event as IDisposable</returns>
+        /// <returns>Task defined by an IDisposable event</returns>
         public static IDisposable TrackCommandEvent(string name, string description = "", int? value = null)
         {
             if (client == null) return new Dummy();
 
             return client.CreateCommandEvent(name, description, value);
+        }
+
+        /// <summary>
+        /// Creates a new command event task of the given name. Start of the 
+        /// command is tracked. When the task is completed and the event is disposed, it's completion is tracked.
+        /// </summary>
+        /// <param name="name">Command name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <returns>Task defined by an IDisposable event</returns>
+        public static Task<IDisposable> TrackTaskCommandEvent(string name, string description = "", int? value = null)
+        {
+            if (client == null)
+            {                
+                return Task.FromResult(new Dummy() as IDisposable);
+            }
+
+            return client.CreateTaskCommandEvent(name, description, value);
+        }
+
+        public static void EndTaskCommandEvent(Task<IDisposable> taskEvent)
+        {
+            client?.EndEventTask(taskEvent);
         }
 
         /// <summary>
@@ -182,6 +223,25 @@ namespace Dynamo.Logging
             if (client == null) return new Dummy();
 
             return client.TrackFileOperationEvent(filepath, operation, size, description);
+        }
+
+        /// <summary>
+        /// Creates a new task file operation event and tracks the start of the event.
+        /// After the task is completed, disposing the returned event will record its completion.
+        /// </summary>
+        /// <param name="filepath">File path</param>
+        /// <param name="operation">File operation</param>
+        /// <param name="size">Size parameter</param>
+        /// <param name="description">Event description</param>
+        /// <returns>Task defined by an IDisposable event</returns>
+        public static Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description = "")
+        {
+            if (client == null)
+            {
+                return Task.FromResult(new Dummy() as IDisposable);
+            }
+
+            return client.TrackTaskFileOperationEvent(filepath, operation, size, description);
         }
 
         /// <summary>

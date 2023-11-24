@@ -474,7 +474,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void JSONisSameBeforeAndAfterSaveWithDummyNodes()
         {
             var testFileWithDummyNode = @"core\dummy_node\2080_JSONTESTCRASH undo_redo.dyn";

@@ -8,7 +8,7 @@ using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageManagerViewModel : NotificationObject
+    public class PackageManagerViewModel : NotificationObject, IDisposable
     {
         private DynamoViewModel dynamoViewModel;
         private InstalledPackagesViewModel installedPackagesViewModel;
@@ -108,5 +108,12 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// Dispose method of the PackageManagerViewModel
+        /// </summary>
+        public void Dispose()
+        {
+            LocalPackages.CollectionChanged -= LocalPackages_CollectionChanged;
+        }
     }
 }

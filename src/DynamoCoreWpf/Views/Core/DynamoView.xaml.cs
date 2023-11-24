@@ -1510,7 +1510,7 @@ namespace Dynamo.Controls
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
-            var cmd = Analytics.TrackCommandEvent("SearchPackage");
+            var cmd = Analytics.TrackTaskCommandEvent("SearchPackage");
 
             // The package search view model is shared and can be shared by resources at the moment
             // If it hasn't been initialized yet, we do that here
@@ -1531,7 +1531,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                _searchPkgsView.Closed += (sender, args) => { _searchPkgsView = null; cmd.Dispose(); };
+                _searchPkgsView.Closed += (sender, args) => { _searchPkgsView = null; Analytics.EndTaskCommandEvent(cmd); };
                 _searchPkgsView.Show();
 
                 if (_searchPkgsView.IsLoaded && IsLoaded) _searchPkgsView.Owner = this;
