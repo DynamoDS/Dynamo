@@ -129,9 +129,9 @@ namespace Dynamo.PackageManager.UI
         {
             this.packageManagerPublish.Dispose();
             this.packageManagerSearch.Dispose();
-            this.PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
             this.PackageManagerViewModel.PackageSearchViewModel.PackageManagerViewClose();
+            this.PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
         }
 
         private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)

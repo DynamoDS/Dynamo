@@ -1093,9 +1093,13 @@ namespace Dynamo.PackageManager
             this.Uploading = false;
             // Clearing the UploadHandle when using Submit currently throws - check trheading
             try
-            { 
-                this._uploadHandle.PropertyChanged -= UploadHandleOnPropertyChanged;
-                this.UploadHandle = null;
+            {
+                BeginInvoke(() =>
+                {
+                    if (this._uploadHandle == null) return;
+                    this._uploadHandle.PropertyChanged -= UploadHandleOnPropertyChanged;
+                    this.UploadHandle = null;
+                });
             }
             catch { Exception ex; }
             this.IsNewVersion = false;
@@ -1143,22 +1147,24 @@ namespace Dynamo.PackageManager
 
         private void ClearPackageContents()
         {
-            //  this method clears the package contents in the publish package dialog
-
-            this.Package = null;
+            BeginInvoke(() =>
+            {
+                //  this method clears the package contents in the publish package dialog
+                this.Package = null;
             
-            // Make changes to your ObservableCollection or other UI-bound collection here.
-            this.PackageContents.Clear();
-            this.PreviewPackageContents.Clear();
-            this.RootContents.Clear();
-            this.CustomDyfFilepaths.Clear();
+                // Make changes to your ObservableCollection or other UI-bound collection here.
+                this.PackageContents.Clear();
+                this.PreviewPackageContents.Clear();
+                this.RootContents.Clear();
+                this.CustomDyfFilepaths.Clear();
 
-            RaisePropertyChanged(nameof(PackageContents));
-            RaisePropertyChanged(nameof(PreviewPackageContents));
-            RaisePropertyChanged(nameof(RootContents));
-            RaisePropertyChanged(nameof(CustomDyfFilepaths));
+                RaisePropertyChanged(nameof(PackageContents));
+                RaisePropertyChanged(nameof(PreviewPackageContents));
+                RaisePropertyChanged(nameof(RootContents));
+                RaisePropertyChanged(nameof(CustomDyfFilepaths));
                     
-            this.CustomNodeDefinitions = new List<CustomNodeDefinition>();            
+                this.CustomNodeDefinitions = new List<CustomNodeDefinition>();            
+            });
         }
 
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)

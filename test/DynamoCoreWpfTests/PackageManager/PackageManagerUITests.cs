@@ -107,7 +107,7 @@ namespace DynamoCoreWpfTests.PackageManager
             AssertWindowOwnedByDynamoView<PackageManagerView>();
         }
 
-        [Test, Ignore("Unknown reason")]
+        [Test]
         public void CannotCreateDuplicatePackagePublishDialogs()
         {
             var l = new PublishPackageViewModel(ViewModel);
@@ -116,7 +116,7 @@ namespace DynamoCoreWpfTests.PackageManager
                 ViewModel.OnRequestPackagePublishDialog(l);
             }
 
-            AssertWindowOwnedByDynamoView<PublishPackageView>();
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
         }
 
         [Test]

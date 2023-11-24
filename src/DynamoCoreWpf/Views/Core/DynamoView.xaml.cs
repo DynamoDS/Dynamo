@@ -2029,7 +2029,6 @@ namespace Dynamo.Controls
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
             this._pkgSearchVM?.Dispose();
-            this._pkgVM?.Dispose();
         }
 
         // the key press event is being intercepted before it can get to
