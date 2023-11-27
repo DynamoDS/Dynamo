@@ -1050,7 +1050,7 @@ namespace Dynamo.ViewModels
             {
                 // HostAnalyticsInfo is not set when this is invoked??
                 //return this.dynamoViewModel.Model.HostAnalyticsInfo.HostName.Equals("Dynamo Revit");
-                var host = this.dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+                var host = DynamoModel.HostAnalyticsInfo.HostName;
 
                 if (host != null)
                 {
