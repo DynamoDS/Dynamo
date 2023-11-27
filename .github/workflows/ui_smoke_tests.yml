@@ -44,7 +44,7 @@ jobs:
       - name: Download Pull Request Artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          name: pr_num
+          name: pr_number
           workflow: ${{ env.WORKFLOW_ID }}
           run_id: ${{ env.RUN_ID }}
           path: ${{ github.workspace }}\pr
