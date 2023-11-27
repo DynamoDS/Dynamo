@@ -74,6 +74,7 @@
   <HideAutocompleteMethodOptions>true</HideAutocompleteMethodOptions>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
+  <IsMLAutocompleteTOUApproved>true</IsMLAutocompleteTOUApproved>
   <IsTimeStampIncludedInExportFilePath>false</IsTimeStampIncludedInExportFilePath>
   <EnablePersistExtensions>true</EnablePersistExtensions>
   <DefaultPythonEngine/>

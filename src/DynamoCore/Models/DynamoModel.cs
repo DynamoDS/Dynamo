@@ -196,7 +196,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     This version of Dynamo.
         /// </summary>
-        public string Version
+        public static string Version
         {
             get { return DefaultUpdateManager.GetProductVersion().ToString(); }
         }
@@ -215,7 +215,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Host analytics info
         /// </summary>
-        public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
+        public static HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
         /// Boolean indication of launching Dynamo in service mode, this mode is optimized for minimal launch time, mostly leveraged by CLI or WPF CLI.
@@ -280,7 +280,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     The application version string for analytics reporting APIs
         /// </summary>
-        internal virtual string AppVersion
+        internal static string AppVersion
         {
             get
             {
@@ -528,7 +528,7 @@ namespace Dynamo.Models
             bool NoNetworkMode => false;
 
             /// <summary>
-            /// Configuration object that contains host information like Host name, version and session id.
+            /// Configuration object that contains host information like Host name, parent id and session id.
             /// </summary>
             HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
@@ -685,13 +685,7 @@ namespace Dynamo.Models
             PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
             if (PreferenceSettings != null)
             {
-                // Setting the locale for Dynamo from loaded Preferences only when
-                // In a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
-                // Language is specified, otherwise Default setting means following host locale
-                if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName) || !PreferenceSettings.Locale.Equals(Configuration.Configurations.SupportedLocaleList.First()))
-                {
-                    SetUICulture(PreferenceSettings.Locale);
-                }
+                SetUICulture(PreferenceSettings.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -730,20 +724,7 @@ namespace Dynamo.Models
             // or the feature flags client for web traffic reason.
             if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Analytics.DisableAnalytics)
             {
-                // Start the Analytics service only when a session is not present.
-                // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
-                // So we don't want to start it when splash screen or dynamo window is launched again.
-                if (Analytics.client == null)
-                {
-                    AnalyticsService.Start(this, IsHeadless, IsTestMode);
-                }
-                else if (Analytics.client is DynamoAnalyticsClient dac)
-                {
-                    if (dac.Session == null)
-                    {
-                        AnalyticsService.Start(this, IsHeadless, IsTestMode);
-                    }
-                }
+                HandleAnalytics();
 
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
@@ -1014,6 +995,38 @@ namespace Dynamo.Models
             }
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        private void HandleAnalytics()
+        {
+            if (IsTestMode)
+            {
+                if (Analytics.DisableAnalytics)
+                {
+                    Logger.Log("Incompatible configuration: [IsTestMode] and [Analytics disabled] ");
+                }
+                return;
+            }
+
+            if (IsHeadless)
+            {
+                return;
+            }
+
+            // Start the Analytics service only when a session is not present.
+            // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
+            // So we don't want to start it when splash screen or dynamo window is launched again.
+            if (Analytics.client == null)
+            {
+                AnalyticsService.Start();
+            }
+            else if (Analytics.client is DynamoAnalyticsClient dac)
+            {
+                if (dac.Session == null)
+                {
+                    AnalyticsService.Start();
+                }
+            }
         }
 
         private void SearchModel_ItemProduced(NodeModel node)
@@ -1599,6 +1612,7 @@ namespace Dynamo.Models
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
+
 
             // Load local custom nodes and locally imported libraries
             foreach (var path in pathManager.DefinitionDirectories)
@@ -2706,8 +2720,24 @@ namespace Dynamo.Models
         /// </summary>
         public static void SetUICulture(string locale)
         {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+            if (string.IsNullOrWhiteSpace(locale)) return;
+
+            // Setting the locale for Dynamo from loaded Preferences, with Default handled differently
+            // between a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
+            // and in-process integration case. In later case, Default setting means following host locale.
+            if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName))
+            {
+                // Sandbox default to en-US
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+                Thread.CurrentThread.CurrentCulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+            }
+            else
+            {
+                var defaultCulture = CultureInfo.DefaultThreadCurrentCulture ?? new CultureInfo("en-US");
+                // Integration default to DefaultThreadCurrentCulture set by integrator
+                Thread.CurrentThread.CurrentUICulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
+                Thread.CurrentThread.CurrentCulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
+            }
         }
 
         /// <summary>
