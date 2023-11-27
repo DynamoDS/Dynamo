@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -127,8 +128,10 @@ namespace Dynamo.PackageManager.UI
         private void WindowClosed(object sender, EventArgs e)
         {
             this.packageManagerPublish.Dispose();
+            this.packageManagerSearch.Dispose();
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
             this.PackageManagerViewModel.PackageSearchViewModel.PackageManagerViewClose();
+            this.PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
         }
 
         private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)
@@ -177,6 +180,44 @@ namespace Dynamo.PackageManager.UI
         {
             this.loadingSearchWarningBar.Visibility = Visibility.Collapsed;
             this.loadingMyPackagesWarningBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void tab_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var selectedTab = sender as TabItem;
+            if (selectedTab == null) return;
+            var tabControl = selectedTab.Parent as TabControl;
+            if (tabControl == null) return;
+            var prevTab = tabControl.SelectedItem as TabItem;
+            if (prevTab == null) return;
+
+            if (prevTab.Name.Equals("publishTab") && !selectedTab.Name.Equals("publishTab"))
+            {
+
+                if (!PackageManagerViewModel.PublishPackageViewModel.AnyUserChanges())
+                {
+                    selectedTab.IsSelected = true;
+                    return;
+                }
+
+                MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK :
+                        MessageBoxService.Show(
+                            this,
+                            Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupMessage,
+                            Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupCaption,
+                            MessageBoxButton.OKCancel,
+                            MessageBoxImage.Warning);
+
+                if (response == MessageBoxResult.OK)
+                {
+                    PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
+                    selectedTab.IsSelected = true;
+                }
+                else
+                {
+                    e.Handled = true;
+                }
+            }
         }
     }
 }
