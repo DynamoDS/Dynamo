@@ -1286,6 +1286,9 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="PackageManagerPublishTab" xml:space="preserve">
     <value>Publish a Package</value>
   </data>
+  <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
+    <value>Virus scan in progress. Your package will be searchable in approximately 15 minutes.</value>
+  </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Installed Packages</value>
   </data>
@@ -1598,6 +1601,9 @@ If the toggle is off custom packages that are not already loaded will load once 
   <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
     <value>Add File To Package</value>
   </data>
+  <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
+    <value>Remove from package</value>
+  </data>
   <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
     <value>Add Directory And Its Files To Package</value>
   </data>
@@ -1670,7 +1676,22 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Build</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
-    <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
+    <value>A version name helps a submitter keep track of updates to the package. When a new version of a package is added, version number must be increased.</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
+    <value>Website link for the package.</value>
+  </data>
+  <data name="PublishPackageViewGithubLinkTooltip" xml:space="preserve">
+    <value>GitHub repository link for the package.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderTooltip" xml:space="preserve">
+    <value>The package's copyright holder.</value>
+  </data>    
+  <data name="PublishPackageViewLicenceTooltip" xml:space="preserve">
+    <value>The package's licence.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearTooltip" xml:space="preserve">
+    <value>The copyright year for the package.</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -1679,7 +1700,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>0</value>
   </data>
   <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
-    <value>1</value>
+    <value>0</value>
   </data>
   <data name="PublishPackageGroupWatermark" xml:space="preserve">
     <value>Group</value>
@@ -1714,6 +1735,15 @@ If the toggle is off custom packages that are not already loaded will load once 
   </data>
   <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
     <value>Node Library</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+    <value>When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
+
+Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
+    </value>
+  </data>
+  <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
+    <value>DLL file containing types and methods that Dynamo imports as nodes. Mark ZeroTouch, NodeModel, or NodeViewCustomization DLLs and types you want to import into Dynamo as node libraries.</value>
   </data>
   <data name="ShowClassicNodeLibrary" xml:space="preserve">
     <value>Show Classic Node Library</value>
@@ -1754,7 +1784,31 @@ If the toggle is off custom packages that are not already loaded will load once 
     <comment>ErrorString</comment>
   </data>
   <data name="NameNeedMoreCharacters" xml:space="preserve">
-    <value>Name must be at least 3 characters.</value>
+    <value>Must be at least 3 characters</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageName" xml:space="preserve">
+    <value>Provide package name</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndFiles" xml:space="preserve">
+    <value>Provide package name and file(s)</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndVersion" xml:space="preserve">
+    <value>Provide package name and version number</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideVersion" xml:space="preserve">
+    <value>Provide version number</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideVersionAndFiles" xml:space="preserve">
+    <value>Provide version number and file(s)</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideFiles" xml:space="preserve">
+    <value>Provide file(s)</value>
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
@@ -2220,6 +2274,15 @@ Do you want to install the latest Dynamo update?</value>
     <value>Move the selected path upward</value>
     <comment>Tool-tip for up arrow</comment>
   </data>
+  <data name="PackageManagerFinishedPackagePackagePath" xml:space="preserve">
+    <value>Package Path</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesUploadedMessage" xml:space="preserve">
+    <value> files uploaded</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesPublishedMessage" xml:space="preserve">
+    <value> files published</value>
+  </data>
   <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
     <value>Package Path Added</value>
   </data>
@@ -2258,6 +2321,12 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
+  </data>
+  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
+    <value>Select package contents</value>
+  </data>
+  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
+    <value>Preview package contents (read only)</value>
   </data>
   <data name="BackgroundPreviewName" xml:space="preserve">
     <value>_Background Preview</value>
@@ -2331,6 +2400,9 @@ Do you want to install the latest Dynamo update?</value>
     <value>Please, load assembly just one time.
 Next assemblies were loaded several times:
 </value>
+  </data>
+  <data name="PackageManagerReadyToPublish" xml:space="preserve">
+    <value>Ready to publish</value>
   </data>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Failed to add file: {0}</value>
@@ -3289,6 +3361,12 @@ Try placing the highlighted **ByOrigin** node.</value>
   </data>
   <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
     <value>No, close file</value>
+  </data>
+  <data name="DiscardChangesWarningPopupCaption" xml:space="preserve">
+    <value>Discard changes?</value>
+  </data>
+  <data name="DiscardChangesWarningPopupMessage" xml:space="preserve">
+    <value>Your changes will be lost if you navigate away from the package upload screen.</value>
   </data>
   <data name="FileTrustWarningPopupSettings" xml:space="preserve">
     <value>Settings</value>
