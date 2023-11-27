@@ -537,7 +537,7 @@ namespace Dynamo.Models
             bool NoNetworkMode => false;
 
             /// <summary>
-            /// Configuration object that contains host information like Host name, version and session id.
+            /// Configuration object that contains host information like Host name, parent id and session id.
             /// </summary>
             HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
@@ -695,13 +695,7 @@ namespace Dynamo.Models
             PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
             if (PreferenceSettings != null)
             {
-                // Setting the locale for Dynamo from loaded Preferences only when
-                // In a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
-                // Language is specified, otherwise Default setting means following host locale
-                if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName) || !PreferenceSettings.Locale.Equals(Configuration.Configurations.SupportedLocaleList.First()))
-                {
-                    SetUICulture(PreferenceSettings.Locale);
-                }
+                SetUICulture(PreferenceSettings.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -2743,8 +2737,24 @@ namespace Dynamo.Models
         /// </summary>
         public static void SetUICulture(string locale)
         {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+            if (string.IsNullOrWhiteSpace(locale)) return;
+
+            // Setting the locale for Dynamo from loaded Preferences, with Default handled differently
+            // between a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
+            // and in-process integration case. In later case, Default setting means following host locale.
+            if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName))
+            {
+                // Sandbox default to en-US
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+                Thread.CurrentThread.CurrentCulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+            }
+            else
+            {
+                var defaultCulture = CultureInfo.DefaultThreadCurrentCulture ?? new CultureInfo("en-US");
+                // Integration default to DefaultThreadCurrentCulture set by integrator
+                Thread.CurrentThread.CurrentUICulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
+                Thread.CurrentThread.CurrentCulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
+            }
         }
 
         /// <summary>
