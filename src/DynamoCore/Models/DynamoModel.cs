@@ -206,7 +206,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Current Version of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
-        public string HostVersion { get; set; }
+        public Version HostVersion { get; set; }
 
         /// <summary>
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)

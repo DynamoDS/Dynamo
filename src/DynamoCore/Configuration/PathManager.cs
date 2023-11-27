@@ -658,6 +658,10 @@ namespace Dynamo.Core
             return paths;
         }
 
+        /// <summary>
+        /// Returns the current Dynamo product version.
+        /// </summary>
+        /// <returns></returns>
         public Updates.BinaryVersion GetProductVersion()
         {
             if (null != productVersion) return productVersion;
