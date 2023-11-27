@@ -32,7 +32,6 @@ namespace Dynamo.PackageManager.UI
     {
         internal double Width;
         internal double Height;
-
         internal PackageManagerSizeEventArgs(double width, double height)
         {
             Width = width;
