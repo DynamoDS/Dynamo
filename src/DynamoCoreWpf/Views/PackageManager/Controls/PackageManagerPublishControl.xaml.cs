@@ -287,6 +287,8 @@ namespace Dynamo.PackageManager.UI
         {
             Page navigatedPage = e.Content as Page;
 
+            if (navigatedPage == null || PublishPages == null || !PublishPages.Any()) return;
+
             PublishPages.Values.ToList().ForEach(page => { page.IsEnabled = false; });
 
             Dispatcher.BeginInvoke((Action)(() =>
