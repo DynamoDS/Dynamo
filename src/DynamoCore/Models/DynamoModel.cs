@@ -537,7 +537,7 @@ namespace Dynamo.Models
             bool NoNetworkMode => false;
 
             /// <summary>
-            /// Configuration object that contains host information like Host name, version and session id.
+            /// Configuration object that contains host information like Host name, parent id and session id.
             /// </summary>
             HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
