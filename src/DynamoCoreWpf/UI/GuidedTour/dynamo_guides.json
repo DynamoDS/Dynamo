@@ -255,13 +255,13 @@
 					"HostUIElementString": "PackageManagerMenu",
 					"VerticalPopupOffset": 80,
 					"HorizontalPopupOffset": 10,
-                    "HighlightRectArea": {
-                        "HighlightColor": "#EF9362",
-                        "UIElementTypeString": "MenuItem",
-                        "WindowElementNameString": "showPM",
-                        "WidthBoxDelta": 0,
-                        "HeightBoxDelta": 3
-                    },
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "MenuItem",
+						"WindowElementNameString": "showPM",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					},
 					"CutOffRectArea": {
 						"WindowElementNameString": "showPMSearch",
 						"WidthBoxDelta": 0,
@@ -365,14 +365,14 @@
 					"Title": "PackagesGuideThirdPartyTitle",
 					"FormattedText": "PackagesGuideThirdPartyText"
 				},
-                "HostPopupInfo": {
-                    "PopupPlacement": "right",
-                    "WindowName": "PackageManagerWindow",
-                    "DynamicHostWindow": true,
-                    "HostUIElementString": "PackageManagerWindow",
-                    "VerticalPopupOffset": 150,
-                    "HorizontalPopupOffset": 0
-                },
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageManagerWindow",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageManagerWindow",
+					"VerticalPopupOffset": 150,
+					"HorizontalPopupOffset": 0
+				},
 				"PreValidation": {
 					"ReturnType": "boolean",
 					"ControlType": "visibility",
@@ -396,11 +396,11 @@
 						"Name": "ExecuteClosePackagesSearch",
 						"Action": "execute",
 						"AutomaticHandlers": [
-                            {
-                                "HandlerElement": "CloseButton",
-                                "HandlerElementEvent": "Click",
-                                "ExecuteMethod": "CloseButton_Click"
-                            }
+							{
+								"HandlerElement": "CloseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
 						],
 						"UpdatePlacementTarget": true
 					}
@@ -417,23 +417,23 @@
 					"Title": "PackagesGuideSearchFilterTitle",
 					"FormattedText": "PackagesGuideSearchFilterText"
 				},
-                "HostPopupInfo": {
-                    "PopupPlacement": "right",
-                    "WindowName": "PackageManagerWindow",
-                    "DynamicHostWindow": true,
-                    "HostUIElementString": "PackageManagerWindow",
-                    "VerticalPopupOffset": 40,
-                    "ElementName": "NextButton",
-                    "HorizontalPopupOffset": 0,
-                    "HtmlPage": {
-                        "FileName": "searchPackages.html",
-                        "Resources": {
-                            "#SearchPackages": "SearchPackages.gif",
-                            "#filterIcon": "filterIcon.png",
-                            "#sortIcon": "sortIcon.png"
-                        }
-                    }
-                },
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageManagerWindow",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageManagerWindow",
+					"VerticalPopupOffset": 40,
+					"ElementName": "NextButton",
+					"HorizontalPopupOffset": 0,
+					"HtmlPage": {
+						"FileName": "searchPackages.html",
+						"Resources": {
+							"#SearchPackages": "SearchPackages.gif",
+							"#filterIcon": "filterIcon.png",
+							"#sortIcon": "sortIcon.png"
+						}
+					}
+				},
 				"UIAutomation": [
 					{
 						"Sequence": 0,
@@ -451,11 +451,11 @@
 						"Name": "ExecuteClosePackagesSearch",
 						"Action": "execute",
 						"AutomaticHandlers": [
-                            {
-                                "HandlerElement": "CloseButton",
-                                "HandlerElementEvent": "Click",
-                                "ExecuteMethod": "CloseButton_Click"
-                            }
+							{
+								"HandlerElement": "CloseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
 						],
 						"UpdatePlacementTarget": true
 					},
@@ -486,23 +486,23 @@
 					"Title": "PackagesGuideSearchResultsTitle",
 					"FormattedText": "PackagesGuideSearchResultsText"
 				},
-                "HostPopupInfo": {
-                    "PopupPlacement": "right",
-                    "WindowName": "PackageManagerWindow",
-                    "DynamicHostWindow": true,
-                    "HostUIElementString": "PackageManagerWindow",
-                    "VerticalPopupOffset": 150,
-                    "HorizontalPopupOffset": 0,
-                    "HighlightRectArea": {
-                        "HighlightColor": "#EF9362",
-                        "UIElementTypeString": "Button",
-                        "WindowName": "PackageManagerWindow",
-                        "UIElementGridContainer": "viewDetailsGrid",
-                        "WindowElementNameString": "viewDetailsButton",
-                        "WidthBoxDelta": 0,
-                        "HeightBoxDelta": 0
-                    }
-                },
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageManagerWindow",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageManagerWindow",
+					"VerticalPopupOffset": 150,
+					"HorizontalPopupOffset": 0,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "Button",
+						"WindowName": "PackageManagerWindow",
+						"UIElementGridContainer": "viewDetailsGrid",
+						"WindowElementNameString": "viewDetailsButton",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
 				"UIAutomation": [
 					{
 						"Sequence": 1,
@@ -528,11 +528,11 @@
 						"Name": "ExecuteClosePackagesSearch",
 						"Action": "execute",
 						"AutomaticHandlers": [
-                            {
-                                "HandlerElement": "CloseButton",
-                                "HandlerElementEvent": "Click",
-                                "ExecuteMethod": "CloseButton_Click"
-                            }
+							{
+								"HandlerElement": "CloseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
 						],
 						"UpdatePlacementTarget": true
 					}
@@ -549,14 +549,14 @@
 					"Title": "PackagesGuideDependenciesTitle",
 					"FormattedText": "PackagesGuideDependenciesText"
 				},
-                "HostPopupInfo": {
-                    "PopupPlacement": "right",
-                    "WindowName": "PackageManagerWindow",
-                    "DynamicHostWindow": true,
-                    "HostUIElementString": "PackageManagerWindow",
-                    "VerticalPopupOffset": 0,
-                    "HorizontalPopupOffset": 0
-                },
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageManagerWindow",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageManagerWindow",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0
+				},
 				"UIAutomation": [
 					{
 						"Sequence": 1,
@@ -620,20 +620,20 @@
 						"UpdatePlacementTarget": true
 					}
 				],
-                "HostPopupInfo": {
-                    "PopupPlacement": "right",
-                    "WindowName": "PackageManagerWindow",
-                    "DynamicHostWindow": true,
-                    "HostUIElementString": "PackageManagerWindow",
-                    "VerticalPopupOffset": 100,
-                    "HorizontalPopupOffset": 0,
-                    "HtmlPage": {
-                        "FileName": "installedPackage.html",
-                        "Resources": {
-                            "#successIcon": "successIcon.png"
-                        }
-                    }
-                },
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageManagerWindow",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageManagerWindow",
+					"VerticalPopupOffset": 100,
+					"HorizontalPopupOffset": 0,
+					"HtmlPage": {
+						"FileName": "installedPackage.html",
+						"Resources": {
+							"#successIcon": "successIcon.png"
+						}
+					}
+				},
 				"PreValidation": {
 					"ReturnType": "boolean",
 					"ControlType": "visibility",
@@ -652,23 +652,23 @@
 					"Title": "PackagesGuideInstallAPackageTitle",
 					"FormattedText": "PackagesGuideInstallAPackageText"
 				},
-                "HostPopupInfo": {
-                    "PopupPlacement": "right",
-                    "WindowName": "PackageManagerWindow",
-                    "DynamicHostWindow": true,
-                    "HostUIElementString": "installButton",
-                    "VerticalPopupOffset": 120,
-                    "HorizontalPopupOffset": 0,
-                    "HighlightRectArea": {
-                        "HighlightColor": "#EF9362",
-                        "UIElementTypeString": "Button",
-                        "WindowName": "PackageManagerWindow",
-                        "UIElementGridContainer": "installPackageGrid",
-                        "WindowElementNameString": "installButton",
-                        "WidthBoxDelta": 0,
-                        "HeightBoxDelta": 0
-                    }
-                },
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageManagerWindow",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "installButton",
+					"VerticalPopupOffset": 120,
+					"HorizontalPopupOffset": 0,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "Button",
+						"WindowName": "PackageManagerWindow",
+						"UIElementGridContainer": "installPackageGrid",
+						"WindowElementNameString": "installButton",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
 				"PreValidation": {
 					"ReturnType": "boolean",
 					"ControlType": "visibility",
