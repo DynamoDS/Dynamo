@@ -487,7 +487,7 @@
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement to _Collect Usability Data</value>
+    <value>Agreement and _Terms of Use</value>
     <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
@@ -1151,7 +1151,10 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Cancel</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement to Collect Usability Data</value>
+    <value>Agreement and Terms of Use</value>
+  </data>
+  <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
+    <value>I agree to ML Node Autocomplete Terms of Use</value>
   </data>
   <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
     <value>Clear</value>
@@ -1306,7 +1309,7 @@ Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
     <value>Once you install a package, you can find it here.</value>
-  </data>    
+  </data>
   <data name="PackagerManageUserNotSignedPackagesMessage" xml:space="preserve">
     <value>Sign in to your Dynamo account to view your published packages.</value>
   </data>
@@ -2600,7 +2603,7 @@ Uninstall the following packages: {0}?</value>
     <value>Filter by</value>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialogTooltip" xml:space="preserve">
-    <value>Display the dialog for user to pick agreement on data collecting.</value>
+    <value>Display the dialog of agreement on data collecting and Machine Learning Node Autocomplete terms of use</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
