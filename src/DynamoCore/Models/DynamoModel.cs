@@ -2751,7 +2751,7 @@ namespace Dynamo.Models
             else
             {
                 var defaultCulture = CultureInfo.DefaultThreadCurrentCulture ?? new CultureInfo("en-US");
-                // Integration default to
+                // Integration default to DefaultThreadCurrentCulture set by integrator
                 Thread.CurrentThread.CurrentUICulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
                 Thread.CurrentThread.CurrentCulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
             }
