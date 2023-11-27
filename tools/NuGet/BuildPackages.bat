@@ -37,8 +37,8 @@ for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %harvestPath%\Dyn
 setlocal DisableDelayedExpansion
 set version=%Major%.%Minor%.%Build%-beta%Revision%
 
-:: Get target framework from CS_SDK.props
-for /f %%f in ('cscript //Nologo .\GetTargetFramework.vbs ..\..\src\Config\CS_SDK.props') do (
+:: Get target framework from build.xml
+for /f %%f in ('cscript //Nologo .\GetTargetFramework.vbs ..\..\src\build.xml') do (
   setlocal EnableDelayedExpansion
   set targetFramework=%%f
 )
