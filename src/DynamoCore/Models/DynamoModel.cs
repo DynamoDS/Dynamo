@@ -96,12 +96,14 @@ namespace Dynamo.Models
     /// </summary>
     public struct HostAnalyticsInfo
     {
-        /// Dynamo variation identified by host.
+        // Dynamo variation identified by host.
         public string HostName;
-        /// Dynamo host parent id for analytics purpose.
+        // Dynamo variation version specific to host
+        public string HostVersion;
+        // Dynamo host parent id for analytics purpose.
         public string ParentId;
-        /// Dynamo host session id for analytics purpose.
-        public string SessionId;
+        // Dynamo host session id for analytics purpose.
+        public string SessionId;        
     }
 
     /// <summary>
@@ -198,7 +200,7 @@ namespace Dynamo.Models
         /// </summary>
         public static string Version
         {
-            get { return DefaultUpdateManager.GetProductVersion().ToString(); }
+            get { return Core.PathManager.Instance.GetProductVersion().ToString(); }
         }
 
         /// <summary>
@@ -285,7 +287,7 @@ namespace Dynamo.Models
             get
             {
                 return Process.GetCurrentProcess().ProcessName + "-"
-                    + DefaultUpdateManager.GetProductVersion();
+                    + Core.PathManager.Instance.GetProductVersion();
             }
         }
 
@@ -690,14 +692,8 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged += LogMessage;
             }
 
-            UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
-
-            if (UpdateManager != null)
-            {
-                // For API compatibility now in Dynamo 2.0, integrators can set HostName in both ways
-                HostName = HostAnalyticsInfo.HostName;
-                HostVersion = UpdateManager.HostVersion?.ToString();
-            }
+            HostName = HostAnalyticsInfo.HostName;
+            HostVersion = HostAnalyticsInfo.HostVersion?.ToString();
 
             bool areAnalyticsDisabledFromConfig = false;
             if (!IsServiceMode)
@@ -757,10 +753,7 @@ namespace Dynamo.Models
 
                 try
                 {
-                    var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null
-                        ? config.UpdateManager.Configuration.DynamoLookUp : null;
-
-                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, dynamoLookup);
+                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager);
                 }
                 catch (Exception e)
                 {

@@ -219,5 +219,15 @@ namespace Dynamo.Interfaces
         /// <returns>Returns true if the requested document can be located, or 
         /// false otherwise.</returns>
         bool ResolveDocumentPath(ref string document);
+
+        /// <summary>
+        /// Returns a list of user data folders on this system.
+        /// </summary>
+        /// <returns>
+        /// The implementation of this interface method should return a list of user 
+        /// data folders, one for each of Dynamo product installed on the system. When 
+        /// there is no Dynamo product installed, this method returns an empty list.
+        /// </returns>
+        IEnumerable<string> GetDynamoUserDataLocations();
     }
 }
