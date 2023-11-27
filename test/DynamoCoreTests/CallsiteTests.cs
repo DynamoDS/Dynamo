@@ -11,6 +11,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using FFITarget;
 using NUnit.Framework;
 using ProtoCore;
@@ -338,6 +339,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanWarnAboutLegacyTraceData()
         {
+            DynamoModel.IsTestMode = false;
             var counter = 99;
             CurrentDynamoModel.RequestNotification += (_, _) => { counter++; };
 
@@ -345,6 +347,7 @@ namespace Dynamo.Tests
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir,
                 "element_binding_customNodes_modified_multiple_pre3.0.dyn");
 
+            DynamoModel.IsTestMode = true;
             Assert.AreEqual(100, counter);
         }
     }
