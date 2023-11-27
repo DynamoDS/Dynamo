@@ -160,6 +160,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I agree to ML Node Autocomplete Terms of Use.
+        /// </summary>
+        public static string AgreeToMLAutocompleteTOUText {
+            get {
+                return ResourceManager.GetString("AgreeToMLAutocompleteTOUText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk A360.
         /// </summary>
         public static string Autodesk360SignInButtonTitleToolTip {
@@ -2270,7 +2279,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement to _Collect Usability Data.
+        ///   Looks up a localized string similar to Agreement and _Terms of Use.
         /// </summary>
         public static string DynamoViewSettingMenuShowDataReportingDialog {
             get {
@@ -2279,7 +2288,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display the dialog for user to pick agreement on data collecting..
+        ///   Looks up a localized string similar to Display the dialog of agreement on data collecting and Machine Learning Node Autocomplete terms of use.
         /// </summary>
         public static string DynamoViewSettingMenuShowDataReportingDialogTooltip {
             get {
@@ -9863,7 +9872,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement to Collect Usability Data.
+        ///   Looks up a localized string similar to Agreement and Terms of Use.
         /// </summary>
         public static string UsageReportPromptDialogTitle {
             get {
