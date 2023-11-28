@@ -15,17 +15,17 @@
         <summary>This package contains all that is required to get up and running building zero touch libraries for the Dynamo Visual Programming language.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework="net6.0">
+            <group targetFramework="$TargetFramework$">
                 <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$"/>
             </group>
         </dependencies>
     </metadata>
     <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
-        <file src="DynamoUnits.dll" target="lib\net6.0" />
-        <file src="DynamoUnits.xml" target="lib\net6.0" />
-        <file src="ProtoGeometry.dll" target="lib\net6.0" />
-        <file src="ProtoGeometry.xml" target="lib\net6.0" />
+        <file src="DynamoUnits.dll" target="lib\$TargetFramework$" />
+        <file src="DynamoUnits.xml" target="lib\$TargetFramework$" />
+        <file src="ProtoGeometry.dll" target="lib\$TargetFramework$" />
+        <file src="ProtoGeometry.xml" target="lib\$TargetFramework$" />
         
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
