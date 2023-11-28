@@ -679,27 +679,38 @@ namespace Dynamo.Graph.Workspaces
             #region Restore trace data
             // Trace Data
             Dictionary<Guid, List<CallSite.RawTraceData>> loadedTraceData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
+            bool containsLegacyTraceData = false;
             // Restore trace data if bindings are present in json
             if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
             {
-                JEnumerable<JToken> bindings = obj["Bindings"].Children();
+                var wrc = serializer.Converters.First(c => c is WorkspaceReadConverter) as WorkspaceReadConverter;
 
-                // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
-                foreach (JToken entity in bindings)
+                if (wrc.engine.CurrentWorkspaceVersion < new Version(3, 0, 0))
                 {
-                    Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
-                    string bindingString = entity["Binding"].ToString();
+                    containsLegacyTraceData = true;
+                }
+                else
+                {
+                    JEnumerable<JToken> bindings = obj["Bindings"].Children();
 
-                    // Key(callsiteId) : Value(traceData)
-                    Dictionary<string, string> bindingData = JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
-                    List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
-
-                    foreach (KeyValuePair<string, string> pair in bindingData)
+                    // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
+                    foreach (JToken entity in bindings)
                     {
-                        callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
-                    }
+                        Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
+                        string bindingString = entity["Binding"].ToString();
 
-                    loadedTraceData.Add(nodeId, callsiteTraceData);
+                        // Key(callsiteId) : Value(traceData)
+                        Dictionary<string, string> bindingData =
+                            JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
+                        List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
+
+                        foreach (KeyValuePair<string, string> pair in bindingData)
+                        {
+                            callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
+                        }
+
+                        loadedTraceData.Add(nodeId, callsiteTraceData);
+                    }
                 }
             }
             #endregion
@@ -725,7 +736,7 @@ namespace Dynamo.Graph.Workspaces
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
                     homeWorkspace.Thumbnail = thumbnail.ToString();
 
-                // GraphDocumentaionLink
+                // GraphDocumentationLink
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
                 {
                     if (Uri.TryCreate(helpLink.ToString(), UriKind.Absolute, out Uri uri))
@@ -738,6 +749,7 @@ namespace Dynamo.Graph.Workspaces
                 // If there is a active linter serialized in the graph we set it to the active linter else set the default None.
                 SetActiveLinter(obj);
 
+
                 ws = homeWorkspace;
             }
 
@@ -746,7 +758,9 @@ namespace Dynamo.Graph.Workspaces
             ws.ExternalFiles = externalFiles;
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
-
+            
+            ws.ContainsLegacyTraceData = containsLegacyTraceData;
+            
             return ws;
         }
 
