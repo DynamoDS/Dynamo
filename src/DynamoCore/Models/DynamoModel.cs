@@ -99,7 +99,7 @@ namespace Dynamo.Models
         // Dynamo variation identified by host.
         public string HostName;
         // Dynamo variation version specific to host
-        public string HostVersion;
+        public Version HostVersion;
         // Dynamo host parent id for analytics purpose.
         public string ParentId;
         // Dynamo host session id for analytics purpose.
@@ -206,7 +206,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Current Version of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
-        public Version HostVersion { get; set; }
+        public string HostVersion { get; set; }
 
         /// <summary>
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
