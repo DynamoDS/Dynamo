@@ -2267,8 +2267,16 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                var param = (string)parameters;
-                OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
+                //When we pass the PackageManagerSizeEventArgs means that we want to start the PackageManagerView with a specific Width and Height
+                if (parameters is PackageManagerSizeEventArgs)
+                {
+                    OnRequestPackageManagerDialog(this, parameters as PackageManagerSizeEventArgs);
+                }
+                else
+                {
+                    var param = (string)parameters;
+                    OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
+                }              
             }
         }
 

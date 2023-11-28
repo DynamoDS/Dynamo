@@ -2269,6 +2269,14 @@ namespace Dynamo.Controls
 
             if (packageManagerWindow == null)
             {
+                if (e is PackageManagerSizeEventArgs)
+                {
+                    var packageManagerSizeEventArgs = e as PackageManagerSizeEventArgs;
+                    //Set a fixed size for the PackageManagerView
+                    _pkgVM.Width = packageManagerSizeEventArgs.Width;
+                    _pkgVM.Height = packageManagerSizeEventArgs.Height;
+                }
+
                 packageManagerWindow = new PackageManagerView(this, _pkgVM)
                 {
                     Owner = this,
