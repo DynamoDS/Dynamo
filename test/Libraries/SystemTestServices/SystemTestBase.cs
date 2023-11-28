@@ -63,7 +63,7 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
-            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.MethodName);
+            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
             var testConfig = GetTestSessionConfiguration();
 
             if (assemblyResolver == null)
@@ -142,7 +142,7 @@ namespace SystemTestServices
                 Console.WriteLine(ex.StackTrace);
             }
 
-            System.Console.WriteLine("Finish test: " + TestContext.CurrentContext.Test.MethodName);
+            System.Console.WriteLine("Finish test: " + TestContext.CurrentContext.Test.Name);
         }
 
         [OneTimeTearDown]

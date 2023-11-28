@@ -64,7 +64,7 @@ namespace Dynamo
         [SetUp]
         public virtual void Setup()
         {
-            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.MethodName);
+            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
             SetupDirectories();
 
             if (assemblyHelper == null)
@@ -98,7 +98,7 @@ namespace Dynamo
             {
                 AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             }
-            System.Console.WriteLine("Finish test: " + TestContext.CurrentContext.Test.MethodName);
+            System.Console.WriteLine("Finish test: " + TestContext.CurrentContext.Test.Name);
         }
 
         public string GetNewFileNameOnTempPath(string fileExtension = "dyn")
