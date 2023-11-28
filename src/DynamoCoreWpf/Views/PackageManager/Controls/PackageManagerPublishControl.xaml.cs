@@ -291,20 +291,17 @@ namespace Dynamo.PackageManager.UI
 
             PublishPages.Values.ToList().ForEach(page => { page.IsEnabled = false; });
 
-            Dispatcher.BeginInvoke((Action)(() =>
+            if (navigatedPage != null)
             {
-                if (navigatedPage != null)
-                {
-                    if (navigatedPage is PublishPackagePublishPage)
-                        (navigatedPage as PublishPackagePublishPage).LoadEvents();
-                    if (navigatedPage is PublishPackageSelectPage)
-                        (navigatedPage as PublishPackageSelectPage).LoadEvents();
-                    if (navigatedPage is PublishPackagePreviewPage)
-                        (navigatedPage as PublishPackagePreviewPage).LoadEvents();
-                    if (navigatedPage is PublishPackageFinishPage)
-                        (navigatedPage as PublishPackageFinishPage).IsEnabled = true;
-                }
-            }));
+                if (navigatedPage is PublishPackagePublishPage)
+                    (navigatedPage as PublishPackagePublishPage).LoadEvents();
+                if (navigatedPage is PublishPackageSelectPage)
+                    (navigatedPage as PublishPackageSelectPage).LoadEvents();
+                if (navigatedPage is PublishPackagePreviewPage)
+                    (navigatedPage as PublishPackagePreviewPage).LoadEvents();
+                if (navigatedPage is PublishPackageFinishPage)
+                    (navigatedPage as PublishPackageFinishPage).IsEnabled = true;
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

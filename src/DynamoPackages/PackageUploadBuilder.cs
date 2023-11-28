@@ -127,7 +127,6 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// Build a new version of the package and upload retaining folder structure
-        /// TODO: Should that be a separate method or an override? Break API ok?
         /// </summary>
         /// <param name="package"></param>
         /// <param name="packagesDirectory"></param>
