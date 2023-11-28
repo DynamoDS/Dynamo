@@ -18,6 +18,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI.GuidedTour;
@@ -73,6 +74,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private ICommandExecutive commandExecutive;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
+        private Task isInitialized;
+        bool isDisposing;
         // private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
         internal WebView2 browser;
@@ -319,9 +322,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
 
-            this.browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
-            InitializeAsync();
-
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel,
                     this, this.customization);
         }
@@ -350,12 +350,19 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 };
             }
 
-            await browser.EnsureCoreWebView2Async();
-            this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
-            twoWayScriptingObject = new ScriptingObject(this);
-            //register the interop object into the browser.
-            this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
-            browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+            isInitialized = browser.EnsureCoreWebView2Async().ContinueWith((_) =>
+            {
+                if (isDisposing) return;
+
+                this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+                twoWayScriptingObject = new ScriptingObject(this);
+                //register the interop object into the browser.
+                this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
+                browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+            await isInitialized;
+
+            if (isDisposing) return;
         }
 
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs args)
@@ -422,6 +429,11 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             string msg = "Browser Loaded";
             LogToDynamoConsole(msg);
+
+            if (!isDisposing)
+            {
+                InitializeAsync();
+            }
         }
 
         // This enum is for matching the modifier keys between C# and javaScript
@@ -712,8 +724,18 @@ namespace Dynamo.LibraryViewExtensionWebView2
             this.dynamoViewModel.Model.Logger.Log(message);
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
+            isDisposing = true;
+
+            if (Models.DynamoModel.IsTestMode && isInitialized != null)
+            {
+                GC.SuppressFinalize(this);
+                await isInitialized;
+                Dispose(true);
+                return;
+            }
+
             Dispose(true);
             GC.SuppressFinalize(this);
         }

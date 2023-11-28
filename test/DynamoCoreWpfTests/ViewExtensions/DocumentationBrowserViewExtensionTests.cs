@@ -144,6 +144,7 @@ namespace DynamoCoreWpfTests
             //There are times in which the URL contain characters like backslash (%5C) then they need to be replaced by the normal slash "/"
             htmlContent = htmlContent.Replace(@"%5C", "/");
 
+            DispatcherUtil.DoEvents();
             // Assert
             Assert.IsTrue(!string.IsNullOrEmpty(browserView.VirtualFolderPath));
             Assert.IsTrue(Directory.Exists(browserView.VirtualFolderPath));
@@ -714,7 +715,7 @@ namespace DynamoCoreWpfTests
             return GetSidebarDocsBrowserContents();
         }
 
-        [Test,Category("Failure")]
+        [Test]
         public void AddGraphInSpecificLocationToWorkspace()
         {
             //TODO see this issue:

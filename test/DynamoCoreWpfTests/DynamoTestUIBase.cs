@@ -14,6 +14,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Scheduler;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
@@ -78,7 +79,7 @@ namespace DynamoCoreWpfTests
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
@@ -109,6 +110,8 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
+            DispatcherUtil.DoEvents();
+
             //Ensure that we leave the workspace marked as
             //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;

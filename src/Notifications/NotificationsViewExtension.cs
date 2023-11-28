@@ -68,6 +68,7 @@ namespace Dynamo.Notifications
                     BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
                 }
                 notificationsMenuItem = null;
+                notificationCenterController?.Dispose();
                 disposed = true;
             }
         }
