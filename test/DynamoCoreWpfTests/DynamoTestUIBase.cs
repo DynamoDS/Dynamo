@@ -41,6 +41,7 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
+            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.MethodName);
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -141,6 +142,7 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
+            System.Console.WriteLine("Exit test: " + TestContext.CurrentContext.Test.MethodName);
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)
