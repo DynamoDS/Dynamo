@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUtilities;
+using Greg.AuthProviders;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -236,6 +237,11 @@ namespace Dynamo.UI.Views
             dynamoView?.Activate();
         }
 
+        private void OnLoginStateChanged(LoginState state)
+        {
+            HandleSignInStatusChange(authManager.IsLoggedIn());
+        }
+
         /// <summary>
         /// Once main window is initialized, Dynamic Splash screen should finish loading
         /// </summary>
@@ -250,6 +256,7 @@ namespace Dynamo.UI.Views
             // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
+                authManager.LoginStateChanged += OnLoginStateChanged;
                 SetSignInStatus(authManager.IsLoggedInInitial());
                 SetLoadingDone();
             }
@@ -390,6 +397,18 @@ namespace Dynamo.UI.Views
             {
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +               
                 $"signInStatus: \"" + status + "\"})");
+            }
+        }
+
+        /// <summary>
+        /// Handle the login status changes on splash screen.
+        /// </summary>
+        internal async void HandleSignInStatusChange(bool status)
+        {
+            if (webView?.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync("window.handleSignInStateChange({" +
+                $"status: \"" + status + "\"})");
             }
         }
 
