@@ -97,7 +97,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="timeoutms">will return empty string if we don't finish reading all data in the timeout provided in milliseconds.</param>
         /// <returns></returns>
-        protected virtual async Task<string> GetData(int timeoutms)
+        protected virtual string GetData(int timeoutms)
         {
             var readStdOutTask = Task.Run(() =>
             {
@@ -145,7 +145,8 @@ namespace Dynamo.Utilities
                     return writer.ToString();
                 }
             });
-            var completedTask = await Task.WhenAny(readStdOutTask, Task.Delay(TimeSpan.FromMilliseconds(timeoutms)));
+
+            var completedTask = Task.WhenAny(readStdOutTask, Task.Delay(TimeSpan.FromMilliseconds(timeoutms))).Result;
             //if the completed task was our read std out task, then return the data
             //else we timed out, so return an empty string.
             return completedTask == readStdOutTask ? readStdOutTask.Result : string.Empty;
