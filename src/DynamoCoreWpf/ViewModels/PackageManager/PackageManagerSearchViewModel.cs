@@ -1125,6 +1125,7 @@ namespace Dynamo.PackageManager
 
         internal void ClearSearchResults()
         {
+            if (this.SearchResults == null) return;
             foreach (var ele in this.SearchResults)
             {
                 ele.RequestDownload -= PackageOnExecuted;

@@ -62,8 +62,12 @@ namespace Dynamo.PackageManager.UI
                 Actions.Close,
                 Categories.PackageManagerOperations);
 
-            PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
-            PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
+            if(PublishPackageViewModel != null )
+            {
+                PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
+                PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
+
+            }
 
             this.Loaded -= InitializeContext;
 
@@ -73,7 +77,7 @@ namespace Dynamo.PackageManager.UI
             PublishPages = null;
             NavButtonStacks = null;
 
-            Breadcrumbs.Clear();
+            Breadcrumbs?.Clear();
         }
 
         private void InitializePages()
@@ -101,6 +105,8 @@ namespace Dynamo.PackageManager.UI
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
         {
+            if (PublishPages == null) return;
+
             statusLabel.Visibility = Visibility.Collapsed;
 
             currentPage = 3;
@@ -270,6 +276,8 @@ namespace Dynamo.PackageManager.UI
 
         private void DisposePages()
         {
+            if (PublishPages == null || !PublishPages.Any()) return;
+
             foreach(var page in PublishPages.Values)
             {
                 if (page is PublishPackagePublishPage)
