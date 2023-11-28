@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,8 +48,8 @@ namespace Watch3DNodeModelsWpf
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             watch3dModel = model;
 
-            var renderingTier = (RenderCapability.Tier >> 16);
-            if (renderingTier < 2) return;
+//            var renderingTier = (RenderCapability.Tier >> 16);
+//            if (renderingTier < 2) return;
 
             var dynamoModel = dynamoViewModel.Model;
 
