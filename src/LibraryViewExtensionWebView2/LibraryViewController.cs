@@ -123,8 +123,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
-
-            InitializeAsync();
         }
 
         private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
@@ -323,6 +321,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
+            InitializeAsync();
 
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel,
                     this, this.customization);
