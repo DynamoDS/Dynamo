@@ -256,7 +256,7 @@ namespace Dynamo.Controls
             {
                 fileTrustWarningPopup = new FileTrustWarning(this);
             }
-            if (!DynamoModel.IsTestMode && Application.Current != null)
+            if (!DynamoModel.IsTestMode && string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.MainWindow = this;
             }
@@ -1372,9 +1372,10 @@ namespace Dynamo.Controls
 
             TrackStartupAnalytics();
 
-            // In native host scenario (e.g. Revit), the "Application.Current" will be "null". Therefore, the InCanvasSearchControl.OnRequestShowInCanvasSearch
-            // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.  
-            if (Application.Current == null)
+            // In native host scenario (e.g. Revit), the InCanvasSearchControl.OnRequestShowInCanvasSearch
+            // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.
+
+            if (!string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
             {
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
@@ -2268,6 +2269,14 @@ namespace Dynamo.Controls
 
             if (packageManagerWindow == null)
             {
+                if (e is PackageManagerSizeEventArgs)
+                {
+                    var packageManagerSizeEventArgs = e as PackageManagerSizeEventArgs;
+                    //Set a fixed size for the PackageManagerView
+                    _pkgVM.Width = packageManagerSizeEventArgs.Width;
+                    _pkgVM.Height = packageManagerSizeEventArgs.Height;
+                }
+
                 packageManagerWindow = new PackageManagerView(this, _pkgVM)
                 {
                     Owner = this,

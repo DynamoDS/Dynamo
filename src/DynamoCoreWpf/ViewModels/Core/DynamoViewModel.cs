@@ -1907,9 +1907,9 @@ namespace Dynamo.ViewModels
         /// Create a toast notification with a notification sent by the DynamoModel
         /// </summary>
         /// <param name="notification"></param>
-        private void model_RequestNotification(string notification)
+        private void model_RequestNotification(string notification, bool stayOpen = false)
         {
-            this.MainGuideManager.CreateRealTimeInfoWindow(notification);
+            this.MainGuideManager.CreateRealTimeInfoWindow(notification, stayOpen);
         }
 
         /// <summary>
@@ -2267,8 +2267,16 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                var param = (string)parameters;
-                OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
+                //When we pass the PackageManagerSizeEventArgs means that we want to start the PackageManagerView with a specific Width and Height
+                if (parameters is PackageManagerSizeEventArgs)
+                {
+                    OnRequestPackageManagerDialog(this, parameters as PackageManagerSizeEventArgs);
+                }
+                else
+                {
+                    var param = (string)parameters;
+                    OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
+                }              
             }
         }
 
