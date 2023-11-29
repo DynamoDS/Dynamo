@@ -77,6 +77,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// If MLAutocompleteTOU is approved
+        /// </summary>
+        public bool IsMLAutocompleteTOUApproved
+        {
+            get
+            {
+                return dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;
+            }
+        }
+
+        /// <summary>
         /// If true, autocomplete method options are hidden from UI 
         /// </summary>
         public bool HideAutocompleteMethodOptions
