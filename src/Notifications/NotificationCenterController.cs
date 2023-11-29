@@ -102,7 +102,7 @@ namespace Dynamo.Notifications
             {
                 InitializeBrowserAsync();
                 RequestNotifications();
-            }   
+            }
         }
 
         private async void InitializeBrowserAsync()
@@ -296,6 +296,8 @@ namespace Dynamo.Notifications
 
         private void Dispose(bool disposing)
         {
+            System.Console.WriteLine("NotificationCenterControl dispose called");
+
             if (notificationUIPopup == null) return;
 
             notificationUIPopup.IsOpen = false;
