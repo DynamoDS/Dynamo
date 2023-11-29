@@ -256,7 +256,7 @@ namespace Dynamo.Controls
             {
                 fileTrustWarningPopup = new FileTrustWarning(this);
             }
-            if (!DynamoModel.IsTestMode && Application.Current != null)
+            if (!DynamoModel.IsTestMode && string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.MainWindow = this;
             }
@@ -1372,9 +1372,10 @@ namespace Dynamo.Controls
 
             TrackStartupAnalytics();
 
-            // In native host scenario (e.g. Revit), the "Application.Current" will be "null". Therefore, the InCanvasSearchControl.OnRequestShowInCanvasSearch
-            // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.  
-            if (Application.Current == null)
+            // In native host scenario (e.g. Revit), the InCanvasSearchControl.OnRequestShowInCanvasSearch
+            // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.
+
+            if (!string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
             {
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
@@ -2033,6 +2034,7 @@ namespace Dynamo.Controls
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
             this._pkgSearchVM?.Dispose();
+            this._pkgVM?.Dispose();
         }
 
         // the key press event is being intercepted before it can get to

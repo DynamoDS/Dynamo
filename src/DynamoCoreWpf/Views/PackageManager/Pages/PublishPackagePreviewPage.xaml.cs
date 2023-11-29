@@ -43,7 +43,7 @@ namespace Dynamo.PackageManager.UI
         {
             this.PublishPackageViewModel = null;
             this.DataContextChanged -= PublishPackagePublishPage_DataContextChanged;
-            this.customBrowserControl.Dispose();
+            this.customBrowserControl?.Dispose();
         }
 
         private void customBrowserControl_Loaded(object sender, RoutedEventArgs e)

@@ -77,10 +77,10 @@ namespace Dynamo.PackageManager.UI
 
         public void Dispose()
         {
-            this.ItemSelection.Clear();
+            this.ItemSelection?.Clear();
             this.PublishPackageViewModel = null;
             this.DataContextChanged -= PublishPackagePublishPage_DataContextChanged;
-            this.customBrowserControl.Dispose();
+            this.customBrowserControl?.Dispose();
         }
 
         private void customBrowserControl_Loaded(object sender, RoutedEventArgs e)

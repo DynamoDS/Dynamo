@@ -77,6 +77,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public void Dispose()
         {
+            if (Model == null || Model.Items == null) return; 
             Model.Items.CollectionChanged -= ItemsOnCollectionChanged;
         }
 
@@ -369,15 +370,22 @@ namespace Dynamo.Wpf.ViewModels
         /// </summary>
         public override void Dispose()
         {
-            foreach (var category in SubCategories)
-                category.PropertyChanged -= CategoryOnPropertyChanged;
+            if (SubCategories != null)
+            {
+                foreach (var category in SubCategories)
+                    category.PropertyChanged -= CategoryOnPropertyChanged;
+            }
 
-            foreach (var item in Items)
-                item.PropertyChanged -= ItemOnPropertyChanged;
+            if (Items != null)
+            {
+                foreach (var item in Items)
+                    item.PropertyChanged -= ItemOnPropertyChanged;
+                Items.CollectionChanged -= ItemsOnCollectionChanged;    
+            }
 
-            Entries.CollectionChanged -= OnCollectionChanged;
-            SubCategories.CollectionChanged -= SubCategoriesOnCollectionChanged;
-            Items.CollectionChanged -= ItemsOnCollectionChanged;
+            if (Entries != null) Entries.CollectionChanged -= OnCollectionChanged;
+            if (SubCategories != null) SubCategories.CollectionChanged -= SubCategoriesOnCollectionChanged;
+
             base.Dispose();
         }
 
@@ -389,11 +397,17 @@ namespace Dynamo.Wpf.ViewModels
         {
             Dispose();
 
-            foreach (var entry in Entries)
-                entry.Dispose();
+            if (Entries != null)
+            {
+                foreach (var entry in Entries)
+                    entry.Dispose();
+            }
 
-            foreach (var subCategory in SubCategories)
-                subCategory.DisposeTree();
+            if (SubCategories != null)
+            {
+                foreach (var subCategory in SubCategories)
+                    subCategory.DisposeTree();
+            }
         }
 
         private void CategoryOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

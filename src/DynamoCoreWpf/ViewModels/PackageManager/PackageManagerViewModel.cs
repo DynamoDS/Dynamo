@@ -113,6 +113,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Dispose()
         {
+            if (LocalPackages == null) return;
+
             LocalPackages.CollectionChanged -= LocalPackages_CollectionChanged;
         }
     }

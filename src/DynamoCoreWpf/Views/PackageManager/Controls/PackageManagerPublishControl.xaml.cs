@@ -79,6 +79,7 @@ namespace Dynamo.PackageManager.UI
             InitializePages();
 
             this.mainFrame.NavigationService.Navigate(PublishPages[0]);
+            this.Loaded -= InitializeContext;
         }
 
         public void Dispose()
@@ -87,8 +88,12 @@ namespace Dynamo.PackageManager.UI
                 Actions.Close,
                 Categories.PackageManagerOperations);
 
-            PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
-            PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
+            if(PublishPackageViewModel != null )
+            {
+                PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
+                PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
+
+            }
 
             this.Loaded -= InitializeContext;
 
@@ -98,7 +103,9 @@ namespace Dynamo.PackageManager.UI
             PublishPages = null;
             NavButtonStacks = null;
 
-            Breadcrumbs.Clear();
+            Breadcrumbs?.Clear();
+            
+            this.DataContextChanged -= ThisDataContextChanged;
         }
 
         private void InitializePages()
@@ -126,6 +133,8 @@ namespace Dynamo.PackageManager.UI
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
         {
+            if (PublishPages == null) return;
+
             statusLabel.Visibility = Visibility.Collapsed;
 
             currentPage = 3;
@@ -295,6 +304,8 @@ namespace Dynamo.PackageManager.UI
 
         private void DisposePages()
         {
+            if (PublishPages == null || !PublishPages.Any()) return;
+
             foreach(var page in PublishPages.Values)
             {
                 if (page is PublishPackagePublishPage)
@@ -312,22 +323,21 @@ namespace Dynamo.PackageManager.UI
         {
             Page navigatedPage = e.Content as Page;
 
+            if (navigatedPage == null || PublishPages == null || !PublishPages.Any()) return;
+
             PublishPages.Values.ToList().ForEach(page => { page.IsEnabled = false; });
 
-            Dispatcher.BeginInvoke((Action)(() =>
+            if (navigatedPage != null)
             {
-                if (navigatedPage != null)
-                {
-                    if (navigatedPage is PublishPackagePublishPage)
-                        (navigatedPage as PublishPackagePublishPage).LoadEvents();
-                    if (navigatedPage is PublishPackageSelectPage)
-                        (navigatedPage as PublishPackageSelectPage).LoadEvents();
-                    if (navigatedPage is PublishPackagePreviewPage)
-                        (navigatedPage as PublishPackagePreviewPage).LoadEvents();
-                    if (navigatedPage is PublishPackageFinishPage)
-                        (navigatedPage as PublishPackageFinishPage).IsEnabled = true;
-                }
-            }));
+                if (navigatedPage is PublishPackagePublishPage)
+                    (navigatedPage as PublishPackagePublishPage).LoadEvents();
+                if (navigatedPage is PublishPackageSelectPage)
+                    (navigatedPage as PublishPackageSelectPage).LoadEvents();
+                if (navigatedPage is PublishPackagePreviewPage)
+                    (navigatedPage as PublishPackagePreviewPage).LoadEvents();
+                if (navigatedPage is PublishPackageFinishPage)
+                    (navigatedPage as PublishPackageFinishPage).IsEnabled = true;
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
