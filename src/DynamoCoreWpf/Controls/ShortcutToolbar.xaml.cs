@@ -18,7 +18,7 @@ namespace Dynamo.UI.Controls
     /// <summary>
     /// An object which provides the data for the shortcut toolbar.
     /// </summary>
-    public partial class ShortcutToolbar : UserControl
+    public partial class ShortcutToolbar : UserControl, IDisposable
     {
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarItems;
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarRightSideItems;
@@ -65,7 +65,6 @@ namespace Dynamo.UI.Controls
             }
 
             this.Loaded += ShortcutToolbar_Loaded;
-            this.Unloaded += ShortcutToolbar_Unloaded;
         }
 
         private void ShortcutToolbar_Loaded(object sender, RoutedEventArgs e)
@@ -75,11 +74,13 @@ namespace Dynamo.UI.Controls
             DynamoViewModel.OnRequestShorcutToolbarLoaded(RightMenu.ActualWidth);
         }
 
-        private void ShortcutToolbar_Unloaded(object sender, RoutedEventArgs e)
+        public void Dispose()
         {
-            authManager.LoginStateChanged -= AuthChangeHandler;
+            if(authManager != null)
+            {
+                authManager.LoginStateChanged -= AuthChangeHandler;
+            }
             this.Loaded -= ShortcutToolbar_Loaded;
-            this.Unloaded -= ShortcutToolbar_Unloaded;
         }
 
         private void AuthChangeHandler(LoginState status)

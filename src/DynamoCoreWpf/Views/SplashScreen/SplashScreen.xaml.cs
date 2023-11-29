@@ -407,8 +407,7 @@ namespace Dynamo.UI.Views
         {
             if (webView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync("window.handleSignInStateChange({" +
-                $"status: \"" + status + "\"})");
+                await webView.CoreWebView2.ExecuteScriptAsync($"window.handleSignInStateChange({{\"status\": \"{status}\"}})");
             }
         }
 
