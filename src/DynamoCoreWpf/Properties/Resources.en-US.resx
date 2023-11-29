@@ -3094,7 +3094,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Hide Wire</value>
   </data>
   <data name="PackagesGuideFindPackageText" xml:space="preserve">
-    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**.</value>
+    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Package Manager...**.</value>
   </data>
   <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
     <value>Find a package</value>

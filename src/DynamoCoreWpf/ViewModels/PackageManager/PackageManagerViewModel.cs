@@ -12,6 +12,8 @@ namespace Dynamo.PackageManager
     {
         private DynamoViewModel dynamoViewModel;
         private InstalledPackagesViewModel installedPackagesViewModel;
+        private double width = 1076;
+        private double height = 718;
 
         /// <summary>
         /// PreferenceViewModel containing the PackageManager paths and installed packages
@@ -52,6 +54,34 @@ namespace Dynamo.PackageManager
         public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
 
         public DelegateCommand PublishNewVersionCommand { get; set; }
+
+        //Width of the PackageManagerView the default value is 1076
+        public double Width
+        {
+            get
+            {
+                return width;
+            }
+            set
+            {
+                width = value;
+                RaisePropertyChanged(nameof(Width));
+            }
+        }
+
+        //Height of the PackageManagerView the default value is 718
+        public double Height
+        {
+            get
+            {
+                return height;
+            }
+            set
+            {
+                height = value;
+                RaisePropertyChanged(nameof(Height));
+            }
+        }
 
         public PackageManagerViewModel(DynamoViewModel dynamoViewModel, PackageManagerSearchViewModel PkgSearchVM)
         {
