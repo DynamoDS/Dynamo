@@ -295,19 +295,13 @@ namespace Dynamo.Notifications
             }
         }
 
-        public async void Dispose()
+        private void Dispose(bool disposing)
         {
-            isDisposing = true;
-
             if (notificationUIPopup == null) return;
 
             notificationUIPopup.IsOpen = false;
             if (notificationUIPopup.webView != null)
             {
-                if (Models.DynamoModel.IsTestMode && isInitialized != null)
-                {
-                    await isInitialized;
-                }
                 notificationUIPopup.webView.Visibility = Visibility.Hidden;
                 notificationUIPopup.webView.Loaded -= WebView_Loaded;
 
@@ -324,6 +318,22 @@ namespace Dynamo.Notifications
                 }
                 notificationUIPopup.webView.Dispose();
             }
+        }
+
+        public async void Dispose()
+        {
+            isDisposing = true;
+
+            if (Models.DynamoModel.IsTestMode && isInitialized != null)
+            {
+                GC.SuppressFinalize(this);
+                await isInitialized;
+                Dispose(true);
+                return;
+            }
+
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
