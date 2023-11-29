@@ -68,6 +68,9 @@ namespace CoreNodeModelsWpf.Nodes
 
         public void Dispose()
         {
+            comboBox.DropDownOpened -= DropDownOpened;
+            comboBox.SelectionChanged -= SelectionChanged;
+
             GC.SuppressFinalize(this);
         }
 
