@@ -100,27 +100,26 @@ namespace Dynamo.Notifications
             // This ensures no network traffic when Notification center feature is turned off
             if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter && !dynamoViewModel.Model.NoNetworkMode ) 
             {
-                if (webBrowserUserDataFolder != null)
-                {
-                    //This indicates in which location will be created the WebView2 cache folder
-                    notificationUIPopup.webView.CreationProperties = new CoreWebView2CreationProperties()
-                    {
-                        UserDataFolder = webBrowserUserDataFolder.FullName
-                    };
-                }
-                notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
-                notificationUIPopup.webView.Loaded += WebView_Loaded;
-                notificationUIPopup.webView.NavigationCompleted += WebView_NavigationCompleted;
-
+                InitializeBrowserAsync();
                 RequestNotifications();
             }   
         }
 
-        private void WebView_Loaded(object sender, RoutedEventArgs e)
+        private async void InitializeBrowserAsync()
         {
-            if (isDisposing) return;
+            if (webBrowserUserDataFolder != null)
+            {
+                //This indicates in which location will be created the WebView2 cache folder
+                notificationUIPopup.webView.CreationProperties = new CoreWebView2CreationProperties()
+                {
+                    UserDataFolder = webBrowserUserDataFolder.FullName
+                };
+            }
+            notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
+            notificationUIPopup.webView.NavigationCompleted += WebView_NavigationCompleted;
 
             isInitialized = notificationUIPopup.webView.EnsureCoreWebView2Async();
+            await isInitialized;
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -303,8 +302,6 @@ namespace Dynamo.Notifications
             if (notificationUIPopup.webView != null)
             {
                 notificationUIPopup.webView.Visibility = Visibility.Hidden;
-                notificationUIPopup.webView.Loaded -= WebView_Loaded;
-
                 if (notificationUIPopup.webView.CoreWebView2 != null)
                 {
                     notificationUIPopup.webView.CoreWebView2.Stop();

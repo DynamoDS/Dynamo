@@ -123,6 +123,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
+
+            InitializeAsync();
         }
 
         private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
@@ -361,8 +363,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
             }, TaskScheduler.FromCurrentSynchronizationContext());
             await isInitialized;
-
-            if (isDisposing) return;
         }
 
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs args)
@@ -429,11 +429,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             string msg = "Browser Loaded";
             LogToDynamoConsole(msg);
-
-            if (!isDisposing)
-            {
-                InitializeAsync();
-            }
         }
 
         // This enum is for matching the modifier keys between C# and javaScript
