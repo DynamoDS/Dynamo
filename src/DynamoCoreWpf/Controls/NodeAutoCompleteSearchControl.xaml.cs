@@ -392,7 +392,7 @@ namespace Dynamo.UI.Controls
                 }
                 else
                 {
-                    ViewModel.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow("Please agree to MLNodeAutoComplete TOU before proceeding");
+                    ViewModel.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
                     // Do nothing for now, do not report analytics since the switch did not happen
                 }
             }
