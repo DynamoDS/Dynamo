@@ -130,9 +130,15 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        /// Constructor
+        /// Stores the value that indicates if the SignIn Button will be enabled(default) or not
         /// </summary>
-        public SplashScreen()
+        bool enableSignInButton;
+
+        /// <summary>
+        /// Splash Screen Constructor. 
+        /// <paramref name="enableSignInButton"/> Indicates if the SignIn Button will be enabled(default) or not.
+        /// </summary>
+        public SplashScreen(bool enableSignInButton = true)
         {
             InitializeComponent();
 
@@ -150,6 +156,7 @@ namespace Dynamo.UI.Views
             RequestImportSettings = ImportSettings;
             RequestSignIn = SignIn;
             RequestSignOut = SignOut;
+            this.enableSignInButton = enableSignInButton;
         }
 
         private void DynamoModel_LanguageDetected()
@@ -352,6 +359,7 @@ namespace Dynamo.UI.Views
             {
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime(\"{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms\")");
+                SetSignInEnable(enableSignInButton);
             }
         }
 
@@ -410,6 +418,17 @@ namespace Dynamo.UI.Views
             }
         }
 
+        /// <summary>
+        /// Enable or disable the SignIn button on splash screen.
+        /// </summary>
+        /// <param name="enabled"></param>
+        internal async void SetSignInEnable(bool enabled)
+        {
+            if (webView?.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setEnableSignInButton({{""enable"": ""{enabled}""}})");
+            }
+        }
         /// <summary>
         /// Setup the values for all labels on splash screen using resources
         /// </summary>
