@@ -13,8 +13,8 @@
         WindowStyle="None"
         Closed="WindowClosed"
         mc:Ignorable="d"
-        Width="1076"
-        Height="718"
+        Width="{Binding PackageManagerViewModel.Width}"
+        Height="{Binding PackageManagerViewModel.Height}"
         MinWidth="810"
         MinHeight="540"
         ResizeMode="NoResize"
@@ -33,6 +33,18 @@
             <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
+            <Style x:Key="PkgMngTextBlockStyle" TargetType="TextBlock">
+                <Setter Property="Width" Value="Auto" />
+                <Setter Property="Margin" Value="0 5" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="Background" Value="#2F2E30" />
+                <Setter Property="Foreground" Value="#EEEEEE" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontStyle" Value="Normal" />
+                <Setter Property="FontSize" Value="12px " />
+                <Setter Property="Focusable" Value="False" />
+                <Setter Property="Padding" Value="5 10"/>
+            </Style> 
             <Style x:Key="PkgMngListBoxStyle" TargetType="ListBox">
                 <Setter Property="Width" Value="Auto" />
                 <Setter Property="Margin" Value="0 5" />
@@ -365,13 +377,37 @@
                                                Height="Auto"
                                                Margin="0 0 0 50"
                                                Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/PackageManager/empty-state-first-use-light-gray.png"></Image>
-                                        <TextBlock Style="{StaticResource LabelStyle}"
-                                                   FontSize="18px"
-                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}" />
-                                        <TextBlock Style="{StaticResource SubLabelStyle}"
-                                                   FontSize="13px"
-                                                   HorizontalAlignment="Center"
-                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}" />
+                                        <TextBlock FontSize="18px">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource LabelStyle}">
+                                                    <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}"/> 
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="True">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="False">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageUserNotSignedPackagesMessage}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock FontSize="13px"
+                                                   HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource SubLabelStyle}">
+                                                    <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}"/> 
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="True">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="False">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackageManagerUserNotSignedPackagesSubMessage}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                         <Button Content="{x:Static p:Resources.PackageManagerPublishPackageButton}"
                                                 Margin="0 25"
                                                 Background="#0696D7"
@@ -486,17 +522,16 @@
                                                          Style="{StaticResource GenericToolTipLight}" />
                                             </Label.ToolTip>
                                         </Label>
-                                        <ListBox Grid.Row="1"
+                                        <!-- Default download path -->
+                                        <TextBlock Grid.Row="1"
                                                  x:Name="PackageDownloadDirectoryListBox"
-                                                 Style="{DynamicResource PkgMngListBoxStyle}"
-                                                 ItemContainerStyle="{DynamicResource PkgMngListBoxItemStyle}"
-                                                 ItemsSource="{Binding Path=PackagePathsForInstall}"
-                                                 SelectedItem="{Binding Path=SelectedPackagePathForInstall}">
-                                            <ListBox.ToolTip>
+                                                 Style="{StaticResource PkgMngTextBlockStyle}"
+                                                 Text="{Binding Path=SelectedPackagePathForInstall, UpdateSourceTrigger=PropertyChanged}">
+                                            <TextBlock.ToolTip>
                                                 <ToolTip Content="{Binding Path=SelectedPackagePathForInstall}"
                                                          Style="{StaticResource GenericToolTipLight}" />
-                                            </ListBox.ToolTip>
-                                        </ListBox>
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
 
                                         <Label Content="{x:Static p:Resources.PackagePathPreferencesTitle}"
                                                Padding="5,5,5,5"

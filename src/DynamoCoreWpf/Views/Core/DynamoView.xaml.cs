@@ -256,7 +256,7 @@ namespace Dynamo.Controls
             {
                 fileTrustWarningPopup = new FileTrustWarning(this);
             }
-            if (!DynamoModel.IsTestMode && Application.Current != null)
+            if (!DynamoModel.IsTestMode && string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.MainWindow = this;
             }
@@ -1308,7 +1308,7 @@ namespace Dynamo.Controls
 
             #region Package manager
 
-            dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
+            dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestPackageManager;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
             dynamoViewModel.RequestPackageManagerDialog += DynamoViewModelRequestShowPackageManager;
 
@@ -1372,9 +1372,10 @@ namespace Dynamo.Controls
 
             TrackStartupAnalytics();
 
-            // In native host scenario (e.g. Revit), the "Application.Current" will be "null". Therefore, the InCanvasSearchControl.OnRequestShowInCanvasSearch
-            // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.  
-            if (Application.Current == null)
+            // In native host scenario (e.g. Revit), the InCanvasSearchControl.OnRequestShowInCanvasSearch
+            // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.
+
+            if (!string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
             {
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
@@ -1464,23 +1465,37 @@ namespace Dynamo.Controls
 
         private PublishPackageView _pubPkgView;
 
-        private void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
+        private void DynamoViewModelRequestPackageManager(PublishPackageViewModel model)
         {
-            var cmd = Analytics.TrackCommandEvent("PublishPackage");
-            if (_pubPkgView == null)
+            if (packageManagerWindow == null)
             {
-                _pubPkgView = new PublishPackageView(model)
+                if (_pkgSearchVM == null)
+                {
+                    _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
+                }
+
+                if (_pkgVM == null)
+                {
+                    _pkgVM = new PackageManagerViewModel(dynamoViewModel, _pkgSearchVM);
+                }
+
+                packageManagerWindow = new PackageManagerView(this, _pkgVM)
                 {
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _pubPkgView.Closed += (sender, args) => { _pubPkgView = null; cmd.Dispose(); };
-                _pubPkgView.Show();
 
-                if (_pubPkgView.IsLoaded && IsLoaded) _pubPkgView.Owner = this;
+                // setting the owner to the packageManagerWindow will centralize promts originating from the Package Manager
+                dynamoViewModel.Owner = packageManagerWindow;
+
+                packageManagerWindow.Closed += HandlePackageManagerWindowClosed;
+                packageManagerWindow.Show();
+
+                if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
             }
 
-            _pubPkgView.Focus();
+            packageManagerWindow.Focus();
+            packageManagerWindow.Navigate(Wpf.Properties.Resources.PackageManagerPublishTab);
         }
 
         private PackageManagerSearchView _searchPkgsView;
@@ -1492,7 +1507,7 @@ namespace Dynamo.Controls
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
-            var cmd = Analytics.TrackCommandEvent("SearchPackage");
+            var cmd = Analytics.TrackTaskCommandEvent("SearchPackage");
 
             // The package search view model is shared and can be shared by resources at the moment
             // If it hasn't been initialized yet, we do that here
@@ -1513,7 +1528,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                _searchPkgsView.Closed += (sender, args) => { _searchPkgsView = null; cmd.Dispose(); };
+                _searchPkgsView.Closed += (sender, args) => { _searchPkgsView = null; Analytics.EndTaskCommandEvent(cmd); };
                 _searchPkgsView.Show();
 
                 if (_searchPkgsView.IsLoaded && IsLoaded) _searchPkgsView.Owner = this;
@@ -1940,7 +1955,7 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 
             //PACKAGE MANAGER
-            dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
+            dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestPackageManager;
             dynamoViewModel.RequestPackageManagerSearchDialog -= DynamoViewModelRequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
@@ -2014,6 +2029,7 @@ namespace Dynamo.Controls
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
+            this._pkgSearchVM?.Dispose();
         }
 
         // the key press event is being intercepted before it can get to
@@ -2241,7 +2257,6 @@ namespace Dynamo.Controls
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
-            var cmd = Analytics.TrackCommandEvent("PackageManager");
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -2254,6 +2269,14 @@ namespace Dynamo.Controls
 
             if (packageManagerWindow == null)
             {
+                if (e is PackageManagerSizeEventArgs)
+                {
+                    var packageManagerSizeEventArgs = e as PackageManagerSizeEventArgs;
+                    //Set a fixed size for the PackageManagerView
+                    _pkgVM.Width = packageManagerSizeEventArgs.Width;
+                    _pkgVM.Height = packageManagerSizeEventArgs.Height;
+                }
+
                 packageManagerWindow = new PackageManagerView(this, _pkgVM)
                 {
                     Owner = this,
@@ -2263,7 +2286,7 @@ namespace Dynamo.Controls
                 // setting the owner to the packageManagerWindow will centralize promts originating from the Package Manager
                 dynamoViewModel.Owner = packageManagerWindow;
 
-                packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
+                packageManagerWindow.Closed += HandlePackageManagerWindowClosed;
                 packageManagerWindow.Show();
 
                 if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
@@ -2274,7 +2297,17 @@ namespace Dynamo.Controls
             {
                 packageManagerWindow.Navigate((e as OpenPackageManagerEventArgs).Tab);
             }
+
             _pkgSearchVM.RefreshAndSearchAsync();
+        }
+
+        private void HandlePackageManagerWindowClosed(object sender, EventArgs e)
+        {
+            packageManagerWindow.Closed -= HandlePackageManagerWindowClosed;
+            packageManagerWindow = null;
+
+            var cmd = Analytics.TrackCommandEvent("PackageManager");
+            cmd.Dispose();
         }
 
         internal void EnableEnvironment(bool isEnabled)

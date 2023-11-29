@@ -135,7 +135,7 @@
   </ItemGroup>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsWpfImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" References="$(SystemDrawingDllPath)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsWpfImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" OutputAssembly="$(OutDir)CoreNodeModelsWpf.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

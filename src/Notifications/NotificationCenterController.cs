@@ -17,6 +17,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 using Microsoft.Web.WebView2.Wpf;
 using Dynamo.Utilities;
+using Dynamo.Configuration;
 
 namespace Dynamo.Notifications
 {
@@ -161,9 +162,10 @@ namespace Dynamo.Notifications
 
         private void RequestNotifications()
         {
-            var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "notificationAddress");
+            var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "notificationAddress");
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            request.Timeout = Configurations.NotificationsDefaultTimeOut;
 
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             using (Stream stream = response.GetResponseStream())
@@ -310,7 +312,7 @@ namespace Dynamo.Notifications
                 InvokeJS(@"window.RequestNotifications('" + url + "');");
             }
             else {
-                InvokeJS(@"window.RequestNotifications('" + DynamoUtilities.PathHelper.getServiceBackendAddress(this, "notificationAddress") + "');");
+                InvokeJS(@"window.RequestNotifications('" + DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "notificationAddress") + "');");
             }
         }
     }

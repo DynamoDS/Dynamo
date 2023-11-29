@@ -1,7 +1,7 @@
-using Dynamo.Controls;
+using System;
+using System.Collections.ObjectModel;
 using Dynamo.ViewModels;
 using NotificationObject = Dynamo.Core.NotificationObject;
-using System.Collections.ObjectModel;
 
 namespace Dynamo.PackageManager
 {
@@ -9,6 +9,8 @@ namespace Dynamo.PackageManager
     {
         private DynamoViewModel dynamoViewModel;
         private InstalledPackagesViewModel installedPackagesViewModel;
+        private double width = 1076;
+        private double height = 718;
 
         /// <summary>
         /// PreferenceViewModel containing the PackageManager paths and installed packages
@@ -35,6 +37,35 @@ namespace Dynamo.PackageManager
         /// </summary>
         public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
 
+
+        //Width of the PackageManagerView the default value is 1076
+        public double Width
+        {
+            get
+            {
+                return width;
+            }
+            set
+            {
+                width = value;
+                RaisePropertyChanged(nameof(Width));
+            }
+        }
+
+        //Height of the PackageManagerView the default value is 718
+        public double Height
+        {
+            get
+            {
+                return height;
+            }
+            set
+            {
+                height = value;
+                RaisePropertyChanged(nameof(Height));
+            }
+        }
+
         public PackageManagerViewModel(DynamoViewModel dynamoViewModel, PackageManagerSearchViewModel PkgSearchVM)
         {
             this.dynamoViewModel = dynamoViewModel;
@@ -53,6 +84,12 @@ namespace Dynamo.PackageManager
             PkgSearchVM.RegisterTransientHandlers();
 
             LocalPackages.CollectionChanged += LocalPackages_CollectionChanged;
+
+            // We are forced to make the update ourselves if the Preferences ViewModel has not been initialized yet
+            if (String.IsNullOrEmpty(PreferencesViewModel?.SelectedPackagePathForInstall))
+            {
+                PreferencesViewModel.SelectedPackagePathForInstall = dynamoViewModel.PreferenceSettings.SelectedPackagePathForInstall;
+            }
         }
 
         private void LocalPackages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

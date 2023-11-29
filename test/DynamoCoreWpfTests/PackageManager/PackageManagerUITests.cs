@@ -104,7 +104,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var l = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(l);
 
-            AssertWindowOwnedByDynamoView<PublishPackageView>();
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
         }
 
         [Test, Ignore("Unknown reason")]
@@ -125,8 +125,8 @@ namespace DynamoCoreWpfTests.PackageManager
             var l = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(l);
 
-            AssertWindowOwnedByDynamoView<PublishPackageView>();
-            AssertWindowClosedWithDynamoView<PublishPackageView>();
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
+            AssertWindowClosedWithDynamoView<PackageManagerView>();
 
         }
         #endregion
@@ -1279,7 +1279,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Description("User tries to download packages that might conflict with an unloaded builtIn package")]
         public void PackageManagerConflictsUnloadedWithBltInPackage()
         {
@@ -1294,7 +1294,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(bltInPackage);
 
-            string expectedDownloadPath = "download/" + bltInPackage.Name + "/" + bltInPackage.VersionName;
+            string expectedDownloadPath = "download/" + bltInPackage.ID + "/" + bltInPackage.VersionName;
             // Simulate the user downloading the same package from PM
             var mockGreg = new Mock<IGregClient>();
             mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Callback((Request x) =>
@@ -1314,8 +1314,7 @@ namespace DynamoCoreWpfTests.PackageManager
             // 1. User downloads the exact version of a builtIn package
             //
             {
-                var id = "test-123";
-                var deps = new List<Dependency>() { new Dependency() { _id = id, name = bltInPackage.Name } };
+                var deps = new List<Dependency>() { new Dependency() { _id = bltInPackage.ID, name = bltInPackage.Name } };
                 var depVers = new List<string>() { bltInPackage.VersionName };
 
                 mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
@@ -1326,7 +1325,7 @@ namespace DynamoCoreWpfTests.PackageManager
                         version = bltInPackage.VersionName,
                         engine_version = bltInPackage.EngineVersion,
                         name = bltInPackage.Name,
-                        id = id,
+                        id = bltInPackage.ID,
                         full_dependency_ids = deps,
                         full_dependency_versions = depVers
                     },
@@ -1613,6 +1612,33 @@ namespace DynamoCoreWpfTests.PackageManager
             AssertWindowOwnedByDynamoView<PackageManagerView>();
             AssertWindowClosedWithDynamoView<PackageManagerView>();
         }
+
+        [Test]
+        public void SearchBoxInactiveOnWindowOpened()
+        {
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+
+            var windows = GetWindowEnumerable(View.OwnedWindows);
+            var packageManagerView = windows.First(x => x is PackageManagerView) as PackageManagerView;
+
+            Assert.IsNotNull(packageManagerView);
+
+            var searchBox = LogicalTreeHelper.FindLogicalNode(packageManagerView, "SearchBox") as UserControl;
+            Assert.IsNotNull(searchBox);
+            Assert.IsFalse(searchBox.IsEnabled);
+
+            packageManagerView.PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded = true;
+            Assert.IsTrue(searchBox.IsEnabled);
+        }
+
+        [Test]
+        public void PackageManagerDialogDoesNotThrowExceptions()
+        {
+            Assert.DoesNotThrow(() => ViewModel.OnRequestPackageManagerDialog(null, null), "Package Manager View did not open without exceptions");
+
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
+        }
+
 
         /// <summary>
         ///     Asserts that the filter context menu will stay open while the user interacts with it

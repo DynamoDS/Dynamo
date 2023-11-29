@@ -213,7 +213,7 @@ namespace Dynamo.ViewModels
             request.Port.ListAtLevel = portInfo.Level;
 
             // Set host info
-            var hostName = string.IsNullOrEmpty(dynamoViewModel.Model.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+            var hostName = string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : DynamoModel.HostAnalyticsInfo.HostName;
             var hostNameEnum = GetHostNameEnum(hostName);
 
             if (hostNameEnum != HostNames.None)
@@ -436,7 +436,7 @@ namespace Dynamo.ViewModels
             {
                 try
                 {
-                    var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
+                    var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     var client = new RestClient(uri);
                     var request = new RestRequest(string.Empty,Method.Post);
 

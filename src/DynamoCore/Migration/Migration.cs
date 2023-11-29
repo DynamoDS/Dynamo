@@ -518,24 +518,6 @@ namespace Dynamo.Migration
         }
 
         /// <summary>
-        /// Call this method to obtain the version of current WorkspaceModel.
-        /// Note that the revision number is dropped as both "0.7.0.1234" 
-        /// should be treated as the same version as "0.7.0.5678", and no file 
-        /// migration should take place.
-        /// </summary>
-        /// <param name="workspace">The WorkspaceModel to get the Version from.
-        /// </param>
-        /// <returns>Returns the Version object representing the workspace 
-        /// version with the revision set to 0.</returns>
-        /// 
-        internal static Version VersionFromWorkspace(WorkspaceModel workspace)
-        {
-            // Ignore revision number.
-            var ver = workspace.WorkspaceVersion;
-            return new Version(ver.Major, ver.Minor, ver.Build, 0);
-        }
-
-        /// <summary>
         /// Call this method to determine if migration should take place 
         /// for the input DYN/DYF file based on the given version numbers.
         /// </summary>

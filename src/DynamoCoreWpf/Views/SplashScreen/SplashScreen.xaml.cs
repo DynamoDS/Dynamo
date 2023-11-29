@@ -84,7 +84,7 @@ namespace Dynamo.UI.Views
                 // When view model is closed, we need to close the splash screen if it is displayed.
                 viewModel.RequestClose += SplashScreenRequestClose;
                 authManager = viewModel.Model.AuthenticationManager;
-                hostAnalyticsInfo = viewModel.Model.HostAnalyticsInfo;
+                hostAnalyticsInfo = DynamoModel.HostAnalyticsInfo;
             }
         }
 
@@ -503,7 +503,7 @@ namespace Dynamo.UI.Views
 
             if (string.IsNullOrEmpty(hostAnalyticsInfo.HostName))
             {
-                Application.Current.Shutdown();
+                Application.Current?.Shutdown();
                 Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
             }
             // If Dynamo is launched from an integrator host, user should be able to close the splash screen window.

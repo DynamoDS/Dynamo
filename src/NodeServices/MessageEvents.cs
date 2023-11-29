@@ -58,4 +58,17 @@ namespace DynamoServices
             LoadLibraryFailure?.Invoke(failureMessage, messageBoxTitle);
         }
     }
+    /// <summary>
+    /// Used to log to the dynamo console from places where we do not have a reference
+    /// to the Dynamo console.
+    /// </summary>
+    internal static class DynamoConsoleLogger
+    {
+        public static event Action<string> LogMessageToDynamoConsole;
+
+        public static void OnLogMessageToDynamoConsole(string message)
+        {
+            LogMessageToDynamoConsole?.Invoke(message);
+        }
+    }
 }

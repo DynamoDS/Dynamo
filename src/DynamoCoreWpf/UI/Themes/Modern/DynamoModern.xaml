@@ -3683,8 +3683,8 @@
         </Setter>
     </Style>
 
-    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#4d4d4d" />
-    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#3c3c3c" />
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#2A2A2A" />
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#2F2E30" />
 
     <ControlTemplate x:Key="ExpanderCaretToggleButton" TargetType="{x:Type ToggleButton}">
         <Border Name="Border"
@@ -3775,6 +3775,8 @@
 
 
     <Style x:Key="InstalledPackagesExpanderStyle" TargetType="Expander">
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <!--  Control template for expander  -->
