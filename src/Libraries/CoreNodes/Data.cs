@@ -257,7 +257,7 @@ namespace DSCore
             {
                 if (depth > maxDepth)
                 {
-                    throw new JsonSerializationException(string.Format("Depth {0} Exceeds MaxDepth {1} at path \"{2}\"", depth, maxDepth, Path));
+                    throw new JsonSerializationException(string.Format(Properties.Resources.Exception_Serialize_Depth_Unsupported, depth, maxDepth, Path));
                 }
             }
         }
