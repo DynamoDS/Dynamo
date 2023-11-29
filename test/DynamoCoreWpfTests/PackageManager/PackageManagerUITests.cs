@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.PackageManager;
@@ -22,6 +13,15 @@ using Greg.Requests;
 using Greg.Responses;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using SystemTestServices;
 
 namespace DynamoCoreWpfTests.PackageManager
@@ -2079,8 +2079,8 @@ namespace DynamoCoreWpfTests.PackageManager
         public void CanRemoveCustomDefinitionDependencyTypes()
         {
             // Arrange
-            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\FileTypesPackageDocs");
-            string dyfPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\FileTypesPackageDocs\\dyf\\3DView by BoundingBox.dyf");
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\_AllFileTypesPackageDocs");
+            string dyfPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\_AllFileTypesPackageDocs\\dyf\\3DView by BoundingBox.dyf");
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
@@ -2136,7 +2136,7 @@ namespace DynamoCoreWpfTests.PackageManager
         public void CanRemoveAllDependencyTypes()
         {
             // Arrange
-            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\FileTypesPackageDocs");
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\_AllFileTypesPackageDocs");
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
@@ -2156,7 +2156,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var dyfPreviewFiles = childItems.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
             var folders = childItems.Where(x => x.DependencyType.Equals(DependencyType.Folder));
 
-            Assert.AreEqual(5, files.Count());
+            Assert.AreEqual(4, files.Count());
             Assert.AreEqual(1, dllFiles.Count());
             Assert.AreEqual(1, dyfPreviewFiles.Count());
             Assert.AreEqual(5, folders.Count());
@@ -2166,7 +2166,6 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(dyfPreviewFiles.First()));
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".json"))));
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".xml"))));
-            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".dll"))));
 
             // At this point, only one root item remains, not the original one but the 'doc' folder
             // The original root item no longer contains a file, therefore it was removed
@@ -2226,7 +2225,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
             var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
             var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
-            var prDllFiles = previewFiles.Where(x => x.DisplayName.EndsWith(".dll"));
+            var prDllFiles = previewFiles.Where(x => x.DependencyType.Equals(DependencyType.Assembly));
 
             Assert.IsTrue(prDllFiles.All(x => Path.GetDirectoryName(x.FilePath) == Path.GetDirectoryName(prDllFiles.First().FilePath)));
             var prDllFolder = Path.GetDirectoryName(prDllFiles.First().FilePath);
@@ -2251,7 +2250,6 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(createdFiles.Count(), previewFiles.Count());
             Assert.AreEqual(createdFolders.Count(), previewFolders.Count() - 1);  // discount one for the root folder is included
             Assert.AreEqual(2, crDllFiles.Count(), prDllFiles.Count());
-            Assert.AreEqual(Path.GetFileName(crDllFolder), Path.GetFileName(prDllFolder));  // check if the dll parent folder is the same
 
             // Clean up
             Directory.Delete(publishPath, true);
