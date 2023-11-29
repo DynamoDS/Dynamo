@@ -231,7 +231,6 @@ namespace Dynamo.UI.Views
             {
                 viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
             }
-            StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
             dynamoView?.Show();
             dynamoView?.Activate();
@@ -527,6 +526,8 @@ namespace Dynamo.UI.Views
 
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             DynamoModel.LanguageDetected -= DynamoModel_LanguageDetected;
+            StaticSplashScreenReady -= OnStaticScreenReady;
+            authManager.LoginStateChanged -= OnLoginStateChanged;
             webView.Dispose();
             webView = null;
 
