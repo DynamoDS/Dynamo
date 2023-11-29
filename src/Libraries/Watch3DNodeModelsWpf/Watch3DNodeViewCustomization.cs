@@ -48,9 +48,6 @@ namespace Watch3DNodeModelsWpf
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             watch3dModel = model;
 
-//            var renderingTier = (RenderCapability.Tier >> 16);
-//            if (renderingTier < 2) return;
-
             var dynamoModel = dynamoViewModel.Model;
 
             var vmParams = new Watch3DViewModelStartupParams(dynamoModel);

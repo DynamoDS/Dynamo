@@ -401,7 +401,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported));
             logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported));
             logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize));
-            logger.Log(string.Format("RENDER : RenderMode: {0}", renderMode));
+            logger.Log(string.Format("RENDER : ProcessRenderMode: {0}", renderMode == RenderMode.Default ? "Hardware (with Software fallback)" : "Software" ));
         }
 
         private void RegisterModelEventhandlers(IDynamoModel dynamoModel)
