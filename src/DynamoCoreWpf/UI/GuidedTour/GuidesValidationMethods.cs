@@ -3,6 +3,8 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Dynamo.Controls;
@@ -28,6 +30,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static Step CurrentExecutingStep;
         internal static Guide CurrentExecutingGuide;
         internal static GuidesManager CurrentExecutingGuidesManager;
+
+        private const double PMCustomWidth = 600;
+        private const double PMCustomHeight = 200;
+        private const double PMDefaultWidth = 1076;
+        private const double PMDefaultHeight = 718;
 
         private static ExitGuide exitGuide;
         private const string AutodeskSamplePackage = "Dynamo Samples";
@@ -78,7 +85,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (enableFunction)
             {
                 //If the TermsOfService is not accepted yet it will show the TermsOfUseView otherwise it will show the PackageManagerSearchView
-                stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
+                stepInfo.DynamoViewModelStep.ShowPackageManager(null);
                 CurrentGuideWindow = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
                 foreach (var handler in uiAutomationData.AutomaticHandlers)
                 {
@@ -184,7 +191,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (enableFunction)
             {
                 if (ownedWindow != null)
-                    viewModel = ownedWindow.DataContext as PackageManagerSearchViewModel;
+                {
+                    var packageManager = ownedWindow as PackageManagerView;
+                    if (packageManager == null) return;
+                    viewModel = packageManager.PackageManagerViewModel.PackageSearchViewModel;
+                }
+                    
 
                 Button buttonElement = GuideUtilities.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button;
                 viewModel.PackageManagerClientViewModel.Downloads.CollectionChanged += Downloads_CollectionChanged;
@@ -320,12 +332,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 //We need to check if the PackageManager search is already open if that is the case we don't need to open it again
                 if (ownedWindow != null) return;
-                stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
+                stepInfo.DynamoViewModelStep.ShowPackageManager(new PackageManagerSizeEventArgs(PMCustomWidth, PMCustomHeight));
 
-                PackageManagerSearchView packageManager = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
+                PackageManagerView packageManager = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerView;
                 if (packageManager == null)
                     return;
-                PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
+                PackageManagerSearchViewModel packageManagerViewModel = packageManager.PackageManagerViewModel.PackageSearchViewModel;
                 if (packageManagerViewModel == null)
                     return;
 
@@ -338,10 +350,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             else
             {
 
-                PackageManagerSearchView packageManager = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
+                PackageManagerView packageManager = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerView;
                 if (packageManager == null)
                     return;
-                PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
+                PackageManagerSearchViewModel packageManagerViewModel = packageManager.PackageManagerViewModel.PackageSearchViewModel;
                 if (packageManagerViewModel == null)
                     return;
 
@@ -371,13 +383,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This method will find the PackageManagerSearch window and then close it
         /// </summary>
         /// <param name="packageManager"></param>
-        private static void ClosePackageManager(PackageManagerSearchView packageManager)
+        private static void ClosePackageManager(PackageManagerView packageManager)
         {
-            PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
+            PackageManagerSearchViewModel packageManagerViewModel = packageManager.PackageManagerViewModel.PackageSearchViewModel;
             if (packageManagerViewModel == null)
                 return;
+            packageManager.PackageManagerViewModel.Width = PMDefaultWidth;
+            packageManager.PackageManagerViewModel.Height = PMDefaultHeight;
             packageManagerViewModel.PropertyChanged -= searchPackagesPropertyChanged.Invoke;
+
+            //Enable the DynamoView.mainGrid so the user will be able to interact with Dynamo
+            (packageManager.Owner as DynamoView).EnableEnvironment(true);
             packageManager.Close();
+            
         }
 
         /// <summary>
@@ -508,7 +526,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void SubscribeViewDetailsEvent(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
-            PackageManagerSearchView packageManager = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
+            PackageManagerView packageManager = GuideUtilities.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerView;
             if (packageManager == null) return;
             Button foundElement = GuideUtilities.FindChild(packageManager, stepInfo.HostPopupInfo.HighlightRectArea.WindowElementNameString) as Button;
             if (foundElement == null)
@@ -546,7 +564,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             const string packageDetailsName = "Package Details";
             const string closeButtonName = "CloseButton";
-            const string packageSearchWindowName = "PackageSearch";
+            const string packageManagerWindowName = "PackageManagerWindow";
 
             CurrentExecutingStep = stepInfo;
             var stepMainWindow = stepInfo.MainWindow as Window;
@@ -555,42 +573,32 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (enableFunction)
             {
                 //This section will open the Package Details Sidebar
-                PackageManagerSearchView packageManager = GuideUtilities.FindWindowOwned(packageSearchWindowName, stepMainWindow) as PackageManagerSearchView;
+                PackageManagerView packageManager = GuideUtilities.FindWindowOwned(packageManagerWindowName, stepMainWindow) as PackageManagerView;
                 if (packageManager == null)
                     return;
-                PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
+                PackageManagerSearchViewModel packageManagerViewModel = packageManager.PackageManagerViewModel.PackageSearchViewModel;
 
                 //If the results in the PackageManagerSearch are null then we cannot open the Package Detail tab
                 if (packageManagerViewModel == null || packageManagerViewModel.SearchResults.Count == 0)
                     return;
 
-                //We take the first result from the PackageManagerSearch
-                PackageManagerSearchElementViewModel packageManagerSearchElementViewModel = packageManagerViewModel.SearchResults[0];
-                if (packageManagerSearchElementViewModel == null) return;
+                var viewDetailsButton = WpfUtilities.ChildOfType<Button>(packageManager.packageManagerSearch.packageManagerSearchPackages.packagesListBox);
+                if (viewDetailsButton == null) return; 
+                viewDetailsButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
 
-                if (packageDetailsWindow == null)
-                    packageManagerViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
-
-                //The PackageDetails sidebar is using events when is being shown then we need to execute those events before setting the Popup.PlacementTarget.
-                //otherwise the sidebar will not be present (and we don't have host for the Popup) and the Popup will be located out of the Dynamo window
                 CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
             else
             {
-                //This section will close the Package Details Sidebar (just in case is still opened), 
-                //due that the sidebar (UserControl) is inserted inside a TabItem the only way to close is by using the method dynamoView.CloseExtensionTab
-                var dynamoView = (stepMainWindow as DynamoView);
-                if (packageDetailsWindow == null)
+                //This section will open the Package Details Sidebar
+                PackageManagerView packageManager = GuideUtilities.FindWindowOwned(packageManagerWindowName, stepMainWindow) as PackageManagerView;
+                if (packageManager == null)
                     return;
-                //In order to close the Package Details tab we need first to get the Tab, then get the Close button and finally call the event to close it
-                TabItem tabitem = stepInfo.DynamoViewModelStep.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == packageDetailsName);
-                if (tabitem == null)
-                    return;
-                //Get the Close button from the PackageDetailsView
-                Button closeButton = GuideUtilities.FindChild(tabitem, closeButtonName) as Button;
-                if (closeButton == null)
-                    return;
-                dynamoView.OnCloseRightSideBarTab(closeButton, null);
+             
+                var closeButton = packageManager.packageManagerSearch.searchPackagesGrid.ChildrenOfType<Button>().Where(button => button.Name == "closeButton").FirstOrDefault();
+                if(closeButton == null) return;
+
+                closeButton.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) { RoutedEvent = Button.ClickEvent });
             }
         }
 

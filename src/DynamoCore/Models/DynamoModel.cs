@@ -8,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -695,13 +694,7 @@ namespace Dynamo.Models
             PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
             if (PreferenceSettings != null)
             {
-                // Setting the locale for Dynamo from loaded Preferences only when
-                // In a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
-                // Language is specified, otherwise Default setting means following host locale
-                if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName) || !PreferenceSettings.Locale.Equals(Configuration.Configurations.SupportedLocaleList.First()))
-                {
-                    SetUICulture(PreferenceSettings.Locale);
-                }
+                SetUICulture(PreferenceSettings.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -2323,6 +2316,10 @@ namespace Dynamo.Models
             var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             currentHomeSpace.UndefineCBNFunctionDefinitions();
 
+            // This is to handle the case of opening a JSON file that does not have a version string
+            EngineController.CurrentWorkspaceVersion = dynamoPreferences.Version ==
+                                         null ? AssemblyHelper.GetDynamoVersion() : new Version(dynamoPreferences.Version);
+
             // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
             // as the fileContents are valid JSON, regardless of if all required data is present or not
             workspace = WorkspaceModel.FromJson(
@@ -2339,16 +2336,16 @@ namespace Dynamo.Models
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
+            
+            if (!IsTestMode)
+            {
+                if (workspace.ContainsLegacyTraceData)
+                {
+                    OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+                }
+            }
 
-            // NOTE: This is to handle the case of opening a JSON file that does not have a version string
-            //       This logic may not be correct, need to decide the importance of versioning early JSON files
-            string versionString = dynamoPreferences.Version;
-            if (versionString == null)
-                versionString = AssemblyHelper.GetDynamoVersion().ToString();
-            workspace.WorkspaceVersion = new System.Version(versionString);
-
-            HomeWorkspaceModel homeWorkspace = workspace as HomeWorkspaceModel;
-            if (homeWorkspace != null)
+            if (workspace is HomeWorkspaceModel homeWorkspace)
             {
                 homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.Instance.DefaultEnableLegacyPolyCurveBehavior;
 
@@ -2471,12 +2468,19 @@ namespace Dynamo.Models
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
             Guid deterministicId = GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
+
+            var loadedTraceData = Utils.LoadTraceDataFromXmlDocument(xmlDoc, out var containsLegacyTraceData);
+            if (!IsTestMode)
+            {
+                if (containsLegacyTraceData) OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+            }
+
             var newWorkspace = new HomeWorkspaceModel(
                 deterministicId,
                 EngineController,
                 Scheduler,
                 NodeFactory,
-                Utils.LoadTraceDataFromXmlDocument(xmlDoc),
+                loadedTraceData,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
                 nodeGraph.Annotations,
@@ -2743,8 +2747,24 @@ namespace Dynamo.Models
         /// </summary>
         public static void SetUICulture(string locale)
         {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+            if (string.IsNullOrWhiteSpace(locale)) return;
+
+            // Setting the locale for Dynamo from loaded Preferences, with Default handled differently
+            // between a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
+            // and in-process integration case. In later case, Default setting means following host locale.
+            if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName))
+            {
+                // Sandbox default to en-US
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+                Thread.CurrentThread.CurrentCulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+            }
+            else
+            {
+                var defaultCulture = CultureInfo.DefaultThreadCurrentCulture ?? new CultureInfo("en-US");
+                // Integration default to DefaultThreadCurrentCulture set by integrator
+                Thread.CurrentThread.CurrentUICulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
+                Thread.CurrentThread.CurrentCulture = locale == "Default" ? defaultCulture : new CultureInfo(locale);
+            }
         }
 
         /// <summary>
@@ -3203,7 +3223,7 @@ namespace Dynamo.Models
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
-            CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
+            EngineController.CurrentWorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
             this.LinterManager?.SetDefaultLinter();
 

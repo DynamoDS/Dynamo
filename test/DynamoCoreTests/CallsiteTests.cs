@@ -6,11 +6,13 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using CoreNodeModels.Input;
+using DSCore;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using FFITarget;
 using NUnit.Framework;
 using ProtoCore;
@@ -333,6 +335,62 @@ namespace Dynamo.Tests
             var legacyTraceData =
                 "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dyY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy";
             Assert.True(CheckIfTraceDataIsLegacySOAPFormat(legacyTraceData));
+        }
+
+        [Test]
+        public void CanWarnAboutLegacyTraceData()
+        {
+            DynamoModel.IsTestMode = false;
+            var counter = 99;
+            CurrentDynamoModel.RequestNotification += (_, _) => { counter++; };
+
+            // Dyn file contains SOAP formatted trace data.
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir,
+                "element_binding_customNodes_modified_multiple_pre3.0.dyn");
+
+            DynamoModel.IsTestMode = true;
+            Assert.AreEqual(100, counter);
+        }
+
+        [Test]
+        public void JsonTraceSerializationTest()
+        {
+            // Contains trace data in old SOAP format
+            var filePath = Path.Combine(TestDirectory,
+                @"core\callsite\element_binding_customNodes_modified_multiple_pre3.0.dyn");
+
+            OpenModel(filePath);
+            var model = CurrentDynamoModel;
+
+            if (((HomeWorkspaceModel)model.CurrentWorkspace).RunSettings.RunType == Dynamo.Models.RunType.Manual)
+            {
+                RunCurrentModel();
+            }
+            var json = model.CurrentWorkspace.ToJson(model.EngineController);
+            Assert.That(json, Is.Not.Null.Or.Empty);
+
+            var obj = Data.ParseJSON(json) as Dictionary<string, object>;
+            var bindings = obj["Bindings"];
+
+            var list = (bindings as IEnumerable<object>).ToList();
+            Assert.AreEqual(3, list.Count);
+            int i = 0;
+            foreach (var elem in list)
+            {
+                var traces = ((elem as Dictionary<string, object>)["Binding"] as Dictionary<string, object>).Values;
+                if (i == 0 || i == 2)
+                {
+                    Assert.AreEqual(2, traces.Count);
+                }
+                else Assert.AreEqual(1, traces.Count);
+
+                foreach (var trace in traces)
+                {
+                    // Assert that new bindings are not in SOAP format.
+                    Assert.False(CallSite.CheckIfTraceDataIsLegacySOAPFormat(trace as string));
+                }
+                ++i;
+            }
         }
     }
 }

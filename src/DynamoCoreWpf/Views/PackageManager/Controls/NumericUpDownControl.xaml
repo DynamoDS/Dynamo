@@ -137,6 +137,7 @@
                 <TextBox x:Name="inputField"
                             Grid.Column="0"
                             PreviewTextInput="inputField_PreviewTextInput"
+                            PreviewKeyDown="inputField_PreviewKeyDown"
                             PreviewMouseLeftButtonUp="inputField_PreviewMouseLeftButtonUp"
                             TextChanged="inputField_TextChanged"
                             LostFocus="inputField_LostFocus"
