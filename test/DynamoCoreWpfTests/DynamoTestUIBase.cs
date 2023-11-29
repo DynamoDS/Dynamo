@@ -111,8 +111,6 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
-            DispatcherUtil.DoEvents();
-
             //Ensure that we leave the workspace marked as
             //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;
