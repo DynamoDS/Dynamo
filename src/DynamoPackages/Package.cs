@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -526,7 +527,7 @@ namespace Dynamo.PackageManager
         /// Any other custom package will be marked for deletion.
         /// </summary>
         /// <param name="prefs"></param>
-        internal void MarkForUninstall(IPreferences prefs)
+        internal void MarkForUninstall()
         {
             if (BuiltInPackage) 
             {
@@ -538,9 +539,9 @@ namespace Dynamo.PackageManager
                 LoadState.SetScheduledForDeletion();
             }
 
-            if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
+            if (!PreferenceSettings.Instance.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
-                prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
+                PreferenceSettings.Instance.PackageDirectoriesToUninstall.Add(RootDirectory);
             }
             RaisePropertyChanged(nameof(LoadState));
         }
@@ -551,11 +552,11 @@ namespace Dynamo.PackageManager
         /// Package load state will remain unaffected.
         /// </summary>
         /// <param name="prefs"></param>
-        internal void UnmarkForUninstall(IPreferences prefs)
+        internal void UnmarkForUninstall()
         {
             LoadState.ResetScheduledState();
 
-            prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
+            PreferenceSettings.Instance.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
             RaisePropertyChanged(nameof(LoadState));
         }
 
@@ -586,11 +587,11 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
-        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
+        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader)
         {
             if (LoadedAssemblies.Any())
             {
-                MarkForUninstall(prefs);
+                MarkForUninstall();
                 return;
             }
 
@@ -604,9 +605,9 @@ namespace Dynamo.PackageManager
 
                     RaisePropertyChanged(nameof(LoadState));
 
-                    if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
+                    if (!PreferenceSettings.Instance.PackageDirectoriesToUninstall.Contains(RootDirectory))
                     {
-                        prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
+                        PreferenceSettings.Instance.PackageDirectoriesToUninstall.Add(RootDirectory);
                     }
                 }
                 else

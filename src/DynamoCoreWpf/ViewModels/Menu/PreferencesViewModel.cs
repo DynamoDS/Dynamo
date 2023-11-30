@@ -712,11 +712,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration;
+                return PreferenceSettings.Instance.UseHardwareAcceleration;
             }
             set
             {
-                dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration = value;
+                PreferenceSettings.Instance.UseHardwareAcceleration = value;
                 RaisePropertyChanged(nameof(UseHardwareAcceleration));
             }
         }
@@ -1345,7 +1345,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)
         {
-            this.preferenceSettings = dynamoViewModel.PreferenceSettings;
+            this.preferenceSettings = PreferenceSettings.Instance;
             this.preferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
@@ -1425,7 +1425,6 @@ namespace Dynamo.ViewModels
             //create a packagePathsViewModel we'll use to interact with the package search paths list.
             var loadPackagesParams = new LoadPackageParams
             {
-                Preferences = preferenceSettings
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            

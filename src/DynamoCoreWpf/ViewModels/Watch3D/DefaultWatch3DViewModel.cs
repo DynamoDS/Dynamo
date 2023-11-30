@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using CoreNodeModels;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -30,7 +31,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public IDynamoModel Model { get; set; }
         public IScheduler Scheduler { get; set; }
         public ILogger Logger { get; set; }
-        public IPreferences Preferences { get; set; }
         public IEngineControllerManager EngineControllerManager { get; set; }
 
         /// <summary>
@@ -50,7 +50,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Model = model;
             Scheduler = model.Scheduler;
             Logger = model.Logger;
-            Preferences = model.PreferenceSettings;
             EngineControllerManager = model;
         }
     }
@@ -66,7 +65,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected readonly NodeModel watchModel;
         protected readonly IDynamoModel dynamoModel;
         protected readonly IScheduler scheduler;
-        protected readonly IPreferences preferences;
         protected readonly ILogger logger;
         protected readonly IEngineControllerManager engineManager;
         protected IRenderPackageFactory renderPackageFactory;
@@ -98,7 +96,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 active = value;
-                preferences.SetIsBackgroundPreviewActive(PreferenceWatchName, value);
+                PreferenceSettings.Instance.SetIsBackgroundPreviewActive(PreferenceWatchName, value);
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();
@@ -121,7 +119,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 if (isGridVisible == value) return;
 
                 isGridVisible = value;
-                preferences.IsBackgroundGridVisible = value;
+                PreferenceSettings.Instance.IsBackgroundGridVisible = value;
                 RaisePropertyChanged("IsGridVisible");
             }
         }
@@ -272,15 +270,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             watchModel = model;
             dynamoModel = parameters.Model;
             scheduler = parameters.Scheduler;
-            preferences = parameters.Preferences;
             logger = parameters.Logger;
             engineManager = parameters.EngineControllerManager;
 
             Name = Resources.BackgroundPreviewDefaultName;
-            isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
-            active = parameters.Preferences.IsBackgroundPreviewActive;
+            isGridVisible = PreferenceSettings.Instance.IsBackgroundGridVisible;
+            active = PreferenceSettings.Instance.IsBackgroundPreviewActive;
             logger = parameters.Logger;
-            GridScale = parameters.Preferences.GridScaleFactor;
+            GridScale = PreferenceSettings.Instance.GridScaleFactor;
 
             RegisterEventHandlers();
 

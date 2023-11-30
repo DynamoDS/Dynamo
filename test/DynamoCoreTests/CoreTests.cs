@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -100,8 +100,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(settings.PythonTemplateFilePath, initialPyFilePath);
 
             // Propagate Python template specified in settings file to DynamoModel & read it from *.py file
-            CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = settings.PythonTemplateFilePath;
-            pyTemplate = File.ReadAllText(CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath);
+            PreferenceSettings.Instance.PythonTemplateFilePath = settings.PythonTemplateFilePath;
+            pyTemplate = File.ReadAllText(PreferenceSettings.Instance.PythonTemplateFilePath);
 
             // Assert the template actually reads and is not empty
             Assert.IsNotEmpty(pyTemplate);
@@ -126,20 +126,20 @@ namespace Dynamo.Tests
             Assert.IsTrue(firstPyNode.Script.StartsWith(initialPyVerificationText));
 
             // change Python template & save settings to XML file
-            CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = changedPyFilePath;
-            CurrentDynamoModel.PreferenceSettings.Save(changedSettingsFilePath);
+            PreferenceSettings.Instance.PythonTemplateFilePath = changedPyFilePath;
+            PreferenceSettings.Instance.Save(changedSettingsFilePath);
 
             // load updated settings
             // no need for combining paths here as we have already done so before saving
             settings = PreferenceSettings.Load(changedSettingsFilePath);
 
             // update the DynamoModel settings
-            CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = settings.PythonTemplateFilePath;
-            updatedPyTemplate = File.ReadAllText(CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath);
+            PreferenceSettings.Instance.PythonTemplateFilePath = settings.PythonTemplateFilePath;
+            updatedPyTemplate = File.ReadAllText(PreferenceSettings.Instance.PythonTemplateFilePath);
 
             // Assert the updated template is applied and not empty
             Assert.AreEqual(
-                CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath,
+                PreferenceSettings.Instance.PythonTemplateFilePath,
                 changedPyFilePath
                 );
             Assert.IsNotEmpty(updatedPyTemplate);

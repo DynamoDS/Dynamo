@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using Dynamo.Configuration;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
@@ -44,12 +45,12 @@ namespace Dynamo.UI.Prompts
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
                 MLNodeAutocompleteConsent.File = mlNodeAutocompleteFile;
             // Initialize the checkbox to the current value
-            AgreeToMLAutocompleteTOUCheckbox.IsChecked = dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;
+            AgreeToMLAutocompleteTOUCheckbox.IsChecked = PreferenceSettings.Instance.IsMLAutocompleteTOUApproved;
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            viewModel.PreferenceSettings.IsMLAutocompleteTOUApproved = AgreeToMLAutocompleteTOUCheckbox.IsChecked ?? false;
+            PreferenceSettings.Instance.IsMLAutocompleteTOUApproved = AgreeToMLAutocompleteTOUCheckbox.IsChecked ?? false;
             Close();
         }
 

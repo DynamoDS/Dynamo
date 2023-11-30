@@ -68,13 +68,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Returns the preference settings.
-        /// </summary>
-        public IPreferences PreferenceSettings
-        {
-            get { return loadPackageParams.Preferences; }
-        }
         internal readonly PackageLoader packageLoader;
         internal LoadPackageParams loadPackageParams;
         private readonly CustomNodeManager customNodeManager;
@@ -104,16 +97,6 @@ namespace Dynamo.ViewModels
             MovePathDownCommand = new DelegateCommand(p => SwapPath(ConvertPathToIndex(p), ConvertPathToIndex(p) + 1), p => CanMoveDown(ConvertPathToIndex(p)));
             UpdatePathCommand = new DelegateCommand(p => UpdatePathAt(ConvertPathToIndex(p)), p => CanUpdate(ConvertPathToIndex(p)));
             SaveSettingCommand = new DelegateCommand(CommitChanges);
-        }
-
-        /// <summary>
-        /// This constructor overload has been added for backwards comptability.
-        /// </summary>
-        /// <param name="setting"></param>
-        public PackagePathViewModel(IPreferences setting)
-        {
-            InitializeRootLocations();
-            InitializeCommands();
         }
 
         private int ConvertPathToIndex(object path)
@@ -178,7 +161,7 @@ namespace Dynamo.ViewModels
         private int GetIndexOfDefaultAppDataPackagePath()
         {
             var index = -1;
-            if (PreferenceSettings is PreferenceSettings prefs)
+            if (PreferenceSettings.Instance is PreferenceSettings prefs)
             {
                 var appDataPath = prefs.OnRequestUserDataFolder();
                 index = RootLocations.IndexOf(appDataPath);
@@ -250,10 +233,10 @@ namespace Dynamo.ViewModels
             var newpaths = CommitRootLocations();
             IEnumerable<string> additionalPaths = new List<string>();
             //if paths are modified, reload packages and update prefs.
-            if (!PreferenceSettings.CustomPackageFolders.SequenceEqual(newpaths))
+            if (!PreferenceSettings.Instance.CustomPackageFolders.SequenceEqual(newpaths))
             {
-                additionalPaths = newpaths.Except(PreferenceSettings.CustomPackageFolders);
-                PreferenceSettings.CustomPackageFolders = newpaths;
+                additionalPaths = newpaths.Except(PreferenceSettings.Instance.CustomPackageFolders);
+                PreferenceSettings.Instance.CustomPackageFolders = newpaths;
                 if (packageLoader != null)
                 {
                     packageLoader.LoadNewCustomNodesAndPackages(additionalPaths, customNodeManager);
@@ -297,7 +280,7 @@ namespace Dynamo.ViewModels
 
         internal void InitializeRootLocations()
         {
-            RootLocations = new ObservableCollection<string>(PreferenceSettings.CustomPackageFolders);
+            RootLocations = new ObservableCollection<string>(PreferenceSettings.Instance.CustomPackageFolders);
             var index = RootLocations.IndexOf(DynamoModel.BuiltInPackagesToken);
 
             if (index != -1)
@@ -322,14 +305,14 @@ namespace Dynamo.ViewModels
 
         internal bool IsPathCurrentlyDisabled(string path)
         {
-            if (!(PreferenceSettings is IDisablePackageLoadingPreferences disablePrefs))
+            if (!(PreferenceSettings.Instance is IDisablePackageLoadingPreferences disablePrefs))
             {
                 return false;
             }
             //disabled if builtinpackages disabled and path is builtinpackages
             if ((disablePrefs.DisableBuiltinPackages && path == Resources.PackagePathViewModel_BuiltInPackages)
                 //or if custompaths disabled and path is custom path
-                || (disablePrefs.DisableCustomPackageLocations && PreferenceSettings.CustomPackageFolders.Contains(path))
+                || (disablePrefs.DisableCustomPackageLocations && PreferenceSettings.Instance.CustomPackageFolders.Contains(path))
                 //or if custompaths disabled and path is known path that is not builtinpackages - needed because new paths that are not committed
                 //will not be added to customPackagePaths yet.
                 || (disablePrefs.DisableCustomPackageLocations && RootLocations.Contains(path) && path != Resources.PackagePathViewModel_BuiltInPackages))

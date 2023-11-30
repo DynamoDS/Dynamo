@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -150,7 +151,7 @@ namespace Dynamo.Wpf.Views.FileTrust
             RunSettings.ForceBlockRun = false;
             if (FileTrustWarningCheckBox.IsChecked.Value == true)
             {
-                if (dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName))
+                if (PreferenceSettings.Instance.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName))
                     dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(string.Format(Properties.Resources.TrustLocationAddedNotification, fileTrustWarningViewModel.DynFileDirectoryName));
             }
             if (dynViewModel.CurrentSpaceViewModel.RunSettingsViewModel.Model.RunType != RunType.Manual)

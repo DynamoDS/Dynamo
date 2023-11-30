@@ -441,14 +441,14 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void PreferenceSetting_BackgroundPreview_1_0API()
         {
-            bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            bool expectedValue = !PreferenceSettings.Instance.IsBackgroundPreviewActive;
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.AreEqual(expectedValue, PreferenceSettings.Instance.IsBackgroundPreviewActive);
 
 
-            expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            expectedValue = !PreferenceSettings.Instance.IsBackgroundPreviewActive;
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.AreEqual(expectedValue, PreferenceSettings.Instance.IsBackgroundPreviewActive);
 
             #region Save And Load of PreferenceSettings
 
@@ -484,10 +484,10 @@ namespace DynamoCoreWpfTests
         {
             // Test that RenderPrecision setting works as expected
             ViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = 256;
-            Assert.AreEqual(256, ViewModel.Model.PreferenceSettings.RenderPrecision);
+            Assert.AreEqual(256, PreferenceSettings.Instance.RenderPrecision);
 
             ViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = 128;
-            Assert.AreEqual(128, ViewModel.Model.PreferenceSettings.RenderPrecision);
+            Assert.AreEqual(128, PreferenceSettings.Instance.RenderPrecision);
 
             // Test serialization of RenderPrecision
             string tempPath = System.IO.Path.GetTempPath();
@@ -514,10 +514,10 @@ namespace DynamoCoreWpfTests
         public void PreferenceSetting_GroupStyles()
         {
             // Test that the group style list is being initialized with a non-empty list
-            Assert.NotNull(ViewModel.PreferenceSettings.GroupStyleItemsList);
+            Assert.NotNull(PreferenceSettings.Instance.GroupStyleItemsList);
 
             //Now by default we will have always 4 GroupStyles added by Dynamo
-            Assert.AreEqual(4, ViewModel.PreferenceSettings.GroupStyleItemsList.Count);
+            Assert.AreEqual(4, PreferenceSettings.Instance.GroupStyleItemsList.Count);
 
             // Test serialization of GroupStyles
             string tempPath = System.IO.Path.GetTempPath();
@@ -558,33 +558,33 @@ namespace DynamoCoreWpfTests
             #region BackgroundPreviewActive
 
             var backgroundPreviewName = ViewModel.BackgroundPreviewViewModel.PreferenceWatchName;
-            bool expectedValue = !ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName);
+            bool expectedValue = !PreferenceSettings.Instance.GetIsBackgroundPreviewActive(backgroundPreviewName);
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
+            Assert.AreEqual(expectedValue, PreferenceSettings.Instance.GetIsBackgroundPreviewActive(backgroundPreviewName));
 
-            expectedValue = !ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName);
+            expectedValue = !PreferenceSettings.Instance.GetIsBackgroundPreviewActive(backgroundPreviewName);
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
+            Assert.AreEqual(expectedValue, PreferenceSettings.Instance.GetIsBackgroundPreviewActive(backgroundPreviewName));
             #endregion
 
             #region ConsoleHeight
             int expectedHeight = 100;
             ViewModel.ToggleConsoleShowing(null);
-            Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
+            Assert.AreEqual(expectedHeight, PreferenceSettings.Instance.ConsoleHeight);
 
             expectedHeight = 0;
             ViewModel.ToggleConsoleShowing(null);
-            Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
+            Assert.AreEqual(expectedHeight, PreferenceSettings.Instance.ConsoleHeight);
             #endregion
 
             #region ConnectorType
             ConnectorType expectedConnector = ConnectorType.BEZIER;
             ViewModel.SetConnectorType("BEZIER");
-            Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
+            Assert.AreEqual(expectedConnector, PreferenceSettings.Instance.ConnectorType);
             // Now we expect bezier to be created regardless of the preference settings.
             expectedConnector = ConnectorType.BEZIER;
             ViewModel.SetConnectorType("POLYLINE");
-            Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
+            Assert.AreEqual(expectedConnector, PreferenceSettings.Instance.ConnectorType);
             #endregion
 
             #region Collect Information Option
@@ -662,10 +662,10 @@ namespace DynamoCoreWpfTests
         public void PreferenceSettings_ShowEdges_Toggle()
         {
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
-            Assert.False(Model.PreferenceSettings.ShowEdges);
+            Assert.False(PreferenceSettings.Instance.ShowEdges);
 
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
-            Assert.True(Model.PreferenceSettings.ShowEdges);
+            Assert.True(PreferenceSettings.Instance.ShowEdges);
         }
 
         [Test]
@@ -688,11 +688,11 @@ namespace DynamoCoreWpfTests
         public void PreferenceSettings_IsFirstRun_And_HideReportOptions()
         {
             ViewModel.HideReportOptions = true;
-            ViewModel.Model.PreferenceSettings.IsFirstRun = true;
+            PreferenceSettings.Instance.IsFirstRun = true;
             //force the dynamoview's loaded handler to be called again -
             View.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
-            Assert.IsFalse(ViewModel.PreferenceSettings.IsFirstRun);
+            Assert.IsFalse(PreferenceSettings.Instance.IsFirstRun);
         }
 
         [Test]
@@ -718,7 +718,7 @@ namespace DynamoCoreWpfTests
             // Assert
             // Check that prefferenceSettings are set to ConnectorType.POLYLINE
             // but the Models connector type is BEZIER
-            Assert.That(Model.PreferenceSettings.ConnectorType == ConnectorType.POLYLINE);
+            Assert.That(PreferenceSettings.Instance.ConnectorType == ConnectorType.POLYLINE);
             Assert.That(Model.ConnectorType == ConnectorType.BEZIER);
         }
 

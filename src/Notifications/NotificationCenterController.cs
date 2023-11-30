@@ -96,7 +96,7 @@ namespace Dynamo.Notifications
 
             // If user turns on the feature, they will need to restart Dynamo to see the count
             // This ensures no network traffic when Notification center feature is turned off
-            if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter && !dynamoViewModel.Model.NoNetworkMode ) 
+            if (PreferenceSettings.Instance.EnableNotificationCenter && !dynamoViewModel.Model.NoNetworkMode ) 
             {               
                 InitializeBrowserAsync();
                 RequestNotifications();
@@ -188,7 +188,7 @@ namespace Dynamo.Notifications
             var notificationsNumber = 0;
             foreach (var notification in notificationsModel.Notifications)
             {
-                if (!dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.Contains(notification.Id))
+                if (!PreferenceSettings.Instance.ReadNotificationIds.Contains(notification.Id))
                 {
                     notification.IsRead = false;
                     notificationsNumber++;
@@ -202,9 +202,9 @@ namespace Dynamo.Notifications
         internal void OnMarkAllAsRead(object[] ids)
         {
             string[] notificationIds = ids.Select(x => x.ToString()).
-                Where(x => !dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.Contains(x.ToString())).ToArray();
+                Where(x => !PreferenceSettings.Instance.ReadNotificationIds.Contains(x.ToString())).ToArray();
 
-            dynamoViewModel.Model.PreferenceSettings.ReadNotificationIds.AddRange(notificationIds);
+            PreferenceSettings.Instance.ReadNotificationIds.AddRange(notificationIds);
 
             var shortcutToolbarViewModel = (ShortcutToolbarViewModel)dynamoView.ShortcutBar.DataContext;
             shortcutToolbarViewModel.NotificationsNumber = 0;
@@ -283,7 +283,7 @@ namespace Dynamo.Notifications
         /// <param name="e"></param>
         private void NotificationsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.dynamoViewModel.PreferenceSettings.EnableNotificationCenter)
+            if (PreferenceSettings.Instance.EnableNotificationCenter)
             {
                 notificationUIPopup.IsOpen = !notificationUIPopup.IsOpen;
                 if (notificationUIPopup.IsOpen)

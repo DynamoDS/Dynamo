@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Events;
 using Dynamo.Graph;
@@ -1045,7 +1046,7 @@ namespace DynamoCoreWpfTests
         public void NewCustomNodeSaveAndLoadPt2()
         {
             var newPaths = new List<string> { Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad") };
-            ViewModel.Model.PreferenceSettings.CustomPackageFolders = newPaths;
+            PreferenceSettings.Instance.CustomPackageFolders = newPaths;
 
             var loader = ViewModel.Model.GetPackageManagerExtension().PackageLoader;
             loader.LoadNewCustomNodesAndPackages(newPaths, ViewModel.Model.CustomNodeManager);

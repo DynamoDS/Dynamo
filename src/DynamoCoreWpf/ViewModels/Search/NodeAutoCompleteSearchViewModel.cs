@@ -72,7 +72,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation;
+                return PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation;
             }
         }
 
@@ -83,7 +83,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.PreferenceSettings.HideAutocompleteMethodOptions;
+                return PreferenceSettings.Instance.HideAutocompleteMethodOptions;
             }
         }
 
@@ -186,7 +186,7 @@ namespace Dynamo.ViewModels
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
         {
             // Initialize request for the the ML API
-            MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest(AssemblyHelper.GetDynamoVersion().ToString(), dynamoViewModel.PreferenceSettings.MLRecommendationNumberOfResults);
+            MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest(AssemblyHelper.GetDynamoVersion().ToString(), PreferenceSettings.Instance.MLRecommendationNumberOfResults);
 
             var nodeInfo = PortViewModel.PortModel.Owner;
             var portInfo = PortViewModel.PortModel;
@@ -402,7 +402,7 @@ namespace Dynamo.ViewModels
 
                 foreach (var result in results)
                 {
-                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= dynamoViewModel.PreferenceSettings.MLRecommendationConfidenceLevel)
+                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= PreferenceSettings.Instance.MLRecommendationConfidenceLevel)
                     {
                         FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
                     }

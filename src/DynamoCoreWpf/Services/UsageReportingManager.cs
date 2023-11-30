@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -57,11 +58,11 @@ namespace Dynamo.Services
         {
             get
             {
-                return dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
+                return PreferenceSettings.Instance.IsFirstRun;
             }
             private set
             {
-                dynamoViewModel.Model.PreferenceSettings.IsFirstRun = value;
+                PreferenceSettings.Instance.IsFirstRun = value;
                 RaisePropertyChanged("FirstRun");
             }
         }
@@ -79,7 +80,7 @@ namespace Dynamo.Services
             resourceProvider = resource;
             // First run of Dynamo
             if (dynamoViewModel != null
-                && dynamoViewModel.Model.PreferenceSettings.IsFirstRun
+                && PreferenceSettings.Instance.IsFirstRun
                 && !dynamoViewModel.HideReportOptions
                 && !Analytics.DisableAnalytics
                 && !DynamoModel.IsTestMode)

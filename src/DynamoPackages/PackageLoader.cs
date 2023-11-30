@@ -13,13 +13,12 @@ using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
 using Dynamo.Models;
+using Dynamo.Configuration;
 
 namespace Dynamo.PackageManager
 {
     public struct LoadPackageParams
     {
-        public IPreferences Preferences { get; set; }
-
         [Obsolete("Do not use. This will be removed in Dynamo 3.0")]
         public IPathManager PathManager { get; set; }
     }
@@ -371,9 +370,9 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadAll(LoadPackageParams loadPackageParams)
+        public void LoadAll()
         {
-            ScanAllPackageDirectories(loadPackageParams.Preferences);
+            ScanAllPackageDirectories();
 
             if (pathManager != null)
             {
@@ -414,10 +413,10 @@ namespace Dynamo.PackageManager
         /// <param name="newPaths">New package paths to load custom nodes and packages from.</param>
         /// <param name="preferences">Can be a temporary local preferences object.</param>
         /// <param name="customNodeManager"></param>
-        private void LoadCustomNodesAndPackagesHelper(IEnumerable<string> newPaths, IPreferences preferences, 
+        private void LoadCustomNodesAndPackagesHelper(IEnumerable<string> newPaths, 
             CustomNodeManager customNodeManager)
         {
-            foreach (var path in preferences.CustomPackageFolders)
+            foreach (var path in PreferenceSettings.Instance.CustomPackageFolders)
             {
                 // Append the definitions subdirectory for custom nodes.
                 var dir = path == DynamoModel.BuiltInPackagesToken ? PathManager.BuiltinPackagesDirectory : path;
@@ -427,14 +426,14 @@ namespace Dynamo.PackageManager
             }
             foreach (var path in newPaths)
             {
-                if (DynamoModel.IsDisabledPath(path, preferences))
+                if (DynamoModel.IsDisabledPath(path))
                 {
                     Log(string.Format(Resources.PackagesDirectorySkipped, path));
                     continue;
                 }
                 else
                 {
-                    ScanPackageDirectories(path, preferences);
+                    ScanPackageDirectories(path);
                 }
             }
 
@@ -468,7 +467,6 @@ namespace Dynamo.PackageManager
         {
             if(newPaths == null || !newPaths.Any()) return;
 
-            var preferences = (pathManager as PathManager).Preferences;
             var packageDirsToScan = new List<string>();
 
             foreach (var path in newPaths)
@@ -479,7 +477,7 @@ namespace Dynamo.PackageManager
                     packageDirsToScan.Add(packageDirectory);
                 }
             }
-            LoadCustomNodesAndPackagesHelper(packageDirsToScan, preferences, customNodeManager);
+            LoadCustomNodesAndPackagesHelper(packageDirsToScan, customNodeManager);
 
         }
 
@@ -494,30 +492,29 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="loadPackageParams">LoadPackageParams initialized with local PreferenceSettings object containing custom package path.</param>
         /// <param name="customNodeManager"></param>
-        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
+        public void LoadCustomNodesAndPackages(CustomNodeManager customNodeManager)
         {
-            var preferences = loadPackageParams.Preferences;
-            LoadCustomNodesAndPackagesHelper(preferences.CustomPackageFolders, preferences, customNodeManager);
+            LoadCustomNodesAndPackagesHelper(PreferenceSettings.Instance.CustomPackageFolders, customNodeManager);
         }
 
-        private void ScanAllPackageDirectories(IPreferences preferences)
+        private void ScanAllPackageDirectories()
         {
             foreach (var packagesDirectory in pathManager.PackagesDirectories)
             {
 
-                if (DynamoModel.IsDisabledPath(packagesDirectory, preferences))
+                if (DynamoModel.IsDisabledPath(packagesDirectory))
                 {
                     Log(string.Format(Resources.PackagesDirectorySkipped, packagesDirectory));
                     continue;
                 }
                 else
                 {
-                    ScanPackageDirectories(packagesDirectory, preferences);
+                    ScanPackageDirectories(packagesDirectory);
                 }
             }
         }
 
-        private void ScanPackageDirectories(string root, IPreferences preferences)
+        private void ScanPackageDirectories(string root)
         {
             try
             {
@@ -557,7 +554,7 @@ namespace Dynamo.PackageManager
                     }
 
                     var pkg = ScanPackageDirectory(dir, checkCertificates);
-                    if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir))
+                    if (pkg != null && PreferenceSettings.Instance.PackageDirectoriesToUninstall.Contains(dir))
                     {
                         if (pkg.BuiltInPackage)
                         {
@@ -849,14 +846,14 @@ namespace Dynamo.PackageManager
 
         private static bool hasAttemptedUninstall;
 
-        internal void DoCachedPackageUninstalls(IPreferences preferences)
+        internal void DoCachedPackageUninstalls()
         {
             // this can only be run once per app run
             if (hasAttemptedUninstall) return;
             hasAttemptedUninstall = true;
 
             var pkgDirsRemoved = new HashSet<string>();
-            foreach (var pkgNameDirTup in preferences.PackageDirectoriesToUninstall)
+            foreach (var pkgNameDirTup in PreferenceSettings.Instance.PackageDirectoriesToUninstall)
             {
                 if (pkgNameDirTup.StartsWith(PathManager.BuiltinPackagesDirectory))
                 {
@@ -880,7 +877,7 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            preferences.PackageDirectoriesToUninstall.RemoveAll(pkgDirsRemoved.Contains);
+            PreferenceSettings.Instance.PackageDirectoriesToUninstall.RemoveAll(pkgDirsRemoved.Contains);
         }
     }
 }

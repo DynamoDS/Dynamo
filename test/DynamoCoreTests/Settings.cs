@@ -72,7 +72,7 @@ namespace Dynamo.Tests
 
             var model = DynamoModel.Start(config);
 
-            Assert.AreEqual(model.PreferenceSettings.PythonTemplateFilePath, templatePath);
+            Assert.AreEqual(PreferenceSettings.Instance.PythonTemplateFilePath, templatePath);
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Dynamo.Tests
 
             var model = DynamoModel.Start(config);
 
-            Assert.AreEqual(model.PreferenceSettings.PythonTemplateFilePath, string.Empty);
+            Assert.AreEqual(PreferenceSettings.Instance.PythonTemplateFilePath, string.Empty);
         }
 
         [Test]

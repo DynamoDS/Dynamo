@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.PackageManager;
@@ -55,8 +56,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
         {
             bool termsOfServiceAccepted = false;
-            if (dynViewModel.Model.PreferenceSettings != null)
-                termsOfServiceAccepted = dynViewModel.Model.PreferenceSettings.PackageDownloadTouAccepted;
+            if (PreferenceSettings.Instance != null)
+                termsOfServiceAccepted = PreferenceSettings.Instance.PackageDownloadTouAccepted;
             return termsOfServiceAccepted;
         }
 
@@ -277,7 +278,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (CurrentExecutingStep.Sequence < CurrentExecutingGuide.TotalSteps)
             {
                 //Due that when the Guide is being executed the TermsOfUseView is not modal then the code that set the PackageDownloadTouAccepted is not reached then we need to set it manually
-                CurrentExecutingStep.DynamoViewModelStep.Model.PreferenceSettings.PackageDownloadTouAccepted = true;
+                PreferenceSettings.Instance.PackageDownloadTouAccepted = true;
 
                 //Move to the next Step in the Guide
                 CurrentExecutingGuide.CalculateStep(GuideFlow.FORWARD, CurrentExecutingStep.Sequence);

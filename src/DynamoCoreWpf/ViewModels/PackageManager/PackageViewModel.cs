@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -246,7 +247,7 @@ namespace Dynamo.ViewModels
 
         private void UnmarkForUninstallation()
         {
-            Model.UnmarkForUninstall( dynamoModel.PreferenceSettings );
+            Model.UnmarkForUninstall();
             NotifyLoadStatePropertyChanged();
         }
 
@@ -291,8 +292,7 @@ namespace Dynamo.ViewModels
             try
             {
                 Model.UninstallCore(dynamoModel.CustomNodeManager, 
-                    dynamoModel.GetPackageManagerExtension().PackageLoader, 
-                    dynamoModel.PreferenceSettings);
+                    dynamoModel.GetPackageManagerExtension().PackageLoader);
             }
             catch (Exception)
             {
@@ -352,7 +352,7 @@ namespace Dynamo.ViewModels
                 foreach (var package in conflicts)
                 {
                     // Only markForUninstall is done if any loaded assemblies are found
-                    package.UninstallCore(dynamoModel.CustomNodeManager, packageLoader, dynamoModel.PreferenceSettings);
+                    package.UninstallCore(dynamoModel.CustomNodeManager, packageLoader);
                 }
 
                 if (!hasConflictsWithLoadedAssemblies)
@@ -361,7 +361,7 @@ namespace Dynamo.ViewModels
                     Model.LoadState.ResetState();
 
                     packageLoader.LoadPackages(new List<Package>() { Model });
-                    dynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Remove(Model.RootDirectory);
+                    PreferenceSettings.Instance.PackageDirectoriesToUninstall.Remove(Model.RootDirectory);
                 }
             }
             catch (Exception e) 

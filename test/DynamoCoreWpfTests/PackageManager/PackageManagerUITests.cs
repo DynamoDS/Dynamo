@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.PackageManager;
@@ -39,7 +40,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
         protected void LoadPackage(string packageDirectory)
         {
-            Model.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
+            PreferenceSettings.Instance.CustomPackageFolders.Add(packageDirectory);
             var loader = GetPackageLoader();
             var pkg = loader.ScanPackageDirectory(packageDirectory);
             loader.LoadPackages(new List<Package> { pkg });
@@ -91,7 +92,7 @@ namespace DynamoCoreWpfTests.PackageManager
         public override void Setup()
         {
             base.Setup();
-            ViewModel.PreferenceSettings.PackageDownloadTouAccepted = true;
+            PreferenceSettings.Instance.PackageDownloadTouAccepted = true;
         }
 
         #endregion
@@ -737,11 +738,8 @@ namespace DynamoCoreWpfTests.PackageManager
             var currentDynamoModel = ViewModel.Model;
             PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
 
-            currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { PackagesDirectorySigned };
-            var loadPackageParams = new LoadPackageParams
-            {
-                Preferences = currentDynamoModel.PreferenceSettings,
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { PackagesDirectorySigned };
+            
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
             foreach (var pkg in loader.LocalPackages.ToList())
@@ -749,11 +747,11 @@ namespace DynamoCoreWpfTests.PackageManager
                 loader.Remove(pkg);
             }
 
-            loader.LoadAll(loadPackageParams);
+            loader.LoadAll();
             Assert.AreEqual(3, loader.LocalPackages.Count());
             Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
 
-            currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { PackagesDirectorySigned, BuiltinPackagesTestDir };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { PackagesDirectorySigned, BuiltinPackagesTestDir };
 
             var newPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
             // This function is called upon addition of new package paths in the UI.
@@ -805,15 +803,12 @@ namespace DynamoCoreWpfTests.PackageManager
             var currentDynamoModel = ViewModel.Model;
             PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
 
-            currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { BuiltinPackagesTestDir };
-            var loadPackageParams = new LoadPackageParams
-            {
-                Preferences = currentDynamoModel.PreferenceSettings,
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { BuiltinPackagesTestDir };
+            
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
-
+                
             // This function is called upon addition of new package paths in the UI.
-            loader.LoadAll(loadPackageParams);
+            loader.LoadAll();
             Assert.AreEqual(1, loader.LocalPackages.Count());
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
@@ -837,7 +832,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.ScheduledForUnload, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
-            Assert.IsTrue(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
+            Assert.IsTrue(PreferenceSettings.Instance.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
 
             Assert.AreEqual(2, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
@@ -847,7 +842,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
-            Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
+            Assert.IsFalse(PreferenceSettings.Instance.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
 
             Assert.AreEqual(2, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
@@ -862,18 +857,14 @@ namespace DynamoCoreWpfTests.PackageManager
             var currentDynamoModel = ViewModel.Model;
             PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
 
-            currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Add(Path.Combine(BuiltinPackagesTestDir, "SignedPackage2"));
-            currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { BuiltinPackagesTestDir };
-            var loadPackageParams = new LoadPackageParams
-            {
-                Preferences = currentDynamoModel.PreferenceSettings,
-            };
-
+            PreferenceSettings.Instance.PackageDirectoriesToUninstall.Add(Path.Combine(BuiltinPackagesTestDir, "SignedPackage2"));
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { BuiltinPackagesTestDir };
+            
             var libraryLoader = new ExtensionLibraryLoader(currentDynamoModel);
 
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
-            loader.LoadAll(loadPackageParams);
+            loader.LoadAll();
             Assert.AreEqual(1, loader.LocalPackages.Count());
             Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
 
@@ -898,7 +889,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
-            Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
+            Assert.IsFalse(PreferenceSettings.Instance.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
             Assert.IsTrue(currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
 
             Assert.AreEqual(2, filters.Count);
@@ -913,18 +904,15 @@ namespace DynamoCoreWpfTests.PackageManager
             var currentDynamoModel = ViewModel.Model;
 
             PathManager.BuiltinPackagesDirectory = null;
-            currentDynamoModel.PreferenceSettings.DisableBuiltinPackages = true;
-            currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { };
-            var loadPackageParams = new LoadPackageParams
-            {
-                Preferences = currentDynamoModel.PreferenceSettings,
-            };
+            PreferenceSettings.Instance.DisableBuiltinPackages = true;
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { };
+            var loadPackageParams = new LoadPackageParams();
 
             var libraryLoader = new ExtensionLibraryLoader(currentDynamoModel);
 
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
-            loader.LoadAll(loadPackageParams);
+            loader.LoadAll();
             Assert.AreEqual(0, loader.LocalPackages.Count());
             var vm = new PackagePathViewModel(loader, loadPackageParams, Model.CustomNodeManager);
 
@@ -970,12 +958,8 @@ namespace DynamoCoreWpfTests.PackageManager
             var libraryLoader = new ExtensionLibraryLoader(dynamoModel);
 
             loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
-            var loadPackageParams = new LoadPackageParams
-            {
-                Preferences = ViewModel.Model.PreferenceSettings
 
-            };
-            loader.LoadAll(loadPackageParams);
+            loader.LoadAll();
             //verify the UI assembly was imported from the correct package.
             var testPackage = loader.LocalPackages.FirstOrDefault(x => x.Name == "NodeViewCustomizationTestPackage");
             var uiassembly = testPackage.LoadedAssemblies.FirstOrDefault(a => a.Name == "NodeViewCustomizationAssembly");

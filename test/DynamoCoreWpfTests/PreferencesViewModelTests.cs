@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Tests;
@@ -83,7 +84,7 @@ namespace DynamoCoreWpfTests
         public void PackagePathsForInstall_RetainsPathThatDoesNotExist()
         {
             //add a new path to the package paths
-            ViewModel.Model.PreferenceSettings.CustomPackageFolders.Add(@"C:\DoesNotExist\");
+            PreferenceSettings.Instance.CustomPackageFolders.Add(@"C:\DoesNotExist\");
             //set to null, so getter regenerates list
             ViewModel.PreferencesViewModel.PackagePathsForInstall = null;
             //access getter
@@ -94,7 +95,7 @@ namespace DynamoCoreWpfTests
         public void PackagePathsForInstall_FiltersSomeFilePaths()
         {
             //add a new path to the package paths
-            ViewModel.Model.PreferenceSettings.CustomPackageFolders.Add(@"C:\DoesNotExist\DoesNotExist.DLL");
+            PreferenceSettings.Instance.CustomPackageFolders.Add(@"C:\DoesNotExist\DoesNotExist.DLL");
             //set to null, so getter regenerates list
             ViewModel.PreferencesViewModel.PackagePathsForInstall = null;
             //access getter
@@ -105,14 +106,14 @@ namespace DynamoCoreWpfTests
         [Test]
         public void SecurityPrefs_DisableTrustWarnings()
         {
-            Assert.IsFalse(ViewModel.PreferenceSettings.DisableTrustWarnings);
+            Assert.IsFalse(PreferenceSettings.Instance.DisableTrustWarnings);
             //assert model setter is no-op
-            ViewModel.PreferenceSettings.DisableTrustWarnings = true;
-            Assert.IsFalse(ViewModel.PreferenceSettings.DisableTrustWarnings);
+            PreferenceSettings.Instance.DisableTrustWarnings = true;
+            Assert.IsFalse(PreferenceSettings.Instance.DisableTrustWarnings);
 
             //assert model set method works
-            ViewModel.PreferenceSettings.SetTrustWarningsDisabled(true);
-            Assert.True(ViewModel.PreferenceSettings.DisableTrustWarnings);
+            PreferenceSettings.Instance.SetTrustWarningsDisabled(true);
+            Assert.True(PreferenceSettings.Instance.DisableTrustWarnings);
         }
 
         [Test]

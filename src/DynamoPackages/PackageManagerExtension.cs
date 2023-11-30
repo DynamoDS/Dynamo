@@ -160,7 +160,7 @@ namespace Dynamo.PackageManager
                 new GregClient(startupParams.AuthProvider, url),
                 uploadBuilder, packageUploadDirectory);
 
-            LoadPackages(startupParams.Preferences, startupParams.PathManager);
+            LoadPackages();
             noNetworkMode = startupParams.NoNetworkMode;
         }
 
@@ -189,14 +189,11 @@ namespace Dynamo.PackageManager
 
         #region Private helper methods
 
-        private void LoadPackages(IPreferences preferences, IPathManager pathManager)
+        private void LoadPackages()
         {
             // Load Packages
-            PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadAll(new LoadPackageParams
-            {
-                Preferences = preferences,
-            });
+            PackageLoader.DoCachedPackageUninstalls();
+            PackageLoader.LoadAll();
         }
 
         private void OnMessageLogged(ILogMessage msg)

@@ -116,11 +116,6 @@ namespace Dynamo.ViewModels
             get { return model; }
         }
 
-        public PreferenceSettings PreferenceSettings
-        {
-            get { return Model.PreferenceSettings; }
-        }
-
         internal PreferencesViewModel PreferencesViewModel
         {
             get
@@ -328,11 +323,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return model.PreferenceSettings.ConsoleHeight;
+                return PreferenceSettings.Instance.ConsoleHeight;
             }
             set
             {
-                model.PreferenceSettings.ConsoleHeight = value;
+                PreferenceSettings.Instance.ConsoleHeight = value;
 
                 RaisePropertyChanged("ConsoleHeight");
             }
@@ -346,11 +341,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return model.PreferenceSettings.ShowPreviewBubbles;
+                return PreferenceSettings.Instance.ShowPreviewBubbles;
             }
             set
             {
-                model.PreferenceSettings.ShowPreviewBubbles = value;
+                PreferenceSettings.Instance.ShowPreviewBubbles = value;
                 RaisePropertyChanged("ShowPreviewBubbles");
             }
         }
@@ -363,11 +358,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return model.PreferenceSettings.ShowCodeBlockLineNumber;
+                return PreferenceSettings.Instance.ShowCodeBlockLineNumber;
             }
             set
             {
-                model.PreferenceSettings.ShowCodeBlockLineNumber = value;
+                PreferenceSettings.Instance.ShowCodeBlockLineNumber = value;
                 RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
             }
         }
@@ -381,7 +376,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return !PreferenceSettings.NamespacesToExcludeFromLibrary.Contains(
+                return !PreferenceSettings.Instance.NamespacesToExcludeFromLibrary.Contains(
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline");
             }
             set
@@ -398,11 +393,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return PreferenceSettings.EnableNodeAutoComplete;
+                return PreferenceSettings.Instance.EnableNodeAutoComplete;
             }
             set
             {
-                PreferenceSettings.EnableNodeAutoComplete = value;
+                PreferenceSettings.Instance.EnableNodeAutoComplete = value;
             }
         }
 
@@ -410,11 +405,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return model.PreferenceSettings.LibraryWidth;
+                return PreferenceSettings.Instance.LibraryWidth;
             }
             set
             {
-                model.PreferenceSettings.LibraryWidth = value;
+                PreferenceSettings.Instance.LibraryWidth = value;
                 RaisePropertyChanged("LibraryWidth");
             }
         }
@@ -613,12 +608,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor;
+                return PreferenceSettings.Instance.ShowTabsAndSpacesInScriptEditor;
             }
             set
             {
                 PythonScriptEditorTextOptions.ShowWhiteSpaceCharacters(value);
-                model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
+                PreferenceSettings.Instance.ShowTabsAndSpacesInScriptEditor = value;
                 RaisePropertyChanged(nameof(ShowTabsAndSpacesInScriptEditor));
             }
         }
@@ -629,12 +624,12 @@ namespace Dynamo.ViewModels
         [Obsolete ("This was moved to PreferencesViewModel.cs")]
         public string DefaultPythonEngine
         {
-            get { return model.PreferenceSettings.DefaultPythonEngine; }
+            get { return PreferenceSettings.Instance.DefaultPythonEngine; }
             set
             {
-                if (value != model.PreferenceSettings.DefaultPythonEngine)
+                if (value != PreferenceSettings.Instance.DefaultPythonEngine)
                 {
-                    model.PreferenceSettings.DefaultPythonEngine = value;
+                    PreferenceSettings.Instance.DefaultPythonEngine = value;
                     RaisePropertyChanged(nameof(DefaultPythonEngine));
                 }
             }
@@ -668,7 +663,7 @@ namespace Dynamo.ViewModels
                 startConfiguration.DynamoModel = DynamoModel.Start();
 
             if(startConfiguration.WatchHandler == null)
-                startConfiguration.WatchHandler = new DefaultWatchHandler(startConfiguration.DynamoModel.PreferenceSettings);
+                startConfiguration.WatchHandler = new DefaultWatchHandler();
 
             if (startConfiguration.Watch3DViewModel == null)
             {
@@ -744,7 +739,7 @@ namespace Dynamo.ViewModels
 
             SubscribeDispatcherHandlers();
 
-            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel();
             RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
 
             BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
@@ -774,7 +769,7 @@ namespace Dynamo.ViewModels
         {
             watch3DViewModel.Setup(this, factory);
             watch3DViewModels.Add(watch3DViewModel);
-            watch3DViewModel.Active = PreferenceSettings
+            watch3DViewModel.Active = PreferenceSettings.Instance
                 .GetIsBackgroundPreviewActive(watch3DViewModel.PreferenceWatchName);
             RaisePropertyChanged("Watch3DViewModels");
         }
@@ -785,7 +780,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "ShowEdges":
-                    model.PreferenceSettings.ShowEdges = factoryVm.Factory.TessellationParameters.ShowEdges;
+                    PreferenceSettings.Instance.ShowEdges = factoryVm.Factory.TessellationParameters.ShowEdges;
                     // A full regeneration is required to get the edge geometry.
                     foreach (var vm in Watch3DViewModels)
                     {
@@ -796,7 +791,7 @@ namespace Dynamo.ViewModels
                     }
                     break;
                 case "MaxTessellationDivisions":
-                    model.PreferenceSettings.RenderPrecision = factoryVm.Factory.TessellationParameters.MaxTessellationDivisions;
+                    PreferenceSettings.Instance.RenderPrecision = factoryVm.Factory.TessellationParameters.MaxTessellationDivisions;
                     break;
                 default:
                     return;
@@ -875,10 +870,10 @@ namespace Dynamo.ViewModels
 
         private void InitializeRecentFiles()
         {
-            this.RecentFiles = new ObservableCollection<string>(model.PreferenceSettings.RecentFiles);
+            this.RecentFiles = new ObservableCollection<string>(PreferenceSettings.Instance.RecentFiles);
             this.RecentFiles.CollectionChanged += (sender, args) =>
             {
-                model.PreferenceSettings.RecentFiles = this.RecentFiles.ToList();
+                PreferenceSettings.Instance.RecentFiles = this.RecentFiles.ToList();
             };
         }
 
@@ -1466,7 +1461,7 @@ namespace Dynamo.ViewModels
 
             RecentFiles.Insert(0, path);
 
-            int maxNumRecentFiles = Model.PreferenceSettings.MaxNumRecentFiles;
+            int maxNumRecentFiles = PreferenceSettings.Instance.MaxNumRecentFiles;
             if (RecentFiles.Count > maxNumRecentFiles)
             {
                 RecentFiles.RemoveRange(maxNumRecentFiles, RecentFiles.Count - maxNumRecentFiles);
@@ -1717,10 +1712,10 @@ namespace Dynamo.ViewModels
                 var directoryName = Path.GetDirectoryName(filePath);
 
                 // Display trust warning when file is not among trust location and warning feature is on
-                bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                bool displayTrustWarning = !PreferenceSettings.Instance.IsTrustedLocation(directoryName)
                     && !filePath.EndsWith("dyf")
                     && !DynamoModel.IsTestMode
-                    && !PreferenceSettings.DisableTrustWarnings
+                    && !PreferenceSettings.Instance.DisableTrustWarnings
                     && FileTrustViewModel != null;
                 RunSettings.ForceBlockRun = displayTrustWarning;
                 // Execute graph open command
@@ -1803,10 +1798,10 @@ namespace Dynamo.ViewModels
                 var directoryName = Path.GetDirectoryName(filePath);
 
                 // Display trust warning when file is not among trust location and warning feature is on
-                bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                bool displayTrustWarning = !PreferenceSettings.Instance.IsTrustedLocation(directoryName)
                     && !filePath.EndsWith("dyf")
                     && !DynamoModel.IsTestMode
-                    && !PreferenceSettings.DisableTrustWarnings
+                    && !PreferenceSettings.Instance.DisableTrustWarnings
                     && FileTrustViewModel != null;
                 RunSettings.ForceBlockRun = displayTrustWarning;
                 // Execute graph open command
@@ -2099,19 +2094,19 @@ namespace Dynamo.ViewModels
             bool substantialChecksum = false;
             string graphId = Model.CurrentWorkspace.Guid.ToString();
 
-            GraphChecksumItem checksumItem = PreferenceSettings.GraphChecksumItemsList.Where(i => i.GraphId == graphId).FirstOrDefault();
+            GraphChecksumItem checksumItem = PreferenceSettings.Instance.GraphChecksumItemsList.Where(i => i.GraphId == graphId).FirstOrDefault();
             if (checksumItem != null)
             {
                 if (checksumItem.Checksum != currentWorkspaceViewModel.Checksum)
                 {
-                    PreferenceSettings.GraphChecksumItemsList.Remove(checksumItem);
-                    PreferenceSettings.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
+                    PreferenceSettings.Instance.GraphChecksumItemsList.Remove(checksumItem);
+                    PreferenceSettings.Instance.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
                     substantialChecksum = true;
                 }
             }
             else
             {
-                PreferenceSettings.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
+                PreferenceSettings.Instance.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
                 substantialChecksum = true;
             }
             return substantialChecksum;
@@ -2590,7 +2585,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                PreferenceSettings.IsBackgroundGridVisible = !PreferenceSettings.IsBackgroundGridVisible;
+                PreferenceSettings.Instance.IsBackgroundGridVisible = !PreferenceSettings.Instance.IsBackgroundGridVisible;
             }
         }
 
@@ -2602,7 +2597,7 @@ namespace Dynamo.ViewModels
         {
             if (BackgroundPreviewViewModel == null) return;
 
-            BackgroundPreviewViewModel.GridScale = PreferenceSettings.GridScaleFactor;
+            BackgroundPreviewViewModel.GridScale = PreferenceSettings.Instance.GridScaleFactor;
             BackgroundPreviewViewModel.UpdateHelpers();
         }
 
@@ -3247,7 +3242,7 @@ namespace Dynamo.ViewModels
         {
             foreach (var originalCustomGroupStyle in originalCustomGroupStyles)
             {
-                var currentCustomGroupStyle = PreferenceSettings.GroupStyleItemsList.Where(
+                var currentCustomGroupStyle = PreferenceSettings.Instance.GroupStyleItemsList.Where(
                     groupStyle => !groupStyle.GroupStyleId.Equals(Guid.Empty) && groupStyle.GroupStyleId.Equals(originalCustomGroupStyle.GroupStyleId)).FirstOrDefault();
 
                 if (currentCustomGroupStyle != null)
@@ -3311,8 +3306,8 @@ namespace Dynamo.ViewModels
         {
             if (FileTrustViewModel == null || DynamoModel.IsTestMode) return;
             if ((FileTrustViewModel.ShowWarningPopup
-                && model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName))
-                || model.PreferenceSettings.DisableTrustWarnings)
+                && PreferenceSettings.Instance.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName))
+                || PreferenceSettings.Instance.DisableTrustWarnings)
             {
                 FileTrustViewModel.ShowWarningPopup = false;
                 RunSettings.ForceBlockRun = false;
@@ -3331,10 +3326,10 @@ namespace Dynamo.ViewModels
                 targetPath = FileTrustViewModel.DynFileDirectoryName;
             }
             if (!FileTrustViewModel.ShowWarningPopup
-                && !model.PreferenceSettings.IsTrustedLocation(targetPath)
+                && !PreferenceSettings.Instance.IsTrustedLocation(targetPath)
                 && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
                 && !FileTrustViewModel.AllowOneTimeTrust
-                && !model.PreferenceSettings.DisableTrustWarnings
+                && !PreferenceSettings.Instance.DisableTrustWarnings
                 && !string.IsNullOrWhiteSpace(currentWorkspaceViewModel.FileName))
             {
                 FileTrustViewModel.ShowWarningPopup = true;
@@ -3360,7 +3355,7 @@ namespace Dynamo.ViewModels
 
         private void SetNumberFormat(object parameter)
         {
-            model.PreferenceSettings.NumberFormat = parameter.ToString();
+            PreferenceSettings.Instance.NumberFormat = parameter.ToString();
         }
 
         private bool CanSetNumberFormat(object parameter)
@@ -3372,8 +3367,8 @@ namespace Dynamo.ViewModels
         {
             if (defaultWorkspace != null)
             {
-                defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
-                defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
+                defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.Instance.DefaultScaleFactor;
+                defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.Instance.DefaultScaleFactor);
             }
         }
 
@@ -3531,10 +3526,10 @@ namespace Dynamo.ViewModels
         {
             PreferenceSettings.AskForTrustedLocationResult askToTheUser =
                 PreferenceSettings.AskForTrustedLocation(CurrentSpaceViewModel.FileName.Length > 0,
-                CurrentSpaceViewModel.FileName.Length > 0 ? PreferenceSettings.IsTrustedLocation(Path.GetDirectoryName(CurrentSpaceViewModel.FileName)) : false,
+                CurrentSpaceViewModel.FileName.Length > 0 ? PreferenceSettings.Instance.IsTrustedLocation(Path.GetDirectoryName(CurrentSpaceViewModel.FileName)) : false,
                 (currentWorkspaceViewModel?.IsHomeSpace ?? false),
                 ShowStartPage,
-                model.PreferenceSettings.DisableTrustWarnings);
+                PreferenceSettings.Instance.DisableTrustWarnings);
 
             if (askToTheUser == PreferenceSettings.AskForTrustedLocationResult.Ask) {
 

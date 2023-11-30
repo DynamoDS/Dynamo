@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using CoreNodeModels.Properties;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
@@ -131,7 +132,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private void Browser_ZoomFactorChanged(object sender, EventArgs e)
         {
             //Multiplies by 100 so the value can be saved as a percentage
-            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = (int)(browser.ZoomFactor * 100);
+            PreferenceSettings.Instance.LibraryZoomScale = (int)(browser.ZoomFactor * 100);
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -406,10 +407,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             SetLibraryFontSize();
             SetTooltipText();
             //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent            
-            double zoomFactor = ((double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100d);
+            double zoomFactor = ((double)PreferenceSettings.Instance.LibraryZoomScale / 100d);
 
             //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
-            browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100;
+            browser.ZoomFactor = (double)PreferenceSettings.Instance.LibraryZoomScale / 100;
             browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
             browser.KeyDown += Browser_KeyDown;
 
@@ -686,7 +687,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 zoomFactor = minimumZoomScale;
 
             browser.ZoomFactor = zoomFactor;
-            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((int)slider.Value);
+            PreferenceSettings.Instance.LibraryZoomScale = ((int)slider.Value);
         }
 
         /// <summary>

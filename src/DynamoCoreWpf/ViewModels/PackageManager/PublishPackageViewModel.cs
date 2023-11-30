@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
@@ -2195,7 +2196,7 @@ namespace Dynamo.PackageManager
         private string GetPublishFolder()
         {
             var pathManager = DynamoViewModel.Model.PathManager as PathManager;
-            var setting = DynamoViewModel.PreferenceSettings;
+            var setting = PreferenceSettings.Instance;
 
             var args = new PackagePathEventArgs
             {

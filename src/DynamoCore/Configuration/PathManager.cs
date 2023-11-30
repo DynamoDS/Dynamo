@@ -100,15 +100,11 @@ namespace Dynamo.Core
 
         #endregion
 
-        internal IPreferences Preferences { get; set; }
-
         private IEnumerable<string> RootDirectories
         {
             get 
-            { 
-                return Preferences != null ? 
-                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.BuiltInPackagesToken ? BuiltinPackagesDirectory : path) 
-                    : rootDirectories;
+            {
+                return PreferenceSettings.Instance.CustomPackageFolders.Select(path => path == DynamoModel.BuiltInPackagesToken ? BuiltinPackagesDirectory : path); 
             }
         }
 
@@ -175,11 +171,7 @@ namespace Dynamo.Core
         {
             get 
             {
-                if (Preferences is PreferenceSettings preferences)
-                {
-                    return TransformPath(preferences.SelectedPackagePathForInstall, DefinitionsDirectoryName);
-                }
-                return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); 
+                return TransformPath(PreferenceSettings.Instance.SelectedPackagePathForInstall, DefinitionsDirectoryName);
             }
         }
 
@@ -207,11 +199,7 @@ namespace Dynamo.Core
         {
             get
             {
-                if (Preferences is PreferenceSettings preferences)
-                {
-                    return TransformPath(preferences.SelectedPackagePathForInstall, PackagesDirectoryName);
-                }
-                return TransformPath(RootDirectories.First(), PackagesDirectoryName);
+                return TransformPath(PreferenceSettings.Instance.SelectedPackagePathForInstall, PackagesDirectoryName);
             }
         }
 

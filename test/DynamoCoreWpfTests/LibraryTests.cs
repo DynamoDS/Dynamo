@@ -41,7 +41,7 @@ namespace DynamoCoreWpfTests
 
             var settings = new PreferenceSettings();
 
-            libraryServices = new LibraryServices(libraryCore, pathManager, settings);
+            libraryServices = new LibraryServices(libraryCore, pathManager);
 
             RegisterEvents();
         }

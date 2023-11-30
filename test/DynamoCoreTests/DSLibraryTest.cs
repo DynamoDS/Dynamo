@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -196,7 +196,7 @@ namespace Dynamo.Tests
         public void TestDllLibraryLoadAtStartup()
         {
             // Get the default custom package folders
-            List<string> initialCustomPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
+            List<string> initialCustomPackageFolders = PreferenceSettings.Instance.CustomPackageFolders;
 
             // Shutdown the current Dynamo model
             CurrentDynamoModel.ShutDown(false);
@@ -238,7 +238,7 @@ namespace Dynamo.Tests
         public void TestAddBuiltinPackagesPath()
         {
             // Get the default custom package folders
-            List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
+            List<string> customPackageFolders = PreferenceSettings.Instance.CustomPackageFolders;
 
             // Test that the default number of folders is correct
             Assert.IsTrue(customPackageFolders.Count == 3);
@@ -257,7 +257,7 @@ namespace Dynamo.Tests
         public void TestAddDllLibraryPath()
         {
             // Get the default custom package folders
-            List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
+            List<string> customPackageFolders = PreferenceSettings.Instance.CustomPackageFolders;
 
             // Test that the default number of folders is correct
             Assert.IsTrue(customPackageFolders.Count == 3);
@@ -284,7 +284,7 @@ namespace Dynamo.Tests
         public void TestBuiltinPackagesTokenIsFirstInList()
         {
             // Get the default custom package folders
-            List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
+            List<string> customPackageFolders = PreferenceSettings.Instance.CustomPackageFolders;
 
             // Test that the default number of folders is correct
             Assert.IsTrue(customPackageFolders.Count == 3);

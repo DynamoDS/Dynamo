@@ -64,7 +64,7 @@ namespace UnitsUI
 
             tb.OnChangeCommitted += TextChangehandler;
 
-            (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+            (PreferenceSettings.Instance).PropertyChanged += PreferenceSettings_PropertyChanged;
         }
 
         private void TextChangehandler()

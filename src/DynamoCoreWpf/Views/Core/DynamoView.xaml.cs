@@ -125,7 +125,7 @@ namespace Dynamo.Controls
             // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
             // This preference is not exposed in the UI and can be used to debug hardware issues only
             // by modifying the preferences xml.
-            RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ?
+            RenderOptions.ProcessRenderMode = PreferenceSettings.Instance.UseHardwareAcceleration ?
                 RenderMode.Default : RenderMode.SoftwareOnly;
 
             this.dynamoViewModel = dynamoViewModel;
@@ -159,10 +159,10 @@ namespace Dynamo.Controls
             // of the available monitors.
             if (CheckVirtualScreenSize())
             {
-                Left = dynamoViewModel.Model.PreferenceSettings.WindowX;
-                Top = dynamoViewModel.Model.PreferenceSettings.WindowY;
-                Width = dynamoViewModel.Model.PreferenceSettings.WindowW;
-                Height = dynamoViewModel.Model.PreferenceSettings.WindowH;
+                Left = PreferenceSettings.Instance.WindowX;
+                Top = PreferenceSettings.Instance.WindowY;
+                Width = PreferenceSettings.Instance.WindowW;
+                Height = PreferenceSettings.Instance.WindowH;
             }
             else
             {
@@ -390,7 +390,7 @@ namespace Dynamo.Controls
 
             if (addExtensionControl)
             {
-                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
+                var settings = PreferenceSettings.Instance.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
                 // Create default settings if they do not currently exist
                 if (settings == null)
                 {
@@ -400,10 +400,10 @@ namespace Dynamo.Controls
                         UniqueId = viewExtension.UniqueId,
                         DisplayMode = ViewExtensionDisplayMode.DockRight
                     };
-                    this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Add(settings);
+                   
                 }
 
-                if (this.dynamoViewModel.PreferenceSettings.EnablePersistExtensions)
+                if (PreferenceSettings.Instance.EnablePersistExtensions)
                 {
                     settings.IsOpen = true;
                 }
@@ -497,7 +497,7 @@ namespace Dynamo.Controls
         private void SaveExtensionWindowSettings(ExtensionWindow window)
         {
             var extension = window.Tag as IViewExtension;
-            var settings = this.dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettings.Find(ext => ext.UniqueId == extension.UniqueId);
+            var settings = PreferenceSettings.Instance.ViewExtensionSettings.Find(ext => ext.UniqueId == extension.UniqueId);
             if (settings != null)
             {
                 if (settings.WindowSettings == null)
@@ -740,7 +740,7 @@ namespace Dynamo.Controls
             var content = tabItem.Content as UIElement;
             CloseRightSideBarTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
-            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+            var settings = PreferenceSettings.Instance.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
             AddExtensionWindow(extension, content, settings?.WindowSettings);
             if (settings != null)
             {
@@ -757,7 +757,7 @@ namespace Dynamo.Controls
             var content = tabItem.Content as UIElement;
             CloseRightSideBarTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
-            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+            var settings = PreferenceSettings.Instance.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
             AddExtensionWindow(extension, content, settings?.WindowSettings);
             if (settings != null)
             {
@@ -838,7 +838,7 @@ namespace Dynamo.Controls
             {
                 AddExtensionTab(extension, content);
 
-                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+                var settings = PreferenceSettings.Instance.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
                 if (settings != null)
                 {
                     settings.DisplayMode = ViewExtensionDisplayMode.DockRight;
@@ -1010,15 +1010,15 @@ namespace Dynamo.Controls
             // On Ian's Windows 8 setup, when Dynamo is maximized, the origin
             // saves at -8,-8. There doesn't seem to be any documentation on this
             // so we'll put in a 10 pixel check to still allow the window to maximize.
-            if (dynamoViewModel.Model.PreferenceSettings.WindowX < ox - 10 ||
-                dynamoViewModel.Model.PreferenceSettings.WindowY < oy - 10)
+            if (PreferenceSettings.Instance.WindowX < ox - 10 ||
+                PreferenceSettings.Instance.WindowY < oy - 10)
             {
                 return false;
             }
 
             // Check that the window is smaller than the available area.
-            if (dynamoViewModel.Model.PreferenceSettings.WindowW > w ||
-                dynamoViewModel.Model.PreferenceSettings.WindowH > h)
+            if (PreferenceSettings.Instance.WindowW > w ||
+                PreferenceSettings.Instance.WindowH > h)
             {
                 return false;
             }
@@ -1028,8 +1028,8 @@ namespace Dynamo.Controls
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)
         {
-            dynamoViewModel.Model.PreferenceSettings.WindowX = Left;
-            dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
+            PreferenceSettings.Instance.WindowX = Left;
+            PreferenceSettings.Instance.WindowY = Top;
 
             //When the Dynamo window is moved to another place we need to update the Steps location
             if(dynamoViewModel.MainGuideManager != null)
@@ -1045,8 +1045,8 @@ namespace Dynamo.Controls
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            dynamoViewModel.Model.PreferenceSettings.WindowW = e.NewSize.Width;
-            dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
+            PreferenceSettings.Instance.WindowW = e.NewSize.Width;
+            PreferenceSettings.Instance.WindowH = e.NewSize.Height;
 
             //When the Dynamo window size is changed then we need to update the Steps location
             if (dynamoViewModel.MainGuideManager != null)
@@ -1079,7 +1079,7 @@ namespace Dynamo.Controls
         /// Calculates the Window threshold to display the text or only icons in the shortcut toolbar
         internal void CalculateWindowThreshold()
         {            
-            dynamoViewModel.OnWindowResized(dynamoViewModel.Model.PreferenceSettings.WindowW <= GetSumOfControlsWidth());            
+            dynamoViewModel.OnWindowResized(PreferenceSettings.Instance.WindowW <= GetSumOfControlsWidth());            
         }
 
         /// <summary>
@@ -1087,7 +1087,7 @@ namespace Dynamo.Controls
         /// </summary>
         internal void CalculateWindowMinWidth()
         {
-            if (dynamoViewModel.Model.PreferenceSettings.WindowW > DefaultMinWidth)
+            if (PreferenceSettings.Instance.WindowW > DefaultMinWidth)
             {
                 MinWidth = GetSumOfControlsWidth();
             }
@@ -1260,7 +1260,7 @@ namespace Dynamo.Controls
         /// <param name="ext">Extension to be re-opened, if saved from last session.</param>
         private void ReOpenSavedExtensionOnDynamoStartup(IViewExtension ext)
         {
-            var viewExtensionSettings = dynamoViewModel.PreferenceSettings.EnablePersistExtensions ? dynamoViewModel.PreferenceSettings.ViewExtensionSettings : null;
+            var viewExtensionSettings = PreferenceSettings.Instance.EnablePersistExtensions ? PreferenceSettings.Instance.ViewExtensionSettings : null;
             if (viewExtensionSettings != null && viewExtensionSettings.Count > 0)
             {
                 var setting = viewExtensionSettings.Find(s => s.UniqueId == ext.UniqueId);
@@ -1280,7 +1280,7 @@ namespace Dynamo.Controls
             CursorLibrary.GetCursor(CursorSet.ArcSelect);
 
             //Backing up IsFirstRun to determine whether to do certain action
-            var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
+            var isFirstRun = PreferenceSettings.Instance.IsFirstRun;
 
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
@@ -1435,7 +1435,7 @@ namespace Dynamo.Controls
         /// 
         private bool DisplayTermsOfUseForAcceptance()
         {
-            var prefSettings = dynamoViewModel.Model.PreferenceSettings;
+            var prefSettings = PreferenceSettings.Instance;
             if (prefSettings.PackageDownloadTouAccepted)
                 return true; // User accepts the terms of use.
 
@@ -1905,7 +1905,7 @@ namespace Dynamo.Controls
                 SaveExtensionOpenState(tab);
             }
             //update open state of all existing view extension in setting, if option to remember extensions is enabled in preferences
-            var settings = dynamoViewModel.PreferenceSettings.ViewExtensionSettings;
+            var settings = PreferenceSettings.Instance.ViewExtensionSettings;
             foreach (var setting in settings)
             {
                 if (!dynamoViewModel.SideBarTabItems.Any(e => e.Uid == setting.UniqueId) && !ExtensionWindows.Values.Any(e => e.Uid == setting.UniqueId))
@@ -1917,7 +1917,7 @@ namespace Dynamo.Controls
         //This method is to ensure that the extensions states are correctly saved for newly added extensions.
         private void SaveExtensionOpenState(object o)
         {
-            if (!dynamoViewModel.PreferenceSettings.EnablePersistExtensions || o == null) return;
+            if (!PreferenceSettings.Instance.EnablePersistExtensions || o == null) return;
 
             var extId = string.Empty;
             switch (o)
@@ -1935,7 +1935,7 @@ namespace Dynamo.Controls
 
             if (string.IsNullOrEmpty(extId)) return;
 
-            var setting = dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettings?.Find(ext => ext.UniqueId == extId);
+            var setting = PreferenceSettings.Instance.ViewExtensionSettings?.Find(ext => ext.UniqueId == extId);
             if (setting != null)
             {
                 setting.IsOpen = true;

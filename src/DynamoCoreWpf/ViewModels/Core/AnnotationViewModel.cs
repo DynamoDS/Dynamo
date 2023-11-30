@@ -31,7 +31,6 @@ namespace Dynamo.ViewModels
         private const int portVerticalMidPoint = 17;
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
-        private PreferenceSettings preferenceSettings;
 
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
@@ -628,7 +627,6 @@ namespace Dynamo.ViewModels
             annotationModel = model;
 
             this.WorkspaceViewModel = workspaceViewModel;
-            this.preferenceSettings = WorkspaceViewModel.DynamoViewModel.PreferenceSettings;
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
@@ -671,7 +669,7 @@ namespace Dynamo.ViewModels
             }
             groupStyleList = new ObservableCollection<Configuration.StyleItem>();
             //This will add the GroupStyles created in Preferences panel to the Group Style Context menu.
-            LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
+            LoadGroupStylesFromPreferences(PreferenceSettings.Instance.GroupStyleItemsList);
         }
 
 

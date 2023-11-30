@@ -302,11 +302,6 @@ namespace Dynamo.Models
         public readonly DebugSettings DebugSettings;
 
         /// <summary>
-        ///     Preference settings for this instance of Dynamo.
-        /// </summary>
-        public readonly PreferenceSettings PreferenceSettings;
-
-        /// <summary>
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
         /// </summary>
         public readonly NodeFactory NodeFactory;
@@ -342,10 +337,10 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsShowingConnectors
         {
-            get { return PreferenceSettings.ShowConnector; }
+            get { return PreferenceSettings.Instance.ShowConnector; }
             set
             {
-                PreferenceSettings.ShowConnector = value;
+                PreferenceSettings.Instance.ShowConnector = value;
             }
         }
         /// <summary>
@@ -357,11 +352,11 @@ namespace Dynamo.Models
         {
             get
             {
-                return PreferenceSettings.ShowConnectorToolTip;
+                return PreferenceSettings.Instance.ShowConnectorToolTip;
             }
             set
             {
-                PreferenceSettings.ShowConnectorToolTip = value;
+                PreferenceSettings.Instance.ShowConnectorToolTip = value;
             }
         }
 
@@ -490,7 +485,7 @@ namespace Dynamo.Models
         protected virtual void ShutDownCore(bool shutdownHost)
         {
             Dispose();
-            PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
+            PreferenceSettings.Instance.SaveInternal(pathManager.PreferenceFilePath);
 
             //Remove reference on shutdown
             PreferenceSettings.dynamoModelRuntimePreferenceSettings = null;
@@ -694,18 +689,12 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+            PreferenceSettings.Instance = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
 
-            //Set the DynamoModel.PreferenceSetting as a static reference to the PreferenceSetting class for use in PreferenceSettings.Instance
-            PreferenceSettings.dynamoModelRuntimePreferenceSettings = PreferenceSettings;
-
-            if (PreferenceSettings != null)
-            {
-                SetUICulture(PreferenceSettings.Locale);
-                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
-                PreferenceSettings.MessageLogged += LogMessage;
-            }
-
+            SetUICulture(PreferenceSettings.Instance.Locale);
+            PreferenceSettings.Instance.PropertyChanged += PreferenceSettings_PropertyChanged;
+            PreferenceSettings.Instance.MessageLogged += LogMessage;
+            
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
 
             if (UpdateManager != null)
@@ -767,7 +756,7 @@ namespace Dynamo.Models
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
-            if (!IsServiceMode && !IsTestMode && PreferenceSettings.IsFirstRun)
+            if (!IsServiceMode && !IsTestMode && PreferenceSettings.Instance.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
 
@@ -785,18 +774,18 @@ namespace Dynamo.Models
 
                 if (migrator != null)
                 {
-                    var isFirstRun = PreferenceSettings.IsFirstRun;
-                    PreferenceSettings = migrator.PreferenceSettings;
+                    var isFirstRun = PreferenceSettings.Instance.IsFirstRun;
+                    PreferenceSettings.Instance = migrator.PreferenceSettings;
 
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
-                    PreferenceSettings.IsFirstRun = isFirstRun;
+                    PreferenceSettings.Instance.IsFirstRun = isFirstRun;
                 }
             }
 
-            if (!IsServiceMode && PreferenceSettings.IsFirstRun && !IsTestMode)
+            if (!IsServiceMode && PreferenceSettings.Instance.IsFirstRun && !IsTestMode)
             {
-                PreferenceSettings.AddDefaultTrustedLocations();
+                PreferenceSettings.Instance.AddDefaultTrustedLocations();
             }
 
             InitializePreferences();
@@ -805,12 +794,12 @@ namespace Dynamo.Models
             // in AppData. If list of PackageFolders is empty, add the folder in AppData to the list since there
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
-            if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> { BuiltInPackagesToken, pathManager.UserDataDirectory };
+            if (PreferenceSettings.Instance.CustomPackageFolders.Count == 0)
+                PreferenceSettings.Instance.CustomPackageFolders = new List<string> { BuiltInPackagesToken, pathManager.UserDataDirectory };
 
-            if (!PreferenceSettings.CustomPackageFolders.Contains(BuiltInPackagesToken))
+            if (!PreferenceSettings.Instance.CustomPackageFolders.Contains(BuiltInPackagesToken))
             {
-                PreferenceSettings.CustomPackageFolders.Insert(0, BuiltInPackagesToken);
+                PreferenceSettings.Instance.CustomPackageFolders.Insert(0, BuiltInPackagesToken);
             }
 
             // Make sure that the default package folder is added in the list if custom packages folder.
@@ -829,7 +818,7 @@ namespace Dynamo.Models
             // 4) Set from OOTB hard-coded default template
 
             // If a custom python template path doesn't already exists in the DynamoSettings.xml
-            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
+            if (string.IsNullOrEmpty(PreferenceSettings.Instance.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.Instance.PythonTemplateFilePath) && !IsServiceMode)
             {
                 // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
                 // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
@@ -842,8 +831,8 @@ namespace Dynamo.Models
                     // If a custom python template path was set in the config apply that template
                     if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
                     {
-                        PreferenceSettings.PythonTemplateFilePath = templatePath;
-                        Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + PreferenceSettings.PythonTemplateFilePath);
+                        PreferenceSettings.Instance.PythonTemplateFilePath = templatePath;
+                        Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + PreferenceSettings.Instance.PythonTemplateFilePath);
                     }
 
                     // Otherwise fallback to the default
@@ -863,11 +852,10 @@ namespace Dynamo.Models
             else
             {
                 // A custom python template path already exists in the DynamoSettings.xml
-                Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
+                Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.Instance.PythonTemplateFilePath);
             }
 
-            pathManager.Preferences = PreferenceSettings;
-            PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
+            PreferenceSettings.Instance.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
             if (!IsServiceMode)
             {
@@ -918,7 +906,7 @@ namespace Dynamo.Models
             libraryCore.Compilers.Add(Language.Associative, new Compiler(libraryCore));
             libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
 
-            LibraryServices = new LibraryServices(libraryCore, pathManager, PreferenceSettings);
+            LibraryServices = new LibraryServices(libraryCore, pathManager);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
@@ -1125,8 +1113,8 @@ namespace Dynamo.Models
             // This file is always named accordingly and located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
             if (!string.IsNullOrEmpty(pathManager.PythonTemplateFilePath) && File.Exists(pathManager.PythonTemplateFilePath))
             {
-                PreferenceSettings.PythonTemplateFilePath = pathManager.PythonTemplateFilePath;
-                Logger.Log(Resources.PythonTemplateAppData + " : " + PreferenceSettings.PythonTemplateFilePath);
+                PreferenceSettings.Instance.PythonTemplateFilePath = pathManager.PythonTemplateFilePath;
+                Logger.Log(Resources.PythonTemplateAppData + " : " + PreferenceSettings.Instance.PythonTemplateFilePath);
             }
 
             // Otherwise the OOTB hard-coded template is applied
@@ -1171,10 +1159,10 @@ namespace Dynamo.Models
                     return false;
             }
 
-            if (PreferenceSettings.CustomPackageFolders.Contains(fullFilename))
+            if (PreferenceSettings.Instance.CustomPackageFolders.Contains(fullFilename))
                 return false;
 
-            PreferenceSettings.CustomPackageFolders.Add(fullFilename);
+            PreferenceSettings.Instance.CustomPackageFolders.Add(fullFilename);
 
             return true;
         }
@@ -1430,12 +1418,9 @@ namespace Dynamo.Models
                 Logger.Log("Backup files timer is disposed");
             }
 
-            if (PreferenceSettings != null)
-            {
-                PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
-                PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
-                PreferenceSettings.MessageLogged -= LogMessage;
-            }
+            PreferenceSettings.Instance.PropertyChanged -= PreferenceSettings_PropertyChanged;
+            PreferenceSettings.Instance.RequestUserDataFolder -= pathManager.GetUserDataFolder;
+            PreferenceSettings.Instance.MessageLogged -= LogMessage;
 
             // Lucene disposals (just if LuceneNET was initialized)
             LuceneUtility.DisposeAll();
@@ -1598,11 +1583,11 @@ namespace Dynamo.Models
 
         }
 
-        internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
+        internal static bool IsDisabledPath(string packagesDirectory)
         {
-            if (!(preferences is IDisablePackageLoadingPreferences disablePrefs)) return false;
+            if (!(PreferenceSettings.Instance is IDisablePackageLoadingPreferences disablePrefs)) return false;
 
-            var isACustomPackageDirectory = preferences.CustomPackageFolders.Where(x => packagesDirectory.StartsWith(x)).Any();
+            var isACustomPackageDirectory = PreferenceSettings.Instance.CustomPackageFolders.Where(x => packagesDirectory.StartsWith(x)).Any();
 
             return
             //if this directory is the builtin packages location
@@ -1650,7 +1635,7 @@ namespace Dynamo.Models
                     parentPath = null;
                 }
                 var pathName = parentPath != null ? parentPath.FullName : path;
-                if (IsDisabledPath(pathName, PreferenceSettings))
+                if (IsDisabledPath(pathName))
                 {
                     continue;
                 }
@@ -1761,18 +1746,15 @@ namespace Dynamo.Models
 
         private void InitializePreferences()
         {
-            if (PreferenceSettings != null)
+            ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.Instance.NumberFormat;
+            PreferenceSettings.Instance.InitializeNamespacesToExcludeFromLibrary();
+
+            if (string.IsNullOrEmpty(PreferenceSettings.Instance.BackupLocation))
             {
-                ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
-                PreferenceSettings.InitializeNamespacesToExcludeFromLibrary();
-
-                if (string.IsNullOrEmpty(PreferenceSettings.BackupLocation))
-                {
-                    PreferenceSettings.BackupLocation = pathManager.DefaultBackupDirectory;
-                }
-
-                UpdateBackupLocation(PreferenceSettings.BackupLocation);
+                PreferenceSettings.Instance.BackupLocation = pathManager.DefaultBackupDirectory;
             }
+
+            UpdateBackupLocation(PreferenceSettings.Instance.BackupLocation);
         }
 
         internal bool UpdateBackupLocation(string selectedBackupLocation)
@@ -1782,7 +1764,7 @@ namespace Dynamo.Models
 
         internal bool IsDefaultBackupLocation()
         {
-            return PreferenceSettings.BackupLocation.Equals(pathManager.DefaultBackupDirectory);
+            return PreferenceSettings.Instance.BackupLocation.Equals(pathManager.DefaultBackupDirectory);
         }
 
         internal string DefaultBackupLocation()
@@ -1802,7 +1784,7 @@ namespace Dynamo.Models
             switch (e.PropertyName)
             {
                 case nameof(PreferenceSettings.NumberFormat):
-                    ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
+                    ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.Instance.NumberFormat;
                     break;
             }
         }
@@ -2540,7 +2522,7 @@ namespace Dynamo.Models
                 // backed up again.
                 var tempDict = new Dictionary<Guid, string>(backupFilesDict);
                 backupFilesDict.Clear();
-                PreferenceSettings.BackupFiles.Clear();
+                PreferenceSettings.Instance.BackupFiles.Clear();
                 foreach (var workspace in Workspaces)
                 {
                     if (!workspace.HasUnsavedChanges)
@@ -2561,7 +2543,7 @@ namespace Dynamo.Models
                     backupFilesDict[workspace.Guid] = savePath;
                     Logger.Log(Resources.BackupSavedMsg + ": " + savePath);
                 }
-                PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
+                PreferenceSettings.Instance.BackupFiles.AddRange(backupFilesDict.Values);
             });
         }
 
@@ -2581,8 +2563,8 @@ namespace Dynamo.Models
             }
 
             backupFilesTimer = new Timer(SaveBackupFiles);
-            backupFilesTimer.Change(PreferenceSettings.BackupInterval, PreferenceSettings.BackupInterval);
-            Logger.Log(String.Format("Backup files timer is started with an interval of {0} milliseconds", PreferenceSettings.BackupInterval));
+            backupFilesTimer.Change(PreferenceSettings.Instance.BackupInterval, PreferenceSettings.Instance.BackupInterval);
+            Logger.Log(String.Format("Backup files timer is started with an interval of {0} milliseconds", PreferenceSettings.Instance.BackupInterval));
         }
 
         #endregion
@@ -2787,7 +2769,7 @@ namespace Dynamo.Models
                 DebugSettings.VerboseLogging,
                 IsTestMode, LinterManager, string.Empty);
 
-            defaultWorkspace.RunSettings.RunType = PreferenceSettings.DefaultRunType;
+            defaultWorkspace.RunSettings.RunType = PreferenceSettings.Instance.DefaultRunType;
 
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);
@@ -3224,7 +3206,7 @@ namespace Dynamo.Models
             if (CurrentWorkspace is HomeWorkspaceModel)
             {
                 //Sets the home workspace run type based on the preferences settings value
-                ((HomeWorkspaceModel)CurrentWorkspace).RunSettings.RunType = PreferenceSettings.DefaultRunType;
+                ((HomeWorkspaceModel)CurrentWorkspace).RunSettings.RunType = PreferenceSettings.Instance.DefaultRunType;
             }
 
             //don't save the file path
@@ -3310,7 +3292,7 @@ namespace Dynamo.Models
         internal void HideUnhideNamespace(bool hide, string library, string namespc)
         {
             var str = library + ':' + namespc;
-            var namespaces = PreferenceSettings.NamespacesToExcludeFromLibrary;
+            var namespaces = PreferenceSettings.Instance.NamespacesToExcludeFromLibrary;
 
             if (hide)
             {

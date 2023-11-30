@@ -12,6 +12,7 @@ using CoreNodeModels;
 using System.Collections.Generic;
 using System;
 using Dynamo.Graph.Nodes;
+using Dynamo.Configuration;
 
 namespace DynamoCoreWpfTests
 {
@@ -104,7 +105,7 @@ namespace DynamoCoreWpfTests
             var node = Model.CurrentWorkspace.NodeFromWorkspace<LengthFromString>("5705381c277c4a86bf6650aeda12a468");
             Assert.IsFalse(node.IsModified);
 
-            Model.PreferenceSettings.NumberFormat = "0.0";
+            PreferenceSettings.Instance.NumberFormat = "0.0";
             Assert.IsTrue(node.IsModified);
         }
 

@@ -122,7 +122,7 @@ namespace Dynamo.Utilities
                 indexDir = FSDirectory.Open(indexPath);
             }
             // Create an analyzer to process the text
-            Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
+            Analyzer = CreateAnalyzerByLanguage(PreferenceSettings.Instance.Locale);
             CreateLuceneIndexWriter();    
         }
 

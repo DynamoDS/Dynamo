@@ -228,7 +228,7 @@ namespace Dynamo.UI.Views
             CloseWasExplicit = false;
             if (viewModel != null)
             {
-                viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+                PreferenceSettings.Instance.EnableStaticSplashScreen = !isCheckboxChecked;
             }
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
@@ -248,7 +248,7 @@ namespace Dynamo.UI.Views
             LoadPreferencesFileAtStartup();
 
             // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
-            if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
+            if (PreferenceSettings.Instance.IsFirstRun || PreferenceSettings.Instance.EnableStaticSplashScreen)
             {
                 SetSignInStatus(authManager.IsLoggedInInitial());
                 SetLoadingDone();
@@ -417,7 +417,7 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal void LoadPreferencesFileAtStartup()
         {
-            if (viewModel.PreferenceSettings.IsFirstRun == true)
+            if (PreferenceSettings.Instance.IsFirstRun == true)
             {
                 //Move the current location two levels up
                 var programDataDir = Directory.GetParent(Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory).ToString()).ToString();

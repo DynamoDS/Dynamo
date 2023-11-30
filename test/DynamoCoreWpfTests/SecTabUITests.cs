@@ -1,4 +1,5 @@
-﻿using Dynamo.Wpf.Views;
+using Dynamo.Configuration;
+using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using System;
@@ -24,12 +25,12 @@ namespace DynamoCoreWpfTests
             trustToggle.IsChecked = true;
             DispatcherUtil.DoEvents();
             Assert.IsTrue(trustToggle.IsChecked.Value);
-            Assert.IsTrue(Model.PreferenceSettings.DisableTrustWarnings);
+            Assert.IsTrue(PreferenceSettings.Instance.DisableTrustWarnings);
             Assert.IsTrue(ViewModel.PreferencesViewModel.DisableTrustWarnings);
             trustToggle.IsChecked = false;
             DispatcherUtil.DoEvents();
             Assert.IsFalse(trustToggle.IsChecked.Value);
-            Assert.IsFalse(Model.PreferenceSettings.DisableTrustWarnings);
+            Assert.IsFalse(PreferenceSettings.Instance.DisableTrustWarnings);
             Assert.IsFalse(ViewModel.PreferencesViewModel.DisableTrustWarnings);
 
         }

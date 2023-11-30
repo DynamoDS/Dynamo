@@ -109,10 +109,7 @@ namespace DynamoCoreWpfTests
             pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { packagesDirectory });
 
             var loader = new PackageLoader(pathManager.Object);
-            loader.LoadAll(new LoadPackageParams
-            {
-                Preferences = ViewModel.Model.PreferenceSettings
-            });
+            loader.LoadAll();
 
             PublishPackageViewModel vm = null;
             var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "package with native assembly");
@@ -136,10 +133,7 @@ namespace DynamoCoreWpfTests
             pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { packagesDirectory });
 
             var loader = new PackageLoader(pathManager.Object);
-            loader.LoadAll(new LoadPackageParams
-            {
-                Preferences = ViewModel.Model.PreferenceSettings
-            });
+            loader.LoadAll();
 
             PublishPackageViewModel vm = null;
             var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
@@ -162,10 +156,7 @@ namespace DynamoCoreWpfTests
             pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { packagesDirectory });
 
             var loader = new PackageLoader(pathManager.Object);
-            loader.LoadAll(new LoadPackageParams
-            {
-                Preferences = ViewModel.Model.PreferenceSettings
-            });
+            loader.LoadAll();
 
             PublishPackageViewModel vm = null;
             var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");

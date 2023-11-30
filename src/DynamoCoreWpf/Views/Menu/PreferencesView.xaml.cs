@@ -48,7 +48,7 @@ namespace Dynamo.Wpf.Views
         private void StoreOriginalCustomGroupStyles()
         {
             originalCustomGroupStyles = new List<GroupStyleItem>();
-            foreach (var groupStyle in dynViewModel.PreferenceSettings.GroupStyleItemsList)
+            foreach (var groupStyle in PreferenceSettings.Instance.GroupStyleItemsList)
             {
                 if (!groupStyle.IsDefault)
                 {
@@ -91,8 +91,8 @@ namespace Dynamo.Wpf.Views
 
             this.viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
 
-            LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
-            PythonZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.PythonScriptZoomScale;
+            LibraryZoomScalingSlider.Value = PreferenceSettings.Instance.LibraryZoomScale;
+            PythonZoomScalingSlider.Value = PreferenceSettings.Instance.PythonScriptZoomScale;
 
             stylesCustomColors = new ObservableCollection<CustomColorItem>();
             UpdateZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
@@ -476,7 +476,7 @@ namespace Dynamo.Wpf.Views
             };
 
             //Saves the current settings before exporting the xml file
-            dynViewModel.PreferenceSettings.SaveInternal(dynViewModel.Model.PathManager.PreferenceFilePath);
+            PreferenceSettings.Instance.SaveInternal(dynViewModel.Model.PathManager.PreferenceFilePath);
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {

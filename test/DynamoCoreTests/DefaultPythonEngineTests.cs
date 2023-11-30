@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.PythonServices;
 using NUnit.Framework;
@@ -25,7 +26,7 @@ namespace Dynamo.Tests
         [Test]
         public void NewPythonNodeUsingSystemDefaultEngine()
         {
-            CurrentDynamoModel.PreferenceSettings.DefaultPythonEngine = string.Empty;
+            PreferenceSettings.Instance.DefaultPythonEngine = string.Empty;
             var node = new PythonNode();
             node.GUID = Guid.NewGuid();
             CurrentDynamoModel.ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, false));
@@ -37,7 +38,7 @@ namespace Dynamo.Tests
         [Test]
         public void NewPythonNodeUsingUserDefaultEngine()
         {
-            CurrentDynamoModel.PreferenceSettings.DefaultPythonEngine = PythonEngineManager.IronPython2EngineName;
+            PreferenceSettings.Instance.DefaultPythonEngine = PythonEngineManager.IronPython2EngineName;
             var node = new PythonNode();
             node.GUID = Guid.NewGuid();
             CurrentDynamoModel.ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, false));

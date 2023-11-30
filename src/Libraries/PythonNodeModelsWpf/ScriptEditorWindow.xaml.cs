@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -120,7 +121,7 @@ namespace PythonNodeModelsWpf
             double deltaValue = fontSizePreferencesSliderProportionValue * Math.Abs(slider.Value - zoomScaleCacheValue);
             UpdateFontSize(shouldIncrease, deltaValue);
             zoomScaleCacheValue = (int)slider.Value;
-            dynamoViewModel.PreferenceSettings.PythonScriptZoomScale = (int)slider.Value;
+            PreferenceSettings.Instance.PythonScriptZoomScale = (int)slider.Value;
         }
 
         internal void Initialize(Guid workspaceGuid, Guid nodeGuid, string propName, string propValue)
@@ -147,8 +148,8 @@ namespace PythonNodeModelsWpf
             editText.Options.ShowTabs = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
 
             // Set font size in editor and cache it
-            editText.FontSize = dynamoViewModel.PreferenceSettings.PythonScriptZoomScale * fontSizePreferencesSliderProportionValue;
-            zoomScaleCacheValue = dynamoViewModel.PreferenceSettings.PythonScriptZoomScale;
+            editText.FontSize = PreferenceSettings.Instance.PythonScriptZoomScale * fontSizePreferencesSliderProportionValue;
+            zoomScaleCacheValue = PreferenceSettings.Instance.PythonScriptZoomScale;
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
@@ -306,7 +307,7 @@ namespace PythonNodeModelsWpf
 
             int percentage = Convert.ToInt32( editText.FontSize / fontSizePreferencesSliderProportionValue );
             zoomScaleCacheValue = percentage;
-            dynamoViewModel.PreferenceSettings.PythonScriptZoomScale = percentage;
+            PreferenceSettings.Instance.PythonScriptZoomScale = percentage;
         }
 
         /// <summary>

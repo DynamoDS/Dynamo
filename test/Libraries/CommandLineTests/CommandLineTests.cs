@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using Dynamo.Applications;
+using Dynamo.Configuration;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json;
@@ -138,7 +139,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("5a1fae3e13ce4ccfba737ec75057907b", 2.0);
 
             //the custom package paths should not be effected by running the CLI.
-            this.CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.ForEach(packagePath =>
+            PreferenceSettings.Instance.CustomPackageFolders.ForEach(packagePath =>
             {
                 Assert.IsFalse(packagePath.Contains(importPath) || packagePath == importPath);
             });

@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using Dynamo.Configuration;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 
@@ -74,7 +75,7 @@ namespace Dynamo.UI
             IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
             customize.AddCheckButton(RunManualCheckboxId, 
                 Dynamo.Wpf.Properties.Resources.FileDialogManualMode,
-                model.PreferenceSettings.OpenFileInManualExecutionMode);
+                PreferenceSettings.Instance.OpenFileInManualExecutionMode);
         }
 
         public DialogResult ShowDialog()
@@ -95,7 +96,7 @@ namespace Dynamo.UI
             if (!enableCustomDialog) return DialogResult.OK;
 
             customize.GetCheckButtonState(RunManualCheckboxId, out _runManualMode);
-            model.PreferenceSettings.OpenFileInManualExecutionMode = _runManualMode;
+            PreferenceSettings.Instance.OpenFileInManualExecutionMode = _runManualMode;
 
             return DialogResult.OK;
         }

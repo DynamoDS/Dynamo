@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -537,7 +538,7 @@ namespace Dynamo.ViewModels
         public void DownloadAndInstallPackage(IPackageInfo packageInfo, string downloadPath = null)
         {
             // User needs to accept terms of use before any packages can be downloaded from package manager
-            var prefSettings = DynamoViewModel.Model.PreferenceSettings;
+            var prefSettings = PreferenceSettings.Instance;
             var touAccepted = prefSettings.PackageDownloadTouAccepted;
             if (!touAccepted)
             {
@@ -632,7 +633,7 @@ namespace Dynamo.ViewModels
                         if (dialogResult == MessageBoxResult.OK)
                         {
                             // mark for uninstallation
-                            duplicatePackage.MarkForUninstall(DynamoViewModel.Model.PreferenceSettings);
+                            duplicatePackage.MarkForUninstall();
                         }
                         return false;// Any package that is in use must first be uninstalled before continuing to download.
                     }
@@ -709,7 +710,6 @@ namespace Dynamo.ViewModels
                 if(dialogResult == MessageBoxResult.No || dialogResult == MessageBoxResult.None) return false;
             }
 
-            var settings = DynamoViewModel.Model.PreferenceSettings;
             if (uninstallsRequiringRestart.Any())
             {
                 var conflictingPkgs = JoinPackageNames(uninstallsRequiringRestart, Environment.NewLine);
@@ -723,7 +723,7 @@ namespace Dynamo.ViewModels
                 if (dialogResult == MessageBoxResult.No)
                 {
                     // mark for uninstallation
-                    uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings));
+                    uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall());
                     return false;
                 }
                 else if (dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return false;
@@ -915,7 +915,7 @@ namespace Dynamo.ViewModels
                 // add custom path to custom package folder list
                 if (!String.IsNullOrEmpty(installPath))
                 {
-                    var settings = DynamoViewModel.Model.PreferenceSettings;
+                    var settings = PreferenceSettings.Instance;
                     if (!settings.CustomPackageFolders.Contains(installPath))
                     {
                         settings.CustomPackageFolders.Add(installPath);
@@ -1012,7 +1012,7 @@ namespace Dynamo.ViewModels
                         var dynModel = DynamoViewModel.Model;
                         try
                         {
-                            firstOrDefault.UninstallCore(dynModel.CustomNodeManager, PackageManagerExtension.PackageLoader, dynModel.PreferenceSettings);
+                            firstOrDefault.UninstallCore(dynModel.CustomNodeManager, PackageManagerExtension.PackageLoader);
                         }
                         catch
                         {

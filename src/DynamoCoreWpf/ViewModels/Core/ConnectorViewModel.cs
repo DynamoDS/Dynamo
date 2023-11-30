@@ -18,6 +18,7 @@ using System.Windows.Media;
 using Dynamo.Graph;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Models;
+using Dynamo.Configuration;
 
 namespace Dynamo.ViewModels
 {
@@ -1181,7 +1182,7 @@ namespace Dynamo.ViewModels
             model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
 
             workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            PreferenceSettings.Instance.PropertyChanged -= DynamoViewModel_PropertyChanged;
             if (Nodevm != null)
             {
                 Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;

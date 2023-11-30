@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -21,13 +22,6 @@ namespace Dynamo.PackageDetails
         private readonly PackageManagerClientViewModel packageManagerClientViewModel;
         private List<PackageDetailItem> packageDetailItems;
         private string license;
-        private IPreferences Preferences
-        {
-            get {
-                if (packageManagerClientViewModel == null && Models.DynamoModel.IsTestMode) return null;
-                return packageManagerClientViewModel.DynamoViewModel.PreferenceSettings;
-            }
-        }
 
         private int numberVotes;
         private bool hasVoted;
@@ -252,7 +246,7 @@ namespace Dynamo.PackageDetails
             PackageLoader packageLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
             packageManagerClientViewModel = packageDetailsViewExtension.PackageManagerClientViewModel;
             IsPackageDeprecated = packageManagerSearchElement.IsDeprecated;
-            IsEnabledForInstall = Preferences == null || !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
+            IsEnabledForInstall = PreferenceSettings.Instance == null || !(PreferenceSettings.Instance as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
 
             // Reversing the versions, so they appear newest-first.
             PackageDetailItems = packageManagerSearchElement.Header.versions

@@ -43,7 +43,6 @@ namespace Dynamo.Engine
         private readonly List<string> packagedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
-        private readonly IPreferences preferenceSettings;
 
         /// <summary>
         /// Returns core which is used for parsing code and loading libraries
@@ -74,20 +73,11 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="libraryManagementCore">Core which is used for parsing code and loading libraries</param>
         /// <param name="pathManager">Instance of IPathManager containing neccessary Dynamo paths</param>
-        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
-            : this(libraryManagementCore, pathManager, null) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LibraryServices"/> class.
-        /// </summary>
-        /// <param name="libraryManagementCore">Core which is used for parsing code and loading libraries</param>
-        /// <param name="pathManager">Instance of IPathManager containing neccessary Dynamo paths</param>
         /// <param name="preferences">The preference settings of the Dynamo instance</param>
-        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager, IPreferences preferences)
+        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
             LibraryManagementCore = libraryManagementCore;
             this.pathManager = pathManager;
-            preferenceSettings = preferences;
 
             PreloadLibraries(pathManager.PreloadedLibraries);
             PopulateBuiltIns();
@@ -366,7 +356,7 @@ namespace Dynamo.Engine
             IEnumerable<FunctionGroup> result = functionGroups.Values;
 
             // Skip namespaces specified in the preference settings
-            var settings = preferenceSettings as PreferenceSettings;
+            var settings = PreferenceSettings.Instance;
             if (settings != null)
             {
                 foreach (var nsp in settings.NamespacesToExcludeFromLibrary

@@ -1,4 +1,5 @@
 using System;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
 using Dynamo.Library;
@@ -121,7 +122,7 @@ namespace Dynamo.Extensions
             libraryLoader = new ExtensionLibraryLoader(dynamoModel);
             customNodeManager = dynamoModel.CustomNodeManager;
             dynamoVersion = new Version(DynamoModel.Version);
-            preferences = dynamoModel.PreferenceSettings;
+            preferences = PreferenceSettings.Instance;
             linterManager = dynamoModel.LinterManager;
             IsGeometryLibraryLoaded = dynamoModel.IsASMLoaded;
             NoNetworkMode = dynamoModel.NoNetworkMode;

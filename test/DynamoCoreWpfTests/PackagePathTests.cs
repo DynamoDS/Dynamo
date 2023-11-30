@@ -59,13 +59,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CannotDeletePathIfThereIsOnlyOne()
         {
-            var setting = new PreferenceSettings
-            {
-                CustomPackageFolders = { @"C:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders.Add(@"C:\");
 
-
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
 
             Assert.AreEqual(1, vm.RootLocations.Count);
             Assert.IsFalse(vm.DeletePathCommand.CanExecute(null));
@@ -74,12 +70,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ReorderingPathsTest()
         {
-            var setting = new PreferenceSettings
-            {
-                CustomPackageFolders = { @"C:\", @"D:\", @"E:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { @"C:\", @"D:\", @"E:\" };
 
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
 
             Assert.IsTrue(vm.MovePathDownCommand.CanExecute(0));
             Assert.IsFalse(vm.MovePathUpCommand.CanExecute(0));
@@ -106,13 +99,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CannotDeleteBuiltinPackagesPath()
         {
-            var setting = new PreferenceSettings
-            {
-                CustomPackageFolders = { DynamoModel.BuiltInPackagesToken, @"C:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { DynamoModel.BuiltInPackagesToken, @"C:\" };
 
-
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
 
             Assert.AreEqual(2, vm.RootLocations.Count);
             Assert.IsFalse(vm.DeletePathCommand.CanExecute(0));
@@ -122,13 +111,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CannotUpdateBuiltinPackagesPath()
         {
-            var setting = new PreferenceSettings
-            {
-                CustomPackageFolders = { DynamoModel.BuiltInPackagesToken, @"C:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { DynamoModel.BuiltInPackagesToken, @"C:\" };
 
-
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
 
             Assert.AreEqual(2, vm.RootLocations.Count);
             Assert.IsFalse(vm.UpdatePathCommand.CanExecute(0));
@@ -137,13 +122,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CannotDeleteProgramDataPath()
         {
-            var setting = new PreferenceSettings
-            {
-                CustomPackageFolders = { Path.Combine(ViewModel.Model.PathManager.CommonDataDirectory,"Packages"), @"C:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { Path.Combine(ViewModel.Model.PathManager.CommonDataDirectory, "Packages"), @"C:\" };
 
-
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
 
             Assert.AreEqual(2, vm.RootLocations.Count);
             Assert.IsFalse(vm.DeletePathCommand.CanExecute(0));
@@ -153,13 +134,10 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CannotUpdateProgramDataPath()
         {
-            var setting = new PreferenceSettings
-            {
-                CustomPackageFolders = { Path.Combine(ViewModel.Model.PathManager.CommonDataDirectory, "Packages"), @"C:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { Path.Combine(ViewModel.Model.PathManager.CommonDataDirectory, "Packages"), @"C:\" };
 
 
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
 
             Assert.AreEqual(2, vm.RootLocations.Count);
             Assert.IsFalse(vm.UpdatePathCommand.CanExecute(0));
@@ -169,12 +147,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void AddRemovePathsTest()
         {
-            var setting = new PreferenceSettings()
-            {
-                CustomPackageFolders = { @"Z:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { @"Z:\" };
 
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
 
             var path = string.Empty;
             vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
@@ -195,12 +170,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void AddPackagePathsTest()
         {
-            var setting = new PreferenceSettings()
-            {
-                CustomPackageFolders = { @"Z:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { @"Z:\" };
 
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
 
             var path = string.Empty;
             vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
@@ -217,11 +189,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void InstalledPackagesContainsCorrectNumberOfPackages()
         {
-            var setting = new PreferenceSettings()
-            {
-                CustomPackageFolders = { PackagesDirectory }
-            };
-            var vm = CreatePackagePathViewModel(setting);
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { PackagesDirectory };
+
+            var vm = CreatePackagePathViewModel();
             var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
 
             vm.packageLoader.PackagesLoaded += libraryLoader.LoadPackages;
@@ -232,7 +202,7 @@ namespace DynamoCoreWpfTests
             Action<IEnumerable<Assembly>> pkgsLoadedDelegate = (x) => { packagesLoaded = true; };
             vm.packageLoader.PackagesLoaded += pkgsLoadedDelegate;
 
-            vm.packageLoader.LoadAll(vm.loadPackageParams);
+            vm.packageLoader.LoadAll();
             Assert.AreEqual(20, vm.packageLoader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
@@ -253,19 +223,16 @@ namespace DynamoCoreWpfTests
         [Test]
         public void RemoveAddPackagePathChangesInstalledPackageState()
         {
-            var setting = new PreferenceSettings()
-            {
-                CustomPackageFolders = { PackagesDirectory }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { PackagesDirectory };
 
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
             var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
 
             vm.packageLoader.PackagesLoaded += libraryLoader.LoadPackages;
             vm.packageLoader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
 
             // Load packages in package path.
-            vm.packageLoader.LoadAll(vm.loadPackageParams);
+            vm.packageLoader.LoadAll();
 
             Assert.AreEqual(20, vm.packageLoader.LocalPackages.Count());
             // Remove package path.
@@ -297,27 +264,24 @@ namespace DynamoCoreWpfTests
         [Test]
         public void EnableCustomPackagePathsLoadsPackagesOnClosingPreferences()
         {
-            var setting = new PreferenceSettings()
-            {
-                CustomPackageFolders = { PackagesDirectory }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { @"Z:\" };
 
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
             var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
 
             vm.packageLoader.PackagesLoaded += libraryLoader.LoadPackages;
             vm.packageLoader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
 
-            (setting as IDisablePackageLoadingPreferences).DisableCustomPackageLocations = true;
+            PreferenceSettings.Instance.DisableCustomPackageLocations = true;
 
             // Load packages in package path.
-            vm.packageLoader.LoadAll(vm.loadPackageParams);
+            vm.packageLoader.LoadAll();
 
             Assert.AreEqual(0, vm.packageLoader.LocalPackages.Count());
 
             // simulate turning off "disable custom package paths" toggle.
-            (setting as IDisablePackageLoadingPreferences).DisableCustomPackageLocations = false;
-            vm.SetPackagesScheduledState(setting.CustomPackageFolders.First(), false);
+            PreferenceSettings.Instance.DisableCustomPackageLocations = false;
+            vm.SetPackagesScheduledState(PreferenceSettings.Instance.CustomPackageFolders.First(), false);
 
             // simulate closing preferences dialog by saving changes to packagepathviewmodel 
             vm.SaveSettingCommand.Execute(null);
@@ -332,12 +296,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void PathEnabledConverterCustomPaths()
         {
-            var setting = new PreferenceSettings()
-            {
-                CustomPackageFolders = { @"Z:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { @"Z:\" };
 
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
             var path = string.Empty;
             vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
 
@@ -346,7 +307,7 @@ namespace DynamoCoreWpfTests
             var x = new PathEnabledConverter();
             Assert.False((bool)x.Convert(new object[] { vm, path },null,null,null ));
 
-            setting.DisableCustomPackageLocations = true;
+            PreferenceSettings.Instance.DisableCustomPackageLocations = true;
 
             Assert.True((bool)x.Convert(new object[] { vm, path }, null, null, null));
         }
@@ -354,12 +315,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void PathEnabledConverterBltinpackagesPath()
         {
-            var setting = new PreferenceSettings()
-            {
-                CustomPackageFolders = { @"Z:\" }
-            };
+            PreferenceSettings.Instance.CustomPackageFolders = new List<string>() { @"Z:\" };
 
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
             var path = string.Empty;
             vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
 
@@ -368,7 +326,7 @@ namespace DynamoCoreWpfTests
             var x = new PathEnabledConverter();
             Assert.False((bool)x.Convert(new object[] { vm, path }, null, null, null));
 
-            setting.DisableBuiltinPackages = true;
+            PreferenceSettings.Instance.DisableBuiltinPackages = true;
 
             Assert.True((bool)x.Convert(new object[] { vm, path }, null, null, null));
             Assert.False((bool)x.Convert(new object[] { vm, @"Z:\" }, null, null, null));
@@ -382,13 +340,10 @@ namespace DynamoCoreWpfTests
             {
                 CustomPackageFolders = {@"Z:\" }
             };
-            var vm = CreatePackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel();
             vm.packageLoader.PackagesLoaded += Loader_PackagesLoaded;
 
-            LoadPackageParams loadParams = new LoadPackageParams
-            {
-                Preferences = setting,
-            };
+            LoadPackageParams loadParams = new LoadPackageParams();
 
             vm.SaveSettingCommand.Execute(null);
 
@@ -423,8 +378,8 @@ namespace DynamoCoreWpfTests
         public void PathsAddedToCustomPacakgePathPreferences_SurvivePreferenceDialogOpenClose()
         {
             //add a new path to the package paths
-            Model.PreferenceSettings.CustomPackageFolders.Add(@"C:\doesNotExist");
-            Model.PreferenceSettings.CustomPackageFolders.Add(@"C:\doesNotExist\dde.dll");
+            PreferenceSettings.Instance.CustomPackageFolders.Add(@"C:\doesNotExist");
+            PreferenceSettings.Instance.CustomPackageFolders.Add(@"C:\doesNotExist\dde.dll");
 
             //assert preference settings is correct after prefs window open and close.
             var preferencesWindow = new PreferencesView(View);
@@ -435,25 +390,20 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             //assert preference settings is correct.
-            Assert.Contains(@"C:\doesNotExist", Model.PreferenceSettings.CustomPackageFolders);
-            Assert.Contains(@"C:\doesNotExist\dde.dll", Model.PreferenceSettings.CustomPackageFolders);
+            Assert.Contains(@"C:\doesNotExist", PreferenceSettings.Instance.CustomPackageFolders);
+            Assert.Contains(@"C:\doesNotExist\dde.dll", PreferenceSettings.Instance.CustomPackageFolders);
         }
 
         #endregion
         #region Setup methods
-        private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings settings)
+        private PackagePathViewModel CreatePackagePathViewModel()
         {
-            var pathManager = new PathManager(new PathManagerParams { })
-            {
-                Preferences = settings
-            };
+            var pathManager = new PathManager(new PathManagerParams { });
 
             PackageLoader loader = new PackageLoader(pathManager);
-            
-            LoadPackageParams loadParams = new LoadPackageParams
-            {
-                Preferences = settings,
-            };
+
+            LoadPackageParams loadParams = new LoadPackageParams();
+
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             return new PackagePathViewModel(loader, loadParams, customNodeManager);
         }
@@ -485,7 +435,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void IfProgramDataPathIsFirstDefaultPackagePathIsStillAppData()
         {
-            var setting = Model.PreferenceSettings;
+            var setting = PreferenceSettings.Instance;
 
             var appDataFolder = GetAppDataFolder();
             Assert.AreEqual(4, ViewModel.Model.PathManager.PackagesDirectories.Count());

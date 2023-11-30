@@ -540,11 +540,6 @@ namespace Dynamo.PackageManager
             get { return PackageManagerClientViewModel.Downloads; }
         }
 
-        public IPreferences Preferences
-        {
-            get { return PackageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
-        }
-
         private bool isDetailPackagesExtensionOpened;
         public bool IsDetailPackagesExtensionOpened
         {
@@ -1159,9 +1154,7 @@ namespace Dynamo.PackageManager
 
             if (dialogResult == MessageBoxResult.Yes)
             {
-                // mark for uninstallation
-                var settings = PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings;
-                installed.MarkForUninstall(settings);
+                installed.MarkForUninstall();
             }
         }
 
@@ -1343,7 +1336,7 @@ namespace Dynamo.PackageManager
 
             List<PackageManagerSearchElementViewModel> list = null;
 
-            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
+            var isEnabledForInstall = !(PreferenceSettings.Instance as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
 
             // Filter based on user preference
             // A package has depndencies if the number of direct_dependency_ids is more than 1

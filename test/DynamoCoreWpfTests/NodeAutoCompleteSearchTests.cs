@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
@@ -114,7 +115,7 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = inPorts[1];
 
             // Set the suggestion to ObjectType
-            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+            PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -140,7 +141,7 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = outPorts[1];
 
             // Set the suggestion to ObjectType
-            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+            PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Results will be nodes that take color or color[] etc as params.
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -161,7 +162,7 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = cnvm.OutPorts.First();
 
             // Set the suggestion to ObjectType
-            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+            PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -181,7 +182,7 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = cnvm.OutPorts.First();
 
             // Set the suggestion to ObjectType
-            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+            PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -464,7 +465,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, suggestions.Count());
 
             // Set the suggestion to ObjectType
-            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+            PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -488,7 +489,7 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[0];
-            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+            PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Get the matching node elements for the specific node port.
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -520,7 +521,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, suggestions.Count());
 
             // Set the suggestion to ObjectType
-            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+            PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // The initial list will fill the FilteredResults with a list of default options
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -543,7 +544,7 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = outPorts[0];
 
             // Set the suggestion to ML
-            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+            PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
 
             // As there is no authentication in test fixture, no results are shown.
             searchViewModel.PopulateAutoCompleteCandidates();

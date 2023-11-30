@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -201,7 +202,7 @@ namespace Dynamo
 
         protected void LoadPackage(string packageDirectory)
         {
-            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
+            PreferenceSettings.Instance.CustomPackageFolders.Add(packageDirectory);
             var loader = GetPackageLoader();
             var pkg = loader.ScanPackageDirectory(packageDirectory);
             if (pkg is null)

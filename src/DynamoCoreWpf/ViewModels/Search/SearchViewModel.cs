@@ -148,9 +148,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (dynamoViewModel.Model.PreferenceSettings != null)
+                if (PreferenceSettings.Instance != null)
                 {
-                    return dynamoViewModel.Model.PreferenceSettings.ShowDetailedLayout;
+                    return PreferenceSettings.Instance.ShowDetailedLayout;
                 }
                 else
                 {
@@ -159,10 +159,10 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if (dynamoViewModel.Model.PreferenceSettings != null
-                    && dynamoViewModel.Model.PreferenceSettings.ShowDetailedLayout != value)
+                if (PreferenceSettings.Instance != null
+                    && PreferenceSettings.Instance.ShowDetailedLayout != value)
                 {
-                    dynamoViewModel.Model.PreferenceSettings.ShowDetailedLayout = value;
+                    PreferenceSettings.Instance.ShowDetailedLayout = value;
                     RaisePropertyChanged("IsDetailedMode");
                 }
             }

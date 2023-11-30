@@ -215,10 +215,10 @@ namespace DynamoCoreWpfTests
         public void ViewExtensionOpensWithDynamoWhenRememberedTest()
         {
             RaiseLoadedEvent(this.View);
-            ViewModel.PreferenceSettings.EnablePersistExtensions = true;
+            PreferenceSettings.Instance.EnablePersistExtensions = true;
 
             //assert that option is enabled
-            Assert.IsTrue(ViewModel.PreferenceSettings.EnablePersistExtensions);
+            Assert.IsTrue(PreferenceSettings.Instance.EnablePersistExtensions);
 
             //open extension
             var extensionManager = View.viewExtensionManager;
@@ -248,10 +248,10 @@ namespace DynamoCoreWpfTests
         public void ViewExtensionDoesNotOpensWithDynamoWhenClosedTest()
         {
             RaiseLoadedEvent(this.View);
-            ViewModel.PreferenceSettings.EnablePersistExtensions = true;
+            PreferenceSettings.Instance.EnablePersistExtensions = true;
 
             //assert that option is enabled
-            Assert.IsTrue(ViewModel.PreferenceSettings.EnablePersistExtensions);
+            Assert.IsTrue(PreferenceSettings.Instance.EnablePersistExtensions);
 
             //open extension
             var extensionManager = View.viewExtensionManager;
@@ -285,10 +285,10 @@ namespace DynamoCoreWpfTests
         public void ViewExtensionDoesNotOpenWhenNotRememberedTest()
         {
             RaiseLoadedEvent(this.View);
-            ViewModel.PreferenceSettings.EnablePersistExtensions = false;
+            PreferenceSettings.Instance.EnablePersistExtensions = false;
 
             //assert that option is disabled
-            Assert.IsFalse(ViewModel.PreferenceSettings.EnablePersistExtensions);
+            Assert.IsFalse(PreferenceSettings.Instance.EnablePersistExtensions);
 
             //open extension
             var extensionManager = View.viewExtensionManager;

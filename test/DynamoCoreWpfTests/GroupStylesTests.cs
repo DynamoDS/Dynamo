@@ -85,8 +85,6 @@ namespace DynamoCoreWpfTests
             int currentGroupStylesCounter = 5;
             Open(@"UI\GroupTest.dyn");
 
-            var preferencesSettings = (View.DataContext as DynamoViewModel).PreferenceSettings;
-
             //Creates the Preferences dialog and the ScaleFactor = 2 ( Medium)
             var preferencesWindow = new PreferencesView(View);
             preferencesWindow.Show();
@@ -102,7 +100,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().Count(), prefViewModel.StyleItemsList.Count);
 
             //Add one Custom Group Style to the PreferencesView
-            preferencesSettings.GroupStyleItemsList.Add(new Dynamo.Configuration.GroupStyleItem { Name = "Custom 1", HexColorString = "FFFF00", IsDefault = false });
+            PreferenceSettings.Instance.GroupStyleItemsList.Add(new Dynamo.Configuration.GroupStyleItem { Name = "Custom 1", HexColorString = "FFFF00", IsDefault = false });
             
             //Close the Preferences Dialog 
             preferencesWindow.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
@@ -128,7 +126,7 @@ namespace DynamoCoreWpfTests
             var tabName = "Visual Settings";
             var expanderName = "Group Styles";
 
-            var preferencesSettings = (View.DataContext as DynamoViewModel).PreferenceSettings;
+            var preferencesSettings = PreferenceSettings.Instance;
 
             //Creates the Preferences dialog 
             var preferencesWindow = new PreferencesView(View);

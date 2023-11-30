@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using Dynamo.Configuration;
 using Dynamo.ViewModels;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
@@ -88,7 +89,7 @@ namespace Dynamo.PackageManager
             // We are forced to make the update ourselves if the Preferences ViewModel has not been initialized yet
             if (String.IsNullOrEmpty(PreferencesViewModel?.SelectedPackagePathForInstall))
             {
-                PreferencesViewModel.SelectedPackagePathForInstall = dynamoViewModel.PreferenceSettings.SelectedPackagePathForInstall;
+                PreferencesViewModel.SelectedPackagePathForInstall = PreferenceSettings.Instance.SelectedPackagePathForInstall;
             }
         }
 
