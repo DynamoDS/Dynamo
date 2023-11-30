@@ -492,6 +492,9 @@ namespace Dynamo.Models
             Dispose();
             PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
 
+            //Remove reference on shutdown
+            PreferenceSettings.dynamoModelRuntimePreferenceSettings = null;
+
             OnCleanup();
 
             DynamoSelection.DestroyInstance();
