@@ -1086,6 +1086,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// If MLAutocompleteTOU is approved
+        /// </summary>
+        internal bool IsMLAutocompleteTOUApproved
+        {
+            get
+            {
+                return preferenceSettings.IsMLAutocompleteTOUApproved;
+            }
+        }
+
+        /// <summary>
         /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
         /// </summary>
         public bool NodeAutocompleteMachineLearningIsChecked
