@@ -788,9 +788,6 @@ namespace Dynamo.Models
                     var isFirstRun = PreferenceSettings.IsFirstRun;
                     PreferenceSettings = migrator.PreferenceSettings;
 
-                    //Set the DynamoModel.PreferenceSetting as a static reference to the PreferenceSetting class for use in PreferenceSettings.Instance
-                    PreferenceSettings.dynamoModelRuntimePreferenceSettings = PreferenceSettings;
-
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
                     PreferenceSettings.IsFirstRun = isFirstRun;
