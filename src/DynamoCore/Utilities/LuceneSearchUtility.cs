@@ -163,7 +163,9 @@ namespace Dynamo.Utilities
             if (DynamoModel.IsTestMode && startConfig.StorageType == LuceneStorage.FILE_SYSTEM) return null;
 
             var name = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Name), string.Empty, Field.Store.YES);
+            var nameSplitted = new TextField(nameof(LuceneConfig.NodeFieldsEnum.NameSplitted), string.Empty, Field.Store.YES);
             var fullCategory = new TextField(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
+            var categorySplitted = new TextField(nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted), string.Empty, Field.Store.YES);          
             var description = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Description), string.Empty, Field.Store.YES);
             var keywords = new TextField(nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
             var docName = new StringField(nameof(LuceneConfig.NodeFieldsEnum.DocName), string.Empty, Field.Store.YES);
@@ -172,8 +174,10 @@ namespace Dynamo.Utilities
 
             var d = new Document()
             {
-                fullCategory,
                 name,
+                nameSplitted,
+                fullCategory,
+                categorySplitted,                
                 description,
                 keywords,
                 fullDoc,
@@ -269,9 +273,26 @@ namespace Dynamo.Utilities
 
             var booleanQuery = new BooleanQuery();
             string searchTerm = QueryParser.Escape(SearchTerm);
+            var bCategoryBasedSearch = searchTerm.Contains('.') ? true : false;
 
             foreach (string f in fields)
             {
+                //Needs to be again due that now a query can contain different values per field (e.g. CategorySplitted:list, Name:tr)
+                searchTerm = QueryParser.Escape(SearchTerm);
+                if (bCategoryBasedSearch == true)
+                {
+                    //This code section should be only executed if the search criteria is CategoryBased like "category.nodename"
+                    if (f != nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) &&
+                        f != nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                        continue;
+
+                    var categorySearchBased = searchTerm.Split('.');
+                    if (f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                        searchTerm = categorySearchBased[0];
+                    else
+                        searchTerm = categorySearchBased[1];
+                }
+
                 FuzzyQuery fuzzyQuery;
                 if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
                 {
@@ -279,13 +300,30 @@ namespace Dynamo.Utilities
                     booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
                 }
 
+                //For normal search we don't consider the fields NameSplitted and CategorySplitted
+                if ((f == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ||
+                    f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted)) && bCategoryBasedSearch == false)
+                    continue;
+
+                //This case is for when the user type something like "list.", I mean, not specifying the node name or part of it
+                if (string.IsNullOrEmpty(searchTerm))
+                    continue;
+
                 var fieldQuery = CalculateFieldWeight(f, searchTerm);
                 var wildcardQuery = CalculateFieldWeight(f, searchTerm, true);
 
-                booleanQuery.Add(fieldQuery, Occur.SHOULD);
-                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                if (bCategoryBasedSearch && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                {
+                    booleanQuery.Add(fieldQuery, Occur.MUST);
+                    booleanQuery.Add(wildcardQuery, Occur.MUST);
+                }
+                else
+                {
+                    booleanQuery.Add(fieldQuery, Occur.SHOULD);
+                    booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                }
 
-                if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
+                if (searchTerm.Contains(' '))
                 {
                     foreach (string s in searchTerm.Split(' ', '.'))
                     {
@@ -317,8 +355,10 @@ namespace Dynamo.Utilities
         {
             WildcardQuery query;
 
+            var termText = fieldName == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ? searchTerm + "*" : "*" + searchTerm + "*";
+
             query = isWildcard == false ?
-                new WildcardQuery(new Term(fieldName, searchTerm)) : new WildcardQuery(new Term(fieldName, "*" + searchTerm + "*"));
+                new WildcardQuery(new Term(fieldName, searchTerm)) : new WildcardQuery(new Term(fieldName, termText));
 
             switch (fieldName)
             {
@@ -326,9 +366,19 @@ namespace Dynamo.Utilities
                     query.Boost = isWildcard == false?
                         LuceneConfig.SearchNameWeight :  LuceneConfig.WildcardsSearchNameWeight;
                     break;
+                case nameof(LuceneConfig.NodeFieldsEnum.NameSplitted):
+                    //Under this case the NameSplitted field will have less weight than CategorySplitted
+                    query.Boost = isWildcard == false ?
+                        LuceneConfig.SearchCategoryWeight : LuceneConfig.WildcardsSearchCategoryWeight;
+                    break;
                 case nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName):
                     query.Boost = isWildcard == false?
                         LuceneConfig.SearchCategoryWeight : LuceneConfig.WildcardsSearchCategoryWeight;
+                    break;
+                case nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted):
+                    //Under this case the CategorySplitted field will have more weight than NameSplitted
+                    query.Boost = isWildcard == false ?
+                        LuceneConfig.SearchNameWeight : LuceneConfig.WildcardsSearchNameWeight;
                     break;
                 case nameof(LuceneConfig.NodeFieldsEnum.Description):
                     query.Boost = isWildcard == false ?
@@ -431,7 +481,17 @@ namespace Dynamo.Utilities
             if (writer == null) return;
 
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+
+            var categoryParts = node.FullCategoryName.Split('.');
+            string categoryParsed = categoryParts.Length > 1 ? categoryParts[categoryParts.Length - 1] : node.FullCategoryName;
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted), categoryParsed);
+
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+
+            var nameParts = node.Name.Split('.');
+            string nameParsed = nameParts.Length > 1 ? nameParts[nameParts.Length - 1] : node.Name;
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.NameSplitted), nameParsed);
+
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
             if (node.SearchKeywords.Count > 0)
             {
