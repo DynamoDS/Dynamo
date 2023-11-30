@@ -100,9 +100,7 @@ namespace Dynamo.Utilities
                 return GetCantCommunicateErrorMessage();
             }
 
-            var output = GetData(processCommunicationTimeoutms);
-
-           return output;
+            return GetData(processCommunicationTimeoutms);
         }
 
         /// <summary>
