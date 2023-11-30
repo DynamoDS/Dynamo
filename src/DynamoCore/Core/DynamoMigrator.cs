@@ -269,7 +269,7 @@ namespace Dynamo.Core
         /// <returns></returns>
         public static IEnumerable<FileVersion> GetInstalledVersions(IPathManager pathManager)
         {
-            var installedVersions = GetInstalledVersionsCore(() => pathManager.GetDynamoUserDataLocations());
+            var installedVersions = GetInstalledVersionsCore(() => pathManager.PathResolver.GetDynamoUserDataLocations());
             return installedVersions.Any() ? installedVersions
                 : GetInstalledVersions(Path.GetDirectoryName(pathManager.UserDataDirectory));
         }
@@ -397,6 +397,32 @@ namespace Dynamo.Core
         public string CommonDataRootFolder
         {
             get { return string.Empty; }
+        }
+
+        /// <summary>
+        /// Returns the full path of user data location of all version of this
+        /// Dynamo product installed on this system. The default implementation
+        /// returns list of all subfolders in %appdata%\Dynamo as well as 
+        /// %appdata%\Dynamo\Dynamo Core\ folders.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetDynamoUserDataLocations()
+        {
+            var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dynamoFolder = Path.Combine(appDatafolder, "Dynamo");
+            if (!Directory.Exists(dynamoFolder)) return Enumerable.Empty<string>();
+
+            var paths = new List<string>();
+            var coreFolder = new FileInfo(UserDataRootFolder).FullName;
+            //Dynamo Core folder has to be enumerated first to cater migration from
+            //Dynamo 1.0 to Dynamo Core 1.0
+            if (Directory.Exists(coreFolder))
+            {
+                paths.AddRange(Directory.EnumerateDirectories(coreFolder));
+            }
+
+            paths.AddRange(Directory.EnumerateDirectories(dynamoFolder));
+            return paths;
         }
     }
 

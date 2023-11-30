@@ -58,6 +58,16 @@ namespace Dynamo.Interfaces
         /// as it will be appended by PathManager.
         /// </summary>
         string CommonDataRootFolder { get; }
+
+        /// <summary>
+        /// Returns a list of user data folders on this system.
+        /// </summary>
+        /// <returns>
+        /// The implementation of this interface method should return a list of user 
+        /// data folders, one for each of Dynamo product installed on the system. When 
+        /// there is no Dynamo product installed, this method returns an empty list.
+        /// </returns>
+        IEnumerable<string> GetDynamoUserDataLocations();
     }
 
     /// <summary>
@@ -190,6 +200,11 @@ namespace Dynamo.Interfaces
         int MinorFileVersion { get; }
 
         /// <summary>
+        /// Integration specific PathResolver
+        /// </summary>
+        IPathResolver PathResolver { get; }
+
+        /// <summary>
         /// Call this method to add additional path for consideration when path 
         /// resolution take place.
         /// </summary>
@@ -219,15 +234,5 @@ namespace Dynamo.Interfaces
         /// <returns>Returns true if the requested document can be located, or 
         /// false otherwise.</returns>
         bool ResolveDocumentPath(ref string document);
-
-        /// <summary>
-        /// Returns a list of user data folders on this system.
-        /// </summary>
-        /// <returns>
-        /// The implementation of this interface method should return a list of user 
-        /// data folders, one for each of Dynamo product installed on the system. When 
-        /// there is no Dynamo product installed, this method returns an empty list.
-        /// </returns>
-        IEnumerable<string> GetDynamoUserDataLocations();
     }
 }

@@ -189,7 +189,7 @@ namespace Dynamo
         public void GetSortedInstallVersion_FromDynamoLookUp()
         {
             var mockLookup = new Mock<IPathManager>();
-            mockLookup.Setup(x=>x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+            mockLookup.Setup(x=>x.PathResolver.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
 
             var versionList = DynamoMigratorBase.GetInstalledVersions(mockLookup.Object).ToList();
             VerifySortedOrder(versionList);
@@ -203,7 +203,7 @@ namespace Dynamo
         public void GetLatestVersionToMigrate()
         {
             var mockLookup = new Mock<IPathManager>();
-            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+            mockLookup.Setup(x => x.PathResolver.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
 
             var current = new FileVersion(1, 0, Path.Combine(TempFolder, "Test"));
             var latest = DynamoMigratorBase.GetLatestVersionToMigrate(mockLookup.Object, current);
@@ -217,7 +217,7 @@ namespace Dynamo
         public void GetLatestVersionToMigrate_10()
         {
             var mockLookup = new Mock<IPathManager>();
-            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+            mockLookup.Setup(x => x.PathResolver.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
 
             var current = new FileVersion(1, 0, TempFolder);
             var latest = DynamoMigratorBase.GetLatestVersionToMigrate(mockLookup.Object, current);
@@ -232,7 +232,7 @@ namespace Dynamo
         public void GetLatestVersionToMigrate_PartiallyValidData()
         {
             var mockLookup = new Mock<IPathManager>();
-            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+            mockLookup.Setup(x => x.PathResolver.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
 
             var current = new FileVersion(0, 9, TempFolder);
             var latest = DynamoMigratorBase.GetLatestVersionToMigrate(mockLookup.Object, current);
@@ -246,7 +246,7 @@ namespace Dynamo
         public void GetLatestVersionToMigrate_AllInvalidData()
         {
             var mockLookup = new Mock<IPathManager>();
-            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(new[] { "x", "y", "z" });
+            mockLookup.Setup(x => x.PathResolver.GetDynamoUserDataLocations()).Returns(new[] { "x", "y", "z" });
 
             var current = new FileVersion(1, 0, "a");
             var latest = DynamoMigratorBase.GetLatestVersionToMigrate(mockLookup.Object, current);

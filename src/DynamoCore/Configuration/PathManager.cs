@@ -103,6 +103,14 @@ namespace Dynamo.Core
 
         internal IPreferences Preferences { get; set; }
 
+        /// <summary>
+        /// PathResolver is used to resolve paths for custom nodes, packages, and preloaded libraries.
+        /// </summary>
+        public IPathResolver PathResolver
+        {
+            get { return pathResolver; }
+        }
+
         private IEnumerable<string> RootDirectories
         {
             get 
@@ -630,32 +638,6 @@ namespace Dynamo.Core
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
-        }
-
-        /// <summary>
-        /// Returns the full path of user data location of all version of this
-        /// Dynamo product installed on this system. The default implementation
-        /// returns list of all subfolders in %appdata%\Dynamo as well as 
-        /// %appdata%\Dynamo\Dynamo Core\ folders.
-        /// </summary>
-        /// <returns></returns>
-        public virtual IEnumerable<string> GetDynamoUserDataLocations()
-        {
-            var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var dynamoFolder = Path.Combine(appDatafolder, "Dynamo");
-            if (!Directory.Exists(dynamoFolder)) return Enumerable.Empty<string>();
-
-            var paths = new List<string>();
-            var coreFolder = Path.Combine(dynamoFolder, "Dynamo Core");
-            //Dynamo Core folder has to be enumerated first to cater migration from
-            //Dynamo 1.0 to Dynamo Core 1.0
-            if (Directory.Exists(coreFolder))
-            {
-                paths.AddRange(Directory.EnumerateDirectories(coreFolder));
-            }
-
-            paths.AddRange(Directory.EnumerateDirectories(dynamoFolder));
-            return paths;
         }
 
         /// <summary>
