@@ -1413,7 +1413,7 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
   <data name="NameNeedMoreCharacters" xml:space="preserve">
     <value>Must be at least 3 characters</value>
     <comment>ErrorString</comment>
-  </data>    
+  </data>
   <data name="PackageManagerProvidePackageName" xml:space="preserve">
     <value>Provide package name</value>
     <comment>ErrorString</comment>
@@ -1905,7 +1905,7 @@ Want to publish a different package?</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package. When a new version of a package is added, version number must be increased.</value>
-  </data>    
+  </data>
   <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
     <value>Website link for the package.</value>
   </data>
@@ -3236,12 +3236,12 @@ To install the latest version of a package, click Install. \n
   <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
     <value>Node Library</value>
   </data>
-    <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
     <value>When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
 
 Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
     </value>
-  </data>    
+  </data>
   <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
     <value>DLL file containing types and methods that Dynamo imports as nodes. Mark ZeroTouch, NodeModel, or NodeViewCustomization DLLs and types you want to import into Dynamo as node libraries.</value>
   </data>
@@ -3854,5 +3854,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="ElementBindingDesc" xml:space="preserve">
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
+  </data>
+  <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
+    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use.</value>
   </data>
 </root>
