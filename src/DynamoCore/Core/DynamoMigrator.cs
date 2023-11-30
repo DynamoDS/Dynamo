@@ -269,7 +269,7 @@ namespace Dynamo.Core
         /// <returns></returns>
         public static IEnumerable<FileVersion> GetInstalledVersions(IPathManager pathManager)
         {
-            var installedVersions = GetInstalledVersionsCore(() => pathManager.PathResolver.GetDynamoUserDataLocations());
+            var installedVersions = GetInstalledVersionsCore(() => pathManager.PathResolver != null? pathManager.PathResolver.GetDynamoUserDataLocations() : Enumerable.Empty<string>());
             return installedVersions.Any() ? installedVersions
                 : GetInstalledVersions(Path.GetDirectoryName(pathManager.UserDataDirectory));
         }
