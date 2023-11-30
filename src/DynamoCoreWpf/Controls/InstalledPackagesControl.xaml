@@ -346,9 +346,10 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Path=RelativePath}"
-                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                                           FontSize="12"
-                                                                           TextTrimming="CharacterEllipsis" />
+                                                                       Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                                       FontSize="12"
+                                                                       FontWeight="Regular"
+                                                                       TextTrimming="CharacterEllipsis" />
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
 
