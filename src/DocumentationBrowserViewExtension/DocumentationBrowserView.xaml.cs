@@ -111,8 +111,6 @@ namespace Dynamo.DocumentationBrowser
 
         protected virtual void Dispose(bool disposing)
         {
-            System.Console.WriteLine("documentationBrowser dispose called");
-
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
             if (this.documentationBrowser != null)
@@ -174,7 +172,6 @@ namespace Dynamo.DocumentationBrowser
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 hasBeenInitialized = documentationBrowser.EnsureCoreWebView2Async().ContinueWith((_) => {
 
-                    System.Console.WriteLine("documentationBrowser.EnsureCoreWebView2Async() done");
                     if (isDisposing) return;
 
                     this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
