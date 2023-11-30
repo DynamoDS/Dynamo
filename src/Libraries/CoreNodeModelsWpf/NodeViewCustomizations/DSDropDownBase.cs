@@ -70,8 +70,6 @@ namespace CoreNodeModelsWpf.Nodes
         {
             comboBox.DropDownOpened -= DropDownOpened;
             comboBox.SelectionChanged -= SelectionChanged;
-
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
