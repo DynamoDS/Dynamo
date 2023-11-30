@@ -39,7 +39,7 @@ namespace DynamoUtilitiesTests
                 {   System.Threading.Thread.Sleep(100);
                     process.Kill();
                 });
-                return GetData(2000).Result;
+                return GetData(2000);
             }
         }
 
