@@ -18,6 +18,7 @@ using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using static Dynamo.ViewModels.SearchViewModel;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views
@@ -649,6 +650,17 @@ namespace Dynamo.Wpf.Views
         {
             this.CloseButton_Click(this.CloseButton, e);
             this.dynViewModel.ShowPackageManager(Dynamo.Wpf.Properties.Resources.PackageManagerInstalledPackagesTab);
+        }
+
+        private void RecommendedNodesRadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!viewModel.IsMLAutocompleteTOUApproved)
+            {
+                dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
+                // Reset back to object type recommendations
+                RecommendedNodesRadioButton.IsChecked = false;
+                ObjectTypeRadioButton.IsChecked = true;
+            }
         }
     }
 }
