@@ -1893,7 +1893,6 @@ namespace DynamoCoreWpfTests.PackageManager
             vm.AddAllFilesAfterSelection(allFiles);
             vm.AddAllFilesAfterSelection(allDuplicateFiles);
 
-            var assemblies = vm.Assemblies;
             var additionalFiles = vm.AdditionalFiles;
 
             var packageContents = vm.PackageContents;
@@ -1903,13 +1902,12 @@ namespace DynamoCoreWpfTests.PackageManager
             // that the PackageContents contains the correct number of items
             var allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.ToList());
 
-            // add 2 root folders, but discard one duplicate assembly file and one folder containing duplicate assembly file  
-            Assert.AreEqual(allFilesAndFoldres.Count, allFiles.Count + allFolders.Count + (allDuplicateFiles.Count - 1) + (allDuplicateFolders.Count - 1) + 2);
-            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
+            // add 2 root folders
+            Assert.AreEqual(allFilesAndFoldres.Count, allFiles.Count + allFolders.Count + (allDuplicateFiles.Count) + (allDuplicateFolders.Count) + 2);
             Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
 
-            // add 2 root folders, but discard one folder containing duplicate assembly file
-            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + (allDuplicateFolders.Count - 1) + 2);
+            // add 2 root folders
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + (allDuplicateFolders.Count) + 2);
 
             // Arrange
             // try to add the folder one level above the two root folders
@@ -1926,13 +1924,12 @@ namespace DynamoCoreWpfTests.PackageManager
             // that the PackageContents still contains the correct number of items
             allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
 
-            // add 1 root folder, but discard one duplicate assembly file and one folder containing duplicate assembly file  
-            Assert.AreEqual(allFilesAndFoldres.Count, (commonRootFiles.Count - 1) + (commonRootFolders.Count - 1) + 1);
-            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
+            // add 1 root folder
+            Assert.AreEqual(allFilesAndFoldres.Count, (commonRootFiles.Count) + (commonRootFolders.Count) + 1);
             Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
 
-            // add 1 root folder1, but discard one folder containing duplicate assembly file
-            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), (commonRootFolders.Count - 1) + 1);
+            // add 1 root folder1
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), (commonRootFolders.Count) + 1);
         }
 
 
@@ -1982,7 +1979,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var files = allRootItems.Count(x => !x.DependencyType.Equals(DependencyType.Folder));
 
             Assert.AreEqual(5, folders);
-            Assert.AreEqual(5, files);
+            Assert.AreEqual(4, files);
         }
 
 
@@ -2152,17 +2149,14 @@ namespace DynamoCoreWpfTests.PackageManager
             var childItems = PackageItemRootViewModel.GetFiles(rootFolder.First());
 
             var files = childItems.Where(x => x.DependencyType.Equals(DependencyType.File));
-            var dllFiles = childItems.Where(x => x.DependencyType.Equals(DependencyType.Assembly));
             var dyfPreviewFiles = childItems.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
             var folders = childItems.Where(x => x.DependencyType.Equals(DependencyType.Folder));
 
             Assert.AreEqual(4, files.Count());
-            Assert.AreEqual(1, dllFiles.Count());
             Assert.AreEqual(1, dyfPreviewFiles.Count());
-            Assert.AreEqual(5, folders.Count());
+            Assert.AreEqual(4, folders.Count());
 
             // Assert
-            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(dllFiles.First()));
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(dyfPreviewFiles.First()));
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".json"))));
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".xml"))));
@@ -2225,10 +2219,6 @@ namespace DynamoCoreWpfTests.PackageManager
             var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
             var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
             var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
-            var prDllFiles = previewFiles.Where(x => x.DependencyType.Equals(DependencyType.Assembly));
-
-            Assert.IsTrue(prDllFiles.All(x => Path.GetDirectoryName(x.FilePath) == Path.GetDirectoryName(prDllFiles.First().FilePath)));
-            var prDllFolder = Path.GetDirectoryName(prDllFiles.First().FilePath);
 
             newPkgVm.Name = "SingleFolderPublishPackage";
             newPkgVm.MajorVersion = "0";
@@ -2241,15 +2231,10 @@ namespace DynamoCoreWpfTests.PackageManager
             // Arrange
             var createdFiles = Directory.GetFiles(publishPath, "*", SearchOption.AllDirectories).ToList();
             var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
-            var crDllFiles = createdFiles.Where(x => x.EndsWith(".dll"));
-
-            Assert.IsTrue(crDllFiles.All(x => Path.GetDirectoryName(x) == Path.GetDirectoryName(crDllFiles.First())));
-            var crDllFolder = Path.GetDirectoryName(crDllFiles.First());
 
             // Assert
             Assert.AreEqual(createdFiles.Count(), previewFiles.Count());
             Assert.AreEqual(createdFolders.Count(), previewFolders.Count() - 1);  // discount one for the root folder is included
-            Assert.AreEqual(2, crDllFiles.Count(), prDllFiles.Count());
 
             // Clean up
             Directory.Delete(publishPath, true);
