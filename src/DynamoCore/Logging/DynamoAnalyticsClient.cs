@@ -119,7 +119,7 @@ namespace Dynamo.Logging
             Session.Start();
 
             //Dynamo app version.
-            var appversion = DynamoModel.AppVersion;
+            var appversion = string.IsNullOrEmpty(hostAnalyticsInfo.AppVersion) ? DynamoModel.AppVersion : hostAnalyticsInfo.AppVersion;
 
             var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? "Dynamo" : hostAnalyticsInfo.HostName;
 
