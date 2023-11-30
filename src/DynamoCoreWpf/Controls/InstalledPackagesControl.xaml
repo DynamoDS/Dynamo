@@ -52,10 +52,12 @@
                                  GroupName="PackageFilters"
                                  IsChecked="{Binding Path=IsChecked, Mode=TwoWay}"
                                  Style="{StaticResource {x:Type ToggleButton}}"
-                                 FontSize="10"
+                                 FontSize="11"
                                  FontFamily="Artifakt Element"
                                  FontWeight="Medium"
                                  HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 VerticalContentAlignment="Center"
                                  BorderThickness="1"
                                  BorderBrush="Transparent"
                                  UseLayoutRounding="True"
@@ -121,7 +123,7 @@
                                                 </TextBlock>
                                                 <TextBlock Text="{Binding Path=Model.VersionName}"
                                                                MinWidth="70"
-                                                               FontSize="11"
+                                                               FontSize="12"
                                                                VerticalAlignment="Center"
                                                                Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
                                                
@@ -334,7 +336,7 @@
                                                         Margin="0,0,0,5">
 
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
-                                                           FontSize="11"
+                                                           FontSize="12"
                                                        Padding="0,5,5,5"
                                                            Foreground="{StaticResource PreferencesWindowFontColor}"></Label>
                                                 <ItemsControl Name="AdditionalFiles"
@@ -345,7 +347,7 @@
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Path=RelativePath}"
                                                                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                                           FontSize="9"
+                                                                           FontSize="11"
                                                                            TextTrimming="CharacterEllipsis" />
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>

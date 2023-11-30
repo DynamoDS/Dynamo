@@ -1023,7 +1023,7 @@
         <Setter Property="CaretBrush" Value="{StaticResource PrimaryCharcoal200Brush}" />
         <Setter Property="Padding" Value="10,12,10,8"/>
         <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
-        <Setter Property="FontSize" Value="12px" />
+        <Setter Property="FontSize" Value="14px" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
 
@@ -4251,7 +4251,7 @@
 
     <Style x:Key="PackageManagerTab" TargetType="{x:Type TabItem}">
         <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
