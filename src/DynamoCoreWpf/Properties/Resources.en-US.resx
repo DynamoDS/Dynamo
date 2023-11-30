@@ -3853,6 +3853,6 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
   </data>
   <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
-    <value>In order to access the Recommended Nodes feature please accept the dedicated Terms of Use located under Dynamo —&gt; Agreement to Collect Usability Data.</value>
+    <value>To access the Recommended Nodes feature please read Dynamo —&gt; Agreement and Terms of Use then accept.</value>
   </data>
 </root>
