@@ -146,10 +146,7 @@ namespace Dynamo.Utilities
                 }
             });
 
-            var completedTask = Task.WhenAny(readStdOutTask, Task.Delay(TimeSpan.FromMilliseconds(timeoutms))).Result;
-            //if the completed task was our read std out task, then return the data
-            //else we timed out, so return an empty string.
-            return completedTask == readStdOutTask ? readStdOutTask.Result : string.Empty;
+            return readStdOutTask.Wait(timeoutms) ? readStdOutTask.Result : string.Empty;
         }
 
         protected void RaiseMessageLogged(string message)

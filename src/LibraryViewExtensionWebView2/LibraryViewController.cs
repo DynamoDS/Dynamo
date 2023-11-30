@@ -351,16 +351,19 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 };
             }
 
-            isInitialized = browser.EnsureCoreWebView2Async().ContinueWith((_) =>
+            if (isInitialized == null)
             {
-                if (isDisposing) return;
+                isInitialized = browser.EnsureCoreWebView2Async().ContinueWith((_) =>
+                {
+                    if (isDisposing) return;
 
-                this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
-                twoWayScriptingObject = new ScriptingObject(this);
-                //register the interop object into the browser.
-                this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
-                browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+                    this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+                    twoWayScriptingObject = new ScriptingObject(this);
+                    //register the interop object into the browser.
+                    this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
+                    browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
             await isInitialized;
         }
 

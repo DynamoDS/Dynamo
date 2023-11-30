@@ -100,13 +100,15 @@ namespace Dynamo.Notifications
             // This ensures no network traffic when Notification center feature is turned off
             if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter && !dynamoViewModel.Model.NoNetworkMode ) 
             {
-                InitializeBrowserAsync();
+                notificationUIPopup.webView.Loaded += InitializeBrowserAsync;
                 RequestNotifications();
             }
         }
 
-        private async void InitializeBrowserAsync()
+        private async void InitializeBrowserAsync(object sender, RoutedEventArgs e)
         {
+            if (isDisposing) return;
+
             if (webBrowserUserDataFolder != null)
             {
                 //This indicates in which location will be created the WebView2 cache folder
@@ -302,6 +304,7 @@ namespace Dynamo.Notifications
             if (notificationUIPopup.webView != null)
             {
                 notificationUIPopup.webView.Visibility = Visibility.Hidden;
+                notificationUIPopup.webView.Loaded -= InitializeBrowserAsync;
                 if (notificationUIPopup.webView.CoreWebView2 != null)
                 {
                     notificationUIPopup.webView.CoreWebView2.Stop();
