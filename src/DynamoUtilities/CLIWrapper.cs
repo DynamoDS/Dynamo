@@ -96,8 +96,9 @@ namespace Dynamo.Utilities
         /// Read data from CLI tool
         /// </summary>
         /// <param name="timeoutms">will return empty string if we don't finish reading all data in the timeout provided in milliseconds.</param>
+        /// <param name="mockReadLine"> if this delegate is non null, it will be used instead of communicating with std out of the process. Used for testing only.</param>
         /// <returns></returns>
-        protected virtual async Task<string> GetData(int timeoutms)
+        protected virtual string GetData(int timeoutms, Func<string> mockReadLine = null)
         {
             var readStdOutTask = Task.Run(() =>
             {
@@ -114,7 +115,17 @@ namespace Dynamo.Utilities
                     {
                         try
                         {
-                            var line = process.StandardOutput.ReadLine();
+                            string line = null;
+                            if(mockReadLine != null)
+                            {
+                                line = mockReadLine.Invoke();
+                            }
+                            else
+                            {
+                                line = process.StandardOutput.ReadLine();
+                            }
+                            
+                           
                             MessageLogged?.Invoke(line);
                             if (line == null || line == startofDataToken)
                             {
@@ -145,7 +156,7 @@ namespace Dynamo.Utilities
                     return writer.ToString();
                 }
             });
-            var completedTask = await Task.WhenAny(readStdOutTask, Task.Delay(TimeSpan.FromMilliseconds(timeoutms)));
+            var completedTask = Task.WhenAny(readStdOutTask, Task.Delay(TimeSpan.FromMilliseconds(timeoutms))).Result;
             //if the completed task was our read std out task, then return the data
             //else we timed out, so return an empty string.
             return completedTask == readStdOutTask ? readStdOutTask.Result : string.Empty;
