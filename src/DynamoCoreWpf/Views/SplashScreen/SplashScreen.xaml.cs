@@ -546,7 +546,10 @@ namespace Dynamo.UI.Views
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             DynamoModel.LanguageDetected -= DynamoModel_LanguageDetected;
             StaticSplashScreenReady -= OnStaticScreenReady;
-            authManager.LoginStateChanged -= OnLoginStateChanged;
+            if (authManager is not null)
+            {
+                authManager.LoginStateChanged -= OnLoginStateChanged;
+            }
             webView.Dispose();
             webView = null;
 
