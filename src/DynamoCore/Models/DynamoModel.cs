@@ -1456,6 +1456,11 @@ namespace Dynamo.Models
             {
                 SearchModel.ItemProduced -= SearchModel_ItemProduced;
             }
+            //handle the disposal of IDSDK manager instance for sandbox
+            if (AuthenticationManager?.AuthProvider is IDSDKManager idsdkProvider)
+            {
+                idsdkProvider?.Dispose();
+            }
         }
 
         private void InitializeCustomNodeManager()
