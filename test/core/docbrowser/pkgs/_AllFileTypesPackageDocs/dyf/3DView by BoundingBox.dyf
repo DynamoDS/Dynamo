@@ -1,0 +1,215 @@
+{
+  "Uuid": "42548128-8606-41a0-920b-3cfa3a66d961",
+  "IsCustomNode": true,
+  "Category": "GeniusLoci.View",
+  "Description": "Use a boundingbox to create a new 3D View with a specified name.\r\nNote: Use the \"Remove Special Characters from String\" node to obtain a view name without prohibited characters.",
+  "Name": "3DView by BoundingBox",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "boundingBox",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null,
+        "Description": "Future Section box"
+      },
+      "Id": "1f37198f21bd4b82805efb8b8022b4ac",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "68ec359e976f4bdf8e312d869e77a667",
+          "Name": "",
+          "Description": "Symbole",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Un paramètre de fonction, utiliser avec des noeuds personnalisés.\r\n\r\nVous pouvez spécifier le type et la valeur par défaut du paramètre. Par exemple,\r\n\r\nentrée: var[]..[]\r\nvaleur: bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "Views",
+      "Id": "c965bdcc3e5f45908a096aba97526350",
+      "Inputs": [
+        {
+          "Id": "dbf7a3b472904bb593e8d0f86be37ef8",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Sortie de fonction, utiliser avec les noeuds personnalisés"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "viewName",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "def2cd54e3cb400d9a4d2919d36027e5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "308f2190efb948778f276449a97b538d",
+          "Name": "",
+          "Description": "Symbole",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Un paramètre de fonction, utiliser avec des noeuds personnalisés.\r\n\r\nVous pouvez spécifier le type et la valeur par défaut du paramètre. Par exemple,\r\n\r\nentrée: var[]..[]\r\nvaleur: bool = false"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "import clr\nclr.AddReference('RevitAPI')\nimport Autodesk\nfrom Autodesk.Revit.DB import *\n\nclr.AddReference('RevitNodes')\nimport Revit\nclr.ImportExtensions(Revit.GeometryConversion)\n\nclr.AddReference('RevitServices')\nimport RevitServices\nfrom RevitServices.Persistence import DocumentManager\nfrom RevitServices.Transactions import TransactionManager\ndoc = DocumentManager.Instance.CurrentDBDocument\n\ndef tolist(obj1):\n    if hasattr(obj1,\"__iter__\"): return obj1\n    else: return [obj1]\n\nbboxs = tolist(IN[0])\nviewNames = tolist(IN[1])\nviews=[]\n\n#Get 3D View ViewFamilyType\nviewTypeColl = FilteredElementCollector(doc).OfClass(ViewFamilyType)\nfor i in viewTypeColl:\n\tif i.ViewFamily == ViewFamily.ThreeDimensional:\n\t\tviewType = i\n\telse:\n\t\tcontinue\n\nfor bbox,viewName in zip(bboxs,viewNames):\n\tnewmax = UnwrapElement(bbox.MaxPoint).ToRevitType()\n\tnewmin = UnwrapElement(bbox.MinPoint).ToRevitType()\n\tnewbox = BoundingBoxXYZ()\n\tnewbox.Max = newmax\n\tnewbox.Min = newmin\n\ttry:\n\t\tTransactionManager.Instance.EnsureInTransaction(doc)\n\t\tview = View3D.CreateIsometric(doc, viewType.Id)\n\t\tview.Name = viewName\n\t\tview.SetSectionBox(newbox)\n\t\tviews.append(view)\n\t\tTransactionManager.Instance.TransactionTaskDone()\n\texcept Exception, ex:\n\t\tviews.append(ex.message)\n\nOUT = views",
+      "VariableInputPorts": true,
+      "Id": "9a773cf94f2544fd86b7a2812569fbad",
+      "Inputs": [
+        {
+          "Id": "a46192192b9c4057b6e4b5bd823a364d",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "20f553569bfd44468fbdcb408899653c",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1e019420186d422ab1e988aa94a08052",
+          "Name": "OUT",
+          "Description": "Résultat du script Python",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Exécute un script IronPython intégré."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "68ec359e976f4bdf8e312d869e77a667",
+      "End": "a46192192b9c4057b6e4b5bd823a364d",
+      "Id": "d4bc75277ea14356a2bb4bf7dbb5381f"
+    },
+    {
+      "Start": "308f2190efb948778f276449a97b538d",
+      "End": "20f553569bfd44468fbdcb408899653c",
+      "Id": "c6e33f1e3fed45f992bfb276166b3a4f"
+    },
+    {
+      "Start": "1e019420186d422ab1e988aa94a08052",
+      "End": "dbf7a3b472904bb593e8d0f86be37ef8",
+      "Id": "0f88d4baf72c4ec7a67efb66b5f20812"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Aperçu en arrière-plan",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "1f37198f21bd4b82805efb8b8022b4ac",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 250.705708561732,
+        "Y": 13.8975315705315
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "c965bdcc3e5f45908a096aba97526350",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 665.115303176804,
+        "Y": 44.9801991454159
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "def2cd54e3cb400d9a4d2919d36027e5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 326.086828276943,
+        "Y": 100.453846562683
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "9a773cf94f2544fd86b7a2812569fbad",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 493.462008990311,
+        "Y": 37.7996033682453
+      }
+    ],
+    "Annotations": [],
+    "X": -280.967276858415,
+    "Y": 265.743005781289,
+    "Zoom": 1.16438980805626
+  }
+}

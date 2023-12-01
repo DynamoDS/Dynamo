@@ -1,0 +1,74 @@
+name: UI Smoke Tests
+
+on:
+  workflow_run:
+    workflows:
+      - Build DynamoAll.sln net6.0
+      - Build DynamoAll.sln net8.0
+    types:
+      - completed
+
+env:
+  TEST_EXECUTE_DOWNLOAD_URL: https://downloads.smartbear.com/TestExecute1552SLM.exe
+  ACTOR: ${{ github.actor }}
+  WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+  RUN_ID: ${{ github.event.workflow_run.id }}
+  RUN_NAME: ${{ github.event.workflow_run.name }}
+  RUN_URL: ${{ github.event.workflow_run.html_url }}
+
+jobs:
+  ui_smoke_tests:
+    name: UI Smoke Tests
+    timeout-minutes: 60
+    runs-on: windows-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: DynamoDS/DynamoTestCompleteTests
+          token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
+          ref: master
+      - name: Download TestExecute
+        run: Invoke-WebRequest -Uri "${{ env.TEST_EXECUTE_DOWNLOAD_URL }}" -OutFile ".\TE.exe"
+      - name: Install TestExecute
+        shell: cmd
+        run: .\TE.exe -SilentInstall
+      - name: Download Build Artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: DynamoSandbox
+          workflow: ${{ env.WORKFLOW_ID }}
+          run_id: ${{ env.RUN_ID }}
+          path: ${{ github.workspace }}\build
+      - name: Download Pull Request Artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: pr_number
+          workflow: ${{ env.WORKFLOW_ID }}
+          run_id: ${{ env.RUN_ID }}
+          path: ${{ github.workspace }}\pr
+      - name: Run UI Smoke Tests
+        shell: cmd
+        run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
+      - name: UI Smoke Tests Report
+        uses: dorny/test-reporter@v1.7.0
+        if: always()
+        with:
+          name: UI Smoke Test Report
+          path: reports/report.xml
+          reporter: java-junit
+      - name: Read Pull Request Number
+        id: read_pr_number
+        run: |
+          "pr_number=$(Get-Content ${{ github.workspace }}\pr\pr_number.txt)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      - name: Summary
+        env:
+          PR_NUMBER: ${{ steps.read_pr_number.outputs.pr_number }}
+          PR_URL: ${{ format('{0}/{1}/pull', github.server_url, github.repository) }}
+        if: always()
+        run: |
+          Get-Content summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "Actor: @$env:ACTOR" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "Workflow Run: [$env:RUN_NAME]($env:RUN_URL)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "Pull Request: [$env:PR_NUMBER]($env:PR_URL/$env:PR_NUMBER)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append

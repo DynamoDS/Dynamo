@@ -17,8 +17,9 @@ jobs:
           days-before-close: 0
           only-labels: needs more info
           close-issue-message: Given that there has been no additional information added, this issue will be closed for now. Please reopen and provide additional information if you wish the Dynamo team to investigate further.
-      - name: Summary
+      - name: Summary # Print markdown list of closed issues or "No Issues" message if no issues were closed
+        env:
+          ISSUES_URL: ${{ format('{0}/{1}/issues', github.server_url, github.repository) }}
         run: |
-          echo "# Closed Issues" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.close_issues.outputs.closed-issues-prs }}" >> $GITHUB_STEP_SUMMARY
+          echo '# Closed Issues' >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.close_issues.outputs.closed-issues-prs }}' | jq --raw-output 'if (. == []) then "- No Issues." else .[] | "- \(.title) - [#\(.number)](\(env.ISSUES_URL)/\(.number))" end' >> $GITHUB_STEP_SUMMARY

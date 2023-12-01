@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Events;
 using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -122,6 +120,25 @@ namespace Dynamo.Graph.Workspaces
 
                 graphDocumentationURL = value;
                 RaisePropertyChanged(nameof(GraphDocumentationURL));
+            }
+        }
+
+        private bool? enableLegacyPolyCurveBehavior;
+        /// <summary>
+        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
+        /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
+        /// A workspace setting if exists, overrides the default preference setting. 
+        /// </summary>
+        [JsonProperty]
+        internal bool? EnableLegacyPolyCurveBehavior
+        {
+            get { return enableLegacyPolyCurveBehavior; }
+            set
+            {
+                if(value == null) return;
+
+                enableLegacyPolyCurveBehavior = value;
+                WorkspaceEvents.OnWorkspaceSettingsChanged(enableLegacyPolyCurveBehavior.GetValueOrDefault());
             }
         }
 
@@ -644,24 +661,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         #endregion
-
-        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
-        protected override bool PopulateXmlDocument(XmlDocument document)
-        {
-            if (!base.PopulateXmlDocument(document))
-                return false;
-
-            var root = document.DocumentElement;
-            if (root == null)
-                return false;
-
-            root.SetAttribute("RunType", RunSettings.RunType.ToString());
-            root.SetAttribute("RunPeriod", RunSettings.RunPeriod.ToString(CultureInfo.InvariantCulture));
-            root.SetAttribute("HasRunWithoutCrash", HasRunWithoutCrash.ToString(CultureInfo.InvariantCulture));
-
-            return true;
-        }
-
+        
         private void PulseMakerRunStarted()
         {
             var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
@@ -737,7 +737,7 @@ namespace Dynamo.Graph.Workspaces
             // Runtime warnings take precedence over build warnings.
             foreach (var warning in updateTask.RuntimeWarnings)
             {
-                var message = string.Join(Environment.NewLine, warning.Value.Select(w => w.Message));
+                var message = string.Join(Environment.NewLine + Environment.NewLine, warning.Value.Select(w => w.Message));
                 warnings.Add(warning.Key, message);
             }
 
@@ -941,13 +941,13 @@ namespace Dynamo.Graph.Workspaces
         #endregion
 
         /// <summary>
-        /// Returns a list of ISerializable items which exist in the preloaded 
+        /// Returns a list of string items which exist in the preloaded 
         /// trace data but do not exist in the current CallSite data.
         /// </summary>
         /// <returns></returns>
-        internal IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
+        internal IList<string> GetOrphanedSerializablesAndClearHistoricalTraceData()
         {
-            var orphans = new List<ISerializable>();
+            var orphans = new List<string>();
 
             if (historicalTraceData == null) return orphans;
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
@@ -68,6 +69,7 @@ namespace Dynamo.Configuration
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
+        private bool isMLAutocompleteTOUApproved;
 
         #region Constants
         /// <summary>
@@ -458,6 +460,11 @@ namespace Dynamo.Configuration
         /// </summary>
         private List<string> trustedLocations { get; set; } = new List<string>();
 
+        /// <summary>
+        /// Return a list of GraphChecksumItems
+        /// </summary>
+        public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
+
         // This function is used to deserialize the trusted locations manually
         // so that the TrustedLocation propertie's setter does not need to be public.
         private List<string> DeserializeTrustedLocations(XmlNode preferenceSettingsElement)
@@ -614,6 +621,15 @@ namespace Dynamo.Configuration
         public bool EnableNodeAutoComplete { get; set; }
 
         /// <summary>
+        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
+        /// This defines whether legacy (pre-3.0) PolyCurve behavior is selected by default.
+        /// This flag can be overridden by individual workspaces that have the EnableLegacyPolyCurveBehavior flag defined.
+        /// Note: For internal use only and will be removed in a future version of Dynamo.
+        /// </summary>
+        [IsObsolete("This property will be removed in a future version of Dynamo.")]
+        public bool DefaultEnableLegacyPolyCurveBehavior { get; set; }
+
+        /// <summary>
         /// This defines if user wants to hide the nodes below a specific confidenc level.
         /// </summary>
         public bool HideNodesBelowSpecificConfidenceLevel { get; set; }
@@ -680,6 +696,21 @@ namespace Dynamo.Configuration
                 isStaticSplashScreenEnabled = value;
             }
         }
+
+        /// <summary>
+        /// This defines if the user is agree to the ML Automcomplete Terms of Use
+        /// </summary>
+        public bool IsMLAutocompleteTOUApproved
+        {
+            get
+            {
+                return isMLAutocompleteTOUApproved;
+            }
+            set
+            {
+                isMLAutocompleteTOUApproved = value;
+            }
+        }        
 
         /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
@@ -836,6 +867,12 @@ namespace Dynamo.Configuration
         #region Dynamo Player and Generative Design settings
 
         /// <summary>
+        /// Enable legacy behavior for Dynamo Player to allow renamed Watch nodes to be seen as graph output.
+        /// This flag is for use in the 2024 product release year and can removed for 2025
+        /// </summary>
+        public bool EnableDynamoPlayerRenamedWatchAsOutput { get; set; }
+
+        /// <summary>
         /// Collections of folders used by individual Dynamo Player or Generative Design as entry points.
         /// </summary>
         public List<DynamoPlayerFolderGroup> DynamoPlayerFolderGroups { get; set; }
@@ -895,6 +932,7 @@ namespace Dynamo.Configuration
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            DefaultEnableLegacyPolyCurveBehavior = true;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
             MLRecommendationNumberOfResults = 10;
@@ -906,8 +944,11 @@ namespace Dynamo.Configuration
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
+            EnableDynamoPlayerRenamedWatchAsOutput = false;
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
+            GraphChecksumItemsList = new List<GraphChecksumItem>();
+            isMLAutocompleteTOUApproved = false;
         }
 
         /// <summary>
@@ -987,7 +1028,6 @@ namespace Dynamo.Configuration
                     return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
-
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);

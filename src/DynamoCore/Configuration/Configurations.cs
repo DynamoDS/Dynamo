@@ -429,5 +429,12 @@ namespace Dynamo.Configuration
         }
 
         #endregion
+
+        #region Notifications Constants
+        /// <summary>
+        /// Request timeOut for notifications service
+        /// </summary>
+        public const int NotificationsDefaultTimeOut = 10000;
+        #endregion
     }
 }

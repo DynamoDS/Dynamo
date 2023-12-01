@@ -42,10 +42,10 @@ namespace Dynamo.UI.Controls
         public NodeAutoCompleteSearchControl()
         {
             InitializeComponent();
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated += CurrentApplicationDeactivated;
-                if (Application.Current.MainWindow != null)
+                if (Application.Current?.MainWindow != null)
                 {
                     Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
                 }
@@ -55,10 +55,10 @@ namespace Dynamo.UI.Controls
 
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
-                if (Application.Current.MainWindow != null)
+                if (Application.Current?.MainWindow != null)
                 {
                     Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
                 }
@@ -385,8 +385,16 @@ namespace Dynamo.UI.Controls
             MenuItem selectedSuggestion = sender as MenuItem;
             if (selectedSuggestion.Name.Contains(nameof(Models.NodeAutocompleteSuggestion.MLRecommendation)))
             {
-                ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
-                Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
+                if(ViewModel.IsMLAutocompleteTOUApproved)
+                {
+                    ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
+                    Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
+                }
+                else
+                {
+                    ViewModel.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
+                    // Do nothing for now, do not report analytics since the switch did not happen
+                }
             }
             else
             {
@@ -396,6 +404,9 @@ namespace Dynamo.UI.Controls
             ViewModel.PopulateAutoCompleteCandidates();
         }
 
+        /// <summary>
+        /// Dispose the control
+        /// </summary>
         public void Dispose()
         {
             NodeAutoCompleteSearchControl_Unloaded(this,null);

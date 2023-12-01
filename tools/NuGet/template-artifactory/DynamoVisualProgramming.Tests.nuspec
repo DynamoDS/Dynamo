@@ -16,16 +16,16 @@
         <summary>This package contains all that is required to get up and running creating tests for Dynamo libraries.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework="net6.0">
+            <group targetFramework="$TargetFramework$">
                 <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
             </group>
         </dependencies>
     </metadata>
     <files>
         <!--These assemblies are referenced from the bin directory since they are not harvested for the installer-->
-        <file src="..\..\..\bin\AnyCPU\Release\DynamoCoreTests.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\AnyCPU\Release\SystemTestServices.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\AnyCPU\Release\TestServices.dll" target="lib\net6.0" />
+        <file src="..\..\..\bin\AnyCPU\Release\DynamoCoreTests.dll" target="lib\$TargetFramework$" />
+        <file src="..\..\..\bin\AnyCPU\Release\SystemTestServices.dll" target="lib\$TargetFramework$" />
+        <file src="..\..\..\bin\AnyCPU\Release\TestServices.dll" target="lib\$TargetFramework$" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>
