@@ -22,6 +22,7 @@ namespace Dynamo.DocumentationBrowser
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
         private bool hasBeenInitialized;
+        private bool webView2Loaded;
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
@@ -50,6 +51,12 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowser.AllowDrop = false;
             this.documentationBrowser.NavigationStarting += ShouldAllowNavigation;
             this.documentationBrowser.DpiChanged += DocumentationBrowser_DpiChanged;
+            this.documentationBrowser.Loaded += DocumentationBrowser_Loaded;
+        }
+
+        private void DocumentationBrowser_Loaded(object sender, RoutedEventArgs e)
+        {
+            webView2Loaded = true;
         }
 
         private void DocumentationBrowser_DpiChanged(object sender, DpiChangedEventArgs args)
@@ -104,26 +111,23 @@ namespace Dynamo.DocumentationBrowser
         /// <param name="link"></param>
         public void NavigateToPage(Uri link)
         {
-            InitializeAsync();
+            Dispatcher.Invoke(InitializeAsync);
         }
 
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
-            this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
-            this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
-
-            if (this.documentationBrowser.CoreWebView2 != null)
+            if (this.documentationBrowser != null)
             {
-                this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
-            }
+                this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
+                this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
+                this.documentationBrowser.DpiChanged -= DocumentationBrowser_Loaded;
+                if (this.documentationBrowser.CoreWebView2 != null)
+                {
+                    this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+                }
 
-            // Note to test writers
-            // Disposing the document browser will cause future tests
-            // that uses the Browser component to crash
-            if (!Models.DynamoModel.IsTestMode)
-            {
                 this.documentationBrowser.Dispose();
             }
         }
@@ -169,9 +173,14 @@ namespace Dynamo.DocumentationBrowser
                         UserDataFolder = WebBrowserUserDataFolder
                     };
                 }
+
+                if (!webView2Loaded)
+                {
+                    Log("DocumentationBrowser's webview2 component is initializing but not yet visible.");
+                }
+
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
-                
            
                 this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
                 comScriptingObject = new ScriptingObject(this.viewModel);
@@ -192,10 +201,7 @@ namespace Dynamo.DocumentationBrowser
 
             htmlContent = ResourceUtilities.LoadResourceAndReplaceByKey(htmlContent, "#fontStyle", fontStylePath);
 
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                this.documentationBrowser.NavigateToString(htmlContent);
-            }));
+            this.documentationBrowser.NavigateToString(htmlContent);
         }
 
         private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)

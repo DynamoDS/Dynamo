@@ -307,6 +307,8 @@ namespace Dynamo.UI.Views
             {
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
+
+            //ContentRendered ensures that the webview2 component is visible.
             await webView.EnsureCoreWebView2Async();
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
