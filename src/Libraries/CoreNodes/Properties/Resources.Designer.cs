@@ -151,6 +151,15 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Depth {0} Exceeds MaxDepth {1} at path &quot;{2}&quot;.
+        /// </summary>
+        internal static string Exception_Serialize_Depth_Unsupported {
+            get {
+                return ResourceManager.GetString("Exception_Serialize_Depth_Unsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This type of Geometry is not able to be serialized..
         /// </summary>
         internal static string Exception_Serialize_DesignScript_Unsupported {
