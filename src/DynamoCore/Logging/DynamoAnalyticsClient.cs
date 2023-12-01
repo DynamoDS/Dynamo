@@ -6,6 +6,7 @@ using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Models;
+using Dynamo.Updates;
 using Microsoft.Win32;
 
 namespace Dynamo.Logging
@@ -73,6 +74,7 @@ namespace Dynamo.Logging
     {
         private readonly ManualResetEventSlim serviceInitialized = new ManualResetEventSlim(false);
         private readonly object trackEventLockObj = new object();
+        private readonly string AppVersion = Process.GetCurrentProcess().ProcessName + "-" + UpdateManager.GetProductVersion();
 
         /// <summary>
         /// A dummy IDisposable class
@@ -119,7 +121,7 @@ namespace Dynamo.Logging
             Session.Start();
 
             //Dynamo app version.
-            var appversion = string.IsNullOrEmpty(hostAnalyticsInfo.AppVersion) ? DynamoModel.AppVersion : hostAnalyticsInfo.AppVersion;
+            var appversion = string.IsNullOrEmpty(hostAnalyticsInfo.AppVersion) ? AppVersion : hostAnalyticsInfo.AppVersion;
 
             var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? "Dynamo" : hostAnalyticsInfo.HostName;
 
