@@ -5072,6 +5072,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use..
+        /// </summary>
+        public static string NotificationToAgreeMLNodeautocompleteTOU {
+            get {
+                return ResourceManager.GetString("NotificationToAgreeMLNodeautocompleteTOU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to null.
         /// </summary>
         public static string NullString {
