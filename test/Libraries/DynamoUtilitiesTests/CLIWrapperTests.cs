@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -39,7 +40,46 @@ namespace DynamoUtilitiesTests
                 {   System.Threading.Thread.Sleep(100);
                     process.Kill();
                 });
-                return GetData(2000).Result;
+                return GetData(2000);
+            }
+
+
+        }
+        /// <summary>
+        /// this test class waits before reading from the console, so GetData is slow.
+        /// </summary>
+        private class SlowCLIWrapper : HangingCLIWrapper
+        {
+            internal new string GetData()
+            {
+                return GetData(2000, () => { Thread.Sleep(4000);return ""; });
+            }
+        }
+
+        /// <summary>
+        /// this test class should get mock data and should not time out.
+        /// </summary>
+        private class MockCLIWraper : HangingCLIWrapper
+        {
+            int count = 0;
+            internal new string GetData()
+            {
+                return GetData(2000, () => {
+                    count++;
+
+                    switch (count)
+                    {
+                        case 1:
+                            return startofDataToken;
+                        case 2:
+                            return "some data";
+                        case 3:
+                            return endOfDataToken;
+                        default:
+                            return string.Empty;
+                    }
+                    
+                });
             }
         }
 
@@ -52,6 +92,28 @@ namespace DynamoUtilitiesTests
             Assert.AreEqual(string.Empty,wrapper.GetData());
             sw.Stop();
             Assert.GreaterOrEqual(sw.ElapsedMilliseconds,2000);
+
+        }
+        [Test]
+        public void CLIWrapperTimesOutIfGetDataIsSlow()
+        {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            var wrapper = new SlowCLIWrapper();
+            Assert.AreEqual(string.Empty, wrapper.GetData());
+            sw.Stop();
+            Assert.GreaterOrEqual(sw.ElapsedMilliseconds, 2000);
+
+        }
+        [Test]
+        public void CLIGetsDataIfDoesNotTimeout()
+        {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            var wrapper = new MockCLIWraper();
+            Assert.AreEqual("some data", wrapper.GetData().TrimEnd());
+            sw.Stop();
+            Assert.LessOrEqual(sw.ElapsedMilliseconds, 2000);
 
         }
     }

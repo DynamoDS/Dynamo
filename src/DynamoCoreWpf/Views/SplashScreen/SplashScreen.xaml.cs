@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUtilities;
+using Greg.AuthProviders;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -129,9 +130,15 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        /// Constructor
+        /// Stores the value that indicates if the SignIn Button will be enabled(default) or not
         /// </summary>
-        public SplashScreen()
+        bool enableSignInButton;
+
+        /// <summary>
+        /// Splash Screen Constructor. 
+        /// <paramref name="enableSignInButton"/> Indicates if the SignIn Button will be enabled(default) or not.
+        /// </summary>
+        public SplashScreen(bool enableSignInButton = true)
         {
             InitializeComponent();
 
@@ -149,6 +156,7 @@ namespace Dynamo.UI.Views
             RequestImportSettings = ImportSettings;
             RequestSignIn = SignIn;
             RequestSignOut = SignOut;
+            this.enableSignInButton = enableSignInButton;
         }
 
         private void DynamoModel_LanguageDetected()
@@ -230,10 +238,14 @@ namespace Dynamo.UI.Views
             {
                 viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
             }
-            StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
             dynamoView?.Show();
             dynamoView?.Activate();
+        }
+
+        private void OnLoginStateChanged(LoginState state)
+        {
+            HandleSignInStatusChange(authManager.IsLoggedIn());
         }
 
         /// <summary>
@@ -250,6 +262,7 @@ namespace Dynamo.UI.Views
             // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
+                authManager.LoginStateChanged += OnLoginStateChanged;
                 SetSignInStatus(authManager.IsLoggedInInitial());
                 SetLoadingDone();
             }
@@ -346,6 +359,7 @@ namespace Dynamo.UI.Views
             {
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime(\"{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms\")");
+                SetSignInEnable(enableSignInButton);
             }
         }
 
@@ -393,6 +407,28 @@ namespace Dynamo.UI.Views
             }
         }
 
+        /// <summary>
+        /// Handle the login status changes on splash screen.
+        /// </summary>
+        internal async void HandleSignInStatusChange(bool status)
+        {
+            if (webView?.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.handleSignInStateChange({{""status"": ""{status}""}})");
+            }
+        }
+
+        /// <summary>
+        /// Enable or disable the SignIn button on splash screen.
+        /// </summary>
+        /// <param name="enabled"></param>
+        internal async void SetSignInEnable(bool enabled)
+        {
+            if (webView?.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setEnableSignInButton({{""enable"": ""{enabled}""}})");
+            }
+        }
         /// <summary>
         /// Setup the values for all labels on splash screen using resources
         /// </summary>
@@ -509,6 +545,11 @@ namespace Dynamo.UI.Views
 
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             DynamoModel.LanguageDetected -= DynamoModel_LanguageDetected;
+            StaticSplashScreenReady -= OnStaticScreenReady;
+            if (authManager is not null)
+            {
+                authManager.LoginStateChanged -= OnLoginStateChanged;
+            }
             webView.Dispose();
             webView = null;
 

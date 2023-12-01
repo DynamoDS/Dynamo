@@ -2968,6 +2968,7 @@ namespace Dynamo.Controls
 
             // Removing the tab items list handler
             dynamoViewModel.SideBarTabItems.CollectionChanged -= this.OnCollectionChanged;
+            shortcutBar?.Dispose();
 
             if (fileTrustWarningPopup != null)
             {

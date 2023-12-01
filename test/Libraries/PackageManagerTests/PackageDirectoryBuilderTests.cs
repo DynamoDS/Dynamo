@@ -52,7 +52,7 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.AreEqual(1, fs.DirectoriesCreated.Count());
             Assert.AreEqual(2, fs.CopiedFiles.Count());
-            Assert.AreEqual(2, fs.DeletedFiles.Count());   
+            Assert.AreEqual(2, fs.DeletedFiles.Count());
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
         }
 
@@ -173,7 +173,6 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(remappedPaths.Any(x => x.Item1 == files[1] && x.Item2 == dyfDir));
         }
 
-
         [Test]
         public void BuildRetainPackageDirectory_RemapsCustomNodePaths()
         {
@@ -196,8 +195,8 @@ namespace Dynamo.PackageManager.Tests
 
             db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
-            var dyfDir1 = Path.Combine(pkgsDir, pkg.Name, Path.GetFileName( Path.GetDirectoryName(files[0].First()) ), Path.GetFileName(files[0].First()));
-            var dyfDir2 = Path.Combine(pkgsDir, pkg.Name, Path.GetFileName( Path.GetDirectoryName(files[1].First()) ), Path.GetFileName(files[1].First()));
+            var dyfDir1 = Path.Combine(pkgsDir, pkg.Name, Path.GetFileName(Path.GetDirectoryName(files[0].First())), Path.GetFileName(files[0].First()));
+            var dyfDir2 = Path.Combine(pkgsDir, pkg.Name, Path.GetFileName(Path.GetDirectoryName(files[1].First())), Path.GetFileName(files[1].First()));
 
             Assert.IsTrue(remappedPaths.Any(x => x.Item1 == files[0].First() && x.Item2 == dyfDir1));
             Assert.IsTrue(remappedPaths.Any(x => x.Item1 == files[1].First() && x.Item2 == dyfDir2));
@@ -232,8 +231,6 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(extraDir, pkg.ExtraDirectory);
             Assert.AreEqual(docDir, pkg.NodeDocumentaionDirectory);
         }
-
-
 
         [Test]
         public void BuildRetainPackageDirectory_UpdatesTheArgumentPackageWithNewDirectories()
@@ -281,7 +278,6 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file1.dyf"))));
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file2.dyf"))));
         }
-
 
         [Test]
         public void BuildPackageRetainDirectory_CopiesTheOriginalFiles()
@@ -335,7 +331,6 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file3.jpg"))));
         }
 
-
         [Test]
         public void BuildRetainPackageDirectory_CopiesMarkDownFiles()
         {
@@ -362,7 +357,6 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file3.jpg"))));
         }
 
-        // Why?
         [Test]
         public void BuildPackageDirectory_DeletesTheOriginalFiles()
         {
@@ -436,7 +430,7 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.AreEqual(5, fs.DirectoriesCreated.Count());
             Assert.AreEqual(4, fs.CopiedFiles.Count());
-            Assert.AreEqual(3, fs.DeletedFiles.Count());   
+            Assert.AreEqual(3, fs.DeletedFiles.Count());
             Assert.AreEqual(2, fs.DeletedDirectories.Count());
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
         }
@@ -462,6 +456,7 @@ namespace Dynamo.PackageManager.Tests
             var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
             var pkgsDir = @"C:\dynamopackages";
             db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+
 
             Assert.AreEqual(1, fs.DirectoriesCreated.Count());
             Assert.AreEqual(4, fs.CopiedFiles.Count());
