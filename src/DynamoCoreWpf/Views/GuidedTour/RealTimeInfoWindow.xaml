@@ -1,17 +1,18 @@
-﻿<Popup x:Class="Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow"
+<Popup x:Class="Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow"
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
        xmlns:local="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
        xmlns:ui="clr-namespace:Dynamo.UI"
-       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf" 
-       mc:Ignorable="d" 
+       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+       xmlns:controls="clr-namespace:Dynamo.Controls"
+       mc:Ignorable="d"
        AllowsTransparency="True"
        Opacity="0.5"
        Width="{Binding Width}"
        MinWidth="340"
-       Height="{Binding Height}"
+       Height="Auto"
        d:DesignHeight="67" 
        d:DesignWidth="340"
        StaysOpen="False"
@@ -28,7 +29,7 @@
             Background="{StaticResource RealTimeInfoWindowBackgroundColor}"
             BorderThickness="1" 
             CornerRadius="2">
-        <Grid Background="Transparent">
+        <Grid Background="Transparent" Name="MyGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="Auto"/>
@@ -36,16 +37,16 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <!--This blue line is a decoration in the RealTimeInfoWindow shown at the left side of the screen, see the Figma design for more detail-->
-            <Line X1="1" 
+            <Line Name="BorderLine"
+                  X1="1" 
                   Y1="1"
                   X2="1" 
-                  Y2="63"
                   Stroke="{StaticResource RealTimeInfoWindowIconColor}"
                   StrokeThickness="3"
                   StrokeStartLineCap="Round"
                   StrokeEndLineCap="Round"
                   Grid.Column="0"/>
-            <!--This Canvas contains two elipses and one line that draw the information symbol in the RealTimeInfo Window-->
+            <!--This Canvas contains two ellipses and one line that draw the information symbol in the RealTimeInfo Window-->
             <Canvas Height="67"
                     Width="20"
                     Margin="30,0,30,0"
@@ -68,11 +69,12 @@
                       Canvas.Left="0"
                       Canvas.Top="13"
                       Stroke="{StaticResource RealTimeInfoWindowIconColor}"
-                      StrokeThickness="2"
-                      Grid.Column="0"/>
+                      StrokeThickness="2"/>
             </Canvas>
             <!--This Text block will contain the text that is shown to the user in the RealTimeInfoWindow-->
-            <TextBlock Text="{Binding TextContent}"
+            <TextBlock SizeChanged="TextBlock_SizeChanged"
+                       Margin="0,5,0,5"
+                       Text="{Binding TextContent}"
                        FontFamily="Artifakt Element"
                        FontSize="12"
                        TextWrapping="WrapWithOverflow"
@@ -81,9 +83,11 @@
                        Foreground="White"
                        Grid.Column="2"/>
             <Button Name="CloseButton"
+                    Margin="0,10,0,0"
                     Height="25"  
                     Width="25"
                     HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
                     Grid.Column="3"
                     Style="{StaticResource RealTimeInfoCloseButtonStyle}"
                     Click="CloseButton_Click">

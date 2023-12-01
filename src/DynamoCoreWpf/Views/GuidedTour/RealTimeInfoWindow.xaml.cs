@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls.Primitives;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Dynamo.Wpf.UI.GuidedTour;
 
 namespace Dynamo.Wpf.Views.GuidedTour
@@ -39,7 +41,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             CleanRealTimeInfoWindow();
         }
-
+            
         /// <summary>
         /// When the Tour has finished we need to close the RealTimeInfo window and remove subscriptions to events
         /// </summary>
@@ -71,5 +73,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
                 positionMethod.Invoke(this, null);
             }
         }
+        private void TextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+                BorderLine.Y2 = MyGrid.ActualHeight /*+ ((TextBlock)sender).Margin.Bottom*/;
+        }
+
+
     }
 }
