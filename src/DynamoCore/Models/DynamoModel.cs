@@ -304,7 +304,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     Preference settings for this instance of Dynamo.
         /// </summary>
-        public readonly PreferenceSettings PreferenceSettings;
+        [Obsolete("this will be removed in 4.0")]
+        public PreferenceSettings PreferenceSettings => PreferenceSettings.Instance;
 
         /// <summary>
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
@@ -491,9 +492,6 @@ namespace Dynamo.Models
         {
             Dispose();
             PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
-
-            //Remove reference on shutdown
-            PreferenceSettings.dynamoModelRuntimePreferenceSettings = null;
 
             OnCleanup();
 
@@ -694,10 +692,7 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
-
-            //Set the DynamoModel.PreferenceSetting as a static reference to the PreferenceSetting class for use in PreferenceSettings.Instance
-            PreferenceSettings.dynamoModelRuntimePreferenceSettings = PreferenceSettings;
+            PreferenceSettings.Instance = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
 
             if (PreferenceSettings != null)
             {
@@ -786,7 +781,7 @@ namespace Dynamo.Models
                 if (migrator != null)
                 {
                     var isFirstRun = PreferenceSettings.IsFirstRun;
-                    PreferenceSettings = migrator.PreferenceSettings;
+                    PreferenceSettings.Instance = migrator.PreferenceSettings;
 
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager

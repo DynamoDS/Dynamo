@@ -48,14 +48,12 @@ namespace Dynamo.Configuration
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource, IHideAutocompleteMethodOptions
     {
-        internal static PreferenceSettings dynamoModelRuntimePreferenceSettings;
-
         internal readonly static Lazy<PreferenceSettings>
             lazy = new Lazy<PreferenceSettings>
             (() => PreferenceSettings.Load(PathManager.Instance.PreferenceFilePath));
 
         [XmlIgnore]
-        public static PreferenceSettings Instance { get { return dynamoModelRuntimePreferenceSettings ?? lazy.Value; } }
+        public static PreferenceSettings Instance { get; internal set; } = lazy.Value;
 
         private string numberFormat;
         private string lastUpdateDownloadPath;
