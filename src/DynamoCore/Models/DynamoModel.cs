@@ -104,7 +104,9 @@ namespace Dynamo.Models
         public string ParentId;
         // Dynamo host session id for analytics purpose.
         public string SessionId;
-        ///  The application version string for analytics reporting APIs
+        /// The application version string for analytics reporting APIs.
+        /// If no AppVersion identifier is provided, a default version will be computed
+        /// based on the current process name and executing assembly version.
         public string AppVersion;
     }
 
