@@ -28,7 +28,7 @@
             CornerRadius="2">
         <Grid Background="Transparent" Name="PopupGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
