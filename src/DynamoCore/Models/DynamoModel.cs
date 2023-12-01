@@ -284,18 +284,6 @@ namespace Dynamo.Models
         public readonly NodeSearchModel SearchModel;
 
         /// <summary>
-        ///     The application version string for analytics reporting APIs
-        /// </summary>
-        internal static string AppVersion
-        {
-            get
-            {
-                return Process.GetCurrentProcess().ProcessName + "-"
-                    + Core.PathManager.Instance.GetProductVersion();
-            }
-        }
-
-        /// <summary>
         ///     Debugging settings for this instance of Dynamo.
         /// </summary>
         public readonly DebugSettings DebugSettings;
