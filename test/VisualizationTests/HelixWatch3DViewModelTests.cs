@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
@@ -119,7 +120,7 @@ namespace WpfVisualizationTests
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         /// <summary>

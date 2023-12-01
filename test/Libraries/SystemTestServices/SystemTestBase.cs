@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
@@ -62,6 +63,7 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
+            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
             var testConfig = GetTestSessionConfiguration();
 
             if (assemblyResolver == null)
@@ -139,6 +141,7 @@ namespace SystemTestServices
             {
                 Console.WriteLine(ex.StackTrace);
             }
+            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 
         [OneTimeTearDown]
@@ -207,7 +210,7 @@ namespace SystemTestServices
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         /// <summary>

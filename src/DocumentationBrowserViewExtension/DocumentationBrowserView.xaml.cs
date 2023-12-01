@@ -21,7 +21,7 @@ namespace Dynamo.DocumentationBrowser
         private readonly DocumentationBrowserViewModel viewModel;
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
-        private bool hasBeenInitialized;
+        internal bool hasBeenInitialized;
         private bool webView2Loaded;
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";

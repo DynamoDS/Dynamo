@@ -714,7 +714,7 @@ namespace DynamoCoreWpfTests
             return GetSidebarDocsBrowserContents();
         }
 
-        [Test,Category("Failure")]
+        [Test]
         public void AddGraphInSpecificLocationToWorkspace()
         {
             //TODO see this issue:
@@ -883,6 +883,18 @@ namespace DynamoCoreWpfTests
         private void ShowDocsBrowser()
         {
             GetDocsMenuItems().First().RaiseEvent(new RoutedEventArgs(MenuItem.CheckedEvent));
+
+            var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
+            int count = 0;
+
+            // Wait for the DocumentationBrowserView webview2 control to finish initialization
+            while (!docsView.hasBeenInitialized && count < 20)
+            {
+                DispatcherUtil.DoEvents();
+                Thread.Sleep(100);
+                count++;
+            }
+            Assert.IsTrue(docsView.hasBeenInitialized);
         }
 
         public static void RaiseLoadedEvent(FrameworkElement element)
