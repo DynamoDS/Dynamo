@@ -29,7 +29,7 @@
             Background="{StaticResource RealTimeInfoWindowBackgroundColor}"
             BorderThickness="1" 
             CornerRadius="2">
-        <Grid Background="Transparent" Name="MyGrid">
+        <Grid Background="Transparent" Name="PopupGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="Auto"/>

@@ -75,7 +75,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         }
         private void TextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-                BorderLine.Y2 = MyGrid.ActualHeight /*+ ((TextBlock)sender).Margin.Bottom*/;
+                BorderLine.Y2 = PopupGrid.ActualHeight /*+ ((TextBlock)sender).Margin.Bottom*/;
         }
 
 
