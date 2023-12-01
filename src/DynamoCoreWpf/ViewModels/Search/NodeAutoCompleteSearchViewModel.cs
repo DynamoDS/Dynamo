@@ -83,7 +83,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;
+                return PreferenceSettings.Instance.IsMLAutocompleteTOUApproved;
             }
         }
 
