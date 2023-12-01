@@ -1,8 +1,8 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
@@ -19,7 +19,7 @@ using NUnit.Framework;
 
 namespace DynamoCoreWpfTests.PackageManager
 {
-    [TestFixture, Category("Failure")]
+    [TestFixture]
     class PackageManagerViewExtensionTests : DynamoTestUIBase
     {
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs"); } }
@@ -139,15 +139,11 @@ namespace DynamoCoreWpfTests.PackageManager
                 .ToList();
             //The location of the .NET assemblies
             var assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
-            /*
-                * Adding some necessary .NET assemblies
-                * These assemblies couldn't be loaded correctly via the same construction as above,
-                * in specific the System.Runtime.
-                */
-            returnList.Add(MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "mscorlib.dll")));
-            returnList.Add(MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.dll")));
-            returnList.Add(MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Core.dll")));
             returnList.Add(MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Runtime.dll")));
+
+            returnList.Add(MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DynamoCore.dll")));
+            returnList.Add(MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DynamoCoreWpf.dll")));
+
             return returnList.ToArray();
         }
 
