@@ -173,9 +173,14 @@ namespace Dynamo.Controls
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)
         {
             var prevcamDir = watch_view.Camera.LookDirection;
-            watch_view.ZoomExtents(bounds.ToRect3D(.05));
+            var camera = watch_view.Camera as HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
+
+            //Todo, Call the equivalent method in Helix on adoption of next release.
+            ZoomExtents(camera, (float)(watch_view.ActualWidth / watch_view.ActualHeight), bounds, out var pos, out var look, out var up);
+            camera.AnimateTo(pos.ToPoint3D(), look.ToVector3D(), up.ToVector3D(), 0);
+
             //if after a zoom the camera is in an undefined position or view direction, reset it.
-            if(watch_view.Camera.Position.ToVector3().IsUndefined() || 
+            if (watch_view.Camera.Position.ToVector3().IsUndefined() || 
                 watch_view.Camera.LookDirection.ToVector3().IsUndefined() || 
                 watch_view.Camera.LookDirection.Length == 0)
             {
@@ -183,6 +188,117 @@ namespace Dynamo.Controls
                 watch_view.Camera.LookDirection = prevcamDir;
             }
         }
+
+        #region ZoomExtents
+
+        //This implementation is found in the current dev branch of Helix-Toolkit (https://github.com/helix-toolkit/helix-toolkit/tree/develop) with the assumption it will be included in the 2.25.0 release
+        //The PR including these changes "Re-implmenet zoom extents in sharpdx versions" is found here -> https://github.com/helix-toolkit/helix-toolkit/pull/2003
+        //Specifically the code included here is located in https://github.com/holance/helix-toolkit/blob/develop/Source/HelixToolkit.SharpDX.Shared/Extensions/CameraCoreExtensions.cs
+        //This implementation is adjust to remove the instance method pattern.
+        //This section can be removed when we adopt the next release of helix-toolkit and call the ZoomExtents() directly.
+
+        private static void ZoomExtents(HelixToolkit.Wpf.SharpDX.PerspectiveCamera camera, float aspectRatio, BoundingBox boundingBox, out Vector3 position, out Vector3 lookDir, out Vector3 upDir)
+        {
+            var cameraDir = Vector3.Normalize(camera.LookDirection.ToVector3());
+            var cameraUp = Vector3.Normalize(camera.UpDirection.ToVector3());
+            var cameraRight = Vector3.Cross(cameraDir, cameraUp);
+            cameraUp = Vector3.Cross(cameraRight, cameraDir);
+
+            var corners = boundingBox.GetCorners();
+
+            var frustum = new BoundingFrustum(camera.CreateViewMatrix() * camera.CreateProjectionMatrix(aspectRatio));
+            var leftNormal = -frustum.Left.Normal;
+            var rightNormal = -frustum.Right.Normal;
+            var topNormal = -frustum.Top.Normal;
+            var bottomNormal = -frustum.Bottom.Normal;
+
+            int leftMostPoint = -1, rightMostPoint = -1, topMostPoint = -1, bottomMostPoint = -1;
+            for (int i = 0; i < corners.Length; i++)
+            {
+                if (leftMostPoint < 0 && IsOutermostPointInDirection(i, ref leftNormal, corners))
+                {
+                    leftMostPoint = i;
+                }
+                if (rightMostPoint < 0 && IsOutermostPointInDirection(i, ref rightNormal, corners))
+                {
+                    rightMostPoint = i;
+                }
+                if (topMostPoint < 0 && IsOutermostPointInDirection(i, ref topNormal, corners))
+                {
+                    topMostPoint = i;
+                }
+                if (bottomMostPoint < 0 && IsOutermostPointInDirection(i, ref bottomNormal, corners))
+                {
+                    bottomMostPoint = i;
+                }
+            }
+
+            var plane1 = new Plane(corners[leftMostPoint], leftNormal);
+            var plane2 = new Plane(corners[rightMostPoint], rightNormal);
+            PlaneIntersectsPlane(ref plane1, ref plane2, out var horizontalIntersection);
+            plane1 = new Plane(corners[topMostPoint], topNormal);
+            plane2 = new Plane(corners[bottomMostPoint], bottomNormal);
+            PlaneIntersectsPlane(ref plane1, ref plane2, out var verticalIntersection);
+            FindClosestPointsOnTwoLines(ref horizontalIntersection, ref verticalIntersection, out var closestPointLine1, out var closestPointLine2);
+            position = Vector3.Dot(closestPointLine1 - closestPointLine2, cameraDir) < 0 ? closestPointLine1 : closestPointLine2;
+            upDir = cameraUp;
+            var boundPlane = new Plane(boundingBox.Center, cameraDir);
+            var lookRay = new Ray(position, cameraDir);
+            boundPlane.Intersects(ref lookRay, out float dist);
+            lookDir = cameraDir * dist;
+        }
+
+        private static bool IsOutermostPointInDirection(int pointIndex, ref Vector3 direction, Vector3[] corners)
+        {
+            Vector3 point = corners[pointIndex];
+            for (int i = 0; i < corners.Length; i++)
+            {
+                if (i != pointIndex && Vector3.Dot(direction, corners[i] - point) > 0)
+                    return false;
+            }
+
+            return true;
+        }
+
+        // Credit: http://wiki.unity3d.com/index.php/3d_Math_functions
+        // Returns the edge points of the closest line segment between 2 lines
+        private static void FindClosestPointsOnTwoLines(ref Ray line1, ref Ray line2, out Vector3 closestPointLine1, out Vector3 closestPointLine2)
+        {
+            Vector3 line1Direction = line1.Direction;
+            Vector3 line2Direction = line2.Direction;
+
+            float a = Vector3.Dot(line1Direction, line1Direction);
+            float b = Vector3.Dot(line1Direction, line2Direction);
+            float e = Vector3.Dot(line2Direction, line2Direction);
+
+            float d = a * e - b * b;
+
+            Vector3 r = line1.Position - line2.Position;
+            float c = Vector3.Dot(line1Direction, r);
+            float f = Vector3.Dot(line2Direction, r);
+
+            float s = (b * f - c * e) / d;
+            float t = (a * f - c * b) / d;
+
+            closestPointLine1 = line1.Position + line1Direction * s;
+            closestPointLine2 = line2.Position + line2Direction * t;
+        }
+
+        private static bool PlaneIntersectsPlane(ref Plane p1, ref Plane p2, out Ray intersection)
+        {
+            var dir = Vector3.Cross(p1.Normal, p2.Normal);
+            float det = Vector3.Dot(dir, dir);
+            if (Math.Abs(det) > float.Epsilon)
+            {
+                var p = (Vector3.Cross(dir, p2.Normal) * p1.D + Vector3.Cross(p1.Normal, dir) * p2.D) / det;
+                intersection = new Ray(p, dir);
+                return true;
+            }
+            intersection = default;
+            return false;
+        }
+
+        #endregion
 
         private void RequestViewRefreshHandler()
         {
