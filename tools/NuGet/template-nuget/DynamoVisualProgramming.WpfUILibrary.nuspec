@@ -23,7 +23,7 @@
             <frameworkAssembly assemblyName="PresentationFramework" targetFramework="net48"/>
         </frameworkAssemblies>
         <dependencies>
-            <group targetFramework="net6.0">
+            <group targetFramework="$TargetFramework$">
                 <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
                 <dependency id="DynamoVisualProgramming.DynamoCoreNodes" version="$Version$"/>
             </group>
@@ -31,9 +31,9 @@
     </metadata>
     <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
-        <file src="DynamoCoreWpf.dll" target="lib\net6.0" />
-        <file src="nodes\CoreNodeModelsWpf.dll" target="lib\net6.0" />
-        <file src="nodes\CoreNodeModelsWpf.xml" target="lib\net6.0" />
+        <file src="DynamoCoreWpf.dll" target="lib\$TargetFramework$" />
+        <file src="nodes\CoreNodeModelsWpf.dll" target="lib\$TargetFramework$" />
+        <file src="nodes\CoreNodeModelsWpf.xml" target="lib\$TargetFramework$" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

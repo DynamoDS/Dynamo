@@ -1,5 +1,8 @@
 ## In Depth
-Plane by Three Points will create a plane that passes through the three input points. The points must not be co-linear. In the example below, we use three code blocks to define the three initial points, then use ByThreePoints to create a plane.
+`Arc.ByThreePoints` draws an arc from three points, given the start point, end point, and a point between them. 
+
+In the example below, we draw an arc from three randomly created points.
+
 ___
 ## Example File
 

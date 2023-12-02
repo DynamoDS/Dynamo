@@ -893,18 +893,21 @@
                                                     <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>
                                                     <ColumnDefinition x:Name="colMLbetaTag" Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <RadioButton Grid.Column="0" 
+                                                <RadioButton Grid.Column="0"
+                                                     x:Name="ObjectTypeRadioButton"
                                                      MinWidth="90"
                                                      Margin="-3,0,20,0"
                                                      Style="{StaticResource RunSettingsRadioButtons}"
                                                      IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
                                                      Content="{x:Static p:Resources.ObjectType}"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
-                                                <RadioButton Grid.Column="1" 
+                                                <RadioButton Grid.Column="1"
+                                                     x:Name="RecommendedNodesRadioButton"
                                                      MinWidth="90"
                                                      Style="{StaticResource RunSettingsRadioButtons}"
                                                      IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
                                                      Content="{x:Static p:Resources.RecommendedNodes}"
+                                                     Click="RecommendedNodesRadioButton_Click"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
                                                 <!--Beta tag-->
                                                 <Label Grid.Column="2"

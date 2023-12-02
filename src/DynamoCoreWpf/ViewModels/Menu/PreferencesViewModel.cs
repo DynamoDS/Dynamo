@@ -1066,7 +1066,7 @@ namespace Dynamo.ViewModels
             {
                 // HostAnalyticsInfo is not set when this is invoked??
                 //return this.dynamoViewModel.Model.HostAnalyticsInfo.HostName.Equals("Dynamo Revit");
-                var host = this.dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+                var host = DynamoModel.HostAnalyticsInfo.HostName;
 
                 if (host != null)
                 {
@@ -1098,6 +1098,17 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
                 RaisePropertyChanged(nameof(EnableHideNodesToggle));
                 RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// If MLAutocompleteTOU is approved
+        /// </summary>
+        internal bool IsMLAutocompleteTOUApproved
+        {
+            get
+            {
+                return preferenceSettings.IsMLAutocompleteTOUApproved;
             }
         }
 

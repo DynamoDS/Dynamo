@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Dynamo.Graph.Workspaces;
@@ -78,7 +78,7 @@ namespace Dynamo.Extensions
         /// <summary>
         /// HostInfo object, Useful to determine what host context Dynamo is running in.
         /// </summary>
-        internal HostAnalyticsInfo HostInfo => dynamoModel.HostAnalyticsInfo;
+        internal HostAnalyticsInfo HostInfo => DynamoModel.HostAnalyticsInfo;
 
 
         /// <summary>

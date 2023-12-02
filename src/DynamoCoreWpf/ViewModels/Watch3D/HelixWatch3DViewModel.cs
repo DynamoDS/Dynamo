@@ -220,11 +220,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 try
                 {
-
-                    if (Environment.Is64BitProcess)
-                        NativeMethods.LoadNvApi64();
-                    else
-                        NativeMethods.LoadNvApi32();
+                    NativeMethods.LoadNvApi64();
                 }
                 catch { } // will always fail since 'fake' entry point doesn't exists
             }

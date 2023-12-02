@@ -148,7 +148,7 @@ namespace DynamoCoreWpfTests.PackageManager
         }
 
         [Test]
-        async public void LateLoadedViewExtensionsHaveMethodsCalled()
+        public void LateLoadedViewExtensionsHaveMethodsCalled()
         {
             var pkgviewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension");

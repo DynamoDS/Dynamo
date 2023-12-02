@@ -315,4 +315,10 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   <data name="ResizeThumbToolTip" xml:space="preserve">
     <value>Drag to modify the size of the chart</value>
   </data>
+  <data name="GateClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="GateOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
 </root>
