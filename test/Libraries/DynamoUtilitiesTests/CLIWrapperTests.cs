@@ -17,7 +17,6 @@ namespace DynamoUtilitiesTests
         /// </summary>
         private class HangingCLIWrapper: Dynamo.Utilities.CLIWrapper
         {
-            private string relativePath = Path.Combine("DynamoFeatureFlags", "DynamoFeatureFlags.exe");
             protected override string GetCantStartErrorMessage()
             {
                 throw new NotImplementedException();
@@ -29,12 +28,11 @@ namespace DynamoUtilitiesTests
             }
             internal HangingCLIWrapper()
             {
-                StartProcess(relativePath, null);
             }
 
             internal string GetData()
             {
-                return GetData(2000, () => { return startofDataToken; });
+                return GetData(4000, () => { return startofDataToken; });
             }
 
             protected override void StartProcess(string relativeEXEPath, string argString)
@@ -57,7 +55,7 @@ namespace DynamoUtilitiesTests
         {
             internal new string GetData()
             {
-                return GetData(2000, () => { Thread.Sleep(4000);return ""; });
+                return GetData(4000, () => { Thread.Sleep(8000);return ""; });
             }
         }
 
