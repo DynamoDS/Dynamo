@@ -22,9 +22,6 @@ namespace Dynamo.DocumentationBrowser
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
         internal bool hasBeenInitialized;
-        private bool isInitializeCalled;
-        private bool IsDisposed;
-        private bool webView2Loaded;
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
@@ -53,12 +50,6 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowser.AllowDrop = false;
             this.documentationBrowser.NavigationStarting += ShouldAllowNavigation;
             this.documentationBrowser.DpiChanged += DocumentationBrowser_DpiChanged;
-            this.documentationBrowser.Loaded += DocumentationBrowser_Loaded;
-        }
-
-        private void DocumentationBrowser_Loaded(object sender, RoutedEventArgs e)
-        {
-            webView2Loaded = true;
         }
 
         private void DocumentationBrowser_DpiChanged(object sender, DpiChangedEventArgs args)
@@ -124,7 +115,6 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
                 this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
-                this.documentationBrowser.DpiChanged -= DocumentationBrowser_Loaded;
                 if (this.documentationBrowser.CoreWebView2 != null)
                 {
                     this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
@@ -176,17 +166,6 @@ namespace Dynamo.DocumentationBrowser
                     };
                 }
 
-                if (!webView2Loaded)
-                {
-                    Log("DocumentationBrowser's webview2 component is initializing but not yet visible.");
-                }
-
-                if (IsDisposed)
-                {
-                    Log("Disposed and trying to initialize");
-                    throw new Exception("Tibi Disposed and trying to initialize");
-                }
-                isInitializeCalled = true;
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
            
@@ -223,13 +202,6 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            IsDisposed = true;
-
-            if (isInitializeCalled && !hasBeenInitialized)
-            {
-                Log("Disposed called while stuck in initialization");
-                throw new Exception("Tibi Disposed called while stuck in initialization");
-            }
             Dispose(true);
             GC.SuppressFinalize(this);
         }
