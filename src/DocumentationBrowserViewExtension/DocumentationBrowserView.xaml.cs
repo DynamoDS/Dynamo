@@ -23,7 +23,7 @@ namespace Dynamo.DocumentationBrowser
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
         internal bool hasBeenInitialized;
 
-        // Used for debugging tests
+        // Used for investigating async vs dispose issues
         private bool initializeStarted;
 
         private ScriptingObject comScriptingObject;
@@ -206,12 +206,9 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            if (Models.DynamoModel.IsTestMode)
+            if (initializeStarted && !hasBeenInitialized)
             {
-                if (initializeStarted && !hasBeenInitialized)
-                {
-                    Log("DocumentationBrowserView is being disposed but async initialization is still not done");
-                }
+                Log("DocumentationBrowserView is being disposed but async initialization is still not done");
             }
 
             Dispose(true);
