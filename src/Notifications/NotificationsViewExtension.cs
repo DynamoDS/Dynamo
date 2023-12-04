@@ -67,6 +67,8 @@ namespace Dynamo.Notifications
                 {
                     BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
                 }
+                notificationCenterController?.Dispose();
+                notificationCenterController = null;
                 notificationsMenuItem = null;
                 disposed = true;
             }
@@ -115,6 +117,12 @@ namespace Dynamo.Notifications
         private void LoadNotificationCenter()
         {
             var dynamoView = viewLoadedParams.DynamoWindow as DynamoView;
+
+            if (notificationCenterController != null)
+            {
+                notificationCenterController.Dispose();
+                notificationCenterController = null;
+            }
             notificationCenterController = new NotificationCenterController(dynamoView, logger);
         }
 
