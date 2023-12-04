@@ -17,7 +17,7 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     public partial class DocumentationBrowserView : UserControl, IDisposable
     {
-        enum InitializeState
+        internal enum InitializeState
         {
             NotStarted,
             Started,
@@ -28,7 +28,7 @@ namespace Dynamo.DocumentationBrowser
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
 
-        private InitializeState initState;
+        internal InitializeState initState;
 
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";

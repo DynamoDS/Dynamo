@@ -8,6 +8,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Notifications;
+using Dynamo.DocumentationBrowser;
+using DynamoCoreWpfTests.Utility;
 
 namespace DynamoCoreWpfTests.ViewExtensions
 {
@@ -19,6 +21,14 @@ namespace DynamoCoreWpfTests.ViewExtensions
             var shortcutBar = this.View.ShortcutBar;
             var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
             notificationsButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+
+            var notificationExtension = this.View.viewExtensionManager.ViewExtensions.OfType<NotificationsViewExtension>().FirstOrDefault();
+            // Wait for the NotificationCenterController webview2 control to finish initialization
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return notificationExtension.notificationCenterController.initState == NotificationCenterController.InitializeState.Done;
+            });
+            Assert.IsTrue(notificationExtension.notificationCenterController.initState == NotificationCenterController.InitializeState.Done);
 
             NotificationUI notificationUI = PresentationSource.CurrentSources.OfType<System.Windows.Interop.HwndSource>()
                                         .Select(h => h.RootVisual)

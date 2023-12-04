@@ -57,10 +57,10 @@ namespace DynamoCoreWpfTests
             // Wait for the DocumentationBrowserView webview2 control to finish initialization
             DispatcherUtil.DoEventsLoop(() =>
             {
-                return docBrowserviewExtension.BrowserView.hasBeenInitialized;
+                return docBrowserviewExtension.BrowserView.initState == DocumentationBrowserView.InitializeState.Done;
             });
 
-            Assert.IsTrue(docBrowserviewExtension.BrowserView.hasBeenInitialized);
+            Assert.IsTrue(docBrowserviewExtension.BrowserView.initState == DocumentationBrowserView.InitializeState.Done);
         }
 
         public override void Open(string path)

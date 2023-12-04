@@ -64,14 +64,14 @@ namespace Dynamo.Notifications
         private static readonly string NotificationCenterButtonName = "notificationsButton";
         internal DirectoryInfo webBrowserUserDataFolder;
 
-        enum InitializeState
+        internal enum InitializeState
         {
             NotStarted = 0,
             Started,
             Done
         }
 
-        private InitializeState initState = InitializeState.NotStarted;
+        internal InitializeState initState = InitializeState.NotStarted;
 
         private readonly DynamoLogger logger;
         private string jsonStringFile;

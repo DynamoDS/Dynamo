@@ -18,7 +18,7 @@ namespace Dynamo.Notifications
         private Action<Logging.NotificationMessage> notificationHandler;
         private ObservableCollection<Logging.NotificationMessage> notifications;
         private bool disposed;
-        private NotificationCenterController notificationCenterController;
+        internal NotificationCenterController notificationCenterController;
         /// <summary>
         /// Notifications data collection. PropertyChanged event is raised to help dealing WPF bind dispose.
         /// </summary>

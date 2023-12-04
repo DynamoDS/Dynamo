@@ -166,7 +166,7 @@ namespace DynamoCoreWpfTests
                 viewExtension.HandleRequestOpenDocumentationLink(externalEvent);
                 DispatcherUtil.DoEventsLoop();
 
-                Assert.IsFalse(viewExtension.BrowserView.hasBeenInitialized);
+                Assert.IsFalse(viewExtension.BrowserView.initState == DocumentationBrowserView.InitializeState.NotStarted);
                 var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
 
                 // Assert
@@ -880,10 +880,10 @@ namespace DynamoCoreWpfTests
             // Wait for the DocumentationBrowserView webview2 control to finish initialization
             DispatcherUtil.DoEventsLoop(() =>
             {
-                return docView.hasBeenInitialized;
+                return docView.initState == DocumentationBrowserView.InitializeState.Done;
             });
 
-            Assert.IsTrue(docView.hasBeenInitialized);
+            Assert.IsTrue(docView.initState == DocumentationBrowserView.InitializeState.Done);
         }
 
         private string GetSidebarDocsBrowserContents()
