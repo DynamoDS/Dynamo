@@ -183,13 +183,12 @@ namespace Dynamo.Core
         /// definitions from the last but one version to the currently installed Dynamo version
         /// </summary>
         /// <param name="pathManager"></param>
-        /// <param name="dynamoLookup"></param>
         /// <returns>new migrator instance after migration</returns>
-        public static DynamoMigratorBase MigrateBetweenDynamoVersions(IPathManager pathManager, IDynamoLookUp dynamoLookup = null)
+        public static DynamoMigratorBase MigrateBetweenDynamoVersions(IPathManager pathManager)
         {
             //Get the current version from the current path manager user data directory.
             var currentVersion = GetInstallVersionFromUserDataFolder(pathManager.UserDataDirectory);
-            var previousVersion = GetLatestVersionToMigrate(pathManager, dynamoLookup, currentVersion);
+            var previousVersion = GetLatestVersionToMigrate(pathManager, currentVersion);
             
             if (!previousVersion.HasValue || previousVersion.Value.UserDataRoot == null)
                 return null; //Don't have previous version for migration
@@ -201,12 +200,11 @@ namespace Dynamo.Core
         /// Returns the most recent version to migrate to the given current version.
         /// </summary>
         /// <param name="pathManager"></param>
-        /// <param name="dynamoLookup"></param>
         /// <param name="currentVersion"></param>
         /// <returns>FileVersion?</returns>
-        public static FileVersion? GetLatestVersionToMigrate(IPathManager pathManager, IDynamoLookUp dynamoLookup, FileVersion currentVersion)
+        public static FileVersion? GetLatestVersionToMigrate(IPathManager pathManager, FileVersion currentVersion)
         {
-            var versions = GetInstalledVersions(pathManager, dynamoLookup);
+            var versions = GetInstalledVersions(pathManager);
 
             if (versions.Count() < 2)
                 return null; // No need for migration
@@ -265,17 +263,14 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Returns list of FileVersion objects, given the IPathManager and 
-        /// IDynamoLookUp objects. If a valid IDynamoLookUp interface object
-        /// is passed, this method uses the lookup to get Dynamo user data locations.
+        /// Returns list of FileVersion objects, given the IPathManager.
         /// </summary>
         /// <param name="pathManager"></param>
-        /// <param name="dynamoLookup"></param>
         /// <returns></returns>
-        public static IEnumerable<FileVersion> GetInstalledVersions(IPathManager pathManager, IDynamoLookUp dynamoLookup)
+        public static IEnumerable<FileVersion> GetInstalledVersions(IPathManager pathManager)
         {
-            return dynamoLookup != null
-                ? GetInstalledVersionsCore(() => dynamoLookup.GetDynamoUserDataLocations())
+            var installedVersions = GetInstalledVersionsCore(() => pathManager.PathResolver != null? pathManager.PathResolver.GetDynamoUserDataLocations() : Enumerable.Empty<string>());
+            return installedVersions.Any() ? installedVersions
                 : GetInstalledVersions(Path.GetDirectoryName(pathManager.UserDataDirectory));
         }
 
@@ -402,6 +397,32 @@ namespace Dynamo.Core
         public string CommonDataRootFolder
         {
             get { return string.Empty; }
+        }
+
+        /// <summary>
+        /// Returns the full path of user data location of all version of this
+        /// Dynamo product installed on this system. The default implementation
+        /// returns list of all subfolders in %appdata%\Dynamo as well as 
+        /// %appdata%\Dynamo\Dynamo Core\ folders.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetDynamoUserDataLocations()
+        {
+            var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dynamoFolder = Path.Combine(appDatafolder, "Dynamo");
+            if (!Directory.Exists(dynamoFolder)) return Enumerable.Empty<string>();
+
+            var paths = new List<string>();
+            var coreFolder = new FileInfo(UserDataRootFolder).FullName;
+            //Dynamo Core folder has to be enumerated first to cater migration from
+            //Dynamo 1.0 to Dynamo Core 1.0
+            if (Directory.Exists(coreFolder))
+            {
+                paths.AddRange(Directory.EnumerateDirectories(coreFolder));
+            }
+
+            paths.AddRange(Directory.EnumerateDirectories(dynamoFolder));
+            return paths;
         }
     }
 

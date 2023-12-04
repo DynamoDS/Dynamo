@@ -76,6 +76,7 @@ namespace Dynamo.Core
 
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
+        private Updates.BinaryVersion productVersion;
         private readonly string dynamoCoreDir;
         private string hostApplicationDirectory;
         private string userDataDir;
@@ -101,6 +102,14 @@ namespace Dynamo.Core
         #endregion
 
         internal IPreferences Preferences { get; set; }
+
+        /// <summary>
+        /// PathResolver is used to resolve paths for custom nodes, packages, and preloaded libraries.
+        /// </summary>
+        public IPathResolver PathResolver
+        {
+            get { return pathResolver; }
+        }
 
         private IEnumerable<string> RootDirectories
         {
@@ -629,6 +638,18 @@ namespace Dynamo.Core
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
+        }
+
+        /// <summary>
+        /// Returns the current Dynamo product version.
+        /// </summary>
+        /// <returns></returns>
+        public Updates.BinaryVersion GetProductVersion()
+        {
+            if (null != productVersion) return productVersion;
+            var executingAssemblyName = Assembly.GetExecutingAssembly().GetName();
+            productVersion = Updates.BinaryVersion.FromString(executingAssemblyName.Version.ToString());
+            return productVersion;
         }
 
         private string GetCommonDataFolder()
