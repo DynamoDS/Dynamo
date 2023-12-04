@@ -6,7 +6,6 @@ using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Models;
-using Dynamo.Updates;
 using Microsoft.Win32;
 
 namespace Dynamo.Logging
