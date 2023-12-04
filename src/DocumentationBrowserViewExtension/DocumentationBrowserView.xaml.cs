@@ -22,6 +22,10 @@ namespace Dynamo.DocumentationBrowser
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
         internal bool hasBeenInitialized;
+
+        // Used for debugging tests
+        private bool initializeStarted;
+
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
@@ -165,7 +169,7 @@ namespace Dynamo.DocumentationBrowser
                         UserDataFolder = WebBrowserUserDataFolder
                     };
                 }
-
+                initializeStarted = true;
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
            
@@ -202,6 +206,14 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
+            if (Models.DynamoModel.IsTestMode)
+            {
+                if (initializeStarted && !hasBeenInitialized)
+                {
+                    Log("DocumentationBrowserView is being disposed but async initialization is still not done");
+                }
+            }
+
             Dispose(true);
             GC.SuppressFinalize(this);
         }

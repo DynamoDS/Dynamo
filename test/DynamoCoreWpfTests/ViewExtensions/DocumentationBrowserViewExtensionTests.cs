@@ -882,6 +882,8 @@ namespace DynamoCoreWpfTests
             {
                 return docView.hasBeenInitialized;
             });
+
+            Assert.IsTrue(docView.hasBeenInitialized);
         }
 
         private string GetSidebarDocsBrowserContents()

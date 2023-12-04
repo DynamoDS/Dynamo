@@ -12,6 +12,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.PythonServices;
 using Dynamo.Tests;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using ICSharpCode.AvalonEdit.Document;
 using NUnit.Framework;
@@ -47,6 +48,19 @@ namespace DynamoCoreWpfTests
                 }
             }
             return null;
+        }
+
+        private void WaitForDocumentationBrowserInitialization()
+        {
+            var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
+
+            // Wait for the DocumentationBrowserView webview2 control to finish initialization
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return docBrowserviewExtension.BrowserView.hasBeenInitialized;
+            });
+
+            Assert.IsTrue(docBrowserviewExtension.BrowserView.hasBeenInitialized);
         }
 
         public override void Open(string path)
@@ -276,7 +290,7 @@ namespace DynamoCoreWpfTests
 
             //Pressing the MoreInfo button, here the OnMoreInfoEvent is raised 
             moreInfoButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-            DispatcherUtil.DoEvents();
+            WaitForDocumentationBrowserInitialization();
 
             //Check that now we are showing a extension tab (DocumentationBrowser)
             Assert.That(this.ViewModel.SideBarTabItems.Count, Is.EqualTo(1));
@@ -315,8 +329,7 @@ namespace DynamoCoreWpfTests
 
             //Click the button and internally the  OpenPythonLearningMaterial method is executed
             learnMoreMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-
-            DispatcherUtil.DoEvents();
+            WaitForDocumentationBrowserInitialization();
 
             var learnMoreTab = this.ViewModel.SideBarTabItems
                                 .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
@@ -349,8 +362,7 @@ namespace DynamoCoreWpfTests
 
             //Click the button and internally the  OpenPythonLearningMaterial method is executed
             learnMoreMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-
-            DispatcherUtil.DoEvents();
+            WaitForDocumentationBrowserInitialization();
 
             var learnMoreTab = this.ViewModel.SideBarTabItems
                                 .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
