@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Logging;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -17,19 +18,11 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     public partial class DocumentationBrowserView : UserControl, IDisposable
     {
-        internal enum InitializeState
-        {
-            NotStarted,
-            Started,
-            Done
-        }
         private const string ABOUT_BLANK_URI = "about:blank";
         private readonly DocumentationBrowserViewModel viewModel;
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
-
-        internal InitializeState initState;
-
+        private AsyncMethodState initState = AsyncMethodState.NotStarted;
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
@@ -163,9 +156,9 @@ namespace Dynamo.DocumentationBrowser
             }
 
             // Only initialize once 
-            if (initState == InitializeState.NotStarted)
+            if (initState == AsyncMethodState.NotStarted)
             {
-                initState = InitializeState.Started;
+                initState = AsyncMethodState.Started;
                 if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
                 {
                     //This indicates in which location will be created the WebView2 cache folder
@@ -186,7 +179,7 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
                 this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
 
-                initState = InitializeState.Done;
+                initState = AsyncMethodState.Done;
             }
 
             if(Directory.Exists(VirtualFolderPath))
@@ -211,7 +204,7 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            if (initState == InitializeState.Started)
+            if (initState == AsyncMethodState.Started)
             {
                 Log("DocumentationBrowserView is being disposed but async initialization is still not done");
             }
