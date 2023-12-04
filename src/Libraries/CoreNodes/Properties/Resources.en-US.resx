@@ -147,6 +147,9 @@
   <data name="Exception_Deserialize_Unsupported_Cache" xml:space="preserve">
     <value>The stored data can not be loaded.</value>
   </data>
+  <data name="Exception_Serialize_Depth_Unsupported" xml:space="preserve">
+    <value>Depth {0} Exceeds MaxDepth {1} at path "{2}"</value>
+  </data>
   <data name="Exception_Serialize_DesignScript_Unsupported" xml:space="preserve">
     <value>This type of Geometry is not able to be serialized.</value>
   </data>

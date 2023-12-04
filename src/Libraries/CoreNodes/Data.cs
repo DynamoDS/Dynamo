@@ -13,6 +13,8 @@ using System.Runtime.Versioning;
 using Dynamo.Events;
 using Dynamo.Logging;
 using Dynamo.Session;
+using System.Globalization;
+using System.Text;
 
 namespace DSCore
 {
@@ -188,8 +190,9 @@ namespace DSCore
         /// <returns name="json">A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.</returns>
         public static string StringifyJSON([ArbitraryDimensionArrayImport] object values)
         {
-            return JsonConvert.SerializeObject(values,
-                new JsonConverter[]
+            var settings = new JsonSerializerSettings()
+            {
+                Converters = new JsonConverter[]
                 {
                     new DictConverter(),
                     new DesignScriptGeometryConverter(),
@@ -198,9 +201,66 @@ namespace DSCore
 #if _WINDOWS
                     new PNGImageConverter(),
 #endif
-                });
+                }
+            };
+
+            StringBuilder sb = new StringBuilder(256);
+            using (var writer = new StringWriter(sb, CultureInfo.InvariantCulture))
+            {
+                using (var jsonWriter = new MaxDepthJsonTextWriter(writer))
+                {
+                    JsonSerializer.Create(settings).Serialize(jsonWriter, values);
+                }
+                return writer.ToString();
+            }
         }
 
+        /// <summary>
+        /// Subclass of JsonTextWriter that limits a maximum supported object depth to prevent circular reference crashes when serializing arbitrary .NET objects types.
+        /// </summary>
+        private class MaxDepthJsonTextWriter : JsonTextWriter
+        {
+            private readonly int maxDepth = 15;
+            private int depth = 0;
+
+            public MaxDepthJsonTextWriter(TextWriter writer) : base(writer) { }
+
+            public override void WriteStartArray()
+            {
+                base.WriteStartArray();
+                depth++;
+                CheckDepth();
+            }
+
+            public override void WriteEndArray()
+            {
+                base.WriteEndArray();
+                depth--;
+                CheckDepth();
+            }
+
+            public override void WriteStartObject()
+            {
+                base.WriteStartObject();
+                depth++;
+                CheckDepth();
+            }
+
+            public override void WriteEndObject()
+            {
+                base.WriteEndObject();
+                depth--;
+                CheckDepth();
+            }
+
+            private void CheckDepth()
+            {
+                if (depth > maxDepth)
+                {
+                    throw new JsonSerializationException(string.Format(Properties.Resources.Exception_Serialize_Depth_Unsupported, depth, maxDepth, Path));
+                }
+            }
+        }
 
         #region Converters
         /// <summary>

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using DynamoUnits;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -190,6 +191,25 @@ namespace Dynamo.Tests
 
             // Verify values match when parsing JSON via Python
             AssertPreviewValue("cdad5bf1-f5f7-47f4-a119-ad42e5084cfa", true);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SerializingObjectOverMaximumDepthFailes()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\json\JSON_Serialization_Depth_Fail.dyn");
+            OpenModel(path);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>(
+                Guid.Parse("cc45bec3172e40dab4d967e9dd81cbdd"));
+
+            var expectedWarning = "Exceeds MaxDepth";
+
+            Assert.AreEqual(node.State, ElementState.Warning);
+            AssertPreviewValue("cc45bec3172e40dab4d967e9dd81cbdd", null);
+            Assert.AreEqual(node.Infos.Count, 1);
+            Assert.IsTrue(node.Infos.Any(x => x.Message.Contains(expectedWarning) && x.State == ElementState.Warning));
         }
 
         [Test]
