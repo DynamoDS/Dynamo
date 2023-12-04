@@ -319,9 +319,6 @@
     <Compile Include="Commands\PortCommands.cs" />
     <Compile Include="Commands\SearchCommands.cs" />
     <Compile Include="Commands\WorkspaceCommands.cs" />
-    <Compile Include="Controls\GraphUpdateNotificationControl.xaml.cs">
-      <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ImageBasedControls.cs" />
     <Compile Include="Controls\ShortcutToolbar.xaml.cs">
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
@@ -568,10 +565,6 @@
     <Page Include="Controls\NodeAutoCompleteSearchControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\GraphUpdateNotificationControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <None Include="UI\Themes\Modern\InPorts.xaml">
       <SubType>Designer</SubType>

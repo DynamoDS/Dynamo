@@ -297,25 +297,31 @@ namespace Dynamo.Notifications
 
         protected virtual void Dispose(bool disposing)
         {
-            if (notificationUIPopup == null) return;
-
-            notificationUIPopup.IsOpen = false;
-            if (notificationUIPopup.webView != null)
+            if (dynamoView != null)
             {
-                notificationUIPopup.webView.Visibility = Visibility.Hidden;
-                notificationUIPopup.webView.Loaded -= InitializeBrowserAsync;
-                if (notificationUIPopup.webView.CoreWebView2 != null)
-                {
-                    notificationUIPopup.webView.CoreWebView2.Stop();
-                    notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
-                    notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
+                dynamoView.SizeChanged -= DynamoView_SizeChanged;
+                dynamoView.LocationChanged -= DynamoView_LocationChanged;
+            }
 
-                    dynamoView.SizeChanged -= DynamoView_SizeChanged;
-                    dynamoView.LocationChanged -= DynamoView_LocationChanged;
-                    notificationsButton.Click -= NotificationsButton_Click;
+            if (notificationUIPopup == null)
+            {
+                notificationUIPopup.IsOpen = false;
+                notificationsButton.Click -= NotificationsButton_Click;
+
+                if (notificationUIPopup.webView != null)
+                {
+                    notificationUIPopup.webView.Visibility = Visibility.Hidden;
+                    notificationUIPopup.webView.Loaded -= InitializeBrowserAsync;
                     notificationUIPopup.webView.NavigationCompleted -= WebView_NavigationCompleted;
+                    notificationUIPopup.webView.CoreWebView2InitializationCompleted -= WebView_CoreWebView2InitializationCompleted;
+
+                    if (notificationUIPopup.webView.CoreWebView2 != null)
+                    {
+                        notificationUIPopup.webView.CoreWebView2.Stop();
+                        notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
+                    }
+                    notificationUIPopup.webView.Dispose();
                 }
-                notificationUIPopup.webView.Dispose();
             }
         }
 

@@ -100,7 +100,6 @@ namespace WpfVisualizationTests
                 StartInTestMode = true,
                 PathResolver = pathResolver,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
-                UpdateManager = this.UpdateManager,
                 ProcessMode = TaskProcessMode.Synchronous,
                 Preferences = PreferenceSettings.Instance
             });

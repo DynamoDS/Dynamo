@@ -47,8 +47,6 @@ namespace SystemTestServices
 
         protected DynamoModel Model { get; set; }
 
-        protected IUpdateManager UpdateManager { get; set; }
-
         protected string ExecutingDirectory
         {
             get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); }
@@ -196,7 +194,6 @@ namespace SystemTestServices
                     StartInTestMode = true,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    UpdateManager = this.UpdateManager,
                     ProcessMode = TaskProcessMode.Synchronous
                 });
 
