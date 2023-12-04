@@ -25,4 +25,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoCLI")]
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
 [assembly: InternalsVisibleTo("DynamoUtilitiesTests")]
-
+[assembly: InternalsVisibleTo("Notifications")]
