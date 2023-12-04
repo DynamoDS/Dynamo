@@ -256,6 +256,8 @@
                                     Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
                                     DockPanel.Dock="Right"
                                     ToolTipService.ShowOnDisabled="True"
+                                    Loaded="DropDownInstallButton_Loaded"
+                                    Unloaded="DropDownInstallButton_Unloaded"
                                     IsEnabled="{Binding IsEnabledForInstall}">
                                 <Button.Style>
                                     <Style TargetType="Button">
@@ -276,7 +278,6 @@
                                                                         Visibility="{Binding CanInstall, Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
                                                                         BorderThickness="0"
                                                                         Cursor="Hand"
-                                                                        Click="DropDownInstallButton_OnClick"
                                                                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                                                                     <Image Source=" /DynamoCoreWpf;component/UI/Images/caret_drop_down.png"
                                                                            Width="7"
