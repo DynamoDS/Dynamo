@@ -22,7 +22,6 @@ namespace Dynamo.DocumentationBrowser
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
         private bool hasBeenInitialized;
-        private bool webView2Loaded;
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
@@ -51,12 +50,6 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowser.AllowDrop = false;
             this.documentationBrowser.NavigationStarting += ShouldAllowNavigation;
             this.documentationBrowser.DpiChanged += DocumentationBrowser_DpiChanged;
-            this.documentationBrowser.Loaded += DocumentationBrowser_Loaded;
-        }
-
-        private void DocumentationBrowser_Loaded(object sender, RoutedEventArgs e)
-        {
-            webView2Loaded = true;
         }
 
         private void DocumentationBrowser_DpiChanged(object sender, DpiChangedEventArgs args)
@@ -122,7 +115,6 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
                 this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
-                this.documentationBrowser.DpiChanged -= DocumentationBrowser_Loaded;
                 if (this.documentationBrowser.CoreWebView2 != null)
                 {
                     this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
@@ -172,11 +164,6 @@ namespace Dynamo.DocumentationBrowser
                     {
                         UserDataFolder = WebBrowserUserDataFolder
                     };
-                }
-
-                if (!webView2Loaded)
-                {
-                    Log("DocumentationBrowser's webview2 component is initializing but not yet visible.");
                 }
 
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
