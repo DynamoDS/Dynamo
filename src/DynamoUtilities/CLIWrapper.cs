@@ -102,7 +102,7 @@ namespace Dynamo.Utilities
         {
             var readStdOutTask = Task.Run(() =>
             {
-                if (process.HasExited)
+                if (CheckIfProcessHasExited())
                 {
                     return string.Empty;
                 }
@@ -180,7 +180,10 @@ namespace Dynamo.Utilities
         /// <returns>Returns error message</returns>
         protected abstract string GetCantCommunicateErrorMessage();
  
-
+        protected virtual bool CheckIfProcessHasExited()
+        {
+            return process.HasExited;
+        }
 
     }
 }
