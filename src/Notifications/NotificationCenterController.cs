@@ -64,6 +64,15 @@ namespace Dynamo.Notifications
         private static readonly string NotificationCenterButtonName = "notificationsButton";
         internal DirectoryInfo webBrowserUserDataFolder;
 
+        enum InitializeState
+        {
+            NotStarted = 0,
+            Started,
+            Done
+        }
+
+        private InitializeState initState = InitializeState.NotStarted;
+
         private readonly DynamoLogger logger;
         private string jsonStringFile;
         private NotificationsModel notificationsModel;
@@ -113,7 +122,10 @@ namespace Dynamo.Notifications
                 };
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
-            await notificationUIPopup.webView.EnsureCoreWebView2Async();        
+
+            initState = InitializeState.Started;
+            await notificationUIPopup.webView.EnsureCoreWebView2Async();
+            initState = InitializeState.Done;
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -318,6 +330,10 @@ namespace Dynamo.Notifications
         /// </summary>
         public void Dispose()
         {
+            if (initState == InitializeState.Started)
+            {
+                logger?.Log("NotificationCenterController is being disposed but async initialization is still not done");
+            }
             Dispose(true);
             GC.SuppressFinalize(this);
         }
