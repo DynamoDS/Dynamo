@@ -26,9 +26,9 @@ namespace DynamoCoreWpfTests.ViewExtensions
             // Wait for the NotificationCenterController webview2 control to finish initialization
             DispatcherUtil.DoEventsLoop(() =>
             {
-                return notificationExtension.notificationCenterController.initState == NotificationCenterController.InitializeState.Done;
+                return notificationExtension.notificationCenterController.initState == DynamoUtilities.AsyncMethodState.Done;
             });
-            Assert.IsTrue(notificationExtension.notificationCenterController.initState == NotificationCenterController.InitializeState.Done);
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, notificationExtension.notificationCenterController.initState);
 
             NotificationUI notificationUI = PresentationSource.CurrentSources.OfType<System.Windows.Interop.HwndSource>()
                                         .Select(h => h.RootVisual)

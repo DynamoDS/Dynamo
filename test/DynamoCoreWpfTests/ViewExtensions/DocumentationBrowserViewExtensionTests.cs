@@ -18,6 +18,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using DynamoCoreWpfTests.Utility;
+using DynamoUtilities;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -166,7 +167,7 @@ namespace DynamoCoreWpfTests
                 viewExtension.HandleRequestOpenDocumentationLink(externalEvent);
                 DispatcherUtil.DoEventsLoop();
 
-                Assert.IsFalse(viewExtension.BrowserView.initState == DocumentationBrowserView.InitializeState.NotStarted);
+                Assert.AreEqual(AsyncMethodState.NotStarted, viewExtension.BrowserView.initState);
                 var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
 
                 // Assert
@@ -880,10 +881,10 @@ namespace DynamoCoreWpfTests
             // Wait for the DocumentationBrowserView webview2 control to finish initialization
             DispatcherUtil.DoEventsLoop(() =>
             {
-                return docView.initState == DocumentationBrowserView.InitializeState.Done;
+                return docView.initState == AsyncMethodState.Done;
             });
 
-            Assert.IsTrue(docView.initState == DocumentationBrowserView.InitializeState.Done);
+            Assert.AreEqual(AsyncMethodState.Done, docView.initState);
         }
 
         private string GetSidebarDocsBrowserContents()
