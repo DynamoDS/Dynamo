@@ -257,7 +257,8 @@
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Path=Name}"
                                                                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                                           FontSize="9"
+                                                                           FontSize="11"
+                                                                           FontWeight="Regular"
                                                                            TextTrimming="CharacterEllipsis" />
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
@@ -281,7 +282,8 @@
                                                             <TextBlock Name="Label"
                                                                            Text="{Binding Path=Name}"
                                                                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                                           FontSize="9"
+                                                                           FontSize="11"
+                                                                           FontWeight="Regular"
                                                                            TextTrimming="CharacterEllipsis" />
 
                                                             <DataTemplate.Triggers>
@@ -314,7 +316,8 @@
                                                             <TextBlock Name="Label"
                                                                            Text="{Binding Path=Name}"
                                                                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                                           FontSize="9"
+                                                                           FontSize="11"
+                                                                           FontWeight="Regular"
                                                                            TextTrimming="CharacterEllipsis" />
 
                                                             <DataTemplate.Triggers>

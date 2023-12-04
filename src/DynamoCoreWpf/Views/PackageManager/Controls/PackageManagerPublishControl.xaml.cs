@@ -32,10 +32,10 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
 
             this.Loaded += InitializeContext;
-            this.DataContextChanged += ThisDataContextChanged;
+            this.DataContextChanged += PackageManagerPublishControl_DataContextChanged;
         }
 
-        private void ThisDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void PackageManagerPublishControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (!(this.DataContext is PublishPackageViewModel)) return;
 
@@ -105,7 +105,7 @@ namespace Dynamo.PackageManager.UI
 
             Breadcrumbs?.Clear();
             
-            this.DataContextChanged -= ThisDataContextChanged;
+            this.DataContextChanged -= PackageManagerPublishControl_DataContextChanged;
         }
 
         private void InitializePages()
