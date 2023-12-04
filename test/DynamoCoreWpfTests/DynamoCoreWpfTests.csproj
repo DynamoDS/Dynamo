@@ -215,7 +215,7 @@
     <EmbeddedResource Include="Resources\DocumentationBrowserScriptsTest.html" />
   </ItemGroup>
 
-    <Target Name="MoveSomeTestDepsOutOfBin" AfterTargets="Build">
+    <Target Name="CopyRoslynToTestDepsFolder" AfterTargets="Build">
         <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
         <!--roslyn compiler api and deps-->
         <Copy SourceFiles="$(PkgMicrosoft_CodeAnalysis_CSharp)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll" DestinationFolder="$(TestDependenciesPath)" />
