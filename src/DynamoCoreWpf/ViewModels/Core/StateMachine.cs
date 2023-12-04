@@ -9,6 +9,7 @@ using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -626,6 +627,7 @@ namespace Dynamo.ViewModels
 
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
+                Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
                 if (ignoreMouseClick)
                 {
                     ignoreMouseClick = false;

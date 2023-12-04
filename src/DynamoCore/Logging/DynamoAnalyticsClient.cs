@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autodesk.Analytics.ADP;
@@ -254,6 +255,28 @@ namespace Dynamo.Logging
                     if (!ReportingAnalytics) return;
 
                     var e = new ScreenViewEvent(viewName);
+                    e.Track();
+                }
+            });
+        }
+        /// <summary>
+        /// This API is used to track user/machine's activity status.
+        /// </summary>
+        /// <param name="activityType">Value must be either machine or user. If no value is provided the API will default to user activity type.</param>
+        public void TrackActivityStatus(string activityType)
+        {
+            if (Analytics.DisableAnalytics) return;
+
+            Task.Run(() =>
+            {
+                serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
+                {
+                    if (!ReportingAnalytics) return;
+
+                    var hbType = (new[] { "machine", "user" }).Contains(activityType?.ToLower()) ? activityType : "user";
+                    var e = new HeartBeatEvent(activityType);
                     e.Track();
                 }
             });
