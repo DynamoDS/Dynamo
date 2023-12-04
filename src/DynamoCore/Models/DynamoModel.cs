@@ -34,7 +34,6 @@ using Dynamo.Scheduler;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
@@ -46,7 +45,6 @@ using ProtoCore;
 using ProtoCore.Runtime;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
-using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using Utils = Dynamo.Graph.Nodes.Utilities;
@@ -98,11 +96,13 @@ namespace Dynamo.Models
     /// </summary>
     public struct HostAnalyticsInfo
     {
-        /// Dynamo variation identified by host.
+        // Dynamo variation identified by host.
         public string HostName;
-        /// Dynamo host parent id for analytics purpose.
+        // Dynamo variation version specific to host
+        public Version HostVersion;
+        // Dynamo host parent id for analytics purpose.
         public string ParentId;
-        /// Dynamo host session id for analytics purpose.
+        // Dynamo host session id for analytics purpose.
         public string SessionId;
     }
 
@@ -200,7 +200,7 @@ namespace Dynamo.Models
         /// </summary>
         public static string Version
         {
-            get { return DefaultUpdateManager.GetProductVersion().ToString(); }
+            get { return Core.PathManager.Instance.GetProductVersion().ToString(); }
         }
 
         /// <summary>
@@ -228,11 +228,6 @@ namespace Dynamo.Models
         /// True if Dynamo starts up in offline mode.
         /// </summary>
         internal bool NoNetworkMode { get; }
-
-        /// <summary>
-        /// UpdateManager to handle automatic upgrade to higher version.
-        /// </summary>
-        public IUpdateManager UpdateManager { get; private set; }
 
         /// <summary>
         ///     The path manager that configures path information required for
@@ -285,18 +280,6 @@ namespace Dynamo.Models
         public readonly NodeSearchModel SearchModel;
 
         /// <summary>
-        ///     The application version string for analytics reporting APIs
-        /// </summary>
-        internal static string AppVersion
-        {
-            get
-            {
-                return Process.GetCurrentProcess().ProcessName + "-"
-                    + DefaultUpdateManager.GetProductVersion();
-            }
-        }
-
-        /// <summary>
         ///     Debugging settings for this instance of Dynamo.
         /// </summary>
         public readonly DebugSettings DebugSettings;
@@ -304,7 +287,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     Preference settings for this instance of Dynamo.
         /// </summary>
-        public readonly PreferenceSettings PreferenceSettings;
+        [Obsolete("this will be removed in 4.0")]
+        public PreferenceSettings PreferenceSettings => PreferenceSettings.Instance;
 
         /// <summary>
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
@@ -517,7 +501,6 @@ namespace Dynamo.Models
             IPreferences Preferences { get; set; }
             IPathResolver PathResolver { get; set; }
             bool StartInTestMode { get; set; }
-            IUpdateManager UpdateManager { get; set; }
             ISchedulerThread SchedulerThread { get; set; }
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
@@ -575,7 +558,6 @@ namespace Dynamo.Models
             public IPreferences Preferences { get; set; }
             public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
-            public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
@@ -691,7 +673,8 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+            PreferenceSettings.Instance = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+
             if (PreferenceSettings != null)
             {
                 SetUICulture(PreferenceSettings.Locale);
@@ -699,14 +682,8 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged += LogMessage;
             }
 
-            UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
-
-            if (UpdateManager != null)
-            {
-                // For API compatibility now in Dynamo 2.0, integrators can set HostName in both ways
-                HostName = string.IsNullOrEmpty(UpdateManager.HostName) ? HostAnalyticsInfo.HostName : UpdateManager.HostName;
-                HostVersion = UpdateManager.HostVersion?.ToString();
-            }
+            HostName = HostAnalyticsInfo.HostName;
+            HostVersion = HostAnalyticsInfo.HostVersion?.ToString();
 
             bool areAnalyticsDisabledFromConfig = false;
             if (!IsServiceMode)
@@ -766,10 +743,7 @@ namespace Dynamo.Models
 
                 try
                 {
-                    var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null
-                        ? config.UpdateManager.Configuration.DynamoLookUp : null;
-
-                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, dynamoLookup);
+                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager);
                 }
                 catch (Exception e)
                 {
@@ -779,7 +753,7 @@ namespace Dynamo.Models
                 if (migrator != null)
                 {
                     var isFirstRun = PreferenceSettings.IsFirstRun;
-                    PreferenceSettings = migrator.PreferenceSettings;
+                    PreferenceSettings.Instance = migrator.PreferenceSettings;
 
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
@@ -930,12 +904,6 @@ namespace Dynamo.Models
             if (!IsServiceMode)
             {
                 AuthenticationManager = new AuthenticationManager(config.AuthProvider);
-            }
-
-            UpdateManager.Log += UpdateManager_Log;
-            if (!IsTestMode && !IsHeadless && !IsServiceMode && !config.NoNetworkMode)
-            {
-                DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }
 
             Logger.Log(string.Format("Dynamo -- Build {0}",
@@ -1410,7 +1378,6 @@ namespace Dynamo.Models
 
             EngineController.VMLibrariesReset -= ReloadDummyNodes;
 
-            UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
 
             EngineController.Dispose();

@@ -13,11 +13,10 @@ namespace DynamoUtilitiesTests
     public class CLIWrapperTests
     {
         /// <summary>
-        /// A test class that starts up the DynamoFF CLI and then kills it to cause a deadlock.
+        /// A test class that always responds with startToken... causing a loop.
         /// </summary>
         private class HangingCLIWrapper: Dynamo.Utilities.CLIWrapper
         {
-            private string relativePath = Path.Combine("DynamoFeatureFlags", "DynamoFeatureFlags.exe");
             protected override string GetCantStartErrorMessage()
             {
                 throw new NotImplementedException();
@@ -29,18 +28,22 @@ namespace DynamoUtilitiesTests
             }
             internal HangingCLIWrapper()
             {
-                StartProcess(relativePath, null);
             }
 
             internal string GetData()
             {
-                //wait a bit, and then kill the process
-                //this will cause GetData to hang and timeout.
-                Task.Run(() =>
-                {   System.Threading.Thread.Sleep(100);
-                    process.Kill();
-                });
-                return GetData(2000);
+                return GetData(4000, () => { return startofDataToken; });
+            }
+
+            protected override void StartProcess(string relativeEXEPath, string argString)
+            {
+                //don't start anything, we're going to mock data responses.
+                return;
+            }
+
+            protected override bool CheckIfProcessHasExited()
+            {
+                return false;
             }
 
 
@@ -52,7 +55,7 @@ namespace DynamoUtilitiesTests
         {
             internal new string GetData()
             {
-                return GetData(2000, () => { Thread.Sleep(4000);return ""; });
+                return GetData(4000, () => { Thread.Sleep(8000);return ""; });
             }
         }
 
@@ -84,7 +87,7 @@ namespace DynamoUtilitiesTests
         }
 
         [Test]
-        public void CLIWrapperDoesNotHangIfProcessDoesNotWriteToStdOut()
+        public void CLIWrapperDoesNotHangIfProcessDoesNotWriteFullSequenceToStdOut()
         {
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -92,6 +95,7 @@ namespace DynamoUtilitiesTests
             Assert.AreEqual(string.Empty,wrapper.GetData());
             sw.Stop();
             Assert.GreaterOrEqual(sw.ElapsedMilliseconds,2000);
+            wrapper.Dispose();
 
         }
         [Test]
@@ -103,6 +107,7 @@ namespace DynamoUtilitiesTests
             Assert.AreEqual(string.Empty, wrapper.GetData());
             sw.Stop();
             Assert.GreaterOrEqual(sw.ElapsedMilliseconds, 2000);
+            wrapper.Dispose();
 
         }
         [Test]
@@ -114,6 +119,7 @@ namespace DynamoUtilitiesTests
             Assert.AreEqual("some data", wrapper.GetData().TrimEnd());
             sw.Stop();
             Assert.LessOrEqual(sw.ElapsedMilliseconds, 2000);
+            wrapper.Dispose();
 
         }
     }
