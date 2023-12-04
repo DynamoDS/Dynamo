@@ -129,7 +129,7 @@ namespace Dynamo.Logging
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
             }
-            product = new ProductInfo() { Id = "DYN", Name = hostName, BuildId = buildId, ReleaseId = releaseId };
+            product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = "", AppVersion = "", BuildId = buildId, ReleaseId = releaseId };
         }
 
         private void RegisterADPTracker(Service service)
