@@ -5745,6 +5745,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish Version.
+        /// </summary>
+        public static string PackageManagerMyPackagesPublishVersion {
+            get {
+                return ResourceManager.GetString("PackageManagerMyPackagesPublishVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to My Packages.
         /// </summary>
         public static string PackageManagerMyPackagesTab {
