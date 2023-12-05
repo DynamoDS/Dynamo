@@ -107,6 +107,7 @@ namespace Dynamo.Notifications
         private void View_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             dynamoView.Closing -= View_Closing;
+            dynamoView.PreviewMouseDown -= DynamoView_PreviewMouseDown;
             SuspendCoreWebviewAsync();
         }
 
