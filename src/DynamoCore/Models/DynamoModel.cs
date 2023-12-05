@@ -2309,7 +2309,7 @@ namespace Dynamo.Models
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             
-            if (!IsTestMode)
+            if (!IsTestMode || !IsHeadless)
             {
                 if (workspace.ContainsLegacyTraceData)
                 {
@@ -2442,7 +2442,7 @@ namespace Dynamo.Models
             Guid deterministicId = GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
 
             var loadedTraceData = Utils.LoadTraceDataFromXmlDocument(xmlDoc, out var containsLegacyTraceData);
-            if (!IsTestMode)
+            if (!IsTestMode || !IsHeadless)
             {
                 if (containsLegacyTraceData) OnRequestNotification(Resources.LegacyTraceDataWarning, true);
             }
