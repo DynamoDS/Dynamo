@@ -393,7 +393,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             packageManagerViewModel.PropertyChanged -= searchPackagesPropertyChanged.Invoke;
 
             //Enable the DynamoView.mainGrid so the user will be able to interact with Dynamo
-            (packageManager.Owner as DynamoView).EnableEnvironment(true);
+            var dynamoView = packageManager.Owner as DynamoView;
+            if (dynamoView != null)
+            {
+                dynamoView.EnableEnvironment(true);
+            }
+          
             packageManager.Close();
             
         }
