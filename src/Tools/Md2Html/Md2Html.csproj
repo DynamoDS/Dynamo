@@ -12,6 +12,7 @@
         <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
         <PublishSingleFile>true</PublishSingleFile>
         <SelfContained>false</SelfContained>
+        <RuntimeFrameworkVersion Condition=" $(DotNet.Contains('net8.0')) ">8.0.0-rc.2.23479.6</RuntimeFrameworkVersion>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="CommandLineParser">
