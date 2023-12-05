@@ -41,7 +41,9 @@ namespace Dynamo.PackageManager.UI
 
         public void Dispose()
         {
+            this.PublishPackageViewModel = null;
             this.DataContextChanged -= PublishPackagePublishPage_DataContextChanged;
+            this.customBrowserControl?.Dispose();
         }
 
         private void customBrowserControl_Loaded(object sender, RoutedEventArgs e)

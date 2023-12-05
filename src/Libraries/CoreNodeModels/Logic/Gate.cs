@@ -16,10 +16,10 @@ namespace CoreNodeModels.Logic
     [NodeSearchTags(nameof(Resources.GateSearchTags), typeof(Resources))]
     [InPortNames(">")]
     [InPortTypes("object")]
-    [InPortDescriptions(nameof(Resources.GateInPortToolTip), nameof(Resources))]
+    [InPortDescriptions(typeof(Resources), nameof(Resources.GateInPortToolTip))]
     [OutPortNames(">")]
     [OutPortTypes("object")]
-    [OutPortDescriptions(nameof(Resources.GateOutPortToolTip), nameof(Resources))]
+    [OutPortDescriptions(typeof(Resources), nameof(Resources.GateOutPortToolTip))]
     [IsDesignScriptCompatible]
     public class Gate : NodeModel
     {
