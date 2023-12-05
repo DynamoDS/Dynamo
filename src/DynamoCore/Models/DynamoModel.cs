@@ -280,18 +280,6 @@ namespace Dynamo.Models
         public readonly NodeSearchModel SearchModel;
 
         /// <summary>
-        ///     The application version string for analytics reporting APIs
-        /// </summary>
-        internal static string AppVersion
-        {
-            get
-            {
-                return Process.GetCurrentProcess().ProcessName + "-"
-                    + Core.PathManager.Instance.GetProductVersion();
-            }
-        }
-
-        /// <summary>
         ///     Debugging settings for this instance of Dynamo.
         /// </summary>
         public readonly DebugSettings DebugSettings;
@@ -299,7 +287,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     Preference settings for this instance of Dynamo.
         /// </summary>
-        public readonly PreferenceSettings PreferenceSettings;
+        [Obsolete("this will be removed in 4.0")]
+        public PreferenceSettings PreferenceSettings => PreferenceSettings.Instance;
 
         /// <summary>
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
@@ -684,7 +673,8 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+            PreferenceSettings.Instance = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+
             if (PreferenceSettings != null)
             {
                 SetUICulture(PreferenceSettings.Locale);
@@ -763,7 +753,7 @@ namespace Dynamo.Models
                 if (migrator != null)
                 {
                     var isFirstRun = PreferenceSettings.IsFirstRun;
-                    PreferenceSettings = migrator.PreferenceSettings;
+                    PreferenceSettings.Instance = migrator.PreferenceSettings;
 
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
