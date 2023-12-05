@@ -10,7 +10,7 @@ jobs:
       with:
         path: Dynamo
     - name: Setup dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
     - name: Disable problem matcher
       run: echo "::remove-matcher owner=csc::"
 
