@@ -1229,7 +1229,7 @@ Failed to publish file(s):
     <value>Library</value>
   </data>
   <data name="MajorVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Major version as a non-negative integer.</value>
+    <value>Provide major, minor, and build version number.</value>
     <comment>ErrorString</comment>
   </data>
   <data name="Manual" xml:space="preserve">

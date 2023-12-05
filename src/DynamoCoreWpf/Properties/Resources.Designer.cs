@@ -4083,7 +4083,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You must provide a Major version as a non-negative integer..
+        ///   Looks up a localized string similar to Provide major, minor, and build version number..
         /// </summary>
         public static string MajorVersionNonNegative {
             get {
