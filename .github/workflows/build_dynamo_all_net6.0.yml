@@ -43,7 +43,7 @@ jobs:
     - name: Save Pull Request Number
       env:
         PR_NUMBER: ${{ github.event.number }}
-      run: $PR_NUMBER | Out-File -FilePath pr_number.txt
+      run: $env:PR_NUMBER | Out-File -FilePath pr_number.txt
     - name: Upload Pull Request Artifact
       uses: actions/upload-artifact@v3
       with:

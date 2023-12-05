@@ -9,12 +9,11 @@ on:
       - completed
 
 env:
-  TEST_EXECUTE_DOWNLOAD_URL: https://downloads.smartbear.com/TestExecute1552SLM.exe
-  ACTOR: ${{ github.actor }}
-  WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
-  RUN_ID: ${{ github.event.workflow_run.id }}
-  RUN_NAME: ${{ github.event.workflow_run.name }}
-  RUN_URL: ${{ github.event.workflow_run.html_url }}
+  TEST_EXECUTE_DOWNLOAD_URL: https://downloads.smartbear.com/TestExecute1559SLM.exe
+  WORKFLOW_RUN_WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+  WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+  WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
+  WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
 
 jobs:
   ui_smoke_tests:
@@ -30,7 +29,7 @@ jobs:
           token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
           ref: master
       - name: Download TestExecute
-        run: Invoke-WebRequest -Uri "${{ env.TEST_EXECUTE_DOWNLOAD_URL }}" -OutFile ".\TE.exe"
+        run: Invoke-WebRequest -Uri $env:TEST_EXECUTE_DOWNLOAD_URL -OutFile ".\TE.exe"
       - name: Install TestExecute
         shell: cmd
         run: .\TE.exe -SilentInstall
@@ -38,37 +37,64 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           name: DynamoSandbox
-          workflow: ${{ env.WORKFLOW_ID }}
-          run_id: ${{ env.RUN_ID }}
+          workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
+          run_id: ${{ env.WORKFLOW_RUN_ID }}
           path: ${{ github.workspace }}\build
       - name: Download Pull Request Artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           name: pr_number
-          workflow: ${{ env.WORKFLOW_ID }}
-          run_id: ${{ env.RUN_ID }}
+          workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
+          run_id: ${{ env.WORKFLOW_RUN_ID }}
           path: ${{ github.workspace }}\pr
       - name: Run UI Smoke Tests
         shell: cmd
         run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
-      - name: UI Smoke Tests Report
+      - name: Set Check Name
+        run: |
+          "CHECK_NAME=$("UI Smoke Tests", $($env:WORKFLOW_RUN_NAME -Split " ")[-1] -Join " - ")" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Publish Test Report
+        id: test_report
         uses: dorny/test-reporter@v1.7.0
         if: always()
         with:
-          name: UI Smoke Test Report
+          name: ${{ env.CHECK_NAME }}
           path: reports/report.xml
           reporter: java-junit
       - name: Read Pull Request Number
-        id: read_pr_number
-        run: |
-          "pr_number=$(Get-Content ${{ github.workspace }}\pr\pr_number.txt)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-      - name: Summary
-        env:
-          PR_NUMBER: ${{ steps.read_pr_number.outputs.pr_number }}
-          PR_URL: ${{ format('{0}/{1}/pull', github.server_url, github.repository) }}
         if: always()
         run: |
-          Get-Content summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          "Actor: @$env:ACTOR" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          "Workflow Run: [$env:RUN_NAME]($env:RUN_URL)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          "Pull Request: [$env:PR_NUMBER]($env:PR_URL/$env:PR_NUMBER)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "PR_NUMBER=$(Get-Content -Path ${{ github.workspace }}\pr\pr_number.txt)" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Add Test Summary
+        if: always()
+        run: |
+          if (Test-Path -Path summary.md) {
+            Get-Content -Path summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          }
+      - name: Add Run Summary
+        if: always()
+        run: |
+          $run_summary=@"
+          ### Run Summary
+          Workflow Run: [$env:WORKFLOW_RUN_NAME]($env:WORKFLOW_RUN_HTML_URL)
+          Check: [$env:CHECK_NAME](${{ steps.test_report.outputs.url_html }})
+          $(if ($env:PR_NUMBER) {
+            "Pull Request: [#$env:PR_NUMBER](${{ format('{0}/{1}/pull/{2}', github.server_url, github.repository, env.PR_NUMBER) }})"
+          })
+          "@
+          $run_summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+      - name: Add Pull Request Comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $pr_comment=@"
+          ## UI Smoke Tests
+          Test: **${{ steps.test_report.outputs.conclusion }}**. ${{ steps.test_report.outputs.passed }} passed, ${{ steps.test_report.outputs.failed }} failed.
+          [TestComplete Test Result]($(Get-Content -Path ${{ github.workspace }}\reports\result.txt))
+          Workflow Run: [${{ github.workflow }}](${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }})
+          Check: [$env:CHECK_NAME](${{ steps.test_report.outputs.url_html }})
+          "@
+          if ($env:PR_NUMBER) {
+            gh pr comment $env:PR_NUMBER --body $pr_comment --repo ${{ github.repository }}
+          }
