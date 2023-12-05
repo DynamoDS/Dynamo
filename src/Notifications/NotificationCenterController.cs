@@ -303,7 +303,7 @@ namespace Dynamo.Notifications
                 dynamoView.LocationChanged -= DynamoView_LocationChanged;
             }
 
-            if (notificationUIPopup == null)
+            if (notificationUIPopup != null)
             {
                 notificationUIPopup.IsOpen = false;
                 notificationsButton.Click -= NotificationsButton_Click;
