@@ -85,6 +85,7 @@ namespace Dynamo.Notifications
             dynamoView.SizeChanged += DynamoView_SizeChanged;
             dynamoView.LocationChanged += DynamoView_LocationChanged;
             notificationsButton.Click += NotificationsButton_Click;
+            dynamoView.PreviewMouseDown += DynamoView_PreviewMouseDown;
 
             notificationUIPopup = new NotificationUI
             {
@@ -256,6 +257,17 @@ namespace Dynamo.Notifications
         }
 
         /// <summary>
+        /// Dismiss notifications panel by clicking outside the panel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DynamoView_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!notificationUIPopup.IsOpen) return;
+            notificationUIPopup.IsOpen = false;
+        }
+
+        /// <summary>
         /// Notification Center button click handler
         /// </summary>
         /// <param name="sender"></param>
@@ -301,6 +313,7 @@ namespace Dynamo.Notifications
             {
                 dynamoView.SizeChanged -= DynamoView_SizeChanged;
                 dynamoView.LocationChanged -= DynamoView_LocationChanged;
+                dynamoView.PreviewMouseDown -= DynamoView_PreviewMouseDown;
             }
 
             if (notificationUIPopup != null)
