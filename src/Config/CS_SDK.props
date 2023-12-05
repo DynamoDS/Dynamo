@@ -6,7 +6,7 @@
     <PlatformTarget >x64</PlatformTarget>
     <!--Use the property DotNet to set TargetFramework from commandline without forcing it on all projects-->
     <!--Ex. DynamoServices uses TargetFramework netstandard2.0 -->
-    <DotNet>net6.0</DotNet>
+    <DotNet>net8.0</DotNet>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
     <TargetFramework>$(DotNet)</TargetFramework>
     <FileAlignment>512</FileAlignment>
