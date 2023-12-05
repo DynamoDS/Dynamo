@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -11,6 +6,11 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
+using System;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -228,6 +228,11 @@ namespace Dynamo.PackageManager.UI
                 {
                     PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
                     selectedTab.IsSelected = true;
+                    var pmPublishControl = this.packageManagerPublish as PackageManagerPublishControl;
+                    if (pmPublishControl != null)
+                    {
+                        pmPublishControl.ResetPageOrder();
+                    }
                 }
                 else
                 {

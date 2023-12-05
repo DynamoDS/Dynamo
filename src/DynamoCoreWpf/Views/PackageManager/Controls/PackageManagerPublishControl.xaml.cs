@@ -1,3 +1,9 @@
+using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.UI;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -5,12 +11,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Dynamo.Logging;
-using Dynamo.Models;
-using Dynamo.UI;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Utilities;
-using DynamoUtilities;
 using Views.PackageManager.Pages;
 
 namespace Dynamo.PackageManager.UI
@@ -328,6 +328,22 @@ namespace Dynamo.PackageManager.UI
             {
                 PublishPackageViewModel.CancelCommand.Execute();
             }
+        }
+
+        /// <summary>
+        /// Navigates back to the starting page 
+        /// </summary>
+        internal void ResetPageOrder()
+        {
+            currentPage = 0;
+            int stepIndex = Breadcrumbs.IndexOf((string)PublishPages[0].Tag);
+            for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
+            {
+                Breadcrumbs.RemoveAt(i);
+            }
+            this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
+            this.breadcrumbsNavigation.Visibility = Visibility.Collapsed;
+            ToggleButtonRowVisibility(0);
         }
     }
 }
