@@ -22,7 +22,7 @@ namespace Dynamo.DocumentationBrowser
         private readonly DocumentationBrowserViewModel viewModel;
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
-        private AsyncMethodState initState = AsyncMethodState.NotStarted;
+        internal AsyncMethodState initState = AsyncMethodState.NotStarted;
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
@@ -208,6 +208,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 Log("DocumentationBrowserView is being disposed but async initialization is still not done");
             }
+
             Dispose(true);
             GC.SuppressFinalize(this);
         }

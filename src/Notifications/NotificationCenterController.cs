@@ -65,7 +65,7 @@ namespace Dynamo.Notifications
         private static readonly string NotificationCenterButtonName = "notificationsButton";
         internal DirectoryInfo webBrowserUserDataFolder;
 
-        private AsyncMethodState initState = AsyncMethodState.NotStarted;
+        internal AsyncMethodState initState = AsyncMethodState.NotStarted;
 
         private readonly DynamoLogger logger;
         private string jsonStringFile;

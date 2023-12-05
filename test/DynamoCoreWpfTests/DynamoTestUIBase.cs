@@ -40,6 +40,7 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
+            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -78,7 +79,7 @@ namespace DynamoCoreWpfTests
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
@@ -138,6 +139,7 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
+            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)
