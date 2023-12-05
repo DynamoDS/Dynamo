@@ -1,16 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using System.Windows;
-using System.Windows.Forms;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
@@ -24,6 +11,19 @@ using DynamoUtilities;
 using Greg.Requests;
 using Prism.Commands;
 using PythonNodeModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Forms;
 using Double = System.Double;
 using NotificationObject = Dynamo.Core.NotificationObject;
 using String = System.String;
@@ -1115,6 +1115,7 @@ namespace Dynamo.PackageManager
             this.RootFolder = string.Empty;
             this.ClearMarkdownDirectory();
             this.ClearPackageContents();
+            this.KeywordsCollection?.Clear();
         }
 
         /// <summary>
