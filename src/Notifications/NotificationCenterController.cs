@@ -83,6 +83,7 @@ namespace Dynamo.Notifications
             dynamoView.LocationChanged += DynamoView_LocationChanged;
             notificationsButton.Click += NotificationsButton_Click;
             dynamoView.Closing += View_Closing;
+            dynamoView.PreviewMouseDown += DynamoView_PreviewMouseDown;
 
             notificationUIPopup = new NotificationUI
             {
@@ -106,6 +107,7 @@ namespace Dynamo.Notifications
         private void View_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             dynamoView.Closing -= View_Closing;
+            dynamoView.PreviewMouseDown -= DynamoView_PreviewMouseDown;
             SuspendCoreWebviewAsync();
         }
 
@@ -274,6 +276,17 @@ namespace Dynamo.Notifications
         {
             notificationUIPopup.Placement = PlacementMode.Bottom;
             notificationUIPopup.UpdatePopupLocation();
+        }
+
+        /// <summary>
+        /// Dismiss notifications panel by clicking outside the panel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DynamoView_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!notificationUIPopup.IsOpen) return;
+            notificationUIPopup.IsOpen = false;
         }
 
         /// <summary>
