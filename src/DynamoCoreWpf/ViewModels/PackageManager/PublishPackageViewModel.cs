@@ -1,3 +1,16 @@
+using Dynamo.Core;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.PackageManager.UI;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
+using Greg.Requests;
+using Prism.Commands;
+using PythonNodeModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -12,19 +25,6 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
-using Dynamo.Core;
-using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
-using Dynamo.PackageManager.UI;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Properties;
-using Dynamo.Wpf.Utilities;
-using DynamoUtilities;
-using Greg.Requests;
-using Prism.Commands;
-using PythonNodeModels;
 using Double = System.Double;
 using NotificationObject = Dynamo.Core.NotificationObject;
 using String = System.String;
@@ -1105,15 +1105,14 @@ namespace Dynamo.PackageManager
             this.BuildVersion = "0";
             this.ErrorString = string.Empty;
             this.Uploading = false;
-            // Clearing the UploadHandle when using Submit currently throws - check trheading
+            // Clearing the UploadHandle when using Submit currently throws - when testing? - check trheading
             try
             {
-                BeginInvoke(() =>
+                if (this._uploadHandle != null)
                 {
-                    if (this._uploadHandle == null) return;
                     this._uploadHandle.PropertyChanged -= UploadHandleOnPropertyChanged;
                     this.UploadHandle = null;
-                });
+                }
             }
             catch { Exception ex; }
             this.IsNewVersion = false;
@@ -1322,7 +1321,7 @@ namespace Dynamo.PackageManager
         public void OnPublishSuccess()
         {
             if (PublishSuccess != null)
-                PublishSuccess(this);
+                PublishSuccess(this);       
         }
 
         private void UploadHandleOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
