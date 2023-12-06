@@ -47,24 +47,21 @@ jobs:
           workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
           run_id: ${{ env.WORKFLOW_RUN_ID }}
           path: ${{ github.workspace }}\pr
+      - name: Set Run Details
+        run: |
+          "PR_NUMBER=$(Get-Content -Path ${{ github.workspace }}\pr\pr_number.txt)" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "CHECK_NAME=$("UI Smoke Tests", $($env:WORKFLOW_RUN_NAME -Split " ")[-1] -Join " - ")" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Run UI Smoke Tests
         shell: cmd
         run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
-      - name: Set Check Name
-        run: |
-          "CHECK_NAME=$("UI Smoke Tests", $($env:WORKFLOW_RUN_NAME -Split " ")[-1] -Join " - ")" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Publish Test Report
         id: test_report
-        uses: dorny/test-reporter@v1.7.0
         if: always()
+        uses: dorny/test-reporter@v1.7.0
         with:
           name: ${{ env.CHECK_NAME }}
           path: reports/report.xml
           reporter: java-junit
-      - name: Read Pull Request Number
-        if: always()
-        run: |
-          "PR_NUMBER=$(Get-Content -Path ${{ github.workspace }}\pr\pr_number.txt)" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Add Test Summary
         if: always()
         run: |
