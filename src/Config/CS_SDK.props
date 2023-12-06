@@ -57,7 +57,9 @@
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win'))">
+  <!--If we are building the Dynamo.All.sln and if current project is a test project, then include windows and wpf references so that tests can load UI nodes -->
+  <!--If UILib is true and we are targeting windows, then include windows and wpf references -->
+  <PropertyGroup Condition=" ( '$(SolutionName)' == 'Dynamo.All' AND '$(TestProject)' == 'true' ) OR ( '$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win')) )">
     <TargetFramework>$(TargetFramework)-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>

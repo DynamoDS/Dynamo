@@ -3,7 +3,8 @@
     ToolsVersion="16.0"
     DefaultTargets="Build">
 <PropertyGroup>
-    <Solution>Dynamo.All.sln</Solution>
+    <SolutionName>Dynamo.All</SolutionName>
+    <Solution>$(SolutionName).sln</Solution>
     <Platform>Any CPU</Platform>
     <DotNet>net8.0</DotNet>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -22,7 +23,7 @@
 
 <Target Name="RestorePackages">
   <Exec Condition="!Exists($(NuGetPath))" Command="powershell.exe -ExecutionPolicy ByPass -Command Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $(NuGetPath)" />
-  <Exec Command="dotnet restore $(Solution) --runtime=$(RuntimeIdentifier) -p:DotNet=$(DotNet)"/>
+  <Exec Command="dotnet restore $(Solution) --runtime=$(RuntimeIdentifier) -p:DotNet=$(DotNet) -p:SolutionName=$(SolutionName)"/>
 </Target>
 
 </Project>
