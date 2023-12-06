@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -93,7 +92,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Package Publish entry, binded to the host multi-selection option
         /// </summary>
-        public class HostComboboxEntry : NotificationObject 
+        public class HostComboboxEntry
         {
             /// <summary>
             /// Name of the host
@@ -103,19 +102,7 @@ namespace Dynamo.PackageManager
             /// <summary>
             /// Boolean indicates if the host entry is selected
             /// </summary>
-            private bool _isSelected;
-            public bool IsSelected
-            {
-                get { return _isSelected; }
-                set
-                {
-                    if (_isSelected != value)
-                    {
-                        _isSelected = value;
-                        RaisePropertyChanged(nameof(IsSelected));
-                    }
-                }
-            }
+            public bool IsSelected { get; set; }
 
             /// <summary>
             /// Constructor
@@ -203,7 +190,6 @@ namespace Dynamo.PackageManager
                 {
                     _isNewVersion = value;
                     RaisePropertyChanged("IsNewVersion");
-                    RaisePropertyChanged("CanEditName");
                 }
             }
         }
@@ -1122,9 +1108,8 @@ namespace Dynamo.PackageManager
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<PackageAssembly>();
-            this.KnownHosts.ForEach(host => { host.IsSelected = false; });
-            this.SelectedHostsString = string.Empty;
             this.SelectedHosts = new List<String>();
+            this.SelectedHostsString = string.Empty;
             this.copyrightHolder = string.Empty;
             this.copyrightYear = string.Empty;
             this.RootFolder = string.Empty;
