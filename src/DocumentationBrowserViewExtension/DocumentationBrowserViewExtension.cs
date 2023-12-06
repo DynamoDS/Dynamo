@@ -178,7 +178,7 @@ namespace Dynamo.DocumentationBrowser
 
         public override void Shutdown()
         {
-            Dispose();
+            // Do nothing for now
         }
 
         private void OnInsertFile(object sender, InsertDocumentationLinkEventArgs e)
