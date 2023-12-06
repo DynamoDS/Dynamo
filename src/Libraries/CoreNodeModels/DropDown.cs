@@ -83,7 +83,7 @@ namespace CoreNodeModels
             }
         }
 
-        private int selectedIndex = -1;
+        private int selectedIndex = 0;
 
         /// <summary>
         /// Index of current selection
