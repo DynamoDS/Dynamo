@@ -93,7 +93,10 @@
                 <RowDefinition Height="55"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-
+            <!--Invisible border to help dragging the main window-->
+            <Border Grid.Row="0"
+                    Background="Transparent"
+                    MouseDown="PackageManagerPanel_MouseDown"/>
             <!--Section/Row of the TitleBar it contains a TextBlock for the windows title and the close button-->
             <!--The CloseButtonStyle and Color Styles are located in the DynamoModer.xaml file-->
             <Grid x:Name="TitleBar"
