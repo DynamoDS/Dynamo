@@ -397,8 +397,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (dynamoView != null)
             {
                 dynamoView.EnableEnvironment(true);
-            }
-          
+            }        
             packageManager.Close();
             
         }
