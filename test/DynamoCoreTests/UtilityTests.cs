@@ -300,14 +300,14 @@ namespace Dynamo.Tests
             Assert.Throws<ArgumentNullException>(() =>
             {
                 // Test method call without a valid XmlDocument.
-                Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(null);
+                Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(null, out _);
             });
 
             Assert.Throws<ArgumentException>(() =>
             {
                 // Test XmlDocument without a document element.
                 XmlDocument document = new XmlDocument();
-                Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(document);
+                Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(document, out _);
             });
         }
 
@@ -321,7 +321,7 @@ namespace Dynamo.Tests
             {
                 XmlDocument document = new XmlDocument();
                 document.AppendChild(document.CreateElement("RootElement"));
-                outputs = Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(document);
+                outputs = Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(document, out _);
             });
 
             Assert.IsNotNull(outputs);

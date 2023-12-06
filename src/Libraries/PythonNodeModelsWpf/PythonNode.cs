@@ -183,7 +183,7 @@ namespace PythonNodeModelsWpf
         {
             try
             {
-                using (var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("PythonEdit"))
+                using (var cmd = Dynamo.Logging.Analytics.TrackTaskCommandEvent("PythonEdit"))
                 {
                     if (editWindow != null)
                     {

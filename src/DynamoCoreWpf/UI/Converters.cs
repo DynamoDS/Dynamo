@@ -377,6 +377,30 @@ namespace Dynamo.Controls
         }
     }
 
+
+    /// <summary>
+    /// Given a string, returns to upper  case
+    /// </summary>
+    public class ToTitleCaseStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (value is string text)
+            {
+                var textInfo = culture.TextInfo;
+                return textInfo.ToTitleCase(text);
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     /// <summary>
     /// If the given string is empty, collapsed visibility enum is returned, otherwise visible enum is returned.
     /// </summary>
@@ -1416,6 +1440,27 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
+    /// Converts 0 Collapsed state, otherwise returns Visible
+    /// </summary>
+    public class ZeroToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is int zero)
+            {
+                return zero == 0 ? Visibility.Collapsed : Visibility.Visible;   
+            }
+
+            return Visibility.Collapsed; // If not int or int not zero, return collapsed.
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
     /// Takes a value and if the value is not null returns Unity Type Auto (*) as a length value
     /// Returns 0 length if the value is null
     /// To be used in Grid Column/Row width 
@@ -2048,6 +2093,28 @@ namespace Dynamo.Controls
         }
     }
 
+    public sealed class NullOrEmptyStringToVisibiltyCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool invert = parameter as string == "invert";
+
+            if (String.IsNullOrEmpty((string)value))
+            {
+                return invert ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else
+            {
+                return invert ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public sealed class NullToPinWidthConverter : IValueConverter
     {
         public const double PIN_WIDTH = 4;
@@ -2169,48 +2236,6 @@ namespace Dynamo.Controls
             var measure = (SIUnit)parameter;
             measure.SetValueFromString(value.ToString());
             return measure.Value;
-        }
-    }
-
-    public class IsUpdateAvailableToTextConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var um = value as IUpdateManager;
-            if (um == null)
-                return Resources.AboutWindowCannotGetVersion;
-
-            if (!um.IsUpdateAvailable)
-                return Resources.AboutWindowUpToDate;
-
-            var latest = um.AvailableVersion;
-
-            return latest != null ? latest.ToString() : Resources.AboutWindowCannotGetVersion;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class IsUpdateAvailableBrushConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            SolidColorBrush brush;
-
-            brush = (bool)value
-                ? (SolidColorBrush)
-                    SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpdateAvailableBrush"]
-                : (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpToDateBrush"];
-
-            return brush;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
         }
     }
 
@@ -3795,4 +3820,96 @@ namespace Dynamo.Controls
             return value;
         }
     }
+
+    public class SumConverter : IMultiValueConverter
+    {
+        /// <summary>
+        /// Calculates and returns the sum of the values provided
+        /// </summary>
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.Cast<double>().Sum();
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+
+    /// <summary>
+    /// Convers PackageUploadHandle UploadType enum value to visibility
+    /// </summary>
+    public class PackageUploadHandleUploadTypeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is PackageUploadHandle.UploadType uploadType)
+            {
+                if (parameter != null && parameter.ToString().ToLower() == "invert")
+                {
+                    return uploadType != PackageUploadHandle.UploadType.Submit ? Visibility.Visible : Visibility.Hidden;
+                }
+                else
+                {
+                    return uploadType == PackageUploadHandle.UploadType.Submit ? Visibility.Visible : Visibility.Hidden;
+                }
+            }
+
+            return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// ReadyToPublish message to visibility converter
+    /// </summary>
+    public class ReadyToPublishToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string errorMessage && errorMessage.Equals(Resources.PackageManagerReadyToPublish))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Given a string, returns to upper  case
+    /// </summary>
+    public class StringEqualsZeroToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (value is string nullOrEmptyString && String.IsNullOrEmpty(nullOrEmptyString)) return Visibility.Visible;
+            if (value is string zeroString && zeroString.Equals("0"))
+            {
+                return Visibility.Visible;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
 }

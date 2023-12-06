@@ -24,15 +24,26 @@
     </ItemGroup>
   <ItemGroup>
 	  <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+
+      <!--roslyn compiler apis direct references so we can copy them to the test_dependencies folder-->
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" GeneratePathProperty="true">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.11.0" GeneratePathProperty="true">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      
     <PackageReference Include="Moq" Version="4.18.4" />
 	  <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-	  <PackageReference Include="Greg" Version="3.0.0.2955">
+	  <PackageReference Include="Greg" Version="3.0.0.3175">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="NUnit" Version="3.13.3" />
-	  <PackageReference Include="RestSharp" Version="109.0.1">
+	  <PackageReference Include="RestSharp" Version="108.0.1">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
@@ -203,4 +214,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\DocumentationBrowserScriptsTest.html" />
   </ItemGroup>
+
+    <Target Name="CopyRoslynToTestDepsFolder" AfterTargets="Build">
+        <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
+        <!--roslyn compiler api and deps-->
+        <Copy SourceFiles="$(PkgMicrosoft_CodeAnalysis_CSharp)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll" DestinationFolder="$(TestDependenciesPath)" />
+        <Copy SourceFiles="$(PkgMicrosoft_CodeAnalysis_Common)\lib\netstandard2.0\Microsoft.CodeAnalysis.dll" DestinationFolder="$(TestDependenciesPath)" />
+
+    </Target>
 </Project>

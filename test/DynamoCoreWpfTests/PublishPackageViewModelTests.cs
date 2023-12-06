@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Dynamo;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
-using Dynamo.Tests;
-using NUnit.Framework;
-using Moq;
 using Dynamo.PackageManager.UI;
+using Dynamo.Tests;
+using Moq;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {

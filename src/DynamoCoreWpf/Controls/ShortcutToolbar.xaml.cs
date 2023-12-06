@@ -11,13 +11,14 @@ using Greg.AuthProviders;
 using System.Linq;
 using System.Windows;
 using System.Collections.Generic;
+using System;
 
 namespace Dynamo.UI.Controls
 {
     /// <summary>
     /// An object which provides the data for the shortcut toolbar.
     /// </summary>
-    public partial class ShortcutToolbar : UserControl
+    public partial class ShortcutToolbar : UserControl, IDisposable
     {
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarItems;
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarRightSideItems;
@@ -57,7 +58,7 @@ namespace Dynamo.UI.Controls
             authManager = dynamoViewModel.Model.AuthenticationManager;
             if (authManager.IsLoggedInInitial())
             {
-                authManager.LoginStateChanged += SignOutHandler;
+                authManager.LoginStateChanged += AuthChangeHandler;
             }
             else {
                 logoutOption.Visibility = Visibility.Collapsed;
@@ -73,14 +74,28 @@ namespace Dynamo.UI.Controls
             DynamoViewModel.OnRequestShorcutToolbarLoaded(RightMenu.ActualWidth);
         }
 
-        private void SignOutHandler(LoginState status)
+        public void Dispose()
+        {
+            if(authManager != null)
+            {
+                authManager.LoginStateChanged -= AuthChangeHandler;
+            }
+            this.Loaded -= ShortcutToolbar_Loaded;
+        }
+
+        private void AuthChangeHandler(LoginState status)
         {
             if (status == LoginState.LoggedOut)
             {
                 LoginButton.ToolTip = Wpf.Properties.Resources.SignInButtonContentToolTip;
                 txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
                 logoutOption.Visibility = Visibility.Collapsed;
-                authManager.LoginStateChanged -= SignOutHandler;
+            }
+            else if (status == LoginState.LoggedIn)
+            {
+                txtSignIn.Text = authManager.Username;
+                logoutOption.Visibility = Visibility.Visible;
+                LoginButton.ToolTip = null;
             }
         }
 
@@ -115,7 +130,6 @@ namespace Dynamo.UI.Controls
                     tb.Text = authManager.Username;
                     logoutOption.Visibility = Visibility.Visible;
                     LoginButton.ToolTip = null;
-                    authManager.LoginStateChanged += SignOutHandler;
                 }
             }
         }

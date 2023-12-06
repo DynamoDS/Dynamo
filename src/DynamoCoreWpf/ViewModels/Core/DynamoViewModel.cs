@@ -22,6 +22,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -479,7 +480,7 @@ namespace Dynamo.ViewModels
 
         public string Version
         {
-            get { return model.Version; }
+            get { return DynamoModel.Version; }
         }
 
         public string HostVersion
@@ -490,15 +491,6 @@ namespace Dynamo.ViewModels
         public string HostName
         {
             get { return model.HostName; }
-        }
-
-        public bool IsUpdateAvailable
-        {
-            get
-            {
-                var um = model.UpdateManager;
-                return um.IsUpdateAvailable;
-            }
         }
 
         public string LicenseFile
@@ -728,7 +720,6 @@ namespace Dynamo.ViewModels
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
             SubscribeModelBackupFileSaveEvent();
-            SubscribeUpdateManagerHandlers();
 
             InitializeAutomationSettings(startConfiguration.CommandFilePath);
 
@@ -857,7 +848,6 @@ namespace Dynamo.ViewModels
             UnsubscribeDispatcherEvents();
             UnsubscribeModelUiEvents();
             UnsubscribeModelChangedEvents();
-            UnsubscribeUpdateManagerEvents();
             UnsubscribeLoggerEvents();
             UnsubscribeModelCleaningUpEvent();
             UnsubscribeModelBackupFileSaveEvent();
@@ -892,16 +882,9 @@ namespace Dynamo.ViewModels
             model.Logger.PropertyChanged -= Instance_PropertyChanged;
         }
 
-        private void SubscribeUpdateManagerHandlers()
-        {
-            model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested += UpdateManager_ShutdownRequested;
-        }
-
         private void UnsubscribeUpdateManagerEvents()
         {
-            model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested -= UpdateManager_ShutdownRequested;
+
         }
 
         private void SubscribeModelUiEvents()
@@ -1083,18 +1066,6 @@ namespace Dynamo.ViewModels
         internal bool CanClearLog(object parameter)
         {
             return true;
-        }
-
-        void Instance_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
-        {
-            RaisePropertyChanged("Version");
-            RaisePropertyChanged("IsUpdateAvailable");
-        }
-
-        void UpdateManager_ShutdownRequested(IUpdateManager updateManager)
-        {
-            PerformShutdownSequence(new ShutdownParams(
-                shutdownHost: true, allowCancellation: true));
         }
 
         void CollectInfoManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1907,9 +1878,10 @@ namespace Dynamo.ViewModels
         /// Create a toast notification with a notification sent by the DynamoModel
         /// </summary>
         /// <param name="notification"></param>
-        private void model_RequestNotification(string notification)
+        private void model_RequestNotification(string notification, bool stayOpen = false)
         {
-            this.MainGuideManager.CreateRealTimeInfoWindow(notification);
+            this.MainGuideManager?.CreateRealTimeInfoWindow(notification, stayOpen);
+            model?.Logger?.Log(notification);
         }
 
         /// <summary>
@@ -2090,15 +2062,52 @@ namespace Dynamo.ViewModels
             return (parameters != null);
         }
 
+        /// <summary>
+        /// Indicates if the graph has been changed substantially bearing in mind the connections of its nodes and store the checksum value of the graph in the preferences to later comparison
+        /// </summary>
+        /// <returns></returns>
+        private bool HasSubstantialCheckSum()
+        {
+            bool substantialChecksum = false;
+            string graphId = Model.CurrentWorkspace.Guid.ToString();
+
+            GraphChecksumItem checksumItem = PreferenceSettings.GraphChecksumItemsList.Where(i => i.GraphId == graphId).FirstOrDefault();
+            if (checksumItem != null)
+            {
+                if (checksumItem.Checksum != currentWorkspaceViewModel.Checksum)
+                {
+                    PreferenceSettings.GraphChecksumItemsList.Remove(checksumItem);
+                    PreferenceSettings.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
+                    substantialChecksum = true;
+                }
+            }
+            else
+            {
+                PreferenceSettings.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
+                substantialChecksum = true;
+            }
+            return substantialChecksum;
+        }
+
         private void InternalSaveAs(string path, SaveContext saveContext, bool isBackup = false)
         {
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
                 CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
-                if (!isBackup) AddToRecentFiles(path);
-                if (currentWorkspaceViewModel?.IsHomeSpace ?? true)
-                    Model.Logger.Log("The Workspace is valid for FDX : " + (HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX).ToString());
+
+                if (!isBackup)
+                {
+                    AddToRecentFiles(path);
+
+                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty) 
+                    {
+                        Model.Logger.Log("The Workspace is valid for FDX");
+                        Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
+                        Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
+                        Model.Logger.Log("The Workspace has Substantial checksum, so is ready to send to FDX : " + HasSubstantialCheckSum().ToString());
+                    }
+                }                                    
             }
             catch (Exception ex)
             {
@@ -2230,8 +2239,16 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                var param = (string)parameters;
-                OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
+                //When we pass the PackageManagerSizeEventArgs means that we want to start the PackageManagerView with a specific Width and Height
+                if (parameters is PackageManagerSizeEventArgs)
+                {
+                    OnRequestPackageManagerDialog(this, parameters as PackageManagerSizeEventArgs);
+                }
+                else
+                {
+                    var param = (string)parameters;
+                    OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
+                }              
             }
         }
 
@@ -2780,7 +2797,7 @@ namespace Dynamo.ViewModels
         {
             OnRequestSaveImage(this, new ImageSaveEventArgs(parameters.ToString()));
 
-            Dynamo.Logging.Analytics.TrackCommandEvent("ImageCapture",
+            Dynamo.Logging.Analytics.TrackTaskCommandEvent("ImageCapture",
                 "NodeCount", CurrentSpace.Nodes.Count());
         }
 
@@ -3255,7 +3272,7 @@ namespace Dynamo.ViewModels
             {
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
 
-                Dynamo.Logging.Analytics.TrackCommandEvent("ExportToSTL");
+                Dynamo.Logging.Analytics.TrackTaskCommandEvent("ExportToSTL");
             }
         }
 
@@ -3430,11 +3447,6 @@ namespace Dynamo.ViewModels
             MainGuideManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
-            if (shutdownParams.ShutdownHost)
-            {
-                model.UpdateManager.HostApplicationBeginQuit();
-            }
-
             UsageReportingManager.DestroyInstance();
             this.model.CommandStarting -= OnModelCommandStarting;
             this.model.CommandCompleted -= OnModelCommandCompleted;
