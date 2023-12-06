@@ -1,16 +1,6 @@
-using Dynamo.Logging;
-using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
-using DynamoUtilities;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Views.PackageManager.Pages;
 
 namespace Dynamo.PackageManager.UI
