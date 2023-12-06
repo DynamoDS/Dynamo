@@ -32,7 +32,7 @@
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
+            
             <Style x:Key="PkgMngTextBlockStyle" TargetType="TextBlock">
                 <Setter Property="Width" Value="Auto" />
                 <Setter Property="Margin" Value="0 5" />
@@ -111,7 +111,7 @@
                            Grid.Column="0"
                            Margin="14,16,0,0"
                            TextAlignment="Left"
-                           FontSize="18"
+                           FontSize="20"
                            FontFamily="Helvetica"
                            HorizontalAlignment="Left"
                            Width="459" />
@@ -509,7 +509,7 @@
                                                 HorizontalAlignment="Stretch">
                                         <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                   FontSize="13"
+                                                   FontSize="14"
                                                    Margin="0 5 0 20">
                                             <Run Text="{x:Static p:Resources.PackageManagerSettingsRunPrefix}" />
                                             <Hyperlink Click="OnPackageManagerSettingsHyperlinkClicked"
@@ -521,7 +521,7 @@
                                         </TextBlock>
                                         <Label Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}"
                                                Padding="5,5,5,5"
-                                               FontSize="13"
+                                               FontSize="14"
                                                Foreground="{StaticResource PreferencesWindowFontColor}">
                                             <Label.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"
@@ -541,7 +541,7 @@
 
                                         <Label Content="{x:Static p:Resources.PackagePathPreferencesTitle}"
                                                Padding="5,5,5,5"
-                                               FontSize="13"
+                                               FontSize="14"
                                                Foreground="{StaticResource PreferencesWindowFontColor}">
                                             <Label.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"
