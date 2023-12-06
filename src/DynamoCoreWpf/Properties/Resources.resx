@@ -3602,6 +3602,9 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="PackageDeprecatedTooltip" xml:space="preserve">
     <value>This package is outdated and cannot be installed.</value>
   </data>
+ <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
+    <value>Publish Version</value>
+  </data>
   <data name="SplashScreenViewExtensions" xml:space="preserve">
     <value>Loading View Extensions...</value>
   </data>
