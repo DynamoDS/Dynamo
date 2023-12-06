@@ -287,10 +287,14 @@ namespace Dynamo.Utilities
                         continue;
 
                     var categorySearchBased = searchTerm.Split('.');
-                    if (f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
-                        searchTerm = categorySearchBased[0];
-                    else
-                        searchTerm = categorySearchBased[1];
+                    //In the case the search criteria is like "Core.File.FileSystem.a" it will take only the last two sections Category=FileSystem and Name=a*
+                    if (categorySearchBased.Length > 1 && !string.IsNullOrEmpty(categorySearchBased[categorySearchBased.Length - 2]))
+                    {
+                        if (f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                            searchTerm = categorySearchBased[categorySearchBased.Length - 2];
+                        else
+                            searchTerm = categorySearchBased[categorySearchBased.Length - 1];
+                    }                   
                 }
 
                 FuzzyQuery fuzzyQuery;
@@ -355,6 +359,7 @@ namespace Dynamo.Utilities
         {
             WildcardQuery query;
 
+            //In case we are weighting the NameSplitted field then means that is a search based on Category of the type "cat.node" so we will be using the wilcard "category.node*" otherwise will be the normal wildcard
             var termText = fieldName == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ? searchTerm + "*" : "*" + searchTerm + "*";
 
             query = isWildcard == false ?
@@ -484,6 +489,7 @@ namespace Dynamo.Utilities
 
             var categoryParts = node.FullCategoryName.Split('.');
             string categoryParsed = categoryParts.Length > 1 ? categoryParts[categoryParts.Length - 1] : node.FullCategoryName;
+            //In case the search criteria is like "filesystem.replace" we will be storing the value "filesystem" inside the CategorySplitted field
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted), categoryParsed);
 
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
