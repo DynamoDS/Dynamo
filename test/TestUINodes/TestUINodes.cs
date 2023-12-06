@@ -162,14 +162,6 @@ namespace TestUINodes
             }
             else
             {
-                //var args = new List<AssociativeNode>
-                //{
-                //    AstFactory.BuildStringNode((string)Items[SelectedIndex].Item)
-                //};
-
-                //var func = new Func<string, DynamoUnits.Symbol>(DynamoUnits.Symbol.ByTypeID);
-                //node = AstFactory.BuildFunctionCall(func, args);
-
                 // get the selected items name
                 var stringNode = AstFactory.BuildStringNode((string)Items[SelectedIndex].Name);
 

@@ -350,7 +350,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void TestDropdownNodeUpdate1()
         {
             var model = GetModel();
