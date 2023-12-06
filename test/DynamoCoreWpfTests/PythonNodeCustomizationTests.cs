@@ -1,15 +1,18 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Autodesk.DesignScript.Runtime;
 using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.DocumentationBrowser;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PythonServices;
+using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
@@ -781,6 +784,51 @@ class NoTabs():
             DispatcherUtil.DoEvents();
 
             Assert.IsTrue(foldings == 4);
+        }
+
+        private class TestEngine : PythonEngine
+        {
+            public override object InputDataMarshaler => throw new NotImplementedException();
+
+            public override object OutputDataMarshaler => throw new NotImplementedException();
+
+            public override string Name => nameof(TestEngine);
+
+            public override event EvaluationStartedEventHandler EvaluationStarted;
+            public override event EvaluationFinishedEventHandler EvaluationFinished;
+
+            public override object Evaluate(string code, IList bindingNames, [ArbitraryDimensionArrayImport] IList bindingValues)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        [Test]
+        public void OnlyUniqueEnginesAddedToUI()
+        {
+            var node = new PythonNode();
+            Model.CurrentWorkspace.AddAndRegisterNode(node);
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            DispatcherUtil.DoEvents();
+            var nodeView = View.NodeViewsInFirstWorkspace().FirstOrDefault();
+            var menu = nodeView.MainContextMenu.Items.Cast<MenuItem>().First(x => (x.Header as string) == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher);
+            Assert.AreEqual(2, menu.Items.Count);
+        }
+        [Test]
+        public void OnlyUniqueEnginesAddedToUI2()
+        {
+            var node = new PythonNode();
+            Model.CurrentWorkspace.AddAndRegisterNode(node);
+            DispatcherUtil.DoEvents();
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+       
+            var nodeView = View.NodeViewsInFirstWorkspace().FirstOrDefault();
+            var menu = nodeView.MainContextMenu.Items.Cast<MenuItem>().First(x => (x.Header as string) == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher);
+            Assert.AreEqual(2, menu.Items.Count);
         }
     }
 }

@@ -33,13 +33,7 @@ namespace PythonNodeModelsWpf
             pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
 
-            var availableEngineNames = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
-            // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
-            if (!availableEngineNames.Contains(nodeModel.EngineName))
-            {
-                availableEngineNames.Add(nodeModel.EngineName);
-            }
-            availableEngineNames.ForEach(x => AddPythonEngineToMenuItems(x));
+            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(x => AddPythonEngineToMenuItems(x));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
@@ -107,12 +101,17 @@ namespace PythonNodeModelsWpf
         private void PythonEnginesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
-            {
                 foreach (var item in e.NewItems)
                 {
-                    AddPythonEngineToMenuItems((item as PythonEngine).Name);
+                    if (item is PythonEngine newEngine)
+                    {
+                        if (pythonEngineVersionMenu.Items.Cast<MenuItem>().Any(x => x.Header == newEngine.Name))
+                        {
+                            continue;
+                        }
+                        AddPythonEngineToMenuItems(newEngine.Name);
+                    }
                 }
-            }
         }
 
         /// <summary>

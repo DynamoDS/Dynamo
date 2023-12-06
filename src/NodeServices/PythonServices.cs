@@ -182,9 +182,9 @@ namespace Dynamo.PythonServices
             }
         }
 
-        private PythonEngine GetEngine(string version)
+        private PythonEngine GetEngine(string name)
         {
-            return AvailableEngines.FirstOrDefault(x => x.Name == version);
+            return AvailableEngines.FirstOrDefault(x => x.Name == name);
         }
 
         // This method can throw exceptions.
