@@ -120,6 +120,22 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
+
+            /// Create and add the library view to the WPF visual tree.
+            /// Also load the library.html and js files.
+            LibraryViewModel model = new LibraryViewModel();
+            LibraryView view = new LibraryView(model);
+
+            //Adding the LibraryView to the sidebar ensures that the webview2 component is visible.
+            var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
+            sidebarGrid.Children.Add(view);
+
+            browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
+            browser.Loaded += Browser_Loaded;
+            browser.SizeChanged += Browser_SizeChanged;
+
+            LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel,
+                    this, this.customization);
         }
 
         private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
@@ -302,30 +318,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
            Tuple.Create("/resources/search-icon-clear.svg",true)
         };
 
-        /// <summary>
-        /// Creates and adds the library view to the WPF visual tree.
-        /// Also loads the library.html and js files.
-        /// </summary>
-        /// <returns>LibraryView control</returns>
-        internal void AddLibraryView()
-        {
-            LibraryViewModel model = new LibraryViewModel();
-            LibraryView view = new LibraryView(model);
-
-            var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
-            sidebarGrid.Children.Add(view);
-
-            browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
-            browser.Loaded += Browser_Loaded;
-            browser.SizeChanged += Browser_SizeChanged;
-
-            this.browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
-            InitializeAsync();
-
-            LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel,
-                    this, this.customization);
-        }
-
         async void InitializeAsync()
         {
             try
@@ -422,6 +414,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             string msg = "Browser Loaded";
             LogToDynamoConsole(msg);
+
+            InitializeAsync();
         }
 
         // This enum is for matching the modifier keys between C# and javaScript
