@@ -540,7 +540,7 @@
                                     <CheckBox Name="HostEntry"
                                               Checked="HostEntry_CheckStateChanged"
                                               Content="{Binding HostName}"
-                                              IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                               Style="{StaticResource ComboBoxCheckBoxStyle}"
                                               Tag="{RelativeSource FindAncestor,
                                                             AncestorType={x:Type ComboBox}}"

@@ -22,6 +22,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -1879,7 +1880,8 @@ namespace Dynamo.ViewModels
         /// <param name="notification"></param>
         private void model_RequestNotification(string notification, bool stayOpen = false)
         {
-            this.MainGuideManager.CreateRealTimeInfoWindow(notification, stayOpen);
+            this.MainGuideManager?.CreateRealTimeInfoWindow(notification, stayOpen);
+            model?.Logger?.Log(notification);
         }
 
         /// <summary>
