@@ -4083,7 +4083,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You must provide a Major version as a non-negative integer..
+        ///   Looks up a localized string similar to Provide major, minor, and build version number..
         /// </summary>
         public static string MajorVersionNonNegative {
             get {
@@ -5741,15 +5741,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerMyPackagesControlName {
             get {
                 return ResourceManager.GetString("PackageManagerMyPackagesControlName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Publish Version.
-        /// </summary>
-        public static string PackageManagerMyPackagesPublishVersion {
-            get {
-                return ResourceManager.GetString("PackageManagerMyPackagesPublishVersion", resourceCulture);
             }
         }
         

@@ -1229,7 +1229,7 @@ Failed to publish file(s):
     <value>Library</value>
   </data>
   <data name="MajorVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Major version as a non-negative integer.</value>
+    <value>Provide major, minor, and build version number.</value>
     <comment>ErrorString</comment>
   </data>
   <data name="Manual" xml:space="preserve">
@@ -3611,9 +3611,6 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="PackageDeprecatedTooltip" xml:space="preserve">
     <value>This package is outdated and cannot be installed.</value>
-  </data>
-  <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
-    <value>Publish Version</value>
   </data>
   <data name="SplashScreenViewExtensions" xml:space="preserve">
     <value>Loading View Extensions...</value>
