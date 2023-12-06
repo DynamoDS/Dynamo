@@ -2322,6 +2322,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
   </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
   <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
     <value>Select package contents</value>
   </data>

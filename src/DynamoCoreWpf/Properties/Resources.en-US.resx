@@ -1843,6 +1843,9 @@ Next assemblies were loaded several times:
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
   </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
   <data name="PublishPackageMessage" xml:space="preserve">
     <value>Package published successfully. 
 Want to publish a different package?</value>
