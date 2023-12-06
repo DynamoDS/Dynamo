@@ -1,6 +1,12 @@
-# Build Dynamo using latest VS and DotNET
-name: Dynamo-net6.0-linux-Build
-on: [push,pull_request]
+# Build DynamoCore.sln with .NET 6.0 on linux
+name: Build DynamoCore.sln net6.0 linux
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
 jobs:
  build:
   runs-on: ubuntu-latest

@@ -1,7 +1,11 @@
 # Build DynamoAll.sln with .NET 6.0
 name: Build DynamoAll.sln net6.0
 
-on: [push,pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
  build:
