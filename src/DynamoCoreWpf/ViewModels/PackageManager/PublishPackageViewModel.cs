@@ -1092,6 +1092,7 @@ namespace Dynamo.PackageManager
 
         private void ClearAllEntries()
         {
+            if (DynamoModel.IsTestMode) return;
             // this function clears all the entries of the publish package dialog
             this.Name = string.Empty;
             this.RepositoryUrl = string.Empty;
