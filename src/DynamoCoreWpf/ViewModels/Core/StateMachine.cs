@@ -627,7 +627,6 @@ namespace Dynamo.ViewModels
 
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
-                Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
                 if (ignoreMouseClick)
                 {
                     ignoreMouseClick = false;

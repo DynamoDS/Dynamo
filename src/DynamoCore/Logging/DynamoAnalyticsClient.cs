@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autodesk.ADPDesktopSDK;
 using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
@@ -96,6 +97,10 @@ namespace Dynamo.Logging
         private readonly HostContextInfo hostInfo;
 
         public virtual IAnalyticsSession Session { get; private set; }
+
+        private DateTime LastMachineHBLogTime;
+        private DateTime LastUserHBLogTime;
+        private readonly int HeartBeatInterval = 4;
 
         /// <summary>
         /// Return if Analytics Client is allowed to send any analytics information
@@ -261,8 +266,13 @@ namespace Dynamo.Logging
         }
         /// <summary>
         /// This API is used to track user/machine's activity status.
+        /// Note: This will not trigger the API at each call, instead it will
+        /// send out one call for every 4(HeartBeatInterval) minutes for each user and machine type activity.
+        /// For example, if the method gets called 100 times in 8 minutes, then it will only
+        /// trigger the HeartBeat API twice. This is to avoid sending out too many calls
+        /// as the API expects a call every 5 minutes, to mark the user/machine active.
         /// </summary>
-        /// <param name="activityType">Value must be either machine or user. If no value is provided the API will default to user activity type.</param>
+        /// <param name="activityType">Value must be either Machine or User. If no value is provided the API will default to user activity type.</param>
         public void TrackActivityStatus(string activityType)
         {
             if (Analytics.DisableAnalytics) return;
@@ -275,11 +285,33 @@ namespace Dynamo.Logging
                 {
                     if (!ReportingAnalytics) return;
 
-                    var hbType = (new[] { "machine", "user" }).Contains(activityType?.ToLower()) ? activityType : "user";
+                    var hbType = (new[] { HeartBeatType.Machine.ToString(), HeartBeatType.User.ToString() }).Contains(activityType) ? activityType : HeartBeatType.User.ToString();
+                    LogHeartBeat(hbType);
+                }
+            });
+        }
+
+        private void LogHeartBeat(string activityType)
+        {
+            if (activityType == HeartBeatType.Machine.ToString())
+            {
+                //Only send log if atleast 4 minutes have been passed since the last log.
+                if (LastMachineHBLogTime != null && DateTime.UtcNow > LastMachineHBLogTime.AddMinutes(HeartBeatInterval))
+                {
+                    LastMachineHBLogTime = DateTime.UtcNow;
                     var e = new HeartBeatEvent(activityType);
                     e.Track();
                 }
-            });
+            }
+            else
+            {
+                if (LastUserHBLogTime != null && DateTime.UtcNow > LastUserHBLogTime.AddMinutes(HeartBeatInterval))
+                {
+                    LastUserHBLogTime = DateTime.UtcNow;
+                    var e = new HeartBeatEvent(activityType);
+                    e.Track();
+                }
+            }
         }
 
         public void TrackException(Exception ex, bool isFatal)
