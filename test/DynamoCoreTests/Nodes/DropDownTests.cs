@@ -19,6 +19,7 @@ namespace Dynamo.Tests.Nodes
         }
         
         [Test]
+        [Category("Move2WPF")]
         public void OpenJsonDYNwithSelectionNode()
         {
             // Define package loading reference path
@@ -45,6 +46,7 @@ namespace Dynamo.Tests.Nodes
 
 
         [Test]
+        [Category("Move2WPF")]
         public void OpenJsonDYNwithSelectionNodeAndWrongSelectionIndexSerialized()
         {
             // Define package loading reference path
@@ -72,6 +74,7 @@ namespace Dynamo.Tests.Nodes
         }
 
         [Test]
+        [Category("Move2WPF")]
         public void PopulateItemsShouldNotChangeSelectedIndex()
         {
             // Define package loading reference path
@@ -102,6 +105,7 @@ namespace Dynamo.Tests.Nodes
         }
 
         [Test]
+        [Category("Move2WPF")]
         public void GetSelectedStringFromItemShouldReturnString()
         {
             // Define package loading reference path

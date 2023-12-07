@@ -873,6 +873,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Move2WPF")]
         public void DropDownNodesNodeInputDataSerializationTest()
         {
             // Arrange

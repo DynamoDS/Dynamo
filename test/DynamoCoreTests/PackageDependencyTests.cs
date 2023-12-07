@@ -13,6 +13,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
+    [Category("Move2WPF")]
     internal class PackageDependencyTests : DynamoModelTestBase
     {
         public string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }

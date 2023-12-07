@@ -48,6 +48,7 @@ namespace Dynamo.Tests.Nodes
         }
 
         [Test]
+        [Category("Move2WPF")]
         public void OpenJsonDYNWithCorrectMenuItems()
         {
             LoadSamplesPackage();
@@ -64,6 +65,7 @@ namespace Dynamo.Tests.Nodes
         }
 
         [Test]
+        [Category("Move2WPF")]
         public void OpenJsonDYNWithCorrectSelectedItem()
         {
             LoadSamplesPackage();
@@ -78,6 +80,7 @@ namespace Dynamo.Tests.Nodes
         }
 
         [Test]
+        [Category("Move2WPF")]
         public void UpdateDropdownValue()
         {
             LoadSamplesPackage();

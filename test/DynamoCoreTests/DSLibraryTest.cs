@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -254,6 +254,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        [Category("Move2WPF")]
         public void TestAddDllLibraryPath()
         {
             // Get the default custom package folders

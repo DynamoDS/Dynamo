@@ -2242,6 +2242,7 @@ namespace Dynamo.Tests
         #region Dynamo Package Node Migration Tests
         [Test]
         [Category("UnitTests")]
+        [Category("Move2WPF")]
         public void TestPackageNodeMigrationForJSONGraphs()
         {
             // Define package loading reference paths

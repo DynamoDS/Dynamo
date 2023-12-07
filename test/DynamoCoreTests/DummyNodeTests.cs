@@ -120,6 +120,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Move2WPF")]
         public void ResolveDummyNodesOnDownloadingPackage()
         {
             string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\ResolveDummyNodesOnDownloadingPackage.dyn");
@@ -144,6 +145,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Move2WPF")]
         public void ResolveDummyNodesInsideCustomNodeWorkspace()
         {
             // Validating the case when dummy nodes are resolved inside a custom node workspace.
