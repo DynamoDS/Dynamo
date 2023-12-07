@@ -23,12 +23,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Resources\**" />
-    <EmbeddedResource Remove="Resources\**" />
-    <None Remove="Resources\**" />
-    <Page Remove="Resources\**" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">
       <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
       <Name>DynamoApplications</Name>
