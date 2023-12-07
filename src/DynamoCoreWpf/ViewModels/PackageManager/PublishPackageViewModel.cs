@@ -2352,6 +2352,12 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            if (Description.Length <= 10)
+            {
+                ErrorString = Resources.DescriptionNeedMoreCharacters;
+                return false;
+            }
+
             if (MajorVersion.Length <= 0)
             {
                 ErrorString = Resources.MajorVersionNonNegative;
