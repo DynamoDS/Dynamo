@@ -452,6 +452,7 @@
                     </TextBlock>
                     <TextBox Name="descriptionInput"
                              MinHeight="81px"
+                             FontSize="12"
                              VerticalContentAlignment="Top"
                              Style="{StaticResource InputStyle}"
                              PreviewKeyDown="textBoxInput_PreviewKeyDown"
@@ -539,7 +540,7 @@
                                     <CheckBox Name="HostEntry"
                                               Checked="HostEntry_CheckStateChanged"
                                               Content="{Binding HostName}"
-                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                              IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               Style="{StaticResource ComboBoxCheckBoxStyle}"
                                               Tag="{RelativeSource FindAncestor,
                                                             AncestorType={x:Type ComboBox}}"

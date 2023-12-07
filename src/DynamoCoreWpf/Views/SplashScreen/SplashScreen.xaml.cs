@@ -56,8 +56,6 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal AuthenticationManager authManager;
 
-        internal HostAnalyticsInfo hostAnalyticsInfo;
-
         /// <summary>
         /// Dynamo View Model reference
         /// </summary>
@@ -84,7 +82,6 @@ namespace Dynamo.UI.Views
                 // When view model is closed, we need to close the splash screen if it is displayed.
                 viewModel.RequestClose += SplashScreenRequestClose;
                 authManager = viewModel.Model.AuthenticationManager;
-                hostAnalyticsInfo = DynamoModel.HostAnalyticsInfo;
             }
         }
 
@@ -307,6 +304,8 @@ namespace Dynamo.UI.Views
             {
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
+
+            //ContentRendered ensures that the webview2 component is visible.
             await webView.EnsureCoreWebView2Async();
             // Context menu disabled
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
@@ -518,7 +517,7 @@ namespace Dynamo.UI.Views
         {
             CloseWasExplicit = true;
 
-            if (string.IsNullOrEmpty(hostAnalyticsInfo.HostName))
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
             {
                 Application.Current?.Shutdown();
                 Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);

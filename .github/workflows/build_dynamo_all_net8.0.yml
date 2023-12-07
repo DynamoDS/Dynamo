@@ -1,7 +1,11 @@
 # Build DynamoAll.sln with .NET 8.0
 name: Build DynamoAll.sln net8.0
 
-on: [push,pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
  build:
@@ -13,7 +17,7 @@ jobs:
         path: Dynamo
         repository: DynamoDS/Dynamo
     - name: Setup dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
     - name: Disable problem matcher
@@ -43,7 +47,7 @@ jobs:
     - name: Save Pull Request Number
       env:
         PR_NUMBER: ${{ github.event.number }}
-      run: $PR_NUMBER | Out-File -FilePath pr_number.txt
+      run: $env:PR_NUMBER | Out-File -FilePath pr_number.txt
     - name: Upload Pull Request Artifact
       uses: actions/upload-artifact@v3
       with:
