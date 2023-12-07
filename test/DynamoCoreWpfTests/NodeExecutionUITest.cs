@@ -366,11 +366,20 @@ namespace DynamoCoreWpfTests
 
             AssertPreviewValue(tdd.GUID.ToString(), null);
 
+            tdd.SelectedIndex = 0;
+            tdd.OnNodeModified();
+
+            AssertPreviewValue(tdd.GUID.ToString(), "one");
+
             tdd.SelectedIndex = 1;
             tdd.OnNodeModified();
 
-            // fails here!
             AssertPreviewValue(tdd.GUID.ToString(), "two");
+
+            tdd.SelectedIndex = 2;
+            tdd.OnNodeModified();
+
+            AssertPreviewValue(tdd.GUID.ToString(), "three");
         }
     }
 }
