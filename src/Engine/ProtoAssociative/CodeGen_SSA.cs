@@ -1,4 +1,4 @@
-﻿using ProtoCore.AST.AssociativeAST;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System.Collections.Generic;
@@ -275,7 +275,7 @@ namespace ProtoAssociative
                         BinaryExpressionNode bnode = (node as BinaryExpressionNode);
                         int generatedUID = ProtoCore.DSASM.Constants.kInvalidIndex;
 
-                        if (context.applySSATransform && core.Options.GenerateSSA)
+                        if (context.applySSATransform && core.Options.GenerateSSA && !bnode.IsInputExpression)
                         {
                             int ssaID = ProtoCore.DSASM.Constants.kInvalidIndex;
                             string name = ProtoCore.Utils.CoreUtils.GenerateIdentListNameString(bnode.LeftNode);
@@ -382,53 +382,6 @@ namespace ProtoAssociative
             return astList;
         }
 
-        private void DfsSSAIeentList(AssociativeNode node, ref Stack<AssociativeNode> ssaStack, ref List<AssociativeNode> astlist)
-        {
-            if (node is IdentifierListNode)
-            {
-                IdentifierListNode listNode = node as IdentifierListNode;
-
-                bool isSingleDot = !(listNode.LeftNode is IdentifierListNode) && !(listNode.RightNode is IdentifierListNode);
-                if (isSingleDot)
-                {
-                    BinaryExpressionNode bnode = BuildSSAIdentListAssignmentNode(listNode);
-                    astlist.Add(bnode);
-                    ssaStack.Push(bnode);
-                }
-                else
-                {
-                    DfsSSAIeentList(listNode.LeftNode, ref ssaStack, ref astlist);
-
-                    IdentifierListNode newListNode = node as IdentifierListNode;
-                    newListNode.Optr = Operator.dot;
-
-                    AssociativeNode leftnode = ssaStack.Pop();
-                    Validity.Assert(leftnode is BinaryExpressionNode);
-
-                    newListNode.LeftNode = (leftnode as BinaryExpressionNode).LeftNode;
-                    newListNode.RightNode = listNode.RightNode;
-
-                    BinaryExpressionNode bnode = BuildSSAIdentListAssignmentNode(newListNode);
-                    astlist.Add(bnode);
-                    ssaStack.Push(bnode);
-
-                }
-            }
-            else if (node is FunctionCallNode)
-            {
-                FunctionCallNode fcNode = node as FunctionCallNode;
-                for (int idx = 0; idx < fcNode.FormalArguments.Count; idx++)
-                {
-                    AssociativeNode arg = fcNode.FormalArguments[idx];
-
-                    Stack<AssociativeNode> ssaStack1 = new Stack<AssociativeNode>();
-                    DFSEmitSSA_AST(arg, ssaStack1, ref astlist);
-                    AssociativeNode argNode = ssaStack.Pop();
-                    fcNode.FormalArguments[idx] = argNode is BinaryExpressionNode ? (argNode as BinaryExpressionNode).LeftNode : argNode;
-                }
-            }
-        }
-
         private void DFSEmitSSA_AST(AssociativeNode node, Stack<AssociativeNode> ssaStack, ref List<AssociativeNode> astlist)
         {
             Validity.Assert(null != astlist && null != ssaStack);
@@ -488,7 +441,6 @@ namespace ProtoAssociative
 
                 var bnode = AstFactory.BuildAssignment(leftNode, rightNode);
                 bnode.isSSAAssignment = isSSAAssignment;
-                bnode.IsInputExpression = astBNode.IsInputExpression;
 
                 astlist.Add(bnode);
                 ssaStack.Push(bnode);

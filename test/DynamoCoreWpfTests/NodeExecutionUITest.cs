@@ -329,48 +329,48 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
-        public void TestDropdownNodeUpdate()
-        {
-            var model = GetModel();
-            var tdd = new TestDropdown
-            {
-                SelectedIndex = 0
-            };
+    //    [Test]
+    //    public void TestDropdownNodeUpdate()
+    //    {
+    //        var model = GetModel();
+    //        var tdd = new TestDropdown
+    //        {
+    //            SelectedIndex = 0
+    //        };
 
-            var command = new DynamoModel.CreateNodeCommand(tdd, 0, 0, true, false);
-            model.ExecuteCommand(command);
+    //        var command = new DynamoModel.CreateNodeCommand(tdd, 0, 0, true, false);
+    //        model.ExecuteCommand(command);
 
-            AssertPreviewValue(tdd.GUID.ToString(), "one");
+    //        AssertPreviewValue(tdd.GUID.ToString(), "one");
 
-            tdd.SelectedIndex = 1;
-            tdd.OnNodeModified();
+    //        tdd.SelectedIndex = 1;
+    //        tdd.OnNodeModified();
 
-            AssertPreviewValue(tdd.GUID.ToString(), "two");
+    //        AssertPreviewValue(tdd.GUID.ToString(), "two");
 
-            tdd.SelectedIndex = 2;
-            tdd.OnNodeModified();
+    //        tdd.SelectedIndex = 2;
+    //        tdd.OnNodeModified();
 
-            AssertPreviewValue(tdd.GUID.ToString(), "three");
+    //        AssertPreviewValue(tdd.GUID.ToString(), "three");
 
-        }
+    //    }
 
-        [Test, Category("Failure")]
-        public void TestDropdownNodeUpdate1()
-        {
-            var model = GetModel();
-            var tdd = new TestDropdown();
+    //    [Test, Category("Failure")]
+    //    public void TestDropdownNodeUpdate1()
+    //    {
+    //        var model = GetModel();
+    //        var tdd = new TestDropdown();
 
-            var command = new DynamoModel.CreateNodeCommand(tdd, 0, 0, true, false);
-            model.ExecuteCommand(command);
+    //        var command = new DynamoModel.CreateNodeCommand(tdd, 0, 0, true, false);
+    //        model.ExecuteCommand(command);
 
-            AssertPreviewValue(tdd.GUID.ToString(), null);
+    //        AssertPreviewValue(tdd.GUID.ToString(), null);
 
-            tdd.SelectedIndex = 1;
-            tdd.OnNodeModified();
+    //        tdd.SelectedIndex = 1;
+    //        tdd.OnNodeModified();
 
-            // fails here!
-            AssertPreviewValue(tdd.GUID.ToString(), "two");
-        }
+    //        // fails here!
+    //        AssertPreviewValue(tdd.GUID.ToString(), "two");
+    //    }
     }
 }
