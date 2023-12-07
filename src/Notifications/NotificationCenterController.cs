@@ -345,7 +345,7 @@ namespace Dynamo.Notifications
         {
             if (initState == AsyncMethodState.Started)
             {
-                logger?.Log("NotificationCenterController is being disposed but async initialization is still not done");
+                System.Console.WriteLine("NotificationCenterController is being disposed but async initialization is still not done");
             }
             Dispose(true);
             GC.SuppressFinalize(this);

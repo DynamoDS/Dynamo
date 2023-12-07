@@ -172,7 +172,9 @@ namespace Dynamo.DocumentationBrowser
 
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
-           
+
+                System.Console.WriteLine("Exiting EnsureCoreWebView2Async " + documentationBrowser.GetHashCode());
+
                 this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
                 comScriptingObject = new ScriptingObject(this.viewModel);
                 //register the interop object into the browser.
@@ -210,7 +212,7 @@ namespace Dynamo.DocumentationBrowser
 
             if (initState == AsyncMethodState.Started)
             {
-                Log("DocumentationBrowserView is being disposed but async initialization is still not done");
+                System.Console.WriteLine("DocumentationBrowserView is being disposed but async initialization is still not done");
             }
 
             Dispose(true);
