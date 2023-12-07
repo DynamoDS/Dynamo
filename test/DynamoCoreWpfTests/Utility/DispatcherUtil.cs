@@ -38,10 +38,12 @@ namespace DynamoCoreWpfTests.Utility
             {
                 if (check != null && check())
                 {
+                    System.Console.WriteLine($"DoEventsLoop finished after ${count} x 100ms");
                     return;
                 }
                 if (count >= max_count)
                 {
+                    System.Console.WriteLine("DoEventsLoop max count reached");
                     return;
                 }
 

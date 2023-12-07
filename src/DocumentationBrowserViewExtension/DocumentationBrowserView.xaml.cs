@@ -168,6 +168,8 @@ namespace Dynamo.DocumentationBrowser
                     };
                 }
 
+                System.Console.WriteLine("Entering EnsureCoreWebView2Async " + documentationBrowser.GetHashCode());
+
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
            
@@ -204,6 +206,8 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
+            System.Console.WriteLine("Entering Dispose " + documentationBrowser.GetHashCode());
+
             if (initState == AsyncMethodState.Started)
             {
                 Log("DocumentationBrowserView is being disposed but async initialization is still not done");
