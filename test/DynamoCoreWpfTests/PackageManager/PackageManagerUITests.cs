@@ -1,3 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.PackageManager;
@@ -13,15 +22,6 @@ using Greg.Requests;
 using Greg.Responses;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using SystemTestServices;
 
 namespace DynamoCoreWpfTests.PackageManager
@@ -2172,8 +2172,9 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.IsFalse(vm.PackageContents.Any());
         }
 
-
-        [Test]
+        // This test asserts CancelCommand, which is currently disabled under testing environment
+        // as it is causing a tread affinity crash. The test will be disabled for the time being
+        [Test, Category("Failure")]
         public void CancelCommandClearsAllData()
         {
             // Arrange
