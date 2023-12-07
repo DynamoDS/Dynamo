@@ -441,6 +441,8 @@ namespace ProtoAssociative
 
                 var bnode = AstFactory.BuildAssignment(leftNode, rightNode);
                 bnode.isSSAAssignment = isSSAAssignment;
+                // TODO: SSA is not called for ASTs that are input expressions. Revisit this if there are any issues.
+                // bnode.IsInputExpression = astBNode.IsInputExpression;
 
                 astlist.Add(bnode);
                 ssaStack.Push(bnode);
