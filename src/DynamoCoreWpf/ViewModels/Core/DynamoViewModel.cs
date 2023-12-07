@@ -2785,6 +2785,7 @@ namespace Dynamo.ViewModels
 
             var command = new DynamoModel.DeleteModelCommand(Guid.Empty);
             this.ExecuteCommand(command);
+            OnNodeDeleted(this, EventArgs.Empty);
         }
 
         internal bool CanDelete(object parameters)
@@ -2792,6 +2793,14 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
+        /// <summary>
+        /// Event to determine when Node is removed
+        /// </summary>
+        internal event EventHandler NodeDeleted;
+        internal void OnNodeDeleted(object sender, EventArgs e)
+        {
+            NodeDeleted?.Invoke(this, e);
+        }
 
         public void SaveImage(object parameters)
         {

@@ -213,6 +213,14 @@ namespace Dynamo.UI.Controls
                 SearchTextBox.Focus();
                 ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
+
+            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
+        }
+
+        private void OnParentNodeRemoved()
+        {
+            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
         }
 
         private void OnMembersListBoxUpdated(object sender, DataTransferEventArgs e)

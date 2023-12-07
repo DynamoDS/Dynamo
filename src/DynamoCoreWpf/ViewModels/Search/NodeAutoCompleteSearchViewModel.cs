@@ -151,6 +151,8 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event Action ParentNodeRemoved;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -530,6 +532,7 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
+            dynamoViewModel.NodeDeleted += NodeViewModel_Removed;
             ResetAutoCompleteSearchViewState();
 
             if (IsDisplayingMLRecommendation)
@@ -593,6 +596,11 @@ namespace Dynamo.ViewModels
             {
                 FilteredResults = DefaultResults.Where(e => e.Name == "Watch" || e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
             }
+        }
+
+        internal void NodeViewModel_Removed(object sender, EventArgs e)
+        {
+            ParentNodeRemoved?.Invoke();
         }
 
         /// <summary>
