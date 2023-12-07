@@ -1493,6 +1493,10 @@ namespace Dynamo.Controls
 
                 if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
             }
+            if (_pkgVM != null)
+            {
+                _pkgVM.PublishPackageViewModel = model;
+            }
 
             packageManagerWindow.Focus();
             packageManagerWindow.Navigate(Wpf.Properties.Resources.PackageManagerPublishTab);
