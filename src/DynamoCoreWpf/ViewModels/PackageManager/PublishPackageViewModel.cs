@@ -1141,6 +1141,7 @@ namespace Dynamo.PackageManager
             this.RootFolder = string.Empty;
             this.ClearMarkdownDirectory();
             this.ClearPackageContents();
+            this.KeywordsCollection?.Clear();
         }
 
         /// <summary>
