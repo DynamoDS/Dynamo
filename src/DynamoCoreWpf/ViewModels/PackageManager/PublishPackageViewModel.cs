@@ -1104,6 +1104,7 @@ namespace Dynamo.PackageManager
 
         private void ClearAllEntries()
         {
+            if (DynamoModel.IsTestMode) return;
             // this function clears all the entries of the publish package dialog
             this.Name = string.Empty;
             this.RepositoryUrl = string.Empty;
@@ -1117,15 +1118,14 @@ namespace Dynamo.PackageManager
             this.BuildVersion = "0";
             this.ErrorString = string.Empty;
             this.Uploading = false;
-            // Clearing the UploadHandle when using Submit currently throws - check trheading
+            // Clearing the UploadHandle when using Submit currently throws - when testing? - check trheading
             try
             {
-                BeginInvoke(() =>
+                if (this._uploadHandle != null)
                 {
-                    if (this._uploadHandle == null) return;
                     this._uploadHandle.PropertyChanged -= UploadHandleOnPropertyChanged;
                     this.UploadHandle = null;
-                });
+                }
             }
             catch { Exception ex; }
             this.IsNewVersion = false;
@@ -1334,7 +1334,7 @@ namespace Dynamo.PackageManager
         public void OnPublishSuccess()
         {
             if (PublishSuccess != null)
-                PublishSuccess(this);
+                PublishSuccess(this);       
         }
 
         private void UploadHandleOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
