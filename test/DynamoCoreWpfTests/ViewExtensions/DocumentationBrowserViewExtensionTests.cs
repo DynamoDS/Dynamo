@@ -206,6 +206,9 @@ namespace DynamoCoreWpfTests
             // Act
             var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
             this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
+
+            WaitForWebView2Initialization();
+
             var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
 
