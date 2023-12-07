@@ -1,6 +1,12 @@
-# Build Dynamo using latest VS and DotNET
-name: Dynamo-net6.0-Build
-on: [push,pull_request]
+# Build DynamoCore.sln with .NET 6.0 on windows
+name: Build DynamoCore.sln net6.0 windows
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
 jobs:
  build:
   runs-on: windows-latest

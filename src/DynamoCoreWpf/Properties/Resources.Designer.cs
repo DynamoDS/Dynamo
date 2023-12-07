@@ -5745,6 +5745,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish Version.
+        /// </summary>
+        public static string PackageManagerMyPackagesPublishVersion {
+            get {
+                return ResourceManager.GetString("PackageManagerMyPackagesPublishVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to My Packages.
         /// </summary>
         public static string PackageManagerMyPackagesTab {
@@ -8106,6 +8115,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageRemoveFromPacakgeTooltip {
             get {
                 return ResourceManager.GetString("PublishPackageRemoveFromPacakgeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string PublishPackageResetButton {
+            get {
+                return ResourceManager.GetString("PublishPackageResetButton", resourceCulture);
             }
         }
         

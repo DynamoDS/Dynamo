@@ -364,7 +364,8 @@
 
                     <!--  Cancel  -->
                     <Button Click="CancelButton_Click"
-                            Content="{x:Static p:Resources.CancelButton}"
+                            Content="{x:Static p:Resources.PublishPackageResetButton}"
+                            IsEnabled="{Binding HasChanges}"
                             DockPanel.Dock="Right"
                             Background="Transparent"
                             Foreground="White"

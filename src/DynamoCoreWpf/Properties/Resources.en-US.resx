@@ -1843,6 +1843,9 @@ Next assemblies were loaded several times:
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
   </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
   <data name="PublishPackageMessage" xml:space="preserve">
     <value>Package published successfully. 
 Want to publish a different package?</value>
@@ -3611,6 +3614,9 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="PackageDeprecatedTooltip" xml:space="preserve">
     <value>This package is outdated and cannot be installed.</value>
+  </data>
+  <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
+    <value>Publish Version</value>
   </data>
   <data name="SplashScreenViewExtensions" xml:space="preserve">
     <value>Loading View Extensions...</value>

@@ -1262,8 +1262,12 @@ namespace DynamoCoreWpfTests.PackageManager
                 .Returns(MessageBoxResult.OK);
             MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
 
-            //actually perform the download & install operations
-            pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
+            Task.Run(() => {
+                // This test runs on a single thread (using DispatcherSyncronizationContext)
+                // We need to run the async ExecutePackageDownload function in a separate thread so that the Thread.Sleep does not mess up the other awaiting tasks.
+                //actually perform the download & install operations
+                pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
+            }).Wait();
 
             //wait a bit.
             Thread.Sleep(500);
