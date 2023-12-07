@@ -2411,22 +2411,6 @@ namespace Dynamo.PackageManager
                          .ToList();
             try
             {
-                var unqualifiedFiles = GetAllUnqualifiedFiles();
-
-                if (files == null || files.Count() < 1 || unqualifiedFiles.Count() > 0)
-                {
-                    string filesCannotBePublished = null;
-                    foreach (var file in unqualifiedFiles)
-                    {
-                        filesCannotBePublished = filesCannotBePublished + file + "\n";
-                    }
-                    string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
-                    UploadState = PackageUploadHandle.State.Error;
-                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    return;
-                }
-
                 // Generate the Package Name, either based on the user 'Description', or the root path name, if no 'Description' yet
                 var packageName = !string.IsNullOrEmpty(Name) ? Name : Path.GetFileName(publishPath);
                 var rootItemPreview = RetainFolderStructureOverride ?
