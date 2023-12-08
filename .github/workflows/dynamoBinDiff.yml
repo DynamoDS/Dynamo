@@ -1,6 +1,8 @@
 # Build Dynamo using latest VS and DotNET and perform a Bin Diff
 name: Dynamo-BinDiff
-on: [push,pull_request]
+
+on: pull_request
+
 jobs:
  build-dotnet-windows-current:
   runs-on: windows-latest
