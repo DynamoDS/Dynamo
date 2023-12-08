@@ -499,6 +499,37 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void CloseNodeAutocompleteWhenParentNodeDeleted()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("77aad5875f124bf59a4ece6b30813d3b").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(2, inPorts.Count());
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("DSCore.Color[]", type);
+
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = inPorts[0];
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+
+            // Get the matching node elements for the specific node port.
+            searchViewModel.PopulateAutoCompleteCandidates();
+            // Show Node AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            //remove the parent node
+            searchViewModel.dynamoViewModel.CurrentSpaceViewModel.Model.RemoveAndDisposeNode(nodeView.ViewModel.NodeModel);
+
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            //confirm if the AutoCompleteSearchBar is closed.
+            Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+
+        }
+
+        [Test]
         public void NodeSuggestions_SkippedSuggestions()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
