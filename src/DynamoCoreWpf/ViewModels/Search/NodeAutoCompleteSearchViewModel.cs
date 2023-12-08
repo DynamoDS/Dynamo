@@ -598,6 +598,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal void OnNodeAutoCompleteWindowClosed()
+        {
+            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
+        }
+
         internal void NodeViewModel_Removed(NodeModel node)
         {
             ParentNodeRemoved?.Invoke(node);
