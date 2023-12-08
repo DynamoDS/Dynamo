@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace DynamoLogExchangeTest
+namespace DynamoForgeDataExchange
 {
     class BinaryReferenceComponent : Dictionary<string, Dictionary<string, IPropertySet>>
     {

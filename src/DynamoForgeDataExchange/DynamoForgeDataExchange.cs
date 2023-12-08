@@ -3,20 +3,32 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using Dynamo.Extensions;
+using Greg;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using ContentType = RestSharp.ContentType;
 
-namespace DynamoLogExchangeTest
+namespace DynamoForgeDataExchange
 {
 
-    class Program
+    class DynamoForgeDataExchange : IExtension, IExtensionSource
     {
         public static string CollectionId { get; set; }
         public static string ExchangeContainerId { get; set; }
         public static string BinaryAssetGuid { get; set; }
 
+        internal static IOAuth2AccessTokenProvider AuthTokenProvider { get; set; }
+
+        public string UniqueId => throw new NotImplementedException();
+
+        public string Name => throw new NotImplementedException();
+
+        public IEnumerable<IExtension> RequestedExtensions => throw new NotImplementedException();
+
+        public event Func<string, IExtension> RequestLoadExtension;
+        public event Action<IExtension> RequestAddExtension;
 
         public static void AddHeadersToPostRequest(RestRequest request, string token)
         {
@@ -29,23 +41,24 @@ namespace DynamoLogExchangeTest
         {
             // Define the custom parameter schemas
             var schemas = new List<Schema>();
-            var checkSumSchema = new StringParameterSchema("CheckSum", schemaNamespaceId);
-            schemas.Add(checkSumSchema);
-            var hostSchema = new StringParameterSchema("Host", schemaNamespaceId);
+            var userIdSchema = new StringParameterSchema("UserId", schemaNamespaceId, "DynamoUserIdParam"); //here we need to pass the oxygenId
+            schemas.Add(userIdSchema);
+            var hostSchema = new StringParameterSchema("Host", schemaNamespaceId, "DynamoHostParam"); //here we need to pass Dynamo's host similar to what we pass to ADP logs
             schemas.Add(hostSchema);
-            var hasWarningsSchema = new BooleanParameterSchema("HasWarnings", schemaNamespaceId);
-            schemas.Add(hasWarningsSchema);
+            var dynamoVersionSchema = new StringParameterSchema("DynamoVersion", schemaNamespaceId, "DynamoVersionParam"); //here we need to pass Dynamo's version similar to what we pass to ADP logs
+            schemas.Add(dynamoVersionSchema);
 
             // Define the assets
             var assets = new List<InstanceAsset>();
 
             // Construct parameter component
             var parameterComponent = new ParameterComponent();
-            parameterComponent.AddParameterFromSchema("this is a hash of the Dynamo file", checkSumSchema);
-            parameterComponent.AddParameterFromSchema("Dynamo host", hostSchema);
-            parameterComponent.AddParameterFromSchema(false, hasWarningsSchema);
+            parameterComponent.AddParameterFromSchema("<Add user id>", userIdSchema);
+            parameterComponent.AddParameterFromSchema("<Add dynamo host>", hostSchema);
+            parameterComponent.AddParameterFromSchema("<Add dynamo version>", dynamoVersionSchema);
+
             // Construct the base component
-            var baseComponent = new BaseComponent("test-instance-asset");
+            var baseComponent = new BaseComponent("DynamoGraphLog");
             // Construct the binary reference component
             var binaryReferenceComponent = new BinaryReferenceComponent(binaryId);
 
@@ -55,6 +68,25 @@ namespace DynamoLogExchangeTest
             // Construct request body
             var body = new UploadAssetsRequestBody(schemas, assets, "insert");
             string bodyJSON = JsonConvert.SerializeObject(body);
+            return bodyJSON;
+        }
+
+        public static string ConstructCreateExchangeRequestBody()
+        {
+            // Instantiate attributes we want to pass to the data exchange
+            // Note: we want to pass attributes to be able to query the data once collected
+            // filtering on these attributes (query based on a custom attribute not currently
+            // supported by the FDX API, but it may become available in the future)
+            var clientIdAttribute = new Attribute("clientId", "Dynamo");
+            var clientVersionAttribute = new Attribute("clientVersion", "<dynamo version>");
+            var attributes = new List<Attribute>
+            {
+                clientIdAttribute,
+                clientVersionAttribute
+            };
+
+            var exchangeComponent = new ExchangeComponent(attributes);
+            string bodyJSON = JsonConvert.SerializeObject(exchangeComponent);
             return bodyJSON;
         }
 
@@ -92,11 +124,11 @@ namespace DynamoLogExchangeTest
             Console.WriteLine($"The data exchange is {fulfillmentStatus}");
         }
 
-        static public string ConvertDynToBase64(string filePath) 
+        static public string ConvertDynToBase64(string filePath)
         {
             string parentDir = Directory.GetParent(filePath).FullName;
             string savePath = Path.Combine(parentDir, "data.txt");
-            
+
             // Read .dyn file as a string
             string sourceFileContent = File.ReadAllText(filePath);
             Console.WriteLine($"Read file '{filePath}' with {sourceFileContent.Length} bytes");  // Should be 337,787 bytes
@@ -115,13 +147,10 @@ namespace DynamoLogExchangeTest
             return base64CompressedBuffer;
         }
 
-        static void SendNewLog(string filePath, RestClient client, string token)
+        static void DataExchangeToForge(string filePath, RestClient client, string token)
         {
-            // STEP 1: CREATE A DATA EXCHANGE CONTAINER ---------------------
-            // We currently use a Revit contract with no host and no source for development purposes. 
-            // The FDX team is working on creating a contract for our use case - we will need to swap 
-            // this with the new contract before we release the data collection feature to production.
-            string exchangeBody = "{\"type\":\"autodesk.fdx:space.exchangecontainer-1.0.0\",\"components\":{\"insert\":{\"autodesk.fdx:contract.revitViewGeometry-1.0.0\":{\"contract\":{\"String\":{\"viewableId\":\"{{viewableId}}\",\"viewName\":\"{{viewableName}}\",\"viewGuid\":\"{{viewGuid}}\"}}}}}}";
+            // STEP 1: CREATE A DATA EXCHANGE CONTAINER ---------------------            
+            string exchangeBody = ConstructCreateExchangeRequestBody();
 
             var createExchangeURL = $"/v1/collections/{CollectionId}/exchanges";
             RestRequest createExchangeRequest = new RestRequest(createExchangeURL);
@@ -133,7 +162,8 @@ namespace DynamoLogExchangeTest
             // We extract the exchange container id, the collection id and the schemaNamespace id 
             // from the response - these will be consumed by the following API calls.
             ExchangeContainerId = exchangeRequestResponseBody["id"].Value;
-            var schemaNamespaceId = exchangeRequestResponseBody["components"]["data"]["insert"]["autodesk.fdx:source.base-1.0.0"]["source"]["String"]["schemaNamespaceId"].Value;
+
+            var schemaNamespaceId = exchangeRequestResponseBody["components"]["data"]["insert"]["autodesk.data:exchange.source.default-1.0.0"]["source"]["String"]["id"].Value;
 
             // STEP 2: START A FULLFILLMENT ---------------------
             var fulfillmentId = StartFullfillment(client, CollectionId, ExchangeContainerId, token);
@@ -246,24 +276,26 @@ namespace DynamoLogExchangeTest
             File.WriteAllText(dynamoParsedPath, uncompressedString);
         }
 
-        
-        static void Main(string[] args)
+
+        static void DataExchange(string filePath)
         {
-            // Pass a sample dynamo file to test with
-            var filePath = args[0];
             // The Forge team has recommended to use the Stage environment for testing.
             // Depending on whether we are using Stage or Prod, a Forge token needs to be retrieved 
             // using client and secret id from a Forge app created in the respective environment.
             // Assuming there is a way to retrieve the 3-leg Forge token in Dynamo, I will use a hardcoded one here.
-            var token = "eyJhbGciOiJSUzI1NiIsImtpZCI6InY1Y2tfS0F1UXBud2ladkFVTElQbEFQaTdhbyIsInBpLmF0bSI6Ijd6M2gifQ.eyJzY29wZSI6WyJkYXRhOnJlYWQiLCJkYXRhOndyaXRlIiwiZGF0YTpjcmVhdGUiXSwiY2xpZW50X2lkIjoic3N5MXlLNkRXaEVBSkxkc0RhZEFFQmN4c29sNGQyVmYiLCJhdWQiOiJodHRwczovL2F1dG9kZXNrLmNvbS9hdWQvYWp3dGV4cDYwIiwianRpIjoiYjlyVmRZVEpVOTR6Z0djWVlUNEEwOVhHSWp2eGZLTmZVUmxNUWhsNms2NndUNXRvQWM1bExDT2ZOZ3ExYjMyUyIsInVzZXJpZCI6IlBRVE1SOEpBSkxZWiIsImV4cCI6MTY5OTQ5NDc0Mn0.IBzde_sBCCShpTbShI8BmGEe6NbDqqECK5TeL1csxWJ5o_iE7UG75HFF7OXiKf9aQ7Hzpp7RHXMGcSrQM4FaZATw4Sefkr0tN9eI81XMZizQvUqGw1hB2zogTLsQeVrj6UCyxPGnQF8i6PmrqZUuQhAUFLHcChbTtHpRxOWNuIhgHeyitVo9n0cUKzQhd7rM1SsGZQBnQ1xeKjpmBimIAHzFL0Z61t6m4ByKjOmhNWIOdBthq7XUOSXnn-shl4YgtppmDE4LfJdVUI8GKf5xxAyFKakvh_m6XdAre_h5l7-lEN3MazOYCkRXExkaH3dcZyoxxLj7aaViIZm1ZZWIAg";
+            var token = GetAuthorizationToken();
             var stageClientUrl = "https://developer-stg.api.autodesk.com/exchange";
             //var prodClientUrl = "https://developer.api.autodesk.com/exchange";
 
             // Stage collectionId created for Dynamo
-            CollectionId = "9R09ArUBUEDVRIGQ5OE373_L2C";
+            CollectionId = "9R09ArUBUEDVRIGQ5OE373_L2C"; // for staging
+            CollectionId = ""; // for production
+
+            //ExchangeContainerId = "";
+
             var forgeClient = new RestClient(stageClientUrl);
-            
-            SendNewLog(filePath, forgeClient, token);
+
+            DataExchangeToForge(filePath, forgeClient, token);
 
             // This is needed here to allow for the testing workflow to run after the upload has been completed.
             // It looks like even though the fullfillment ran by teh SendNewLog function is being reported 
@@ -272,6 +304,31 @@ namespace DynamoLogExchangeTest
             TestPipeline(filePath, token, forgeClient);
 
             Console.ReadKey();
+        }
+
+        private static string GetAuthorizationToken()
+        {
+            return AuthTokenProvider.GetAccessToken();
+        }
+
+        public void Startup(StartupParams sp)
+        {
+            AuthTokenProvider = (IOAuth2AccessTokenProvider)sp.AuthProvider;
+        }
+
+        public void Ready(ReadyParams sp)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Shutdown()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

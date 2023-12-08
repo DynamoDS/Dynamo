@@ -1,8 +1,8 @@
-﻿using System.IO;
+using System.IO;
 using System.IO.Compression;
 
 
-namespace DynamoLogExchangeTest
+namespace DynamoForgeDataExchange
 {
     public static class DataUtilities
     {

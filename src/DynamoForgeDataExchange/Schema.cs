@@ -1,13 +1,12 @@
-﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace DynamoLogExchangeTest
+namespace DynamoForgeDataExchange
 {
 
     class StringParameterSchema : Schema
     {
-        public StringParameterSchema(string value, string schemaNamespaceId)
+        public StringParameterSchema(string value, string schemaNamespaceId, string schemaId)
         {
             var constant = new Constant(value);
             Constants = new List<Constant>
@@ -20,32 +19,11 @@ namespace DynamoLogExchangeTest
                 "autodesk.parameter:parameter.string-3.0.0"
             };
 
-            var guid = Guid.NewGuid().ToString("N").ToUpper();
-            TypeId = $"exchange.parameter.{schemaNamespaceId}:{guid}-1.0.0";
+            TypeId = $"exchange.parameter.{schemaNamespaceId}:{schemaId}-1.0.0";
             Type = "String";
         }
     }
 
-    class BooleanParameterSchema : Schema
-    {
-        public BooleanParameterSchema(string value, string schemaNamespaceId)
-        {
-            var constant = new Constant(value);
-            Constants = new List<Constant>
-            {
-                constant
-            };
-
-            Parent = new List<string>
-            {
-                "autodesk.parameter:parameter.bool-2.0.0"
-            };
-
-            var guid = Guid.NewGuid().ToString("N").ToUpper();
-            TypeId = $"exchange.parameter.{schemaNamespaceId}:{guid}-1.0.0";
-            Type = "Bool";
-        }
-    }
 
     class Schema
     {
@@ -57,7 +35,7 @@ namespace DynamoLogExchangeTest
 
         [JsonProperty("typeid")]
         public string TypeId { get; set; }
-        
+
         [JsonIgnore]
         public string Type { get; set; }
 

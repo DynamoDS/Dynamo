@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+		<UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
 		<Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -7,13 +10,12 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProjectGuid>{F2FCFD49-84BC-4C0E-90C1-5A327D017C4E}</ProjectGuid>
 	<OutputType>Library</OutputType>
-	<RootNamespace>DynamoLogExchangeTest</RootNamespace>
-	<AssemblyName>DynamoLogExchangeTest</AssemblyName>
+	<RootNamespace>DynamoForgeDataExchange</RootNamespace>
+	<AssemblyName>DynamoForgeDataExchange</AssemblyName>
 	<FileAlignment>512</FileAlignment>
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	<Deterministic>true</Deterministic>
 	<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-	<TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 	<PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,8 +37,15 @@
 	<WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
 		<PackageReference Include="RestSharp" Version="109.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+	<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
+	  <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
+	  <Name>DynamoCoreWpf</Name>
+	  <Private>False</Private>
+	</ProjectReference>
   </ItemGroup>
   <ItemGroup>
 	<Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -44,9 +53,6 @@
 	</Reference>
 	<Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
 	  <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-	</Reference>
-	<Reference Include="RestSharp, Version=109.0.1, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-	  <HintPath>packages\RestSharp.109.0.1\lib\net471\RestSharp.dll</HintPath>
 	</Reference>
 	<Reference Include="System" />
 	<Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -85,15 +91,17 @@
 	<Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+	<Compile Include="Attribute.cs" />
 	<Compile Include="BaseComponent.cs" />
 	<Compile Include="BinaryAsset.cs" />
 	<Compile Include="BinaryReferenceComponent.cs" />
 	<Compile Include="DataUtilities.cs" />
+	<Compile Include="ExchangeComponent.cs" />
 	<Compile Include="InstanceAsset.cs" />
 	<Compile Include="ParameterComponent.cs" />
 	<Compile Include="Schema.cs" />
 	<Compile Include="UploadAssetsRequestBody.cs" />
-	<Compile Include="Program.cs" />
+	<Compile Include="DynamoForgeDataExchange.cs" />
 	<Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

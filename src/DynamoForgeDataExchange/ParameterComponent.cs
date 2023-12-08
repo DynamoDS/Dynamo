@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace DynamoLogExchangeTest
+namespace DynamoForgeDataExchange
 {
     class ParameterComponent: Dictionary<string, Dictionary<string, Parameter>>
     {

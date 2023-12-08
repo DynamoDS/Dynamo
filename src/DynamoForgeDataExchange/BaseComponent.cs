@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace DynamoLogExchangeTest
+namespace DynamoForgeDataExchange
 {
     class BaseComponent : Dictionary<string, Dictionary<string, ObjectInfo>>
     {
@@ -23,15 +23,10 @@ namespace DynamoLogExchangeTest
     {
         [JsonProperty("name")]
         public string Name { get; set; }
-        [JsonProperty("revision")]
-        public string Revision { get; set; }
-        [JsonProperty("sourceId")]
-        public string SourceId { get; set; }
-        public ObjectInfo(string name, string revision = "", string sourceId = "")
+
+        public ObjectInfo(string name)
         {
             Name = name;
-            Revision = revision;
-            SourceId = sourceId;
         }
     }
 }
