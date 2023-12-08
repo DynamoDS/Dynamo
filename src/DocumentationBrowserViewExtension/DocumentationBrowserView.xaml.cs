@@ -6,6 +6,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
@@ -216,7 +217,14 @@ namespace Dynamo.DocumentationBrowser
         #region ILogSource Implementation
         private void Log(string message)
         {
-            viewModel.MessageLogged?.Invoke(LogMessage.Info(message));
+            if (DynamoModel.IsTestMode)
+            {
+                System.Console.WriteLine(message);
+            }
+            else
+            {
+                viewModel?.MessageLogged?.Invoke(LogMessage.Info(message));
+            }
         }
         #endregion
     }
