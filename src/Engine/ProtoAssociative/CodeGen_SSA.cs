@@ -275,6 +275,10 @@ namespace ProtoAssociative
                         BinaryExpressionNode bnode = (node as BinaryExpressionNode);
                         int generatedUID = ProtoCore.DSASM.Constants.kInvalidIndex;
 
+                        // Skip SSA for input ASTs that are first assigned null such as this:
+                        // a = null; (update "a") => a = <some primitive>;
+                        // SSA would break up the null AST into two assignments, which then breaks update:
+                        // a = null; (SSA) => temp = null; a = temp;
                         if (context.applySSATransform && core.Options.GenerateSSA && !bnode.IsInputExpression)
                         {
                             int ssaID = ProtoCore.DSASM.Constants.kInvalidIndex;
