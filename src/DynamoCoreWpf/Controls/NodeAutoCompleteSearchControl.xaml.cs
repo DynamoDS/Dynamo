@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -217,10 +218,15 @@ namespace Dynamo.UI.Controls
             ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
         }
 
-        private void OnParentNodeRemoved()
+        //Removes nodeautocomplete menu when the associated parent node is removed.
+        private void OnParentNodeRemoved(NodeModel node)
         {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
-            ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+            NodeModel parent_node = ViewModel.PortViewModel?.PortModel.Owner;
+            if (node == parent_node)
+            {
+                OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+            }
         }
 
         private void OnMembersListBoxUpdated(object sender, DataTransferEventArgs e)

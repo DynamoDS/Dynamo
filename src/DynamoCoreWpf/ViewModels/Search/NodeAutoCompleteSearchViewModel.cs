@@ -151,7 +151,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal event Action ParentNodeRemoved;
+        internal event Action<NodeModel> ParentNodeRemoved;
 
         /// <summary>
         /// Constructor
@@ -532,7 +532,7 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
-            dynamoViewModel.NodeDeleted += NodeViewModel_Removed;
+            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
             ResetAutoCompleteSearchViewState();
 
             if (IsDisplayingMLRecommendation)
@@ -598,9 +598,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void NodeViewModel_Removed(object sender, EventArgs e)
+        internal void NodeViewModel_Removed(NodeModel node)
         {
-            ParentNodeRemoved?.Invoke();
+            ParentNodeRemoved?.Invoke(node);
         }
 
         /// <summary>
