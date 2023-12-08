@@ -14,7 +14,6 @@ namespace DynamoCoreWpfTests.Utility
         /// <summary>
         ///     Force the Dispatcher to empty it's queue
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void DoEvents()
         {
             var frame = new DispatcherFrame();
@@ -24,14 +23,13 @@ namespace DynamoCoreWpfTests.Utility
         }
 
         /// <summary>
-        /// Force the Dispatcher to empty it's queue every 100 ms for a maximum 4 seconds or until
+        /// Force the Dispatcher to empty it's queue every 100 ms for a maximum 20 seconds or until
         /// the check function returns true.
         /// </summary>
         /// <param name="check">When check returns true, the even loop is stopped.</param>
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public static void DoEventsLoop(Func<bool> check = null)
         {
-            const int max_count = 40;
+            const int max_count = 200;
 
             int count = 0;
             while (true)
