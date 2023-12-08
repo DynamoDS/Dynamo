@@ -181,7 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
-      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
+      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\net6.0-windows\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

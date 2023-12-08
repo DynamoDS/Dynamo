@@ -5,10 +5,12 @@ using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageManagerViewModel : NotificationObject
+    public class PackageManagerViewModel : NotificationObject, IDisposable
     {
         private DynamoViewModel dynamoViewModel;
         private InstalledPackagesViewModel installedPackagesViewModel;
+        private double width = 1076;
+        private double height = 718;
 
         /// <summary>
         /// PreferenceViewModel containing the PackageManager paths and installed packages
@@ -34,6 +36,35 @@ namespace Dynamo.PackageManager
         /// Returns all available filters
         /// </summary>
         public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
+
+
+        //Width of the PackageManagerView the default value is 1076
+        public double Width
+        {
+            get
+            {
+                return width;
+            }
+            set
+            {
+                width = value;
+                RaisePropertyChanged(nameof(Width));
+            }
+        }
+
+        //Height of the PackageManagerView the default value is 718
+        public double Height
+        {
+            get
+            {
+                return height;
+            }
+            set
+            {
+                height = value;
+                RaisePropertyChanged(nameof(Height));
+            }
+        }
 
         public PackageManagerViewModel(DynamoViewModel dynamoViewModel, PackageManagerSearchViewModel PkgSearchVM)
         {
@@ -75,5 +106,14 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// Dispose method of the PackageManagerViewModel
+        /// </summary>
+        public void Dispose()
+        {
+            if (LocalPackages == null) return;
+
+            LocalPackages.CollectionChanged -= LocalPackages_CollectionChanged;
+        }
     }
 }

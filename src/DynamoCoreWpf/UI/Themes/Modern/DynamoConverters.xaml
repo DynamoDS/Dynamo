@@ -92,7 +92,8 @@
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
-    <controls:EmptyToVisibilityCollapsedConverter x:Key="EmptyToVisibilityCollapsedConverter"/>
+    <controls:EmptyToVisibilityCollapsedConverter x:Key="EmptyToVisibilityCollapsedConverter" />
+    <controls:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />    
     <controls:EmptyToZeroLengthConverter x:Key="EmptyToZeroLengthConverter"/>
     <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
     <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />
@@ -105,8 +106,6 @@
     <controls:TabSizeConverter x:Key="TabSizeConverter" />
     <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter" />
     <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
-    <controls:IsUpdateAvailableToTextConverter x:Key="IsUpdateAvailableToTextConverter" />
-    <controls:IsUpdateAvailableBrushConverter x:Key="IsUpdateAvailableBrushConverter" />
     <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
     <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter" />
     <controls:NumberFormatConverter x:Key="NumberFormatConverter" />

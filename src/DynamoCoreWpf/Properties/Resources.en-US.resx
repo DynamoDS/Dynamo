@@ -764,7 +764,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement to _Collect Usability Data</value>
+    <value>Agreement and _Terms of Use</value>
     <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
@@ -1229,7 +1229,7 @@ Failed to publish file(s):
     <value>Library</value>
   </data>
   <data name="MajorVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Major version as a non-negative integer.</value>
+    <value>Provide major, minor, and build version number.</value>
     <comment>ErrorString</comment>
   </data>
   <data name="Manual" xml:space="preserve">
@@ -1411,7 +1411,31 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
   </data>
   <data name="NameNeedMoreCharacters" xml:space="preserve">
-    <value>Name must be at least 3 characters.</value>
+    <value>Must be at least 3 characters</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageName" xml:space="preserve">
+    <value>Provide package name</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndFiles" xml:space="preserve">
+    <value>Provide package name and file(s)</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndVersion" xml:space="preserve">
+    <value>Provide package name and version number</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideVersion" xml:space="preserve">
+    <value>Provide version number</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideVersionAndFiles" xml:space="preserve">
+    <value>Provide version number and file(s)</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideFiles" xml:space="preserve">
+    <value>Provide file(s)</value>
     <comment>ErrorString</comment>
   </data>
   <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
@@ -1487,6 +1511,9 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <value>Please, load assembly just one time.
 Next assemblies were loaded several times:
 </value>
+  </data>
+  <data name="PackageManagerReadyToPublish" xml:space="preserve">
+    <value>Ready to publish</value>
   </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>only</value>
@@ -1576,6 +1603,15 @@ Next assemblies were loaded several times:
     <value>Move the selected path upward</value>
     <comment>Tool-tip for up arrow</comment>
   </data>
+  <data name="PackageManagerFinishedPackagePackagePath" xml:space="preserve">
+    <value>Package Path</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesUploadedMessage" xml:space="preserve">
+    <value> files uploaded</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesPublishedMessage" xml:space="preserve">
+    <value> files published</value>
+  </data>
   <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
     <value>Package Path Added</value>
   </data>
@@ -1648,7 +1684,7 @@ Next assemblies were loaded several times:
     <value>Install latest version</value>
   </data>
   <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
-    <value>Install latest version to folder...</value>
+    <value>Install to folder...</value>
   </data>
   <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
     <value>Install this version</value>
@@ -1798,8 +1834,17 @@ Next assemblies were loaded several times:
   <data name="PublishPackageDialogCaption" xml:space="preserve">
     <value>Published Successfully</value>
   </data>
+  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
+    <value>Select package contents</value>
+  </data>
+  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
+    <value>Preview package contents (read only)</value>
+  </data>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
+  </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>Reset</value>
   </data>
   <data name="PublishPackageMessage" xml:space="preserve">
     <value>Package published successfully. 
@@ -1812,7 +1857,10 @@ Want to publish a different package?</value>
     <value>Add Files</value>
   </data>
   <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
-    <value>Add File To Package</value>
+    <value>Add file</value>
+  </data>
+  <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
+    <value>Remove from package</value>
   </data>
   <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
     <value>Is Node Library</value>
@@ -1859,7 +1907,22 @@ Want to publish a different package?</value>
     <value>Build</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
-    <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
+    <value>A version name helps a submitter keep track of updates to the package. When a new version of a package is added, version number must be increased.</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
+    <value>Website link for the package.</value>
+  </data>
+  <data name="PublishPackageViewGithubLinkTooltip" xml:space="preserve">
+    <value>GitHub repository link for the package.</value>
+  </data>
+  <data name="PublishPackageViewLicenceTooltip" xml:space="preserve">
+    <value>The package's licence.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderTooltip" xml:space="preserve">
+    <value>The package's copyright holder.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearTooltip" xml:space="preserve">
+    <value>The copyright year for the package.</value>
   </data>
   <data name="PublishPackageViewPublish" xml:space="preserve">
     <value>Publish a Package</value>
@@ -2157,7 +2220,10 @@ Installing the latest update requires Dynamo and any host applications to close.
 Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement to Collect Usability Data</value>
+    <value>Agreement and Terms of Use</value>
+  </data>
+  <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
+    <value>I agree to ML Node Autocomplete Terms of Use</value>
   </data>
   <data name="UseLevelKeepListStructureHint" xml:space="preserve">
     <value>Keep 1 input list's nesting</value>
@@ -2250,10 +2316,7 @@ Uninstall the following packages: {0}?</value>
     <value>Filter by</value>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialogTooltip" xml:space="preserve">
-    <value>Display the dialog for user to pick agreement on data collecting.</value>
-  </data>
-  <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
-    <value>Crash report from Dynamo {0}</value>
+    <value>Display the dialog of agreement on data collecting and Machine Learning Node Autocomplete terms of use</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -2832,7 +2895,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>0</value>
   </data>
   <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
-    <value>1</value>
+    <value>0</value>
   </data>
   <data name="PublishPackageViewPackageDescription" xml:space="preserve">
     <value>Description</value>
@@ -2887,7 +2950,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Add Directory</value>
   </data>
   <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
-    <value>Add Directory And Its Files To Package</value>
+    <value>Add folder</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
     <value>Markdown Files Path (optional)</value>
@@ -2943,6 +3006,9 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="PackageManagerPublishTab" xml:space="preserve">
     <value>Publish a Package</value>
   </data>
+  <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
+    <value>Virus scan in progress. Your package will be searchable in approximately 15 minutes.</value>
+  </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Installed Packages</value>
   </data>
@@ -2963,6 +3029,12 @@ This package will be unloaded after the next Dynamo restart.</value>
   </data>
   <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
     <value>Once you install a package, you can find it here.</value>
+  </data>
+  <data name="PackagerManageUserNotSignedPackagesMessage" xml:space="preserve">
+    <value>Sign in to your Dynamo account to view your published packages.</value>
+  </data>
+  <data name="PackageManagerUserNotSignedPackagesSubMessage" xml:space="preserve">
+    <value>Once signed in, you can find your published packages here.</value>
   </data>
   <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
     <value>Search for Packages</value>
@@ -3025,7 +3097,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Hide Wire</value>
   </data>
   <data name="PackagesGuideFindPackageText" xml:space="preserve">
-    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**.</value>
+    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Package Manager...**.</value>
   </data>
   <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
     <value>Find a package</value>
@@ -3167,6 +3239,15 @@ To install the latest version of a package, click Install. \n
   <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
     <value>Node Library</value>
   </data>
+  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+    <value>When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
+
+Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
+    </value>
+  </data>
+  <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
+    <value>DLL file containing types and methods that Dynamo imports as nodes. Mark ZeroTouch, NodeModel, or NodeViewCustomization DLLs and types you want to import into Dynamo as node libraries.</value>
+  </data>
   <data name="NodeTooltipRenamed" xml:space="preserve">
     <value>Renamed from {0}</value>
   </data>
@@ -3296,6 +3377,12 @@ Try placing the highlighted **ByOrigin** node.</value>
   </data>
   <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
     <value>No, close file</value>
+  </data>
+  <data name="DiscardChangesWarningPopupCaption" xml:space="preserve">
+    <value>Discard changes?</value>
+  </data>
+  <data name="DiscardChangesWarningPopupMessage" xml:space="preserve">
+    <value>Your changes will be lost if you navigate away from the package upload screen.</value>
   </data>
   <data name="FileTrustWarningPopupSettings" xml:space="preserve">
     <value>Settings</value>
@@ -3527,6 +3614,9 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="PackageDeprecatedTooltip" xml:space="preserve">
     <value>This package is outdated and cannot be installed.</value>
+  </data>
+  <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
+    <value>Publish Version</value>
   </data>
   <data name="SplashScreenViewExtensions" xml:space="preserve">
     <value>Loading View Extensions...</value>
@@ -3767,5 +3857,29 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="ElementBindingDesc" xml:space="preserve">
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
+  </data>
+  <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
+    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use.</value>
+  </data>
+  <data name="GESUnitCentimeters" xml:space="preserve">
+    <value>Centimeters</value>
+  </data>
+  <data name="GESUnitFeet" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="GESUnitInches" xml:space="preserve">
+    <value>Inches</value>
+  </data>
+  <data name="GESUnitKilometers" xml:space="preserve">
+    <value>Kilometers</value>
+  </data>
+  <data name="GESUnitMeters" xml:space="preserve">
+    <value>Meters</value>
+  </data>
+  <data name="GESUnitMiles" xml:space="preserve">
+    <value>Miles</value>
+  </data>
+  <data name="GESUnitMillimeters" xml:space="preserve">
+    <value>Millimeters</value>
   </data>
 </root>

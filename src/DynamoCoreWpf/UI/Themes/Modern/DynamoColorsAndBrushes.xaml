@@ -116,10 +116,6 @@
     <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
     <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#F5F5F5" />
 
-    <!--  Update Manager  -->
-    <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="#AF1B1B" />
-    <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="#168576" />
-
     <!--  3D  -->
     <Color x:Key="EdgeColor">#000000</Color>
     <Color x:Key="PointColor">#000000</Color>

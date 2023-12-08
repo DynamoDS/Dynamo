@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -20,13 +20,13 @@ namespace DynamoServices
         internal const string __TEMP_REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
         // ReSharper restore InconsistentNaming
 
-        [ThreadStatic] private static Dictionary<String, ISerializable> _localStorageSlot; //= new Dictionary<string, ISerializable>();
+        [ThreadStatic] private static Dictionary<string, string> _localStorageSlot;
 
-        internal static Dictionary<String, ISerializable> LocalStorageSlot
+        internal static Dictionary<string, string> LocalStorageSlot
         {
             get
             {
-                return _localStorageSlot ?? (_localStorageSlot = new Dictionary<string, ISerializable>());
+                return _localStorageSlot ?? (_localStorageSlot = new Dictionary<string, string>());
             }
             set
             {
@@ -68,9 +68,9 @@ namespace DynamoServices
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static ISerializable GetTraceData(string key)
+        public static string GetTraceData(string key)
         {
-            ISerializable data;  
+            string data;  
             if (!LocalStorageSlot.TryGetValue(key, out data))
             {
                 return null;
@@ -86,7 +86,7 @@ namespace DynamoServices
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public static void SetTraceData(string key, ISerializable value)
+        public static void SetTraceData(string key, string value)
         {
             if (LocalStorageSlot.ContainsKey(key))
             {

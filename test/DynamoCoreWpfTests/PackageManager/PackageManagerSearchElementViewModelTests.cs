@@ -242,7 +242,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             packageManagerSearchViewModel.LastSync = new List<PackageManagerSearchElement>();
             foreach (var result in packageManagerSearchViewModel.SearchResults)
             {
-                packageManagerSearchViewModel.LastSync.Add(result.Model);
+                packageManagerSearchViewModel.LastSync.Add(result.SearchElementModel);
             }
 
             //Validate the total added packages match
@@ -370,7 +370,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             packageManagerSearchViewModel.LastSync = new List<PackageManagerSearchElement>();
             foreach (var result in packageManagerSearchViewModel.SearchResults)
             {
-                packageManagerSearchViewModel.LastSync.Add(result.Model);
+                packageManagerSearchViewModel.LastSync.Add(result.SearchElementModel);
             }
 
             //Validate the total added packages match
@@ -510,7 +510,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             packageManagerSearchViewModel.LastSync = new List<PackageManagerSearchElement>();
             foreach (var result in packageManagerSearchViewModel.SearchResults)
             {
-                packageManagerSearchViewModel.LastSync.Add(result.Model);
+                packageManagerSearchViewModel.LastSync.Add(result.SearchElementModel);
             }
 
             //Validate the total added packages match
@@ -586,7 +586,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             foreach (var package in packageManagerSearchViewModel.SearchResults)
             {
                 var iDoc = packageManagerSearchViewModel.LuceneUtility.InitializeIndexDocumentForPackages();
-                packageManagerSearchViewModel.AddPackageToSearchIndex(package.Model, iDoc);
+                packageManagerSearchViewModel.AddPackageToSearchIndex(package.SearchElementModel, iDoc);
             }
 
             packageManagerSearchViewModel.LuceneUtility.CommitWriterChanges();

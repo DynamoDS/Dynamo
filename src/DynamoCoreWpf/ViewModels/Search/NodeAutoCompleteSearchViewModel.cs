@@ -77,6 +77,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// If MLAutocompleteTOU is approved
+        /// </summary>
+        public bool IsMLAutocompleteTOUApproved
+        {
+            get
+            {
+                return dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;
+            }
+        }
+
+        /// <summary>
         /// If true, autocomplete method options are hidden from UI 
         /// </summary>
         public bool HideAutocompleteMethodOptions
@@ -213,7 +224,7 @@ namespace Dynamo.ViewModels
             request.Port.ListAtLevel = portInfo.Level;
 
             // Set host info
-            var hostName = string.IsNullOrEmpty(dynamoViewModel.Model.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+            var hostName = string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : DynamoModel.HostAnalyticsInfo.HostName;
             var hostNameEnum = GetHostNameEnum(hostName);
 
             if (hostNameEnum != HostNames.None)

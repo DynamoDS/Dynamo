@@ -33,6 +33,24 @@ namespace Dynamo.PackageManager.Tests
             return new PackageUploadBuilder(pdb.Object, zipper.Object);
         }
 
+        private IPackageUploadBuilder BigPackageUploadRetainBuilderMock()
+        {
+            // a IFileInfo object that is, by mocking, too large
+            var bigzip = new Mock<IFileInfo>();
+            bigzip.Setup(x => x.Length).Returns(PackageUploadBuilder.MaximumPackageSize + 1);
+
+            // the zipper returns a big zip
+            var zipper = new Mock<IFileCompressor>();
+            zipper.Setup((x) => x.Zip(It.IsAny<IDirectoryInfo>())).Returns(bigzip.Object);
+
+            var pdb = new Mock<IPackageDirectoryBuilder>();
+            pdb.Setup(x => x.BuildRetainDirectory(It.IsAny<Package>(), It.IsAny<string>(), It.IsAny<IEnumerable<IEnumerable<string>>>(), It.IsAny<IEnumerable<string>>()))
+                .Returns((new Mock<IDirectoryInfo>()).Object);
+
+            // this package upload builder will try to return a zip that is too big
+            return new PackageUploadBuilder(pdb.Object, zipper.Object);
+        }
+
         private class directoryTestClass : IDirectoryInfo
         {
             public string FullName { get; set; }
@@ -160,6 +178,40 @@ namespace Dynamo.PackageManager.Tests
 
         #endregion
 
+        #region NewPackageUploadRetainFolderStructure
+
+        [Test]
+        public void NewPackageUploadRetain_ThrowsExceptionWhenPackageIsTooBig()
+        {
+            var pub = BigPackageUploadRetainBuilderMock();
+
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+            var pkgsDir = @"C:\dynamopackages";
+
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
+
+            Assert.Throws<Exception>(() => pub.NewPackageRetainUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), handle));
+        }
+
+        [Test]
+        public void NewPackageVersionUploadRetain_ThrowsForNullArguments()
+        {
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+            var pkgsDir = @"C:\dynamopackages";
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
+
+            var m = new PackageUploadBuilder(MockMaker.Empty<IPackageDirectoryBuilder>(), MockMaker.Empty<IFileCompressor>());
+
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(null, pkgsDir, files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(pkg, null, files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(pkg, pkgsDir, null, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), null));
+        }
+
+        #endregion
+
         #region NewPackageVersionUpload
 
         [Test]
@@ -190,6 +242,40 @@ namespace Dynamo.PackageManager.Tests
             Assert.Throws<ArgumentNullException>(() => m.NewPackageUpload(pkg, null, files, Enumerable.Empty<string>(), handle));
             Assert.Throws<ArgumentNullException>(() => m.NewPackageUpload(pkg, pkgsDir, null, Enumerable.Empty<string>(), handle));
             Assert.Throws<ArgumentNullException>(() => m.NewPackageUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), null));
+        }
+
+        #endregion
+
+        #region NewPackageVersionUploadRetainFolderStructure
+
+        [Test]
+        public void NewPackageVersionUploadRetain_ThrowsExceptionWhenPackageIsTooBig()
+        {
+            var pub = BigPackageUploadBuilderMock();
+
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+            var pkgsDir = @"C:\dynamopackages";
+
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
+
+            Assert.Throws<Exception>(() => pub.NewPackageVersionRetainUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), handle));
+        }
+
+        [Test]
+        public void NewPackageUploadRetain_ThrowsForNullArguments()
+        {
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+            var pkgsDir = @"C:\dynamopackages";
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
+
+            var m = new PackageUploadBuilder(MockMaker.Empty<IPackageDirectoryBuilder>(), MockMaker.Empty<IFileCompressor>());
+
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(null, pkgsDir, files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(pkg, null, files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(pkg, pkgsDir, null, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), null));
         }
 
         #endregion

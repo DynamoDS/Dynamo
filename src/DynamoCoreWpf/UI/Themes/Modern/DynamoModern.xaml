@@ -53,6 +53,7 @@
     <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
     <Color x:Key="GenericMouseOverBackgroundColor">#808080</Color>
 
+    <SolidColorBrush x:Key="BorderPressedColorBrush" Color="{DynamicResource BorderPressedColor}"/>
     <SolidColorBrush x:Key="GenericBorderBackgroundColorBrush" Color="#3c3c3c"/>    
     <SolidColorBrush x:Key="GenericMouseOverBackgroundColorBrush" Color="{DynamicResource GenericMouseOverBackgroundColor}"/>    
 
@@ -1022,7 +1023,7 @@
         <Setter Property="CaretBrush" Value="{StaticResource PrimaryCharcoal200Brush}" />
         <Setter Property="Padding" Value="10,12,10,8"/>
         <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
-        <Setter Property="FontSize" Value="12px" />
+        <Setter Property="FontSize" Value="14px" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
 
@@ -3421,11 +3422,19 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="menuIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/menu_16_16.png"/>
+                        <Border Width="16" Height="16" Background="Transparent" BorderThickness="0">
+                            <Path Name="menuIcon"
+                                  Width="16"
+                                  Height="16"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Fill="{DynamicResource MidGreyBrush}"
+                                  Data="M7.5 3C8.32843 3 9 2.32843 9 1.5C9 0.671573 8.32843 0 7.5 0C6.67157 0 6 0.671573 6 1.5C6 2.32843 6.67157 3 7.5 3ZM7.5 9C8.32843 9 9 8.32843 9 7.5C9 6.67157 8.32843 6 7.5 6C6.67157 6 6 6.67157 6 7.5C6 8.32843 6.67157 9 7.5 9ZM9 13.5C9 14.3284 8.32843 15 7.5 15C6.67157 15 6 14.3284 6 13.5C6 12.6716 6.67157 12 7.5 12C8.32843 12 9 12.6716 9 13.5Z"/>
+                        </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="menuIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/menu-hover-16px.png" />
+                            <Setter TargetName="menuIcon" Property="Fill" Value="{DynamicResource BorderPressedColorBrush}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value=".5" />
@@ -3434,7 +3443,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>    
 
     <Style x:Key="CtaButtonStyle" TargetType="Button">
         <Setter Property="HorizontalAlignment" Value="Right" />
@@ -3683,8 +3692,8 @@
         </Setter>
     </Style>
 
-    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#4d4d4d" />
-    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#3c3c3c" />
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#2A2A2A" />
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#2F2E30" />
 
     <ControlTemplate x:Key="ExpanderCaretToggleButton" TargetType="{x:Type ToggleButton}">
         <Border Name="Border"
@@ -3775,6 +3784,8 @@
 
 
     <Style x:Key="InstalledPackagesExpanderStyle" TargetType="Expander">
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <!--  Control template for expander  -->
@@ -4240,7 +4251,7 @@
 
     <Style x:Key="PackageManagerTab" TargetType="{x:Type TabItem}">
         <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
@@ -6017,6 +6028,47 @@
                         </Trigger>
                     </ControlTemplate.Triggers>
 
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Package Manager DataGrid Header style -->
+    <Style x:Key="DataGridColumnHeaderText" TargetType="DataGridColumnHeader">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid>
+                        <TextBlock Name="DataGridColumnHeader"
+                                           Height="32"
+                                           Padding="10,7,10,0"
+                                           VerticalAlignment="Center"
+                                           Background="#434343"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="14px"
+                                           FontWeight="Regular"
+                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                           Text="{TemplateBinding Content}" >
+                            <TextBlock.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.PublishPackageNodeLibraryTooltip}"
+                                                 Style="{StaticResource GenericToolTipLight}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <Thumb x:Name="PART_RightHeaderGripper"
+                                       Width="1"
+                                       HorizontalAlignment="Right"
+                                       BorderBrush="Transparent"
+                                       BorderThickness="1,0,0,0"
+                                       Cursor="SizeWE" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                         Value="True">
+                            <Setter TargetName="DataGridColumnHeader"
+                                            Property="Background"
+                                            Value="#666666" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

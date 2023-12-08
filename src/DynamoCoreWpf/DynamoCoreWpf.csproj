@@ -56,8 +56,13 @@
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="UI\Images\checkmark_16px.png" />
     <None Remove="UI\Images\close_16px.png" />
     <None Remove="UI\Images\caret_drop_down.png" />
+    <None Remove="UI\Images\file-generic-16px.png" />
+    <None Remove="UI\Images\finished_checkmark_30px.png" />
+    <None Remove="UI\Images\folder-generic-16px.png" />
+    <None Remove="UI\Images\help-16px.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
     <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <None Remove="UI\Images\search_icon_20px.png" />
@@ -74,6 +79,10 @@
     <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
     <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageFinishPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackagePublishPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageSelectPage.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
@@ -129,13 +138,13 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2965" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3241" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
-    <PackageReference Include="Greg" Version="3.0.0.2955" />
+    <PackageReference Include="Greg" Version="3.0.0.3175" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	<PackageReference Include="RestSharp" Version="109.0.1" />
+	<PackageReference Include="RestSharp" Version="108.0.1" />
 	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
 	<PackageReference Include="SharpDX" Version="4.2.0" />
 	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
@@ -148,8 +157,9 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="6.0.0" />
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
-      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
+      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\net6.0-windows\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference> 
   
     <PackageReference Include="Prism.Core" Version="8.1.97" />
@@ -309,9 +319,6 @@
     <Compile Include="Commands\PortCommands.cs" />
     <Compile Include="Commands\SearchCommands.cs" />
     <Compile Include="Commands\WorkspaceCommands.cs" />
-    <Compile Include="Controls\GraphUpdateNotificationControl.xaml.cs">
-      <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ImageBasedControls.cs" />
     <Compile Include="Controls\ShortcutToolbar.xaml.cs">
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
@@ -434,6 +441,7 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\NumericUpDownControl.xaml.cs" />
@@ -448,6 +456,10 @@
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml.cs" />
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
     </Compile>
@@ -554,10 +566,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\GraphUpdateNotificationControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <None Include="UI\Themes\Modern\InPorts.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -646,6 +654,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PackageManager\Controls\CustomBrowserControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PackageManager\Controls\FilterTagControl.xaml">
         <SubType>Designer</SubType>
         <Generator>MSBuild:Compile</Generator>
@@ -677,6 +689,22 @@
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>      
+    <Page Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -795,6 +823,7 @@
     <Resource Include="UI\Images\caret_drop_down.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
+    <Resource Include="UI\Images\checkmark_16px.png" />
     <Resource Include="UI\Images\close_16px.png" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
@@ -928,6 +957,10 @@
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
+    <Resource Include="UI\Images\file-generic-16px.png" />
+    <Resource Include="UI\Images\finished_checkmark_30px.png" />
+    <Resource Include="UI\Images\folder-generic-16px.png" />
+    <Resource Include="UI\Images\help-16px.png" />
     <Resource Include="UI\Images\maximize_16px_blue.png" />
     <Resource Include="UI\Images\minimize_16px_blue.png" />
     <Resource Include="UI\Images\minus_16px_blue.png" />
@@ -1721,10 +1754,25 @@
     <Resource Include="UI\Images\not-authenticated.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Views\PackageManager\Controls\CustomBrowserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Views\PackageManager\Controls\FilterTagControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
