@@ -132,16 +132,11 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        /// Stores the value that indicates if the SignIn Button will be enabled(default) or not
-        /// </summary>
-        bool enableSignInButton;
-
-        /// <summary>
         /// Splash Screen Constructor. 
-        /// <paramref name="enableSignInButton"/> Indicates if the SignIn Button will be enabled(default) or not.
+        /// <paramref name="enableSignIn"/> Indicates if the SignIn Button will be enabled(default) or not.
         /// </summary>
-        /// <param name="enableSignInButton">Indicates if enable(default) the Sigin button or not</param>
-        public SplashScreen(bool enableSignInButton = true)
+        /// <param name="enableSignIn">Indicates if enable(default) the Sigin button or not</param>
+        public SplashScreen(bool enableSignIn = true)
         {
             InitializeComponent();
 
@@ -159,7 +154,7 @@ namespace Dynamo.UI.Views
             RequestImportSettings = ImportSettings;
             RequestSignIn = SignIn;
             RequestSignOut = SignOut;
-            this.enableSignInButton = enableSignInButton;
+            this.enableSignInButton = enableSignIn;
         }
 
         private void DynamoModel_LanguageDetected()
@@ -434,17 +429,6 @@ namespace Dynamo.UI.Views
             }
         }
 
-        /// <summary>
-        /// Enable or disable the SignIn button on splash screen.
-        /// </summary>
-        /// <param name="enabled"></param>
-        internal async void SetSignInEnable(bool enabled)
-        {
-            if (webView?.CoreWebView2 != null)
-            {
-                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setEnableSignInButton({{""enable"": ""{enabled}""}})");
-            }
-        }
         /// <summary>
         /// Setup the values for all labels on splash screen using resources
         /// </summary>
