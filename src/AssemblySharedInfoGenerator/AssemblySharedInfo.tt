@@ -55,8 +55,10 @@ using System.Runtime.InteropServices;
 // AssemblyVersionAttribute so that the "Product version" in the file
 // properties window matches the version displayed in the GAC shell extension.
 //[assembly: AssemblyInformationalVersion("1.0.0.0")] // a.k.a. "Product version"
-// Version information for an assembly consists of the following four valu
-//      Majo//Minor Version
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version
 //      Build Number
 //      Revision
 //
@@ -70,5 +72,5 @@ int MinorVersion = 1;
 int BuildNumber = 0;
 // The datetime baseline we choose using this algorithm will affect build number and all nuget packages uploaded
 // Please only change when major or minor version got incremented
-int RevisionNumber = ((int)(DateTime.UtcNow - new DateTime(2022,1,1)).TotalDays)*10+((int)DateTime.UtcNow.Hour)/3;
+int RevisionNumber = ((int)(DateTime.UtcNow - new DateTime(2023,1,1)).TotalDays)*10+((int)DateTime.UtcNow.Hour)/3;
 #>
