@@ -264,8 +264,12 @@ namespace Dynamo.Notifications
         /// <param name="e"></param>
         private void DynamoView_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            string popupBellID = "FontAwesome5.FontAwesome";
             if (!notificationUIPopup.IsOpen) return;
-            notificationUIPopup.IsOpen = false;
+            if(e.OriginalSource.ToString() != popupBellID)
+            {
+                notificationUIPopup.IsOpen = false;
+            }
         }
 
         /// <summary>
