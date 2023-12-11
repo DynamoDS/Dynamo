@@ -2322,6 +2322,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
   </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
   <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
     <value>Select package contents</value>
   </data>
@@ -3599,6 +3602,9 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="PackageDeprecatedTooltip" xml:space="preserve">
     <value>This package is outdated and cannot be installed.</value>
   </data>
+  <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
+    <value>Publish Version</value>
+  </data>
   <data name="SplashScreenViewExtensions" xml:space="preserve">
     <value>Loading View Extensions...</value>
   </data>
@@ -3841,5 +3847,26 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
     <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use.</value>
+  </data>
+  <data name="GESUnitCentimeters" xml:space="preserve">
+    <value>Centimeters</value>
+  </data>
+  <data name="GESUnitFeet" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="GESUnitInches" xml:space="preserve">
+    <value>Inches</value>
+  </data>
+  <data name="GESUnitKilometers" xml:space="preserve">
+    <value>Kilometers</value>
+  </data>
+  <data name="GESUnitMeters" xml:space="preserve">
+    <value>Meters</value>
+  </data>
+  <data name="GESUnitMiles" xml:space="preserve">
+    <value>Miles</value>
+  </data>
+  <data name="GESUnitMillimeters" xml:space="preserve">
+    <value>Millimeters</value>
   </data>
 </root>
