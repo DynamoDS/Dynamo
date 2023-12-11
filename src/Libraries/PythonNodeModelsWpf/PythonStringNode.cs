@@ -105,10 +105,6 @@ namespace PythonNodeModelsWpf
                 {
                     if (item is PythonEngine newEngine)
                     {
-                        if (pythonEngineVersionMenu.Items.Cast<MenuItem>().Any(x => x.Header == newEngine.Name))
-                        {
-                            continue;
-                        }
                         AddPythonEngineToMenuItems(newEngine.Name);
                     }
                 }
@@ -136,3 +132,4 @@ namespace PythonNodeModelsWpf
         }
     }
 }
+

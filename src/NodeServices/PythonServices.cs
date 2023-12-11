@@ -111,9 +111,11 @@ namespace Dynamo.PythonServices
         public static PythonEngineManager Instance { get { return lazy.Value; } }
         #endregion
 
+        //TODO see DYN-6550 when hiding/replacing this obsolete field.
         /// <summary>
         /// An observable collection of all the loaded Python engines
         /// </summary>
+        [Obsolete("AvailableEngines field will be replaced in a future Dynamo release.")]
         public ObservableCollection<PythonEngine> AvailableEngines;
 
         #region Constant strings

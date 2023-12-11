@@ -93,7 +93,8 @@ namespace PythonNodeModelsWpf
 
             learnMoreItem.Click += OpenPythonLearningMaterial;
 
-            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(x => AddPythonEngineToMenuItems(x));
+            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => AddPythonEngineToMenuItems(
+                pythonNodeModel,pythonEngineVersionMenu,UpdateEngine,engineName));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
@@ -316,10 +317,7 @@ namespace PythonNodeModelsWpf
                 {
                     if(item is PythonEngine newEngine)
                     {
-                        if (pythonEngineVersionMenu.Items.Cast<MenuItem>().Any(x => x.Header == newEngine.Name)){
-                            continue;
-                        }
-                        AddPythonEngineToMenuItems(newEngine.Name);
+                        AddPythonEngineToMenuItems(pythonNodeModel,pythonEngineVersionMenu,UpdateEngine,newEngine.Name);
                     }
                 }   
             }
@@ -328,10 +326,18 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// Adds python engine to MenuItems
         /// </summary>
-        private void AddPythonEngineToMenuItems(string engineName)
+        private static void AddPythonEngineToMenuItems(PythonNodeBase pythonNodeModel,
+            MenuItem pythonEngineVersionMenu,
+            RoutedEventHandler updateEngineDelegate,
+            string engineName)
         {
+         
+            if (pythonEngineVersionMenu.Items.Cast<MenuItem>().Any(x => x.Header as string == engineName))
+            {
+                return;
+            }
             var pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
-            pythonEngineItem.Click += UpdateEngine;
+            pythonEngineItem.Click += updateEngineDelegate;
             pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.EngineName))
             {
                 Source = pythonNodeModel,
