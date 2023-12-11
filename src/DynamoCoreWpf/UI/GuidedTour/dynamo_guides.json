@@ -738,10 +738,18 @@
 					{
 						"Sequence": 1,
 						"ControlType": "function",
+						"Name": "CollapsePackageDiv",
+						"JSFunctionName": "collapsePackageDiv",
+						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
 						"WindowName": "PopupWindow",
 						"Name": "SubscribeNextButtonClickEvent",
 						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
+						"JSFunctionName": "expandPackageDiv",
 						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ],
 						"AutomaticHandlers": [
 							{
@@ -752,7 +760,7 @@
 						]
 					},
 					{
-						"Sequence": 2,
+						"Sequence": 3,
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "setOverlay",
@@ -760,7 +768,7 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 3,
+						"Sequence": 4,
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "subscribePackageClickedEvent",
@@ -768,7 +776,7 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 4,
+						"Sequence": 5,
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "getDocumentClientRect",
@@ -776,7 +784,7 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 5,
+						"Sequence": 6,
 						"ControlType": "function",
 						"Name": "LibraryScrollToBottom",
 						"JSFunctionName": "scrollToBottom",
@@ -784,7 +792,7 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 6,
+						"Sequence": 7,
 						"ControlType": "function",
 						"Name": "CalculateLibraryItemLocation",
 						"JSFunctionName": "getDocumentClientRect",
@@ -821,7 +829,7 @@
 				},
 				"UIAutomation": [
 					{
-						"Sequence": 0,
+						"Sequence": 1,
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "setOverlay",
@@ -829,27 +837,19 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 1,
-						"ControlType": "JSFunction",
-						"Name": "InvokeJSFunction",
-						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ]
-					},
-					{
 						"Sequence": 2,
-						"ControlType": "JSFunction",
-						"Name": "InvokeJSFunction",
-						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "Examples", "LibraryItemGroupText" ]
-					},
-					{
-						"Sequence": 3,
 						"ControlType": "function",
 						"Name": "LibraryScrollToBottom",
 						"JSFunctionName": "scrollToBottom",
 						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "expandPackageDiv",
+						"JSParameters": [ "Examples", "LibraryItemGroupText" ],
 						"Action": "execute"
 					}
 				]
@@ -998,7 +998,7 @@
 						"WindowName": "LibraryView",
 						"Name": "InvokeJSFunction",
 						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
+						"JSFunctionName": "expandPackageDiv",
 						"JSParameters": [ "Geometry", "LibraryItemText" ]
 					},
 					{
@@ -1007,7 +1007,7 @@
 						"WindowName": "LibraryView",
 						"Name": "InvokeJSFunction",
 						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
+						"JSFunctionName": "expandPackageDiv",
 						"JSParameters": [ "Abstract", "LibraryItemGroupText" ]
 					},
 					{
@@ -1016,7 +1016,7 @@
 						"WindowName": "LibraryView",
 						"Name": "InvokeJSFunction",
 						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
+						"JSFunctionName": "expandPackageDiv",
 						"JSParameters": [ "CoordinateSystem", "LibraryItemGroupText" ]
 					},
 					{
