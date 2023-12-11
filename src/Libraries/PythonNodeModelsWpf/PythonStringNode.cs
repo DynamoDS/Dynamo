@@ -115,10 +115,15 @@ namespace PythonNodeModelsWpf
         }
 
         /// <summary>
-        /// Adds python engine to MenuItems
+        /// Adds python engine to MenuItems, if that engine name is not already present.
         /// </summary>
         private void AddPythonEngineToMenuItems(string engineName)
         {
+            if (pythonEngineVersionMenu.Items.Cast<MenuItem>().Any(x => x.Header as string == engineName))
+            {
+                return;
+            }
+
             var pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
             pythonEngineItem.Click += UpdateEngine;
             pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonStringNodeModel.EngineName))
