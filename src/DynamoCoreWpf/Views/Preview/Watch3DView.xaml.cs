@@ -173,28 +173,31 @@ namespace Dynamo.Controls
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)
         {
             var prevcamDir = watch_view.Camera.LookDirection;
-            var camera = watch_view.Camera as HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
-
-            //Todo, Call the equivalent method in Helix on adoption of next release.
-            ZoomExtents(camera, (float)(watch_view.ActualWidth / watch_view.ActualHeight), bounds, out var pos, out var look, out var up);
-            camera.AnimateTo(pos.ToPoint3D(), look.ToVector3D(), up.ToVector3D(), 0);
-
-            //if after a zoom the camera is in an undefined position or view direction, reset it.
-            if (watch_view.Camera.Position.ToVector3().IsUndefined() || 
-                watch_view.Camera.LookDirection.ToVector3().IsUndefined() || 
-                watch_view.Camera.LookDirection.Length == 0)
+            if (watch_view.Camera is HelixToolkit.Wpf.SharpDX.PerspectiveCamera perspectiveCam)
             {
-                watch_view.Camera.Position = prevCamera;
-                watch_view.Camera.LookDirection = prevcamDir;
+                //Todo, Call the equivalent method in Helix on adoption of next release.
+                ZoomExtents(perspectiveCam, (float)(watch_view.ActualWidth / watch_view.ActualHeight), bounds, out var pos,
+                    out var look, out var up);
+                perspectiveCam.AnimateTo(pos.ToPoint3D(), look.ToVector3D(), up.ToVector3D(), 0);
+
+                //if after a zoom the camera is in an undefined position or view direction, reset it.
+                if (watch_view.Camera.Position.ToVector3().IsUndefined() ||
+                    watch_view.Camera.LookDirection.ToVector3().IsUndefined() ||
+                    watch_view.Camera.LookDirection.Length == 0)
+                {
+                    watch_view.Camera.Position = prevCamera;
+                    watch_view.Camera.LookDirection = prevcamDir;
+                }
             }
         }
 
         #region ZoomExtents
 
         //This implementation is found in the current dev branch of Helix-Toolkit (https://github.com/helix-toolkit/helix-toolkit/tree/develop) with the assumption it will be included in the 2.25.0 release
-        //The PR including these changes "Re-implmenet zoom extents in sharpdx versions" is found here -> https://github.com/helix-toolkit/helix-toolkit/pull/2003
-        //Specifically the code included here is located in https://github.com/holance/helix-toolkit/blob/develop/Source/HelixToolkit.SharpDX.Shared/Extensions/CameraCoreExtensions.cs
-        //This implementation is adjust to remove the instance method pattern.
+        //The PR including these changes "Re-implementing zoom extents in sharpdx versions" is found here -> https://github.com/helix-toolkit/helix-toolkit/pull/2003
+        //Specifically the code included here is located in https://github.com/holance/helix-toolkit/blob/develop/Source/HelixToolkit.SharpDX.Shared/Extensions/CameraCoreExtensions.cs in this commit:
+        //https://github.com/holance/helix-toolkit/commit/660c85ff2218eb318f810dd682986d1816c5ece5
+        //This implementation is adjusted to remove the instance method pattern.
         //This section can be removed when we adopt the next release of helix-toolkit and call the ZoomExtents() directly.
 
         private static void ZoomExtents(HelixToolkit.Wpf.SharpDX.PerspectiveCamera camera, float aspectRatio, BoundingBox boundingBox, out Vector3 position, out Vector3 lookDir, out Vector3 upDir)
