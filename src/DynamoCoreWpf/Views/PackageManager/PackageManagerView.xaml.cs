@@ -228,6 +228,11 @@ namespace Dynamo.PackageManager.UI
                 {
                     PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
                     selectedTab.IsSelected = true;
+                    var pmPublishControl = this.packageManagerPublish as PackageManagerPublishControl;
+                    if (pmPublishControl != null)
+                    {
+                        pmPublishControl.ResetPageOrder();
+                    }
                 }
                 else
                 {

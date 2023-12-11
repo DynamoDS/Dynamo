@@ -53,7 +53,7 @@ namespace Dynamo.Configuration
             (() => PreferenceSettings.Load(PathManager.Instance.PreferenceFilePath));
 
         [XmlIgnore]
-        public static PreferenceSettings Instance { get { return lazy.Value; } }
+        public static PreferenceSettings Instance { get; internal set; } = lazy.Value;
 
         private string numberFormat;
         private string lastUpdateDownloadPath;

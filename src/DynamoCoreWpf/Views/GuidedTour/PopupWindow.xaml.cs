@@ -105,7 +105,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             if (hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
             {
-                ContentRichTextBox.Visibility = Visibility.Hidden;            
+                ContentRichTextBox.Visibility = Visibility.Hidden;
+
+                // Opened event ensures the webview2 will be visible when added to the popup layout tree.
                 InitWebView2Component();
             }
         }

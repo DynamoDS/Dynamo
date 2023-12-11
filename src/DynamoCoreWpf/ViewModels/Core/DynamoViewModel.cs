@@ -22,6 +22,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -492,15 +493,6 @@ namespace Dynamo.ViewModels
             get { return model.HostName; }
         }
 
-        public bool IsUpdateAvailable
-        {
-            get
-            {
-                var um = model.UpdateManager;
-                return um.IsUpdateAvailable;
-            }
-        }
-
         public string LicenseFile
         {
             get
@@ -728,7 +720,6 @@ namespace Dynamo.ViewModels
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
             SubscribeModelBackupFileSaveEvent();
-            SubscribeUpdateManagerHandlers();
 
             InitializeAutomationSettings(startConfiguration.CommandFilePath);
 
@@ -868,7 +859,6 @@ namespace Dynamo.ViewModels
             UnsubscribeDispatcherEvents();
             UnsubscribeModelUiEvents();
             UnsubscribeModelChangedEvents();
-            UnsubscribeUpdateManagerEvents();
             UnsubscribeLoggerEvents();
             UnsubscribeModelCleaningUpEvent();
             UnsubscribeModelBackupFileSaveEvent();
@@ -903,16 +893,9 @@ namespace Dynamo.ViewModels
             model.Logger.PropertyChanged -= Instance_PropertyChanged;
         }
 
-        private void SubscribeUpdateManagerHandlers()
-        {
-            model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested += UpdateManager_ShutdownRequested;
-        }
-
         private void UnsubscribeUpdateManagerEvents()
         {
-            model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested -= UpdateManager_ShutdownRequested;
+
         }
 
         private void SubscribeModelUiEvents()
@@ -1094,18 +1077,6 @@ namespace Dynamo.ViewModels
         internal bool CanClearLog(object parameter)
         {
             return true;
-        }
-
-        void Instance_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
-        {
-            RaisePropertyChanged("Version");
-            RaisePropertyChanged("IsUpdateAvailable");
-        }
-
-        void UpdateManager_ShutdownRequested(IUpdateManager updateManager)
-        {
-            PerformShutdownSequence(new ShutdownParams(
-                shutdownHost: true, allowCancellation: true));
         }
 
         void CollectInfoManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1920,7 +1891,8 @@ namespace Dynamo.ViewModels
         /// <param name="notification"></param>
         private void model_RequestNotification(string notification, bool stayOpen = false)
         {
-            this.MainGuideManager.CreateRealTimeInfoWindow(notification, stayOpen);
+            this.MainGuideManager?.CreateRealTimeInfoWindow(notification, stayOpen);
+            model?.Logger?.Log(notification);
         }
 
         /// <summary>
@@ -3486,11 +3458,6 @@ namespace Dynamo.ViewModels
             MainGuideManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
-            if (shutdownParams.ShutdownHost)
-            {
-                model.UpdateManager.HostApplicationBeginQuit();
-            }
-
             UsageReportingManager.DestroyInstance();
             this.model.CommandStarting -= OnModelCommandStarting;
             this.model.CommandCompleted -= OnModelCommandCompleted;

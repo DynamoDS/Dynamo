@@ -482,7 +482,7 @@ namespace Dynamo.DocumentationBrowser
 
                 object[] jsParameters = new object[] { breadBrumbsArray[i], sectionType, "true" };
                 //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
-                object[] parametersInvokeScript = new object[] { "collapseExpandPackage", jsParameters };
+                object[] parametersInvokeScript = new object[] { "expandPackageDiv", jsParameters };
 
                 ResourceUtilities.ExecuteJSFunction(DynamoView, parametersInvokeScript);
                 

@@ -14,6 +14,7 @@ using Dynamo.PackageManager.UI;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json.Linq;
 using static Dynamo.PackageManager.PackageManagerSearchViewModel;
@@ -393,7 +394,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             packageManagerViewModel.PropertyChanged -= searchPackagesPropertyChanged.Invoke;
 
             //Enable the DynamoView.mainGrid so the user will be able to interact with Dynamo
-            (packageManager.Owner as DynamoView).EnableEnvironment(true);
+            var dynamoView = packageManager.Owner as DynamoView;
+            if (dynamoView != null)
+            {
+                dynamoView.EnableEnvironment(true);
+            }        
             packageManager.Close();
             
         }
@@ -491,18 +496,30 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="e">Event Arguments</param>
         internal void ExecuteAutomaticPackage_Click(object sender, RoutedEventArgs e)
         {
-            CollapseExpandPackage(CurrentExecutingStep);
+            var nextButton = (sender as Button);
+            if (nextButton == null) return;
+
+            var popupVM = (nextButton.DataContext as PopupWindowViewModel);
+            if(popupVM == null) return;
+
+            if (popupVM.Step == null) return;
+            ExpandPackage(popupVM.Step);
         }
 
         /// <summary>
-        /// This method will call the collapseExpandPackage javascript method with reflection, so the package expander in LibraryView will be clicked
+        /// This method will call the expandPackageDiv javascript method with reflection, so the package expander in LibraryView will be clicked
         /// </summary>
-        internal static void CollapseExpandPackage(Step stepInfo)
+        internal static void ExpandPackage(Step stepInfo)
         {
-            CurrentExecutingStep = stepInfo;
-            var firstUIAutomation = stepInfo.UIAutomation.FirstOrDefault();
-            if (firstUIAutomation == null || firstUIAutomation.JSParameters.Count == 0) return;
-            object[] parametersInvokeScript = new object[] { firstUIAutomation.JSFunctionName, new object[] { firstUIAutomation.JSParameters.FirstOrDefault() } };
+            var expandUIAutomation = stepInfo.UIAutomation.Where(automation => automation.JSFunctionName == "expandPackageDiv").FirstOrDefault();
+            if (expandUIAutomation == null || expandUIAutomation.JSParameters.Count == 0) return;
+
+            //Expand the Sample Package Div when clicking the next button in Step8
+            object[] parametersInvokeScript = new object[] { expandUIAutomation.JSFunctionName, new object[] { expandUIAutomation.JSParameters[0], expandUIAutomation.JSParameters[1] } };
+            ResourceUtilities.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
+
+            //Expand the Package nodes when clicking the next button in Step8
+            parametersInvokeScript = new object[] { expandUIAutomation.JSFunctionName, new object[] { "Examples", "LibraryItemGroupText" } };
             ResourceUtilities.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
         }
 
@@ -971,6 +988,25 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private static void RunButton_Click(object sender, RoutedEventArgs e)
         {
             CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
+        }
+
+        /// <summary>
+        /// In the the Package is expanded this method will call a js method that will collapse the <div></div>
+        /// </summary>
+        internal static void CollapsePackageDiv(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            if (uiAutomationData == null) return;
+            string jsFunctionName = uiAutomationData.JSFunctionName;
+            //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
+            object[] parametersInvokeScript = new object[] { jsFunctionName, new object[] { uiAutomationData.JSParameters[0], uiAutomationData.JSParameters[1] } };
+
+            //Only will be executed when entering to the Step8 (when leaving Step8 the div should be expanded)
+            if(enableFunction == true)
+            {
+                //Execute the JS function with the provided parameters
+                ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
+            }            
         }
     }
 }
