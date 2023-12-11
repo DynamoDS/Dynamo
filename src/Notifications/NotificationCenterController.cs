@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Microsoft.Web.WebView2.Wpf;
 using Dynamo.Utilities;
 using Dynamo.Configuration;
+using Dynamo.Models;
 
 namespace Dynamo.Notifications
 {
@@ -345,10 +346,22 @@ namespace Dynamo.Notifications
         {
             if (initState == AsyncMethodState.Started)
             {
-                logger?.Log("NotificationCenterController is being disposed but async initialization is still not done");
+                Log("NotificationCenterController is being disposed but async initialization is still not done");
             }
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        private void Log(string msg)
+        {
+            if (DynamoModel.IsTestMode)
+            {
+                System.Console.WriteLine(msg);
+            }
+            else
+            {
+                logger?.Log(msg);
+            }
         }
     }
 }

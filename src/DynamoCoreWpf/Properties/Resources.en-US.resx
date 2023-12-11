@@ -3861,4 +3861,25 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
     <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use.</value>
   </data>
+  <data name="GESUnitCentimeters" xml:space="preserve">
+    <value>Centimeters</value>
+  </data>
+  <data name="GESUnitFeet" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="GESUnitInches" xml:space="preserve">
+    <value>Inches</value>
+  </data>
+  <data name="GESUnitKilometers" xml:space="preserve">
+    <value>Kilometers</value>
+  </data>
+  <data name="GESUnitMeters" xml:space="preserve">
+    <value>Meters</value>
+  </data>
+  <data name="GESUnitMiles" xml:space="preserve">
+    <value>Miles</value>
+  </data>
+  <data name="GESUnitMillimeters" xml:space="preserve">
+    <value>Millimeters</value>
+  </data>
 </root>
