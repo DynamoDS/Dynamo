@@ -2320,7 +2320,7 @@ namespace Dynamo.Models
 
             if (workspace is HomeWorkspaceModel homeWorkspace)
             {
-                homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.Instance.DefaultEnableLegacyPolyCurveBehavior;
+                homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.DefaultEnableLegacyPolyCurveBehavior;
 
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
