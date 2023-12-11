@@ -324,9 +324,9 @@ namespace PythonNodeModelsWpf
         }
 
         /// <summary>
-        /// Adds python engine to MenuItems
+        /// Adds python engine to MenuItems, if that engine name is not already present.
         /// </summary>
-        private static void AddPythonEngineToMenuItems(PythonNodeBase pythonNodeModel,
+        internal static void AddPythonEngineToMenuItems(PythonNodeBase pythonNodeModel,
             MenuItem pythonEngineVersionMenu,
             RoutedEventHandler updateEngineDelegate,
             string engineName)
