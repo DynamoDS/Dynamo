@@ -1,6 +1,8 @@
 # Build Dynamo using latest VS and DotNET and perform a Bin Diff
 name: Dynamo-BinDiff
-on: [push,pull_request]
+
+on: pull_request
+
 jobs:
  build-dotnet-windows-current:
   runs-on: windows-latest
@@ -11,7 +13,7 @@ jobs:
         path: net60_Win_Dynamo
         repository: DynamoDS/Dynamo
     - name: Setup dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0.x'
     - name: Disable problem matcher
@@ -46,7 +48,7 @@ jobs:
         path: master_net60_Win_Dynamo
         repository: DynamoDS/Dynamo
     - name: Setup dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0.x'
     - name: Disable problem matcher
