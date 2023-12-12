@@ -125,7 +125,7 @@ namespace Dynamo.Tests
         public void LuceneSearchNodesByCategoryValidation()
         {
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
-            string category = "Core.Input";
+            string category = "Core.Input.";
 
             // Search and check that the results are correct based in the node name provided for the searchTerm
             var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(category);
@@ -187,7 +187,7 @@ namespace Dynamo.Tests
             List<string> expectedSearchResults1 = new List<string> { "number", "number slider", "round" };
 
             string searchTerm2 = "list.join";
-            List<string> expectedSearchResults2 = new List<string> { "join", "list create", "list.map" };
+            List<string> expectedSearchResults2 = new List<string> { "join", "list create", "range" };
 
             // Search and check that the results are correct based in the node name provided for the searchTerm
             var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm);
