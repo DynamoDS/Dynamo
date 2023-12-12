@@ -143,9 +143,19 @@ namespace Dynamo.Configuration
             Name,
 
             /// <summary>
+            /// NameSplitted - The name of the node splitted using just the last part (e.g. List.Chop we will be using just Chop)
+            /// </summary>
+            NameSplitted,
+
+            /// <summary>
             /// FullCategoryName - The category of the node
             /// </summary>
             FullCategoryName,
+
+            /// <summary>
+            /// CategorySplitted - For this case we will be using just the last Category (the last word after the dot separator in FullCategoryName)
+            /// </summary>
+            CategorySplitted,
 
             /// <summary>
             /// Description - The description of the node
@@ -182,7 +192,9 @@ namespace Dynamo.Configuration
         /// Nodes Fields to be indexed by Lucene Search
         /// </summary>
         public static string[] NodeIndexFields = { nameof(NodeFieldsEnum.Name),
+                                                   nameof(NodeFieldsEnum.NameSplitted),
                                                    nameof(NodeFieldsEnum.FullCategoryName),
+                                                   nameof(NodeFieldsEnum.CategorySplitted),
                                                    nameof(NodeFieldsEnum.Description),
                                                    nameof(NodeFieldsEnum.SearchKeywords),
                                                    nameof(NodeFieldsEnum.DocName),

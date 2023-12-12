@@ -3266,7 +3266,18 @@ namespace Dynamo.Models
             if (LuceneUtility.addedFields == null) return;
 
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+
+            var categoryParts = node.FullCategoryName.Split('.');
+            string categoryParsed = categoryParts.Length > 1 ? categoryParts[categoryParts.Length - 1] : node.FullCategoryName;
+            //In case the search criteria is like "filesystem.replace" we will be storing the value "filesystem" inside the CategorySplitted field
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted), categoryParsed);
+
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+
+            var nameParts = node.Name.Split('.');
+            string nameParsed = nameParts.Length > 1 ? nameParts[nameParts.Length - 1] : node.Name;
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.NameSplitted), nameParsed);
+
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
             if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
