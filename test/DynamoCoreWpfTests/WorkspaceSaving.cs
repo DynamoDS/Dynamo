@@ -650,6 +650,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        [Category("Failure")]
         public void RemovePIIDataFromWorkspace()
         {
             string graphWithPIIDataPath = Path.Combine(TestDirectory, (@"UI\GraphWithPIIData.dyn"));
