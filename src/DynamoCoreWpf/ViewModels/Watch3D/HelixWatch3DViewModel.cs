@@ -3008,7 +3008,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var bounds = geom.Bounds;
 
-            if(Math.Abs(bounds.Size.LengthSquared()) < defaultBoundsSize * defaultBoundsSize * 3)
+            //if the actual bounds diagonal are smaller than the default bounds diagonal then return
+            //a new default bounds centered on the actual bounds center.
+            if(bounds.Size.LengthSquared() < defaultBoundsSize * defaultBoundsSize * 3)
             {
                 var pos = bounds.Center();
                 var min = pos + new Vector3(-defaultBoundsSize, -defaultBoundsSize, -defaultBoundsSize);
