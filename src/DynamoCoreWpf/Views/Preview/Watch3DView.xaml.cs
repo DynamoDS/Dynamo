@@ -11,7 +11,9 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.SharpDX.Core;
 using SharpDX;
+using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
 using Point = System.Windows.Point;
+using HelixToolkit.SharpDX.Core.Cameras;
 
 namespace Dynamo.Controls
 {
@@ -172,22 +174,32 @@ namespace Dynamo.Controls
 
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)
         {
-            var prevcamDir = watch_view.Camera.LookDirection;
+            var preCamDir = watch_view.Camera.LookDirection;
+            //TODO, Call the equivalent method in Helix on adoption of next release, remove these private helix definitions.
+
             if (watch_view.Camera is HelixToolkit.Wpf.SharpDX.PerspectiveCamera perspectiveCam)
             {
-                //Todo, Call the equivalent method in Helix on adoption of next release.
                 ZoomExtents(perspectiveCam, (float)(watch_view.ActualWidth / watch_view.ActualHeight), bounds, out var pos,
                     out var look, out var up);
                 perspectiveCam.AnimateTo(pos.ToPoint3D(), look.ToVector3D(), up.ToVector3D(), 0);
+            }
 
-                //if after a zoom the camera is in an undefined position or view direction, reset it.
-                if (watch_view.Camera.Position.ToVector3().IsUndefined() ||
-                    watch_view.Camera.LookDirection.ToVector3().IsUndefined() ||
-                    watch_view.Camera.LookDirection.Length == 0)
-                {
-                    watch_view.Camera.Position = prevCamera;
-                    watch_view.Camera.LookDirection = prevcamDir;
-                }
+            else if (watch_view.Camera is OrthographicCamera orthCam && watch_view.Camera.CameraInternal is OrthographicCameraCore orthoCamCore)
+            {
+                ZoomExtents(orthoCamCore, (float)(watch_view.ActualWidth / watch_view.ActualHeight), bounds, out var pos,
+                    out var look, out var up,out var width
+                    );
+                orthCam.AnimateWidth(width,0);
+                orthCam.AnimateTo(pos.ToPoint3D(), look.ToVector3D(), up.ToVector3D(), 0);
+            }
+
+            //if after a zoom the camera is in an undefined position or view direction, reset it.
+            if (watch_view.Camera.Position.ToVector3().IsUndefined() ||
+                watch_view.Camera.LookDirection.ToVector3().IsUndefined() ||
+                watch_view.Camera.LookDirection.Length == 0)
+            {
+                watch_view.Camera.Position = prevCamera;
+                watch_view.Camera.LookDirection = preCamDir;
             }
         }
 
@@ -249,6 +261,25 @@ namespace Dynamo.Controls
             var lookRay = new Ray(position, cameraDir);
             boundPlane.Intersects(ref lookRay, out float dist);
             lookDir = cameraDir * dist;
+        }
+
+        private static void ZoomExtents(OrthographicCameraCore camera, float aspectRatio, BoundingBox boundingBox, out Vector3 position, out Vector3 lookDir, out Vector3 upDir, out float width)
+        {
+            float minX = float.PositiveInfinity, minY = float.PositiveInfinity, maxX = float.NegativeInfinity, maxY = float.NegativeInfinity;
+            var corners = boundingBox.GetCorners();
+            var view = camera.CreateViewMatrix();
+            foreach (var p in corners)
+            {
+                var local = Vector3.TransformCoordinate(p, view);
+                minX = Math.Min(minX, local.X);
+                minY = Math.Min(minY, local.Y);
+                maxX = Math.Max(maxX, local.X);
+                maxY = Math.Max(maxY, local.Y);
+            }
+            width = aspectRatio > 1 ? Math.Max((maxX - minX), (maxY - minY) * aspectRatio) : Math.Max((maxX - minX) / aspectRatio, maxY - minY);
+            position = boundingBox.Center - camera.LookDirection.Normalized() * width;
+            lookDir = camera.LookDirection.Normalized() * width;
+            upDir = camera.UpDirection;
         }
 
         private static bool IsOutermostPointInDirection(int pointIndex, ref Vector3 direction, Vector3[] corners)
