@@ -249,7 +249,11 @@
             }
             if (found_div != null) {
                 if (enableHighlight == true) {
-                    glowAnimation(found_div, true);
+                    //Validates that the div is not already highlighted
+                    var currentAttibute = found_div.getAttribute("id");
+                    if (currentAttibute == null || !currentAttibute.includes("glow_")) {
+                        glowAnimation(found_div, true);
+                    }                  
                 }
                 else {
                     glowAnimation(found_div, false);
@@ -307,7 +311,7 @@
         }
 
         //This will execute a click over a specific <div> that contains the package content
-        function collapseExpandPackage(packageName, libraryClassName) {
+        function expandPackageDiv(packageName, libraryClassName) {
             var found_div = findPackageDiv(packageName, libraryClassName);
             if (found_div == null) {
                 return;
@@ -315,6 +319,18 @@
             var containerCatDiv = found_div.parentNode.parentNode;
             var itemBodyContainer = containerCatDiv.getElementsByClassName(libraryClassName)[0];
             if (!itemBodyContainer.parentElement.parentElement.className.includes('expanded')) {
+                itemBodyContainer.click();
+            }
+        }
+
+        function collapsePackageDiv(packageName, libraryClassName) {
+            var found_div = findPackageDiv(packageName, libraryClassName);
+            if (found_div == null) {
+                return;
+            }
+            var containerCatDiv = found_div.parentNode.parentNode;
+            var itemBodyContainer = containerCatDiv.getElementsByClassName(libraryClassName)[0];
+            if (itemBodyContainer.parentElement.parentElement.className.includes('expanded')) {
                 itemBodyContainer.click();
             }
         }

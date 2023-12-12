@@ -710,7 +710,7 @@ namespace Dynamo.ViewModels
         /// <param name="engine"></param>
         /// <param name="saveContext"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
+        internal bool Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -748,7 +748,7 @@ namespace Dynamo.ViewModels
 
                             if (result == MessageBoxResult.Cancel)
                             {
-                                return;
+                                return false;
                             }
                         }
                     }
@@ -791,6 +791,8 @@ namespace Dynamo.ViewModels
                 throw ex;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
             }
+
+            return true;
         }
         /// <summary>
         /// This function appends view block to the model json

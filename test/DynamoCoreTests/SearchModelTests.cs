@@ -284,7 +284,7 @@ namespace Dynamo.Tests
             AddNodeElementToSearchIndex(element2);
             search.Add(element3);
             AddNodeElementToSearchIndex(element3);
-            var results = search.Search("Category.Child", CurrentDynamoModel.LuceneUtility);
+            var results = search.Search("Category.Child.", CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(3, results.Count());
         }
 

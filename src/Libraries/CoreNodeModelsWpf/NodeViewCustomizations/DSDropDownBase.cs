@@ -37,7 +37,6 @@ namespace CoreNodeModelsWpf.Nodes
             Grid.SetRow(comboBox, 0);
 
             comboBox.DropDownOpened += DropDownOpened;
-            comboBox.SelectionChanged += SelectionChanged;
 
             comboBox.DataContext = model;
 
@@ -56,6 +55,8 @@ namespace CoreNodeModelsWpf.Nodes
                 Source = model
             };
             comboBox.SetBinding(Selector.SelectedIndexProperty, indexBinding);
+
+            comboBox.SelectionChanged += SelectionChanged;
         }
 
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)

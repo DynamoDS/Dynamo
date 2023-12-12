@@ -262,11 +262,20 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 dynamoViewModel.OnEnableShortcutBarItems(true);
 
+                EnableDynamoUI();
+
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
                 GuidesValidationMethods.CurrentExecutingGuide = null;
                 tourStarted = false;
             }
+        }
+
+        private void EnableDynamoUI()
+        {
+            var dynamoView = mainRootElement as DynamoView;
+            if (dynamoView != null)
+                dynamoView.EnableEnvironment(true);
         }
 
         /// <summary>
@@ -297,6 +306,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void ExitTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
+            EnableDynamoUI();
             GuideFlowEvents.OnGuidedTourExited(currentGuide.Name);
             ExitTour();
         }
