@@ -754,7 +754,7 @@ namespace Dynamo.Models
                 {
                     var isFirstRun = PreferenceSettings.IsFirstRun;
                     PreferenceSettings = migrator.PreferenceSettings;
-
+                    PreferenceSettings.Instance = PreferenceSettings;
 
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
