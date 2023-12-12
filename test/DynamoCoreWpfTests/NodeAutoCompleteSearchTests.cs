@@ -67,6 +67,7 @@ namespace DynamoCoreWpfTests
         public void NodeSuggestions_CanAutoCompleteInCustomNodeWorkspace()
         {
             Open(@"pkgs\EvenOdd2\dyf\EvenOdd.dyf");
+            ViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Pick the % node
             NodeView nodeView = NodeViewWithGuid(Guid.Parse("1ddf4b4cc39f42acadd578db42bcb6d3").ToString());
@@ -192,6 +193,7 @@ namespace DynamoCoreWpfTests
         public void NodeSuggestions_InputPortZeroTouchNode_AreCorrect()
         {
             Open(@"UI\ffitarget_inputport_suggestion.dyn");
+            ViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Get the node view for a specific node in the graph
             NodeView nodeView = NodeViewWithGuid(Guid.Parse("9aeba33453a34c73823976222b44375b").ToString());
