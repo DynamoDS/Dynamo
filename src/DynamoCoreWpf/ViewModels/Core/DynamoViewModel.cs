@@ -2104,6 +2104,7 @@ namespace Dynamo.ViewModels
                         Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
                         Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
                         Model.Logger.Log("The Workspace has Substantial checksum, so is ready to send to FDX : " + HasSubstantialCheckSum().ToString());
+                        DynamoForgeDataExchange.DynamoForgeDataExchange.DataExchange(path);
                     }
                 }                                    
             }

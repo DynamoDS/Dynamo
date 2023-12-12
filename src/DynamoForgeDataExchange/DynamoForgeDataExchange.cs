@@ -13,7 +13,7 @@ using ContentType = RestSharp.ContentType;
 namespace DynamoForgeDataExchange
 {
 
-    class DynamoForgeDataExchange : IExtension, IExtensionSource
+    internal class DynamoForgeDataExchange : IExtension, IExtensionSource
     {
         public static string CollectionId { get; set; }
         public static string ExchangeContainerId { get; set; }
@@ -276,8 +276,7 @@ namespace DynamoForgeDataExchange
             File.WriteAllText(dynamoParsedPath, uncompressedString);
         }
 
-
-        static void DataExchange(string filePath)
+        internal static void DataExchange(string filePath)
         {
             // The Forge team has recommended to use the Stage environment for testing.
             // Depending on whether we are using Stage or Prod, a Forge token needs to be retrieved 

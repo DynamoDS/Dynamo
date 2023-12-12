@@ -1,70 +1,70 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+	<Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <ProjectGuid>{0DD3E4ED-66AA-47FC-9EB9-2A0E6A0EA01B}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>NodeDocumentationMarkdownGenerator</RootNamespace>
-    <AssemblyName>NodeDocumentationMarkdownGenerator</AssemblyName>
+	<ProjectGuid>{0DD3E4ED-66AA-47FC-9EB9-2A0E6A0EA01B}</ProjectGuid>
+	<OutputType>Exe</OutputType>
+	<RootNamespace>NodeDocumentationMarkdownGenerator</RootNamespace>
+	<AssemblyName>NodeDocumentationMarkdownGenerator</AssemblyName>
 	<OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
-    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+	<DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="CommandLineParser" Version="2.8.0" />
-        <PackageReference Include="Greg" Version="3.0.0.3175" />
-        <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3241" />
-        <PackageReference Include="Magick.NET.Core" Version="7.0.1" />
-        <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.24.1" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="RestSharp" Version="108.0.1" />
-        <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommandLineParser" Version="2.8.0" />
+		<PackageReference Include="Greg" Version="3.0.0.3175" />
+		<PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3241" />
+		<PackageReference Include="Magick.NET.Core" Version="7.0.1" />
+		<PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.24.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="RestSharp" Version="109.0.1" />
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	</ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
-      <Name>DynamoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DynamoPackages\DynamoPackages.csproj">
-      <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
-      <Name>DynamoPackages</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
-      <Name>DynamoUtilities</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
-      <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
+	<ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
+	  <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+	  <Name>DynamoCore</Name>
+	  <Private>False</Private>
+	</ProjectReference>
+	<ProjectReference Include="..\..\DynamoPackages\DynamoPackages.csproj">
+	  <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
+	  <Name>DynamoPackages</Name>
+	  <Private>False</Private>
+	</ProjectReference>
+	<ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
+	  <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+	  <Name>DynamoUtilities</Name>
+	  <Private>False</Private>
+	</ProjectReference>
+	<ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
+	  <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
+	  <Name>ProtoCore</Name>
+	  <Private>False</Private>
+	</ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="images\logo.png" />
+	<Content Include="images\logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\Resources.en-US.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
-    </Compile>
+	<Compile Update="Properties\Resources.Designer.cs">
+	  <AutoGen>True</AutoGen>
+	  <DesignTime>True</DesignTime>
+	  <DependentUpon>Resources.resx</DependentUpon>
+	</Compile>
+	<Compile Update="Properties\Resources.en-US.Designer.cs">
+	  <AutoGen>True</AutoGen>
+	  <DesignTime>True</DesignTime>
+	  <DependentUpon>Resources.en-US.resx</DependentUpon>
+	</Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\Resources.en-US.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+	<EmbeddedResource Update="Properties\Resources.resx">
+	  <Generator>ResXFileCodeGenerator</Generator>
+	  <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+	</EmbeddedResource>
+	<EmbeddedResource Update="Properties\Resources.en-US.resx">
+	  <Generator>ResXFileCodeGenerator</Generator>
+	  <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+	</EmbeddedResource>
   </ItemGroup>
 </Project>
