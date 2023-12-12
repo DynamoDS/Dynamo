@@ -163,9 +163,9 @@ namespace DynamoCoreWpfTests
             Open(saveAsPathInTestDir);
 
             // Assert saved as file doesn't have binding data after open.
-            DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex);
+            DynamoUtilities.PathHelper.isValidJson(saveAsPath, out fileContents, out ex);
             obj = DSCore.Data.ParseJSON(fileContents) as Dictionary<string, object>;
-            Assert.AreEqual(1, (obj["Bindings"] as IEnumerable<object>).Count());
+            Assert.AreEqual(0, (obj["Bindings"] as IEnumerable<object>).Count());
 
             File.Delete(filePath);
             File.Delete(saveAsPath);
