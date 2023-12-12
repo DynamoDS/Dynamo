@@ -154,8 +154,8 @@ namespace DynamoCoreWpfTests
             string dynamoRevitHostPath = "C:\\Program Files\\Autodesk\\Revit 2024\\AddIns\\DynamoForRevit\\Revit)";
             singletonPathManager.AssignHostPathAndIPathResolver(dynamoRevitHostPath, revitPathResolver);
 
-            string dynamoRevitUserDataDirectory = "C:\\Users\\user\\AppData\\Roaming\\Dynamo\\Dynamo Revit\\3.0";
-            string dynamoRevitCommonDataDirectory = "C:\\ProgramData\\Autodesk\\RVT 2024\\Dynamo\\3.0";
+            string dynamoRevitUserDataDirectory = "C:\\Users\\user\\AppData\\Roaming\\Dynamo\\Dynamo Revit\\3.1";
+            string dynamoRevitCommonDataDirectory = "C:\\ProgramData\\Autodesk\\RVT 2024\\Dynamo\\3.1";
             string dynamoRevitSamplesPath = "C:\\ProgramData\\Autodesk\\RVT 2024\\Dynamo\\samples\\en-US";
 
             Assert.AreEqual(Path.GetFullPath(singletonPathManager.UserDataDirectory), Path.GetFullPath(dynamoRevitUserDataDirectory));

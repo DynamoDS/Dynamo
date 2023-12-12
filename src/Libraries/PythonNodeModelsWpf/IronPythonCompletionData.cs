@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Media.Imaging;
@@ -15,7 +15,6 @@ namespace Dynamo.Python
     {
 
         private static Dictionary<CompletionType, BitmapImage> TypeToIcon;
-        private readonly IronPythonCompletionProvider provider;
 
         public enum CompletionType
         {
@@ -51,35 +50,16 @@ namespace Dynamo.Python
         internal IronPythonCompletionData(IExternalCodeCompletionData data)
         {
             this.Text = data.Text;
-            this._description = data.Description;
+            this.Description = data.Description;
 
             BuildCompletionTypeToIconMap();
 
-            this._image = TypeToIcon[ConvertCompletionType(data.CompletionType)];
+            Image = TypeToIcon[ConvertCompletionType(data.CompletionType)];
 
         }
-        public IronPythonCompletionData(string text, string stub, bool isInstance, CompletionType type, IronPythonCompletionProvider provider)
-        {
-            this.Text = text;
-            this.Stub = stub;
-            this.IsInstance = isInstance;
-            this.provider = provider;
 
-            BuildCompletionTypeToIconMap();
-
-            this._image = TypeToIcon[type];
-        }
-
-        // image
-        private readonly BitmapImage _image;
-        public System.Windows.Media.ImageSource Image
-        {
-            get
-            {
-                return _image;
-            }
-        }
-
+        public System.Windows.Media.ImageSource Image { get; }
+       
         public string Text { get; private set; }
 
         public string Stub { get; private set; }
@@ -89,31 +69,17 @@ namespace Dynamo.Python
         // Use this property if you want to show a fancy UIElement in the drop down list.
         public object Content
         {
-            get { return this.Text; }
+            get { return Text; }
         }
 
-        // description
-        private string _description;
+        public object Description { get; private set; }
 
-        public object Description
-        {
-            get
-            {
-                // lazily get the description
-                if (_description == null)
-                {
-                    _description = provider.GetDescription(this.Stub, this.Text, this.IsInstance).TrimEnd('\r', '\n');
-                }
-
-                return _description;
-            }
-        }
 
         public double Priority { get { return 0; } }
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-            textArea.Document.Replace(completionSegment, this.Text);
+            textArea.Document.Replace(completionSegment, Text);
         }
 
         private static BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
