@@ -343,7 +343,7 @@ namespace Dynamo.ViewModels
         }        
 
         /// <summary>
-        /// Controls the IsChecked property in the Show Run Preview toogle button
+        /// Controls the IsChecked property in the Show Run Preview toggle button
         /// </summary>
         public bool RunPreviewIsChecked
         {

@@ -3849,7 +3849,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Use Instancing (Beta)</value>
   </data>
   <data name="PreferencesWindowUseInstancingTooltip" xml:space="preserve">
-    <value>When toggled on, some graphics will render faster</value>
+    <value>When toggled on, some symmetric geometry types such as cubes, rectangles, or spheres will render faster due to mutiple copies being drawn at once vs sequentially.</value>
   </data>
   <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
     <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use.</value>

@@ -7908,7 +7908,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When toggled on, some graphics will render faster.
+        ///   Looks up a localized string similar to When toggled on, some symmetric geometry types such as cubes, rectangles, or spheres will render faster due to mutiple copies being drawn at once vs sequentially..
         /// </summary>
         public static string PreferencesWindowUseInstancingTooltip {
             get {

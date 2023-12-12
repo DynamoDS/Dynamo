@@ -43,6 +43,7 @@ using Matrix = SharpDX.Matrix;
 using MeshBuilder = HelixToolkit.SharpDX.Core.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.SharpDX.Core.MeshGeometry3D;
 using TextInfo = HelixToolkit.SharpDX.Core.TextInfo;
+using Dynamo.Configuration;
 
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
@@ -1878,7 +1879,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         //for each instancable item and add instance transforms.
                         //If we have any line geometry that was not associated with an instance,
                         //remove the previously added line data from the render package so the remaining lines can be added to the scene.
-                        if (rp.LineVertexRangesAssociatedWithInstancing.Any())
+                        if (rp.LineVertexRangesAssociatedWithInstancing.Any() && PreferenceSettings.Instance.UseRenderInstancing)
                         {
                             //For each range of line vertices add the line data and instances to the scene
                             var j = 0;
@@ -1938,7 +1939,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     //object for each texture map and associated mesh geometry.  
                     //If we have any mesh geometry that was not associated with a texture map, remove the previously
                     //added mesh data from the render package so the remaining mesh can be added to the scene.
-                    if (rp.MeshVerticesRangesAssociatedWithTextureMaps.Any())
+                    if (rp.MeshVerticesRangesAssociatedWithTextureMaps.Any() && PreferenceSettings.Instance.UseRenderInstancing)
                     {
                         //For each range of mesh vertices add the mesh data and texture map to the scene
                         for (var j = 0; j < rp.MeshVerticesRangesAssociatedWithTextureMaps.Count; j++)
