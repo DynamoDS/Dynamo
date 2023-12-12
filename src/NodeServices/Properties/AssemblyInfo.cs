@@ -37,5 +37,8 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
 [assembly: InternalsVisibleTo("DSCoreNodes")]
 [assembly: InternalsVisibleTo("FFITarget")]
+[assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
+[assembly: InternalsVisibleTo("DynamoPlayer")]
+[assembly: InternalsVisibleTo("DynamoConnector")]
 [assembly: InternalsVisibleTo("DynamoApplications")]
