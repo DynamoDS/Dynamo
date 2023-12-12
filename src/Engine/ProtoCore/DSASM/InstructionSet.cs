@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.Exceptions;
@@ -10,6 +10,7 @@ namespace ProtoCore.DSASM
     public enum Registers
     {
         RX,
+        // Register used to temporarily store primitive values for graph update cycles.
         LX,
     }
 
