@@ -753,11 +753,13 @@ namespace Dynamo.Models
                 if (migrator != null)
                 {
                     var isFirstRun = PreferenceSettings.IsFirstRun;
+                    var pyTarget = PreferenceSettings.IronPythonResolveTargetVersion;
                     PreferenceSettings.Instance = migrator.PreferenceSettings;
 
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
                     PreferenceSettings.IsFirstRun = isFirstRun;
+                    PreferenceSettings.IronPythonResolveTargetVersion = pyTarget;
                 }
             }
 
