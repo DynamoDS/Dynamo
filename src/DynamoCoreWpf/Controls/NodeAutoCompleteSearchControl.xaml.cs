@@ -371,7 +371,7 @@ namespace Dynamo.UI.Controls
         internal void CloseAutoCompletion()
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
-            ViewModel.OnNodeAutoCompleteWindowClosed();
+            ViewModel?.OnNodeAutoCompleteWindowClosed();
         }
 
         /// <summary>
