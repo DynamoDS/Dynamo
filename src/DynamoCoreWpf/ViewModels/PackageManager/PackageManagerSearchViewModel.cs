@@ -476,12 +476,15 @@ namespace Dynamo.PackageManager
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
         /// <summary>
+        /// A getter boolean identifying if the user is currently logged in
+        /// </summary>
+        public bool IsLoggedIn { get { return PackageManagerClientViewModel.AuthenticationManager.IsLoggedIn(); } }
+
+        /// <summary>
         /// Current selected filter hosts
         /// </summary>
         public List<string> SelectedHosts { get; set; }
 
-        private EntryDictionary<PackageManagerSearchElement> EntryDictionary;
-        
         /// <summary>
         ///     Command to clear the completed package downloads
         /// </summary>
@@ -562,7 +565,6 @@ namespace Dynamo.PackageManager
             SearchResults = new ObservableCollection<PackageManagerSearchElementViewModel>();
             InfectedPackages = new ObservableCollection<PackageManagerSearchElement>();
             MaxNumSearchResults = 35;
-            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             SortCommand = new DelegateCommand(Sort, CanSort);
             SearchSortCommand = new DelegateCommand<object>(Sort, CanSort);
@@ -634,8 +636,6 @@ namespace Dynamo.PackageManager
             // We should have already populated the CachedPackageList by this step
             if (PackageManagerClientViewModel.CachedPackageList == null ||
                 !PackageManagerClientViewModel.CachedPackageList.Any()) return;
-            // We need the user to be logged in, otherwise there is no point in runnig this routine
-            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return;
 
             List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
 
@@ -995,16 +995,6 @@ namespace Dynamo.PackageManager
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
             LastSync = pkgs;
 
-            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
-
-            foreach (var pkg in pkgs)
-            {
-                EntryDictionary.Add(pkg, pkg.Name);
-                EntryDictionary.Add(pkg, pkg.Description);
-                EntryDictionary.Add(pkg, pkg.Maintainers);
-                EntryDictionary.Add(pkg, pkg.Keywords);
-            }
-
             PopulateMyPackages();   // adding 
         }
 
@@ -1135,9 +1125,12 @@ namespace Dynamo.PackageManager
 
         internal void ClearSearchResults()
         {
+            if (this.SearchResults == null) return;
             foreach (var ele in this.SearchResults)
             {
                 ele.RequestDownload -= PackageOnExecuted;
+                ele.RequestShowFileDialog -= OnRequestShowFileDialog;
+                ele?.Dispose();
             }
             this.SearchResults.Clear();
         }
@@ -1604,6 +1597,11 @@ namespace Dynamo.PackageManager
             SearchAndUpdateResults(String.Empty); // reset the search text property
             InitialResultsLoaded = false;
             TimedOut = false;
+
+            RequestShowFileDialog -= OnRequestShowFileDialog; // adding this back in
+
+            ClearSearchResults();   // also clear all SearchResults and unsubscribe 
+            ClearMySearchResults();
         }
 
         /// <summary>
@@ -1611,13 +1609,33 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal void Dispose()
         {
+            if(LastSync != null)
+            {
+                foreach(var package in LastSync)
+                {
+                    package.UpvoteRequested -= PackageManagerClientViewModel.Model.Upvote;
+                }
+                LastSync.Clear();
+            }
+
             nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
-            aTimer.Elapsed -= OnTimedEvent;
+            nonHostFilter.Clear();
+
+            if (aTimer != null)
+            {
+                aTimer.Stop();
+                aTimer.Elapsed -= OnTimedEvent;
+                aTimer = null;
+            }
 
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
 
+            RequestShowFileDialog -= OnRequestShowFileDialog;   // adding this back in
+
+            ClearSearchResults();   // also clear all SearchResults and unsubscribe 
             ClearMySearchResults();
+
         }
     }
 }

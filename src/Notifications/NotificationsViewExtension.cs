@@ -18,7 +18,7 @@ namespace Dynamo.Notifications
         private Action<Logging.NotificationMessage> notificationHandler;
         private ObservableCollection<Logging.NotificationMessage> notifications;
         private bool disposed;
-        private NotificationCenterController notificationCenterController;
+        internal NotificationCenterController notificationCenterController;
         /// <summary>
         /// Notifications data collection. PropertyChanged event is raised to help dealing WPF bind dispose.
         /// </summary>
@@ -67,6 +67,8 @@ namespace Dynamo.Notifications
                 {
                     BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
                 }
+                notificationCenterController?.Dispose();
+                notificationCenterController = null;
                 notificationsMenuItem = null;
                 disposed = true;
             }
@@ -115,6 +117,12 @@ namespace Dynamo.Notifications
         private void LoadNotificationCenter()
         {
             var dynamoView = viewLoadedParams.DynamoWindow as DynamoView;
+
+            if (notificationCenterController != null)
+            {
+                notificationCenterController.Dispose();
+                notificationCenterController = null;
+            }
             notificationCenterController = new NotificationCenterController(dynamoView, logger);
         }
 

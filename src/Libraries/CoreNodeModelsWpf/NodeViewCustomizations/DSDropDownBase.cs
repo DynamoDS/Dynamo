@@ -15,61 +15,70 @@ namespace CoreNodeModelsWpf.Nodes
     public class DropDownNodeViewCustomization : INodeViewCustomization<DSDropDownBase>
     {
         private DSDropDownBase model;
+        private ComboBox comboBox;
 
         public void CustomizeView(DSDropDownBase model, NodeView nodeView)
         {
             this.model = model;
 
-            //add a drop down list to the window
-            var combo = new ComboBox
+            // Add a drop down list to the window
+            comboBox = new ComboBox
             {
-                Width = System.Double.NaN,
-                MinWidth= 150,
+                Width = double.NaN,
+                MinWidth = 150,
                 Height = Configurations.PortHeightInPixels,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Style = (Style)SharedDictionaryManager.DynamoModernDictionary["RefreshComboBox"]
             };
 
+            nodeView.inputGrid.Children.Add(comboBox);
+            Grid.SetColumn(comboBox, 0);
+            Grid.SetRow(comboBox, 0);
 
-            combo.Style = (Style)SharedDictionaryManager.DynamoModernDictionary["RefreshComboBox"];
+            comboBox.DropDownOpened += DropDownOpened;
 
-            nodeView.inputGrid.Children.Add(combo);
-            System.Windows.Controls.Grid.SetColumn(combo, 0);
-            System.Windows.Controls.Grid.SetRow(combo, 0);
+            comboBox.DataContext = model;
 
-            combo.DropDownOpened += combo_DropDownOpened;
-
-            combo.DataContext = model;
-
-            // bind this combo box to the selected item hash
-            var bindingVal = new System.Windows.Data.Binding("Items")
+            // Bind this combo box to the selected item hash.
+            var bindingVal = new Binding(nameof(DSDropDownBase.Items))
             {
                 Mode = BindingMode.TwoWay,
                 Source = model
             };
-            combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
+            comboBox.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
             
-            // bind the selected index to the model property SelectedIndex
-            var indexBinding = new Binding("SelectedIndex")
+            // Bind the selected index to the model property SelectedIndex.
+            var indexBinding = new Binding(nameof(DSDropDownBase.SelectedIndex))
             {
                 Mode = BindingMode.TwoWay,
                 Source = model
             };
-            combo.SetBinding(Selector.SelectedIndexProperty, indexBinding);
+            comboBox.SetBinding(Selector.SelectedIndexProperty, indexBinding);
+
+            comboBox.SelectionChanged += SelectionChanged;
+        }
+
+        private void SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (comboBox.SelectedIndex != -1)
+            {
+                model.OnNodeModified();
+            }
         }
 
         public void Dispose()
         {
+            comboBox.DropDownOpened -= DropDownOpened;
+            comboBox.SelectionChanged -= SelectionChanged;
         }
 
         /// <summary>
         /// When the dropdown is opened, the node's implementation of PopulateItems is called
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void combo_DropDownOpened(object sender, EventArgs e)
+        void DropDownOpened(object sender, EventArgs e)
         {
-            this.model.PopulateItems();
+            model.PopulateItems();
         }
 
     }

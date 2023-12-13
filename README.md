@@ -1,12 +1,11 @@
 # Dynamo
 
-[![Dynamo-VS2022Build](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoMSbuild.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoMSbuild.yml)
-[![DynamoAllNet6.0-Build](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoAllNet6.0_build.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoAllNet6.0_build.yml)
-[![Dynamo-net6.0-Build](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoNet6.0_build.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoNet6.0_build.yml)
-[![Dynamo-net6.0-linux-Build](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoNet6.0_linux_build.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoNet6.0_linux_build.yml)
+[![Build DynamoAll.sln net6.0](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all_net6.0.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all_net6.0.yml)
+[![Build DynamoAll.sln net8.0](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all_net8.0.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all_net8.0.yml)
+[![Build DynamoCore.sln net6.0](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_net6.0.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_net6.0.yml)
+[![Build DynamoCore.sln net6.0 linux](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_net6.0_linux.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_net6.0_linux.yml)
 
 [![Nuget](https://img.shields.io/nuget/v/DynamoVisualProgramming.Core?logo=nuget)](https://www.nuget.org/packages/DynamoVisualProgramming.Core)
-[![DynamoVisualProgramming.Core on fuget.org](https://www.fuget.org/packages/DynamoVisualProgramming.Core/badge.svg)](https://www.fuget.org/packages/DynamoVisualProgramming.Core)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/dynamo_logo_light.png">

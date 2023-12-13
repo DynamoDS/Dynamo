@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
-using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -232,6 +231,11 @@ namespace Dynamo.Graph.Workspaces
                 return currentPasteOffset + PasteOffsetStep;
             }
         }
+
+        /// <summary>
+        /// This is true only if the workspace contains legacy SOAP formatted binding data.
+        /// </summary>
+        internal bool ContainsLegacyTraceData { get; set; }
 
         internal bool ScaleFactorChanged = false;
 
@@ -1280,9 +1284,6 @@ namespace Dynamo.Graph.Workspaces
             get { return new Rect2D(x, y, width, height); }
         }
 
-        //TODO(Steve): This probably isn't needed inside of WorkspaceModel -- MAGN-5714
-        internal Version WorkspaceVersion { get; set; }
-
         /// <summary>
         /// Implements <see cref="ILocatable.CenterX"/> property.
         /// </summary>
@@ -1332,7 +1333,6 @@ namespace Dynamo.Graph.Workspaces
                 WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
             }
         }
-
         #endregion
 
         #region constructors
@@ -1373,7 +1373,6 @@ namespace Dynamo.Graph.Workspaces
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
             LastSaved = DateTime.Now;
 
-            WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
@@ -2061,94 +2060,6 @@ namespace Dynamo.Graph.Workspaces
                 mapElement.AppendChild(resolverElement);
             }
             root.AppendChild(mapElement);
-        }
-
-        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
-        protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
-        {
-            try
-            {
-                var root = xmlDoc.DocumentElement;
-                root.SetAttribute("Version", WorkspaceVersion.ToString());
-                root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("ScaleFactor", ScaleFactor.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Name", Name);
-                root.SetAttribute("Description", Description);
-
-                SerializeElementResolver(xmlDoc);
-
-                var elementList = xmlDoc.CreateElement("Elements");
-                //write the root element
-                root.AppendChild(elementList);
-
-                foreach (var dynEl in Nodes.Select(el => el.Serialize(xmlDoc, SaveContext.Save)))
-                    elementList.AppendChild(dynEl);
-
-                //write only the output connectors
-                var connectorList = xmlDoc.CreateElement("Connectors");
-                //write the root element
-                root.AppendChild(connectorList);
-
-                foreach (var el in Nodes)
-                {
-                    foreach (var port in el.OutPorts)
-                    {
-                        foreach (
-                            var c in
-                                port.Connectors.Where(c => c.Start != null && c.End != null))
-                        {
-                            var connector = xmlDoc.CreateElement(c.GetType().ToString());
-                            connectorList.AppendChild(connector);
-                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
-                            connector.SetAttribute("start_index", c.Start.Index.ToString());
-                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
-                            connector.SetAttribute("end_index", c.End.Index.ToString());
-                            connector.SetAttribute(nameof(ConnectorModel.IsHidden), c.IsHidden.ToString());
-
-                            if (c.End.PortType == PortType.Input)
-                                connector.SetAttribute("portType", "0");
-                        }
-                    }
-                }
-
-                //save the notes
-                var noteList = xmlDoc.CreateElement("Notes"); //write the root element
-                root.AppendChild(noteList);
-                foreach (var n in Notes)
-                {
-                    var note = n.Serialize(xmlDoc, SaveContext.Save);
-                    noteList.AppendChild(note);
-                }
-
-                //save the annotation
-                var annotationList = xmlDoc.CreateElement("Annotations");
-                root.AppendChild(annotationList);
-                foreach (var n in annotations)
-                {
-                    var annotation = n.Serialize(xmlDoc, SaveContext.Save);
-                    annotationList.AppendChild(annotation);
-                }
-
-                //save the presets into the dyn file as a seperate element on the root
-                var presetsElement = xmlDoc.CreateElement("Presets");
-                root.AppendChild(presetsElement);
-                foreach (var preset in Presets)
-                {
-                    var presetState = preset.Serialize(xmlDoc, SaveContext.Save);
-                    presetsElement.AppendChild(presetState);
-                }
-
-                OnSaving(xmlDoc);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log(ex.Message);
-                Log(ex.StackTrace);
-                return false;
-            }
         }
 
         internal void SendModelEvent(Guid modelGuid, string eventName, int value)

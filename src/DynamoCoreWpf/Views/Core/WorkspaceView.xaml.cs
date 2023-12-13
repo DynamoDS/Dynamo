@@ -221,6 +221,12 @@ namespace Dynamo.Views
                         if (popup == NodeAutoCompleteSearchBar)
                         {
                             if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
+                            // if the MLRecommendation is default but user not accepting TOU, display notification
+                            if (ViewModel.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation && !ViewModel.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved)
+                            {
+                                ViewModel.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NotificationToAgreeMLNodeautocompleteTOU, true);
+                                return;
+                            }
                             // Force the Child visibility to change here because
                             // 1. Popup isOpen change does not necessarily update the child control before it take effect
                             // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control

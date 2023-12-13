@@ -17,7 +17,7 @@
 	 </ReferenceCopyLocalPaths>
 	</ItemDefinitionGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2965" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3241" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
@@ -71,7 +71,7 @@
   </ItemGroup>
   <Target Name="GegenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)GeometryUIImages.resx" OutputResources="$(ProjectDir)GeometryUIImages.resources" References="$(SystemDrawingDllPath)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)GeometryUIImages.resx" OutputResources="$(ProjectDir)GeometryUIImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)GeometryUIImages.resources" OutputAssembly="$(OutDir)GeometryUI.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

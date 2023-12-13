@@ -1,109 +1,21 @@
 {
-  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "Uuid": "45e7b53a-c877-477c-9f87-991968155b28",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "SerializeAsSAB",
+  "Name": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB",
   "ElementResolver": {
-    "ResolutionMap": {
-      "Color": {
-        "Key": "DSCore.Color",
-        "Value": "DSCoreNodes.dll"
-      },
-      "Display": {
-        "Key": "Display.Display",
-        "Value": "Display.dll"
-      }
-    }
+    "ResolutionMap": {}
   },
   "Inputs": [],
   "Outputs": [],
   "Nodes": [
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "2424301d34a145ee99076f3dc5dd68d9",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid@double",
-      "Id": "9222260d07494abbb34a20af71030c41",
       "Inputs": [
         {
-          "Id": "16178e26e51744fdab5e0b7f0c3af430",
-          "Name": "curve",
-          "Description": "Autodesk.DesignScript.Geometry.Curve",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "3e7760a894e2466eae792da178f5603a",
-          "Name": "distance",
-          "Description": "Distance to extrude\n\ndouble\nDefault value : 1",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "bbd1c92d23984abeb5c82bf5d77ffb5c",
-          "Name": "Solid",
-          "Description": "The extruded Solid",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Extrudes a Curve in the Normal direction by the specified distance. Curve must be closed.\n\nCurve.ExtrudeAsSolid (distance: double = 1): Solid"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
-      "Id": "30a8c0ffc0304a5b91193a44ccc5f608",
-      "Inputs": [
-        {
-          "Id": "25cc3041086244ef9418344d26514331",
-          "Name": "centerPoint",
-          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "e29ca60895c443d8bc85305318a150c6",
-          "Name": "radius",
-          "Description": "double\nDefault value : 1",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "52f6a737762d46898ef9a71fcd4bc89b",
-          "Name": "Circle",
-          "Description": "Circle",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB@Autodesk.DesignScript.Geometry.Geometry[]",
-      "Id": "1c8aa7366a3847edac7cd1805582c1a2",
-      "Inputs": [
-        {
-          "Id": "eef320c6c5894661a8cf1018a296436d",
+          "Id": "9b19faf87cd34eaa9ccd20395722b44c",
           "Name": "geometry",
           "Description": "Geometry[]",
           "UsingDefaultValue": false,
@@ -114,7 +26,7 @@
       ],
       "Outputs": [
         {
-          "Id": "03a1038355864c448d1c4deb554fa536",
+          "Id": "f484c914f6bb4274b28d62194c275178",
           "Name": "int[]",
           "Description": "int[]",
           "UsingDefaultValue": false,
@@ -123,18 +35,96 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB@Autodesk.DesignScript.Geometry.Geometry[]",
       "Replication": "Auto",
       "Description": "Serializes the specified geometry into Standard ACIS Binary(SAB) format and returns serialized binary stream data\n\nGeometry.SerializeAsSAB (geometry: Geometry[]): int[]"
     },
     {
-      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "NodeType": "ExtensionNode",
-      "Id": "0d7eacf6814d494398ab6534e2e2174c",
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "a0daed52f6994456a2f98a589ab59f95",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "105c5e86bfdd42c5b531eea7e085ca28",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "2;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "39f500aab3164286941717599deaf16b",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
-          "Id": "a0cf5420236f4c028b7526c494414a25",
-          "Name": "",
-          "Description": "Node to evaluate.",
+          "Id": "42a8beb099bc43bdab6e8e09886bc543",
+          "Name": "width",
+          "Description": "Width of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a65971a03fbb4070b1b5478d65b18d20",
+          "Name": "length",
+          "Description": "Length of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "803042b59f2d475c843caa350c2aa765",
+          "Name": "height",
+          "Description": "Height of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5fa5d80d0a1347c99b6287453660bfa3",
+          "Name": "Cuboid",
+          "Description": "Cuboid created by lengths",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double",
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at WCS origin, with width, length, and height.\n\nCuboid.ByLengths (width: double = 1, length: double = 1, height: double = 1): Cuboid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "5234c4ae9f0043028cae030274649e50",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8760cc837954476eac220777801faf97",
+          "Name": "filePath",
+          "Description": "Path to write to\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cee8264e67bd4abd91531452701faa59",
+          "Name": "data",
+          "Description": "List of lists to write into CSV\n\nvar[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -143,9 +133,41 @@
       ],
       "Outputs": [
         {
-          "Id": "b914610c120147f4ae47db666bcdff88",
+          "Id": "b229037d2d2446da97729d9524ce74f8",
+          "Name": "void",
+          "Description": "void",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSOffice.Data.ExportCSV@string,var[][]",
+      "Replication": "Auto",
+      "Description": "Write a list of lists into a file using a comma-separated values format. Outer list represents rows, inner lists represent columns.\n\nData.ExportCSV (filePath: string, data: var[][]): void"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "f4e0e97fc2194ad9b6d51134c629718e",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "78b5af065467460398a3f5848cb29b51",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8d7cc15dee0d4bb49ac9fb7f5526dafa",
+          "Name": "",
+          "Description": "Node output",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -153,94 +175,203 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "2c592660460c4b00ad4c10740bcd6201",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "beae738eaaad4656b3773fbd99714632",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "C:\\Users\\tellro\\Downloads\\UpdatedDynamoSampleGraphs\\cuboidSAB.csv",
+      "InputValue": ".\\cuboidSAB.csv"
     }
   ],
   "Connectors": [
     {
-      "Start": "bbd1c92d23984abeb5c82bf5d77ffb5c",
-      "End": "eef320c6c5894661a8cf1018a296436d",
-      "Id": "52beb659f6c5435483c99ac785e0741d"
+      "Start": "f484c914f6bb4274b28d62194c275178",
+      "End": "78b5af065467460398a3f5848cb29b51",
+      "Id": "b5904df55ce848f4ab19c83e788ab273",
+      "IsHidden": "False"
     },
     {
-      "Start": "52f6a737762d46898ef9a71fcd4bc89b",
-      "End": "16178e26e51744fdab5e0b7f0c3af430",
-      "Id": "cc520e12b4f14f89a6506cf5fcaf0c9f"
+      "Start": "105c5e86bfdd42c5b531eea7e085ca28",
+      "End": "42a8beb099bc43bdab6e8e09886bc543",
+      "Id": "c836e734a6d74364ace1ae5876d70c3d",
+      "IsHidden": "False"
     },
     {
-      "Start": "03a1038355864c448d1c4deb554fa536",
-      "End": "a0cf5420236f4c028b7526c494414a25",
-      "Id": "0b7422b62b1b41e3abcbb0dec00d033a"
+      "Start": "105c5e86bfdd42c5b531eea7e085ca28",
+      "End": "a65971a03fbb4070b1b5478d65b18d20",
+      "Id": "7fd4b43619eb4031a79825ba032a596a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "105c5e86bfdd42c5b531eea7e085ca28",
+      "End": "803042b59f2d475c843caa350c2aa765",
+      "Id": "fecc920286cc4771bf9b9f0fb35b73c6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5fa5d80d0a1347c99b6287453660bfa3",
+      "End": "9b19faf87cd34eaa9ccd20395722b44c",
+      "Id": "d47e3b2ce2b9459fbd94e3229071144c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8d7cc15dee0d4bb49ac9fb7f5526dafa",
+      "End": "cee8264e67bd4abd91531452701faa59",
+      "Id": "e3f9901a0f8d4b9f8c7ffa1837138cd0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "beae738eaaad4656b3773fbd99714632",
+      "End": "8760cc837954476eac220777801faf97",
+      "Id": "b65972230c0c442c995e1ee8f32adf28",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.5055",
+      "Version": "2.19.4.6632",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
-      "EyeX": -0.52827745676040649,
-      "EyeY": 3.0270106792449951,
-      "EyeZ": 3.8986048698425293,
-      "LookX": 3.3505916595458984,
-      "LookY": -4.38075065612793,
-      "LookZ": -7.4591059684753418,
-      "UpX": 0.11156784743070602,
-      "UpY": 0.96221798658370972,
-      "UpZ": -0.24837298691272736
+      "Name": "_Background Preview",
+      "EyeX": -3.6967225074768066,
+      "EyeY": 6.2835097312927246,
+      "EyeZ": 9.7791213989257813,
+      "LookX": 4.1121954917907715,
+      "LookY": -4.594825267791748,
+      "LookZ": -11.491615295410156,
+      "UpX": 0.048345595598220825,
+      "UpY": 0.98965144157409668,
+      "UpZ": -0.13510327041149139
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "Curve.ExtrudeAsSolid",
-        "Id": "9222260d07494abbb34a20af71030c41",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -211.38446802603653,
-        "Y": 2817.235439445
-      },
-      {
-        "ShowGeometry": false,
-        "Name": "Circle.ByCenterPointRadius",
-        "Id": "30a8c0ffc0304a5b91193a44ccc5f608",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -534.38446802603653,
-        "Y": 2817.235439445
-      },
-      {
-        "ShowGeometry": true,
+        "Id": "2424301d34a145ee99076f3dc5dd68d9",
         "Name": "Geometry.SerializeAsSAB",
-        "Id": "1c8aa7366a3847edac7cd1805582c1a2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 88.615531973963471,
-        "Y": 2817.235439445
+        "ShowGeometry": true,
+        "X": 520.74950798377211,
+        "Y": 171.92333194220728
       },
       {
-        "ShowGeometry": true,
-        "Name": "Watch",
-        "Id": "0d7eacf6814d494398ab6534e2e2174c",
+        "Id": "a0daed52f6994456a2f98a589ab59f95",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 389.61553197396347,
-        "Y": 2817.235439445
+        "ShowGeometry": true,
+        "X": -41.750492016227895,
+        "Y": 205.75083194220727
+      },
+      {
+        "Id": "39f500aab3164286941717599deaf16b",
+        "Name": "Cuboid.ByLengths",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 212.24950798377211,
+        "Y": 171.92333194220728
+      },
+      {
+        "Id": "5234c4ae9f0043028cae030274649e50",
+        "Name": "Data.ExportCSV",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1259.2495079837722,
+        "Y": 137.92333194220728
+      },
+      {
+        "Id": "f4e0e97fc2194ad9b6d51134c629718e",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 882.24950798377211,
+        "Y": 171.92333194220731
+      },
+      {
+        "Id": "2c592660460c4b00ad4c10740bcd6201",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 885.09798427042711,
+        "Y": 5.6222861760427634
       }
     ],
-    "Annotations": [],
-    "X": 749.326350559705,
-    "Y": -5329.90689548734,
-    "Zoom": 1.90479712435349
+    "Annotations": [
+      {
+        "Id": "a72e8353dd814ebcbcf6c6fea8f841d9",
+        "Title": "Serialized Binary stream data as Integers",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 533.24950798377211,
+        "Top": 121.92333194220728,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "2424301d34a145ee99076f3dc5dd68d9"
+      }
+    ],
+    "X": 193.42363603641479,
+    "Y": 251.58970230823871,
+    "Zoom": 0.50908019745208166
   }
 }

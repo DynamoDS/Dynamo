@@ -8,6 +8,7 @@ using Dynamo.Graph.Workspaces;
 using System.Collections.Generic;
 using Dynamo.Graph;
 using Dynamo.Extensions;
+using Dynamo.Logging;
 
 namespace Dynamo.Models
 {
@@ -157,6 +158,11 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceAdded;
             if (handler != null) handler(obj);
+
+            if (obj is CustomNodeWorkspaceModel)
+                Analytics.TrackScreenView("CustomWorkspace");
+            else
+                Analytics.TrackScreenView("Workspace");
 
             WorkspaceEvents.OnWorkspaceAdded(obj.Guid, obj.Name, obj.GetType());
         }
@@ -541,12 +547,12 @@ namespace Dynamo.Models
         /// <summary>
         /// This event is used to raise a toast notification from the DynamoViewModel 
         /// </summary>
-        internal event Action<string> RequestNotification;
-        internal void OnRequestNotification(string notification)
+        internal event Action<string, bool> RequestNotification;
+        internal void OnRequestNotification(string notification, bool stayOpen = false)
         {
             if (RequestNotification != null)
             {
-                RequestNotification(notification);
+                RequestNotification(notification, stayOpen);
             }
         }
 
