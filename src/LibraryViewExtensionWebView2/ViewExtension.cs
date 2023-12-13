@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -35,7 +35,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 viewParams = viewLoadedParams;
                 controller = new LibraryViewController(viewLoadedParams.DynamoWindow, viewLoadedParams.CommandExecutive, customization);
-                controller.AddLibraryView();
                 (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
             }
             

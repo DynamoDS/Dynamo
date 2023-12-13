@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Dynamo.Applications;
+using Dynamo.Models;
 using NUnit.Framework;
 
 namespace IntegrationTests
@@ -62,7 +63,7 @@ namespace IntegrationTests
         public void DynamoMakeModelWithHostName()
         {
             var model = Dynamo.Applications.StartupUtils.MakeModel(false, string.Empty, "DynamoFormIt");
-            Assert.AreEqual(model.HostAnalyticsInfo.HostName, "DynamoFormIt");
+            Assert.AreEqual(DynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
         }
 
         [Test]

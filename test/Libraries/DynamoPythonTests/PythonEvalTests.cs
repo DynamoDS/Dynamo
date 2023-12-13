@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -7,7 +7,7 @@ using DSCPython;
 using System.IO;
 using Dynamo;
 using Dynamo.PythonServices;
- using Lucene.Net.Util;
+using Dynamo.PythonServices.EventHandlers;
 
  namespace DSPythonTests
 {
@@ -149,6 +149,51 @@ print 'hello'
             }
         }
 
+        [Test]
+        public void CPythonEngineWithErrorRaisesCorrectEvent()
+        {
+
+            var count = 0;
+            EvaluationFinishedEventHandler handler = (state, scope, codeString, bindings) =>
+            {
+                count = count + 1;
+                if (count == 1)
+                {
+                    Assert.AreEqual(EvaluationState.Success, state);
+                }
+                else if (count == 2)
+                {
+                    Assert.AreEqual(EvaluationState.Failed, state);
+                }
+            };
+
+            CPythonEvaluator.Instance.EvaluationFinished += handler;
+
+            var code = @"1";
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+            }
+            finally
+            {
+                Assert.AreEqual(1, count);
+            }
+
+            code = @"1/a";
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+            }
+            catch
+            {
+                //we anticipate an undefined var error.
+            }
+            finally
+            {
+                CPythonEvaluator.Instance.EvaluationFinished -= handler;
+                Assert.AreEqual(2, count);
+            }
+        }
 
         [Test]
         public void OutputPythonObjectDoesNotThrow()

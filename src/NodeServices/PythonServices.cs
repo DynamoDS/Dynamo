@@ -9,20 +9,6 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.PythonServices.EventHandlers;
 
-namespace PythonNodeModels
-{
-    /// <summary>
-    /// Enum of possible values of python engine versions.
-    /// </summary>
-    [Obsolete("This Enum will be removed in a future version of Dynamo")]
-    internal enum PythonEngineVersion
-    {
-        Unspecified,
-        IronPython2,
-        CPython3,
-        Unknown
-    }
-}
 
 namespace Dynamo.PythonServices.EventHandlers
 {
@@ -125,9 +111,11 @@ namespace Dynamo.PythonServices
         public static PythonEngineManager Instance { get { return lazy.Value; } }
         #endregion
 
+        //TODO see DYN-6550 when hiding/replacing this obsolete field.
         /// <summary>
         /// An observable collection of all the loaded Python engines
         /// </summary>
+        [Obsolete("AvailableEngines field will be replaced in a future Dynamo release.")]
         public ObservableCollection<PythonEngine> AvailableEngines;
 
         #region Constant strings
@@ -196,9 +184,9 @@ namespace Dynamo.PythonServices
             }
         }
 
-        private PythonEngine GetEngine(string version)
+        private PythonEngine GetEngine(string name)
         {
-            return AvailableEngines.FirstOrDefault(x => x.Name == version);
+            return AvailableEngines.FirstOrDefault(x => x.Name == name);
         }
 
         // This method can throw exceptions.

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -92,7 +93,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Package Publish entry, binded to the host multi-selection option
         /// </summary>
-        public class HostComboboxEntry
+        public class HostComboboxEntry : NotificationObject 
         {
             /// <summary>
             /// Name of the host
@@ -102,7 +103,16 @@ namespace Dynamo.PackageManager
             /// <summary>
             /// Boolean indicates if the host entry is selected
             /// </summary>
-            public bool IsSelected { get; set; }
+            private bool _isSelected;
+            public bool IsSelected
+            {
+                get { return _isSelected; }
+                set
+                {
+                    _isSelected = value;
+                    RaisePropertyChanged(nameof(IsSelected));
+                }
+            }
 
             /// <summary>
             /// Constructor
@@ -112,6 +122,14 @@ namespace Dynamo.PackageManager
             {
                 HostName = hostName;
                 IsSelected = false;
+            }
+
+            /// <summary>
+            /// Reset the state of the `IsSelected` property without raising update
+            /// </summary>
+            internal void ResetState()
+            {
+                this._isSelected = false;
             }
         }
 
@@ -190,6 +208,7 @@ namespace Dynamo.PackageManager
                 {
                     _isNewVersion = value;
                     RaisePropertyChanged("IsNewVersion");
+                    RaisePropertyChanged("CanEditName");
                 }
             }
         }
@@ -255,6 +274,7 @@ namespace Dynamo.PackageManager
                 {
                     _group = value;
                     RaisePropertyChanged("Group");
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -273,6 +293,7 @@ namespace Dynamo.PackageManager
                 {
                     _Description = value;
                     RaisePropertyChanged("Description");
+                    RaisePropertyChanged(nameof(HasChanges));
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
@@ -301,6 +322,7 @@ namespace Dynamo.PackageManager
 
                     _Keywords = value;
                     RaisePropertyChanged("Keywords");
+                    RaisePropertyChanged(nameof(HasChanges));
                     KeywordList = value.Split(' ').Where(x => x.Length > 0).ToList();
                 }
             }
@@ -354,6 +376,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _MinorVersion = value;
                     RaisePropertyChanged("MinorVersion");
+                    RaisePropertyChanged(nameof(HasChanges));
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
@@ -380,6 +403,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _BuildVersion = value;
                     RaisePropertyChanged("BuildVersion");
+                    RaisePropertyChanged(nameof(HasChanges));
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
@@ -406,6 +430,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _MajorVersion = value;
                     RaisePropertyChanged("MajorVersion");
+                    RaisePropertyChanged(nameof(HasChanges));
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
@@ -429,6 +454,7 @@ namespace Dynamo.PackageManager
                 {
                     _license = value;
                     RaisePropertyChanged(nameof(License));
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -444,6 +470,7 @@ namespace Dynamo.PackageManager
             {
                 copyrightHolder = value;
                 RaisePropertyChanged(nameof(CopyrightHolder));
+                RaisePropertyChanged(nameof(HasChanges));
             }
         }
 
@@ -458,6 +485,7 @@ namespace Dynamo.PackageManager
             {
                 copyrightYear = value;
                 RaisePropertyChanged(nameof(CopyrightYear));
+                RaisePropertyChanged(nameof(HasChanges));
             }
         }
 
@@ -475,6 +503,7 @@ namespace Dynamo.PackageManager
                 {
                     _siteUrl = value;
                     RaisePropertyChanged("SiteUrl");
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -493,6 +522,7 @@ namespace Dynamo.PackageManager
                 {
                     _repositoryUrl = value;
                     RaisePropertyChanged("RepositoryUrl");
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -516,6 +546,8 @@ namespace Dynamo.PackageManager
                         SubmitCommand.RaiseCanExecuteChanged();
                         PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
+
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -581,6 +613,7 @@ namespace Dynamo.PackageManager
                     SelectedHostsString = SelectedHostsString.Trim().TrimEnd(',');
                     RaisePropertyChanged( nameof(SelectedHosts));
                     RaisePropertyChanged( nameof(SelectedHostsString));
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -598,6 +631,7 @@ namespace Dynamo.PackageManager
                 {
                     selectedHostsString = value;
                     RaisePropertyChanged(nameof(SelectedHostsString));
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -750,6 +784,7 @@ namespace Dynamo.PackageManager
                 {
                     _additionalFiles = value;
                     RaisePropertyChanged("AdditionalFiles");
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -775,6 +810,7 @@ namespace Dynamo.PackageManager
             {
                 dependencyNames = value; 
                 RaisePropertyChanged(nameof(DependencyNames));
+                RaisePropertyChanged(nameof(HasChanges));
             }
         }
 
@@ -883,7 +919,16 @@ namespace Dynamo.PackageManager
             {
                 _rootFolder = value;
                 RaisePropertyChanged(nameof(RootFolder));
+                RaisePropertyChanged(nameof(HasChanges));
             }
+        }
+
+        /// <summary>
+        /// Indicates if the user has made any changes to the current publish package form
+        /// </summary>
+        public bool HasChanges
+        {
+            get { return AnyUserChanges(); }
         }
 
         #endregion
@@ -1069,6 +1114,15 @@ namespace Dynamo.PackageManager
 
         private void ClearAllEntries()
         {
+            if (DynamoModel.IsTestMode) return;
+
+            try
+            {
+                this.KnownHosts.ForEach(host => host.ResetState());
+                this.KnownHosts.ForEach(host => host.IsSelected = false);
+            }
+            catch { Exception ex; }
+
             // this function clears all the entries of the publish package dialog
             this.Name = string.Empty;
             this.RepositoryUrl = string.Empty;
@@ -1082,11 +1136,14 @@ namespace Dynamo.PackageManager
             this.BuildVersion = "0";
             this.ErrorString = string.Empty;
             this.Uploading = false;
-            // Clearing the UploadHandle when using Submit currently throws - check trheading
+            // Clearing the UploadHandle when using Submit currently throws - when testing? - check trheading
             try
-            { 
-                this._uploadHandle.PropertyChanged -= UploadHandleOnPropertyChanged;
-                this.UploadHandle = null;
+            {
+                if (this._uploadHandle != null)
+                {
+                    this._uploadHandle.PropertyChanged -= UploadHandleOnPropertyChanged;
+                    this.UploadHandle = null;
+                }
             }
             catch { Exception ex; }
             this.IsNewVersion = false;
@@ -1095,13 +1152,14 @@ namespace Dynamo.PackageManager
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<PackageAssembly>();
+            this.SelectedHostsString = string.Empty;    
             this.SelectedHosts = new List<String>();
-            this.SelectedHostsString = string.Empty;
             this.copyrightHolder = string.Empty;
             this.copyrightYear = string.Empty;
             this.RootFolder = string.Empty;
             this.ClearMarkdownDirectory();
             this.ClearPackageContents();
+            this.KeywordsCollection?.Clear();
         }
 
         /// <summary>
@@ -1135,23 +1193,31 @@ namespace Dynamo.PackageManager
         private void ClearPackageContents()
         {
             //  this method clears the package contents in the publish package dialog
+            if (this.Package != null) this.Package = null;
 
-            this.Package = null;
-            //System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            //{
-                // Make changes to your ObservableCollection or other UI-bound collection here.
+            // Make changes to your ObservableCollection or other UI-bound collection here.
+            if (this.PackageContents.Any())
+            {
                 this.PackageContents.Clear();
-                this.PreviewPackageContents.Clear();
-                this.RootContents.Clear();
-                this.CustomDyfFilepaths.Clear();
-
                 RaisePropertyChanged(nameof(PackageContents));
+            }
+            if (this.PreviewPackageContents.Any())
+            {
+                this.PreviewPackageContents.Clear();
                 RaisePropertyChanged(nameof(PreviewPackageContents));
+            }
+            if (this.RootContents.Any())
+            {
+                this.RootContents.Clear();
                 RaisePropertyChanged(nameof(RootContents));
+            }
+            if (this.CustomDyfFilepaths.Any())
+            {
+                this.CustomDyfFilepaths.Clear();
                 RaisePropertyChanged(nameof(CustomDyfFilepaths));
+            }
                     
-                this.CustomNodeDefinitions = new List<CustomNodeDefinition>();
-            //});
+            this.CustomNodeDefinitions = new List<CustomNodeDefinition>();         
         }
 
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1286,7 +1352,7 @@ namespace Dynamo.PackageManager
         public void OnPublishSuccess()
         {
             if (PublishSuccess != null)
-                PublishSuccess(this);
+                PublishSuccess(this);       
         }
 
         private void UploadHandleOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -1422,12 +1488,13 @@ namespace Dynamo.PackageManager
         private void UpdateDependencies()
         {
             Dependencies.Clear();
-            GetAllDependencies().ToList().ForEach(Dependencies.Add);
+            GetAllDependencies()?.ToList().ForEach(Dependencies.Add);
         }
 
         private IEnumerable<PackageDependency> GetAllDependencies()
         {
             var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            if (pmExtension == null) return null;
             var pkgLoader = pmExtension.PackageLoader;
 
             // all workspaces
@@ -2112,7 +2179,7 @@ namespace Dynamo.PackageManager
                 AppendPackageContents();
 
                 Package.Dependencies.Clear();
-                GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
+                GetAllDependencies()?.ToList().ForEach(Package.Dependencies.Add);
 
                 Package.HostDependencies = Enumerable.Empty<string>();
                 Package.HostDependencies = SelectedHosts;
@@ -2304,6 +2371,12 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            if (Description.Length <= 10)
+            {
+                ErrorString = Resources.DescriptionNeedMoreCharacters;
+                return false;
+            }
+
             if (MajorVersion.Length <= 0)
             {
                 ErrorString = Resources.MajorVersionNonNegative;
@@ -2363,22 +2436,6 @@ namespace Dynamo.PackageManager
                          .ToList();
             try
             {
-                var unqualifiedFiles = GetAllUnqualifiedFiles();
-
-                if (files == null || files.Count() < 1 || unqualifiedFiles.Count() > 0)
-                {
-                    string filesCannotBePublished = null;
-                    foreach (var file in unqualifiedFiles)
-                    {
-                        filesCannotBePublished = filesCannotBePublished + file + "\n";
-                    }
-                    string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
-                    UploadState = PackageUploadHandle.State.Error;
-                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    return;
-                }
-
                 // Generate the Package Name, either based on the user 'Description', or the root path name, if no 'Description' yet
                 var packageName = !string.IsNullOrEmpty(Name) ? Name : Path.GetFileName(publishPath);
                 var rootItemPreview = RetainFolderStructureOverride ?

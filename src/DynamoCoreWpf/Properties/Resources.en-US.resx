@@ -764,7 +764,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement to _Collect Usability Data</value>
+    <value>Agreement and _Terms of Use</value>
     <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
@@ -1229,7 +1229,7 @@ Failed to publish file(s):
     <value>Library</value>
   </data>
   <data name="MajorVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Major version as a non-negative integer.</value>
+    <value>Provide major, minor, and build version number.</value>
     <comment>ErrorString</comment>
   </data>
   <data name="Manual" xml:space="preserve">
@@ -1413,7 +1413,7 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
   <data name="NameNeedMoreCharacters" xml:space="preserve">
     <value>Must be at least 3 characters</value>
     <comment>ErrorString</comment>
-  </data>    
+  </data>
   <data name="PackageManagerProvidePackageName" xml:space="preserve">
     <value>Provide package name</value>
     <comment>ErrorString</comment>
@@ -1843,6 +1843,9 @@ Next assemblies were loaded several times:
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
   </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
   <data name="PublishPackageMessage" xml:space="preserve">
     <value>Package published successfully. 
 Want to publish a different package?</value>
@@ -1905,7 +1908,7 @@ Want to publish a different package?</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package. When a new version of a package is added, version number must be increased.</value>
-  </data>    
+  </data>
   <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
     <value>Website link for the package.</value>
   </data>
@@ -2217,7 +2220,10 @@ Installing the latest update requires Dynamo and any host applications to close.
 Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement to Collect Usability Data</value>
+    <value>Agreement and Terms of Use</value>
+  </data>
+  <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
+    <value>I agree to ML Node Autocomplete Terms of Use</value>
   </data>
   <data name="UseLevelKeepListStructureHint" xml:space="preserve">
     <value>Keep 1 input list's nesting</value>
@@ -2310,7 +2316,7 @@ Uninstall the following packages: {0}?</value>
     <value>Filter by</value>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialogTooltip" xml:space="preserve">
-    <value>Display the dialog for user to pick agreement on data collecting.</value>
+    <value>Display the dialog of agreement on data collecting and Machine Learning Node Autocomplete terms of use</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -3091,7 +3097,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Hide Wire</value>
   </data>
   <data name="PackagesGuideFindPackageText" xml:space="preserve">
-    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**.</value>
+    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Package Manager...**.</value>
   </data>
   <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
     <value>Find a package</value>
@@ -3233,12 +3239,12 @@ To install the latest version of a package, click Install. \n
   <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
     <value>Node Library</value>
   </data>
-    <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
     <value>When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
 
 Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
     </value>
-  </data>    
+  </data>
   <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
     <value>DLL file containing types and methods that Dynamo imports as nodes. Mark ZeroTouch, NodeModel, or NodeViewCustomization DLLs and types you want to import into Dynamo as node libraries.</value>
   </data>
@@ -3609,6 +3615,9 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="PackageDeprecatedTooltip" xml:space="preserve">
     <value>This package is outdated and cannot be installed.</value>
   </data>
+  <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
+    <value>Publish Version</value>
+  </data>
   <data name="SplashScreenViewExtensions" xml:space="preserve">
     <value>Loading View Extensions...</value>
   </data>
@@ -3848,5 +3857,29 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="ElementBindingDesc" xml:space="preserve">
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
+  </data>
+  <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
+    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use.</value>
+  </data>
+  <data name="GESUnitCentimeters" xml:space="preserve">
+    <value>Centimeters</value>
+  </data>
+  <data name="GESUnitFeet" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="GESUnitInches" xml:space="preserve">
+    <value>Inches</value>
+  </data>
+  <data name="GESUnitKilometers" xml:space="preserve">
+    <value>Kilometers</value>
+  </data>
+  <data name="GESUnitMeters" xml:space="preserve">
+    <value>Meters</value>
+  </data>
+  <data name="GESUnitMiles" xml:space="preserve">
+    <value>Miles</value>
+  </data>
+  <data name="GESUnitMillimeters" xml:space="preserve">
+    <value>Millimeters</value>
   </data>
 </root>

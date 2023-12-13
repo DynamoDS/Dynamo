@@ -76,7 +76,7 @@ namespace Dynamo.Extensions
             pathManager = dynamoModel.PathManager;
             libraryLoader = new ExtensionLibraryLoader(dynamoModel);
             customNodeManager = dynamoModel.CustomNodeManager;
-            dynamoVersion = new Version(dynamoModel.Version);
+            dynamoVersion = new Version(DynamoModel.Version);
             preferences = dynamoModel.PreferenceSettings;
             linterManager = dynamoModel.LinterManager;
             IsGeometryLibraryLoaded = dynamoModel.IsASMLoaded;

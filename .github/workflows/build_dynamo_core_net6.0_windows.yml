@@ -1,6 +1,12 @@
-# Build Dynamo using latest VS and DotNET
-name: Dynamo-net6.0-Build
-on: [push,pull_request]
+# Build DynamoCore.sln with .NET 6.0 on windows
+name: Build DynamoCore.sln net6.0 windows
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
 jobs:
  build:
   runs-on: windows-latest
@@ -11,7 +17,7 @@ jobs:
         path: Dynamo
         repository: DynamoDS/Dynamo
     - name: Setup dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0.x'
     - name: Disable problem matcher
@@ -19,7 +25,7 @@ jobs:
 
     - name: Install dependencies for windows runtime
       run: |
-        dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.sln /p:Configuration=Release --runtime=win10-x64
+        dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.sln /p:Configuration=Release --runtime=win-x64
     - name: Build Dynamo with MSBuild for Windows
       run: |
         echo "***Continue with the build, Good luck developer!***"

@@ -1033,7 +1033,7 @@ namespace Dynamo.ViewModels
             {
                 // HostAnalyticsInfo is not set when this is invoked??
                 //return this.dynamoViewModel.Model.HostAnalyticsInfo.HostName.Equals("Dynamo Revit");
-                var host = this.dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+                var host = DynamoModel.HostAnalyticsInfo.HostName;
 
                 if (host != null)
                 {
@@ -1065,6 +1065,17 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
                 RaisePropertyChanged(nameof(EnableHideNodesToggle));
                 RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// If MLAutocompleteTOU is approved
+        /// </summary>
+        internal bool IsMLAutocompleteTOUApproved
+        {
+            get
+            {
+                return preferenceSettings.IsMLAutocompleteTOUApproved;
             }
         }
 
@@ -1228,7 +1239,7 @@ namespace Dynamo.ViewModels
         private void AddPythonEnginesOptions()
         {
             var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
-            foreach (var item in PythonEngineManager.Instance.AvailableEngines)
+            foreach (var item in PythonEngineManager.Instance.AvailableEngines.GroupBy(x=>x.Name).Select(g=>g.FirstOrDefault()).ToList())
             {
                 options.Add(item.Name);
             }
@@ -1279,6 +1290,35 @@ namespace Dynamo.ViewModels
 
             return setSettings(newPreferences);
         }
+
+        /// <summary>
+        /// Returns localized resource strings for Units
+        /// </summary>
+        private string GetLocalizedUnits(Enum value)
+        {
+            if (value != null)
+            {
+                switch (value)
+                {
+                    case Configurations.Units.Millimeters:
+                        return Res.GESUnitMillimeters;
+                    case Configurations.Units.Centimeters:
+                        return Res.GESUnitCentimeters;
+                    case Configurations.Units.Kilometers:
+                        return Res.GESUnitKilometers;
+                    case Configurations.Units.Meters:
+                        return Res.GESUnitMeters;
+                    case Configurations.Units.Inches:
+                        return Res.GESUnitInches;
+                    case Configurations.Units.Feet:
+                        return Res.GESUnitFeet;
+                    case Configurations.Units.Miles:
+                        return Res.GESUnitMiles;
+                }
+            }
+            return null;
+        }
+
 
         private bool setSettings(PreferenceSettings newPreferences)
         {
@@ -1353,7 +1393,7 @@ namespace Dynamo.ViewModels
             SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
 
             // Chose the scaling unit, if option is allowed by user
-            UnitList = Configurations.SupportedUnits.Keys.Select(x => x.ToString()).ToObservableCollection();
+            UnitList = Configurations.SupportedUnits.Keys.Select(x => GetLocalizedUnits(x)).ToObservableCollection();
             SelectedUnits = Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key.ToString();
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;

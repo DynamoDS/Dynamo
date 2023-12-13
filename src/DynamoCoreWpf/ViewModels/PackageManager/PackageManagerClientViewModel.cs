@@ -885,7 +885,7 @@ namespace Dynamo.ViewModels
 
                 // Determine if there are any dependencies that are made with a newer version
                 // of Dynamo (this includes the root package)
-                var dynamoVersion = VersionUtilities.PartialParse(DynamoViewModel.Model.Version);
+                var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
                 var futureDeps = newPackageHeaders.Where(dep => VersionUtilities.PartialParse(dep.engine_version) > dynamoVersion);
 
                 // If any of the required packages use a newer version of Dynamo, show a dialog to the user

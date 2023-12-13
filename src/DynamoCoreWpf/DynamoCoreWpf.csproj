@@ -138,7 +138,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3171" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3241" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.0.3175" />
@@ -159,7 +159,7 @@
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
 	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="6.0.0" />
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
-      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
+      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\net6.0-windows\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference> 
   
     <PackageReference Include="Prism.Core" Version="8.1.97" />
@@ -319,9 +319,6 @@
     <Compile Include="Commands\PortCommands.cs" />
     <Compile Include="Commands\SearchCommands.cs" />
     <Compile Include="Commands\WorkspaceCommands.cs" />
-    <Compile Include="Controls\GraphUpdateNotificationControl.xaml.cs">
-      <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ImageBasedControls.cs" />
     <Compile Include="Controls\ShortcutToolbar.xaml.cs">
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
@@ -568,10 +565,6 @@
     <Page Include="Controls\NodeAutoCompleteSearchControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\GraphUpdateNotificationControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <None Include="UI\Themes\Modern\InPorts.xaml">
       <SubType>Designer</SubType>

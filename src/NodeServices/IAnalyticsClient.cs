@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace Dynamo.Logging
 {
@@ -517,6 +518,17 @@ namespace Dynamo.Logging
         IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value);
 
         /// <summary>
+        /// Creates a new task timed event with start state and tracks its start.
+        /// After task is compoleted, disposing the returnd event will record the event completion.
+        /// </summary>
+        /// <param name="category">Event category</param>
+        /// <param name="variable">Timed varaible name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <returns>Event as IDisposable</returns>
+        Task<IDisposable> CreateTaskTimedEvent(Categories category, string variable, string description, int? value);
+
+        /// <summary>
         /// Creates a new command event of the given name. Start of the 
         /// command is tracked. When the event is disposed, it's completion is tracked.
         /// </summary>
@@ -525,6 +537,22 @@ namespace Dynamo.Logging
         /// <param name="value">A metric value associated with the event</param>
         /// <returns>Event as IDisposable</returns>
         IDisposable CreateCommandEvent(string name, string description, int? value);
+
+        /// <summary>
+        /// Creates a new task command event of the given name. Start of the 
+        /// command is tracked. When the task is completed and the event is disposed, it's completion is tracked.
+        /// </summary>
+        /// <param name="name">Command name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <returns>Event as IDisposable</returns>
+        Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value);
+
+        /// <summary>
+        /// Waits for the given task to end so that it can dispose the event and
+        /// complete the tracking.
+        /// </summary>
+        void EndEventTask(Task<IDisposable> taskToEnd);
 
         /// <summary>
         /// Creates a new file operation event and tracks the start of the event.
@@ -536,5 +564,16 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
         IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description);
+
+        /// <summary>
+        /// Creates a new file operation task event and tracks the start of the event.
+        /// After the task is completed, disposing the returned event will record its completion.
+        /// </summary>
+        /// <param name="filepath">File path</param>
+        /// <param name="operation">File operation</param>
+        /// <param name="size">Size parameter</param>
+        /// <param name="description">Event description</param>
+        /// <returns>Event as IDisposable</returns>
+        Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description);
     }
 }

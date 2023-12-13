@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
-using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -232,6 +231,11 @@ namespace Dynamo.Graph.Workspaces
                 return currentPasteOffset + PasteOffsetStep;
             }
         }
+
+        /// <summary>
+        /// This is true only if the workspace contains legacy SOAP formatted binding data.
+        /// </summary>
+        internal bool ContainsLegacyTraceData { get; set; }
 
         internal bool ScaleFactorChanged = false;
 
@@ -1280,9 +1284,6 @@ namespace Dynamo.Graph.Workspaces
             get { return new Rect2D(x, y, width, height); }
         }
 
-        //TODO(Steve): This probably isn't needed inside of WorkspaceModel -- MAGN-5714
-        internal Version WorkspaceVersion { get; set; }
-
         /// <summary>
         /// Implements <see cref="ILocatable.CenterX"/> property.
         /// </summary>
@@ -1332,7 +1333,6 @@ namespace Dynamo.Graph.Workspaces
                 WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
             }
         }
-
         #endregion
 
         #region constructors
@@ -1373,7 +1373,6 @@ namespace Dynamo.Graph.Workspaces
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
             LastSaved = DateTime.Now;
 
-            WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;

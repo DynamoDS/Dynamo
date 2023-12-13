@@ -51,11 +51,12 @@ using System.Windows;
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
-[assembly: InternalsVisibleTo("DynamoPlayerExtension")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
 [assembly: InternalsVisibleTo("DynamoPlayer.WorkflowsUi")]
 [assembly: InternalsVisibleTo("UnitsUI")]
+[assembly: InternalsVisibleTo("DynamoPlayer")]
+[assembly: InternalsVisibleTo("DynamoConnector")]
 
 
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSpecification))]

@@ -53,5 +53,11 @@ namespace Views.PackageManager.Pages
                 Process.Start("explorer.exe", directory);
             }
         }
+
+        public void Dispose()
+        {
+            this.PublishPackageViewModel = null;
+            this.DataContextChanged -= PublishFinishPage_DataContextChanged;
+        }
     }
 }

@@ -160,6 +160,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I agree to ML Node Autocomplete Terms of Use.
+        /// </summary>
+        public static string AgreeToMLAutocompleteTOUText {
+            get {
+                return ResourceManager.GetString("AgreeToMLAutocompleteTOUText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk A360.
         /// </summary>
         public static string Autodesk360SignInButtonTitleToolTip {
@@ -2270,7 +2279,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement to _Collect Usability Data.
+        ///   Looks up a localized string similar to Agreement and _Terms of Use.
         /// </summary>
         public static string DynamoViewSettingMenuShowDataReportingDialog {
             get {
@@ -2279,7 +2288,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display the dialog for user to pick agreement on data collecting..
+        ///   Looks up a localized string similar to Display the dialog of agreement on data collecting and Machine Learning Node Autocomplete terms of use.
         /// </summary>
         public static string DynamoViewSettingMenuShowDataReportingDialogTooltip {
             get {
@@ -3152,6 +3161,69 @@ namespace Dynamo.Wpf.Properties {
         public static string GenericTaskDialogTitle {
             get {
                 return ResourceManager.GetString("GenericTaskDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Centimeters.
+        /// </summary>
+        public static string GESUnitCentimeters {
+            get {
+                return ResourceManager.GetString("GESUnitCentimeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feet.
+        /// </summary>
+        public static string GESUnitFeet {
+            get {
+                return ResourceManager.GetString("GESUnitFeet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inches.
+        /// </summary>
+        public static string GESUnitInches {
+            get {
+                return ResourceManager.GetString("GESUnitInches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kilometers.
+        /// </summary>
+        public static string GESUnitKilometers {
+            get {
+                return ResourceManager.GetString("GESUnitKilometers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meters.
+        /// </summary>
+        public static string GESUnitMeters {
+            get {
+                return ResourceManager.GetString("GESUnitMeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Miles.
+        /// </summary>
+        public static string GESUnitMiles {
+            get {
+                return ResourceManager.GetString("GESUnitMiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Millimeters.
+        /// </summary>
+        public static string GESUnitMillimeters {
+            get {
+                return ResourceManager.GetString("GESUnitMillimeters", resourceCulture);
             }
         }
         
@@ -4074,7 +4146,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You must provide a Major version as a non-negative integer..
+        ///   Looks up a localized string similar to Provide major, minor, and build version number..
         /// </summary>
         public static string MajorVersionNonNegative {
             get {
@@ -5063,6 +5135,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use..
+        /// </summary>
+        public static string NotificationToAgreeMLNodeautocompleteTOU {
+            get {
+                return ResourceManager.GetString("NotificationToAgreeMLNodeautocompleteTOU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to null.
         /// </summary>
         public static string NullString {
@@ -5723,6 +5804,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerMyPackagesControlName {
             get {
                 return ResourceManager.GetString("PackageManagerMyPackagesControlName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Version.
+        /// </summary>
+        public static string PackageManagerMyPackagesPublishVersion {
+            get {
+                return ResourceManager.GetString("PackageManagerMyPackagesPublishVersion", resourceCulture);
             }
         }
         
@@ -6555,7 +6645,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**..
+        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Package Manager...**..
         /// </summary>
         public static string PackagesGuideFindPackageText {
             get {
@@ -8088,6 +8178,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageRemoveFromPacakgeTooltip {
             get {
                 return ResourceManager.GetString("PublishPackageRemoveFromPacakgeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string PublishPackageResetButton {
+            get {
+                return ResourceManager.GetString("PublishPackageResetButton", resourceCulture);
             }
         }
         
@@ -9863,7 +9962,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement to Collect Usability Data.
+        ///   Looks up a localized string similar to Agreement and Terms of Use.
         /// </summary>
         public static string UsageReportPromptDialogTitle {
             get {
