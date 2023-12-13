@@ -445,6 +445,12 @@ namespace Dynamo.Logging
         Export
     }
 
+    public enum HeartBeatType
+    {
+        User,
+        Machine
+    }
+
     /// <summary>
     /// Implements analytics and logging functions. This interface is defined 
     /// for internal use only to implement analytics functions and mock the tests.
@@ -505,6 +511,13 @@ namespace Dynamo.Logging
         /// <param name="ex">Exception</param>
         /// <param name="isFatal">If it's fatal</param>
         void TrackException(Exception ex, bool isFatal);
+
+        /// <summary>
+        /// This API is used to track user/machine's activity status.
+        /// </summary>
+        /// <param name="activityType">Value must be: machine or user. If no value is provided the API will default to user activity type.</param>
+        /// <returns>0 if successful, otherwise returns an error code.</returns>
+        void TrackActivityStatus(string activityType);
 
         /// <summary>
         /// Creates a new timed event with start state and tracks its start.
