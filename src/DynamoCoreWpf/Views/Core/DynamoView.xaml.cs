@@ -2038,6 +2038,7 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         private void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
+            Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
@@ -2784,6 +2785,7 @@ namespace Dynamo.Controls
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
             dynamoViewModel.IsMouseDown = true;
         }
 
