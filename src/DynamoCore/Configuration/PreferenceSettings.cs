@@ -844,7 +844,7 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
-        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value
+        /// This property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
         internal Version ironPythonResolveTargetVersion = new Version(3, 0, 0);
