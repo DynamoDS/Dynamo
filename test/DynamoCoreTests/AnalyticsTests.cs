@@ -81,6 +81,9 @@ namespace Dynamo.Tests
             Analytics.TrackScreenView("TestScreen");
             clientMoq.Verify(c => c.TrackScreenView("TestScreen"), times);
 
+            Analytics.TrackActivityStatus("User");
+            clientMoq.Verify(c => c.TrackActivityStatus("User"), times);
+
             TestAnalytics.TrackException<InvalidOperationException>(false);
             clientMoq.Verify(c => c.TrackException(It.IsAny<InvalidOperationException>(), false), times);
 
