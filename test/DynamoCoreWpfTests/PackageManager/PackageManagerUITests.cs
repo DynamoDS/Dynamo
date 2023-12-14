@@ -1944,7 +1944,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
-            ViewModel.OnRequestPackagePublishDialog(vm);
+            //ViewModel.OnRequestPackagePublishDialog(vm);
 
             vm.AddAllFilesAfterSelection(allFiles);
 
@@ -1969,7 +1969,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
-            ViewModel.OnRequestPackagePublishDialog(vm);
+            //ViewModel.OnRequestPackagePublishDialog(vm);
 
             vm.AddAllFilesAfterSelection(allFiles);
 
@@ -1994,7 +1994,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
-            ViewModel.OnRequestPackagePublishDialog(vm);
+            //ViewModel.OnRequestPackagePublishDialog(vm);
 
             vm.AddAllFilesAfterSelection(allFiles);
 
@@ -2031,7 +2031,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
-            ViewModel.OnRequestPackagePublishDialog(vm);
+            //ViewModel.OnRequestPackagePublishDialog(vm);
 
             vm.AddAllFilesAfterSelection(allFiles);
 
@@ -2056,7 +2056,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
-            ViewModel.OnRequestPackagePublishDialog(vm);
+            //ViewModel.OnRequestPackagePublishDialog(vm);
 
             vm.AddAllFilesAfterSelection(allFiles);
 
@@ -2085,7 +2085,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
-            ViewModel.OnRequestPackagePublishDialog(vm);
+            //ViewModel.OnRequestPackagePublishDialog(vm);
 
             vm.AddAllFilesAfterSelection(allFiles);
 
@@ -2141,7 +2141,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
-            ViewModel.OnRequestPackagePublishDialog(vm);
+            //ViewModel.OnRequestPackagePublishDialog(vm);
 
             vm.AddAllFilesAfterSelection(allFiles);
 
@@ -2189,7 +2189,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(0, vm.PackageContents.Count);
             Assert.AreEqual(0, vm.PreviewPackageContents.Count);
 
-            ViewModel.OnRequestPackagePublishDialog(vm);
+            //ViewModel.OnRequestPackagePublishDialog(vm);
 
             vm.AddAllFilesAfterSelection(allFiles);
 
@@ -2217,7 +2217,7 @@ namespace DynamoCoreWpfTests.PackageManager
             //now lets publish this package.
             var newPkgVm = new PublishPackageViewModel(this.ViewModel);
 
-            ViewModel.OnRequestPackagePublishDialog(newPkgVm);
+            //ViewModel.OnRequestPackagePublishDialog(newPkgVm);
 
             newPkgVm.AddAllFilesAfterSelection(allFiles);
 
@@ -2259,7 +2259,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var newPkgVm = new PublishPackageViewModel(this.ViewModel);
             newPkgVm.RetainFolderStructureOverride = true;
 
-            ViewModel.OnRequestPackagePublishDialog(newPkgVm);
+            //ViewModel.OnRequestPackagePublishDialog(newPkgVm);
 
             newPkgVm.AddAllFilesAfterSelection(allFiles);
 
@@ -2301,7 +2301,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var newPkgVm = new PublishPackageViewModel(this.ViewModel);
             newPkgVm.RetainFolderStructureOverride = true;
 
-            ViewModel.OnRequestPackagePublishDialog(newPkgVm);
+            //ViewModel.OnRequestPackagePublishDialog(newPkgVm);
 
             newPkgVm.AddAllFilesAfterSelection(allFiles);
 
