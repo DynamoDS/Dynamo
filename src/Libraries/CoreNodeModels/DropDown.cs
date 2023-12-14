@@ -303,6 +303,7 @@ namespace CoreNodeModels
             // Restore the selection when selectedIndex is valid
             if (selectionState == SelectionState.Restore && !string.IsNullOrEmpty(currentSelection))
             {
+                SelectedIndex = -1;
                 for (int i = 0; i < items.Count; i++)
                 {
                     if (GetSelectedStringFromItem(items.ElementAt(i)).Equals(currentSelection))
