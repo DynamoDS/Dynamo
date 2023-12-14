@@ -111,12 +111,29 @@ namespace Dynamo.PythonServices
         public static PythonEngineManager Instance { get { return lazy.Value; } }
         #endregion
 
+        /// <summary>
+        /// A readonly collection of all the loaded Python engines
+        /// </summary>
+        public ReadOnlyCollection<PythonEngine> PythonEngines => new ReadOnlyCollection<PythonEngine>(AvailableEngines);
+
         //TODO see DYN-6550 when hiding/replacing this obsolete field.
         /// <summary>
         /// An observable collection of all the loaded Python engines
         /// </summary>
         [Obsolete("AvailableEngines field will be replaced in a future Dynamo release.")]
-        public ObservableCollection<PythonEngine> AvailableEngines;
+        internal ObservableCollection<PythonEngine> AvailableEngines;
+
+        public delegate void PythonEngineChangedHandler(PythonEngine engine);
+
+        /// <summary>
+        /// Event that is triggered for every new engine that is added.
+        /// </summary>
+        public static PythonEngineChangedHandler PythonEngineAdded;
+
+        /// <summary>
+        /// Event that is triggered for every engine that is removed.
+        /// </summary>
+        public static PythonEngineChangedHandler PythonEngineRemoved;
 
         #region Constant strings
         
@@ -157,13 +174,28 @@ namespace Dynamo.PythonServices
         private PythonEngineManager()
         {
             AvailableEngines = new ObservableCollection<PythonEngine>();
-
+            AvailableEngines.CollectionChanged += AvailableEngines_CollectionChanged;
             // We check only for the default python engine because it is the only one loaded by static references.
             // Other engines can only be loaded through package manager
             LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
                FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
 
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
+        }
+
+        private void AvailableEngines_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                for (var ii=0; ii< e.NewItems.Count; ii++)
+                    PythonEngineAdded?.Invoke(e.NewItems[ii] as PythonEngine);
+            }
+
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                for (var ii = 0; ii < e.OldItems.Count; ii++)
+                    PythonEngineRemoved?.Invoke(e.OldItems[ii] as PythonEngine);
+            }
         }
 
         private void LoadDefaultPythonEngine(Assembly a)
