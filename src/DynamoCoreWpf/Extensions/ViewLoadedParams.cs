@@ -86,12 +86,6 @@ namespace Dynamo.Wpf.Extensions
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
         }
 
-        [Obsolete("Method will be deprecated in a future version of Dynamo, please use AddExtensionMenuItem")]
-        public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
-        {
-            AddItemToMenu(type, menuItem, index);
-        }
-
         /// <summary>
         /// Adds a menu item to the extensions menu
         /// Items will be ordered alphabetically
