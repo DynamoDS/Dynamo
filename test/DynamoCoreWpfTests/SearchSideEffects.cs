@@ -125,7 +125,7 @@ namespace Dynamo.Tests
         public void LuceneSearchNodesByCategoryValidation()
         {
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
-            string category = "Core.Input";
+            string category = "Core.Input.";
 
             // Search and check that the results are correct based in the node name provided for the searchTerm
             var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(category);
@@ -141,6 +141,42 @@ namespace Dynamo.Tests
             }
         }
 
+        /// <summary>
+        /// This test validates several cases using Search Category Based (like "category.node")
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void LuceneValidateCategoryBasedSearch()
+        {
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
+            string category = "FileSystem";
+            string nodeName = "F";
+            string searchTerm = category + "." + nodeName;
+
+            // Search and check that the results are correct based in the node name provided for the searchTerm
+            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm);
+
+            //Take the first 5 elements in the results
+            var topFourResults = nodesResult.Take(5);
+            //Validate that the top 4 elements in the results start with "F"
+            Assert.That(topFourResults.Where(x => x.Name.StartsWith(nodeName)).Count() == 4, Is.True);
+            //Validate that the top 5 elements in the results belong to the FileSystem category
+            Assert.That(topFourResults.Where(x => x.Class.Equals(category)).Count() == 5);
+
+            nodeName = "Append";
+            searchTerm = category + "." + nodeName;
+            nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm);
+            //Validate that the first in the node is AppendText
+            Assert.That(nodesResult.Take(1).First().Name.StartsWith(nodeName), Is.True);
+            //Validate that the first result belong to the FileSystem category
+            Assert.That(nodesResult.Take(1).First().Class == category, Is.True);
+
+            searchTerm = ".";
+            //This search should not return results since we are searching just for the "." char
+            nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm);
+            Assert.That(nodesResult.Count() == 0, Is.True);
+        }
+
         //This test will validate that resulting nodes have a specific order
         [Test]
         [Category("UnitTests")]
@@ -151,7 +187,7 @@ namespace Dynamo.Tests
             List<string> expectedSearchResults1 = new List<string> { "number", "number slider", "round" };
 
             string searchTerm2 = "list.join";
-            List<string> expectedSearchResults2 = new List<string> { "join", "list create", "list.map" };
+            List<string> expectedSearchResults2 = new List<string> { "join", "list create", "range" };
 
             // Search and check that the results are correct based in the node name provided for the searchTerm
             var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm);

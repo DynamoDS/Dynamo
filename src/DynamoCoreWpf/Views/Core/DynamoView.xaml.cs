@@ -1360,7 +1360,6 @@ namespace Dynamo.Controls
             BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
             background_grid.Children.Add(BackgroundPreview);
             BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
-            BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
             var vizBinding = new Binding
             {
                 Source = dynamoViewModel.BackgroundPreviewViewModel,
@@ -2042,6 +2041,7 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         private void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
+            Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
@@ -2788,6 +2788,7 @@ namespace Dynamo.Controls
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
             dynamoViewModel.IsMouseDown = true;
         }
 
