@@ -266,9 +266,10 @@ namespace Dynamo
         {
             var settings = new PreferenceSettings
             {
-                CustomPackageFolders = new List<string>{packageDir},
+                CustomPackageFolders = new List<string> { packageDir },
                 //need to mock this because PreferenceSettings.SelectedPackagePathForInstall uses an event to get UserDataFolder from PathManager
-                SelectedPackagePathForInstall = packageDir
+                SelectedPackagePathForInstall = packageDir,
+                IronPythonResolveTargetVersion = new Version(2,4,0).ToString(),
             };
             settings.Save(filePath);
         }
@@ -382,6 +383,37 @@ namespace Dynamo
             // Assert that new SelectedPackagePath is not equal to the old path.
             Assert.AreNotEqual(sourcePrefs.SelectedPackagePathForInstall,
                 targetMigrator.PreferenceSettings.SelectedPackagePathForInstall);
+        }
+        [Test]
+        [Category("UnitTests")]
+        public void IronPythonVersionIsNotMigrated()
+        {
+            // Create some mock user data folders
+            string userDataDir;
+            CreateMockDirectoriesAndFiles(out userDataDir);
+
+            var sourceVersionDir = Path.Combine(userDataDir, "1.3");
+            var settingsFilePath = Path.Combine(sourceVersionDir, "DynamoSettings.xml");
+
+            CreateMockPreferenceSettingsFile(settingsFilePath, sourceVersionDir);
+
+            // Create mock objects for IPathManager and IPathResolver
+            var mockPathManager = new Mock<IPathManager>();
+
+            var currentVersionDir = Path.Combine(userDataDir, "2.0");
+
+            mockPathManager.Setup(x => x.UserDataDirectory).Returns(() => currentVersionDir);
+
+            
+            // Test MigrateBetweenDynamoVersions
+            var targetMigrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(
+                mockPathManager.Object);
+
+            var sourcePrefs = PreferenceSettings.Load(settingsFilePath);
+            Assert.AreEqual(sourceVersionDir, sourcePrefs.SelectedPackagePathForInstall);
+
+            // Assert that new ironPythonTargetVersion is not equal to the old version.
+            Assert.That(targetMigrator.PreferenceSettings.IronPythonResolveTargetVersion, Is.Not.EqualTo(sourcePrefs.IronPythonResolveTargetVersion));
         }
     }
 }
