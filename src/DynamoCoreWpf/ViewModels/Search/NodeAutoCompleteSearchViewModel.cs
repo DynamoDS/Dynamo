@@ -170,7 +170,7 @@ namespace Dynamo.ViewModels
         internal void ResetAutoCompleteSearchViewState()
         {
             DisplayAutocompleteMLStaticPage = false;
-            DisplayLowConfidence = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel && PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
+            DisplayLowConfidence = dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel && dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
             AutocompleteMLMessage = string.Empty;
             AutocompleteMLTitle = string.Empty;
             FilteredResults = new List<NodeSearchElementViewModel>();
@@ -425,7 +425,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // Show low confidence section if there are some results under threshold and feature enabled
-                DisplayLowConfidence = FilteredLowConfidenceResults.Any() && PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel;
+                DisplayLowConfidence = FilteredLowConfidenceResults.Any() && dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel;
 
                 if (!FilteredHighConfidenceResults.Any())
                 {
@@ -436,7 +436,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // By default, show only the results which are above the threshold
-                FilteredResults = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel? FilteredHighConfidenceResults : results    ;
+                FilteredResults = dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel? FilteredHighConfidenceResults : results    ;
             }
         }
 
