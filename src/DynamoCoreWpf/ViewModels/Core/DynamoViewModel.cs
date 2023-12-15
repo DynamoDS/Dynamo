@@ -22,7 +22,6 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -2793,7 +2792,6 @@ namespace Dynamo.ViewModels
         {
             return DynamoSelection.Instance.Selection.Count > 0;
         }
-
 
         public void SaveImage(object parameters)
         {

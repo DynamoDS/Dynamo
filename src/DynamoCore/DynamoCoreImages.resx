@@ -201,47 +201,55 @@
   </data>
   <data name="Dynamo.Graph.Nodes.CustomNodes.Output.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGvSURBVHhe7drNTQJQEMRxSqAU2jDxYAmWQCeWQAmW
-        YKzATqAEnE2WhJAXiIf1zT7+v2Qv4mF2J0a+NgAAAAAAAAAAAAAAAAAAAOaOx+PZdTLi2kaLu0xGXNto
-        cZfJiGtzW9gtTzm3hd3ylHNb2C1PObeF3fKUc1v4UZ7v15et5kuzyx/19mjh/3YvTx7/R3PWnJYo4d7C
-        bnTwfR7/MlHCWz7cU6cCgg5+uCrgMu/5cD/dCgg6+MdNAX1L6FhAiIPfFBCzz4f76FpA0MFHJRzy4R46
-        FxB08N4ldC8g6OA7TTwj6lfCCgUEHXxUQrxm2OaveFqlgKBj9yvhrwXcLNdlfEt4kgJiPnMFL09SwDp/
-        Ac505PX/B7jSkXkWNIuOzOuAWXRoXgnPokPzXtAsOjTvhs6iQ/N5wCw6NJ+IzaJDjz4T7nv84FbAvTw6
-        Nt+KqPYoT5bA94KquOUp57awW55ybgu75SnntrBbnnJuC7vlKee2sFuecm4Lu+Up57awW55ybgu75Snn
-        trBbnnLXC7tNRlzbaHGXyYhrGy3uMhkRAAAAAAAAAAAAAAAAAIpsNr9zf07LjcAa5AAAAABJRU5ErkJg
-        gg==
+        iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAKzSURBVHhe7dexbRRRFIVhk+DclIDcheVGLKogRFSC6MAd
+        2KlLsKUtARogY3gbrGSNfsvHPqPLmZkbfMnPrnQPT2jF2TRN7T/C2OpgbHUwtjoYWx2MrQ7GVgdjq4Ox
+        1cHY6mBsdTC2OhhbHYytDsZWB6PqcDhMWzHfVgWjioas1XxbFYwqGrJW821VMKoSBjgS7seoShjgSLgf
+        oyphgCPhfoyqhAGOhPsxqhIGOBLux6hKGOBIuB+jKmGAI+F+jKqEAY6E+zGqEgY4Eu7HqEoY4Ei4H6Mq
+        YYAj4X6MqoQBjoT7MaoSBjgS7seoShjgSLgfoyphgCPhfoyqhAFrh1HVD+DDqOoH8GFU9QP4MKr6AXwY
+        Vf0APoyqrT7A14fpbvhMf7Y0jKoNP8A0/Bm+DR/pM0vBqNr4A5w8Dlf0uSVgVO3kAY7+Dj+GC/q8A6Nq
+        Rw9w8mu4oe+8F0bVDh/gZLEfaYwq5QFmh2/JIj/SGFU7f4CTW9qtwqja+QMc/wV8H85ptwqjSnmANXr2
+        l/yS++GSvvtWGFU7fIDfw5fhA33vPTCqdvQAx/8H/Bw+0ecdGFU7eYCn4Zo+twSMqo0/wCI/sq/BqNrw
+        Ayz2I/sajKqtPkAljKp+AB9GVT+AD6OqH8CHUdUP4MOo6gfwYVSt/QES7seoShjgSLgfoyphgCPhfoyq
+        hAGOhPsxqhIGOBLux6hKGOBIuB+jKmGAI+F+jKqEAY6E+zGqEgY4Eu7HqEoY4Ei4H6MqYYAj4X6MqoQB
+        joT7MaoSBjgS7seoShjgSLgfoyphgCPhfoyqhAGOhPsxqhIGOBLux6hKGOBIuB+j6vmAtZtvq4JRRUPW
+        ar6tCkYVDVmr+bYqGFsdjK0OxlYHY6uDsdXB2OpgbHUwtjoYWx2MrQ7GVgdjq4Ox1cHY6mBsVaazf0eA
+        ASu2k03rAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="Dynamo.Graph.Nodes.CustomNodes.Output.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACOSURBVFhHYxgFo2AUjIJBDd69e/efVAzVSh1AqoGD
-        xgEHfTwNgLgfLEgJINdHQMsDgPg/EM+HCpEHKAlSoOUJFDuC0jgFWg6KivdAvB+IBaDCxAN0BwANAfmI
-        XEx6SAy6ECAFAC0cuDQAtHRgcgFMPdDigSkHKIkyrGDUASADScVQraNgFIyCUUAkYGAAABgE/Ij0YxYN
-        AAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAACTSURBVFhH7ZAxCoBADASt9CHiCy3FH/kDbX3EvcQyRrhs
+        cUQOxESLFAPLEt3hGiL6FLX0BCGlRFbIhgZC7fApIRACIfC5QA2EELAWGHdamb7sERwEiDmYiWmlx0Ep
+        kD+wYpGdW4G3ycPXC8xMJz0OHAQ2Zih7BGuBOxBCwEqg9l+EEAiBEPiFgBWyoaGWnqilH9ScchQnDS1r
+        W/UAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="Dynamo.Graph.Nodes.CustomNodes.Symbol.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGrSURBVHhe7drRbcJAEIRhl5ASUgJtIKUIOqOElBBR
-        QUpIB04JMJb2wbIOCfu83HD8n7QPUXjY2VFCgAwAAAAAAAAAAAAAAAAAAAAAgAzjOF5dJ1bsWym4y8SK
-        fSsFd5lYsW9ugd32SecW2G2fdG6B3fZJ5xbYbZ90tYEvX8eT5hxfVqvd5+XUBI7jX2N2KaFmn7ejo//P
-        CpjmW/MR396EAlbQsQ+aZQm/ms0lUMBKOvZUwl8cv7oECthgOnYcfVnCZzzkYRSwkY5dKmH69XSIhzyE
-        Airo2NUlUMAOdPDzrIBVJVDATnTwZQnTnOLbd1HAjnTw1SW8ZAGFkO5ztwQKeN4UnxMo4DnT10+AKx36
-        PZ4DHOnQ/BXUig7N64AWdGReCbeiI/NeUCs6Mu+GtqIj83lAKzoyn4i1pEMvj/+j4TPhNWoC69j8V0St
-        2sBRAv8XtJVbYLd90rkFdtsnnVtgt33SuQV22yedW2C3fdK5BXbbJ51bYLd90rkFdtsnnVtgt33SuQV2
-        2yfdPLDbxIp9KwV3mVixb6XgLhMrAgAAAAAAAAAAAAAAf8NwAyVoRks3qNaKAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAKQSURBVHhe7dfBidVwHMTx9aJ3LUHsQmxErMKjWInYgR3o
+        1RIUtgRtwJvxH9iFEL6PvIRxZrPM4XMZ82AmP5bgzTRNFYRh+WBYPhiWD4blg2H5YFg+GJYPhuWDYflg
+        WD4Ylg+G5YNh+WBYPhg63N7eTo/FetseGDrQkLNab9sDQwcaclbrbXtg6KAakKLqj6GDakCKqj+GDqoB
+        Kar+GDqoBqSo+mPooBqQouqPoYNqQIqqP4YOqgEpqv4YOqgGpKj6Y+igGpCi6o+hg2pAiqo/hg6qASmq
+        /hg6qAakqPpj6KAakKLqj6GDakCKqj+GDqoBKar+GNa2HiCsBwjrAcJ6gLAeIKwHOOj99+nr8JL+bY8e
+        4KDx8qfhz/BheErPXKMHOOjuAPd+DK/puS09wEGrA8z+Dp+G5/T8JT3AQYsXv/ZreEu/IT3AQauXTq76
+        SD+IA6yKPyabH+kewOML7Z71AP/X/BfwcXhGu2cP4gBntHjJl3wbXtFvl3qAg1Yve+n38G54Qr9b6wEO
+        Wrzwe/P/Az4PL+j5S3qAgxYvfvZzeEPPbekBDrp78Zsf2S09wEHjpV/1kd3SA4T1AGE9QFgPENYDhPUA
+        Yac/gGpAiqo/hg6qASmq/hg6qAakqPpj6KAakKLqj6GDakCKqj+GDqoBKar+GDqoBqSo+mPooBqQouqP
+        oYNqQIqqP4YOqgEpqv4YOqgGpKj6Y+igGpCi6o+hg2pAiqo/hg6qASmq/hg6qAakqPpj6KAakKLqj6GD
+        akCKqj+GDqoBKar+GDosB5zdetseGDrQkLNab9sDQwcaclbrbXtgWD4Ylg+G5YNh+WBYPhiWD4blg2H5
+        YFg+GJYPhuWDYflgWD4Ylg+G5TLd/ANrxAErZBl0GgAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="Dynamo.Graph.Nodes.CustomNodes.Symbol.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACESURBVFhHYxgFo2AUjIJRQCp49+7df1IxVCt1AKkG
-        0sUBB308+4HYAMpFAVR3ADYAtPw8EL/H5gh6OUAAlyPo4gAYAFo+H+qIBKgQZQ4AGvSfAqwAMmNohwCx
-        AGjhwKYBXJaDANUdgM1AoMX0KwdINXDUATRxAKkYqnUUjIJRMBgBAwMAKSX8Cf1gZE4AAAAASUVORK5C
-        YII=
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAACISURBVFhH7dCxCYAwEIXhVDqIOKGluJEbaOsQmcTyPMFA
+        ciSQIndBeMXXPCL3oyOirrKjpez48t6TlvhOcjQmH7aCAAQgoDpACwLMApaLDjbJ3TKA2M1WNoS9GPB9
+        oGUPd3r8gY2NYbcMONksd7OAEgRUB8iHrSAAAQj4V4CW+E5ytIfsaIfcA4TBJw24OfTnAAAAAElFTkSu
+        QmCC
 </value>
   </data>
 </root>
