@@ -113,6 +113,24 @@ namespace Dynamo.PackageManager.ViewModels
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : this(element, canLogin, true)
         {}
 
+        /// <summary>
+        /// A property showing if the currently logged-in user owns the package
+        /// </summary>
+        private bool isOwner = false;
+        public bool IsOnwer
+        {
+            get
+            {
+                return isOwner;
+            }
+
+            internal set
+            {   
+                isOwner = value;
+                RaisePropertyChanged(nameof(IsOnwer));
+            }
+        }
+
         private bool canInstall;
         /// <summary>
         /// A Boolean flag reporting whether or not the user can install this SearchElement's package.
