@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -92,7 +93,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Package Publish entry, binded to the host multi-selection option
         /// </summary>
-        public class HostComboboxEntry
+        public class HostComboboxEntry : NotificationObject 
         {
             /// <summary>
             /// Name of the host
@@ -102,7 +103,16 @@ namespace Dynamo.PackageManager
             /// <summary>
             /// Boolean indicates if the host entry is selected
             /// </summary>
-            public bool IsSelected { get; set; }
+            private bool _isSelected;
+            public bool IsSelected
+            {
+                get { return _isSelected; }
+                set
+                {
+                    _isSelected = value;
+                    RaisePropertyChanged(nameof(IsSelected));
+                }
+            }
 
             /// <summary>
             /// Constructor
@@ -112,6 +122,14 @@ namespace Dynamo.PackageManager
             {
                 HostName = hostName;
                 IsSelected = false;
+            }
+
+            /// <summary>
+            /// Reset the state of the `IsSelected` property without raising update
+            /// </summary>
+            internal void ResetState()
+            {
+                this._isSelected = false;
             }
         }
 
@@ -190,6 +208,7 @@ namespace Dynamo.PackageManager
                 {
                     _isNewVersion = value;
                     RaisePropertyChanged("IsNewVersion");
+                    RaisePropertyChanged("CanEditName");
                 }
             }
         }
@@ -1105,6 +1124,14 @@ namespace Dynamo.PackageManager
         private void ClearAllEntries()
         {
             if (DynamoModel.IsTestMode) return;
+
+            try
+            {
+                this.KnownHosts.ForEach(host => host.ResetState());
+                this.KnownHosts.ForEach(host => host.IsSelected = false);
+            }
+            catch { Exception ex; }
+
             // this function clears all the entries of the publish package dialog
             this.Name = string.Empty;
             this.RepositoryUrl = string.Empty;
@@ -1134,8 +1161,8 @@ namespace Dynamo.PackageManager
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<PackageAssembly>();
+            this.SelectedHostsString = string.Empty;    
             this.SelectedHosts = new List<String>();
-            this.SelectedHostsString = string.Empty;
             this.copyrightHolder = string.Empty;
             this.copyrightYear = string.Empty;
             this.RootFolder = string.Empty;
@@ -1470,12 +1497,13 @@ namespace Dynamo.PackageManager
         private void UpdateDependencies()
         {
             Dependencies.Clear();
-            GetAllDependencies().ToList().ForEach(Dependencies.Add);
+            GetAllDependencies()?.ToList().ForEach(Dependencies.Add);
         }
 
         private IEnumerable<PackageDependency> GetAllDependencies()
         {
             var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            if (pmExtension == null) return null;
             var pkgLoader = pmExtension.PackageLoader;
 
             // all workspaces
@@ -2160,7 +2188,7 @@ namespace Dynamo.PackageManager
                 AppendPackageContents();
 
                 Package.Dependencies.Clear();
-                GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
+                GetAllDependencies()?.ToList().ForEach(Package.Dependencies.Add);
 
                 Package.HostDependencies = Enumerable.Empty<string>();
                 Package.HostDependencies = SelectedHosts;
@@ -2352,6 +2380,12 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            if (Description.Length <= 10)
+            {
+                ErrorString = Resources.DescriptionNeedMoreCharacters;
+                return false;
+            }
+
             if (MajorVersion.Length <= 0)
             {
                 ErrorString = Resources.MajorVersionNonNegative;
@@ -2411,22 +2445,6 @@ namespace Dynamo.PackageManager
                          .ToList();
             try
             {
-                var unqualifiedFiles = GetAllUnqualifiedFiles();
-
-                if (files == null || files.Count() < 1 || unqualifiedFiles.Count() > 0)
-                {
-                    string filesCannotBePublished = null;
-                    foreach (var file in unqualifiedFiles)
-                    {
-                        filesCannotBePublished = filesCannotBePublished + file + "\n";
-                    }
-                    string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
-                    UploadState = PackageUploadHandle.State.Error;
-                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    return;
-                }
-
                 // Generate the Package Name, either based on the user 'Description', or the root path name, if no 'Description' yet
                 var packageName = !string.IsNullOrEmpty(Name) ? Name : Path.GetFileName(publishPath);
                 var rootItemPreview = RetainFolderStructureOverride ?

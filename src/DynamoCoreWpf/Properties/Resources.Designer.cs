@@ -3165,6 +3165,69 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Centimeters.
+        /// </summary>
+        public static string GESUnitCentimeters {
+            get {
+                return ResourceManager.GetString("GESUnitCentimeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feet.
+        /// </summary>
+        public static string GESUnitFeet {
+            get {
+                return ResourceManager.GetString("GESUnitFeet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inches.
+        /// </summary>
+        public static string GESUnitInches {
+            get {
+                return ResourceManager.GetString("GESUnitInches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kilometers.
+        /// </summary>
+        public static string GESUnitKilometers {
+            get {
+                return ResourceManager.GetString("GESUnitKilometers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meters.
+        /// </summary>
+        public static string GESUnitMeters {
+            get {
+                return ResourceManager.GetString("GESUnitMeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Miles.
+        /// </summary>
+        public static string GESUnitMiles {
+            get {
+                return ResourceManager.GetString("GESUnitMiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Millimeters.
+        /// </summary>
+        public static string GESUnitMillimeters {
+            get {
+                return ResourceManager.GetString("GESUnitMillimeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _User Interface Tour.
         /// </summary>
         public static string GetStartedGuide {

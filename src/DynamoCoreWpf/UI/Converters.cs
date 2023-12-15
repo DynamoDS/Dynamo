@@ -18,7 +18,6 @@ using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
-using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
@@ -3898,10 +3897,7 @@ namespace Dynamo.Controls
             CultureInfo culture)
         {
             if (value is string nullOrEmptyString && String.IsNullOrEmpty(nullOrEmptyString)) return Visibility.Visible;
-            if (value is string zeroString && zeroString.Equals("0"))
-            {
-                return Visibility.Visible;
-            }
+            
             return Visibility.Collapsed;
         }
 

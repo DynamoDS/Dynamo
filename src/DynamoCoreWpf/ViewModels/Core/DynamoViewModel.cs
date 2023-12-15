@@ -22,7 +22,6 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -2093,10 +2092,10 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
+                Model.Logger.Log(string.Format(Properties.Resources.SavingInProgress, path));
+                var hasSaved = CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
 
-                if (!isBackup)
+                if (!isBackup && hasSaved)
                 {
                     AddToRecentFiles(path);
 
@@ -2168,8 +2167,10 @@ namespace Dynamo.ViewModels
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-                Workspaces.Where(w => w.Model.Guid == id).FirstOrDefault().Save(path, isBackup, Model.EngineController, saveContext);
-                if (!isBackup) AddToRecentFiles(path);
+                var hasSaved = Workspaces.FirstOrDefault(w => w.Model.Guid == id).Save(
+                    path, isBackup, Model.EngineController, saveContext);
+
+                if (!isBackup && hasSaved) AddToRecentFiles(path);
             }
             catch (Exception ex)
             {
@@ -2791,7 +2792,6 @@ namespace Dynamo.ViewModels
         {
             return DynamoSelection.Instance.Selection.Count > 0;
         }
-
 
         public void SaveImage(object parameters)
         {

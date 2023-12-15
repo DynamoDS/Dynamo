@@ -118,6 +118,15 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Tracks user/machine idle and active states while using the application.
+        /// </summary>
+        /// <param name="activityType">Defines the activity type i.e: machine or user</param>
+        public static void TrackActivityStatus(string activityType)
+        {
+            if (client != null) client.TrackActivityStatus(activityType);
+        }
+
+        /// <summary>
         /// Tracks an exception. If the exception is fatal, its recorded as crash.
         /// </summary>
         /// <param name="ex">Exception</param>
