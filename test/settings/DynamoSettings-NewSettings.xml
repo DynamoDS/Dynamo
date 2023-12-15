@@ -132,7 +132,7 @@
     </GroupStyleItem>
   </GroupStyleItemsList>
   <NodeSearchTagSizeLimit>500</NodeSearchTagSizeLimit>
-  <IronPythonResolveTargetVersion>2.1.X</IronPythonResolveTargetVersion>
+  <IronPythonResolveTargetVersion>2.1.0</IronPythonResolveTargetVersion>
   <ReadNotificationIds>
     <string>1</string>
   </ReadNotificationIds>
