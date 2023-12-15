@@ -356,13 +356,13 @@ namespace Dynamo.Logging
             return Task.Run(() => CreateTimedEvent(category, variable, description, value));
         }
 
-        [Obsolete("Property will become private in Dynamo 4.0, please use CreateTaskCommandEvent")]
+        [Obsolete("Property will be removed in Dynamo 4.0, please use CreateTaskCommandEvent")]
         public IDisposable CreateCommandEvent(string name, string description, int? value)
         {
             return CreateCommandEvent(name, description, value, null);
         }
 
-        private IDisposable CreateCommandEvent(string name, string description, int? value, Dictionary<string, object> parameters = null)
+        private IDisposable CreateCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null)
         {
             serviceInitialized.Wait();
 
@@ -394,10 +394,10 @@ namespace Dynamo.Logging
         {
             if (Analytics.DisableAnalytics) return Task.FromResult(Disposable);
 
-            return Task.Run(() => CreateCommandEvent(name, description, value));
+            return Task.Run(() => CreateCommandEvent(name, description, value, null));
         }
 
-        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, Dictionary<string, object> parameters = null)
+        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, IDictionary<string, object> parameters = null)
         {
             if (Analytics.DisableAnalytics) return Task.FromResult(Disposable);
 

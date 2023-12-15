@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -203,7 +204,7 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
         /// <returns>Task defined by an IDisposable event</returns>
-        public static Task<IDisposable> TrackTaskCommandEvent(string name, string description = "", int? value = null)
+        public static Task<IDisposable> TrackTaskCommandEvent(string name, string description, int value)
         {
             if (client == null)
             {                
@@ -211,6 +212,24 @@ namespace Dynamo.Logging
             }
 
             return client.CreateTaskCommandEvent(name, description, value);
+        }
+
+        /// <summary>
+        /// Creates a new command event task of the given name. Start of the 
+        /// command is tracked. When the task is completed and the event is disposed, it's completion is tracked.
+        /// </summary>
+        /// <param name="name">Command name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="parameters">A dictionary of (string, object) associated with the event</param>
+        /// <returns>Task defined by an IDisposable event</returns>
+        public static Task<IDisposable> TrackTaskCommandEvent(string name, string description = "", IDictionary<string, object> parameters = null)
+        {
+            if (client == null)
+            {
+                return Task.FromResult(new Dummy() as IDisposable);
+            }
+
+            return client.CreateTaskCommandEvent(name, description, parameters);
         }
 
         public static void EndTaskCommandEvent(Task<IDisposable> taskEvent)
