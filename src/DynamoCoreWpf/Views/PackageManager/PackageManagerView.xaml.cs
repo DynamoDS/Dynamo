@@ -42,7 +42,7 @@ namespace Dynamo.PackageManager.UI
                 Actions.Open,
                 Categories.PackageManager);
 
-            dynamoView.EnableEnvironment(false);
+            this.dynamoView = dynamoView;
         }
 
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -105,7 +105,6 @@ namespace Dynamo.PackageManager.UI
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Analytics.TrackEvent(Actions.Close, Categories.PackageManager);
-            (this.Owner as DynamoView).EnableEnvironment(true);
 
             Close();
         }

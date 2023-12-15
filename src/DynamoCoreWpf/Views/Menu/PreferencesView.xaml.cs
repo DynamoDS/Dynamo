@@ -96,7 +96,6 @@ namespace Dynamo.Wpf.Views
             stylesCustomColors = new ObservableCollection<CustomColorItem>();
             UpdateZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
             UpdateZoomScaleValueLabel(PythonZoomScalingSlider, lblPythonScalingValue);
-            dynamoView.EnableEnvironment(false);
         }
 
         /// <summary>
@@ -170,7 +169,6 @@ namespace Dynamo.Wpf.Views
 
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
             dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
-            (this.Owner as DynamoView).EnableEnvironment(true);
 
             Close();
         }
