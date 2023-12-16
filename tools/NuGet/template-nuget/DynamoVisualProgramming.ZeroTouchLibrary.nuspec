@@ -24,9 +24,22 @@
     <files>
         <file src="DynamoUnits.dll" target="lib\$TargetFramework$" />
         <file src="DynamoUnits.xml" target="lib\$TargetFramework$" />
+
         <file src="ProtoGeometry.dll" target="lib\$TargetFramework$" />
         <file src="ProtoGeometry.xml" target="lib\$TargetFramework$" />
-        
+
+        <file src="en-US\ProtoGeometry.resources.dll" target="lib\$TargetFramework$\en-US" />
+
+        <file src="DynamoUnits.dll.config" target="build\$TargetFramework$" />
+        <file src="DynamoUnits.customization.dll" target="build\$TargetFramework$" />
+        <file src="DynamoUnits_DynamoCustomization.xml" target="build\$TargetFramework$" />
+
+        <file src="ProtoGeometry.config" target="build\$TargetFramework$" />
+        <file src="ProtoGeometry.customization.dll" target="build\$TargetFramework$" />
+        <file src="ProtoGeometry_DynamoCustomization.xml" target="build\$TargetFramework$" />
+        <file src="ProtoGeometry.Migrations.xml" target="build\$TargetFramework$" />
+
+        <file src="..\..\..\tools\Nuget\build_props\DynamoVisualProgramming.ZeroTouchLibrary.targets" target="build\$TargetFramework$" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

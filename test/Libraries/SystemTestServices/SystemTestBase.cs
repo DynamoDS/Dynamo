@@ -194,7 +194,8 @@ namespace SystemTestServices
                     StartInTestMode = true,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous,
+                    DynamoCorePath = testConfig.DynamoCorePath
                 });
 
             ViewModel = DynamoViewModel.Start(
