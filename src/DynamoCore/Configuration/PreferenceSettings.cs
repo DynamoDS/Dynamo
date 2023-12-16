@@ -948,7 +948,7 @@ namespace Dynamo.Configuration
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
             GraphChecksumItemsList = new List<GraphChecksumItem>();
-            isMLAutocompleteTOUApproved = false;
+            isMLAutocompleteTOUApproved = true;
         }
 
         /// <summary>

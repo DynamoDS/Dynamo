@@ -160,7 +160,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I agree to ML Node Autocomplete Terms of Use.
+        ///   Looks up a localized string similar to I would like to participate in data collection.
         /// </summary>
         public static string AgreeToMLAutocompleteTOUText {
             get {
