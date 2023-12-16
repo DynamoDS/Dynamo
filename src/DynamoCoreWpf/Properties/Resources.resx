@@ -1154,7 +1154,7 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Agreement and Terms of Use</value>
   </data>
   <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
-    <value>I agree to ML Node Autocomplete Terms of Use</value>
+    <value>I would like to participate in data collection</value>
   </data>
   <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
     <value>Clear</value>
