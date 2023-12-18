@@ -32,9 +32,35 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
 
             this.Loaded += InitializeContext;
+            this.DataContextChanged += PackageManagerPublishControl_DataContextChanged;
+        }
+
+        private void PackageManagerPublishControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(this.DataContext is PublishPackageViewModel)) return;
+
+            ResetDataContext();
+            SetDataContext();
         }
 
         private void InitializeContext(object sender, RoutedEventArgs e)
+        {
+            SetDataContext();
+
+            this.Loaded -= InitializeContext;
+        }
+
+        private void ResetDataContext()
+        {
+            if (PublishPackageViewModel != null)
+            {
+                PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
+                PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
+            }
+
+            PublishPackageViewModel = null; 
+        }
+        private void SetDataContext()
         {
             // Set the owner of this user control
             this.Owner = Window.GetWindow(this);
@@ -42,7 +68,7 @@ namespace Dynamo.PackageManager.UI
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
             PublishPackageViewModel.Owner = this.Owner;
 
-            if(PublishPackageViewModel != null )
+            if (PublishPackageViewModel != null)
             {
                 PublishPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
                 PublishPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
@@ -78,6 +104,8 @@ namespace Dynamo.PackageManager.UI
             NavButtonStacks = null;
 
             Breadcrumbs?.Clear();
+            
+            this.DataContextChanged -= PackageManagerPublishControl_DataContextChanged;
         }
 
         private void InitializePages()

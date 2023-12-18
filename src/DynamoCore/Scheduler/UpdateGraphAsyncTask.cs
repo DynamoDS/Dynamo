@@ -6,6 +6,7 @@ using ProtoCore.BuildData;
 using ProtoScript.Runners;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 
 namespace Dynamo.Scheduler
 {
@@ -103,7 +104,10 @@ namespace Dynamo.Scheduler
             // EngineController might be disposed and become invalid.
             // After MAGN-5167 is done, we could remove this checking.
             if (!engineController.IsDisposed)
+            {
+                Analytics.TrackActivityStatus(HeartBeatType.Machine.ToString());
                 engineController.UpdateGraphImmediate(graphSyncData);
+            }
         }
 
         protected override void HandleTaskCompletionCore()
@@ -116,6 +120,7 @@ namespace Dynamo.Scheduler
             }
             else
             {
+                Analytics.TrackActivityStatus(HeartBeatType.Machine.ToString());
                 // Retrieve warnings in the context of ISchedulerThread.
                 BuildWarnings = engineController.GetBuildWarnings();
                 RuntimeWarnings = engineController.GetRuntimeWarnings();
