@@ -559,18 +559,9 @@ namespace Dynamo.Logging
         /// <param name="name">Command name</param>
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
+        /// <param name="parameters">A dictionary of (string, object) associated with the event</param>
         /// <returns>Event as IDisposable</returns>
-        Task<IDisposable> CreateTaskCommandEvent(string name, string description, int value);
-
-        /// <summary>
-        /// Creates a new task command event of the given name. Start of the 
-        /// command is tracked. When the task is completed and the event is disposed, it's completion is tracked.
-        /// </summary>
-        /// <param name="name">Command name</param>
-        /// <param name="description">Event description</param>
-        /// <param name="parameters">A dictionary of (stringl, object) associated with the event</param>
-        /// <returns>Event as IDisposable</returns>
-        Task<IDisposable> CreateTaskCommandEvent(string name, string description, IDictionary<string, object> parameters);
+        Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null);
 
         /// <summary>
         /// Waits for the given task to end so that it can dispose the event and

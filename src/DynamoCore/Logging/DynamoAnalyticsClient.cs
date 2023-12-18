@@ -390,14 +390,7 @@ namespace Dynamo.Logging
             }
         }
 
-        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, int value)
-        {
-            if (Analytics.DisableAnalytics) return Task.FromResult(Disposable);
-
-            return Task.Run(() => CreateCommandEvent(name, description, value, null));
-        }
-
-        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, IDictionary<string, object> parameters = null)
+        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null)
         {
             if (Analytics.DisableAnalytics) return Task.FromResult(Disposable);
 
