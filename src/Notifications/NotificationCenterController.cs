@@ -20,6 +20,7 @@ using Microsoft.Web.WebView2.Wpf;
 using Dynamo.Utilities;
 using Dynamo.Configuration;
 using Dynamo.Models;
+using Autodesk.ADPDesktopSDK.Facets;
 
 namespace Dynamo.Notifications
 {
@@ -339,6 +340,7 @@ namespace Dynamo.Notifications
                         notificationUIPopup.webView.CoreWebView2.NewWindowRequested -= WebView_NewWindowRequested;
                     }
                     notificationUIPopup.webView.Dispose();
+                    GC.SuppressFinalize(notificationUIPopup.webView);
                 }
             }
         }

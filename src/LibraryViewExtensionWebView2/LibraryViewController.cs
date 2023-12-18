@@ -23,6 +23,7 @@ using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.WinForms;
 using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
 
@@ -732,6 +733,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;
                 browser.Dispose();
+                GC.SuppressFinalize(browser);
+
                 browser = null;
             }
             twoWayScriptingObject.Dispose();

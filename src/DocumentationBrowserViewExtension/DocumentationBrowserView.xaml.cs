@@ -123,6 +123,7 @@ namespace Dynamo.DocumentationBrowser
                 }
 
                 this.documentationBrowser.Dispose();
+                GC.SuppressFinalize(this.documentationBrowser);
             }
         }
 

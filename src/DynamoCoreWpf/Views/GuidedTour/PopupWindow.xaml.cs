@@ -91,6 +91,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
             if (webBrowserComponent != null)
             {
                 webBrowserComponent.Visibility = Visibility.Collapsed;
+                webBrowserComponent.Dispose();
+                GC.SuppressFinalize(webBrowserComponent);
             }
 
 

@@ -550,8 +550,9 @@ namespace Dynamo.UI.Views
                 authManager.LoginStateChanged -= OnLoginStateChanged;
             }
             webView.Dispose();
-            webView = null;
+            GC.SuppressFinalize(webView);
 
+            webView = null;
             GC.SuppressFinalize(this);
         }
     }
