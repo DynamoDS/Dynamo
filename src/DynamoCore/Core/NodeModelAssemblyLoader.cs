@@ -137,7 +137,7 @@ namespace Dynamo.Models
 
             if (Models.DynamoModel.IsTestMode)
             {
-                if (shouldLoadAssemblyPath.GetInvocationList().Length > 0) {
+                if (shouldLoadAssemblyPath != null) {
                     allDynamoAssemblyPaths = allDynamoAssemblyPaths.Where((path) => shouldLoadAssemblyPath(path)).ToList();
                 }
             }
