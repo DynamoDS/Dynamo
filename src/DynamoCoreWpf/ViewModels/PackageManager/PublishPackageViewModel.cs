@@ -940,6 +940,11 @@ namespace Dynamo.PackageManager
             get { return AnyUserChanges(); }
         }
 
+        /// <summary>
+        /// Indicates if this view model is created during a FromLocalPackage routine
+        /// </summary>
+        private bool IsPublishFromLocalPackage = false;
+
         #endregion
                 
         internal PublishPackageViewModel()
@@ -1292,7 +1297,8 @@ namespace Dynamo.PackageManager
                 License = pkg.License,
                 SelectedHosts = pkg.HostDependencies as List<string>,
                 CopyrightHolder = pkg.CopyrightHolder,
-                CopyrightYear = pkg.CopyrightYear
+                CopyrightYear = pkg.CopyrightYear,
+                IsPublishFromLocalPackage = true
             };
 
             // add additional files
@@ -1491,7 +1497,7 @@ namespace Dynamo.PackageManager
             files = files.Union(AdditionalFiles);
             // if we retain the folder structure, we don't want to lose assemblies in sub-folders
             // othrewise we need to delete duplicate assemblies which will end up in the same `dll` folder
-            files = RetainFolderStructureOverride ?
+            files = RetainFolderStructureOverride && !IsPublishFromLocalPackage ?
                 files.Union(Assemblies.Select(x => x.LocalFilePath)) :
                 files.Union(Assemblies.Select(x => x.Assembly.Location));  
 
@@ -2327,6 +2333,8 @@ namespace Dynamo.PackageManager
 
         private bool CheckPackageValidity()
         {
+            if (ErrorString.StartsWith(Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage)) return false;
+
             if (!string.IsNullOrEmpty(Name) && Name.IndexOfAny(PathHelper.SpecialAndInvalidCharacters()) >= 0)
             {
                 ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(PathHelper.SpecialAndInvalidCharacters());
