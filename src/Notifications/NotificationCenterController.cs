@@ -119,6 +119,8 @@ namespace Dynamo.Notifications
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
 
+            System.Console.WriteLine("notificationUIPopup EnsureCoreWebView2Async called");
+
             initState = AsyncMethodState.Started;
             await notificationUIPopup.webView.EnsureCoreWebView2Async();
             initState = AsyncMethodState.Done;

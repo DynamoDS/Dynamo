@@ -169,6 +169,7 @@ namespace Dynamo.DocumentationBrowser
                     };
                 }
 
+                System.Console.WriteLine("Documentation browser EnsureCoreWebView2Async called");
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
            

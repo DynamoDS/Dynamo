@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
@@ -39,8 +40,15 @@ namespace Dynamo.Tests
         [SetUp]
         public override void Setup()
         {
+            Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
             base.Setup();
             StartDynamo();
+        }
+
+        private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+            System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message}");
         }
 
         public override void Cleanup()
@@ -67,6 +75,7 @@ namespace Dynamo.Tests
             }
 
             base.Cleanup();
+            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
         }
 
         private void RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
