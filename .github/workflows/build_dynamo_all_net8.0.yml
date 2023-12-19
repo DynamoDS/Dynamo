@@ -38,7 +38,7 @@ jobs:
         echo "***Locating DynamoCLI for Windows!***"
         test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: DynamoSandbox
         path: ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
@@ -49,7 +49,7 @@ jobs:
         PR_NUMBER: ${{ github.event.number }}
       run: $env:PR_NUMBER | Out-File -FilePath pr_number.txt
     - name: Upload Pull Request Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: pr_number
         path: ${{ github.workspace }}\pr_number.txt
