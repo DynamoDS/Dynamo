@@ -1489,7 +1489,11 @@ namespace Dynamo.PackageManager
 
             // union with additional files
             files = files.Union(AdditionalFiles);
-            files = files.Union(Assemblies.Select(x => x.Assembly.Location));
+            // if we retain the folder structure, we don't want to lose assemblies in sub-folders
+            // othrewise we need to delete duplicate assemblies which will end up in the same `dll` folder
+            files = RetainFolderStructureOverride ?
+                files.Union(Assemblies.Select(x => x.LocalFilePath)) :
+                files.Union(Assemblies.Select(x => x.Assembly.Location));  
 
             return files;
         }
@@ -1929,7 +1933,7 @@ namespace Dynamo.PackageManager
                                         Resources.PackageDuplicateAssemblyWarningTitle, 
                                         MessageBoxButton.OK, 
                                         MessageBoxImage.Stop);
-                        return; // skip loading assembly
+                        //return; // DO NOT skip loading assembly
                     }
 
                     Assemblies.Add(new PackageAssembly()
@@ -2118,15 +2122,6 @@ namespace Dynamo.PackageManager
                 return Enumerable.Empty<IEnumerable<string>>();
             }
 
-            var updatedFiles = files.Select(file =>
-            {
-                if (Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))))
-                {
-                    return Assemblies.First(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))).LocalFilePath;
-                }
-                return file;
-            }).ToList();
-
             if (PreviewPackageContents.Count() > 1)
             {
                 // we cannot have more than 1 root folder at this stage
@@ -2145,7 +2140,7 @@ namespace Dynamo.PackageManager
                     foreach (var item in folderContents)
                     {
                         if (item.DependencyType.Equals(DependencyType.Folder) || item.DependencyType.Equals(DependencyType.CustomNode)) continue;
-                        if (updatedFiles.Contains(item.FilePath))
+                        if (files.Contains(item.FilePath))
                         {
                             updatedFolder.Add(item.FilePath);
                         }
@@ -2467,12 +2462,12 @@ namespace Dynamo.PackageManager
         {
             if (!PackageContents.Any()) return null;
             if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1) {
+                // If there is only one root item, nest it under the new root package folder
                 var item = PackageContents.First(x => x.DependencyType.Equals(DependencyType.Folder));
-                if(item.DisplayName != packageName)
-                {
-                    item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
-                    item.AddChildren(PackageContents.First().ChildItems.ToList());
-                }
+                
+                item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
+                item.AddChildren(new List<PackageItemRootViewModel> { PackageContents.First() } );
+
                 return item;
             }
 
