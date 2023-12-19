@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -355,8 +356,13 @@ namespace Dynamo.Logging
             return Task.Run(() => CreateTimedEvent(category, variable, description, value));
         }
 
-        [Obsolete("Property will become private in Dynamo 4.0, please use CreateTaskCommandEvent")]
+        [Obsolete("Property will be removed in Dynamo 4.0, please use CreateTaskCommandEvent")]
         public IDisposable CreateCommandEvent(string name, string description, int? value)
+        {
+            return CreateCommandEvent(name, description, value, null);
+        }
+
+        private IDisposable CreateCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null)
         {
             serviceInitialized.Wait();
 
@@ -364,17 +370,31 @@ namespace Dynamo.Logging
             {
                 if (!ReportingAnalytics) return Disposable;
 
-                var e = new CommandEvent(name) { Description = description, Value = value };
+                var e = new CommandEvent(name) { Description = description };
+
+                if (value != null)
+                {
+                    e.Value = value;
+                }
+                
+                if (parameters != null)
+                {
+                    foreach (var item in parameters)
+                    {
+                        e[item.Key] = item.Value;
+                    }
+                }    
+
                 e.Track();
                 return e;
             }
         }
 
-        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value)
+        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null)
         {
             if (Analytics.DisableAnalytics) return Task.FromResult(Disposable);
 
-            return Task.Run(() => CreateCommandEvent(name, description, value));
+            return Task.Run(() => CreateCommandEvent(name, description, null, parameters));
         }
 
         public void EndEventTask(Task<IDisposable> taskToEnd)
