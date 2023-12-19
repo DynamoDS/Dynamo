@@ -10,7 +10,7 @@ jobs:
   runs-on: ubuntu-latest
   steps:
     - name: Download PR Data
-      uses: dawidd6/action-download-artifact@v2
+      uses: dawidd6/action-download-artifact@v3
       with:
         run_id: ${{github.event.workflow_run.id }}
         name: pr
@@ -88,7 +88,7 @@ jobs:
     if: github.event.workflow_run.event == 'pull_request'
     steps:
       - name: Download PR Data
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v3
         with:
           run_id: ${{github.event.workflow_run.id }}
           name: pr
