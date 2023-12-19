@@ -28,5 +28,5 @@ jobs:
           base-ref: ${{ github.event.inputs.base-ref }}
       - name: Summary
         run: |
-          echo '# Changelog' >> $GITHUB_STEP_SUMMARY
-          echo '${{ steps.generate_changelog.outputs.changelog }}' >> $GITHUB_STEP_SUMMARY
+          echo "# Changelog" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.generate_changelog.outputs.changelog }}" >> $GITHUB_STEP_SUMMARY
