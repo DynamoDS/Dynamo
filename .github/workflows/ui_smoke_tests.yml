@@ -3,7 +3,6 @@ name: UI Smoke Tests
 on:
   workflow_run:
     workflows:
-      - Build DynamoAll.sln net6.0
       - Build DynamoAll.sln net8.0
     types:
       - completed
@@ -43,7 +42,7 @@ jobs:
       - name: Download Pull Request Artifact
         uses: dawidd6/action-download-artifact@v3
         with:
-          name: pr_number
+          name: pr_data
           workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
           run_id: ${{ env.WORKFLOW_RUN_ID }}
           path: ${{ github.workspace }}\pr
@@ -53,7 +52,7 @@ jobs:
           "CHECK_NAME=$("UI Smoke Tests", $($env:WORKFLOW_RUN_NAME -Split " ")[-1] -Join " - ")" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Run UI Smoke Tests
         shell: cmd
-        run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
+        run: .\utils\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests ${{ github.workspace }}\build
       - name: Publish Test Report
         id: test_report
         if: always()
