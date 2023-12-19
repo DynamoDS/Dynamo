@@ -16,12 +16,6 @@
         </description>
         <summary>This package contains all that is required to get up and running building nodes for the Dynamo Visual Programming language with custom UI in WPF.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
-        <frameworkAssemblies>
-            <frameworkAssembly assemblyName="System.Xaml" targetFramework="net48"/>
-            <frameworkAssembly assemblyName="WindowsBase" targetFramework="net48"/>
-            <frameworkAssembly assemblyName="PresentationCore" targetFramework="net48"/>
-            <frameworkAssembly assemblyName="PresentationFramework" targetFramework="net48"/>
-        </frameworkAssemblies>
         <dependencies>
             <group targetFramework="$TargetFramework$">
                 <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
