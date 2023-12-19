@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Dynamo.Logging
@@ -558,8 +559,9 @@ namespace Dynamo.Logging
         /// <param name="name">Command name</param>
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
+        /// <param name="parameters">A dictionary of (string, object) associated with the event</param>
         /// <returns>Event as IDisposable</returns>
-        Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value);
+        Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null);
 
         /// <summary>
         /// Waits for the given task to end so that it can dispose the event and
