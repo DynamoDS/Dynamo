@@ -3,7 +3,6 @@ name: UI Smoke Tests
 on:
   workflow_run:
     workflows:
-      - Build DynamoAll.sln net6.0
       - Build DynamoAll.sln net8.0
     types:
       - completed
