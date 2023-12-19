@@ -1203,6 +1203,8 @@ namespace Dynamo.Controls
 
                 startPage = new StartPageViewModel(dynamoViewModel, isFirstRun);
                 startPageItemsControl.Items.Add(startPage);
+
+                homePage.DataContext = startPage;
             }
         }
 
@@ -2029,6 +2031,8 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
+
+            this.homePage.Dispose();
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
