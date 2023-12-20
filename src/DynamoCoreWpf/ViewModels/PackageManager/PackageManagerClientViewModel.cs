@@ -283,7 +283,7 @@ namespace Dynamo.ViewModels
                 };
             }
 
-            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn))
+            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn) && !dynamoViewModel.Model.NoNetworkMode)
             {
                 this.Uservotes = this.Model.UserVotes();
             }

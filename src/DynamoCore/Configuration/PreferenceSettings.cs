@@ -48,12 +48,21 @@ namespace Dynamo.Configuration
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource, IHideAutocompleteMethodOptions
     {
-        internal readonly static Lazy<PreferenceSettings>
+        private readonly static Lazy<PreferenceSettings>
             lazy = new Lazy<PreferenceSettings>
             (() => PreferenceSettings.Load(PathManager.Instance.PreferenceFilePath));
 
+        /// <summary>
+        /// Return a PreferenceSetting object.  The object returned is based on the following conditions:
+        /// 1) if DynamoModel present, the DynamoModel.PreferenceSettings object is returned,
+        /// 2) else, if a valid setting xml file exists, the PreferenceSettings object de-serialized from the xml file is returned,
+        /// 3) else, if no DynamoModel and no valid xml file exists, a new PreferenceSettings object returned
+        /// Note that Instance is a runtime object only.  No changes to the PreferenceSettings will be persisted on disk with condition 2 or 3.
+        /// User of Instance must initiate save operations to insure persistence of modifications to the PreferenceSettings model.
+        /// In some cases even the save will not guarantee persistence of modifications depending on the startup of DynamoModel.
+        /// </summary>
         [XmlIgnore]
-        public static PreferenceSettings Instance { get; internal set; } = lazy.Value;
+        internal static PreferenceSettings Instance { get; set; } = lazy.Value;
 
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -844,10 +853,10 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
-        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value
+        /// This property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
-        internal static Version ironPythonResolveTargetVersion = new Version(2, 4, 0);
+        internal Version ironPythonResolveTargetVersion = new Version(3, 0, 0);
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
@@ -948,7 +957,7 @@ namespace Dynamo.Configuration
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
             GraphChecksumItemsList = new List<GraphChecksumItem>();
-            isMLAutocompleteTOUApproved = false;
+            isMLAutocompleteTOUApproved = true;
         }
 
         /// <summary>

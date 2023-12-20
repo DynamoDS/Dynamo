@@ -651,8 +651,12 @@ namespace Dynamo.PackageManager
             var pkgs = PackageManagerClientViewModel.CachedPackageList.Where(x => x.Maintainers != null && x.Maintainers.Contains(name)).ToList();
             foreach(var pkg in pkgs)
             {
-                var p = new PackageManagerSearchElementViewModel(pkg, false);
+                var p = new PackageManagerSearchElementViewModel(pkg,
+                                                                 PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                                                                 CanInstallPackage(pkg.Name));
                 p.RequestDownload += this.PackageOnExecuted;
+                p.RequestShowFileDialog += this.OnRequestShowFileDialog;
+                p.IsOnwer = true;
 
                 myPackages.Add(p);
             }
@@ -666,6 +670,7 @@ namespace Dynamo.PackageManager
             foreach (var ele in this.SearchMyResults)
             {
                 ele.RequestDownload -= PackageOnExecuted;
+                ele.RequestShowFileDialog -= OnRequestShowFileDialog;
             }
 
             this.SearchMyResults = null;
