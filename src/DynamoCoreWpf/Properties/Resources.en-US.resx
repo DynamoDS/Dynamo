@@ -2223,7 +2223,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Agreement and Terms of Use</value>
   </data>
   <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
-    <value>I agree to ML Node Autocomplete Terms of Use</value>
+    <value>I would like to participate in data collection</value>
   </data>
   <data name="UseLevelKeepListStructureHint" xml:space="preserve">
     <value>Keep 1 input list's nesting</value>

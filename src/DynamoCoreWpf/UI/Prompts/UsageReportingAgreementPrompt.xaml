@@ -7,7 +7,7 @@
         WindowStyle="None"
         MinWidth="530"
         MaxWidth="650"
-        Height="485"
+        Height="500"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         AllowsTransparency="True"
@@ -97,8 +97,8 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="145"></RowDefinition>
-                    <RowDefinition Height="145"></RowDefinition>
+                    <RowDefinition Height="140"></RowDefinition>
+                    <RowDefinition Height="165"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>

@@ -287,8 +287,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Preference settings for this instance of Dynamo.
         /// </summary>
-        [Obsolete("this will be removed in 4.0")]
-        public PreferenceSettings PreferenceSettings => PreferenceSettings.Instance;
+        public PreferenceSettings PreferenceSettings { get; private set; } 
 
         /// <summary>
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
@@ -673,7 +672,8 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            PreferenceSettings.Instance = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+            PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+            PreferenceSettings.Instance = PreferenceSettings;
 
             if (PreferenceSettings != null)
             {
@@ -753,7 +753,8 @@ namespace Dynamo.Models
                 if (migrator != null)
                 {
                     var isFirstRun = PreferenceSettings.IsFirstRun;
-                    PreferenceSettings.Instance = migrator.PreferenceSettings;
+                    PreferenceSettings = migrator.PreferenceSettings;
+                    PreferenceSettings.Instance = PreferenceSettings;
 
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
@@ -2319,7 +2320,7 @@ namespace Dynamo.Models
 
             if (workspace is HomeWorkspaceModel homeWorkspace)
             {
-                homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.Instance.DefaultEnableLegacyPolyCurveBehavior;
+                homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.DefaultEnableLegacyPolyCurveBehavior;
 
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 

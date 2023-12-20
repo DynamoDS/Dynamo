@@ -108,7 +108,7 @@ jobs:
         echo ${{ github.event.number }} > ./pr/NR
         echo ${{ github.run_id }}-${{ github.run_attempt }} > ./pr/WN
         echo "${{ needs.run-bin-diff-net60-windows.outputs.Diff2 }}" > ./pr/Diff2
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: pr
         path: pr/

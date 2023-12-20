@@ -1360,7 +1360,6 @@ namespace Dynamo.Controls
             BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
             background_grid.Children.Add(BackgroundPreview);
             BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
-            BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
             var vizBinding = new Binding
             {
                 Source = dynamoViewModel.BackgroundPreviewViewModel,
@@ -1492,6 +1491,10 @@ namespace Dynamo.Controls
                 packageManagerWindow.Show();
 
                 if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
+            }
+            if (_pkgVM != null)
+            {
+                _pkgVM.PublishPackageViewModel = model;
             }
 
             packageManagerWindow.Focus();
