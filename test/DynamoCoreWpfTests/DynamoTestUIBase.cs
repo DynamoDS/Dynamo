@@ -40,8 +40,6 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
-            Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
-
             System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
@@ -82,12 +80,6 @@ namespace DynamoCoreWpfTests
             View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
-        }
-
-        private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            e.Handled = true;
-            System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message}");
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
@@ -147,7 +139,6 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
             System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 

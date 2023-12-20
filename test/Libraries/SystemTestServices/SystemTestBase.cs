@@ -18,7 +18,6 @@ using Dynamo.Tests;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
-using Microsoft.Diagnostics.Runtime;
 
 using NUnit.Framework;
 
@@ -79,12 +78,6 @@ namespace SystemTestServices
         }
 
         protected string TempFolder { get; private set; }
-
-        private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            //e.Handled = true;
-            System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message}");
-        }
         #endregion
 
         #region public methods
@@ -93,9 +86,6 @@ namespace SystemTestServices
         public virtual void Setup()
         {
             System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
-
 
             var testConfig = GetTestSessionConfiguration();
 
@@ -123,11 +113,6 @@ namespace SystemTestServices
             originalBuiltinPackagesDirectory = originalBuiltinPackagesDirectory ?? PathManager.BuiltinPackagesDirectory;
 
             StartDynamo(testConfig);
-        }
-
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            System.Console.WriteLine("Unhandled exception thrown during test  with message");
         }
 
         /// <summary>
@@ -179,9 +164,6 @@ namespace SystemTestServices
             {
                 Console.WriteLine(ex.StackTrace);
             }
-            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
-            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
-
             System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Windows.Threading;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -9,9 +10,24 @@ public class Setup
 {
     private AssemblyHelper assemblyHelper;
 
+    private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        e.Handled = true;
+        System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message + Environment.NewLine + e.Exception.StackTrace}");
+    }
+
+    private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        var ex = e.ExceptionObject as Exception;
+        System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {ex.Message + Environment.NewLine + ex.StackTrace}");
+    }
+
     [OneTimeSetUp]
     public void RunBeforeAllTests()
     {
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
+
         var assemblyPath = Assembly.GetExecutingAssembly().Location;
         var moduleRootFolder = new DirectoryInfo(assemblyPath).Parent;
 
@@ -31,5 +47,7 @@ public class Setup
     {
         AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
         assemblyHelper = null;
+        AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+        Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
     }
 }

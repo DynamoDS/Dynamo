@@ -11,9 +11,24 @@ using NUnit.Framework;
     {
         private AssemblyHelper assemblyHelper;
 
+        private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+            System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message + Environment.NewLine + e.Exception.StackTrace}");
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex = e.ExceptionObject as Exception;
+            System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {ex.Message + Environment.NewLine + ex.StackTrace}");
+        }
+
         [OneTimeSetUp]
         public void RunBeforeAllTests()
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
+
             var dispatcher = Dispatcher.CurrentDispatcher;
             Assert.IsNotNull(dispatcher);
 
@@ -38,5 +53,8 @@ using NUnit.Framework;
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
             Dispatcher.CurrentDispatcher.InvokeShutdown();
+
+            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
         }
     }
