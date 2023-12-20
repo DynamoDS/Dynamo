@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +18,7 @@ using Dynamo.Tests;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
+using Microsoft.Diagnostics.Runtime;
 
 using NUnit.Framework;
 
@@ -26,6 +28,30 @@ using TestServices;
 
 namespace SystemTestServices
 {
+    public sealed class CustomSynchronizationContext : SynchronizationContext
+    {
+        private void EnsureExceptionHandlers()
+        {
+            Dispatcher.FromThread(Thread.CurrentThread).UnhandledException += QueueSynchronizationContext_UnhandledException;
+        }
+
+        private void QueueSynchronizationContext_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+            System.Console.WriteLine($"Unhandled exception thrown with message : {e.Exception.Message}");
+        }
+
+        public override void Post(SendOrPostCallback d, object? state)
+        {
+            EnsureExceptionHandlers();
+            base.Post(d, state);
+        }
+        public override void Send(SendOrPostCallback d, object? state)
+        {
+            EnsureExceptionHandlers();
+            base.Send(d, state);
+        }
+    }
     /// <summary>
     /// SystemTestBase is the base class for all 
     /// Dynamo system tests.
@@ -54,6 +80,11 @@ namespace SystemTestServices
 
         protected string TempFolder { get; private set; }
 
+        private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            //e.Handled = true;
+            System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message}");
+        }
         #endregion
 
         #region public methods
@@ -62,6 +93,10 @@ namespace SystemTestServices
         public virtual void Setup()
         {
             System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
+
+
             var testConfig = GetTestSessionConfiguration();
 
             if (assemblyResolver == null)
@@ -88,6 +123,11 @@ namespace SystemTestServices
             originalBuiltinPackagesDirectory = originalBuiltinPackagesDirectory ?? PathManager.BuiltinPackagesDirectory;
 
             StartDynamo(testConfig);
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            System.Console.WriteLine("Unhandled exception thrown during test  with message");
         }
 
         /// <summary>
@@ -139,6 +179,9 @@ namespace SystemTestServices
             {
                 Console.WriteLine(ex.StackTrace);
             }
+            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+
             System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 
