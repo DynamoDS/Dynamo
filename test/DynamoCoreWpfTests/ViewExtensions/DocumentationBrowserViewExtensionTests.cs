@@ -62,7 +62,7 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void DocsExtensionAddsMenuItem()
         {
             // Arrange
@@ -72,7 +72,7 @@ namespace DynamoCoreWpfTests
             Assert.GreaterOrEqual(showDocsMenuItems.Count, 1);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void ClickingMenuItemLaunchesSidebarWithIndexContent()
         {
             // Act
@@ -92,7 +92,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(docsBrowserContent.Contains(indexPageHtmlHeader));
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void ShowingStartPageHidesBrowser()
         {
             // Arrange
@@ -116,7 +116,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// This test validates that the Virtual Directory that will be created with WebView2 exists so the images will be loaded for a package node documentation
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void CanCreatePackageNodeDocumentationAndLoadImages()
         {
             // Arrange
@@ -155,7 +155,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(expectedImageContent));
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void ViewExtensionIgnoresExternalEvents()
         {
             // Arrange
@@ -177,7 +177,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanHandleDocsEventWithValidLink()
         {
             // Arrange
@@ -197,7 +197,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanHandleDocsEventTriggeredFromDynamoViewModel()
         {
             // Arrange
@@ -219,7 +219,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(excelDocsFileHtmlHeader));
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanHandleDocsEventTriggeredFromDynamoViewModelMultipleTimes()
         {
             // Arrange
@@ -243,7 +243,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(excelDocsFileHtmlHeader));
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void Displays404PageOnMissingDocFile()
         {
             // Arrange
@@ -263,7 +263,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void DisplaysHtmlEmbeddedInLoadedAssemblies()
         {
             // Arrange
@@ -290,7 +290,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void Displays404PageWhenLinkPointsToAssemblyThatCannotBeFound()
         {
             // Arrange
@@ -320,7 +320,7 @@ namespace DynamoCoreWpfTests
         /// Test with Dynamo running in "en-us" culture and help content requested
         /// for a package that contains localized help content for "en-us".
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void DisplaysLocalizedContentWhenAvailable()
         {
             // Arrange
@@ -354,7 +354,7 @@ namespace DynamoCoreWpfTests
         /// for a package that doesn't contain localized help content for "es-uy",
         /// but does contain help content for neutral culture "es".
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void DisplayNeutralCultureContentWhenSpecificCultureContentIsNotAvailable()
         {
             // Arrange
@@ -386,7 +386,7 @@ namespace DynamoCoreWpfTests
         /// for a package that doesn't contain localized help content for "en",
         /// but does contain help content for specific culture "en-us".
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void DisplaySpecificCultureContentWhenNeutralCultureContentIsNotAvailable()
         {
             // Arrange
@@ -419,7 +419,7 @@ namespace DynamoCoreWpfTests
         /// nor the neutral culture "fr", so it falls back to invariant culture
         /// help content.
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void DisplaysInvariantContentWhenNoCompatibleLocalizedContentIsAvailable()
         {
             // Arrange
@@ -446,7 +446,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void RemovesScriptTagsFromLoadedHtml()
         {
             // Arrange
@@ -473,7 +473,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void DPIScriptExists()
         {
             // Arrange
@@ -499,7 +499,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void GetResourceNameWithCultureNameReturnsSameAsInputWhenCultureIsNull()
         {
             var name = "MyPage.html";
@@ -507,7 +507,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(name, result);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void GetResourceNameWithCultureNameReturnsSameAsInputWhenItDoesNotHaveAnExtension()
         {
             var name = "NotAPage";
@@ -515,7 +515,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(name, result);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void GetResourceNameWithCultureNameWorksWithValidCultureAndInputName()
         {
             var name = "MyPage.html";
@@ -523,7 +523,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("MyPage.en-US.html", result);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanCreateNodeDocumenationHtmlFromNodeAnnotationEventArgsWithOOTBNodeWithoutAddtionalDocumentation()
         {
             // Arrange
@@ -562,7 +562,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeOutputs));
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanCreateNodeDocumenationHtmlFromNodeAnnotationEventArgsWithPackageNodeWithAddtionalDocumentation()
         {
             // Arrange
@@ -613,7 +613,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentationImage));
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CanGetNodeDocumentationMarkdownFromPackageDocumentationManager()
         {
             // Arrange
@@ -626,7 +626,7 @@ namespace DynamoCoreWpfTests
             Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(Path.Combine(packageName, nodeWithoutDocumentation)));
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void DocsCanBeLoadedForDSNonPackageNodesFrom_FallBackPath()
         {
             //setup the docs browser to point to our fake fallback folder.
@@ -659,7 +659,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(htmlContent.Contains("loopwhile sample docs"));
         }
-        [Test, Category("Failure")]
+        [Test]
         public void DocsAreLoadedFromHostPathBeforeCorePath()
         {
             //setup the docs browser to point to our fake fallback folder.
@@ -683,7 +683,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains("list.rank sample docs from host path"));
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void DocsCanBeLoadedForCoreNodeModelNodesFrom_FallBackPath()
         {
             //setup the docs browser to point to our fake fallback folder.
@@ -750,7 +750,7 @@ namespace DynamoCoreWpfTests
             return GetSidebarDocsBrowserContents();
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void AddGraphInSpecificLocationToWorkspace()
         {
             //TODO see this issue:
@@ -803,7 +803,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void Validate_GetGraphLinkFromMDLocation()
         {
             var nodeName = "Number";
@@ -836,7 +836,7 @@ namespace DynamoCoreWpfTests
             //check that the pathPath contains "NodeHelpSharedDocs//dynfilename"
             Assert.That(graphPathValue.Contains(sharedFilesPath));
         }
-        [Test, Category("Failure")]
+        [Test]
         public void Validate_GetGraphLinkFromPackage()
         {
             var nodeName = "Package.Hello";

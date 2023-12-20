@@ -15,7 +15,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
 {
     public class NotificationsExtensionTests : DynamoTestUIBase
     {
-        [Test, Category("Failure")]
+        [Test]
         public void PressNotificationButtonAndShowPopup()
         {
             var shortcutBar = this.View.ShortcutBar;
@@ -42,7 +42,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             Assert.NotNull(webView);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void ValidateNotificationsUIEmbededFiles()
         {
             var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x=>x.ManifestModule.Name.Contains("Notifications.dll"));
