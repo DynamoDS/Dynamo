@@ -260,7 +260,7 @@ namespace Dynamo.ViewModels
         public ICommand ToggleLoginStateCommand { get; private set; }
 
         /// <summary>
-        /// Contains all votes the user has been submitted.
+        /// Contains all votes the user has submitted.
         /// Will allow the user to vote for a package they have not upvoted before
         /// </summary>
         private List<string> Uservotes { get; set; }
@@ -285,7 +285,7 @@ namespace Dynamo.ViewModels
 
             if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn))
             {
-                this.Uservotes = this.Model.UserVotes();
+                Task.Run(() => this.Uservotes = this.Model.UserVotes());                
             }
         }
 
