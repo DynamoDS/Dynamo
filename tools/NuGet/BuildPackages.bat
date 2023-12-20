@@ -35,7 +35,7 @@ for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %harvestPath%\Dyn
   set /a count=!count!+1
 )
 setlocal DisableDelayedExpansion
-set version=%Major%.%Minor%.%Build%-beta%Revision%
+set version=%Major%.%Minor%.%Build%.%Revision%
 
 :: Get target framework from build.xml
 for /f %%f in ('cscript //Nologo .\GetTargetFramework.vbs ..\..\src\build.xml') do (
