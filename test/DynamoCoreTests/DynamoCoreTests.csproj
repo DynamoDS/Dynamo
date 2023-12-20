@@ -25,7 +25,7 @@
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
         <PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
-        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.0.3421">
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.0.3534">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
