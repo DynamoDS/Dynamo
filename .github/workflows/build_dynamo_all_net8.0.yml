@@ -47,9 +47,11 @@ jobs:
           if-no-files-found: warn
           retention-days: 3
       - name: Save Pull Request Artifact
+        env:
+          PR_NUMBER: ${{ github.event.number }}
         run: |
           New-Item -Path ${{ github.workspace }}\pr -ItemType Directory -Force
-          ${{ github.event.number }}| Out-File -FilePath pr\pr_number.txt
+          $env:PR_NUMBER | Out-File -FilePath ${{ github.workspace }}\pr\pr_number.txt
       - name: Upload Pull Request Artifact
         uses: actions/upload-artifact@v4
         with:
