@@ -45,11 +45,11 @@ jobs:
         run: |
           Write-Output "***Continue with the build, Good luck developer!***"
           msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release /p:Platform=NET60_Linux
-      - name: Look for DynamoCLI.exe
+      - name: Look for DynamoCLI
         run: |
           Write-Output "***Locating DynamoCLI for Linux!***"
-          if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\NET60_Linux\Release\DynamoCLI.exe") {
-            Write-Output "DynamoCLI.exe exists!"
+          if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\NET60_Linux\Release\DynamoCLI") {
+            Write-Output "DynamoCLI exists!"
           } else {
-            Write-Error "DynamoCLI.exe was not found!"
+            Write-Error "DynamoCLI was not found!"
           }
