@@ -64,8 +64,8 @@ jobs:
       - name: Add Test Summary
         if: always()
         run: |
-          if (Test-Path -Path summary.md) {
-            Get-Content -Path summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          if (Test-Path -Path reports/summary.md) {
+            Get-Content -Path reports/summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
       - name: Add Run Summary
         if: always()

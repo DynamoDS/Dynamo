@@ -10,6 +10,11 @@ using NUnit.Framework;
     {
         private AssemblyHelper assemblyHelper;
 
+        /// <summary>
+        /// Skip loading WPF nodes during DynamoCore tests because they will fail to load and will generate too many useless logs
+        /// </summary>
+        /// <param name="assemblyPath"></param>
+        /// <returns></returns>
         private bool NodeModelAssemblyLoader_shouldLoadAssemblyPath(string assemblyPath)
         {
             if (assemblyPath.Contains("WPF", StringComparison.OrdinalIgnoreCase) || assemblyPath.Contains("UI", StringComparison.OrdinalIgnoreCase))
