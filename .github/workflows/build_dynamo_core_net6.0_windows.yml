@@ -48,4 +48,8 @@ jobs:
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI for Linux!***"
-          test "${{ github.workspace }}\Dynamo\bin\NET60_Linux\Release"\DynamoCLI.exe" && Write-Output "DynamoCLI exists!"
+          if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\NET60_Linux\Release\DynamoCLI.exe") {
+            Write-Output "DynamoCLI.exe exists!"
+          } else {
+            Write-Error "DynamoCLI.exe was not found!"
+          }
