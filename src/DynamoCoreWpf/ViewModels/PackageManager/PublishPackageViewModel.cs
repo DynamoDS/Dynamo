@@ -1364,6 +1364,106 @@ namespace Dynamo.PackageManager
 
         }
 
+
+        /// <summary>
+        /// An alternative path to publishing package version experience
+        /// In this method, we keep duplicate assemblies, adding them as files and not raising an error
+        /// </summary>
+        /// <param name="dynamoViewModel"></param>
+        /// <param name="pkg"></param>
+        /// <returns></returns>
+        public static PublishPackageViewModel FromLocalPackageRetainFolderStructure(DynamoViewModel dynamoViewModel, Package pkg)
+        {
+            var defs = new List<CustomNodeDefinition>();
+
+            foreach (var x in pkg.LoadedCustomNodes)
+            {
+                CustomNodeDefinition def;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(
+                    x.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out def))
+                {
+                    defs.Add(def);
+                }
+            }
+
+            var pkgViewModel = new PublishPackageViewModel(dynamoViewModel)
+            {
+                Group = pkg.Group,
+                Description = pkg.Description,
+                Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : "",
+                CustomNodeDefinitions = defs,
+                Name = pkg.Name,
+                RepositoryUrl = pkg.RepositoryUrl ?? "",
+                SiteUrl = pkg.SiteUrl ?? "",
+                Package = pkg,
+                License = pkg.License,
+                SelectedHosts = pkg.HostDependencies as List<string>,
+                CopyrightHolder = pkg.CopyrightHolder,
+                CopyrightYear = pkg.CopyrightYear,
+                IsPublishFromLocalPackage = true,
+                RetainFolderStructureOverride = true
+            };
+
+            // add additional files
+            pkg.EnumerateAdditionalFiles();
+            foreach (var file in pkg.AdditionalFiles)
+            {
+                pkgViewModel.AdditionalFiles.Add(file.Model.FullName);
+            }
+
+            var nodeLibraryNames = pkg.Header.node_libraries;
+
+            var assembliesLoadedTwice = new List<string>();
+            foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
+            {
+                Assembly assem;
+                var result = PackageLoader.TryMetaDataContextLoad(file, SharedPublishLoadContext, out assem);
+
+                switch (result)
+                {
+                    case AssemblyLoadingState.Success:
+                        {
+                            var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
+                            pkgViewModel.Assemblies.Add(new PackageAssembly()
+                            {
+                                IsNodeLibrary = isNodeLibrary,
+                                Assembly = assem
+                            });
+                            break;
+                        }
+                    case AssemblyLoadingState.NotManagedAssembly:
+                        {
+                            // if it's not a .NET assembly, we load it as an additional file
+                            pkgViewModel.AdditionalFiles.Add(file);
+                            break;
+                        }
+                    case AssemblyLoadingState.AlreadyLoaded:
+                        {
+                            // When retaining the folder structure, we bypass this check (for now!)
+                            pkgViewModel.AdditionalFiles.Add(file);
+                            break;
+                        }
+                }
+            }
+
+            //after dependencies are loaded refresh package contents
+            pkgViewModel.RefreshPackageContents();
+            pkgViewModel.UpdateDependencies();
+
+            if (pkg.VersionName == null) return pkgViewModel;
+
+            var parts = pkg.VersionName.Split('.');
+            if (parts.Count() != 3) return pkgViewModel;
+
+            pkgViewModel.MajorVersion = parts[0];
+            pkgViewModel.MinorVersion = parts[1];
+            pkgViewModel.BuildVersion = parts[2];
+            return pkgViewModel;
+
+        }
+
         public void OnPublishSuccess()
         {
             if (PublishSuccess != null)

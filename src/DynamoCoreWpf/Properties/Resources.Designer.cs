@@ -3858,6 +3858,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish Retain....
+        /// </summary>
+        public static string InstalledPackageViewContextMenuPublishRetain {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuPublishRetain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish this package retaining its folder structure, if it has yet to be published..
+        /// </summary>
+        public static string InstalledPackageViewContextMenuPublishRetainTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuPublishRetainTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish this package, if it has yet to be published..
         /// </summary>
         public static string InstalledPackageViewContextMenuPublishTooltip {
@@ -3872,6 +3890,24 @@ namespace Dynamo.Wpf.Properties {
         public static string InstalledPackageViewContextMenuPublishVersion {
             get {
                 return ResourceManager.GetString("InstalledPackageViewContextMenuPublishVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Version Retain....
+        /// </summary>
+        public static string InstalledPackageViewContextMenuPublishVersionRetain {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuPublishVersionRetain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish a new version of this package retaining its folder structure, assuming it has already been published. Only allowed if you&apos;re a current maintainer of the package..
+        /// </summary>
+        public static string InstalledPackageViewContextMenuPublishVersionRetainTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuPublishVersionRetainTooltip", resourceCulture);
             }
         }
         
