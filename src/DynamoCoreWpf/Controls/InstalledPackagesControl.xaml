@@ -204,12 +204,28 @@
                                                                     <ToolTip Content="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                                                                 </MenuItem.ToolTip>
                                                             </MenuItem>
+                                                            <MenuItem Name="MakePackageRetainButton"
+                                                                      Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                                      Command="{Binding Path=PublishNewPackageRetainCommand}"
+                                                                      Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishRetain}">
+                                                                <MenuItem.ToolTip>
+                                                                    <ToolTip Content="{x:Static p:Resources.InstalledPackageViewContextMenuPublishRetainTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                                </MenuItem.ToolTip>
+                                                            </MenuItem>
                                                             <MenuItem Name="MakeNewVersionButton"
                                                                               Visibility="{Binding Path=CanPublishNewVersion, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                                               Command="{Binding Path=PublishNewPackageVersionCommand}"
                                                                               Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersion}">
                                                                 <MenuItem.ToolTip>
                                                                     <ToolTip Content="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                                </MenuItem.ToolTip>
+                                                            </MenuItem>
+                                                            <MenuItem Name="MakeNewVersionRetainButton"
+                                                                              Visibility="{Binding Path=CanPublishNewVersion, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                                              Command="{Binding Path=PublishNewPackageVersionRetainCommand}"
+                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionRetain}">
+                                                                <MenuItem.ToolTip>
+                                                                    <ToolTip Content="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionRetainTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                                                                 </MenuItem.ToolTip>
                                                             </MenuItem>
                                                             <MenuItem Name="DeprecateButton"

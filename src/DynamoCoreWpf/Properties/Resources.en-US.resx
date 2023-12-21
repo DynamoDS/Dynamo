@@ -1146,11 +1146,23 @@ Failed to publish file(s):
   <data name="InstalledPackageViewContextMenuPublishTooltip" xml:space="preserve">
     <value>Publish this package, if it has yet to be published.</value>
   </data>
+  <data name="InstalledPackageViewContextMenuPublishRetain" xml:space="preserve">
+    <value>Publish Retain...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishRetainTooltip" xml:space="preserve">
+    <value>Publish this package retaining its folder structure, if it has yet to be published.</value>
+  </data>
   <data name="InstalledPackageViewContextMenuPublishVersion" xml:space="preserve">
     <value>Publish Version...</value>
   </data>
   <data name="InstalledPackageViewContextMenuPublishVersionTooltip" xml:space="preserve">
     <value>Publish a new version of this package, assuming it has already been published. Only allowed if you're a current maintainer of the package.</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishVersionRetain" xml:space="preserve">
+    <value>Publish Version Retain...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishVersionRetainTooltip" xml:space="preserve">
+    <value>Publish a new version of this package retaining its folder structure, assuming it has already been published. Only allowed if you're a current maintainer of the package.</value>
   </data>
   <data name="InstalledPackageViewContextMenuRemoveDeprecation" xml:space="preserve">
     <value>Remove deprecation</value>
