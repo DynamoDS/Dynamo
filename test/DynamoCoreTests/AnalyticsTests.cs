@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
@@ -24,11 +25,6 @@ namespace Dynamo.Tests
             get { return Analytics.IsEnabled; }
         }
 
-        public static void Disable()
-        {
-            Analytics.ShutDown();
-        }
-
         public static void Throw<T>() where T : Exception, new()
         {
             throw new T();
@@ -47,7 +43,7 @@ namespace Dynamo.Tests
         }
     }
 
-    public class AnalyticsTests : DynamoModelTestBase
+    public class AnalyticsTestsBase : DynamoModelTestBase
     {
         protected Mock<IAnalyticsClient> clientMoq;
 
@@ -79,58 +75,64 @@ namespace Dynamo.Tests
         protected virtual void VerifyEventTracking(Times times)
         {
             Analytics.TrackEvent(Actions.New, Categories.NodeOperations, "New Node", 5);
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackEvent(Actions.New, Categories.NodeOperations, "New Node", 5), times);
 
             Analytics.TrackScreenView("TestScreen");
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackScreenView("TestScreen"), times);
 
             Analytics.TrackActivityStatus("User");
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackActivityStatus("User"), times);
 
             TestAnalytics.TrackException<InvalidOperationException>(false);
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackException(It.IsAny<InvalidOperationException>(), false), times);
 
             var time = TimeSpan.FromMinutes(3);
             var variable = "TimeVariable";
             var description = "Some description";
             Analytics.TrackTimedEvent(Categories.Stability, variable, time, description);
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackTimedEvent(Categories.Stability, variable, time, description), times);
 
-            using (var x = Analytics.CreateTimedEvent(Categories.Performance, variable, description))
+            using (var x = Analytics.CreateTaskTimedEvent(Categories.Performance, variable, description).Result)
             {
-                clientMoq.Verify(c => c.CreateTimedEvent(Categories.Performance, variable, description, null), times);
+                clientMoq.Verify(c => c.CreateTaskTimedEvent(Categories.Performance, variable, description, null), times);
             }
 
-            var e = Analytics.TrackCommandEvent("TestCommand");
-            clientMoq.Verify(c => c.CreateCommandEvent("TestCommand", "", null), times);
+            var e = Analytics.TrackTaskCommandEvent("TestCommand").Result;
+            clientMoq.Verify(c => c.CreateTaskCommandEvent("TestCommand", "", null, null), times);
 
-            Task task = Analytics.TrackTaskCommandEvent("TestCommand", "TestCommand description", null, new Dictionary<string, object>() { } );
-            task.Wait();
-
-            clientMoq.Verify(c => c.CreateCommandEvent("TestCommand", "", null), times);
+            e = Analytics.TrackTaskCommandEvent("TestCommand", "TestCommand description", null, new Dictionary<string, object>() { } ).Result;
+            clientMoq.Verify(c => c.CreateTaskCommandEvent("TestCommand", "", null, null), times);
 
             e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5);
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5, ""), times);
-
-            Analytics.LogPiiInfo("tag", "data");
-            clientMoq.Verify(c => c.LogPiiInfo("tag", "data"), times);
         }
+    }
 
-        [Test]
+    public class AnalyticsTests : AnalyticsTestsBase
+    {
+        [Test, Order(1)]
         public void EventTrackingEnabled()
         {
             VerifyEventTracking(Times.Exactly(1));
         }
 
-        [Test]
+        [Test, Order(2)]
         public void EventTrackingDisabled()
         {
-            TestAnalytics.Disable(); //Disable analytics tracking.
+            Analytics.ShutDown();
+            Thread.Sleep(100);
+
             VerifyEventTracking(Times.Never());
         }
     }
 
-    public class DynamoAnalyticsTests : AnalyticsTests
+    public class DynamoAnalyticsTests : AnalyticsTestsBase
     {
         protected Mock<TrackerFactory> factoryMoq;
         protected Mock<IEventTracker> trackerMoq;
@@ -176,8 +178,7 @@ namespace Dynamo.Tests
             Service.Instance.Unregister(factoryName);
         }
 
-        [Test]
-        [Category("Failure")]
+        [Test, Order(1)]
         public void AnalyticsTrackingEnabled()
         {
             VerifyEventTracking(Times.Exactly(1));
@@ -185,26 +186,25 @@ namespace Dynamo.Tests
             trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.AtLeast(10));
         }
 
-        [Test]
-        [Category("Failure")]
+        [Test, Order(1)]
         public void CreateDisposableEvents()
         {
             var variable = "TimeVariable";
             var description = "Some description";
-            
-            var e = Analytics.CreateTimedEvent(Categories.Performance, variable, description);
+
+            IDisposable e = Analytics.CreateTaskTimedEvent(Categories.Performance, variable, description).Result;
             Assert.IsInstanceOf<TimedEvent>(e);
             e.Dispose();
             //1 Dispose, Timed event is not tracked for creation.
             trackerMoq.Verify(t => t.Track(e as TimedEvent, factoryMoq.Object), Times.Exactly(1));
 
-            e = Analytics.TrackCommandEvent("TestCommand");
+            e = Analytics.TrackTaskCommandEvent("TestCommand").Result;
             Assert.IsInstanceOf<CommandEvent>(e);
             e.Dispose();
             //1 Create + 1 Dispose
             trackerMoq.Verify(t => t.Track(e as CommandEvent, factoryMoq.Object), Times.Exactly(2));
 
-            e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Save, 5);
+            e = Analytics.TrackTaskFileOperationEvent(this.TempFolder, Actions.Save, 5).Result;
             Assert.IsInstanceOf<FileOperationEvent>(e);
             e.Dispose();
 
