@@ -34,8 +34,8 @@ namespace SystemTestServices
     {
         protected IPathResolver pathResolver;
         protected string workingDirectory;
+        private TestSessionConfiguration testConfig;
         private Preloader preloader;
-        private AssemblyResolver assemblyResolver;
         // Some tests override the static property PathManager.BuiltinPackagesDirectory, so we need a way to reset it after each test.
         private string originalBuiltinPackagesDirectory;
 
@@ -56,21 +56,17 @@ namespace SystemTestServices
 
         #endregion
 
+        public SystemTestBase()
+        {
+            testConfig = new TestSessionConfiguration();
+        }
+
         #region public methods
 
         [SetUp]
         public virtual void Setup()
         {
             System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
-            var testConfig = GetTestSessionConfiguration();
-
-            if (assemblyResolver == null)
-            {
-                assemblyResolver = new AssemblyResolver();
-                assemblyResolver.Setup(testConfig.DynamoCorePath, new [] {
-                    Path.Combine(testConfig.DynamoCorePath, "nodes")
-                });
-            }
 
             SetupCore();
 
@@ -97,7 +93,7 @@ namespace SystemTestServices
         /// <returns></returns>
         protected virtual TestSessionConfiguration GetTestSessionConfiguration()
         {
-            return new TestSessionConfiguration();
+            return testConfig;
         }
 
         [TearDown]
@@ -122,12 +118,6 @@ namespace SystemTestServices
             Model = null;
             preloader = null;
             pathResolver = null;
-
-            if (assemblyResolver != null)
-            {
-                assemblyResolver.TearDown();
-                assemblyResolver = null;
-            }
 
             PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
             try
@@ -306,7 +296,7 @@ namespace SystemTestServices
             Assert.AreEqual(count, data.GetElements().ToList().Count);
         }
 
-        public NodeModel GetNode<T>(string guid) where T : NodeModel
+        protected T GetNode<T>(string guid) where T : class
         {
             var allNodes = ViewModel.Model.CurrentWorkspace.Nodes;
             var nodes = allNodes.Where(x => string.CompareOrdinal(x.GUID.ToString(), guid) == 0);

@@ -10,15 +10,13 @@
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>
-            Assemblies required to start a DynamoModel and execute DesignScript code.
+            Assemblies required to reference core APIs from Dynamo.
         </description>
         <summary>This package contains the core assemblies for Dynamo.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <!--TODO - why do we reference nunit from dynamo core? This is an odd partial collection of dependencies to mark.-->
             <group targetFramework="$TargetFramework$">
                 <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
-                <dependency id="Newtonsoft.Json" version="13.0.1"/>
             </group>
         </dependencies>
     </metadata>
@@ -26,45 +24,23 @@
     <files>
         <file src="DynamoApplications.dll" target="lib\$TargetFramework$" />
         <file src="DynamoApplications.xml" target="lib\$TargetFramework$" />
-        <file src="en-US\DynamoApplications.resources.dll" target="lib\$TargetFramework$\en-US" />
-
         <file src="DynamoCore.dll" target="lib\$TargetFramework$" />
         <file src="DynamoCore.xml" target="lib\$TargetFramework$" />
-        <file src="DynamoCore.dll.config" target="build\$TargetFramework$" />
-        <file src="en-US\DynamoCore.resources.dll" target="lib\$TargetFramework$\en-US" />
-        <file src="DynamoCore.customization.dll" target="build\$TargetFramework$" />
-
         <file src="DynamoInstallDetective.dll" target="lib\$TargetFramework$" />
-
         <file src="DynamoShapeManager.dll" target="lib\$TargetFramework$" />
         <file src="DynamoShapeManager.xml" target="lib\$TargetFramework$" />
-        <file src="DynamoShapeManager.dll.config" target="build\$TargetFramework$" />
-
         <file src="DynamoUtilities.dll" target="lib\$TargetFramework$" />
         <file src="DynamoUtilities.xml" target="lib\$TargetFramework$" />
-        <file src="en-US\DynamoUtilities.resources.dll" target="lib\$TargetFramework$\en-US" />
-
         <file src="ProtoCore.dll" target="lib\$TargetFramework$" />
         <file src="ProtoCore.xml" target="lib\$TargetFramework$" />
-        <file src="en-US\ProtoCore.resources.dll" target="lib\$TargetFramework$\en-US" />
-
         <file src="DesignScriptBuiltin.dll" target="lib\$TargetFramework$" />
         <file src="DesignScriptBuiltin.xml" target="lib\$TargetFramework$" />
-        <file src="en-US\DesignScriptBuiltin.resources.dll" target="lib\$TargetFramework$\en-US" />
-
         <file src="VMDataBridge.dll" target="lib\$TargetFramework$" />
         <file src="VMDataBridge.xml" target="lib\$TargetFramework$" />
-     
         <file src="DSCPython.dll" target="lib\$TargetFramework$" />
-        <file src="en-US\DSCPython.resources.dll" target="lib\$TargetFramework$\en-US" />
-
         <!--TODO - arguable if DynamoPackages should be in this package-->
         <file src="DynamoPackages.dll" target="lib\$TargetFramework$" />
         <file src="DynamoPackages.xml" target="lib\$TargetFramework$" />
-        <file src="en-US\DynamoPackages.resources.dll" target="lib\$TargetFramework$\en-US" />
-        <file src="DynamoPackages.dll.config" target="build\$TargetFramework$" />
-
-        <file src="..\..\..\tools\Nuget\build_props\DynamoVisualProgramming.Core.targets" target="build\$TargetFramework$" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

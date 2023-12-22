@@ -15,6 +15,7 @@ namespace TestServices
     /// </summary>
     public class TestSessionConfiguration
     {
+        private AssemblyResolver assemblyResolver = new AssemblyResolver();
         private const string CONFIG_FILE_NAME = "TestServices.dll.config";
         private  List<Version> supportedLibGVersions = new List<Version>
                 {
@@ -22,7 +23,26 @@ namespace TestServices
                     new Version(229,0,0),
                 };
 
-        public string DynamoCorePath { get; private set; }
+        private string dynamoCorePath;
+
+        public string DynamoCorePath
+        {
+            get => dynamoCorePath;
+            private set
+            {
+                if (!string.IsNullOrEmpty(dynamoCorePath))
+                {
+                    // if we have an assembly resolver, try to clean it first.
+                    assemblyResolver?.TearDown();
+                }
+                dynamoCorePath = value;
+
+                // setup the assembly resolver
+                assemblyResolver?.Setup(dynamoCorePath, new[] {
+                    Path.Combine(dynamoCorePath, "nodes")
+                });
+            }
+        }
         [Obsolete("Please use the Version2 Property instead.")]
         public LibraryVersion RequestedLibraryVersion { get { return (LibraryVersion)this.RequestedLibraryVersion2.Major; }}
 
