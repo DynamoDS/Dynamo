@@ -353,15 +353,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// This property getter returns an empty GeometryCollection
-        /// </summary>
-        [Obsolete("This property will be removed in Dynamo 3.0 - please use NestedGroupsGeometries instead.")]
-        public GeometryCollection NestedGroupsGeometryCollection
-        {
-            get => new GeometryCollection();
-        }
-
-        /// <summary>
         /// Collection of rectangles based on AnnotationModels
         /// that belongs to this group.
         /// This is used to make a cutout in this groups background

@@ -53,7 +53,6 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeView.ViewModel;
             this.DataContext = nodeViewModel.NodeModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
-            this.dynamoViewModel.PropertyChanged += OnDynamoViewModelPropertyChanged;
             this.dynamoViewModel.PreferencesViewModel.PropertyChanged += OnPreferencesViewModelPropertyChanged;
             this.InnerTextEditor.TextChanged += OnTextChanged;
             this.InnerTextEditor.TextArea.GotFocus+= OnTextAreaGotFocus; 
@@ -191,15 +190,6 @@ namespace Dynamo.UI.Controls
             {
                 WatermarkLabel.Visibility = Visibility.Collapsed;
                 this.InnerTextEditor.ShowLineNumbers = dynamoViewModel.PreferencesViewModel.ShowCodeBlockLineNumber;
-            }
-        }
-
-        [Obsolete("This is now done through a PreferencesViewModel property change")]
-        private void OnDynamoViewModelPropertyChanged(object sender, EventArgs e)
-        {
-            if((e as PropertyChangedEventArgs).PropertyName == nameof(dynamoViewModel.ShowCodeBlockLineNumber))
-            {
-                this.InnerTextEditor.ShowLineNumbers = dynamoViewModel.ShowCodeBlockLineNumber;
             }
         }
 
@@ -414,7 +404,6 @@ namespace Dynamo.UI.Controls
 
         internal void Dispose()
         {
-            this.dynamoViewModel.PropertyChanged -= OnDynamoViewModelPropertyChanged;
             this.dynamoViewModel.PreferencesViewModel.PropertyChanged -= OnPreferencesViewModelPropertyChanged;
         }
     }
