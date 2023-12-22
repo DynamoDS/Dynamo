@@ -1342,10 +1342,6 @@ namespace ProtoFFI
             }
         }
 
-        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0. Use FFIMethodAttributes(MethodBase method, Dictionary<MethodInfo, Attribute[]> getterAttributes = null) instead.")]
-        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
-            : this(method as MethodBase, getterAttributes) { }
-
         public FFIMethodAttributes(MethodBase method, Dictionary<MethodInfo, Attribute[]> getterAttributes = null)
         {
             if (method == null)
