@@ -33,7 +33,7 @@
 
         <file src="..\..\..\bin\AnyCPU\Debug\SystemTestServices.dll" target="lib\$TargetFramework$" />
         <file src="..\..\..\bin\AnyCPU\Debug\TestServices.dll" target="lib\$TargetFramework$" />
-        <file src="..\..\..\bin\AnyCPU\Debug\TestServices.dll.config" target="build" />
+        <file src="..\..\..\tools\Nuget\build_props\TestServices.dll.config" target="build" />
         
         <file src="..\..\..\tools\Nuget\build_props\DynamoVisualProgramming.Tests.props" target="build" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />

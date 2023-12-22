@@ -1,8 +1,0 @@
-<Project>
-     <Target Name="Copy_extra_files" AfterTargets="Build">
-         <ItemGroup>
-            <Extras Include="$(MSBuildThisFileDirectory)*" />
-        </ItemGroup>
-        <Copy SourceFiles="@(Extras)" DestinationFolder="$(OutputPath)" />
-  </Target>
-</Project>
