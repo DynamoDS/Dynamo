@@ -75,11 +75,6 @@ namespace Dynamo.WorkspaceDependency
         }
 
 
-        [Obsolete("This method is not implemented and will be removed.")]
-        public void Ready(ReadyParams readyParams)
-        {
-        }
-
         public override void Startup(ViewStartupParams viewStartupParams)
         {
             pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();

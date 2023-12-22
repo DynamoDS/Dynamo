@@ -24,7 +24,7 @@ namespace UnitsUI
     /// Class defining the behaviour of a nodemodel which has no inputs, but rather uses wpf comboboxes to select items from collections.
     /// It then outputs a formatted string from the selections made.
     /// </summary>
-    [Obsolete("This abstract class will be removed in Dynamo 3.0 - This abstract class will be removed in Dynamo 3.0 - please use the UnitInput node")]
+    [Obsolete("This abstract class will be removed in a future version of Dynamo - please use the UnitInput node")]
     public abstract class MeasurementInputBase : NodeModel
     {
         [JsonIgnore]
@@ -74,11 +74,6 @@ namespace UnitsUI
                     Value = DeserializeValue(subNode.Attributes[0].Value);
                 }
             }
-        }
-
-        public override string PrintExpression()
-        {
-            return Value.ToString();
         }
 
         protected double DeserializeValue(string val)

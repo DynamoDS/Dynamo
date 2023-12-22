@@ -67,8 +67,6 @@ namespace Dynamo.ViewModels
             GettingStartedGuideCommand = new DelegateCommand(StartGettingStartedGuide, CanStartGettingStartedGuide);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowPackageManagerCommand = new DelegateCommand(ShowPackageManager, CanShowPackageManager);
-            ShowInstalledPackagesCommand = new DelegateCommand(o => { }, o => true);
-            ManagePackagePathsCommand = new DelegateCommand(o => { }, o => true);
 
             if (PackageManagerClientViewModel != null && !Model.IsServiceMode)
             {
@@ -120,10 +118,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand GraphAutoLayoutCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand ShowInstalledPackagesCommand { get; set; }
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand ManagePackagePathsCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
         public DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand { get; set; }
