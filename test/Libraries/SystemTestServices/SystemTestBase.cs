@@ -296,7 +296,7 @@ namespace SystemTestServices
             Assert.AreEqual(count, data.GetElements().ToList().Count);
         }
 
-        protected T GetNode<T>(string guid) where T : class
+        protected NodeModel GetNode(string guid)
         {
             var allNodes = ViewModel.Model.CurrentWorkspace.Nodes;
             var nodes = allNodes.Where(x => string.CompareOrdinal(x.GUID.ToString(), guid) == 0);
@@ -304,7 +304,7 @@ namespace SystemTestServices
                 return null;
             else if (nodes.Count() > 1)
                 throw new Exception("There are more than one nodes with the same GUID!");
-            return nodes.ElementAt(0) as T;
+            return nodes.ElementAt(0);
         }
 
         public object GetPreviewValue(string guid)
