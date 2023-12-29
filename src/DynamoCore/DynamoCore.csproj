@@ -18,6 +18,7 @@
   </PropertyGroup>
     <ItemGroup>
     <Compile Remove="Graph\ConnectorPinModel.cs" />
+    <Compile Remove="Utilities\NotificationCounter.cs" Condition="'$(Configuration)' != 'Debug'"/>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
@@ -26,15 +27,7 @@
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.2.1" ExcludeAssets="runtime" Condition="'$(Configuration)' != 'Debug'" />
-    <PackageReference Include="Lib.Harmony" Version="2.2.1" ExcludeAssets="none" Condition="'$(Configuration)' == 'Debug'" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" GeneratePathProperty="true" />
-    <PackageReference Include="Greg" Version="2.3.0.2505" />
-	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" CopyXML="true" />
-	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
-    <Reference Include="Microsoft.CSharp" />
-  <ItemGroup Label="Common dependencies">
+    <PackageReference Include="Lib.Harmony" Version="2.2.1" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.8" />
     <PackageReference Include="Greg" Version="3.0.0.3175" />
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.3331" GeneratePathProperty="true" />
