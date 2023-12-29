@@ -1,0 +1,199 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.DirectoryExists_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "C:\\Temp\\NewFolder",
+      "InputValue": "C:\\Temp\\NewFolder",
+      "NodeType": "ExtensionNode",
+      "Id": "5e448f2dba2143d0811e99050ff48502",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6d3713b18f6c43d7ae4c874d10fdaafb",
+          "Name": "",
+          "Description": "Directory path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a directory on the system and returns its path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.DirectoryExists@string",
+      "Id": "88fcf59123e947988b6d7c3d9a1d4950",
+      "Inputs": [
+        {
+          "Id": "f4fb2b81b1fb40ffa43faa2ddb013ef1",
+          "Name": "path",
+          "Description": "Path to a directory on disk\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2dd0a29c0ae4449ab7ec27f7936250b2",
+          "Name": "bool",
+          "Description": "True if directory exists, false if it doesn’t",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determines if a directory exists at the given path.\n\nFileSystem.DirectoryExists (path: string): bool"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "f57fde8d19b64308ac126a2242a3135c",
+      "Inputs": [
+        {
+          "Id": "6fb24447b971444496dd94a68ae6f935",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "aba990510de54612b47d35236def21b6",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6d3713b18f6c43d7ae4c874d10fdaafb",
+      "End": "f4fb2b81b1fb40ffa43faa2ddb013ef1",
+      "Id": "abbe0cb867824cea97abef0a88992630",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2dd0a29c0ae4449ab7ec27f7936250b2",
+      "End": "6fb24447b971444496dd94a68ae6f935",
+      "Id": "c3891049a6fa45f4b9129cee7fbbde86",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Directory Path",
+        "ShowGeometry": true,
+        "Id": "5e448f2dba2143d0811e99050ff48502",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3110.6133553299005,
+        "Y": 3450.1997353023062
+      },
+      {
+        "Name": "FileSystem.DirectoryExists",
+        "ShowGeometry": true,
+        "Id": "88fcf59123e947988b6d7c3d9a1d4950",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3390.6133553299005,
+        "Y": 3450.1997353023062
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "f57fde8d19b64308ac126a2242a3135c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3762.6133553299005,
+        "Y": 3450.1997353023062
+      }
+    ],
+    "Annotations": [],
+    "X": -2934.0463573187426,
+    "Y": -2640.3465969587028,
+    "Zoom": 0.96421855318101279
+  }
+}

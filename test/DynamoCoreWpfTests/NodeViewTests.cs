@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -403,6 +403,38 @@ namespace DynamoCoreWpfTests
             wvm.Zoom = 0.6;
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Collapsed);
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);  
+        }
+
+        [Test]
+        public void ZoomWarningFileFromPathTest()
+        {
+            // Arrange
+            Open(@"UI\DisplayImage.dyn");
+
+            NodeView filePathNode = NodeViewWithGuid(Guid.Parse("5a424eaa78c84cffaef5469c034de703").ToString());
+            NodeView fileFromPathNode = NodeViewWithGuid(Guid.Parse("eeeadd2b09294b5fbe3ea2668b99777a").ToString());
+            NodeView imageReadFromFileNode = NodeViewWithGuid(Guid.Parse("8d82e3934d0e464cb810ddc7389ab0ae").ToString());
+
+            // Get a reference to the NodeViewModels and the current workspace
+            NodeViewModel filePathNodeViewModel = filePathNode.DataContext as NodeViewModel;
+            NodeViewModel fileFromPathNodeViewModel = (fileFromPathNode.DataContext as NodeViewModel);
+            NodeViewModel imageReadFromFileNodeViewModel = imageReadFromFileNode.DataContext as NodeViewModel;
+
+            WorkspaceViewModel wvm = filePathNodeViewModel.WorkspaceViewModel as WorkspaceViewModel;
+                        
+            // Zoom out, less than 0.4
+            wvm.Zoom = 0.3;
+
+            Assert.AreEqual(fileFromPathNode.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Visible);
+            Assert.AreEqual(fileFromPathNode.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Visible);            
+
+            // Fix the image path and re run the engine
+            filePathNodeViewModel.NodeModel.UpdateValue(new Dynamo.Graph.UpdateValueParams("Value", ".\\Bricks.PNG"));
+
+            wvm.Zoom = 0.6;
+
+            Assert.AreEqual(fileFromPathNode.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);
+            Assert.AreEqual(fileFromPathNode.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Collapsed);
         }
 
         /// <summary>

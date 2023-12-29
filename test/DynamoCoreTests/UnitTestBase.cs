@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
@@ -64,8 +64,8 @@ namespace Dynamo
         [SetUp]
         public virtual void Setup()
         {
+            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
             SetupDirectories();
-            DSOffice.ExcelInterop.ShowOnStartup = false;
 
             if (assemblyHelper == null)
             {
@@ -98,6 +98,7 @@ namespace Dynamo
             {
                 AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             }
+            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 
         public string GetNewFileNameOnTempPath(string fileExtension = "dyn")

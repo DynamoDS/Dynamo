@@ -1,7 +1,11 @@
-﻿using System.IO;
+using System;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Engine;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 
@@ -16,6 +20,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void OnWorkspaceChangedExtensionIsNotified()
         {
+            this.View.WindowState = WindowState.Maximized;
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             extensionManager.Add(viewExtension);
@@ -52,21 +57,21 @@ namespace DynamoCoreWpfTests
 
             var extensionManager = View.viewExtensionManager;
 
-            var initialNum = View.ExtensionTabItems.Count;
+            var initialNum = ViewModel.SideBarTabItems.Count;
 
             // Adding the first extension will add a tab in the extensions side bar
             extensionManager.Add(viewExtension);
-            Assert.AreEqual(initialNum + 1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(initialNum + 1, ViewModel.SideBarTabItems.Count);
 
             // Adding the second extension will add another tab in the extensions side bar
             extensionManager.Add(extensionsSideBarViewExtension);
-            Assert.AreEqual(initialNum + 2, View.ExtensionTabItems.Count);
+            Assert.AreEqual(initialNum + 2, ViewModel.SideBarTabItems.Count);
 
             // Setting a different unique ID so as to add the extension to the extension manager. 
             // But since that extension is already added to the side bar, it won't be added again. 
             extensionsSideBarViewExtensionNew.UniqueId = "ExtensionsSideBarDummyIDNew";
             extensionManager.Add(extensionsSideBarViewExtensionNew);
-            Assert.AreEqual(initialNum + 2, View.ExtensionTabItems.Count); 
+            Assert.AreEqual(initialNum + 2, ViewModel.SideBarTabItems.Count); 
         }
 
         [Test]
@@ -76,17 +81,17 @@ namespace DynamoCoreWpfTests
 
             var extensionManager = View.viewExtensionManager;
 
-            var initialNum = View.ExtensionTabItems.Count;
+            var initialNum = ViewModel.SideBarTabItems.Count;
 
             // Adding a dummy extension will add a new tab in the extensions side bar
             extensionManager.Add(viewExtension);
-            Assert.AreEqual(initialNum + 1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(initialNum + 1, ViewModel.SideBarTabItems.Count);
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
 
             // Closing the view extension using the CloseExtensioninInSideBar API should close the view extension.
             loadedParams.CloseExtensioninInSideBar(this.viewExtension);
-            Assert.AreEqual(initialNum, View.ExtensionTabItems.Count);
+            Assert.AreEqual(initialNum, ViewModel.SideBarTabItems.Count);
         }
 
         [Test]
@@ -147,11 +152,11 @@ namespace DynamoCoreWpfTests
             View.viewExtensionManager.Add(viewExtension);
 
             // Extension bar is shown
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
 
             // The content is in the extension tab
-            var content = View.ExtensionTabItems[0].Content as TextBlock;
+            var content = ViewModel.SideBarTabItems[0].Content as TextBlock;
             Assert.IsNotNull(content);
             Assert.AreEqual("Dummy", content.Text);
 
@@ -159,7 +164,7 @@ namespace DynamoCoreWpfTests
             View.UndockExtension(viewExtension.Name);
 
             // Extension is no longer in the side bar (now collapsed)
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
             // Extension is in a window now
             Assert.AreEqual(1, View.ExtensionWindows.Count);
@@ -175,12 +180,12 @@ namespace DynamoCoreWpfTests
             window.Close();
 
             // Extension is in the sidebar again and the window is gone
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
             Assert.AreEqual(0, View.ExtensionWindows.Count);
 
             // The content is in the extension tab
-            content = View.ExtensionTabItems[0].Content as TextBlock;
+            content = ViewModel.SideBarTabItems[0].Content as TextBlock;
             Assert.IsNotNull(content);
             Assert.AreEqual("Dummy", content.Text);
         }
@@ -194,11 +199,11 @@ namespace DynamoCoreWpfTests
             View.viewExtensionManager.Add(viewExtension);
 
             // Extension bar is shown
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
 
             // The content is in the extension tab
-            var content = View.ExtensionTabItems[0].Content as TextBlock;
+            var content = ViewModel.SideBarTabItems[0].Content as TextBlock;
             Assert.IsNotNull(content);
             Assert.AreEqual("Dummy", content.Text);
 
@@ -206,7 +211,7 @@ namespace DynamoCoreWpfTests
             View.UndockExtension(viewExtension.Name);
 
             // Extension is no longer in the side bar (now collapsed)
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
             // Extension is in a window now
             Assert.AreEqual(1, View.ExtensionWindows.Count);
@@ -221,7 +226,7 @@ namespace DynamoCoreWpfTests
             window.Close();
 
             // Extension is not in the sidebar nor as a window
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
             Assert.AreEqual(0, View.ExtensionWindows.Count);
         }
@@ -235,7 +240,7 @@ namespace DynamoCoreWpfTests
             View.viewExtensionManager.Add(extensionsSideBarViewExtension);
 
             // Extension bar is shown
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
 
             // Undock extension which return a new UniqueId, this should not crash Dynamo
@@ -252,14 +257,14 @@ namespace DynamoCoreWpfTests
             View.viewExtensionManager.Add(viewExtension);
 
             // Extension bar is shown
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
 
             // Undock extension 
             View.UndockExtension(viewExtension.Name);
 
             // Extension is no longer in the side bar (now collapsed)
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
             // Extension is in a window now
             Assert.AreEqual(1, View.ExtensionWindows.Count);
@@ -268,7 +273,7 @@ namespace DynamoCoreWpfTests
             View.AddOrFocusExtensionControl(viewExtension, viewExtension.Content);
 
             // Extension is not added to the sidebar
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
         }
 
@@ -281,14 +286,14 @@ namespace DynamoCoreWpfTests
             View.viewExtensionManager.Add(viewExtension);
 
             // Extension bar is shown
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
 
             // Undock extension 
             View.UndockExtension(viewExtension.Name);
 
             // Extension is no longer in the side bar (now collapsed)
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
             // Extension is in a window now
             Assert.AreEqual(1, View.ExtensionWindows.Count);
@@ -298,7 +303,7 @@ namespace DynamoCoreWpfTests
             window.Close();
 
             // Extension is not in the sidebar nor as a window
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
             Assert.AreEqual(0, View.ExtensionWindows.Count);
 
@@ -306,7 +311,7 @@ namespace DynamoCoreWpfTests
             View.AddOrFocusExtensionControl(viewExtension, viewExtension.Content);
 
             // Extension is remembered to be opened as a window
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
             Assert.AreEqual(1, View.ExtensionWindows.Count);
 
@@ -316,7 +321,7 @@ namespace DynamoCoreWpfTests
             window.Close();
 
             // Extension is in the sidebar now
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
             Assert.AreEqual(0, View.ExtensionWindows.Count);
 
@@ -324,7 +329,7 @@ namespace DynamoCoreWpfTests
             View.CloseExtensionControl(viewExtension);
 
             // Extension is closed
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
             Assert.AreEqual(0, View.ExtensionWindows.Count);
 
@@ -332,7 +337,7 @@ namespace DynamoCoreWpfTests
             View.AddOrFocusExtensionControl(viewExtension, viewExtension.Content);
 
             // Extension is remembered to be opened in the sidebar
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
             Assert.AreEqual(0, View.ExtensionWindows.Count);
         }
@@ -346,14 +351,65 @@ namespace DynamoCoreWpfTests
 
             eventMethod.Invoke(element, new object[] { args });
         }
+
+        /// <summary>
+        /// Test if the number of nodes displayed in the extension is equal to current number of nodes
+        /// </summary>
+        [Test]
+        public void TestGraphEvaluationEvents()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+
+            EngineController controller = null;
+            int counter = 0;
+
+            void startedEvent(HomeWorkspaceModel hwm, EventArgs args)
+            {
+                counter++;
+                Assert.IsTrue(hwm.GraphRunInProgress);
+
+                Assert.IsNotNull(hwm.EngineController);
+                Assert.IsFalse(hwm.EngineController.IsDisposed);
+
+                controller = hwm.EngineController;
+                // Test that we do not get into an infinite loop
+                hwm.RequestRun();
+            };
+
+            void finishedEvent(HomeWorkspaceModel hwm, EventArgs args)
+            {
+                counter++;
+
+                Assert.IsFalse(hwm.GraphRunInProgress);
+                Assert.AreEqual(controller, hwm.EngineController);
+            };
+
+            viewExtension.OnOpenEvaluationStarted += startedEvent;
+            viewExtension.OnOpenEvaluationEnded += finishedEvent;
+
+            // Open first file.
+            Open(@"core\node2code\numberRange.dyn");
+
+            Assert.AreEqual(2, counter);
+
+            viewExtension.OnOpenEvaluationStarted -= startedEvent;
+            viewExtension.OnOpenEvaluationEnded -= finishedEvent;
+        }
     }
 
     public class DummyViewExtension : IViewExtension
     {
         public int Counter { get; private set; }
+        public HomeWorkspaceModel CurrentHWM;
+        public ViewLoadedParams Params;
         public bool SetOwner { get; set; } = true;
         public bool WindowClosed { get; private set; }
         public Window Content { get; private set; }
+
+        public event Action<HomeWorkspaceModel, EventArgs> OnOpenEvaluationStarted;
+        public event Action<HomeWorkspaceModel, EventArgs> OnOpenEvaluationEnded;
 
         public string UniqueId
         {
@@ -370,12 +426,30 @@ namespace DynamoCoreWpfTests
             // Do nothing for now
         }
 
-        public void Loaded(ViewLoadedParams p)
+        private void OnEvalStarted(object sender, EventArgs args)
         {
-            p.CurrentWorkspaceChanged += (ws) =>
+            OnOpenEvaluationStarted?.Invoke(Params.CurrentWorkspaceModel as HomeWorkspaceModel, args);
+        }
+
+        private void OnEvalEnded(object sender, EvaluationCompletedEventArgs args)
+        {
+            OnOpenEvaluationEnded?.Invoke(Params.CurrentWorkspaceModel as HomeWorkspaceModel, args);
+        }
+
+        private void workpaceChangedHandler(IWorkspaceModel ws) {
+            if (ws is HomeWorkspaceModel hwm)
             {
-                Counter++;
-            };
+                hwm.EvaluationStarted += OnEvalStarted;
+                hwm.EvaluationCompleted += OnEvalEnded;
+            }
+            
+            Counter++;
+        }
+
+        public void Loaded(ViewLoadedParams p)
+        { 
+            Params = p;
+            Params.CurrentWorkspaceChanged += workpaceChangedHandler;
 
             var window = new Window();
             window.Content = new TextBlock() { Text = "Dummy" };
@@ -399,7 +473,16 @@ namespace DynamoCoreWpfTests
 
         public void Dispose()
         {
+            if (Params != null)
+            {
+                if (Params.CurrentWorkspaceModel is HomeWorkspaceModel hwm)
+                {
+                    hwm.EvaluationStarted -= OnEvalStarted;
+                    hwm.EvaluationCompleted -= OnEvalEnded;
+                }
 
+                Params.CurrentWorkspaceChanged -= workpaceChangedHandler;
+            }
         }
     }
 

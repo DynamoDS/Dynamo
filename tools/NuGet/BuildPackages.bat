@@ -37,6 +37,13 @@ for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %harvestPath%\Dyn
 setlocal DisableDelayedExpansion
 set version=%Major%.%Minor%.%Build%-beta%Revision%
 
+:: Get target framework from build.xml
+for /f %%f in ('cscript //Nologo .\GetTargetFramework.vbs ..\..\src\build.xml') do (
+  setlocal EnableDelayedExpansion
+  set targetFramework=%%f
+)
+setlocal DisableDelayedExpansion
+
 :: Clean files generated from the previous run
 if exist *.nupkg ( del *.nupkg )
 
@@ -45,7 +52,7 @@ for %%f in (%1\*.nuspec) do (
   :: Check if nuspec file name containing "Symbols"
   echo %%f|find "Symbols" >nul
   :: When nuget pack symbols, set to release path where the symbol files live
-  if errorlevel 1 ( nuget pack %%f -basepath %harvestPath% -properties Version=%version%) else (nuget pack %%f -basepath %releasePath% -properties Version=%version%)
+  if errorlevel 1 ( nuget pack %%f -basepath %harvestPath% -properties Version=%version%;TargetFramework=%targetFramework%) else (nuget pack %%f -basepath %releasePath% -properties Version=%version%;TargetFramework=%targetFramework%)
   if not exist %%~nf.%version%.nupkg (
     exit /b 1
   )

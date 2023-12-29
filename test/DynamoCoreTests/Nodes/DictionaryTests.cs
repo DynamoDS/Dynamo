@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using DesignScript.Builtin;
 using NUnit.Framework;
@@ -87,9 +87,12 @@ namespace Dynamo.Tests.Nodes
 
             var validationData1 = new List<string> { "foo" };
             var validationData2 = new object[] { 1, new[] { 1, 2 } };
+            var validationData3 = new object[] { 5, 4, 7, 6, 1, 3, 2, 13, 12, 15, 14, 9, 8, 11, 10,
+                21, 20, 23, 22, 17, 16, 19, 18, 25, 24, 26};
 
             AssertPreviewValue("f64c1972520144d7a6d342937584c47e", validationData2);
             AssertPreviewValue("bc957838571c4c56af2bb714f9f40bd7", validationData1);
+            AssertPreviewValue("9a2b9a7d328148d6bdbc013b289e062a", validationData3);
         }
     }
 }

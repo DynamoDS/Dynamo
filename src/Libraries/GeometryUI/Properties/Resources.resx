@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExportToSATDescripiton" xml:space="preserve">
-    <value>Exports the specified geometry to the given SAT  file path.</value>
+    <value>Exports the given geometry to the given SAT file path</value>
   </data>
   <data name="ExportToSatFilePathDescription" xml:space="preserve">
     <value>File to export the geometry to.</value>

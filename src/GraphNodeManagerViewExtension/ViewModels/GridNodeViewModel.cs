@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.ImperativeAST;
 using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
@@ -39,11 +37,15 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private bool isNull = false;
         private int dismissedAlertsCount = 0;
         private bool isDummyNode = false;
+        private bool isPartOfPackage;
+        private bool outputIsSingleItem;
         private int infoCount = 0;
         private string infoIcon = string.Empty;
         private ElementState state;
         private ObservableCollection<NodeInfo> nodeInfos = new ObservableCollection<NodeInfo>();
         private string package;
+        private string originalName = string.Empty;
+        private string topLevelItemsNumber = string.Empty;
         private Guid nodeGuid;
         private bool isRenamed = false;
         
@@ -141,7 +143,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         }
 
         /// <summary>
-        /// IsFrozen
+        /// IsFunction
         /// </summary>
         public bool StateIsFunction
         {
@@ -155,6 +157,40 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 if (stateIsFunction == value) return;
                 stateIsFunction = value;
                 RaisePropertyChanged(nameof(StateIsFunction));
+            }
+        }
+
+        /// <summary>
+        /// Returns True if the output of the node is a single item
+        /// </summary>
+        public bool IsOutputSingleItem
+        {
+            get
+            {
+                return IsNodeOutputSingeItem(NodeModel.CachedValue);
+            }
+            internal set
+            {
+                if (outputIsSingleItem == value) return;
+                outputIsSingleItem = value;
+                RaisePropertyChanged(nameof(IsOutputSingleItem));
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of top-level items in list
+        /// </summary>
+        public string TopLevelItemsNumber
+        {
+            get
+            {
+                return GetTopLevelItemsNumber(NodeModel.CachedValue);
+            }
+            internal set
+            {
+                if (topLevelItemsNumber == value) return;
+                topLevelItemsNumber = value;
+                RaisePropertyChanged(nameof(TopLevelItemsNumber));
             }
         }
 
@@ -205,7 +241,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                if (NodeModel.State == ElementState.Info)
+                if (NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo)
                 {
                     isInfo = true;
                 }
@@ -325,7 +361,23 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 RaisePropertyChanged(nameof(IsRenamed));
             }
         }
-
+        /// <summary>
+        /// The original name of the node
+        /// </summary>
+        public string OriginalName
+        {
+            get
+            {
+                string originalName = NodeModel.GetOriginalName();
+                return originalName;
+            }
+            internal set
+            {
+                if (originalName == value) return;
+                originalName = value;
+                RaisePropertyChanged(nameof(OriginalName));
+            }
+        }
         /// <summary>
         /// The correct icon for the Info Bubble
         /// </summary>
@@ -336,6 +388,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 switch (NodeModel.State)
                 {
                     case ElementState.Info:
+                    case ElementState.PersistentInfo:
                         infoIcon = "/GraphNodeManagerViewExtension;component/Images/Info.png";
                         break;
                     case ElementState.Warning:
@@ -420,6 +473,57 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Returns true if the output of the node is a single item
+        /// </summary>
+        public bool IsNodeOutputSingeItem(MirrorData mirrorData)
+        {
+
+            if (mirrorData == null) return false;
+            if (!mirrorData.IsCollection)
+            {
+                try
+                {
+                    var output = mirrorData.Data;
+
+                    if (output is object) return true;
+                    return false;
+                }
+                catch (Exception)
+                { return false; }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the number of list items in the top level of the node output
+        /// </summary>
+        public string GetTopLevelItemsNumber(MirrorData mirrorData)
+        {
+            if (mirrorData == null) return string.Empty;
+            if (mirrorData.IsCollection)
+            {
+                try
+                {
+                    var list = mirrorData.GetElements();
+                    if (list.ToList().Count() == 1) return "[1]";
+                    else if (list.ToList().Count() == 2) return "[2]";
+                    else if (list.ToList().Count() == 3) return "[3]";
+                    else if (list.ToList().Count() == 4) return "[4]";
+                    else if (list.ToList().Count() == 5) return "[5]";
+                    else if (list.ToList().Count() == 6) return "[6]";
+                    else if (list.ToList().Count() == 7) return "[7]";
+                    else if (list.ToList().Count() == 8) return "[8]";
+                    else if (list.ToList().Count() == 9) return "[9]";
+                    else if (list.ToList().Count() > 9) return "[9+]";
+                    else return string.Empty;
+
+                }
+                catch (Exception) { return string.Empty; }
+            }
+            return string.Empty;
         }
 
         /// <summary>

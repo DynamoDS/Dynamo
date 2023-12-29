@@ -1,0 +1,402 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Plane",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "fdbf614236624f24aa499dc1f1153926",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "9.4",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "97c9bb904d3144f888acc5a7f4a7d5c6",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "8.6",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "5720fe697ccc4be49f53f5c8a96de9df",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "8.6",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "9e235c2ddf0c4de5b4c191e8fde118a1",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "271.1",
+      "MaximumValue": 360.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles@Autodesk.DesignScript.Geometry.Plane,double,double,double,double",
+      "Id": "ea76972f0ad9474c86e6b81a6271a537",
+      "Inputs": [
+        {
+          "Id": "00929261d43940d289cf5cca47719024",
+          "Name": "plane",
+          "Description": "The plane the EllipseArc is contained in\n\nPlane\nDefault value : Autodesk.DesignScript.Geometry.Plane.XY() (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cce1544e7e2b4f36af71cd9793adf9a6",
+          "Name": "xRadius",
+          "Description": "The radius of the EllipseArc in the X direction of the Plane\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "110ffd86e64c41f1a053deddb32d4020",
+          "Name": "yRadius",
+          "Description": "The radius of the EllipseArc in the Y direction of the Plane\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "74ea92cfcabc4ff3a82c2f1207bd198a",
+          "Name": "startAngle",
+          "Description": "The start angle of the arc as measured from the positive x-axis of the input plane\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4f46816afad94b6ca3e915d6bd436958",
+          "Name": "sweepAngle",
+          "Description": "The angle to sweep from the start angle in degrees\n\ndouble\nDefault value : 180",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c016589b476f44e88ef6054fd5c9ea4e",
+          "Name": "EllipseArc",
+          "Description": "EllipseArc",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create an EllipseArc in a plane with the given the radii along the X and Y axes and the angles to sweep through\n\nEllipseArc.ByPlaneRadiiAngles (plane: Plane = Autodesk.DesignScript.Geometry.Plane.XY(), xRadius: double = 1, yRadius: double = 1, startAngle: double = 0, sweepAngle: double = 180): EllipseArc"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.XY",
+      "Id": "3f61b9bcb5d443babb9c69f2b6526fa1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "eeacab7dbaf84ac79cb631bf991f92d0",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a plane in the world XY\n\nPlane.XY ( ): Plane"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 9.4,
+      "Id": "fdbf614236624f24aa499dc1f1153926",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4e0390db2e9a4fa7a76673331d6de7ba",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 8.6,
+      "Id": "97c9bb904d3144f888acc5a7f4a7d5c6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d347d63a12f04421b50164a58e55cc8c",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 20.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 8.6,
+      "Id": "5720fe697ccc4be49f53f5c8a96de9df",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d5685300bed54ce89698f9443ad94cfc",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 360.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 271.1,
+      "Id": "9e235c2ddf0c4de5b4c191e8fde118a1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fd45b479f0ef4d9388a2f0c32eb10dd6",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.EllipseArc.Plane",
+      "Id": "81288416e9cf4335b9058e5d598430a3",
+      "Inputs": [
+        {
+          "Id": "4568b270188f4c80b9bc15f3fe68bd25",
+          "Name": "ellipseArc",
+          "Description": "Autodesk.DesignScript.Geometry.EllipseArc",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8a68a18ee66e4857981f81b56534d2a3",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The plane in which the ellipse lies\n\nEllipseArc.Plane: Plane"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "c016589b476f44e88ef6054fd5c9ea4e",
+      "End": "4568b270188f4c80b9bc15f3fe68bd25",
+      "Id": "7e6a12cea17e497da1477f36e272401c"
+    },
+    {
+      "Start": "eeacab7dbaf84ac79cb631bf991f92d0",
+      "End": "00929261d43940d289cf5cca47719024",
+      "Id": "58e593ee058b4feb8537d8878c33965d"
+    },
+    {
+      "Start": "4e0390db2e9a4fa7a76673331d6de7ba",
+      "End": "cce1544e7e2b4f36af71cd9793adf9a6",
+      "Id": "f5ab9d9ca3a4467c8db7f43295256290"
+    },
+    {
+      "Start": "d347d63a12f04421b50164a58e55cc8c",
+      "End": "110ffd86e64c41f1a053deddb32d4020",
+      "Id": "1c54ddbe9e9f42519c6be166f3d57207"
+    },
+    {
+      "Start": "d5685300bed54ce89698f9443ad94cfc",
+      "End": "74ea92cfcabc4ff3a82c2f1207bd198a",
+      "Id": "5aa733f02ec74706acb1e2c8e9c28e49"
+    },
+    {
+      "Start": "fd45b479f0ef4d9388a2f0c32eb10dd6",
+      "End": "4f46816afad94b6ca3e915d6bd436958",
+      "Id": "3d94574446c5431e9ff108332614d03a"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -28.051069259643555,
+      "EyeY": 14.830986022949219,
+      "EyeZ": 26.245969772338867,
+      "LookX": 29.131986618041992,
+      "LookY": -5.6344146728515625,
+      "LookZ": -28.43927001953125,
+      "UpX": -0.056142434477806091,
+      "UpY": 0.99691730737686157,
+      "UpZ": 0.054807450622320175
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "EllipseArc.ByPlaneRadiiAngles",
+        "Id": "ea76972f0ad9474c86e6b81a6271a537",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 384.959317757699,
+        "Y": 296.77785159652
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Plane.XY",
+        "Id": "3f61b9bcb5d443babb9c69f2b6526fa1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 94.1552963975578,
+        "Y": 296.77785159652
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "fdbf614236624f24aa499dc1f1153926",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -128.244703602442,
+        "Y": 405.812776463499
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "97c9bb904d3144f888acc5a7f4a7d5c6",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -128.244703602442,
+        "Y": 462.730113229484
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "5720fe697ccc4be49f53f5c8a96de9df",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -128.244703602442,
+        "Y": 556.262274175597
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "9e235c2ddf0c4de5b4c191e8fde118a1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -128.244703602442,
+        "Y": 610.857500338894
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "EllipseArc.Plane",
+        "Id": "81288416e9cf4335b9058e5d598430a3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 686.83469533338655,
+        "Y": 295.70467320216
+      }
+    ],
+    "Annotations": [],
+    "X": 285.099893285607,
+    "Y": -210.941023520604,
+    "Zoom": 0.931811528498331
+  }
+}

@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for InPortContextMenu.xaml
+    /// Interaction logic for OutPortContextMenu.xaml
     /// </summary>
     public partial class OutPortContextMenu : UserControl
     {
@@ -19,7 +20,10 @@ namespace Dynamo.UI.Controls
         {
             InitializeComponent();
 
-            if (Application.Current != null) Application.Current.Deactivated += CurrentApplicationDeactivated;
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
+            {
+                Application.Current.Deactivated += CurrentApplicationDeactivated;
+            }
             Unloaded += OutPortContextMenuControl_Unloaded;
         }
 
@@ -30,7 +34,7 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         private void OutPortContextMenuControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
             }

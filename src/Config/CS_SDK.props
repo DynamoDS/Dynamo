@@ -1,44 +1,79 @@
 <Project>
   <PropertyGroup>
+    <Platforms>AnyCPU;NET60_Linux;</Platforms>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <PlatformTarget >x64</PlatformTarget>
+    <!--Use the property DotNet to set TargetFramework from commandline without forcing it on all projects-->
+    <!--Ex. DynamoServices uses TargetFramework netstandard2.0 -->
+    <DotNet>net8.0</DotNet>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>$(DotNet)</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
-    <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
-    <BaseIntermediateOutputPath>int\</BaseIntermediateOutputPath>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</OutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
     <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <UICulture>en-US</UICulture>
+    <OutputType Condition=" '$(OutputType)' == '' ">Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
-    <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
-    <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
-     <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
-    <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
+    <!--MSB3539: The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
+    <!--CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member'-->
+    <!--NUnit2005: Consider using Assert.That(actual, Is.EqualTo(expected)) instead of Assert.AreEqual(expected, actual)-->
+    <!--NUnit2007: The actual value should not be a constant-->
+    <!--CS0618: The 'member' is obsolete: 'text'-->
+    <!--CS0612: The 'member' is obsolete-->
+    <!--CS0672: Member 'member1' overrides obsolete member 'member2. Add the Obsolete attribute to 'member1'-->
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
+    <SelfContained>false</SelfContained>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <PropertyGroup>
     <DebugType>full</DebugType>
+    </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugType>pdbonly</DebugType>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+    <PropertyGroup>
+    <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('AnyCPU'))" >
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <DefineConstants>$(DefineConstants);_WINDOWS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win'))">
+    <TargetFramework>$(TargetFramework)-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />
     <None Remove="obj\**" />
     <None Remove="*.resources" />
+    <Compile Remove="int\**" />
+    <EmbeddedResource Remove="int\**" />
+    <None Remove="int\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition="'$(ProjectName)'!='AssemblyInfoGenerator'" Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -50,7 +85,10 @@
       <Private>false</Private>
     </ProjectReference>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
+  <PropertyGroup Condition=" '$(TestProject)' == 'true' ">
+    <TestDependenciesPath>$(OutputPath)\..\..\..\test\test_dependencies</TestDependenciesPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition=" '$(TestProject)' == 'true' ">
     <ProjectReference>
       <PrivateAssets>all</PrivateAssets>
       <ExcludeAssets>runtime</ExcludeAssets>
@@ -88,4 +126,24 @@
     <Copy SourceFiles="@(PDBContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
     <Copy SourceFiles="@(DLLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)$(Local_CopyToSubdirectory)" Condition="Exists('%(FullPath)')" />
   </Target>
+  <Target Name="ResolveSateliteResDeps" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
+   <PropertyGroup>
+        <OutputExtension>dll</OutputExtension>
+    </PropertyGroup>
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
+  </Target>
+  <Choose>
+      <When Condition=" '$(OS)' != 'Unix' ">
+          <PropertyGroup>
+              <PowerShellCommand>powershell.exe</PowerShellCommand>
+          </PropertyGroup>
+      </When>
+      <Otherwise>
+          <PropertyGroup>
+              <PowerShellCommand>pwsh</PowerShellCommand>
+          </PropertyGroup>
+      </Otherwise>
+  </Choose>
 </Project>

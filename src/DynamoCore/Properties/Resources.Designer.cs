@@ -89,6 +89,51 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences..
+        /// </summary>
+        public static string AutocompleteLowConfidenceMessage {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low confidence.
+        /// </summary>
+        public static string AutocompleteLowConfidenceTitle {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Recommendations that are below the confidence level..
+        /// </summary>
+        public static string AutocompleteLowConfidenceTooltip {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no recommendations yet. You can try switching to node type match autocomplete..
+        /// </summary>
+        public static string AutocompleteNoRecommendationsMessage {
+            get {
+                return ResourceManager.GetString("AutocompleteNoRecommendationsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No recommendations.
+        /// </summary>
+        public static string AutocompleteNoRecommendationsTitle {
+            get {
+                return ResourceManager.GetString("AutocompleteNoRecommendationsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search Autocomplete Results.
         /// </summary>
         public static string AutocompleteSearchTextBlockText {
@@ -525,6 +570,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文.
+        /// </summary>
+        public static string DynamoLanguages_noxlate {
+            get {
+                return ResourceManager.GetString("DynamoLanguages_noxlate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamo is up to date..
         /// </summary>
         public static string DynamoUpToDate {
@@ -557,6 +611,15 @@ namespace Dynamo.Properties {
         public static string ExceptionEncountered {
             get {
                 return ResourceManager.GetString("ExceptionEncountered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to insert the file as some of the nodes already exist in the current worspace..
+        /// </summary>
+        public static string FailedInsertFileNodeExistNotification {
+            get {
+                return ResourceManager.GetString("FailedInsertFileNodeExistNotification", resourceCulture);
             }
         }
         
@@ -669,6 +732,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node..
+        /// </summary>
+        public static string FormulaDSConversionFailure {
+            get {
+                return ResourceManager.GetString("FormulaDSConversionFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script..
+        /// </summary>
+        public static string FormulaMigrated {
+            get {
+                return ResourceManager.GetString("FormulaMigrated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attempting to load customNode {0} loaded by package {1}, but a previous definition named {2} exists with no associated package. The new customNode definition has been loaded, but Dynamo may be in an unstable state, please avoid loading multiple custom nodes with the id..
         /// </summary>
         public static string FunctionDefinitionOverwrittenMessage {
@@ -732,7 +813,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Double click here to edit group description&gt;.
+        ///   Looks up a localized string similar to Description &lt;Double click here to edit group description&gt;.
         /// </summary>
         public static string GroupDefaultText {
             get {
@@ -741,7 +822,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Double click here to edit group title&gt;.
+        ///   Looks up a localized string similar to Title &lt;Double click here to edit group title&gt;.
         /// </summary>
         public static string GroupNameDefaultText {
             get {
@@ -930,6 +1011,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert Dynamo Definition....
+        /// </summary>
+        public static string InsertDialogBoxText {
+            get {
+                return ResourceManager.GetString("InsertDialogBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example file added to workspace. Run mode changed to Manual..
+        /// </summary>
+        public static string InsertGraphRunModeNotificationText {
+            get {
+                return ResourceManager.GetString("InsertGraphRunModeNotificationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidCustomNodeFolderWarning {
@@ -1019,6 +1118,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding data will be saved in the new format the next time you run and save this workspace..
+        /// </summary>
+        public static string LegacyTraceDataWarning {
+            get {
+                return ResourceManager.GetString("LegacyTraceDataWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Build error for library: {0}.
         /// </summary>
         public static string LibraryBuildError {
@@ -1089,6 +1197,24 @@ namespace Dynamo.Properties {
         public static string LocateInDisk {
             get {
                 return ResourceManager.GetString("LocateInDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete..
+        /// </summary>
+        public static string LoginNeededMessage {
+            get {
+                return ResourceManager.GetString("LoginNeededMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not authenticated.
+        /// </summary>
+        public static string LoginNeededTitle {
+            get {
+                return ResourceManager.GetString("LoginNeededTitle", resourceCulture);
             }
         }
         
@@ -1804,6 +1930,24 @@ namespace Dynamo.Properties {
         public static string SearchTextBlockText {
             get {
                 return ResourceManager.GetString("SearchTextBlockText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initializing preferences....
+        /// </summary>
+        public static string SplashScreenInitPreferencesSettings {
+            get {
+                return ResourceManager.GetString("SplashScreenInitPreferencesSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Node Library....
+        /// </summary>
+        public static string SplashScreenLoadNodeLibrary {
+            get {
+                return ResourceManager.GetString("SplashScreenLoadNodeLibrary", resourceCulture);
             }
         }
         

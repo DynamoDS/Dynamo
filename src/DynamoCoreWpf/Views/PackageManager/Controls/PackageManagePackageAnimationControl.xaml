@@ -1,0 +1,159 @@
+<UserControl x:Class="Dynamo.PackageManager.UI.PackageManagerPackageAnimationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:ViewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+            <controls:DateToVisibilityCollapsedConverter x:Key="DateToVisibilityCollapsedConverter" />
+            <controls:DateToPackageLabelConverter x:Key="DateToPackageLabelCollapsedConverter" />
+            <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
+            <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
+            <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="Transparent">
+        <ListBox Name="myPackagesListBox"
+                 Background="{StaticResource PackageManagerTabBackgroundColor}"
+                 BorderThickness="0"
+                 ItemsSource="{Binding DummySearchResults}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                 VirtualizingPanel.ScrollUnit="Pixel">
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Padding"
+                            Value="0" />
+                    <Setter Property="Margin"
+                            Value="0" />
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Stretch" />
+                    <Setter Property="BorderThickness"
+                            Value="0" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+            <!--  The template for all package search results  -->
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Name="resultItemTemplate"
+                          VerticalAlignment="Center"
+                          Margin="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40px" />
+                            <RowDefinition Height="20px" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Top Row  -->
+                        <DockPanel Name="resultTopRow"
+                                   Grid.Row="0"
+                                   Margin="15,10,22,0"
+                                   LastChildFill="False">
+
+                            <!--  View Details Button  -->
+                            <local:LoadingAnimationStripeControl  x:Name="viewDetailsRectangle"
+                                                                  Width="70"
+                                                                  Height="15"
+                                                                  Margin="20 0 0 0"
+                                                                  DockPanel.Dock="Right" />
+                            <!--  Install Button  -->
+                            <local:LoadingAnimationStripeControl  x:Name="installRectangle"
+                                                                  Width="70"
+                                                                  Height="15"
+                                                                  DockPanel.Dock="Right" />
+
+                            <!--  Contains Package Name and New Label  -->
+                            <Grid Margin="0,0,0,0"
+                                  DockPanel.Dock="Left">
+
+                                <local:LoadingAnimationStripeControl  x:Name="packageNameRectangle"
+                                                                      Grid.Column="0"
+                                                                      VerticalAlignment="Center"
+                                                                      Width="250"
+                                                                      Height="15" />
+                            </Grid>                            
+                        </DockPanel>
+
+                        <!--  Middle Row  -->
+                        <DockPanel Name="requirementsRow"
+                                   Grid.Row="1"
+                                   Margin="15,0,22,8"
+                                   VerticalAlignment="Center"
+                                   LastChildFill="False">
+
+                            <local:LoadingAnimationStripeControl  x:Name="requirementsRectangle"
+                                                                  Width="150"
+                                                                  Height="8"
+                                                                  Margin="0,0,0,1"
+                                                                  VerticalAlignment="Center"
+                                                                  DockPanel.Dock="Left" />
+                        </DockPanel>
+
+                        <!--  Bottom Row  -->
+                        <DockPanel Name="resultBottomRow"
+                                   Grid.Row="2"
+                                   Margin="15,5,22,15"
+                                   VerticalAlignment="Bottom">
+
+                            <local:LoadingAnimationStripeControl  Width="48"
+                                                                  Height="8"
+                                                                  Margin="22,0,0,2"
+                                                                  VerticalAlignment="Center"
+                                                                  DockPanel.Dock="Right" />
+
+                            <local:LoadingAnimationStripeControl  Width="48"
+                                                                  Height="8"
+                                                                  Margin="22,0,0,2"
+                                                                  VerticalAlignment="Center"
+                                                                  DockPanel.Dock="Right" />
+
+                            <local:LoadingAnimationStripeControl  Width="48"
+                                                                  Height="8"
+                                                                  Margin="22,0,0,2"
+                                                                  VerticalAlignment="Center"
+                                                                  DockPanel.Dock="Right" />
+
+                            <local:LoadingAnimationStripeControl  Width="48"
+                                                                  Height="8"
+                                                                  Margin="22,0,0,2"
+                                                                  VerticalAlignment="Center"
+                                                                  DockPanel.Dock="Right" />
+
+                            <local:LoadingAnimationStripeControl  Width="70"
+                                                                  Height="8"
+                                                                  Margin="0,0,0,2"
+                                                                  DockPanel.Dock="Left"
+                                                                  HorizontalAlignment="Left"/>
+
+                        </DockPanel>
+
+                        <!--  A 1px bar that separates List Items  -->
+                        <Rectangle Name="separator"
+                                   Grid.Row="2"
+                                   Height="1"
+                                   VerticalAlignment="Bottom"
+                                   Fill="{StaticResource DarkMidGreyBrush}" />  
+
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

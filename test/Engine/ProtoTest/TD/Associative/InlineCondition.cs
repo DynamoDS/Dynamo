@@ -168,7 +168,6 @@ namespace ProtoTest.TD.Associative
 	d = ((a > c))?even(odd(c)) : odd(even(c)); //53
 ";
             thisTest.VerifyRunScriptSource(src, errmsg);
-            Object n1 = null;
             thisTest.Verify("b", new object[] {2, 4, 6});
             thisTest.Verify("a", 10);
             thisTest.Verify("c", 13);

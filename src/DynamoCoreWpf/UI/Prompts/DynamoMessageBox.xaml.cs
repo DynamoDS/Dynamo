@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -88,6 +88,18 @@ namespace Dynamo.UI.Prompts
             }
         }
 
+        /// <summary>
+        /// A tooltip is shown on the message box when this is set to true and if
+        /// Tooltip is non-null and non-empty.  
+        /// </summary>
+        public bool ShowTooltip { get; private set; }
+
+        /// <summary>
+        /// A tooltip is shown on the message box when this is set to a non-empty string
+        /// and ShowTooltip is true.
+        /// </summary>
+        public string Tooltip { get; private set; }
+
         #endregion
 
         /// <summary>
@@ -97,6 +109,8 @@ namespace Dynamo.UI.Prompts
         {
             InitializeComponent();
             DataContext = this;
+            ShowTooltip = false;
+            ToolTip = "";
         }
 
         /// <summary>
@@ -106,9 +120,38 @@ namespace Dynamo.UI.Prompts
         /// <param name="caption"></param>
         /// <param name="button"></param>
         /// <param name="icon"></param>
+        /// <param name="tooltip"></param>
         /// <returns></returns>
         public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button,
-            MessageBoxImage icon)
+            MessageBoxImage icon, string tooltip = "")
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon,
+                ShowTooltip = !string.IsNullOrEmpty(tooltip),
+                Tooltip = tooltip
+            };
+
+            dynamoMessageBox.ConfigureButtons(button);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+
+
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        /// <param name="messageBoxText">Content of the message</param>
+        /// <param name="caption">MessageBox title</param>
+        /// <param name="showRichTextBox">True if we will be using the RichTextBox instead of the usual one</param>
+        /// <param name="button">OK button shown in the MessageBox</param>
+        /// <param name="icon">Type of message: Warning, Error</param>
+        /// <returns></returns>
+        public static MessageBoxResult Show(string messageBoxText, string caption, bool showRichTextBox, MessageBoxButton button,
+           MessageBoxImage icon)
         {
             var dynamoMessageBox = new DynamoMessageBox
             {
@@ -117,7 +160,12 @@ namespace Dynamo.UI.Prompts
                 MessageBoxButton = button,
                 MessageBoxImage = icon
             };
-
+            
+            if (showRichTextBox)
+            {
+                dynamoMessageBox.BodyTextBlock.Visibility = Visibility.Collapsed;
+                dynamoMessageBox.ContentRichTextBox.Visibility = Visibility.Visible;
+            }             
             dynamoMessageBox.ConfigureButtons(button);
             dynamoMessageBox.ShowDialog();
             return dynamoMessageBox.CustomDialogResult;

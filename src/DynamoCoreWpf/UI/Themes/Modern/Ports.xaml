@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
                     xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
@@ -463,6 +463,15 @@
                                         IsEnabled="{Binding HideWiresButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource PopupButtonStyle}"
                                         Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+
+                                <Button Margin="0,3"
+                                        HorizontalAlignment="Left"
+                                        Command="{Binding Path=EditPortPropertiesCommand}"
+                                        Content="{x:Static p:Resources.RenamePortPopupMenuItem}"
+                                        IsEnabled="{Binding RenameNodeButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource PopupButtonStyle}"
+                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+
                             </StackPanel>
                         </Border>
                         <Path Grid.Column="1"

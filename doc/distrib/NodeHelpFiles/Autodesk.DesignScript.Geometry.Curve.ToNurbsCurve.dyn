@@ -1,0 +1,220 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ToNurbsCurve",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Id": "b2eeff6be3eb46c7b7323a0c539a5e8a",
+      "Inputs": [
+        {
+          "Id": "308717a6900d48c19c3b3de3a03da8b7",
+          "Name": "firstPoint",
+          "Description": "First point along the curve\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cf4aa43df1094d96a3da4b2d127fc879",
+          "Name": "secondPoint",
+          "Description": "Second point along the curve\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1b63228492c542d8aa34d3b21e2ac5f5",
+          "Name": "thirdPoint",
+          "Description": "Third point along the curve\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2639d84d24fe4c059f1786920424a880",
+          "Name": "Arc",
+          "Description": "An Arc",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Point.Origin();\nPoint.ByCoordinates(0,5,3);\nPoint.ByCoordinates(0,10,0);",
+      "Id": "555ea511e4a3461cab71ed573084dd12",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "be9eb568db7c4553beeed02775761854",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2b90b003bfbb450198a60b89f0e88867",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "342a59e4618c4b4f8ddd4131f0d55fad",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve",
+      "Id": "6ee3cf2514134fde96871a1418d4b4df",
+      "Inputs": [
+        {
+          "Id": "75b43ece978e43fc8be84535a42df492",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f31601bf836847cea6a6c229f68fe9de",
+          "Name": "NurbsCurve",
+          "Description": "A NurbsCurve approximating the Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the Curve to a NurbsCurve approximation\n\nCurve.ToNurbsCurve ( ): NurbsCurve"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "2639d84d24fe4c059f1786920424a880",
+      "End": "75b43ece978e43fc8be84535a42df492",
+      "Id": "2606ee3904b6465f8f4a34c76562f680"
+    },
+    {
+      "Start": "be9eb568db7c4553beeed02775761854",
+      "End": "308717a6900d48c19c3b3de3a03da8b7",
+      "Id": "8c198cd3e1c64e7fbc0fdc216f76b49f"
+    },
+    {
+      "Start": "2b90b003bfbb450198a60b89f0e88867",
+      "End": "cf4aa43df1094d96a3da4b2d127fc879",
+      "Id": "c4da086cc6ea4545bbba9834f6f43e03"
+    },
+    {
+      "Start": "342a59e4618c4b4f8ddd4131f0d55fad",
+      "End": "1b63228492c542d8aa34d3b21e2ac5f5",
+      "Id": "7e5a3d80d13c4cd4a4c59a2dd9262a56"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -12.151876449584961,
+      "EyeY": 10.257155418395996,
+      "EyeZ": 4.30262565612793,
+      "LookX": 16.018514633178711,
+      "LookY": -5.6682891845703125,
+      "LookZ": -8.9196844100952148,
+      "UpX": 0.073107823729515076,
+      "UpY": 0.996492862701416,
+      "UpZ": -0.040709063410758972
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Arc.ByThreePoints",
+        "Id": "b2eeff6be3eb46c7b7323a0c539a5e8a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 427.8529750529085,
+        "Y": -51.7219004442438
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "555ea511e4a3461cab71ed573084dd12",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 66.8529750529085,
+        "Y": -39.0819004442438
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Curve.ToNurbsCurve",
+        "Id": "6ee3cf2514134fde96871a1418d4b4df",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 741.01390371012485,
+        "Y": -51.7219004442438
+      }
+    ],
+    "Annotations": [],
+    "X": 12.6037732167187,
+    "Y": 97.3394164637171,
+    "Zoom": 1.19179377129296
+  }
+}

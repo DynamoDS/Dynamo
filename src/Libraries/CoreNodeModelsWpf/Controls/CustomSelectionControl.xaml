@@ -52,10 +52,10 @@
         IsHitTestVisible="True"
         Template="{StaticResource ExpanderTemplate}">
         <DockPanel Margin="-20,50,0,0" Grid.IsSharedSizeScope="True">
-            <Grid DockPanel.Dock="Top">
+            <Grid DockPanel.Dock="Top" Margin="2,0,0,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition SharedSizeGroup="display" />
-                    <ColumnDefinition SharedSizeGroup="value" />
+                    <ColumnDefinition Width="105" SharedSizeGroup="display" />
+                    <ColumnDefinition Width="105" SharedSizeGroup="value" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0"
@@ -86,8 +86,8 @@
                     <DataTemplate>
                         <Grid Margin="0,8,0,8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="105" SharedSizeGroup="display" />
-                                <ColumnDefinition Width="105" SharedSizeGroup="value" />
+                                <ColumnDefinition SharedSizeGroup="display" />
+                                <ColumnDefinition SharedSizeGroup="value" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
@@ -95,12 +95,18 @@
                             <TextBox Grid.Column="1" Style="{StaticResource InputStyle}" Margin="0,0,0,0" Text="{Binding Item}" LostFocus="ItemValueChanged" />
 
                             <core:DynamoNodeButton Grid.Column="2"
+                                                   x:Name="RemoveButton"
                                                    Style="{StaticResource SingleCharButton}"
                                                    HorizontalAlignment="Right"
                                                    Command="{Binding ElementName=EnumItemsListbox, Path=DataContext.RemoveCommand}"
                                                    CommandParameter="{Binding}"
                                                    Content="-" />
                         </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.Model.Items.Count, ElementName=EnumItemsListbox}" Value="1">
+                                <Setter TargetName="RemoveButton" Property="Visibility" Value="Hidden" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

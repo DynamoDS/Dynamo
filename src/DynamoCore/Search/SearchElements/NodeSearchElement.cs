@@ -9,7 +9,7 @@ namespace Dynamo.Search.SearchElements
     /// <summary>
     ///     Base class for all Dynamo Node search elements.
     /// </summary>
-    public abstract class NodeSearchElement : ISearchEntry, ISource<NodeModel>
+    public abstract class NodeSearchElement : ISearchEntry, ISource<NodeModel>, ICloneable
     {
         protected string iconName;
 
@@ -283,6 +283,14 @@ namespace Dynamo.Search.SearchElements
             inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
             return inputParameters;
         }
+
+        /// <summary>
+        ///    Clones the NodeSearchElement
+        /// </summary>
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 
     /// <summary>
@@ -291,6 +299,54 @@ namespace Dynamo.Search.SearchElements
     internal class AutoCompletionNodeElementInfo
     {
         internal int PortToConnect { get; set; }
+    }
+
+    /// <summary>
+    /// This class will support the Machine Learning info related to a node element of Auto-completion feature.
+    /// </summary>
+    public class AutoCompletionNodeMachineLearningInfo
+    {
+        /// <summary>
+        /// default constructor
+        /// </summary>
+        public AutoCompletionNodeMachineLearningInfo()
+        {
+            DisplayIcon = false;
+            IsByRecommendation = false;
+            IsByUse = false;
+        }
+
+        /// <summary>
+        /// Creates ML info object using DisplayIcon, IsByRecommendation and ConfidenceScore params
+        /// </summary>
+        /// <param name="displayIcon">True if the user can view the confidence score or the recent use icon, otherwise False</param>
+        /// <param name="isByRecommendation">True if the Node is part of the ML recommendation, otherwise False</param>
+        /// <param name="confidenceScore">Confidence Score</param>
+        public AutoCompletionNodeMachineLearningInfo(bool displayIcon, bool isByRecommendation, double confidenceScore)
+        {
+            DisplayIcon = displayIcon;
+            IsByRecommendation = isByRecommendation;
+            ConfidenceScore = confidenceScore;
+        }
+
+        /// <summary>
+        /// Indicates if the icon is displayed to show the condifent score or by-usage
+        /// </summary>
+        public bool DisplayIcon { get; set; }
+
+        /// <summary>
+        /// Confidence score in percentage
+        /// </summary>
+        public double ConfidenceScore { get; set; }
+
+        /// <summary>
+        /// Indicates if the Node is part of ML result per use
+        /// </summary>
+        public bool IsByUse { get; set; }
+        /// <summary>
+        /// Indicates if the Node is part of the ML result per recommendation
+        /// </summary>
+        public bool IsByRecommendation { get; set; }
     }
 
     /// <summary>

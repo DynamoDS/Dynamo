@@ -1,8 +1,6 @@
-﻿using System.Windows.Input;
-
+using System.Windows.Input;
 using Dynamo.UI.Commands;
-
-using Microsoft.Practices.Prism.ViewModel;
+using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.Wpf.ViewModels
 {

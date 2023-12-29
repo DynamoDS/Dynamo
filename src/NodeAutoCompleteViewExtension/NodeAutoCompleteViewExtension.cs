@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Extensions;
 using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;

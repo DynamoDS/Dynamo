@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -110,18 +110,18 @@ namespace Analysis
             return new SurfaceData(surface, uvs, values);
         }
 
-        /// <summary>
-        /// This method constructs a surface through the UV locations,
-        /// converting UVs to Points in the 0,0->1,1 domain. This surface is used
-        /// to calculate gradient values at positions on a grid specified by width
-        /// and height. The Z coordinate of the created points is set to the normalized value 
-        /// associated with that UV locaton. Points are then found on the surface from UVs,
-        /// in a grid of the width and height provided. The Z component of the 
-        /// points is then stored in the map.
-        /// </summary>
-        /// <param name="width">The width of the value map.</param>
-        /// <param name="height"></param>
-        /// <returns></returns>
+        ///// <summary>
+        ///// This method constructs a surface through the UV locations,
+        ///// converting UVs to Points in the 0,0->1,1 domain. This surface is used
+        ///// to calculate gradient values at positions on a grid specified by width
+        ///// and height. The Z coordinate of the created points is set to the normalized value 
+        ///// associated with that UV locaton. Points are then found on the surface from UVs,
+        ///// in a grid of the width and height provided. The Z component of the 
+        ///// points is then stored in the map.
+        ///// </summary>
+        ///// <param name="width">The width of the value map.</param>
+        ///// <param name="height"></param>
+        ///// <returns></returns>
         //public double[][] GetValueMap(int width, int height)
         //{
         //    const int MinPointCount = 3;

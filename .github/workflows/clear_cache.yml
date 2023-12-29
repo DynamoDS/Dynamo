@@ -1,0 +1,138 @@
+# Clean up caches created by BinDiff job
+name: Dynamo-PostBinDiffProcess
+on:
+  workflow_run:
+    workflows: [Dynamo-BinDiff]
+    types:
+      - completed
+jobs:
+ fetch-PR-Data:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Download PR Data
+      uses: dawidd6/action-download-artifact@v3
+      with:
+        run_id: ${{github.event.workflow_run.id }}
+        name: pr
+        path: pr/
+    - name: Check Artifact
+      run: ls -R
+    - name: Extract Data to Output
+      id: extract
+      run: |
+        cat pr/NR
+        echo "PRNumber=`cat pr/NR`" >> "$GITHUB_OUTPUT"
+        echo "WFNumber=`cat pr/WN`" >> "$GITHUB_OUTPUT"
+        echo "Diff1=`cat pr/Diff1`" >> "$GITHUB_OUTPUT"
+        echo "Diff2=`cat pr/Diff2`" >> "$GITHUB_OUTPUT"
+        echo "TIMESTAMP=`date +%Y-%m-%d-%H:%M:%S`" >> "$GITHUB_OUTPUT"
+  outputs:
+    PRNumber: ${{ steps.extract.outputs.PRNumber }}
+    WFNumber: ${{ steps.extract.outputs.WFNumber }}
+    Diff1: ${{ steps.extract.outputs.Diff1 }}
+    Diff2: ${{ steps.extract.outputs.Diff2 }}
+    TIMESTAMP: ${{ steps.extract.outputs.TIMESTAMP }}
+ diff-cache-cleanup-pr:
+    runs-on: ubuntu-latest
+    needs: [fetch-PR-Data]
+    if: github.event.workflow_run.event == 'pull_request'
+    steps:
+      - name: Cleanup Caches
+        run: |
+          gh extension install actions/gh-actions-cache
+          
+          PRNUM=${{ needs.fetch-PR-Data.outputs.PRNumber }}
+          REPO=${{ github.repository }}
+          BRANCH="refs/pull/$PRNUM/merge"
+          echo "Fetching list of cache key"
+          echo $REPO
+          echo $BRANCH
+          echo $PRNUM
+          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH | cut -f 1 )
+          ## Setting this to not fail the workflow while deleting cache keys. 
+          set +e
+          echo "Deleting caches..."
+          for cacheKey in $cacheKeysForPR
+          do
+              echo "Deleting: $cacheKey"
+              gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ diff-cache-cleanup-push:
+    runs-on: ubuntu-latest
+    needs: [fetch-PR-Data]
+    if: github.event.workflow_run.event == 'push'
+    steps:
+      - name: Cleanup Caches
+        run: |
+          gh extension install actions/gh-actions-cache
+          
+          WNNUM=${{ needs.fetch-PR-Data.outputs.WFNumber }}
+          echo $WNNUM
+          REPO=${{ github.repository }}
+          
+          ## Setting this to not fail the workflow while deleting cache keys. 
+          set +e
+          echo "Deleting caches..."
+          echo "Deleting: $WNNUM-cache-net60Win-current"
+          gh actions-cache delete $WNNUM-cache-net60Win-current -R $REPO --confirm
+          echo "Deleting: $WNNUM-cache-net60Win-master"
+          gh actions-cache delete $WNNUM-cache-net60Win-master -R $REPO --confirm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+ comments-pr-workflow:
+    runs-on: ubuntu-latest
+    needs: [fetch-PR-Data]
+    if: github.event.workflow_run.event == 'pull_request'
+    steps:
+      - name: Download PR Data
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          run_id: ${{github.event.workflow_run.id }}
+          name: pr
+          path: pr/
+      - name: Check Artifact
+        run: ls -R
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ needs.fetch-PR-Data.outputs.PRNumber }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Files Added/Deleted
+          direction: last
+      - name: Create comment
+        if: |
+          steps.fc.outputs.comment-id == '' &&
+          (needs.fetch-PR-Data.outputs.Diff1 != '' || needs.fetch-PR-Data.outputs.Diff2 != '')
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ needs.fetch-PR-Data.outputs.PRNumber }}
+          body: |
+            ${{ needs.fetch-PR-Data.outputs.Diff1 }}
+            ${{ needs.fetch-PR-Data.outputs.Diff2 }}
+      - name: Update comment
+        if: |
+          steps.fc.outputs.comment-id != '' &&
+          (needs.fetch-PR-Data.outputs.Diff1 != '' || needs.fetch-PR-Data.outputs.Diff2 != '')
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            ${{ needs.fetch-PR-Data.outputs.Diff1 }}
+            ${{ needs.fetch-PR-Data.outputs.Diff2 }}
+            (Updated: ${{ needs.fetch-PR-Data.outputs.TIMESTAMP }})
+      - name: Update comment resolved
+        if: |
+          steps.fc.outputs.comment-id != '' &&
+          (needs.fetch-PR-Data.outputs.Diff1 == '' && needs.fetch-PR-Data.outputs.Diff2 == '')
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            ":white_check_mark: **Bin-Diff Issue Resolved.**"
+            (Updated: ${{ needs.fetch-PR-Data.outputs.TIMESTAMP }})

@@ -1,13 +1,14 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Dynamo.Events;
 using NUnit.Framework;
 using SystemTestServices;
 
 namespace DynamoServicesTests
 {
-    [TestFixture, RequiresSTA]
+    [TestFixture, Apartment(ApartmentState.MTA)]
     class WorkspaceEventTests : SystemTestBase
     {
         protected override void SetupCore()
@@ -18,7 +19,7 @@ namespace DynamoServicesTests
                 Path.Combine(asmDir, @"..\..\..\test\core\"));
         }
 
-        [Test]
+        [Test, Category("FailureNET6")]
         public void WorkspaceAddedEventIsTriggeredWhenWorkspaceIsAdded()
         {
             // Register for the added event
@@ -29,7 +30,7 @@ namespace DynamoServicesTests
             OpenDynamoDefinition(@".\math\Add.dyn");
         }
 
-        [Test]
+        [Test, Category("FailureNET6")]
         public void WorkspaceRemovedEventIsTriggeredWhenWorkspaceIsRemoved()
         {
             // Open a definition

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -39,6 +40,7 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
+            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -77,7 +79,7 @@ namespace DynamoCoreWpfTests
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
@@ -137,14 +139,7 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-        }
-
-        [TestFixtureTearDown]
-        public void FinalTearDown()
-        {
-            // Fix for COM exception on close
-            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
-            //Dispatcher.CurrentDispatcher.InvokeShutdown();
+            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)

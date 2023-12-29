@@ -1,5 +1,8 @@
 ## In Depth
-Radius will return the center of an input sphere. In the example below, we use a ByBestFit node to create a sphere based on a set of random points. We then use a Radius node to determine the size of the best fit sphere.
+`Cylinder.Radius` returns the radius of a cylinder as a double. 
+
+In the example below, adjusting the number slider will change the cylinder's radius.
+
 ___
 ## Example File
 

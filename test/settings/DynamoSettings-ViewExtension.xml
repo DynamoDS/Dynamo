@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<PreferenceSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsFirstRun>false</IsFirstRun>
+  <IsAnalyticsReportingApproved>true</IsAnalyticsReportingApproved>
+  <LibraryWidth>304</LibraryWidth>
+  <Locale>en-US</Locale>
+  <ConsoleHeight>0</ConsoleHeight>
+  <ShowPreviewBubbles>true</ShowPreviewBubbles>
+  <ShowCodeBlockLineNumber>true</ShowCodeBlockLineNumber>
+  <ShowConnector>true</ShowConnector>
+  <ShowConnectorToolTip>true</ShowConnectorToolTip>
+  <LibraryZoomScale>100</LibraryZoomScale>
+  <PythonScriptZoomScale>22</PythonScriptZoomScale>
+  <ConnectorType>BEZIER</ConnectorType>
+  <BackgroundPreviews>
+    <BackgroundPreviewActiveState>
+      <Name>IsBackgroundPreviewActive</Name>
+      <IsActive>true</IsActive>
+    </BackgroundPreviewActiveState>
+  </BackgroundPreviews>
+  <IsBackgroundGridVisible>true</IsBackgroundGridVisible>
+  <DefaultScaleFactor>0</DefaultScaleFactor>
+  <RenderPrecision>128</RenderPrecision>
+  <ShowEdges>false</ShowEdges>
+  <ShowDetailedLayout>true</ShowDetailedLayout>
+  <WindowX>0</WindowX>
+  <WindowY>0</WindowY>
+  <WindowW>1024</WindowW>
+  <WindowH>768</WindowH>
+  <UseHardwareAcceleration>true</UseHardwareAcceleration>
+  <NumberFormat>f3</NumberFormat>
+  <MaxNumRecentFiles>10</MaxNumRecentFiles>
+  <RecentFiles />
+  <BackupFiles />
+  <CustomPackageFolders>
+    <string>%BuiltInPackages%</string>
+    <string>C:\rmWorkspace\github\Dynamo\test\pkgs</string>
+    <string>C:\Users\aggarwas\AppData\Roaming\Dynamo\Dynamo Core\2.18</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\2.18\packages</string>
+  </CustomPackageFolders>
+  <DisableTrustWarnings>false</DisableTrustWarnings>
+  <TrustedLocations />
+  <PackageDirectoriesToUninstall />
+  <PythonTemplateFilePath />
+  <BackupInterval>60000</BackupInterval>
+  <BackupFilesCount>1</BackupFilesCount>
+  <PackageDownloadTouAccepted>false</PackageDownloadTouAccepted>
+  <OpenFileInManualExecutionMode>false</OpenFileInManualExecutionMode>
+  <IsIronPythonDialogDisabled>false</IsIronPythonDialogDisabled>
+  <ShowTabsAndSpacesInScriptEditor>false</ShowTabsAndSpacesInScriptEditor>
+  <EnableNodeAutoComplete>true</EnableNodeAutoComplete>
+  <HideNodesBelowSpecificConfidenceLevel>false</HideNodesBelowSpecificConfidenceLevel>
+  <MLRecommendationConfidenceLevel>10</MLRecommendationConfidenceLevel>
+  <MLRecommendationNumberOfResults>10</MLRecommendationNumberOfResults>
+  <EnableNotificationCenter>true</EnableNotificationCenter>
+  <EnablePersistExtensions>true</EnablePersistExtensions>
+  <EnableStaticSplashScreen>true</EnableStaticSplashScreen>
+  <DefaultPythonEngine />
+  <SelectedPackagePathForInstall>C:\Users\aggarwas\AppData\Roaming\Dynamo\Dynamo Core\2.18</SelectedPackagePathForInstall>
+  <NamespacesToExcludeFromLibrary>
+    <string>ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline</string>
+  </NamespacesToExcludeFromLibrary>
+  <ViewExtensionSettings/>
+  <DisableBuiltinPackages>false</DisableBuiltinPackages>
+  <DisableCustomPackageLocations>false</DisableCustomPackageLocations>
+  <DefaultRunType>Automatic</DefaultRunType>
+  <DefaultNodeAutocompleteSuggestion>MLRecommendation</DefaultNodeAutocompleteSuggestion>
+  <ShowRunPreview>false</ShowRunPreview>
+  <GroupStyleItemsList>
+    <GroupStyleItem>
+      <Name>Actions</Name>
+      <HexColorString>B9F9E1</HexColorString>
+      <IsDefault>true</IsDefault>
+      <FontSize>36</FontSize>
+      <GroupStyleId>4d68be4a-a04d-4945-9dd5-cdf61079d790</GroupStyleId>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Inputs</Name>
+      <HexColorString>FFB8D8</HexColorString>
+      <IsDefault>true</IsDefault>
+      <FontSize>36</FontSize>
+      <GroupStyleId>883066aa-1fe2-44a4-9bd1-c3df86bfe9f6</GroupStyleId>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Outputs</Name>
+      <HexColorString>FFC999</HexColorString>
+      <IsDefault>true</IsDefault>
+      <FontSize>36</FontSize>
+      <GroupStyleId>07655dc1-2d65-4fed-8d6a-37235d3e3a8d</GroupStyleId>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Review</Name>
+      <HexColorString>A4E1FF</HexColorString>
+      <IsDefault>true</IsDefault>
+      <FontSize>36</FontSize>
+      <GroupStyleId>bc688959-ce34-4bf5-90f8-6ddd23f80989</GroupStyleId>
+    </GroupStyleItem>
+  </GroupStyleItemsList>
+  <NodeSearchTagSizeLimit>300</NodeSearchTagSizeLimit>
+  <IronPythonResolveTargetVersion>2.4.0</IronPythonResolveTargetVersion>
+  <ReadNotificationIds />
+  <DynamoPlayerFolderGroups />
+</PreferenceSettings>

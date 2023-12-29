@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.UI.Controls.OutPortContextMenu"
+<UserControl x:Class="Dynamo.UI.Controls.OutPortContextMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -46,6 +46,16 @@
                         Command="{Binding Path=HideConnectionsCommand}"
                         Content="{Binding ShowHideWiresButtonContent, UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding HideWiresButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource PopupButtonStyle}" />
+
+                <!--  Rename Port  -->
+                <Button Name="RenamePortButton"
+                        Margin="0,3"
+                        HorizontalAlignment="Left"
+                        Command="{Binding Path=EditPortPropertiesCommand}"
+                        Content="{x:Static p:Resources.RenamePortPopupMenuItem}"
+                        IsEnabled="{Binding RenameNodeButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding RenameNodeButtonEnabled, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                         Style="{StaticResource PopupButtonStyle}" />
 
             </StackPanel>

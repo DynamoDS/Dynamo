@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -12,17 +12,16 @@
     <AssemblyName>DSCoreNodes</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DSCoreNodes.xml</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="GeometryColor.cs" />
   </ItemGroup>
+  <ItemGroup Label="Common dependencies">
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3421" />
+  </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" />
-    <PackageReference Include="ncalc" Version="1.3.8">
-      <!--Exclude copying the runtime dlls because we need to keep binary compatibility with Revit for now -->
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-    <Reference Include="PresentationCore" />
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -41,7 +40,7 @@
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
       <Name>DesignScriptBuiltin</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\DynamoUnits\UnitsCore.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
       <Private>False</Private>
@@ -81,20 +80,12 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="CopyFiles" BeforeTargets="Build">
+  <Target Name="CopyFiles" BeforeTargets="ResolveSateliteResDeps">
     <Copy SourceFiles="$(ProjectDir)DSCoreNodes_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
-  <Target Name="GenerateFiles" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
-    </GetAssemblyIdentity>
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DSCoreNodesImages.resx" OutputResources="$(ProjectDir)DSCoreNodesImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DSCoreNodesImages.resx" OutputResources="$(ProjectDir)DSCoreNodesImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DSCoreNodesImages.resources" OutputAssembly="$(OutDir)DSCoreNodes.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

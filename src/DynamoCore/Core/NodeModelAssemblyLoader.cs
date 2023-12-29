@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +7,6 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Migration;
-using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -24,9 +23,9 @@ namespace Dynamo.Models
         /// <summary>
         /// Used at startup to avoid reloading NodeModels from assemblies that have already been loaded.
         /// Is NOT kept in sync with latest loaded assemblies - use LoadedAssemblies Property for that.
+        /// TODO refactor and use LoadedAssemblies instead
         /// </summary>
-        [Obsolete("Will be made internal, please use LoadedAssemblies Property.")]
-        public readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
+        internal readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
         private readonly HashSet<Assembly> loadedAssemblies = new HashSet<Assembly>();
 
         /// <summary>
@@ -80,8 +79,12 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Should be used only in tests
+        /// </summary>
+        internal static event Func<string, bool> shouldLoadAssemblyPath;
         #endregion
-        
+
         #region Methods
         /// <summary>
         /// Load all types which inherit from NodeModel whose assemblies are located in
@@ -132,6 +135,13 @@ namespace Dynamo.Models
             var result = new List<TypeLoadData>();
             var result2 = new List<TypeLoadData>();
 
+            if (Models.DynamoModel.IsTestMode)
+            {
+                if (shouldLoadAssemblyPath != null) {
+                    allDynamoAssemblyPaths = allDynamoAssemblyPaths.Where((path) => shouldLoadAssemblyPath(path)).ToList();
+                }
+            }
+            
             foreach (var assemblyPath in allDynamoAssemblyPaths)
             {
                 var fn = Path.GetFileName(assemblyPath);
@@ -218,7 +228,7 @@ namespace Dynamo.Models
                 var customizerType = Type.GetType("Dynamo.Wpf.INodeViewCustomization`1,DynamoCoreWpf");
                 if (customizerType != null)
                 {
-                    output = assem.GetTypes().Where(t => !t.IsAbstract && TypeExtensions.ImplementsGeneric(customizerType, t));
+                    output = assem.GetTypes().Where(t => !t.IsAbstract && Utilities.TypeExtensions.ImplementsGeneric(customizerType, t));
                     return output;
                 }
             }

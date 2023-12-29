@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
@@ -28,7 +28,7 @@ namespace Dynamo.PackageManager.UI
         {
             ViewModel = pm;
             this.DataContext = ViewModel;
-            pm.PackageManagerClientViewModel.Owner = this;
+            pm.PackageManagerClientViewModel.ViewModelOwner = this;
             InitializeComponent();
             ViewModel.RegisterTransientHandlers();
             ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
@@ -60,15 +60,19 @@ namespace Dynamo.PackageManager.UI
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.searchTextBox.Text);
+            string searchTerm = this.searchTextBox.Text;
+            if (string.IsNullOrEmpty(searchTextBox.Text))
+            {
+                searchTerm = null;
+            }
+            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(searchTerm);
         }
 
         /// <summary>
-        /// TODO: mark private in Dynamo 3.0
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void ItemStackPanel_MouseDown(object sender, RoutedEventArgs e)
+        private void ItemStackPanel_MouseDown(object sender, RoutedEventArgs e)
         {
             var lbi = sender as StackPanel;
             if (lbi == null) return;
@@ -76,7 +80,7 @@ namespace Dynamo.PackageManager.UI
             var viewModel = lbi.DataContext as PackageManagerSearchElementViewModel;
             if (viewModel == null) return;
 
-            viewModel.Model.IsExpanded = !viewModel.Model.IsExpanded;
+            viewModel.SearchElementModel.IsExpanded = !viewModel.SearchElementModel.IsExpanded;
         }
 
         private void OnShowContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
@@ -185,7 +189,7 @@ namespace Dynamo.PackageManager.UI
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
-            ViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+            ViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
         }
 
         /// <summary>

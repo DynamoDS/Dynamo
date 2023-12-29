@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -36,39 +36,9 @@ namespace PythonNodeModels
     {
         private string engine = string.Empty;
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
         [DefaultValue("IronPython2")]
-
-        // When removing this property also replace the serialized property in EngineName
-        // (i.e remove XmlIgnore and add [JsonProperty("Engine", DefaultValueHandling = DefaultValueHandling.Populate)]
-        /// <summary>
-        /// Return the user selected python engine enum.
-        /// </summary>
-        [Obsolete("This property will be deprecated in Dynamo 3.0. Please use EngineName instead")]
-        public PythonEngineVersion Engine
-        {
-            get
-            {
-                if (!Enum.TryParse(engine, out PythonEngineVersion engineVersion) ||
-                    engineVersion == PythonEngineVersion.Unspecified)
-                {
-                    // This is a first-time case for newly created nodes only
-                    SetEngineByDefault();
-                }
-                return engineVersion;
-            }
-            set
-            {
-                engine = value.ToString();
-                RaisePropertyChanged(nameof(EngineName));
-            }
-        }
-
-        [XmlIgnore]
-        // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
-        [DefaultValue("IronPython2")]
+        [JsonProperty("Engine", DefaultValueHandling = DefaultValueHandling.Populate)]
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
@@ -90,20 +60,6 @@ namespace PythonNodeModels
                     engine = value;
                     RaisePropertyChanged(nameof(EngineName));
                 }
-            }
-        }
-
-        /// <summary>
-        /// Available Python engines.
-        /// </summary>
-        [Obsolete(@"This method will be removed in future versions of Dynamo.
-        Please use PythonEngineManager.Instance.AvailableEngines instead")]
-        public static ObservableCollection<PythonEngineVersion> AvailableEngines
-        {
-            get
-            {
-                return new ObservableCollection<PythonEngineVersion>(PythonEngineManager.Instance.AvailableEngines.
-                    Select(x => Enum.TryParse(x.Name, out PythonEngineVersion version) ? version : PythonEngineVersion.Unspecified));
             }
         }
 
@@ -321,6 +277,44 @@ namespace PythonNodeModels
             var e = new PythonCodeMigrationEventArgs(Script, newCode); 
             Script = newCode;
             OnCodeMigrated(e);
+        }
+
+        /// <summary>
+        //  Boolean to check if script content is saved or not.
+        /// </summary>
+        internal bool ScriptContentSaved = true;
+
+        // Event triggered when this node is edited.
+        internal event Action<string> EditNode;
+
+        // Event triggered when the script editor is not saved and shows a warning when closed.
+        internal event Action UserScriptWarned;
+
+        /// <summary>
+        /// This is called to edit the python node script.
+        /// </summary>
+        public void OnNodeEdited(string content)
+        {
+            EditNode?.Invoke(content);
+        }
+
+        /// <summary>
+        /// This is called to show a warning that the script editor is not saved yet.
+        /// </summary>
+        public void OnWarnUserScript()
+        {
+            UserScriptWarned?.Invoke();
+        }
+
+        internal List<Delegate> GetInvocationListForEditAction()
+        {
+            var delegates = new List<Delegate>();
+            if (EditNode != null)
+            {
+                delegates = EditNode.GetInvocationList().ToList();
+            }
+
+            return delegates;
         }
 
         /// <summary>

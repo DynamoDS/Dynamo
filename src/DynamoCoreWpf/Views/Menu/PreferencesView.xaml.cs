@@ -1,5 +1,11 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -8,8 +14,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Logging;
+using Dynamo.UI;
 using Dynamo.ViewModels;
+using static Dynamo.ViewModels.SearchViewModel;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views
@@ -21,26 +30,47 @@ namespace Dynamo.Wpf.Views
     {
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
-        private int scaleValue = 0;
+        private List<GroupStyleItem> originalCustomGroupStyles { get; set; }
+
+        private Button colorButtonSelected;
+        private bool groupStyleItemExisting = false;
 
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
         // around in a compatible way for now
-        private IDisposable managePackageCommandEvent;
+        private Task<IDisposable> managePackageCommandEvent;
+
+        //This list will be passed everytime that we create a new GroupStyle so the custom colors can remain
+        internal ObservableCollection<CustomColorItem> stylesCustomColors;
+
+        /// <summary>
+        /// Storing the original custom styles before the user could update them
+        /// </summary>
+        private void StoreOriginalCustomGroupStyles()
+        {
+            originalCustomGroupStyles = new List<GroupStyleItem>();
+            foreach (var groupStyle in dynViewModel.PreferenceSettings.GroupStyleItemsList)
+            {
+                if (!groupStyle.IsDefault)
+                {
+                    originalCustomGroupStyles.Add(new GroupStyleItem() { GroupStyleId = groupStyle.GroupStyleId, HexColorString = groupStyle.HexColorString, FontSize = groupStyle.FontSize });
+                }                
+            }
+        }
 
         /// <summary>
         /// Constructor of Preferences View
         /// </summary>
-        /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
+        /// <param name="dynamoView"> Dynamo ViewModel</param>
         public PreferencesView(DynamoView dynamoView)
         {
-            dynViewModel = dynamoView.DataContext as DynamoViewModel;
-            
+            dynViewModel = dynamoView.DataContext as DynamoViewModel;            
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
- 
+
             InitializeComponent();
+
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
                 Categories.Preferences);
@@ -49,14 +79,25 @@ namespace Dynamo.Wpf.Views
             dynViewModel.Owner = this;
             if (DataContext is PreferencesViewModel viewModelTemp)
             {
-                viewModel = viewModelTemp;
+                this.viewModel = viewModelTemp;
             }
 
             InitRadioButtonsDescription();
 
-            //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
-            scaleValue = dynViewModel.ScaleFactorLog;
             ResetGroupStyleForm();
+            StoreOriginalCustomGroupStyles();
+            displayConfidenceLevel();
+
+            this.viewModel.InitializeGeometryScaling();
+
+            this.viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+
+            LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
+            PythonZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.PythonScriptZoomScale;
+
+            stylesCustomColors = new ObservableCollection<CustomColorItem>();
+            UpdateZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
+            UpdateZoomScaleValueLabel(PythonZoomScalingSlider, lblPythonScalingValue);
         }
 
         /// <summary>
@@ -76,6 +117,23 @@ namespace Dynamo.Wpf.Views
 
             // Init all package filters 
             dynamoViewModel.PreferencesViewModel.InitPackageListFilters();
+
+            dynamoViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged += TrustedPathsViewModel_PropertyChanged;
+        }
+
+        /// <summary>
+        /// Evaluates if the user interacts over the Trusted Locations
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TrustedPathsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            List<string> actions = typeof(TrustedPathViewModel.Action).GetFields().Select(a => a.Name).ToList();
+
+            if (actions.Contains(e.PropertyName))
+            {
+                dynViewModel.CheckCurrentFileInTrustedLocation();
+            }
         }
 
         /// <summary>
@@ -109,38 +167,12 @@ namespace Dynamo.Wpf.Views
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
             TrustedPathView.Dispose();
+            Dispose();
 
-            RunGraphWhenScaleFactorUpdated();
+            dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
+            dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
 
             Close();
-        }
-
-        /// <summary>
-        /// This method will run the graph only if the Geometry Scaling was updated otherwise will not be executed
-        /// </summary>
-        private void RunGraphWhenScaleFactorUpdated()
-        {
-            //If the new radio button selected (ScaleValue) is different than the current one in Dynamo, we update the current one
-            if (dynViewModel.ScaleFactorLog != scaleValue)
-            {
-                dynViewModel.ScaleFactorLog = scaleValue;
-                dynViewModel.CurrentSpace.HasUnsavedChanges = true;
-
-                //Due that binding are done before the contructor of this class we need to execute the Log only if the viewModel was assigned previously
-                if (viewModel != null)
-                {
-                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
-                    viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
-                    viewModel.UpdateSavedChangesLabel();
-                    Dynamo.Logging.Analytics.TrackEvent(
-                        Actions.Switch,
-                        Categories.Preferences,
-                        Res.PreferencesViewVisualSettingsGeoScaling);
-                }
-
-                var allNodes = dynViewModel.HomeSpace.Nodes;
-                dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
-            }
         }
 
         /// <summary>
@@ -185,10 +217,11 @@ namespace Dynamo.Wpf.Views
             var grid = (saveChangesButton.Parent as Grid).Parent as Grid;
 
             var groupNameLabel = grid.FindName("groupNameBox") as TextBox;
-
             var colorHexString = grid.FindName("colorHexVal") as Label;
+            var groupStyleFontSize = grid.FindName("groupStyleFontSize") as ComboBox;
+            var groupStyleId = Guid.NewGuid();
 
-            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString() };
+            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString(), FontSize = Convert.ToInt32(groupStyleFontSize.SelectedValue), GroupStyleId = groupStyleId };
 
             if (string.IsNullOrEmpty(newItem.Name))
                 newItem.Name = "Input";
@@ -226,63 +259,82 @@ namespace Dynamo.Wpf.Views
            var grid = (removeButton.Parent as Grid).Parent as Grid;
 
             //Find inside the Grid the label that contains the GroupName (unique id)
-           var groupNameLabel = grid.FindName("groupNameLabel") as Label;
+           var groupNameLabel = grid.FindName("groupNameLabel") as TextBlock;
 
             //Remove the selected style from the list
-            viewModel.RemoveStyleEntry(groupNameLabel.Content.ToString());
+            viewModel.RemoveStyleEntry(groupNameLabel.Text.ToString());
             Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
+        }
+
+        private void ColorPicker_Closed(object sender, EventArgs e)
+        {
+            var colorPicker = sender as CustomColorPicker;
+            if (colorPicker == null) return;  
+            colorPicker.Closed -= ColorPicker_Closed;
+
+            if (colorButtonSelected != null)
+            {
+                var viewModel = colorPicker.DataContext as CustomColorPickerViewModel;
+                if (viewModel == null || viewModel.ColorPickerSelectedColor == null)
+                    return;
+                colorButtonSelected.Background = new SolidColorBrush(viewModel.ColorPickerSelectedColor.Value);
+
+                //In case we are editing a Custom Style color then groupStyleItemExisting will be true and we need to set the GroupStyleItem.HexColorString
+                if (groupStyleItemExisting == true)
+                {
+                    GroupStyleItem selectedGroupStyle = (GroupStyleItem)colorButtonSelected.DataContext;
+                    selectedGroupStyle.HexColorString = viewModel.ColorPickerSelectedColor.Value.R.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.G.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.B.ToString("X2");
+                }
+            }
+            groupStyleItemExisting = false;
         }
 
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+            ShowCustomColorPicker(sender);
+        }
 
-            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        private void ShowCustomColorPicker(object sender)
+        {
+            var colorPicker = new CustomColorPicker();
+
+            //This section populate the CustomColorPicker custom colors with the colors defined in the custom GroupStyles
+            var customStylesColorsList = viewModel.StyleItemsList.Where(style => style.IsDefault == false);
+            foreach (var styleItem in customStylesColorsList)
             {
-                Button colorButton = sender as Button;
-                if (colorButton != null)
-                    colorButton.Background = new SolidColorBrush(Color.FromRgb(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+                Color color = (Color)ColorConverter.ConvertFromString("#" + styleItem.HexColorString);
+                var customColorItem = new CustomColorItem(color, string.Format("#{0},{1},{2}", color.R, color.G, color.B));
+                if (!stylesCustomColors.Contains(customColorItem))
+                    stylesCustomColors.Add(customColorItem);
+            }
+
+            //This will set the custom colors list so the custom colors will remain the same for the Preferences panel (no matter if preferences is closed the list will remain).
+            colorPicker.SetCustomColors(stylesCustomColors);
+            if (colorPicker == null) return;
+
+            colorPicker.Placement = PlacementMode.Top;
+            colorPicker.PlacementTarget = sender as UIElement;
+            colorPicker.IsOpen = true;
+            colorPicker.Closed += ColorPicker_Closed;
+            colorButtonSelected = sender as Button;
+
+            var brushColor = (colorButtonSelected.Background as SolidColorBrush);
+            if (brushColor != null)
+            {
+                //if the current color in the Group Style already exists in the CustomColorPicker then it will be selected
+                colorPicker.InitializeSelectedColor(brushColor.Color);
             }
         }
 
-        /// <summary>
-        /// This event is generated every time the user clicks a Radio Button in the Geometry Scaling section
-        /// The method just get the Radio Button clicked and saves the ScaleValue selected
-        /// This are the values used for the scales:
-        /// - 2 - Small
-        ///   0 - Medium (Default)
-        ///   2 - Large
-        ///   4 - Extra Large
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Geometry_Scaling_Checked(object sender, RoutedEventArgs e)
+        private void onChangedGroupStyleColor_Click(object sender, RoutedEventArgs e)
         {
-            RadioButton selectedScaling = sender as RadioButton;
-            var radioButtons = GeometryScalingRadiosPanel.Children.OfType<RadioButton>();
-
-            int index = 0;      
-
-            //We need to loop all the radiobuttons in the GeometryScaling section in order to find the index of the selected one
-            foreach (var radio in radioButtons)
-            {
-                if(radio == selectedScaling)
-                {
-                    scaleValue = GeometryScalingOptions.ConvertUIToScaleFactor(index);
-                    break;
-                }
-                index++;
-            }
+            groupStyleItemExisting = true;
+            ShowCustomColorPicker(sender);
         }
 
         private void Log(ILogMessage obj)
         {
             dynViewModel.Model.Logger.Log(obj);
-        }
-
-        private void Log(string message)
-        {
-            Log(LogMessage.Info(message));
         }
 
         /// <summary>
@@ -292,13 +344,13 @@ namespace Dynamo.Wpf.Views
         /// <param name="e"></param>
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            if (sender is Label lable)
+            if (sender is Label label)
             {
-                if (lable.Name == "Titleinfo")
+                if (label.Name == "MLNodeAutocompleteLabel")
                 {
                     dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
                 }
-                else if (lable.Name == "TrustWarningInfoLabel")
+                else if (label.Name == "TrustWarningInfoLabel")
                 {
                     dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.FileTrustWarningDocumentationUriString, UriKind.Relative)));
 
@@ -315,7 +367,7 @@ namespace Dynamo.Wpf.Views
         {
             if (e.OriginalSource == e.Source)
             {
-                managePackageCommandEvent = Analytics.TrackCommandEvent("ManagePackage");
+                managePackageCommandEvent = Analytics.TrackTaskCommandEvent("ManagePackage");
             }
         }
 
@@ -323,7 +375,7 @@ namespace Dynamo.Wpf.Views
         {
             if (e.OriginalSource == e.Source)
             {
-                managePackageCommandEvent?.Dispose();
+                Analytics.EndTaskCommandEvent(managePackageCommandEvent);
             }
         }
 
@@ -334,12 +386,20 @@ namespace Dynamo.Wpf.Views
             if (string.IsNullOrEmpty(groupNameBox.Text))
             {
                 viewModel.IsSaveButtonEnabled = false;
+                if (e.Key == Key.Return)
+                {
+                    viewModel.EnableGroupStyleWarningState(Res.PreferencesViewAlreadyExistingStyleWarning);
+                }
             }
             else
             {
                 viewModel.IsSaveButtonEnabled = true;
                 viewModel.CurrentWarningMessage = string.Empty;
                 viewModel.IsWarningEnabled = false;
+                if (e.Key == Key.Return)
+                {
+                    AddStyle_SaveButton_Click(AddStyle_SaveButton, new RoutedEventArgs());
+                }
             }
         }
 
@@ -368,6 +428,237 @@ namespace Dynamo.Wpf.Views
                 scrollviewer.LineDown();
             }
             e.Handled = true;
+        }
+
+        private void importTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            string fileExtension = "*" + Path.GetExtension(PathManager.PreferenceSettingsFileName);
+            string[] fileFilter = { string.Format(Res.FileDialogImportSettingsFiles, fileExtension) };
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog.Filter = String.Join("|", fileFilter);
+            openFileDialog.Title = Res.ImportSettingsDialogTitle;
+            openFileDialog.Multiselect = false;
+            openFileDialog.RestoreDirectory = true;
+
+            var result = openFileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    bool isImported = viewModel.importSettings(openFileDialog.FileName);
+                    if (isImported)
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
+                            this, Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
+                            this, Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                    Analytics.TrackEvent(Actions.Import, Categories.Preferences, isImported.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                        this, ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }            
+        }
+
+        private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dialog = new DynamoFolderBrowserDialog
+            {
+                Title = Res.ExportSettingsDialogTitle,
+                Owner = this
+            };
+
+            //Saves the current settings before exporting the xml file
+            dynViewModel.PreferenceSettings.SaveInternal(dynViewModel.Model.PathManager.PreferenceFilePath);
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName);
+                try
+                {
+                    if (File.Exists(selectedPathFile))
+                    {
+                        string uniqueId = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString();
+                        string suffixPlusDot = $"_{ uniqueId}.";
+                        string uniqueFileName = PathManager.PreferenceSettingsFileName.Replace(".", suffixPlusDot);
+                        selectedPathFile = Path.Combine(dialog.SelectedPath, uniqueFileName);
+                    }
+
+                    File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
+                    string argument = "/select, \"" + selectedPathFile + "\"";
+                    System.Diagnostics.Process.Start(new ProcessStartInfo("explorer.exe", argument) { UseShellExecute = true });
+                    Analytics.TrackEvent(Actions.Export, Categories.Preferences);
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                        this,
+                        ex.Message,
+                        Res.ExportSettingsFailedMessage,
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+        }
+
+        private void SelectBackupLocation(object sender, RoutedEventArgs e)
+        {
+            var dialog = new DynamoFolderBrowserDialog
+            {
+                Title = Res.PreferencesSettingsBackupLocationDialogTitle,
+                Owner = this
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    string selectedBackupLocation = dialog.SelectedPath;
+                    if (!viewModel.UpdateBackupLocation(selectedBackupLocation))
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
+                          this,
+                          Res.PreferencesSettingsBackupFailedMessage,
+                          Res.PreferencesSettingsBackupFailedTitle,
+                          MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                        this,
+                        ex.Message,
+                        Res.PreferencesSettingsBackupFailedTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+        }
+
+        private void ResetBackupLocation(object sender, RoutedEventArgs e)
+        {
+            viewModel.ResetBackupLocation();
+        }
+
+            // Show File path dialog
+            private void OnRequestShowFileDialog(object sender, EventArgs e)
+        {
+            var args = e as PythonTemplatePathEventArgs;
+            args.Cancel = true;
+
+            var dialog = new System.Windows.Forms.OpenFileDialog
+            {
+                // Navigate to initial folder.
+                FileName = args.Path
+            };
+
+            //Filter python files.
+            dialog.Filter = "Python File|*.py";
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                args.Cancel = false;
+                args.Path = dialog.FileName;
+            }
+        }
+
+        // Number input textbox validation
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        internal void Dispose()
+        {
+            viewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+        }
+
+        int getExtraLeftSpace(int confidenceLevel)
+        {
+            int value = 16;
+
+            for (int i = 1; i <= 9; i++)
+            {
+                if (confidenceLevel <= 9)
+                {
+                    break;
+                }               
+                else
+                {
+                    value--;
+                    if ((confidenceLevel == 10) || confidenceLevel >= (i * 10) + 1 && confidenceLevel <= (i + 1) * 10)
+                    {                        
+                        break;
+                    }
+                }
+            }
+            return value;
+        }       
+
+        private void sliderConfidenceLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            displayConfidenceLevel();
+        }
+
+        private void displayConfidenceLevel()
+        {
+            if (this.lblConfidenceLevel != null && this.lblConfidenceLevelLabelStart != null)
+            {
+                int confidenceLevel = (int)lblConfidenceLevel.Content;
+
+                int left = ((int)lblConfidenceLevel.Content * 3) + getExtraLeftSpace(confidenceLevel);
+                this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
+            }
+        }
+
+        private void ZoomScaleLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+            UpdateZoomScaleValueLabel(slider, lblZoomScalingValue);
+        }
+
+        private void PythonZoomScalingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+            UpdateZoomScaleValueLabel(slider, lblPythonScalingValue);
+        }
+
+        private void UpdateZoomScaleValueLabel(Slider slider, Label label)
+        {
+            //Since the percentage goes from 25 to 300, the value is decremented by 25 to standardize. 
+            double percentage = slider.Value - 25;
+
+            //The margin value for the label goes from - 480 to 310, resulting in 790 pixels from the starting point to the end.
+            //We also standardized the values of the percentage(from 0 to 275).
+            //The value is decreased to 480 because the margin begins at - 480
+            //This is the relation between the margin in pixels and the value of the percentage
+            double marginValue = (790 * percentage / 275) - 480;
+            if (label != null)
+            {
+                label.Margin = new Thickness(marginValue, 0, 0, 0);
+                label.Content = slider.Value.ToString() + "%";
+            }
+        }
+        private void OnInstalledPackagesHyperlinkClicked(object sender, RoutedEventArgs e)
+        {
+            this.CloseButton_Click(this.CloseButton, e);
+            this.dynViewModel.ShowPackageManager(Dynamo.Wpf.Properties.Resources.PackageManagerInstalledPackagesTab);
+        }
+
+        private void RecommendedNodesRadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!viewModel.IsMLAutocompleteTOUApproved)
+            {
+                dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
+                // Reset back to object type recommendations
+                RecommendedNodesRadioButton.IsChecked = false;
+                ObjectTypeRadioButton.IsChecked = true;
+            }
         }
     }
 }

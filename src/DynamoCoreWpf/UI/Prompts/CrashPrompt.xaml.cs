@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -131,7 +131,7 @@ namespace Dynamo.Nodes.Prompts
                 return;
 
             // Catch for exception, for cases where the directory does not exist
-            try { Process.Start(@folderPath); }
+            try { Process.Start(new ProcessStartInfo(@folderPath) { UseShellExecute = true }); }
             catch { }
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -7,8 +7,9 @@ using System.Text;
 using Dynamo.Wpf.Properties;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
+using NotificationObject = Dynamo.Core.NotificationObject;
 using Dynamo.Configuration;
+using CoreNodeModels;
 
 namespace Dynamo.ViewModels
 {
@@ -17,12 +18,6 @@ namespace Dynamo.ViewModels
         // Formats double value into string. E.g. 1054.32179 => "1054.32179"
         // For more info: https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
         private const string numberFormat = "g";
-
-        internal const string doubleType = "double";
-        internal const string boolType = "bool";
-        internal const string intType = "int";
-        internal const string objectType = "object";
-        internal const string stringType = "string";
 
         #region Events
 
@@ -41,6 +36,8 @@ namespace Dynamo.ViewModels
         public const string LIST = "List";
         public const string EMPTY_DICTIONARY = "Empty Dictionary";
         public const string DICTIONARY = "Dictionary";
+
+        internal Watch WatchNode { get; set; }
 
         private ObservableCollection<WatchViewModel> children = new ObservableCollection<WatchViewModel>();
         private string label;
@@ -249,6 +246,9 @@ namespace Dynamo.ViewModels
 
         private static string GetStringFromObject(object obj)
         {
+            if (obj == null)
+                return Resources.NullString;
+
             TypeCode type = Type.GetTypeCode(obj.GetType());
             switch (type)
             {
@@ -256,6 +256,9 @@ namespace Dynamo.ViewModels
                     return ObjectToLabelString(obj);
                 case TypeCode.Double:
                     return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
+                //!!!!carefully consider the consequences of this change before uncommenting.
+                //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
+                //return ((double)obj).ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat, CultureInfo.InvariantCulture);
                 case TypeCode.Int32:
                     return ((int)obj).ToString(CultureInfo.InvariantCulture);
                 case TypeCode.Int64:
@@ -285,22 +288,25 @@ namespace Dynamo.ViewModels
 
         private string GetDisplayType(object obj)
         {
+            if (obj == null)
+                return Resources.NullString;
+
             TypeCode typeCode = Type.GetTypeCode(obj.GetType());
             // returning a customized user friendly string instead of just returning the name of the type 
             switch (typeCode)
             {
                 case TypeCode.Boolean:
-                    return boolType;
+                    return nameof(TypeCode.Boolean);
                 case TypeCode.Double:
-                    return doubleType;
+                    return nameof(TypeCode.Double);
                 case TypeCode.Int64:
-                    return intType;
+                    return nameof(TypeCode.Int64);
                 case TypeCode.Int32:
-                    return intType;
+                    return nameof(TypeCode.Int32);
                 case TypeCode.Object:
-                    return objectType;
+                    return nameof(TypeCode.Object);
                 case TypeCode.String:
-                    return stringType;
+                    return nameof(TypeCode.String);
                 case TypeCode.Empty:
                     return String.Empty;
                 default:

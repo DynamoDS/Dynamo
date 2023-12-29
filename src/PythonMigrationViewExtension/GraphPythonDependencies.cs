@@ -1,4 +1,4 @@
-﻿using Dynamo.Configuration;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -16,7 +16,7 @@ namespace Dynamo.PythonMigration
     public class GraphPythonDependencies
     {
         internal static readonly string PythonPackage = "DynamoIronPython2.7";
-        internal static readonly Version PythonPackageVersion = PreferenceSettings.IronPythonResolveVersion;
+        internal readonly Version PythonPackageVersion;
         private IWorkspaceModel workspace;
         private readonly ICustomNodeManager customNodeManager;
 
@@ -33,10 +33,11 @@ namespace Dynamo.PythonMigration
             DirectDependency
         }
 
-        internal GraphPythonDependencies(IWorkspaceModel workspaceModel, ICustomNodeManager customNodeManager)
+        internal GraphPythonDependencies(IWorkspaceModel workspaceModel, ICustomNodeManager customNodeManager, Version ironPythonTargetVersion)
         {
-            this.workspace = workspaceModel;
+            workspace = workspaceModel;
             this.customNodeManager = customNodeManager;
+            PythonPackageVersion = ironPythonTargetVersion;
         }
 
         internal void UpdateWorkspace(IWorkspaceModel workspaceModel)

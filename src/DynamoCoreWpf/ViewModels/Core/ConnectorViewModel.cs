@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using Dynamo.Graph;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {
@@ -578,14 +579,14 @@ namespace Dynamo.ViewModels
         {
             bool isCollectionofFiveorMore = false;
 
-            ///if model is null or enginecontroller is disposed, return
+            //if model is null or enginecontroller is disposed, return
             if (model is null ||
                 model.Start is null ||
                 model.Start.Owner is null||
                 workspaceViewModel.DynamoViewModel.EngineController.IsDisposed == true)
             { return; }
 
-            ///if it is possible to get the last value of the model.Start.Owner
+            //if it is possible to get the last value of the model.Start.Owner
             try
             {
                 var portValue = model.Start.Owner.GetValue(model.Start.Index, workspaceViewModel.DynamoViewModel.EngineController);
@@ -603,7 +604,7 @@ namespace Dynamo.ViewModels
                 {
                     if (isCollection && portValue.GetElements().Count() > 5)
                     {
-                        ///only sets 'is a collection' to true if the collection meets a size of 5
+                        // only sets 'is a collection' to true if the collection meets a size of 5
                         isCollectionofFiveorMore = true;
                         for (int i = 0; i < 5; i++)
                         {
@@ -666,6 +667,14 @@ namespace Dynamo.ViewModels
         /// Delegate command to trigger a construction of a ContextMenu.
         /// </summary>
         public DelegateCommand InstantiateContextMenuCommand { get; set; }
+        /// <summary>
+        /// Delegate command to focus the view on the start node
+        /// </summary>
+        public DelegateCommand GoToStartNodeCommand { get; set; }
+        /// <summary>
+        /// Delegate command to focus the view on the end node
+        /// </summary>
+        public DelegateCommand GoToEndNodeCommand { get; set; }
 
         /// <summary>
         /// When mouse hovers over connector, if the data coming through the connector is collection of 5 or more,
@@ -867,11 +876,38 @@ namespace Dynamo.ViewModels
             CreateContextMenu();
         }
 
+        private void GoToStartNodeCommandExecute(object parameters)
+        {
+            var startNodeID = ConnectorModel.Start.Owner.GUID;
+
+            //Select
+            var command = new DynCmd.SelectModelCommand(startNodeID, ModifierKeys.None);
+            workspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+
+            //Focus the node
+            workspaceViewModel.DynamoViewModel.CurrentSpaceViewModel.FocusNodeCommand.Execute(startNodeID.ToString());
+        }
+
+        private void GoToEndNodeCommandExecute(object parameters)
+        {
+            var endNodeID = ConnectorModel.End.Owner.GUID;
+
+            //Select
+            var command = new DynCmd.SelectModelCommand(endNodeID, ModifierKeys.None);
+            workspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+
+            //Focus the node
+            workspaceViewModel.DynamoViewModel.CurrentSpaceViewModel.FocusNodeCommand.Execute(endNodeID.ToString());
+        }
+
         /// <summary>
         /// Helper function ssed for placing (re-placing) connector
         /// pins when a WatchNode is placed in the center of a connector.
         /// </summary>
+        /// <param name="connectors"></param>
+        /// <param name="connectorWireIndex"></param>
         /// <param name="point"></param>
+        /// <param name="createdModels"></param>
         public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point, List<ModelBase> createdModels)
         {
             var selectedConnector = connectors[connectorWireIndex];
@@ -909,6 +945,8 @@ namespace Dynamo.ViewModels
             MouseUnhoverCommand = new DelegateCommand(MouseUnhoverCommandExecute, CanRunMouseUnhover);
             PinConnectorCommand = new DelegateCommand(PinConnectorCommandExecute, x => true);
             InstantiateContextMenuCommand = new DelegateCommand(InstantiateContextMenuCommandExecute, CanInstantiateContextMenu);
+            GoToStartNodeCommand = new DelegateCommand(GoToStartNodeCommandExecute, x => true);
+            GoToEndNodeCommand = new DelegateCommand(GoToEndNodeCommandExecute, x => true);
         }
 
         #endregion
@@ -1394,7 +1432,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Recalculate the connector's points given the end point
         /// </summary>
-        /// <param name="p2">The position of the end point</param>
+        /// <param name="parameter">The position of the end point</param>
         public void Redraw(object parameter)
         {
             var p2 = new Point();
@@ -1515,7 +1553,7 @@ namespace Dynamo.ViewModels
                 dotTop = CurvePoint3.Y - EndDotSize / 2;
                 dotLeft = CurvePoint3.X - EndDotSize / 2;
 
-                ///Add chain of points including start/end
+                // Add chain of points including start/end
                 Point[] points = new Point[ConnectorPinViewCollection.Count];
                 int count = 0;
                 foreach (var wirePin in ConnectorPinViewCollection)

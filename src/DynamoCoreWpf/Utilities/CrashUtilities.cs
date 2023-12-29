@@ -13,17 +13,19 @@ namespace Dynamo.Wpf.Utilities
         {
             var baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
 
-            // provide fallback values for text content in case Resources or Assembly calls fail
-            var issueTitle = Properties.Resources.CrashPromptGithubNewIssueTitle ?? "Crash report from Dynamo {0}";
+            var issueTitle = "Crash report from Dynamo {0}";
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
-            var content = GitHubCrashReportBody(crashContent);
 
             // append the title and body to the URL as query parameters
             // making sure we properly escape content since stack traces may contain characters not suitable
             // for use in URLs
             var title = "title=" + Uri.EscapeDataString(string.Format(issueTitle, dynamoVersion));
-            var body = "body=" + Uri.EscapeDataString(content);
-            baseUri.Query = title + "&" + body;
+            var template = "template=issue.yml";
+            var fields = "dynamo_version=" + Uri.EscapeDataString(dynamoVersion)
+                + "&os=" +  Uri.EscapeDataString(Environment.OSVersion.ToString())
+                + "&packages=" + Uri.EscapeDataString(crashContent?.ToString() ?? string.Empty)
+                + "&details=" + Uri.EscapeDataString("CLR: " + Environment.Version.ToString());
+            baseUri.Query = title + "&" + template + "&" + fields;
 
             // this will properly format the string for use as a uri
             return baseUri.ToString();
@@ -60,21 +62,6 @@ namespace Dynamo.Wpf.Utilities
             {
                 return "(Fill in here)";
             }
-        }
-
-        /// <summary>
-        /// Formats crash details and adds metadata for use in Github issue body
-        /// </summary>
-        /// <param name="details">Crash details, such as a stack trace.</param>
-        /// <returns>A formatted, but not escaped, string to use as issue body.</returns>
-        private static string GitHubCrashReportBody(object details)
-        {
-            var markdownPackages = details?.ToString() ?? string.Empty;
-
-            // This functionality was not available prior to version 2.1.0, so it should be the fallback value
-            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
-
-            return BuildMarkdownContent(dynamoVersion, markdownPackages);
         }
 
         /// <summary>

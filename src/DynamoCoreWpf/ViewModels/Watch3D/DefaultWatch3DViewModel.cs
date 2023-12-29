@@ -1,13 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
+using CoreNodeModels;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -32,11 +34,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public IPreferences Preferences { get; set; }
         public IEngineControllerManager EngineControllerManager { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Watch3DViewModelStartupParams()
         {
-            
+
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="model"></param>
         public Watch3DViewModelStartupParams(DynamoModel model)
         {
             Model = model;
@@ -49,7 +58,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
     /// <summary>
     /// The DefaultWatch3DViewModel is the base class for all 3D previews in Dynamo.
-    /// Classes which derive from this base are used to prepare geometry for 
+    /// Classes which derive from this base are used to prepare geometry for
     /// rendering by various render targets. The base class handles the registration
     /// of all necessary event handlers on models, workspaces, and nodes.
     /// </summary>
@@ -67,6 +76,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         protected bool isGridVisible;
+        protected float gridScale;
 
         /// <summary>
         /// Represents the name of current Watch3DViewModel which will be saved in preference settings
@@ -89,7 +99,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 active = value;
-                preferences.SetIsBackgroundPreviewActive(PreferenceWatchName, value);               
+                preferences.SetIsBackgroundPreviewActive(PreferenceWatchName, value);
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();
@@ -118,6 +128,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
+        /// Sets the scale of the Grid helper
+        /// </summary>
+        public virtual float GridScale
+        {
+            get { return gridScale; }
+            set
+            {
+                if (gridScale == value) return;
+
+                gridScale = value;
+                RaisePropertyChanged(nameof(GridScale));
+            }
+        }
+
+
+        /// <summary>
         /// A name which identifies this view model when multiple
         /// Watch3DViewModel objects exist.
         /// </summary>
@@ -126,12 +152,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// A flag which indicates whether this view model is used for a background preview.
         /// </summary>
-        public virtual bool IsBackgroundPreview 
+        public virtual bool IsBackgroundPreview
         {
             get { return true; }
         }
 
         private bool canNavigateBackground = false;
+        /// <summary>
+        /// Indicate if user can natigvate background geometry view
+        /// </summary>
         public bool CanNavigateBackground
         {
             get
@@ -141,15 +170,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             set
             {
                 canNavigateBackground = value;
-                Dynamo.Logging.Analytics.TrackScreenView(canNavigateBackground ? "Geometry" : "Nodes");
-                RaisePropertyChanged("CanNavigateBackground");
+                Analytics.TrackScreenView(canNavigateBackground ? "Geometry" : "Nodes");
+                RaisePropertyChanged(nameof(CanNavigateBackground));
             }
         }
 
+        private bool isolationMode;
         /// <summary>
         /// A flag which indicates whether Isolate Selected Geometry mode is activated.
         /// </summary>
-        private bool isolationMode;
         public bool IsolationMode
         {
             get
@@ -252,6 +281,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
             active = parameters.Preferences.IsBackgroundPreviewActive;
             logger = parameters.Logger;
+            GridScale = parameters.Preferences.GridScaleFactor;
 
             RegisterEventHandlers();
 
@@ -266,11 +296,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// Call setup to establish the visualization context for the
         /// Watch3DViewModel. Because the Watch3DViewModel is passed into the DynamoViewModel,
-        /// Setup is required to fully establish the rendering context. 
+        /// Setup is required to fully establish the rendering context.
         /// </summary>
         /// <param name="viewModel">An IDynamoViewModel object.</param>
         /// <param name="renderPackageFactory">An IRenderPackageFactory object.</param>
-        public void Setup(IDynamoViewModel viewModel, 
+        public void Setup(IDynamoViewModel viewModel,
             IRenderPackageFactory renderPackageFactory)
         {
             this.viewModel = viewModel;
@@ -282,10 +312,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
-        
+
         protected virtual void OnClear()
         {
             // Override in inherited classes.
+        }
+
+        /// <summary>
+        /// Updates background graphic helpers
+        /// </summary>
+        public virtual void UpdateHelpers()
+        {
+            // Override in inherited classes
         }
 
         protected virtual void OnActiveStateChanged()
@@ -356,12 +394,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
             var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
+            var renderMode = RenderOptions.ProcessRenderMode;
 
             logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier));
             logger.LogError(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported));
             logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported));
             logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported));
             logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize));
+            logger.Log(string.Format("RENDER : ProcessRenderMode: {0}", renderMode == RenderMode.Default ? "Hardware (with Software fallback)" : "Software" ));
         }
 
         private void RegisterModelEventhandlers(IDynamoModel dynamoModel)
@@ -503,7 +543,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// Call this method to add the render package. 
+        /// Call this method to add the render package.
         /// </summary>
         /// <param name="packages"></param>
         /// <param name="forceAsyncCall"></param>
@@ -553,6 +593,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public virtual void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes)
         {
             // Override in derived classes.
+
+            // Reset state machine
+            CurrentSpaceViewModel.CancelActiveState();
         }
 
         private void RegisterNodeEventHandlers(NodeModel node)
@@ -610,6 +653,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // If there is no attached model update for all render packages
             if (watchModel == null)
             {
+                //When Watch3D nodes are in canvas we need to ignore the Node.RenderPackageUpdate event in some cases.
+                //The background preview does not request tesselation for non-visible nodes or the Watch / Watch3D nodes.
+                //When these nodes are connected to a Watch3D, tesselation is requested and the Node.RenderPacakgeUpdate
+                //event will be raised.  The background preview needs to filter out those tesselation events.
+                if (node.IsVisible == false || node is Watch || node is Watch3DNodeModels.Watch3D)
+                {
+                    return;
+                }
+
                 AddGeometryForRenderPackages(packages);
                 return;
             }
@@ -622,30 +674,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return;
             }
 
-            // If there are no connectors connected to the first (only) input port update for all render packages
-            var inConnectors = inPorts[0].Connectors;
-            if (inConnectors == null || inConnectors.Count() < 1 || inConnectors[0].Start == null)
+            foreach (PortModel inPort in inPorts)
             {
-                AddGeometryForRenderPackages(packages);
-                return;
-            }
-
-            // Only update for render packages from the connected output port
-            var inputId = inConnectors[0].Start.GUID;
-            foreach (var port in node.OutPorts)
-            {
-                if (port.GUID != inputId)
+                var inConnectors = inPort.Connectors;
+                if (inConnectors == null || inConnectors.Count() < 1 || inConnectors[0].Start == null)
                 {
+                    AddGeometryForRenderPackages(packages);
                     continue;
                 }
 
-                RenderPackageCache portPackages = packages.GetPortPackages(inputId);
-                if (portPackages == null)
+                // Only update for render packages from the connected output port
+                var inputId = inConnectors[0].Start.GUID;
+                foreach (var port in node.OutPorts)
                 {
-                    continue;
-                }
+                    if (port.GUID != inputId)
+                    {
+                        continue;
+                    }
 
-                AddGeometryForRenderPackages(portPackages);
+                    RenderPackageCache portPackages = packages.GetPortPackages(inputId);
+                    if (portPackages == null)
+                    {
+                        continue;
+                    }
+
+                    AddGeometryForRenderPackages(portPackages);
+                }
             }
         }
 
@@ -653,7 +707,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Called from derived classes when a collection of render packages
         /// are available to be processed as render geometry.
         /// </summary>
-        /// <param name="taskPackages">A collection of packages from which to 
+        /// <param name="taskPackages">A collection of packages from which to
         /// create render geometry.</param>
         public virtual void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(
             RenderPackageCache taskPackages)
@@ -665,7 +719,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         /// <summary>
         /// Returns a 3D ray from the camera to the given mouse location
-        /// in world coordinates that can be used to perform a hit-test 
+        /// in world coordinates that can be used to perform a hit-test
         /// on objects in the view
         /// </summary>
         /// <param name="args">mouse click location in screen coordinates</param>
@@ -798,7 +852,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected virtual void ZoomToFit(object parameter)
         {
             // Override in derived classes to specify zoom to fit behavior.
-        } 
+        }
 
         #endregion
 

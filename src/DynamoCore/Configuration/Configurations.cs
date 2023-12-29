@@ -1,6 +1,8 @@
-﻿using Dynamo.Properties;
-using Dynamo.Utilities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Dynamo.Properties;
+using Dynamo.Utilities;
 
 namespace Dynamo.Configuration
 {
@@ -35,18 +37,6 @@ namespace Dynamo.Configuration
         /// Default width of Integer Slider
         /// </summary>
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
-
-        /// <summary>
-        /// Maximum width of Watch Node
-        /// </summary>
-        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
-        public static readonly double MaxWatchNodeWidth = 280.0;
-
-        /// <summary>
-        /// Maximum height of Watch Node
-        /// </summary>
-        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
-        public static readonly double MaxWatchNodeHeight = 310.0;
 
         #endregion
 
@@ -251,12 +241,6 @@ namespace Dynamo.Configuration
         #region CodeBlockNode
 
         /// <summary>
-        ///     Default height of CodeBlock's port. Now obsolete.
-        ///     Inputs height are set in the normal way, outputs height is set to CodeBlockOutputPortHeightInPixels
-        /// </summary>
-        [Obsolete] public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
-
-        /// <summary>
         ///     Code Block outputs have a condensed port height
         /// </summary>
         public static readonly double CodeBlockOutputPortHeightInPixels = 16.345;
@@ -368,6 +352,71 @@ namespace Dynamo.Configuration
         /// </summary>
         public static string BackupFileNamePrefix = "backup";
 
+        #endregion
+
+        #region Locale info and constants
+
+        /// <summary>
+        /// Supported locales as a list
+        /// </summary>
+        internal static readonly List<string> SupportedLocaleList = new List<string>() { "Default", "en-US", "cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "ja-JP", "ko-KR", "pl-PL", "pt-BR", "ru-RU", "zh-CN", "zh-TW" };
+
+        /// <summary>
+        /// Supported languages and locales as a dictionary in the current thread locale
+        /// </summary>
+        public static Dictionary<string, string> SupportedLocaleDic
+        {
+            get
+            {
+                // Dynamically create a dictionary mapping languages and locales in the current thread locale
+                // This is done so that Preferences Panel could display the languages selections using the current locale
+                return Properties.Resources.DynamoLanguages_noxlate.Split(',').
+                    Zip(SupportedLocaleList, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
+            }
+        }
+
+        /// <summary>
+        /// Host units, used to scale background grid graphic element
+        /// </summary>
+        internal enum Units
+        {
+            Millimeters,
+            Centimeters,
+            Meters,
+            Kilometers,
+            Feet,
+            Inches,
+            Miles
+        }
+
+        /// <summary>
+        /// Supported Host units and their conversion to dynamo units
+        /// Used in graphic helpers scaling (grid, axes)
+        /// </summary>
+        internal static Dictionary<Units, double> SupportedUnits
+        {
+            get
+            {
+                return new Dictionary<Units, double>
+                {
+                    { Units.Millimeters, 1 },
+                    { Units.Centimeters, 10 },
+                    { Units.Meters, 1000 },
+                    { Units.Kilometers, 100000 },
+                    { Units.Feet, 1 },
+                    { Units.Inches, 10 },
+                    { Units.Miles, 1000 },
+                };
+            }
+        }
+
+        #endregion
+
+        #region Notifications Constants
+        /// <summary>
+        /// Request timeOut for notifications service
+        /// </summary>
+        public const int NotificationsDefaultTimeOut = 10000;
         #endregion
     }
 }

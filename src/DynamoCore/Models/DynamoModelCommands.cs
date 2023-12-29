@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -57,6 +57,13 @@ namespace Dynamo.Models
             string fileContents = command.FileContents;
             bool forceManualMode = command.ForceManualExecutionMode;
             OpenFileFromJson(fileContents, forceManualMode);
+        }
+
+        protected virtual void InsertFileImpl(InsertFileCommand command)
+        {
+            string filePath = command.FilePath;
+            bool forceManualMode = command.ForceManualExecutionMode;
+            InsertFileFromPath(filePath, forceManualMode);
         }
 
         private void RunCancelImpl(RunCancelCommand command)
@@ -319,7 +326,7 @@ namespace Dynamo.Models
                     EndShiftReconnections(nodeId, command.PortIndex, command.Type);
                     break;
 
-                // TODO - can be removed in Dynamo 3.0 - DYN-1729
+                // TODO - can be removed in a future version of Dynamo - DYN-1729
                 case MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
                     BeginCreateConnections(nodeId, command.PortIndex, command.Type);
                     break;

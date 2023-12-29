@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using Dynamo.Extensions;
@@ -42,6 +42,11 @@ namespace Dynamo.GraphMetadata
 
         private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
         {
+            AddToSidebar();
+        }
+
+        private void AddToSidebar()
+        {
             // Dont allow the extension to show in anything that isnt a HomeWorkspaceModel
             if (!(this.viewLoadedParamsReference.CurrentWorkspaceModel is HomeWorkspaceModel))
             {
@@ -50,6 +55,12 @@ namespace Dynamo.GraphMetadata
             }
 
             this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.graphMetadataView);
+        }
+
+        public override void ReOpen()
+        {
+            AddToSidebar();
+            this.graphMetadataMenuItem.IsChecked = true;
         }
 
         #region Storage Access implementation
@@ -99,10 +110,12 @@ namespace Dynamo.GraphMetadata
 
         protected virtual void Dispose(bool disposing)
         {
-            viewModel.Dispose();
-
-            this.graphMetadataMenuItem.Checked -= MenuItemCheckHandler;
-            this.graphMetadataMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            viewModel?.Dispose();
+            if (graphMetadataMenuItem != null)
+            {
+                graphMetadataMenuItem.Checked -= MenuItemCheckHandler;
+                graphMetadataMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            }
         }
 
         public override void Dispose()

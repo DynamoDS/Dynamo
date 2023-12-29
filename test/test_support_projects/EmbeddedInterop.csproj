@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EmbeddedInterop</RootNamespace>
+    <AssemblyName>EmbeddedInterop</AssemblyName>
+  </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000" GeneratePathProperty="true">
+            <ExcludeAssets>all</ExcludeAssets>
+        </PackageReference>
+        <Reference Include="$(PkgMicrosoft_Office_Interop_Excel)\lib\net20\Microsoft.Office.Interop.Excel.dll">
+            <EmbedInteropTypes>True</EmbedInteropTypes>
+            <WrapperTool>tlbimp</WrapperTool>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+  <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+  </ItemGroup>
+</Project>

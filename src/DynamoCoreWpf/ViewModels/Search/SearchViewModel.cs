@@ -1,10 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -14,7 +12,6 @@ using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -46,7 +43,12 @@ namespace Dynamo.ViewModels
             if (SearchTextChanged != null)
                 SearchTextChanged(this, e);
 
-            SearchCommand?.Execute(null);
+            // If this is trigged from NodeAutoCompleteSearchViewModel, we don't want to execute this SearchCommand on all nodes.
+            // The Search will later be triggered on a subset of filtered results.
+            if (this is NodeAutoCompleteSearchViewModel is false)
+            {
+                SearchCommand?.Execute(null);
+            }
         }
 
         #endregion
@@ -188,6 +190,41 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private IEnumerable<NodeSearchElementViewModel> filteredHighConfidenceResults;
+        /// <summary>
+        /// Filtered high confidence search results.
+        /// </summary>
+        internal IEnumerable<NodeSearchElementViewModel> FilteredHighConfidenceResults
+        {
+            get
+            {
+                return filteredHighConfidenceResults;
+            }
+            set
+            {
+                filteredHighConfidenceResults = ToggleSelect(value);
+                RaisePropertyChanged(nameof(FilteredHighConfidenceResults));
+            }
+        }
+
+
+        private IEnumerable<NodeSearchElementViewModel> filteredLowConfidenceResults;
+        /// <summary>
+        /// Filtered low confidence search results.
+        /// </summary>
+        internal IEnumerable<NodeSearchElementViewModel> FilteredLowConfidenceResults
+        {
+            get
+            {
+                return filteredLowConfidenceResults;
+            }
+            set
+            {
+                filteredLowConfidenceResults = ToggleSelect(value);
+                RaisePropertyChanged(nameof(FilteredLowConfidenceResults));
+            }
+        }
+
         /// <summary>
         /// Filters search items, if category was selected.
         /// </summary>
@@ -290,7 +327,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         public NodeSearchElementViewModel FindViewModelForNode(string nodeName)
         {
-            var result = Model.SearchEntries.Where(e => {
+            var result = Model.Entries.Where(e => {
                 if (e.CreationName.Equals(nodeName))
                 {
                     return true;
@@ -308,6 +345,15 @@ namespace Dynamo.ViewModels
 
         public NodeSearchModel Model { get; private set; }
         internal readonly DynamoViewModel dynamoViewModel;
+
+        // Lucene search utility to perform indexing operations.
+        private LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return LuceneSearch.LuceneUtilityNodeSearch;
+            }
+        }
 
         /// <summary>
         /// Class name, that has been clicked in library search view.
@@ -338,6 +384,12 @@ namespace Dynamo.ViewModels
             InitializeCore();
         }
 
+        internal SearchViewModel(NodeSearchModel model, DynamoViewModel dynamoViewModel)
+        {
+            Model = model;
+            InitializeCore();
+        }
+
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -351,6 +403,7 @@ namespace Dynamo.ViewModels
             {
                 cate.DisposeTree();
             }
+            Model.EntryAdded -= AddEntry;
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
@@ -373,19 +426,20 @@ namespace Dynamo.ViewModels
             searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             // When Library changes, sync up
-            Model.EntryAdded += entry =>
-            {
-                InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
-                RaisePropertyChanged("BrowserRootCategories");
-            };
-             
+            Model.EntryAdded += AddEntry;
             Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
-            LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
+            LibraryRootCategories.AddRange(CategorizeEntries(Model.Entries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
+        }
+
+        private void AddEntry(NodeSearchElement entry)
+        {
+            InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
+            RaisePropertyChanged("BrowserRootCategories");
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
@@ -830,10 +884,12 @@ namespace Dynamo.ViewModels
             if (string.IsNullOrEmpty(query))
                 return;
 
+            //Passing the second parameter as true will search using Lucene.NET
             var foundNodes = Search(query);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
             FilteredResults = searchResults;
+
             UpdateSearchCategories();
 
             RaisePropertyChanged("FilteredResults");
@@ -872,15 +928,52 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Performs a search using the given string as query and subset, if provided.
+        ///     Performs a search using the given string as query and subset, if provided. Uses Lucene search.
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
-        internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
+        internal IEnumerable<NodeSearchElementViewModel> Search(string search)
         {
-            var foundNodes = Model.Search(search, 0, subset);
-            return foundNodes.Select(MakeNodeSearchElementVM);
+            if (LuceneUtility != null)
+            {
+                var searchElements = Model.Search(search, LuceneUtility);
+                if (searchElements != null)
+                {
+                    return searchElements.Select(MakeNodeSearchElementVM);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// To get view model for a node based on its name and category
+        /// </summary>
+        /// <param name="nodeName">Name of the node</param>
+        /// <param name="nodeCategory">Full Category of the node</param>
+        /// <param name="parameters">Node input parameters</param>
+        /// <returns></returns>
+        internal NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
+        {
+            var result = Model.Entries.Where(e => {
+                if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
+                {
+                    //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
+                    //Then in this case when searching if e.Parameters is null we need to check against empty space
+                    if (e.Parameters == null)
+                        return string.IsNullOrEmpty(parameters);
+                    //Parameters contain a value so we need to compare against the value indexed
+                    else
+                        return e.Parameters.Equals(parameters);
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return MakeNodeSearchElementVM(result.ElementAt(0));
         }
 
         private static IEnumerable<NodeSearchElementViewModel> GetVisibleSearchResults(NodeCategoryViewModel category)
@@ -898,7 +991,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
+        internal NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
         {
             var element = entry as CustomNodeSearchElement;
             var elementVM = element != null

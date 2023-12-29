@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -23,6 +23,7 @@ namespace Dynamo.PackageManager
     {
         public bool IsNodeLibrary { get; set; }
         public Assembly Assembly { get; set; }
+        public string LocalFilePath {get;set;} 
 
         public string Name
         {
@@ -131,13 +132,6 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "doc"); }
         }
 
-        [Obsolete("This property will be removed in 3.0. Please use the LoadState property instead.")]
-        public bool Loaded {
-            get {
-                return LoadState.State == PackageLoadState.StateTypes.Loaded;
-            }
-        }
-
         private bool typesVisibleInManager;
         public bool TypesVisibleInManager
         {
@@ -190,15 +184,6 @@ namespace Dynamo.PackageManager
         internal bool BuiltInPackage
         {
             get { return RootDirectory.StartsWith(PathManager.BuiltinPackagesDirectory); }
-        }
-
-        [Obsolete("This property will be removed in Dynamo 3.0. Use LoadState.ScheduledState instead")]
-        public bool MarkedForUninstall
-        {
-            get {
-                return BuiltInPackage ? LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload :
-                  LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion;
-            }
         }
 
         public PackageLoadState LoadState = new PackageLoadState();
@@ -327,7 +312,8 @@ namespace Dynamo.PackageManager
             AdditionalFiles.AddRange(nonDyfDllFiles);
         }
 
-        public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
+        //TODO can we make this internal?
+        public IEnumerable<string> EnumerateAssemblyFilesInPackage()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) 
                 return new List<string>();
@@ -470,7 +456,7 @@ namespace Dynamo.PackageManager
                         return true;
                     }
                 }
-                catch (Exception _)
+                catch (Exception)
                 {
                     if (messages != null)
                     {
@@ -561,7 +547,6 @@ namespace Dynamo.PackageManager
         /// Marks any given package for unload.
         /// The package will not be marked for deletion.
         /// </summary>
-        /// <param name="prefs"></param>
         internal void MarkForUnload()
         {
             LoadState.SetScheduledForUnload();
@@ -573,7 +558,6 @@ namespace Dynamo.PackageManager
         /// Package will no longer be unloaded.
         /// Package load state will remain unaffected.
         /// </summary>
-        /// <param name="prefs"></param>
         internal void UnmarkForUnload()
         {
             LoadState.ResetScheduledState();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -24,14 +24,15 @@ namespace NodeDocumentationMarkdownGenerator
 #if DEBUG
             var config = "Debug";
 #else
-   var config = "Release";
+            var config = "Release";
 #endif
-            var relativePathToDynamo = $@"..\..\..\..\..\bin\AnyCPU\{config}";
-            Console.WriteLine($"looking for dynamo core assemblies in {relativePathToDynamo}");
-                    dynamoDirectoryAssemblyPaths = new DirectoryInfo(
-                Path.GetFullPath(
-                    Path.Combine(
-                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), relativePathToDynamo)))
+            var platform = "AnyCPU";
+            var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var relativePathToDynamo = $@"..\..\..\..\..\..\bin\{platform}\{config}";
+
+            var fullLoc = Path.GetFullPath(Path.Combine(dirName, relativePathToDynamo));
+            Console.WriteLine($"looking for dynamo core assemblies in {fullLoc}");
+                    dynamoDirectoryAssemblyPaths = new DirectoryInfo(fullLoc)
                 .EnumerateFiles("*.dll", SearchOption.AllDirectories);
                 }
 
@@ -50,14 +51,15 @@ namespace NodeDocumentationMarkdownGenerator
 
             ShowWelcomeMessages();
 
-            var result = Parser.Default.ParseArguments<FromDirectoryOptions, FromPackageOptions>(args);
+            var result = Parser.Default.ParseArguments<FromDirectoryOptions, FromPackageOptions, RenameOptions>(args);
             var text = result
                 .MapResult(
                     (FromDirectoryOptions opts) => CommandHandler.HandleFromDirectory(opts),
                     (FromPackageOptions opts) => CommandHandler.HandleFromPackage(opts),
+                    (RenameOptions opts) => CommandHandler.HandleRename(opts),
                     err => "1");
             Console.WriteLine($"docs generation tool {sw.Elapsed.TotalSeconds}");
-# if DEBUG
+#if DEBUG
             Console.ReadLine();
 #endif
         }

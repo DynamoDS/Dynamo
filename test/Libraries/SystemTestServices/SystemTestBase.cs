@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
@@ -46,8 +47,6 @@ namespace SystemTestServices
 
         protected DynamoModel Model { get; set; }
 
-        protected IUpdateManager UpdateManager { get; set; }
-
         protected string ExecutingDirectory
         {
             get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); }
@@ -62,6 +61,7 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
+            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
             var testConfig = GetTestSessionConfiguration();
 
             if (assemblyResolver == null)
@@ -139,9 +139,10 @@ namespace SystemTestServices
             {
                 Console.WriteLine(ex.StackTrace);
             }
+            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public virtual void FinalTearDown()
         {
             // Fix for COM exception on close
@@ -149,7 +150,7 @@ namespace SystemTestServices
             //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
-        #endregion
+#endregion
 
         #region protected methods
 
@@ -193,7 +194,6 @@ namespace SystemTestServices
                     StartInTestMode = true,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    UpdateManager = this.UpdateManager,
                     ProcessMode = TaskProcessMode.Synchronous
                 });
 
@@ -207,7 +207,7 @@ namespace SystemTestServices
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         /// <summary>

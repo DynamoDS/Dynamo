@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using CoreNodeModels.Input;
 using DesignScript.Builtin;
 using Dynamo.Graph.Nodes;
@@ -10,12 +11,21 @@ using CoreNodeModels;
 using CoreNodeModelsWpf;
 using NUnit.Framework;
 using ProtoCore.Namespace;
+using TestUINodes;
 
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class NodeExecutionUITest : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+
+            base.GetLibrariesToPreload(libraries);
+        }
+
         //case 1 : Node in Freeze and Not execute state. True for all parent nodes.
         [Test]
         [Category("DynamoUI")]
@@ -279,6 +289,97 @@ namespace DynamoCoreWpfTests
             cdn.OnNodeModified();
 
             AssertPreviewValue(cdn.GUID.ToString(), 2);
+        }
+
+        [Test]
+        public void TestSelectionNodeUpdate()
+        {
+            var model = GetModel();
+            var tsn = new TestSelectionNode2();
+
+            tsn.UpdateSelection(new List<int> { 1, 2, 3 });
+            var command = new DynamoModel.CreateNodeCommand(tsn, 0, 0, true, false);
+            model.ExecuteCommand(command);
+
+            AssertPreviewValue(tsn.GUID.ToString(), 3);
+
+            tsn.ClearSelections();
+
+            AssertPreviewValue(tsn.GUID.ToString(), 0);
+        }
+        [Test]
+        public void TestSelectionNodeUpdate2()
+        {
+            var model = GetModel();
+            var tsn = new TestSelectionNode2();
+
+            tsn.UpdateSelection(new List<int> { 1, 2, 3 });
+            var command = new DynamoModel.CreateNodeCommand(tsn, 0, 0, true, false);
+            model.ExecuteCommand(command);
+            AssertPreviewValue(tsn.GUID.ToString(), 3);
+
+            tsn.ClearSelections();
+            AssertPreviewValue(tsn.GUID.ToString(), 0);
+
+            tsn.UpdateSelection(new List<int> { 2, 4, 6,8 });
+            AssertPreviewValue(tsn.GUID.ToString(), 4);
+
+            tsn.ClearSelections();
+            AssertPreviewValue(tsn.GUID.ToString(), 0);
+
+        }
+
+        [Test]
+        public void TestDropdownNodeUpdate()
+        {
+            var model = GetModel();
+            var tdd = new TestDropdown
+            {
+                SelectedIndex = 0
+            };
+
+            var command = new DynamoModel.CreateNodeCommand(tdd, 0, 0, true, false);
+            model.ExecuteCommand(command);
+
+            AssertPreviewValue(tdd.GUID.ToString(), "one");
+
+            tdd.SelectedIndex = 1;
+            tdd.OnNodeModified();
+
+            AssertPreviewValue(tdd.GUID.ToString(), "two");
+
+            tdd.SelectedIndex = 2;
+            tdd.OnNodeModified();
+
+            AssertPreviewValue(tdd.GUID.ToString(), "three");
+
+        }
+
+        [Test]
+        public void TestDropdownNodeUpdate1()
+        {
+            var model = GetModel();
+            var tdd = new TestDropdown();
+
+            var command = new DynamoModel.CreateNodeCommand(tdd, 0, 0, true, false);
+            model.ExecuteCommand(command);
+
+            AssertPreviewValue(tdd.GUID.ToString(), null);
+
+            tdd.SelectedIndex = 0;
+            tdd.OnNodeModified();
+
+            AssertPreviewValue(tdd.GUID.ToString(), "one");
+
+            tdd.SelectedIndex = 1;
+            tdd.OnNodeModified();
+
+            AssertPreviewValue(tdd.GUID.ToString(), "two");
+
+            tdd.SelectedIndex = 2;
+            tdd.OnNodeModified();
+
+            AssertPreviewValue(tdd.GUID.ToString(), "three");
         }
     }
 }

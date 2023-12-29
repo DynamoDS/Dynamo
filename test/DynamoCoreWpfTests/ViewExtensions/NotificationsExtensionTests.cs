@@ -1,4 +1,4 @@
-﻿using Dynamo.Utilities;
+using Dynamo.Utilities;
 using Dynamo.Notifications.View;
 using NUnit.Framework;
 using System;
@@ -8,6 +8,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Notifications;
+using Dynamo.DocumentationBrowser;
+using DynamoCoreWpfTests.Utility;
 
 namespace DynamoCoreWpfTests.ViewExtensions
 {
@@ -19,6 +21,14 @@ namespace DynamoCoreWpfTests.ViewExtensions
             var shortcutBar = this.View.ShortcutBar;
             var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
             notificationsButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+
+            var notificationExtension = this.View.viewExtensionManager.ViewExtensions.OfType<NotificationsViewExtension>().FirstOrDefault();
+            // Wait for the NotificationCenterController webview2 control to finish initialization
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return notificationExtension.notificationCenterController.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, notificationExtension.notificationCenterController.initState);
 
             NotificationUI notificationUI = PresentationSource.CurrentSources.OfType<System.Windows.Interop.HwndSource>()
                                         .Select(h => h.RootVisual)
@@ -36,7 +46,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
         public void ValidateNotificationsUIEmbededFiles()
         {
             var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x=>x.ManifestModule.Name.Contains("Notifications.dll"));
-            var htmlFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
+            var htmlFile = "Dynamo.Notifications.Packages.NotificationCenter.build.index.html";
 
             var mainJstag = "mainJs";     
 

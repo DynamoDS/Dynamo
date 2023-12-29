@@ -1,7 +1,9 @@
-﻿using Dynamo.Utilities;
+using Dynamo.Utilities;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Dynamo.Tests.Logging
@@ -60,7 +62,50 @@ namespace Dynamo.Tests.Logging
             testflagsManager.CacheAllFlags();
 
             testflagsManager.MessageLogged -= TestflagsManager_MessageLogged;
-            Assert.AreEqual("LD startup: testmode true, no LD connection. LD startup time: 0 <<<<<InitDone>>>>>feature flag exe starting<<<<<Sod>>>>>{\"TestFlag1\":true,\"TestFlag2\":\"I am a string\",\"graphics-primitive-instancing\":true}<<<<<Eod>>>>>", log);
+            //json ordering cannot be controlled between .net target versions.
+            StringAssert.StartsWith("LD startup: testmode true, no LD connection. LD startup time:" , log);
+            StringAssert.Contains("<<<<<InitDone>>>>>feature flag exe starting<<<<<Sod>>>>>",log);
+            StringAssert.Contains("\"TestFlag1\":true", log);
+            StringAssert.Contains("\"TestFlag2\":\"I am a string\"", log);
+            StringAssert.Contains("\"graphics-primitive-instancing\":true", log);
+            StringAssert.EndsWith("<<<<<Eod>>>>>", log);
+
+        }
+        //TODO(DYN-6464) Revisit this and log more when the logger is not easily overwhelmed.
+        [Test]
+        public void FeatureFlagsShouldMessageLoggedShouldOnlyContainNullFlagErrorOnce()
+        {
+            var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
+            testflagsManager.MessageLogged += TestflagsManager_MessageLogged;
+            testflagsManager.CheckFeatureFlag("TestFlag2", "na");
+            testflagsManager.CheckFeatureFlag("TestFlag2", "na");
+            testflagsManager.CheckFeatureFlag("TestFlag2", "na");
+            testflagsManager.MessageLogged -= TestflagsManager_MessageLogged;
+            var matches = Regex.Matches(log, "wait longer for the cache").Count;
+            Assert.AreEqual(1,matches);
+        }
+        //TODO(DYN-6464) Revisit this and log more when the logger is not easily overwhelmed.
+        [Test]
+        public void FeatureFlagsShouldMessageLoggedShouldOnlyContainMissingFlagErrorOnce()
+        {
+            var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
+            testflagsManager.MessageLogged += TestflagsManager_MessageLogged;
+            testflagsManager.CacheAllFlags();
+            testflagsManager.CheckFeatureFlag("MissingFlag", "na");
+            testflagsManager.CheckFeatureFlag("MissingFlag", "na");
+            testflagsManager.CheckFeatureFlag("MissingFlag", "na");
+            testflagsManager.MessageLogged -= TestflagsManager_MessageLogged;
+            var matches = Regex.Matches(log, "failed to get value").Count;
+            Assert.AreEqual(1, matches);
+        }
+        [Test]
+        public void FeatureFlagsThrowsIfCheckIngNonSupportedType()
+        {
+            var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                testflagsManager.CheckFeatureFlag("NumericTypeNotSupported", 10);
+            });
         }
 
         private void DynamoFeatureFlagsManager_FlagsRetrieved()

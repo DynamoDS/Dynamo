@@ -1,35 +1,46 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using Dynamo.Applications;
+using Dynamo.Logging;
 using Dynamo.Models;
 
 namespace DynamoCLI
 {
     internal class Program
     {
+        private static EventWaitHandle suspendEvent = new AutoResetEvent(false);
+
         [STAThread]
-        static internal void Main(string[] args)
+        internal static void Main(string[] args)
         {
+            bool useConsole = true;
+            
             try
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
+                useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
-                if (cmdLineArgs.DisableAnalytics)
-                {
-                    Dynamo.Logging.Analytics.DisableAnalytics = true;
-                }
+
+                cmdLineArgs.SetDisableAnalytics();
 
                 if (cmdLineArgs.KeepAlive)
                 {
-                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
-
-                    thread.Name = "DynamoModelKeepAlive";
-                    thread.SetApartmentState(ApartmentState.STA);
+                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs))
+                    {
+                        Name = "DynamoModelKeepAlive"
+                    };
                     thread.Start();
 
-                    Console.WriteLine("Starting DynamoCLI in keepalive mode");
-                    Console.ReadLine();
+                    if (!useConsole)
+                    {
+                        suspendEvent.WaitOne();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Starting DynamoCLI in keepalive mode");
+                        Console.ReadLine();
+                    }
 
                     ShutDown();
                 }
@@ -52,8 +63,12 @@ namespace DynamoCLI
                 {
                 }
 
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                if (useConsole)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
+                }
+
             }
         }
 
@@ -63,15 +78,16 @@ namespace DynamoCLI
             {
                 StartupDynamo(cmdLineArgs);
 
-                Console.WriteLine("-----------------------------------------");
-                Console.WriteLine("DynamoCLI is running in keepalive mode");
-                Console.WriteLine("Press Enter to shutdown...");
-
-                System.Windows.Threading.Dispatcher.Run();
+                if (!cmdLineArgs.NoConsole)
+                {
+                    Console.WriteLine("-----------------------------------------");
+                    Console.WriteLine("DynamoCLI is running in keepalive mode");
+                    Console.WriteLine("Press Enter to shutdown...");
+                }
             }
-            catch
+            catch(Exception ex)
             {
-                Console.WriteLine("Server is shutting down due to an error");
+                Console.WriteLine("Server is shutting down due to an error : " + ex.ToString());
             }
         }
 
@@ -83,14 +99,7 @@ namespace DynamoCLI
         private static DynamoModel StartupDynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
             DynamoModel model;
-            if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
-            {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath, cmdLineArgs.AnalyticsInfo);
-            }
-            else
-            {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
-            }
+            model = StartupUtils.MakeCLIModel(cmdLineArgs);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {
@@ -99,7 +108,7 @@ namespace DynamoCLI
 
             model.ShutdownCompleted += (m) => { ShutDown(); };
 
-            cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
+            cmdLineArgs.ImportedPaths?.ToList().ForEach(path =>
             {
                 CommandLineRunner.ImportAssembly(model, path);
             });

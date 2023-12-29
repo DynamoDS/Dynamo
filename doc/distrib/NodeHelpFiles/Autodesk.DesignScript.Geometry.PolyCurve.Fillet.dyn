@@ -1,0 +1,368 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Fillet",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "79dc01aed3f2446089171620c1c5d77e",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "1.81",
+      "MaximumValue": 2.0,
+      "MinimumValue": 0.1,
+      "StepValue": 0.01,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "eae2b38197b04b26b60f5a19ca134747",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "false",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "Id": "aec14b05475747a8afdfd9d3190be3c4",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "true",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.Fillet@double,bool",
+      "Id": "d3df610da0204fce851d8a9e445b8230",
+      "Inputs": [
+        {
+          "Id": "8df628cee3844bb4866c2270336a09eb",
+          "Name": "polyCurve",
+          "Description": "Autodesk.DesignScript.Geometry.PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8d1b5a3e45084783a5868d06773824e3",
+          "Name": "radius",
+          "Description": "Radius of fillet\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2e34e50903d749a0ac1a003fdbbef742",
+          "Name": "rightSide",
+          "Description": "If right side which to fillet\n\nbool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "139aedbc642045e4956bd3aeb6d18a30",
+          "Name": "PolyCurve",
+          "Description": "PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Fillet polycurve in its plane.\n\nPolyCurve.Fillet (radius: double = 1, rightSide: bool = true): PolyCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "pt1=Point.ByCoordinates(2,8,0);\npt2=Point.ByCoordinates(10,8,0);\npt3=Point.ByCoordinates(8,2,0);\npt4=Point.ByCoordinates(1,2,0);\n[pt1,pt2,pt3,pt4];",
+      "Id": "066f406ee0f54c15a798c54dae0f227c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "07053ffc16f4458c8360c586c7a92ea9",
+          "Name": "",
+          "Description": "pt1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d1f977f01c834e1a8906f7e7f0454682",
+          "Name": "",
+          "Description": "pt2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2da6bf1c2b3f4e39b6fd5cebe798d1d1",
+          "Name": "",
+          "Description": "pt3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d3e004693075405489b3a37b061d7601",
+          "Name": "",
+          "Description": "pt4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "755a3caa4b3c416ab1bb982b71f0cf83",
+          "Name": "",
+          "Description": "Value of expression at line 5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
+      "Id": "b450a58004f243c79085bb4da2c90426",
+      "Inputs": [
+        {
+          "Id": "fe5c63e84b384281ad6e8c5f3fa8f75e",
+          "Name": "points",
+          "Description": "Points to make polycurve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "72bf39d8d962452c8c2f666d093e0240",
+          "Name": "connectLastToFirst",
+          "Description": "make close or open polycurve\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "278715a1cbf54119bd961c4d55fcaddf",
+          "Name": "PolyCurve",
+          "Description": "PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 2.0,
+      "MinimumValue": 0.1,
+      "StepValue": 0.01,
+      "InputValue": 1.81,
+      "Id": "79dc01aed3f2446089171620c1c5d77e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cd8065532d054bcaa9b1908a28f5d537",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "eae2b38197b04b26b60f5a19ca134747",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8fc5a69c545349f39c53362e76ff8796",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "aec14b05475747a8afdfd9d3190be3c4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c53bfe5f7dae4fcb9c17bdfda2de2472",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "755a3caa4b3c416ab1bb982b71f0cf83",
+      "End": "fe5c63e84b384281ad6e8c5f3fa8f75e",
+      "Id": "680fafabf9ac4eaeba7a12a0dd15254c"
+    },
+    {
+      "Start": "278715a1cbf54119bd961c4d55fcaddf",
+      "End": "8df628cee3844bb4866c2270336a09eb",
+      "Id": "d759290ecd5e47398bd9bc38d8d3f0d1"
+    },
+    {
+      "Start": "cd8065532d054bcaa9b1908a28f5d537",
+      "End": "8d1b5a3e45084783a5868d06773824e3",
+      "Id": "bb164da5cdcc4456a1bb43986b9cdc92"
+    },
+    {
+      "Start": "8fc5a69c545349f39c53362e76ff8796",
+      "End": "2e34e50903d749a0ac1a003fdbbef742",
+      "Id": "ce239fe7320047239d97b88e1e8c296c"
+    },
+    {
+      "Start": "c53bfe5f7dae4fcb9c17bdfda2de2472",
+      "End": "72bf39d8d962452c8c2f666d093e0240",
+      "Id": "ecb381e13d1449d7a0e95ccd70eb352c"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 9.1584438771765022,
+      "EyeY": 9.3070368735530522,
+      "EyeZ": 1.7376641646791704,
+      "LookX": -6.6507481717969616,
+      "LookY": -16.649654559014923,
+      "LookZ": -4.672380473414508,
+      "UpX": -0.64126214597677134,
+      "UpY": 0.62114774158657171,
+      "UpZ": -0.45050885168129307
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "PolyCurve.Fillet",
+        "Id": "d3df610da0204fce851d8a9e445b8230",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 829.01897542418055,
+        "Y": 500.26721026634556
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "066f406ee0f54c15a798c54dae0f227c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 36.018975424180553,
+        "Y": 303.18721026634546
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "PolyCurve.ByPoints",
+        "Id": "b450a58004f243c79085bb4da2c90426",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 430.01897542418055,
+        "Y": 409.2672102663455
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "79dc01aed3f2446089171620c1c5d77e",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 430.01897542418055,
+        "Y": 543.2672102663455
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "eae2b38197b04b26b60f5a19ca134747",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 430.01897542418055,
+        "Y": 626.2672102663455
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "aec14b05475747a8afdfd9d3190be3c4",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 36.018975424180553,
+        "Y": 475.2672102663455
+      }
+    ],
+    "Annotations": [],
+    "X": -91.189849764515,
+    "Y": -501.75808394323406,
+    "Zoom": 1.63793481743378
+  }
+}

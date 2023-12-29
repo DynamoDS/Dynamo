@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.Serialization;
@@ -14,7 +14,7 @@ namespace Dynamo.Graph.Nodes
     // So Type2 is not deserialized at all in previous versions of Dynamo.
     // Type's setter limits the possible values to a subset of the enum to avoid clients setting this to a value that would break file
     // deserialization in previous dynamo versions.
-    // TODO We should unify these properties (Type and Type2) when possible (Dynamo 3.x) 
+    // TODO We should unify these properties (Type and Type2) when possible n a future version of dynamo
 
     /// <summary>
     /// Possible graph input types. 
@@ -81,6 +81,7 @@ namespace Dynamo.Graph.Nodes
                 else { type = value; }
             }
         }
+        /// <summary>
         /// The type of input this node is.
         /// </summary>
         public NodeInputTypes Type2 { get; set; }
@@ -126,7 +127,7 @@ namespace Dynamo.Graph.Nodes
         /// The index of the selected item.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public int SelectedIndex { get; set; }
+        public int? SelectedIndex { get; set; }
 
         private static Dictionary<Type, NodeInputTypes> dotNetTypeToNodeInputType = new Dictionary<Type, NodeInputTypes>
         {
@@ -139,8 +140,8 @@ namespace Dynamo.Graph.Nodes
             {typeof(float),NodeInputTypes.numberInput},
         };
 
-        [Obsolete("To be removed in Dynamo 3.x")]
-        public static NodeInputTypes getNodeInputTypeFromType(Type type)
+        [Obsolete("To be removed in a future version of Dynamo")]
+        internal static NodeInputTypes GetNodeInputTypeFromType(Type type)
         {
             NodeInputTypes output;
             if (dotNetTypeToNodeInputType.TryGetValue(type, out output))
@@ -157,12 +158,12 @@ namespace Dynamo.Graph.Nodes
         {
             var converted = obj as NodeInputData;
 
-            var valNumberComparison = false;
+            bool valNumberComparison;
             try
             {
                 valNumberComparison = Math.Abs(Convert.ToDouble(this.Value, CultureInfo.InvariantCulture) - Convert.ToDouble(converted.Value, CultureInfo.InvariantCulture)) < .000001;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //this just stays false.
                 valNumberComparison = false;
@@ -184,5 +185,4 @@ namespace Dynamo.Graph.Nodes
                 ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == converted.Value.ToString());
         }
     }
-
 }

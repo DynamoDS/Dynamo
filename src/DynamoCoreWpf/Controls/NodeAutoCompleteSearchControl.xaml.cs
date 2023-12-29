@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,11 +8,15 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.UI.Controls
 {
@@ -20,47 +25,56 @@ namespace Dynamo.UI.Controls
     /// Notice this control shares a lot of logic with InCanvasSearchControl for now
     /// But they will diverge eventually because of UI improvements to auto complete.
     /// </summary>
-    public partial class NodeAutoCompleteSearchControl
+    public partial class NodeAutoCompleteSearchControl : IDisposable
     {
         ListBoxItem HighlightedItem;
 
         internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
 
-        public NodeAutoCompleteSearchViewModel ViewModel
-        {
-            get { return DataContext as NodeAutoCompleteSearchViewModel; }
-        }
+        double currentX;
+
+        ListBoxItem currentListBoxItem;
+
+        /// <summary>
+        /// Node AutoComplete Search ViewModel DataContext
+        /// </summary>
+        public NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
 
         public NodeAutoCompleteSearchControl()
         {
             InitializeComponent();
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
-                Application.Current.Deactivated += currentApplicationDeactivated;
+                Application.Current.Deactivated += CurrentApplicationDeactivated;
+                if (Application.Current?.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
+                }
             }
-            Unloaded += NodeAutoCompleteSearchControl_Unloaded;
             HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
         }
 
-        private void NodeAutoCompleteSearchControl_Unloaded(object sender, RoutedEventArgs e)
+        private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
-                Application.Current.Deactivated -= currentApplicationDeactivated;
+                Application.Current.Deactivated -= CurrentApplicationDeactivated;
+                if (Application.Current?.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
+                }
             }
+            HomeWorkspaceModel.WorkspaceClosed -= this.CloseAutoCompletion;
         }
 
-        private void currentApplicationDeactivated(object sender, EventArgs e)
+        private void CurrentApplicationDeactivated(object sender, EventArgs e)
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
         }
 
         private void OnRequestShowNodeAutoCompleteSearch(ShowHideFlags flags)
         {
-            if (RequestShowNodeAutoCompleteSearch != null)
-            {
-                RequestShowNodeAutoCompleteSearch(flags);
-            }
+            RequestShowNodeAutoCompleteSearch?.Invoke(flags);
         }
 
         private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
@@ -81,8 +95,7 @@ namespace Dynamo.UI.Controls
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var listBoxItem = sender as ListBoxItem;
-            if (listBoxItem == null || e.OriginalSource is Thumb) return;
+            if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 
             ExecuteSearchElement(listBoxItem);
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
@@ -99,27 +112,86 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                    var selectedNodeName = (searchElement.Model is Search.SearchElements.ZeroTouchSearchElement) ?
+                                                searchElement.Model.CreationName :
+                                                // Same as NameTypeId.ToStrng() format
+                                                string.Format("{0}, {1}", searchElement.Model.CreationName, searchElement.Assembly.Split('\\').Last().Split('.').First());
+                    var originalNodeName = (port.NodeViewModel.NodeModel is DSFunctionBase) ?
+                                                port.NodeViewModel.NodeModel.CreationName :
+                                                string.Format("{0}, {1}", port.NodeViewModel.NodeModel.GetType().FullName, port.NodeViewModel.NodeModel.GetType().Assembly.GetName().Name) ;
+                    var searchElementInfo = ViewModel.IsDisplayingMLRecommendation ?
+                        selectedNodeName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + originalNodeName + " " +
+                        searchElement.Model.AutoCompletionNodeElementInfo.PortToConnect.ToString() + " " +
+                        searchElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore.ToString() + " "  +  ViewModel.ServiceVersion
+                        : selectedNodeName;
+
                     Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Select,
                     Dynamo.Logging.Categories.NodeAutoCompleteOperations,
-                    searchElement.FullName);
+                    searchElementInfo);
                 }
+            }
+        }        
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (!(sender is FrameworkElement fromSender)) return;
+            currentX = e.GetPosition(MembersListBox).X;
+
+            DisplayOrHideConfidenceTooltip(sender);
+        }
+
+        private void DisplayOrHideConfidenceTooltip(object sender)
+        {
+            currentListBoxItem = sender as ListBoxItem;
+            if (currentX <= 35)
+            {
+                confidenceToolTip.PlacementTarget = currentListBoxItem;
+                confidenceToolTip.Placement = PlacementMode.Bottom;
+                confidenceToolTip.IsOpen = true;
+            }
+            else
+            {
+                confidenceToolTip.IsOpen = false;
+                confidenceToolTip.PlacementTarget = null;
             }
         }
 
         private void OnMouseEnter(object sender, MouseEventArgs e)
         {
-            FrameworkElement fromSender = sender as FrameworkElement;
-            if (fromSender == null) return;
+            if (!(sender is FrameworkElement fromSender)) return;
 
+            HighlightedItem.IsSelected = false;
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
+            confidenceToolTip.IsOpen = false;
+
+            DisplayOrHideConfidenceTooltip(sender);
+
+            dynamic currentNodeSearchElement = currentListBoxItem.DataContext;
+            var scoreFormatter = new Dynamo.Controls.ConfidenceScoreFormattingConverter();
+            var score = scoreFormatter.Convert(currentNodeSearchElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore, null, null, CultureInfo.CurrentCulture);
+            confidenceScoreTitle.Text = $"{Res.ConfidenceToolTipTitle}: {score}%";
+        }
+
+        private void onCloseConfidenceToolTip(object sender, RoutedEventArgs e)
+        {
+            confidenceToolTip.IsOpen = false;
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
+            if (!(sender is FrameworkElement)) return;
+
+            HighlightedItem.IsSelected = true;
             toolTipPopup.DataContext = null;
             toolTipPopup.IsOpen = false;
+        }
+
+        private void onConfidenceToolTipLearnMoreClicked(object sender, MouseButtonEventArgs e)
+        {
+            confidenceToolTip.IsOpen = false;
+            ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Res.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
         private void OnNodeAutoCompleteSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -142,6 +214,19 @@ namespace Dynamo.UI.Controls
                 SearchTextBox.Focus();
                 ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
+
+            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
+        }
+
+        //Removes nodeautocomplete menu when the associated parent node is removed.
+        private void OnParentNodeRemoved(NodeModel node)
+        {
+            NodeModel parent_node = ViewModel.PortViewModel?.PortModel.Owner;
+            if (node == parent_node)
+            {
+                OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+            }
         }
 
         private void OnMembersListBoxUpdated(object sender, DataTransferEventArgs e)
@@ -280,12 +365,66 @@ namespace Dynamo.UI.Controls
 
         internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
         {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            CloseAutoCompletion();
         }
 
         internal void CloseAutoCompletion()
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            ViewModel?.OnNodeAutoCompleteWindowClosed();
+        }
+
+        /// <summary>
+        /// A common method to handle the suggestions Button being clicked
+        /// </summary>
+        private void DisplaySuggestions(object sender, RoutedEventArgs e)
+        {
+            var cm = this.SuggestionsContextMenu;
+            cm.PlacementTarget = sender as Button;
+            cm.IsOpen = true;
+        }
+
+        private void ShowLowConfidenceResults(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ShowLowConfidenceResults();
+            //Tracking Analytics when the Low Confidence combobox (located in the Autocomplete popup)  is clicked
+            Analytics.TrackEvent(
+                    Actions.Expanded,
+                    Categories.NodeAutoCompleteOperations,
+                    "LowConfidenceResults",
+                    ViewModel.dynamoViewModel.Model.PreferenceSettings.MLRecommendationConfidenceLevel);
+        }
+
+        private void OnSuggestion_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem selectedSuggestion = sender as MenuItem;
+            if (selectedSuggestion.Name.Contains(nameof(Models.NodeAutocompleteSuggestion.MLRecommendation)))
+            {
+                if(ViewModel.IsMLAutocompleteTOUApproved)
+                {
+                    ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
+                    Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
+                }
+                else
+                {
+                    ViewModel.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
+                    // Do nothing for now, do not report analytics since the switch did not happen
+                }
+            }
+            else
+            {
+                ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
+                Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
+            }
+            ViewModel.PopulateAutoCompleteCandidates();
+        }
+
+        /// <summary>
+        /// Dispose the control
+        /// </summary>
+        public void Dispose()
+        {
+            NodeAutoCompleteSearchControl_Unloaded(this,null);
         }
     }
 }

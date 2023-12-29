@@ -16,7 +16,7 @@ namespace Dynamo.Linting.Rules
     {
         /// <summary>
         /// Method to call when this rule needs to be evaluated.
-        /// This will use <see cref="EvaluateFunction(WorkspaceModel, NodeModel)"/> to evaluate the rule.       
+        /// This will use <see cref="EvaluateFunction"/> to evaluate the rule.       
         /// </summary>
         /// <param name="workspaceModel"></param>
         /// <param name="changedEvent"></param>

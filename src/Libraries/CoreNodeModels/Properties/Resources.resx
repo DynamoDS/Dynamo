@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AndDescription" xml:space="preserve">
-    <value>Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.</value>
+    <value>Boolean AND: Returns True only if all of the inputs are true. If any is false, returns False.</value>
     <comment>Description for And</comment>
   </data>
   <data name="ApplyPortDataFuncArgToolTip" xml:space="preserve">
@@ -128,7 +128,7 @@
     <value>Function to apply.</value>
   </data>
   <data name="BooleanDescription" xml:space="preserve">
-    <value>Selection between a true and false.</value>
+    <value>Enables selection between True and False</value>
     <comment>Description for Boolean</comment>
   </data>
   <data name="BooleanSelectorSearchTags" xml:space="preserve">
@@ -136,7 +136,7 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ColorRangeDescription" xml:space="preserve">
-    <value>Get a color given a color range.</value>
+    <value>Returns a color given a color range</value>
     <comment>Description for Color Range</comment>
   </data>
   <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
@@ -173,14 +173,14 @@
     <value>A list (type: var[]..[])</value>
   </data>
   <data name="DirectoryFromPathDescription" xml:space="preserve">
-    <value>Creates a directory object from a path.</value>
+    <value>Creates a directory object from the given path</value>
     <comment>Description for Directory.FromPath</comment>
   </data>
   <data name="DirectoryNodeDescription" xml:space="preserve">
-    <value>Allows you to select a directory on the system to get its path</value>
+    <value>Allows you to select a directory on the system and returns its path</value>
   </data>
   <data name="DirectoryObjectNodeDescription" xml:space="preserve">
-    <value>Creates a directory object from a path</value>
+    <value>Creates a directory object from the given path</value>
   </data>
   <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
     <value>Path to the directory (type: string)</value>
@@ -189,31 +189,31 @@
     <value>Directory object.</value>
   </data>
   <data name="DirectoryPathDescription" xml:space="preserve">
-    <value>Allows you to select a directory on the system to get its path.</value>
+    <value>Allows you to select a directory on the system and returns its path</value>
     <comment>Description for Directory Path</comment>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
     <value>Creates a number.</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
-    <value>A slider that produces double values.</value>
+    <value>Produces numeric values</value>
     <comment>Description for Double Slider</comment>
   </data>
   <data name="DoubleSliderNodeDescription" xml:space="preserve">
-    <value>A slider that produces numeric values.</value>
+    <value>Produces numeric values</value>
   </data>
   <data name="DropDownPortDataResultToolTip" xml:space="preserve">
     <value>The selected {0}</value>
   </data>
   <data name="FileFromPathDescription" xml:space="preserve">
-    <value>Creates a file object from a path.</value>
+    <value>Creates a file object from the given path</value>
     <comment>Description for File.FromPath</comment>
   </data>
   <data name="FilenameNodeDescription" xml:space="preserve">
     <value>Allows you to select a file on the system to get its filename</value>
   </data>
   <data name="FileObjectNodeDescription" xml:space="preserve">
-    <value>Creates a file object from a path.</value>
+    <value>Creates a file object from the given path</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
     <value>Path to the file as string.</value>
@@ -222,7 +222,7 @@
     <value>File object</value>
   </data>
   <data name="FilePathDescription" xml:space="preserve">
-    <value>Allows you to select a file on the system to get its file path.</value>
+    <value>Allows you to select a file on the system and returns its file path</value>
     <comment>Description for File Path</comment>
   </data>
   <data name="FilterPortDataConditionToolTip" xml:space="preserve">
@@ -238,7 +238,7 @@
     <value>List containing all elements "x" where condition(x) = False</value>
   </data>
   <data name="FormulaDescription" xml:space="preserve">
-    <value>Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/</value>
+    <value>Evaluates mathematical formulas using NCalc</value>
     <comment>Description for Formula</comment>
   </data>
   <data name="FormulaPortDataResultToolTip" xml:space="preserve">
@@ -265,11 +265,11 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FunctionApplyDescription" xml:space="preserve">
-    <value>Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point.</value>
+    <value>Returns the result of a function with given arguments</value>
     <comment>Description for Function.Apply</comment>
   </data>
   <data name="FunctionComposeDescription" xml:space="preserve">
-    <value>Returns a single function from multiple functions. Ex: the modulus and divide functions are composed into a single function to apply to a list.</value>
+    <value>Returns a single function from multiple functions</value>
     <comment>Description for Function.Compose</comment>
   </data>
   <data name="IfDescription" xml:space="preserve">
@@ -277,18 +277,18 @@
     <comment>Description for If</comment>
   </data>
   <data name="IntegerSliderDescription" xml:space="preserve">
-    <value>A slider that produces integer values.</value>
+    <value>Produces integer values</value>
     <comment>Description for Integer Slider</comment>
   </data>
   <data name="IntegerSliderNodeDescription" xml:space="preserve">
-    <value>A slider that produces integer values.</value>
+    <value>Produces integer values</value>
   </data>
   <data name="LegacyNodeDescription" xml:space="preserve">
     <value>This is an obsolete node</value>
     <comment>Description for Legacy Node</comment>
   </data>
   <data name="ListCartesianProductDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair in the cartesian product of two sequences</value>
+    <value>Applies a combinator to each pair in the Cartesian product of two sequences</value>
     <comment>Description for List.CartesianProduct</comment>
   </data>
   <data name="ListCartesianProductSearchTags" xml:space="preserve">
@@ -304,11 +304,11 @@
     <comment>List.Combine search tags</comment>
   </data>
   <data name="ListCreateDescription" xml:space="preserve">
-    <value>Makes a new list out of the given inputs</value>
+    <value>Makes a new list from the given inputs</value>
     <comment>Description for List.Create</comment>
   </data>
   <data name="ListFilterDescription" xml:space="preserve">
-    <value>Filters a sequence by a given condition such that for an arbitrary element "x," condition(x) = True or False.</value>
+    <value>Filters items on a list in or out based on the given condition. If the condition is true, items are filtered in, and if the condition is false, items are filtered out.</value>
     <comment>Description for List.Filter</comment>
   </data>
   <data name="ListFilterSearchTags" xml:space="preserve">
@@ -348,7 +348,7 @@
     <comment>search tags for List.Map</comment>
   </data>
   <data name="ListReduceDescription" xml:space="preserve">
-    <value>Reduces a list into a new value by combining each element with an accumulated result.</value>
+    <value>Reduces a list into a new value by combining each element with an accumulated result</value>
     <comment>Description for List.Reduce</comment>
   </data>
   <data name="ListReduceSearchTags" xml:space="preserve">
@@ -373,7 +373,7 @@
     <value>Mapped list of type: var[]..[]</value>
   </data>
   <data name="RangeDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers or letters in the specified range.</value>
+    <value>Creates a sequence of numbers or letters in the given range</value>
     <comment>Description for Number Range</comment>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
@@ -381,7 +381,7 @@
     <comment>Description for Number Sequence</comment>
   </data>
   <data name="OrDescription" xml:space="preserve">
-    <value>Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.</value>
+    <value>Boolean OR: Returns True if any of the inputs are true. If none are true, returns False.</value>
     <comment>Description for Or</comment>
   </data>
   <data name="PortDataFalseBlockToolTip" xml:space="preserve">
@@ -418,7 +418,7 @@
     <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
   </data>
   <data name="ReplaceByConditionDescription" xml:space="preserve">
-    <value>Replaces an object with a given substitute if the original object satisfies a given condition.</value>
+    <value>Replaces an item with the given substitute if the original item satisfies the given condition</value>
     <comment>Description for ReplaceByCondition</comment>
   </data>
   <data name="ReplaceByConditionSearchTags" xml:space="preserve">
@@ -537,7 +537,7 @@
     <value>A converted numeric value.</value>
   </data>
   <data name="DateTimeDescription" xml:space="preserve">
-    <value>Create a DateTime object from a formatted date and time string. Date and time must be of the format "April 12, 1977 12:00 PM"</value>
+    <value>Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format "MMMM dd, yyyy h:mm tt", e.g. "April 02, 1977 12:00 PM"</value>
   </data>
   <data name="ColorRangeSearchTags" xml:space="preserve">
     <value>colorrange;</value>
@@ -591,7 +591,7 @@
     <value>color</value>
   </data>
   <data name="EqualsWithToleranceDescription" xml:space="preserve">
-    <value>Compares if two numbers are equal given a certain tolerance.</value>
+    <value>Returns True if x and y are equal given a certain tolerance</value>
     <comment>Description for Equals with tolerance node</comment>
   </data>
   <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
@@ -631,5 +631,37 @@ Default value: {0}</value>
   </data>
   <data name="CustomSelectionOutputDescription" xml:space="preserve">
     <value>Selected value</value>
+  </data>
+  <data name="TooltipTextAction" xml:space="preserve">
+    <value>Nodes that execute an action</value>
+  </data>
+  <data name="TooltipTextCreate" xml:space="preserve">
+    <value>Nodes that create data</value>
+  </data>
+  <data name="TooltipTextQuery" xml:space="preserve">
+    <value>Nodes that query data</value>
+  </data>
+  <data name="RememberDescription" xml:space="preserve">
+    <value>Store data passing through this node to the Dynamo file. Return the stored data if the input is null.</value>
+  </data>
+  <data name="RememberInputToolTip" xml:space="preserve">
+    <value>Data to sample and store in the file.</value>
+  </data>
+  <data name="RememberOuputToolTip" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="GateDescription" xml:space="preserve">
+    <value>Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.
+
+In Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit</value>
+  </data>
+  <data name="GateInPortToolTip" xml:space="preserve">
+    <value>Data to pass to a downstream node with gated controls.</value>
+  </data>
+  <data name="GateOutPortToolTip" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="GateSearchTags" xml:space="preserve">
+    <value>gate;stop;data</value>
   </data>
 </root>

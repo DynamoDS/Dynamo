@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -300,14 +300,14 @@ namespace Dynamo.Tests
             Assert.Throws<ArgumentNullException>(() =>
             {
                 // Test method call without a valid XmlDocument.
-                Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(null);
+                Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(null, out _);
             });
 
             Assert.Throws<ArgumentException>(() =>
             {
                 // Test XmlDocument without a document element.
                 XmlDocument document = new XmlDocument();
-                Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(document);
+                Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(document, out _);
             });
         }
 
@@ -321,7 +321,7 @@ namespace Dynamo.Tests
             {
                 XmlDocument document = new XmlDocument();
                 document.AppendChild(document.CreateElement("RootElement"));
-                outputs = Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(document);
+                outputs = Graph.Nodes.Utilities.LoadTraceDataFromXmlDocument(document, out _);
             });
 
             Assert.IsNotNull(outputs);
@@ -832,8 +832,10 @@ namespace Dynamo.Tests
         public void GenerateSnapshotNameTest()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
-            var snapshotName = PathHelper.GetScreenCaptureNameFromPath(examplePath);
+            var snapshotName = PathHelper.GetScreenCaptureNameFromPath(examplePath, true);
             Assert.AreEqual(snapshotName, "Add_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now));
+            var snapshotNameWithoutTimestamp = PathHelper.GetScreenCaptureNameFromPath(examplePath, false);
+            Assert.AreEqual(snapshotNameWithoutTimestamp, "Add");
         }
     }
 }

@@ -1,0 +1,245 @@
+{
+  "Uuid": "52110831-593d-4fd9-a6d1-f140fd89e2f7",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "pinned groups simple",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "f5f3698cf7dc405e998fbfaa46dde290",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "4e049cd065864402b53cb94831d0d9ff",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "31ecfa3826b447b58ef9da753b506412",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "x;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "7636c3b513dd410e8c922959f852ed14",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "2d612be32257494daf57727b2b4fd85e",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f85e7b48ece74f87a4a3b9ac5a124bbd",
+          "Name": "",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "x = y;"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "31ecfa3826b447b58ef9da753b506412",
+      "End": "2d612be32257494daf57727b2b4fd85e",
+      "Id": "496d8b5344c6449c8762423d6b21c555",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.18",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.18.0.2986",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [
+      {
+        "Left": 446.66666666666663,
+        "Top": 270.0001,
+        "IsHidden": false,
+        "ConnectorGuid": "496d8b53-44c6-449c-8762-423d6b21c555"
+      }
+    ],
+    "NodeViews": [
+      {
+        "Id": "f5f3698cf7dc405e998fbfaa46dde290",
+        "Name": "nested node",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 92.370245501596173,
+        "Y": 207.45313531945578
+      },
+      {
+        "Id": "7636c3b513dd410e8c922959f852ed14",
+        "Name": "root node",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 724.43103352560468,
+        "Y": 441.9194789720317
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "9d272dab44b24f9e8586362d9e809ecb",
+        "Title": "Nested group",
+        "DescriptionText": "<Double click here to edit group description>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "f5f3698cf7dc405e998fbfaa46dde290"
+        ],
+        "HasNestedGroups": false,
+        "Left": 82.370245501596173,
+        "Top": 82.11980198612244,
+        "Width": 185.33333333333337,
+        "Height": 257.66666666666663,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 207.45313531945578,
+        "InitialHeight": 162.33333333333334,
+        "TextblockHeight": 115.33333333333334,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "cab1676718344715a98796af4355cef6",
+        "Title": "Root group",
+        "DescriptionText": "<Double click here to edit group description>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "7636c3b513dd410e8c922959f852ed14",
+          "9d272dab44b24f9e8586362d9e809ecb",
+          "54f04e9cff7d47f3b7e84dbf09f89c9a"
+        ],
+        "HasNestedGroups": true,
+        "Left": 72.370245501596173,
+        "Top": 8.7864686527891038,
+        "Width": 823.39412135734187,
+        "Height": 565.46634365257592,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 82.11980198612244,
+        "InitialHeight": 662.27581038265168,
+        "TextblockHeight": 63.333333333333336,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "b5ebc382d67a46748daaca25f9fc16ff",
+        "Title": "Unpinned note",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 99.4115405817468,
+        "Top": -209.99587727481452,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "54f04e9cff7d47f3b7e84dbf09f89c9a",
+        "Title": "Pinned note",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 761.0977001922713,
+        "Top": 391.25281230536507,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "7636c3b513dd410e8c922959f852ed14"
+      }
+    ],
+    "X": 135.71234475519236,
+    "Y": 301.06851218357639,
+    "Zoom": 0.565293988808902
+  }
+}

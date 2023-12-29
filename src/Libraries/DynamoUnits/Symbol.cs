@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Autodesk.DesignScript.Runtime;
+using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
 {
@@ -10,10 +11,10 @@ namespace DynamoUnits
     /// </summary>
     public class Symbol
     {
-        internal readonly ForgeUnitsCLR.Symbol forgeSymbol;
-        internal readonly ForgeUnitsCLR.PrefixOrSuffix forgePrefixOrSuffix;
+        internal readonly ForgeUnits.Symbol forgeSymbol;
+        internal readonly ForgeUnits.PrefixOrSuffix forgePrefixOrSuffix;
 
-        internal Symbol(ForgeUnitsCLR.Symbol symbol)
+        internal Symbol(ForgeUnits.Symbol symbol)
         {
             this.forgeSymbol = symbol ?? throw new ArgumentNullException();
             this.forgePrefixOrSuffix = symbol.getPrefixOrSuffix();
@@ -54,7 +55,7 @@ namespace DynamoUnits
             {
                 return new Symbol(Utilities.ForgeUnitsEngine.getSymbol(typeId));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //The exact match for the Forge TypeID failed.  Test for a fallback.  This can be either earlier or later version number.
                 if (Utilities.TryParseTypeId(typeId, out string typeName, out Version version))

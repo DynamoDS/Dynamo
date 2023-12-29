@@ -1,4 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
@@ -11,18 +14,18 @@
     <RootNamespace>DynamoMSOfficeTests</RootNamespace>
     <AssemblyName>DynamoMSOfficeTests</AssemblyName>
   </PropertyGroup>
+    <ItemGroup> 
+        <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">
+            <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
+            <Name>DSOffice</Name>
+            <Private>False</Private>
+        </ProjectReference>
+    </ItemGroup>
   <ItemGroup>
-	  <PackageReference Include="NUnit" Version="2.6.3" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
-      <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
-      <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj" />
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
@@ -38,29 +41,15 @@
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">
-      <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
-      <Name>DSOffice</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
-      <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>
-      <Name>DynamoCoreTests</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj">
-      <Project>{7dd8077a-201e-4c56-96c5-3c901a51bdf3}</Project>
-      <Name>DynamoCoreWpfTests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj">
-      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
-      <Name>SystemTestServices</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj" />
+    <ProjectReference Include="..\..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj" />
+    <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj" />
+    <ProjectReference Include="..\TestServices\TestServices.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

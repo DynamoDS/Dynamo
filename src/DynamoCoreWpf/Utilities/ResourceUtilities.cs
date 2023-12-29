@@ -1,4 +1,4 @@
-﻿using Dynamo.Logging;
+using Dynamo.Logging;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -44,11 +45,185 @@ namespace Dynamo.Utilities
             var dpiScale = getDPIScale();
             document.body.style.zoom = dpiScale;
 
-            var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
+            var widthPercentage = ((100.0 / dpiScale)-2).toString() + '%';
             document.body.style.width = widthPercentage;
         }
         adaptDPI() 
         </script>";
+
+        public const string IMGNAVIGATIONSCRIPT = @"
+            <!-- Set image div container width and height -->
+            <script type='text/javascript'>
+                maintainContainerRatio();
+
+                function maintainContainerRatio()
+                {
+                    var container_ele = document.getElementById('img--container');
+
+                    var img_width = document.getElementById('drag--img').naturalWidth;
+                    var img_height = document.getElementById('drag--img').naturalHeight;
+
+                    var ratio = img_width / img_height;
+                    var calculated_width = document.getElementById('drag--img').width;
+
+                    var calculated_height = calculated_width / ratio;
+                    container_ele.style.height = calculated_height + 'px';
+                }
+
+                window.onresize = maintainContainerRatio;
+        </script>
+
+        <!-- Adds zoom to image container -->
+        <script type = 'text/javascript' >
+
+            var img_ele = null;
+            var scale = 1.0;
+            var increment = 0.1;
+
+            const initial = { x: 0, y: 0 };
+            const offset = { x: 0, y: 0 };
+
+            function reset_pan()
+            {
+                initial.x = initial.y = 0;
+                offset.x = offset.y = 0;
+            }
+
+            function insert(ev){
+                ev.preventDefault();
+                document.getElementById('insert').removeEventListener('click', insert);
+                let message = 'insert';
+                window.chrome.webview.postMessage(message);
+                document.getElementById('insert')?.addEventListener('click', insert);
+            }
+
+            function zoom(zoomtype)
+            {
+                img_ele = document.getElementById('drag--img');
+
+                if (zoomtype === 'out')
+                {
+                    if (scale <= 1.0) return;
+                    scale -= increment;
+                }
+                else
+                {
+                    scale += increment;
+                }
+
+                img_ele.style.transform = `scale(${ scale}, ${ scale})`;
+
+                reset_pan();
+            }
+
+            function fit(){
+                if(scale === 1.0 || !img_ele) return;
+                scale = 1.0;
+                img_ele.style.transform = `scale(${scale}, ${scale})`;
+            }
+
+            function scroll(ev){
+                ev.preventDefault();
+                if(ev.deltaY < 0) zoom('in');
+                else zoom('out');
+            }
+
+            // check against the future frame so you don't get stuck
+            function check_edges(el, x, y)
+            {
+                const container_rect = el.getBoundingClientRect();
+                const image_rect = el.firstElementChild.getBoundingClientRect();
+
+                if (image_rect.top > container_rect.top - y)
+                {
+                    y = 0;
+                }
+                if (image_rect.left > container_rect.left - x)
+                {
+                    x = 0;
+                }
+                if (image_rect.right < container_rect.right - x)
+                {
+                    x = 0;
+                }
+                if (image_rect.bottom < container_rect.bottom - y)
+                {
+                    y = 0;
+                }
+
+                return { delta_x: x, delta_y: y};
+            }
+
+            function expand_collapse(ev){
+                let message = 'expandcollapse-' + this.innerHTML;
+                window.chrome.webview.postMessage(message);
+            }
+
+            const pannable = (el) => {
+                const img_canvas = el.firstElementChild; // the image
+
+                let is_pan = false;
+
+                // get the click location relative to the div and current image scale
+                const getXY = ({ clientX, clientY}) => {
+                    const { left, top} = el.getBoundingClientRect(); // the left/top of the container div
+                    return { x: (clientX - left), y: (clientY - top) }
+                }
+
+                const pan_start = (ev) => {
+                    if (scale === 1) return; // do not start panning if not zoomed in
+                    ev.preventDefault();
+                    is_pan = true;
+                    const { x, y} = getXY(ev);
+                    initial.x = x - offset.x;
+                    initial.y = y - offset.y;
+                }
+            
+                const pan_move = (ev) => {
+                    if (!is_pan) return;
+
+                    const { x, y} = getXY(ev);
+
+                    var d_x = (x - initial.x);
+                    var d_y = (y - initial.y);
+
+                    const { delta_x, delta_y} = check_edges(el, d_x - offset.x, d_y - offset.y);
+
+                    img_canvas.style.transform = `translate(${ offset.x + delta_x}px, ${ offset.y + delta_y}px) scale(${ scale}, ${ scale})`;
+
+                    offset.x += (delta_x);
+                    offset.y += (delta_y);
+                }
+
+                const pan_end = (ev) => {
+                    is_pan = false;
+                };
+
+                el.addEventListener('mousedown', pan_start);
+                document.addEventListener('mousemove', pan_move);
+                document.addEventListener('mouseup', pan_end);
+            }
+
+            document.getElementById('zoomout')?.addEventListener('click', function() {
+                zoom('out');
+            });
+            document.getElementById('zoomin')?.addEventListener('click', function() {
+                zoom('in');
+            });
+            document.getElementById('zoomfit')?.addEventListener('click', function() {
+              fit();
+            });
+            document.getElementById('insert')?.addEventListener('click', insert);
+            document.getElementById('img--container')?.addEventListener('wheel', scroll);
+            document.querySelectorAll('.container').forEach(pannable);
+
+            const crumbs = document.querySelectorAll('.breadcrumb');
+
+            for (let i = 0; i < crumbs.length; i++) {
+                crumbs[i].addEventListener('click', expand_collapse);
+            }
+        </script>
+        ";
 
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
@@ -174,6 +349,7 @@ namespace Dynamo.Utilities
         /// the culture name before the file extension. Example: NoContent.html => NoContent.de-DE.html
         /// </summary>
         /// <param name="name">Resource name</param>
+        /// <param name="culture"></param>
         /// <returns>Resource name with the culture name appended before the extension</returns>
         internal static string GetResourceNameWithCultureName(string name, CultureInfo culture)
         {
@@ -207,6 +383,7 @@ namespace Dynamo.Utilities
         /// with the UI culture is found, it returns the provided main/invariant assembly.
         /// </summary>
         /// <param name="assembly">The main assembly</param>
+        /// <param name="name"></param>
         /// <returns>The resource assembly</returns>
         private static Assembly GetResourceAssembly(Assembly assembly, string name)
         {
@@ -291,15 +468,33 @@ namespace Dynamo.Utilities
         /// <param name="MainWindow">MainWindow in which the LibraryView is located</param>
         /// <param name="popupInfo">Popup Information about the Step </param>
         /// <param name="parametersInvokeScript">Parameters for the WebBrowser.InvokeScript() function</param>
-        internal static object ExecuteJSFunction(UIElement MainWindow, HostControlInfo popupInfo, object[] parametersInvokeScript)
+        internal static async Task<object> ExecuteJSFunction(UIElement MainWindow, HostControlInfo popupInfo, object[] parametersInvokeScript)
         {
-            const string webBrowserString = "Browser";
-            const string invokeScriptFunction = "InvokeScript";
+            const string invokeScriptFunction = "ExecuteScriptAsync";
             object resultJSHTML = null;
+            Task<string> resutlJS = null;
 
             //Try to find the grid that contains the LibraryView
             var sidebarGrid = (MainWindow as Window).FindName(popupInfo.HostUIElementString) as Grid;
             if (sidebarGrid == null) return null;
+
+            var functionName = parametersInvokeScript[0] as string;
+            object[] functionParameters = parametersInvokeScript[1] as object[];
+            List<string> functionParametersList = new List<string>();
+            foreach(var parameter in functionParameters)
+            {
+                string strParameter = string.Empty;
+                //If we try to use boolVariable.ToString() returns "True" or "False" but the expected parameter in the js function is "true" or "false"
+                if (parameter is bool)
+                    strParameter = parameter.ToString().Equals("True") ? "true" : "false";
+                //The parameter expected in the js method is a string so we need to add the quotes at the beginning and at the end
+                else
+                    strParameter = "\"" + parameter + "\"";
+
+                functionParametersList.Add(strParameter);
+            }
+            //Due that the method WebView2.ExecuteScriptAsync() is expecting just one string parameter, we will need to contatecate the function name and the parameters in parentesis
+            var parametersExecuteScriptString = string.Join(",", functionParametersList);
 
             //We need to iterate every child in the grid due that we need to apply reflection to get the Type and find the LibraryView (a reference to LibraryViewExtensionMSWebBrowser cannot be added).
             foreach (var child in sidebarGrid.Children)
@@ -309,14 +504,70 @@ namespace Dynamo.Utilities
                 {
                     var libraryView = child as UserControl;
                     //get the WebBrowser instance inside the LibraryView
-                    var browser = libraryView.FindName(webBrowserString);
+                    var browser = libraryView.ChildOfType<WebView2>();
                     if (browser == null) return null;
-
                     Type typeBrowser = browser.GetType();
-                    //Due that there are 2 methods with the same name "InvokeScript", then we need to get the one with 2 parameters
-                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 2);
-                    //Invoke the JS method located in library.html
-                    resultJSHTML = methodInvokeScriptInfo.Invoke(browser, parametersInvokeScript);
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 1);
+                    //Due that WebView2.ExecuteScriptAsync() method is async we need to wait until we get a response
+                    resutlJS = (Task<string>)methodInvokeScriptInfo.Invoke(browser, new object[] { functionName + "(" + parametersExecuteScriptString + ")" });
+                    await resutlJS;
+                    var resultProperty = resutlJS.GetType().GetProperty("Result");
+                    resultJSHTML = resultProperty.GetValue(resutlJS);
+                    if (resultJSHTML.ToString().Equals("null"))
+                        resultJSHTML = null;
+                    break;
+                }
+            }
+            return resultJSHTML;
+        }
+
+        internal static async Task<object> ExecuteJSFunction(UIElement MainWindow, object[] parametersInvokeScript)
+        {
+            const string invokeScriptFunction = "ExecuteScriptAsync";
+            object resultJSHTML = null;
+            Task<string> resutlJS = null;
+
+            //Try to find the grid that contains the LibraryView
+            var sidebarGrid = (MainWindow as Window).FindName("sidebarGrid") as Grid;
+            if (sidebarGrid == null) return null;
+
+            var functionName = parametersInvokeScript[0] as string;
+            object[] functionParameters = parametersInvokeScript[1] as object[];
+            List<string> functionParametersList = new List<string>();
+            foreach (var parameter in functionParameters)
+            {
+                string strParameter = string.Empty;
+                //If we try to use boolVariable.ToString() returns "True" or "False" but the expected parameter in the js function is "true" or "false"
+                if (parameter is bool)
+                    strParameter = parameter.ToString().Equals("True") ? "true" : "false";
+                //The parameter expected in the js method is a string so we need to add the quotes at the beginning and at the end
+                else
+                    strParameter = "\"" + parameter + "\"";
+
+                functionParametersList.Add(strParameter);
+            }
+            //Due that the method WebView2.ExecuteScriptAsync() is expecting just one string parameter, we will need to contatecate the function name and the parameters in parentesis
+            var parametersExecuteScriptString = string.Join(",", functionParametersList);
+
+            //We need to iterate every child in the grid due that we need to apply reflection to get the Type and find the LibraryView (a reference to LibraryViewExtensionMSWebBrowser cannot be added).
+            foreach (var child in sidebarGrid.Children)
+            {
+                Type type = child.GetType();
+                if (type.Name.Equals("LibraryView"))
+                {
+                    var libraryView = child as UserControl;
+                    //get the WebBrowser instance inside the LibraryView
+                    var browser = libraryView.ChildOfType<WebView2>();
+                    if (browser == null) return null;
+                    Type typeBrowser = browser.GetType();
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 1);
+                    //Due that WebView2.ExecuteScriptAsync() method is async we need to wait until we get a response
+                    resutlJS = (Task<string>)methodInvokeScriptInfo.Invoke(browser, new object[] { functionName + "(" + parametersExecuteScriptString + ")" });
+                    await resutlJS;
+                    var resultProperty = resutlJS.GetType().GetProperty("Result");
+                    resultJSHTML = resultProperty.GetValue(resutlJS);
+                    if (resultJSHTML.ToString().Equals("null"))
+                        resultJSHTML = null;
                     break;
                 }
             }
@@ -334,24 +585,36 @@ namespace Dynamo.Utilities
         /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
         internal static async void LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
         {
-            var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false);
-
-            bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
-            bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
-
-            if (!string.IsNullOrEmpty(userDataFolder))
+            try
             {
-                //This indicates in which location will be created the WebView2 cache folder
-                webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
-                {
-                    UserDataFolder = userDataFolder
-                };
-            }
+                var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false);
 
-            await webBrowserComponent.EnsureCoreWebView2Async();
-            // Context menu disabled
-            webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            webBrowserComponent.NavigateToString(bodyHtmlPage);
+                bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
+                bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
+
+                if (!string.IsNullOrEmpty(userDataFolder))
+                {
+                    //This indicates in which location will be created the WebView2 cache folder
+                    webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
+                    {
+                        UserDataFolder = userDataFolder
+                    };
+                }
+
+                await webBrowserComponent.EnsureCoreWebView2Async();
+                // Context menu disabled
+                webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                webBrowserComponent.NavigateToString(bodyHtmlPage);
+
+                webBrowserComponent.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                webBrowserComponent.CoreWebView2.Settings.IsPinchZoomEnabled = false;
+            }
+            catch (Exception ex)
+            {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
+            }
         }
 
         /// <summary>

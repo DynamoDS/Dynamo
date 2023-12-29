@@ -1,8 +1,10 @@
-﻿using System;
-using System.Windows;
+using System;
+using System.Windows; 
 using HelixToolkit.Wpf.SharpDX;
-using HelixToolkit.Wpf.SharpDX.Core;
-using HelixToolkit.Wpf.SharpDX.Model.Scene;
+using HelixToolkit.SharpDX.Core;
+using HelixToolkit.SharpDX.Core.Core;
+using HelixToolkit.SharpDX.Core.Model.Scene;
+
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -51,7 +53,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return new DynamoMeshNode();
         }
 
-        [Obsolete("This property will be deprecated and made internal in Dynamo 3.0.")]
+        [Obsolete("This property will be deprecated and made internal in a future version of Dynamo.")]
         public static readonly DependencyProperty RequiresPerVertexColorationProperty =
             DependencyProperty.Register("RequiresPerVertexColoration", typeof(bool), 
                 typeof(GeometryModel3D), new UIPropertyMetadata(false, RequirePerVertexColorationChanged));
@@ -90,9 +92,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return new DynamoGeometryMeshCore();
         }
 
-        protected override IRenderTechnique OnCreateRenderTechnique(IRenderHost host)
+        protected override IRenderTechnique OnCreateRenderTechnique(IEffectsManager effectsManager)
         {
-            return host.EffectsManager[DynamoEffectsManager.DynamoMeshShaderName];
+            return effectsManager[DynamoEffectsManager.DynamoMeshShaderName];
         }
     }
 }

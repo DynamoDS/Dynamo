@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -49,6 +49,7 @@ namespace ProtoCore
             /// Experimental constructor that takes in a core object
             /// Takes a core object to read static data
             /// </summary>
+            /// <param name="core"></param>
             /// <param name="sv"></param>
             public MirrorData(ProtoCore.Core core, StackValue sv)
             {
@@ -59,6 +60,8 @@ namespace ProtoCore
             /// <summary>
             /// Takes a runtime core object to read runtime data
             /// </summary>
+            /// <param name="core"></param>
+            /// <param name="runtimeCore"></param>
             /// <param name="sv"></param>
             public MirrorData(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, StackValue sv)
             {
@@ -67,33 +70,6 @@ namespace ProtoCore
                 svData = sv;
             }
 
-
-            /// <summary>
-            ///  Retrieves list of IGraphicItem to get the graphic 
-            ///  representation/preview of this Data.
-            /// </summary>
-            /// <returns>List of IGraphicItem</returns>
-            /// <remarks>This method is marked as obsolete because it's possible
-            /// to get the CLR object from this mirror data and client can handle
-            /// any query to IGraphicItem on the CLR object directly.</remarks>
-            [System.Obsolete("Query IGraphicItem from Data property of this class")]
-            public List<IGraphicItem> GetGraphicsItems()
-            {
-                List<DSASM.StackValue> values = new List<DSASM.StackValue>();
-                GetPointersRecursively(svData, values);
-
-                List<IGraphicItem> graphicItems = new List<IGraphicItem>();
-                foreach (var sv in values)
-                {
-                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.runtimeCore);
-                    if (items != null && (items.Count > 0))
-                        graphicItems.AddRange(items);
-                }
-                if (graphicItems.Count > 0)
-                    return graphicItems;
-
-                return null;
-            }
 
             /// <summary>
             /// Recursively finds all Pointers from the stack value
@@ -184,7 +160,7 @@ namespace ProtoCore
             /// it returns null.
             /// </summary>
             /// <param name="sv">StackValue</param>
-            /// <param name="core">ProtoCore.Core</param>
+            /// <param name="runtimeCore">ProtoCore.Core</param>
             /// <returns>System.Object</returns>
             internal static object GetData(StackValue sv, RuntimeCore runtimeCore)
             {
@@ -208,6 +184,8 @@ namespace ProtoCore
                 return null;
             }
 
+            internal static string PrecisionFormat { get; set; } = "f3";
+
             /// <summary>
             /// Returns string representation of data
             /// </summary>
@@ -219,20 +197,30 @@ namespace ProtoCore
                     {
                         return "null";
                     }
-                    else if (Data is bool)
+                    if (Data is bool)
                     {
                         return Data.ToString().ToLower();
                     }
-                    else if (Data is IFormattable)
+                    if (Data is IFormattable)
                     {
                         // Object.ToString() by default will use the current 
                         // culture to do formatting. For example, Double.ToString()
                         // https://msdn.microsoft.com/en-us/library/3hfd35ad(v=vs.110).aspx
                         // We should always use invariant culture format for formattable 
                         // object.
+
+                        //!!!!carefully consider the consequences of this change before uncommenting.
+                        //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
+                        //if (Data is double)
+                        //{
+                        //    return (Data as IFormattable).ToString(PrecisionFormat, CultureInfo.InvariantCulture);
+                        //}
+                        //else
+                        //{
                         return (Data as IFormattable).ToString(null, CultureInfo.InvariantCulture);
+                        //}
                     }
-                    else
+                    
                     {
                         return Data.ToString();
                     }

@@ -1,0 +1,326 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.MoveFile_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "",
+      "InputValue": "No file selected.",
+      "NodeType": "ExtensionNode",
+      "Id": "4fb5ef295abc494e8e7040343c673a8e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ffb3cdcae92f45e8afda60ba7622c512",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.MoveFile@string,string,bool",
+      "Id": "b0b47b60addc4ce2848e441bae46c4e1",
+      "Inputs": [
+        {
+          "Id": "252df16a408c48c8a3a9bc3a3e92b95a",
+          "Name": "path",
+          "Description": "String representation of existing path\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f4a0ed8639564bcca857867770398a9f",
+          "Name": "newPath",
+          "Description": "String representation of new path\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c88c2d74a91e455f9917e4b68af8cb1e",
+          "Name": "overwrite",
+          "Description": "Toggle to overwrite existing files\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a30b3d1dc1064b24a920d3bec65fb737",
+          "Name": "void",
+          "Description": "Node performs a task, doesn’t produce an output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Moves a specified file to a new location\n\nFileSystem.MoveFile (path: string, newPath: string, overwrite: bool = false): void"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.FileName@string,bool",
+      "Id": "192c29011f464bd88d82e17cb43d64e4",
+      "Inputs": [
+        {
+          "Id": "48278a73a3b143b5a437cc2e56e1548c",
+          "Name": "path",
+          "Description": "Path to get the file name of\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "837567de6b6a4f96b6d2ce107d4aeaf7",
+          "Name": "withExtension",
+          "Description": "Toggle to include extension in result\n\nbool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "50266ce1f6c944dcbe7defe830ef4a7e",
+          "Name": "string",
+          "Description": "File name from file path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the file name of a file path.\n\nFileSystem.FileName (path: string, withExtension: bool = true): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "",
+      "InputValue": "No file selected.",
+      "NodeType": "ExtensionNode",
+      "Id": "1356354744dd438c8618aa4e673fdf23",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "eb28c9d6299d448197b7baa82b385f4b",
+          "Name": "",
+          "Description": "Directory path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a directory on the system and returns its path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
+      "FunctionSignature": "DSCore.IO.FileSystem.CombinePath@string[]",
+      "FunctionType": "VariableArgument",
+      "NodeType": "FunctionNode",
+      "Id": "1fc56a3c9a3b48379f8a404bbab739a9",
+      "Inputs": [
+        {
+          "Id": "d42150b7619e4b99b701200bd7a748ed",
+          "Name": "string0",
+          "Description": "Strings to combine into a path\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e8a972c0fddd48dfb0e0df9d8f70febb",
+          "Name": "string1",
+          "Description": "string[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "02eba8acacc145db8d04b6d3f79dc95c",
+          "Name": "string",
+          "Description": "Combined file path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Combines multiple strings into a single file path.\n\nFileSystem.CombinePath (strings: string[]): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ffb3cdcae92f45e8afda60ba7622c512",
+      "End": "252df16a408c48c8a3a9bc3a3e92b95a",
+      "Id": "eb13bf2142b34d12817a1dd17fe2fb61",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ffb3cdcae92f45e8afda60ba7622c512",
+      "End": "48278a73a3b143b5a437cc2e56e1548c",
+      "Id": "8ca26df502cc4fe78f280ea6c43c7c64",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "50266ce1f6c944dcbe7defe830ef4a7e",
+      "End": "e8a972c0fddd48dfb0e0df9d8f70febb",
+      "Id": "08f1ce7936ac46dca7ce81f73eab3180",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "eb28c9d6299d448197b7baa82b385f4b",
+      "End": "d42150b7619e4b99b701200bd7a748ed",
+      "Id": "9d2f3fd31b214b68b74a45be9a5f27de",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "02eba8acacc145db8d04b6d3f79dc95c",
+      "End": "f4a0ed8639564bcca857867770398a9f",
+      "Id": "80af20f932844259a64f40908b22afcc",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "4fb5ef295abc494e8e7040343c673a8e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3023.0659237220225,
+        "Y": 4022.6265422680481
+      },
+      {
+        "Name": "FileSystem.MoveFile",
+        "ShowGeometry": true,
+        "Id": "b0b47b60addc4ce2848e441bae46c4e1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4022.8404377198376,
+        "Y": 4016.932244913291
+      },
+      {
+        "Name": "FileSystem.FileName",
+        "ShowGeometry": true,
+        "Id": "192c29011f464bd88d82e17cb43d64e4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3307.8739330841013,
+        "Y": 4265.9781971656648
+      },
+      {
+        "Name": "Directory Path",
+        "ShowGeometry": true,
+        "Id": "1356354744dd438c8618aa4e673fdf23",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3307.8739330841013,
+        "Y": 4107.9781971656648
+      },
+      {
+        "Name": "FileSystem.CombinePath",
+        "ShowGeometry": true,
+        "Id": "1fc56a3c9a3b48379f8a404bbab739a9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3654.2739330841014,
+        "Y": 4169.9781971656648
+      }
+    ],
+    "Annotations": [],
+    "X": -2027.5228954148579,
+    "Y": -2038.3981658085249,
+    "Zoom": 0.68644422057135079
+  }
+}

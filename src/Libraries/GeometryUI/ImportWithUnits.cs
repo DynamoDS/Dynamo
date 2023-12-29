@@ -73,7 +73,7 @@ namespace GeometryUI
     [NodeCategory(BuiltinNodeCategories.GEOMETRY)]
     [NodeName("Geometry.DeserializeFromSABWithUnits")]
     [InPortTypes(new string[] { "byte[]", "DynamoUnits.Unit" })]
-    [InPortNames(new[] { "file|filePath", "dynamoUnit" })]
+    [InPortNames(new[] { "buffer", "dynamoUnit" })]
     [InPortDescriptions(typeof(Properties.Resources), new[] { "ImportSABByteArrayDesc", "ImportSATDynamoUnitDesc" })]
     [NodeDescription("ImportToSABUnitsDesc", typeof(Properties.Resources))]
     [OutPortTypes("Geometry[]")]

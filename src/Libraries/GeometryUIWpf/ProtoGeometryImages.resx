@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -731,7 +731,7 @@
   <data name="Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAABoFSURBVHhe7Z15d1RV1sb9CHwE/mrFEZsGxKG7nEEQ
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAABoDSURBVHhe7Z15d1RV1sb9CHwE/mrFEZsGxKG7nEEQ
         IziAIyriDEFEURwCimIAwzzIkDCDgBG727YdSKJCIw6ReZQA2u/7/mU+wnmf377nXE5VKgOhEgpWnbXO
         oupU5dS9+zn7efbe597LRaVWaqVWaqVWaqVWaqVWaqVWaqVWhO2PP/7ooZ6h+yFreu9C90PWzmRcr5n3
         nI/79/Qe/ivF03RQjf4g0xOghbGzGdfrszKcHz7r8ag3+q8UT4sP0A9ZK8S4Xnerof1wi/G4+68UT9NB
@@ -841,8 +841,8 @@
         2Q+OAaDeHwDA2Gk27AFII6EgxNHDQH4eP65Z4WjtN3cNKZe25D12nVPw+HCOnG9xPPJAB4E3pKtevd1c
         Ibdp9feQAGcEQPnsa/pVCIA6AVAXQlCSMASRJCk/AHM9AKutBJ0FgA9FFSHVKVmrkxBXKSGrOPDetMze
         KW92iFJ0TuXR+XVfibqjTQfFiggJG//ag039xwVpisszAiAjADICICMAMgIgIwAyAiAjADICICO+zwiA
-        jIxf0NWp8+EcLRIK51foczyrpoOBJ+OVktX916xdqONF0XRQMV+m3X9s7QIaL8r/EhFNOOu9ZT9krQjH
-        w/kVR1haaqVWaqVWaqVWaqVWaqVWaqVWanG76KL/B/UTLGLOcqLCAAAAAElFTkSuQmCC
+        jIxf0NWp8+EcLRIK51foczyrpoOBJ+OVktX916xdqONF0XRQMV/mPdALaLwo/0tENOGs95b9kLUiHA/n
+        VxxhaamVWqmVWqmVWqmVWqmVWqmVWqnF7aKL/h/1EyxiPZ9RcgAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -1104,7 +1104,7 @@
   <data name="Autodesk.DesignScript.Geometry.BoundingBox.Contains.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAZsSURBVHhe7Z09buRGEIV1BB1B0An2CHLuQEfQARzo
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAZqSURBVHhe7Z09buRGEIV1BB1B0An2CHLuQEfQARzo
         CIIDZ8YCjpwp3sDYyLDhRIEjA8YKjgwbsIW1gfUPYOkI4/eI10SR0z0imz2cmlZ/wMNyis2aqupms6mZ
         4Z40Go1Go9FoNBqNRsMhH33xyyl0QcnUgdebIJk65tixTb8Ht+s1daomfkBQ9wqyT4AE2xI7thcVTubF
         dqN7NfGDDVCmjhJ2bK9aaJm37FZq4gcEdQc9KcBbmavCdY4I6FKBBb3WrmqI5OinExAML8LhOsBR8kq7
@@ -1131,8 +1131,8 @@
         BqMf28nrAvaFeqwzyPBGXD3c6CVfc+RUtUKyILewGkz9zmDdDrDgTe28WeP/MTBeqm49H87ul2k98KY7
         H2Bn98l0VCBuuxTnv+7umO0ZsLVqkP1oO4AwJ4i59dMsttkxPlZICnCwbsY2l6vFvnngCeQSzgp2ir/f
         kyGoMG/6O2ULgJzCGR9yZL4+/qyNIHg29KMeevZe4dhATtcmP5f3ChwR9sJV64Nbu++Xhvxc5YhgOE/a
-        kTKQmnXUancBgrLzZS/t7qjI7vK/ROQ1YfFnyzJ1OLSH/Pz84a7RaDQajUaj0Wg0GoGTk/8BFSNqiyYP
-        UwkAAAAASUVORK5CYII=
+        kTKQmnXUancBgrLzZTTQiuwu/0tEXhMWf7YsU4dDe8jPzx/uGo1Go9FoNBqNRqMRODn5HxUjaosEhcwU
+        AAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.BoundingBox.Contains.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -1283,7 +1283,7 @@
   <data name="Autodesk.DesignScript.Geometry.BoundingBox.IsEmpty.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAzwSURBVHhe7Z13kxTHGcb5CHwE/hIZTiByOnIQkhBy
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAzuSURBVHhe7Z13kxTHGcb5CHwE/hIZTiByOnIQkhBy
         WTKmbKRCCJGRRDIITkQhQIicObKChc/lhCxjH7LK2FY6Y4QQQSCcqmxXwUdoP7+me6tnb4/bMHc7u56n
         6i1m35nt7X7efkP3zA0dUqRIkSJFihQpUqRIkSJFAjFy57WOklrEqSz02XhxKotC9Dqm3bLr3Weko7sk
         OVCnmlwnMwMAXleKXsclEefUJesDaXKXJAdhB53KIg69jtuVaKdupg/FXZIcqFONknuug/VOXVVI9BjV
@@ -1337,9 +1337,8 @@
         R/+6St/n5L0JUp0K3xZV+e9kyAGNi+IjMvt13GJe0DnPR/tMMv0QJWrm0Q0dM3Oq6uWtITQ2Xw3mnHDu
         XPsZIIR+NIybVfcHDhqTfzWZl2bvhwvPO1X7QT/6wBfYheecqqKgfoelOP8mbsUcekCzqsHpK9YAgDFJ
         GFsmzOoYwySjQnIdjNTNOqZcjbz2152qeGgs3iswSrL+uA+oUz5uJs9lY4DG5D3ej5HxJmNbW53AGzKz
-        XtLqWqHSoDEtCsaXyLUCMyJMXGxlVPbrY7Kg8TBG+7dkfnyJGqM6Q5wMZ0pE3GUW1apPBNSpMF5mxJ22
-        qCJ9Iv9LRHJCyfeWncoigXo/vuRs3KVIkSJFihQpUqRIkSJFCo8OHf4HSRPRh7dCwgEAAAAASUVORK5C
-        YII=
+        XtLqWqHSoDEtCsaXyLUCMyJMXGxlVPbrY7Kg8TBG+7dkfnyJGqM6Q5wMZ0pE3GUW1apPBNSpMF7m7GgV
+        6RP5XyKSE0q+t+xUFgnU+/ElZ+MuRYoUKVKkSJEiRYoUKVJ4dOjwP0kT0YcBMJBeAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.BoundingBox.IsEmpty.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -13709,7 +13708,7 @@
   <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByPoints.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAh
-        NgAAITYB4R99ngAABAVJREFUeF7t292R00AQxPEL4WK4CAiBV6oIhhAIiRAgEyK4IgMzQ91Ha+7vZbW3
+        NQAAITUBTKZc8wAABAVJREFUeF7t292R00AQxPEL4WK4CAiBV6oIhhAIiRAgEyK4IgMzQ91Ha+7vZbW3
         XkGpH34vXTuStw0Cyfbd5XKxA2Fo62Bo62Bo62Bo62Bo62Bo62Bo62Bo62CYHh4eLnvUeeuDYaKSW+q8
         9cEwUcktdd76YJi03B+fPyFdU+etD4ZJy6Xyk66p89YHw6TlUvlJ19R564Nh0nKp/KRrHh8f7+k41oZh
         0nKp/KRr4g34GT7Qsew6DJOWS+UnXRPlP/tCxzOGYdJye8gbkL4FX5I6YJio5JbyBiRfkjpgmKjkllK+
@@ -13732,7 +13731,7 @@
   <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByPoints.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EQAACxEBf2RfkQAAAQxJREFUWEfNldENgzAMRBmBESomYI1KHaajsUI3YIROgLpB6kMJcsyp6kcc8/Ek
+        DAAACwwBP0AiyAAAAQxJREFUWEfNldENgzAMRBmBESomYI1KHaajsUI3YIROgLpB6kMJcsyp6kcc8/Ek
         erlyh+LAkFIKhYo9oWJPjotpmpKm6N4cFwh9Pe47lyiwbdtTG704LhCqkQJgEUb9h9ZQEU+fC4C3MDNf
         C6gIEJrDSxGXLaFiQUJHAdtQbQ+wXsu/fipa8PS4iRnSn1i/vWeBioxLFNDYdYv1Syk6yCehNRK8z5Cw
         svWT0BoJvgmfXOJ0kqofXiA4F0CRm16rjJ5I8JpLLFqvTJ5I8GwHEzo1e4FQezSp0YvQAuFbEDqEEhp3
@@ -16362,43 +16361,43 @@
   <data name="Autodesk.DesignScript.Geometry.Solid.Difference.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         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
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAhoSURBVHhe7VxdiBVlGN6bbrqQYG+6ESQIr4q99ia7
-        UI5gJRWSC5pQQdDfRhEkCduPCgVpmluWtQvGWoltlohuwiYmBQVbJFS7uuruutuKchArqJvT+4zvO7zz
-        nW/OmTnzc87Mfg88nDPvfGfev/P9zMw70+Xg4ODg4ODg4ODg4ODg4ODg4ODg4ODQgbh39x89xH6QRR5o
-        uyZkkYc4cvq+MqqcPj0biOu8RosF5HAVQQBZ5EFkSeT0PU4C/G3iMq/hYoDh+GYWWwMKxJHT91YTMEi8
-        zWtcdpCjY08fulTb8vWsxz2nFo7UarX78ubbY3+ehP7nDk/XVr07gSSMs4nlBjm67MUvZ85KAkZ+qW6z
-        BShrzl//75E3T85/L0lY895kH5tYfly89u+q14/PTR386douCcjZ+X8eQ1B0kPIgeiB6A32/h7gEQxGx
-        vBMzOVeTIUiCgMAjISASIfKsKL1P28CsPPDBue9gIzGwSisNbAlA4CUgW49e/ivrJIgubQOI3vDSkZna
-        2vcnZXIu37BkS8DgD1c/lIBsH537VeRZUXRpG0AkXv4MG4amLpCt5VwZkbMrtOMg5gM4r+eBM1M3ntVt
-        NG1BPPHb9S1J5XpyXv/xeekJm4k9bH7xQY7WJcCk9Ar0CFuvMAMHppEAU77pwAVJAk4g/fOWQoOcbJgA
-        LE11YECzjW1fFgkAnzh40U8Cu1BcwJEXRmYCDpuUVZEOgtkmCeMcF8Mg2nECAmfjhQSciOI8JsR9Z64M
-        gxiObG1apehvZoMQNpDddRcQC4moCciScRMAsvnlgM3BMLYSrLQJ3Xy9qPhDEGBzMoydkgA6Q3YJMPe1
-        SqxyhLb9JkuVgKLOAcRudqHYcAloM4qYAAxVu8YWNpLtK9mNYsPmZBjjBisLQrdckmAXigtyqNt0sBFd
-        AlIGOdT2BLSyCipNArCcSzugmgOnr6x/5tD0MEjby4UIYDNK2+2j8xthp5CAP82tmANgN65l4Z4G2hKX
-        9h2evh/JEcJP+uzMuqOsE0AON607CiM3RdvQ8haxXduPnoRt3Nx/8rObiXlo/7laZeDm2TOxc+qOckiA
-        Hziite4ojNy0LgG8DfaJ7dp+SYCW4xO3N5EI+l3n1B2RcZnOAeToGFEHbyerbhn6eKa+MErdEYj7Cav2
-        TnRG3REZl3UClhHHVdASj8HqWKTCrtekvrUJ7jm18A7Jl/Ah2wcyItMEQAcFCrU9SIIegpAYbxigTxlS
-        Ip1YUbvYCRCquiNsV775/fpddJz2Tcx5zgGsUicERCLq2kSFTafJRn8a3N/GRE0TdHtu7qDSoA0J0EOS
-        v0oCuUlk2HSaDEsAeoPIsZTdMDSVf90R1ts249KiLbj0vU/JA5M0N2kIaucPWTadJsU/00ddd9R/7PIC
-        l+DcwWryASnEyUvA4EYMcyaMrKYOFDzU9qAn+MtB+h5a60P7/CRp2uyxLUPD5ObkDO7+dmHrwx+dz6fu
-        iLreHrnZLoY2ojbU3Gcjq2kKCuZODip6xBiLffC+OtrsiZMAmxx86vNL+dQdxR2CtJHmPhtZTUOQo+t0
-        UEHe5cPcL7TZYwYU26AuuQTD2oO4tEHHz77u6NFPLlRN5aAYByaRmwETsnoPtI1Vkdkm0pmq1htGbY+5
-        z6TUHXECYi8KYmPbiblNqIDWRpqGJpEbQfXJ6n2QTK+MwBHe1RBabxi1PeY+GzEc7xid30825LM0pVPz
-        EW2kaWgSuRFUn6w6AJLjGg32Y/xtNCGnsgpqwhWsLh88uP/c4PNfTAeeBeBlWcCwuM7w4SODghpIEn3i
-        MdrAZKjbmPrSIHzLbQjS6B2aupMM6IERKE/H0KQfWxLj8koAEcGXEzX/JIm3PZr60mDbEiB49dhc5eWv
-        Zv15QSdBZKDIGpEPGRk6uERzXvCu2WiZqc9GWQWBtv0m4ZtUYHtG5Q1S3LNmYKKKGxpmAuJSB4sPHxn0
-        G30ldZDFAdh0moz7p2EuZxXtATmM7j+OEzUxCnOCbV5oRA5ey/8m+h2WqIF7CNiGHN9tOk0WMgEaZEz3
-        z7N/9+K6CRj1rBlE4IV8uESg4+iVUr9Np8m4CcBQ1XF1R6v3Tozgsq12JMwxLeefe+DA1SVDy8PI7dAr
-        A3KtNy3CblwhwPE9AzsBZIx3rQb3D3AJm7AcKwXb0zVZJQCg77iIJ/Kq1psWOzIBABmEazb+kykwUEjA
-        nbWlxEBi0I73dSN5QrQTwtlm1O2lzAUlL7RtDaJmK6sg6IRfsL/QgBPSG0xH86Loj2lD50zCSVDgBNzO
-        LhQbRUwAhiqurnPV1+0gdGOeKsUcANicDKNLQAawORnGLBLQyiqoNAko4hzAdI9ApcVFnwC5qmo4mBvj
-        JgBD1ePDF0u1Cmr6Ohxh3GBlQejGHwdkF4oLcqIfN7izqjuKSpSkSP1Ts1ewlS0B3u29qAHNKgH6uM1W
-        Q2hTpgRUe4emfOeFpsNZys195qvYbGTziw9KAK6gVnUVNqidzVoOmi+cQj2o2UaTzS8HKAEj6M5hpfA6
-        MFnIhfKYEqo9Gr2AEEMU2Rv5gZFCgJzBrcTqK0cv301OVuBoGnVHcYkCA/16ZiTCVnqDPwzI5pcD5JD3
-        eCg5ueTAj1ffSqPuKAkRfCnL1K9hw82kUiZAQI71rN03aS17yTMB5rwgPUOKskqdAGIVrx1DEpLUHSWh
-        fkJGPbgH5lsX2g5wEsYrAxNvkMN4U3pLdUdJCX14VkzLXjs+9ynZ1hkPcucBcvqW0+dvrMa/EYxTd5Q2
-        0RN4CPLqjtjE8oOc9ZaqQpZZx+Ks5PRZV3ekmpcb5Kw8I6YDYg1ElnL6Hqg7YvHiADkcWnfkNWDkIJdX
-        25TnDe0ODg4ODg4ODg4ODg7lRFfX/6WK69EquXVTAAAAAElFTkSuQmCC
+        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
 </value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.Solid.Difference.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -18978,7 +18977,7 @@
         B4DX+z8QweZWlsKHTvYn1X8rLJbnfzGaN+sIZIoAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface.bool.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAR6SURBVHhe7ZvvbhRVGMZ7Cb2EXkLpPyi03VUQAxJb
@@ -19003,7 +19002,7 @@
         BXLws4etsW1MCCGEEEIIIYQQQgghhBBCCCGEEEIIyQhdXa8AquGj7EDOQR0AAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface.bool.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGGSURBVFhH7ZTNSgJRGIbnEryELsHEsiwaI2oRFEK1
@@ -22634,7 +22633,7 @@
   <data name="Autodesk.DesignScript.Geometry.Solid.Separate.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAh
-        NwAAITcBM1ifegAACVxJREFUeF7tnfuLFlUcxvsT/LGCwKCCCsqgfoiiBAmisMygkspMELrSdsMumGsX
+        NQAAITUBTKZc8wAACVxJREFUeF7tnfuLFlUcxvsT/LGCwKCCCsqgfoiiBAmisMygkspMELrSdsMumGsX
         uoNQ0C8FFhQZVm52sUxb3W4m1EYRRUGbaW2Z26b5brnm9Dzv+x4979lnZs7MnHkvOgc+qN8d5/u83+ec
         75k5u+gRURRVdBAZrGgfMljRPmSwon3IYEX7kMGK9iGDXUYfMONPoK7pWWSwy6gMCMk1j2+ZCaarr8VQ
         GRACFh0Mg8iCfx4E/aAPKHMqA4qCos4B48Aufhp1czZ+uWMt7lEf+/dHf+EXmaNXkcGQoIjLraJm5sUN
@@ -22680,7 +22679,7 @@
   <data name="Autodesk.DesignScript.Geometry.Solid.Separate.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAAAy9JREFUWEfVlt1LFFEYxv0TvIygsIuKrtqLupAKBAnKPigvKhPN0pu+aOlGCssP
+        DAAACwwBP0AiyAAAAy9JREFUWEfVlt1LFFEYxv0TvIygsIuKrtqLupAKBAnKPigvKhPN0pu+aOlGCssP
         EgsjvAjyokAiIsvSsEKDxE3TVck2tAzbcNMNt1Wn0dS1bDu9zzBnOXPmTLWLGi38Vuflfd7nmXfOwiQx
         xv4pyuJSoizKHKrscUm1VhOxlhDKogiZVxHMRCdag2OzoZA2F8gse5Gt0sSDsgjIKIXwmcYWBoanWH9g
         kq3IvqurtID6SgiEx989RBqRLPdZLjimAHdrMwd9Q3rUOxCOLjtwh9qV+jxZI5JR5PHzXlmYTNSIzTKp
@@ -22700,7 +22699,7 @@
   <data name="Autodesk.DesignScript.Geometry.Solid.ByRuledLoft.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAh
-        NwAAITcBM1ifegAADVlJREFUeF7tnIlyVMcVhv0IPEIewY/g2HEK25DI7GbHYd8XBwNhLTAEbCdgU3Zi
+        NQAAITUBTKZc8wAADVlJREFUeF7tnIlyVMcVhv0IPEIewY/g2HEK25DI7GbHYd8XBwNhLTAEbCdgU3Zi
         l2NMZbPZ9x0EEkL7jEb7AohdYJDZdzg5f4tunWmdkUZI3NGdzK36i+Jo5k73Od3f/bvvnXmNiDJKodRg
         RsFJDWYUnNRgRsFJDWYUnNRgRsFJDWYUnNRgRsFJDWYUnNRguqns17/5lRbvCVKD6SIknrWddbOnFkEN
         hl2c7F6spSwS2q69NtVSg2EWJ3omCyNeJt8qS3tPKqUGwyhO7husRpFsTShML+39qZIaDJM4oeB89osE
@@ -22763,7 +22762,7 @@
   <data name="Autodesk.DesignScript.Geometry.Solid.ByRuledLoft.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAABA9JREFUWEfFVglPU1kU9ifwE/wDJv4EHJXFYqFTgyIaNMZtNDM6M5m4Rg0uEyYZ
+        DAAACwwBP0AiyAAABA9JREFUWEfFVglPU1kU9ifwE/wDJv4EHJXFYqFTgyIaNMZtNDM6M5m4Rg0uEyYZ
         NdFoNHFJNE6MGJOZDBIJA6W0tK/be92gtAXKVva1FNrS4zkXixVPibamc5Mv7/W723e/c8593QAA/ytY
         Mp9gyXyCJbOBvGXbAQLXtx5Y8muAmxbKxaVhpVwTkbcWzeHvAm5cJrDklwA32qjs2GlRSlRx37PngL/B
         8+tvE/h8w43PBJZcD7jBJqWs/CVt2HnrNgTdbujp6REC6F0uKl3E9wpuLgeWXA+SttImf7cdPLVXYwHJ
@@ -22786,7 +22785,7 @@
   <data name="Autodesk.DesignScript.Geometry.Geometry.FromSolidDef.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAADNpJREFUeF7tm8mSFccVhiWPWx6BR2DrHWtHOEKPwCNoLwRNgJlE0GCkYGwmg4wI
+        DAAACwwBP0AiyAAADNpJREFUeF7tm8mSFccVhiWPWx6BR2DrHWtHOEKPwCNoLwRNgJlE0GCkYGwmg4wI
         IQbhEFMbhAUSs4AwIOZBlpibSWaZPl/2PbfznjpVXdXVlOiOWnxB35NZlRX/n3lyqOKdEELLr4gbbGkO
         N9jSHG6wpTncYEtzuMGW5nCDLc3hBluaww3Cnz7YGVp6sRqNB27Qa7xlBKtXHTIBr8GWXqxmdcgEvAZb
         erGa1SET8Bps6cVqVodMwGuwDFevXu3ilaekdVO8unl414NXN6Vs3aJ6VrM6ZAK2sbIUPbCS1inCu1bx
@@ -22847,7 +22846,7 @@
   <data name="Autodesk.DesignScript.Geometry.Geometry.FromSolidDef.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACEAAAAgCAYAAACcuBHKAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAAArNJREFUWEfFlM9u0kEQx5sePPcRfA1fwcQnKiWQIo0NoVZq+oNogQSqMSUYipE/
+        DAAACwwBP0AiyAAAArNJREFUWEfFlM9u0kEQx5sePPcRfA1fwcQnKiWQIo0NoVZq+oNogQSqMSUYipE/
         TWo5qIkUehEqSEvUVA4ktFS9jjtrRmeXwSJYOHyyO7MzO9/f7v5mDgBmjuicNoZxazEN1w2vRxiGlNRo
         NIw5IflsvzTn9QjDoECOtBkf7XVpjcfweoRhUCCHb8A3ttdsH4/lcbweYRgUyLELDducr9sjj+P1CMOg
         QErmo+TD0V6/KobXIwyDAnky3+Aqn+2X5rweYRgUeJ3wesSAQ0r8n9j1kAHHLBCd00Z0TsLbN697jeYH
@@ -22865,7 +22864,7 @@
   <data name="Autodesk.DesignScript.Geometry.Geometry.ToSolidDef.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAADH9JREFUeF7tmtlyFEcWhu3xC/AIPAK3c8f1REyEH4FH8L0xiIBhM4FgsAMJIbZB
+        DAAACwwBP0AiyAAADH9JREFUeF7tmtlyFEcWhu3xC/AIPAK3c8f1REyEH4FH8L0xiIBhM4FgsAMJIbZB
         HoYwZjETZpPBjLGN2AzECCzAYvHY7GKb4TLnfNl9SllZp6pb7VK11FEXX4BOZVVW/H/myZNZ/Y5zrqaL
         mMGa6jCDNdVhBmuqwwzWVIcZrKkOM1hTHWawpjrMYCeMjp5a9MP3301dvnzRjY//203c+snd+fm2u3v3
         bsLPk5Pu1p1bbvzGuPvxxyvu7Nlv3MmTJ93Ro0fd/s8/d3v37nXDw8NuYHDA9W/qn1q3fv0iq69ewgx2
@@ -22924,7 +22923,7 @@
   <data name="Autodesk.DesignScript.Geometry.Geometry.ToSolidDef.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACEAAAAgCAYAAACcuBHKAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAAAtZJREFUWEfFld9OU0EQxkFfwEfgEbz1zmsTE98HQtpQC5KGgsVQqCI1LWoDwRSN
+        DAAACwwBP0AiyAAAAtZJREFUWEfFld9OU0EQxkFfwEfgEbz1zmsTE98HQtpQC5KGgsVQqCI1LWoDwRSN
         jZAglSrI/zQpcIpAosY2JbEtKJefO2smbpcp2gqHi1/27OzMfF9395y2ALh0xKDbiEG3EYNMJrMAZ9fB
         wcEB1tfXkHr9Co9GR9Hd06OW5ZpmEINMe0cHAoEApl9OY/HDe2QW3uHj0iImJyfVslzTDGKQYROxWAzp
         9DzWVldcMdHKz8pA22WZuEoji4+NjemjmJ19g83NTew429jd28XW9haWl5YQiUSCVn1T2IErysCcz+dD
@@ -22942,7 +22941,7 @@
   <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Curve1-double-bool-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        EgAACxIB0t1+/AAAAeFJREFUWEfFls1xgzAQRl0CJbgESnA6YDKTu0twCS7BkwoogRI4pIBcc3MBngkd
+        DAAACwwBP0AiyAAAAeFJREFUWEfFls1xgzAQRl0CJbgESnA6YDKTu0twCS7BkwoogRI4pIBcc3MBngkd
         KN+n7GpWSCEYZHx4jLRYfrv6AXbOuaeSDZbm5f3LgbP2b7fbp1AnPy4NxAdJoNEYxI6wnQwoDcStJFCx
         D/FBEriynx1UCkj3YACdxiBuJYGW/WRQSSDuAauv2Ye0AoMkcGAsO3AtEFZAp95uPq2+11g0sAQQNuAq
         cj/NBNKjyEP1JBq8FIi40zsj5rqf9P5IfrFjQ2MNkLFqv9nAEeiO55pfjDzMiBJ1SiDShjKgGy6pXEkC
@@ -22956,7 +22955,7 @@
   <data name="Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Curve1-double-bool-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAh
-        NwAAITcBM1ifegAABkNJREFUeF7tnLtVHEEQRQmBEAiBEFAGHJ0jnxAIgRA4ioAAZBAChgLAlUcAGGSw
+        NQAAITUBTKZc8wAABkNJREFUeF7tnLtVHEEQRQmBEAiBEFAGHJ0jnxAIgRA4ioAAZBAChgLAlUcAGGSw
         eg9Nr7prXn9mdplvGdeYogfjdm9NdU3vXhwOB2dGZNCZDhl0pkMGHc23n39ewCN46LhR4wLv7+834KHj
         rrsmV2FM7yZHA9nX4GC4V2MDnfiD4CGM6d3kaCD7xsgntU/AkxHvEzAWyGbKsRNwTCUKiH4x4gPHievd
         5Gggm/k/lv+hxsUI8YHrMKZ3k6Mx8smzGhegZCP9SDwuucnRQPatkU9qD+B7K77jJR6X3ORoIPvZyCe1
@@ -22986,79 +22985,270 @@
         5TVLSOkAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Solid.Repair.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.Heal.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAASVSURBVHhe7dpfbFNVHAdwHvXJhAefSFxMfNZHH/foH4KY
-        OI0xIZBo4h8Cm1mmjCzi3NAoy2BkxrpsmdlDq8C00IFC2bqNSTuGXcgWtkE7ok8koDzgg/Hh+P019zan
-        p9/2tOvdZDt9+GS333u7c76/lvZC2KaUchoNXUJDl9DQJTR0CQ1dQkOX0NAlNHQJDV1CQ5fQcL3EYrEG
-        aITd7Pz/gYa10Eo2wxFIwDwowx3Yy37HRqKhTTgcloJCCh4HKSmFzJKVkOc2snU2Ag1tent7VSQSYWVq
-        IYNoMNdaPnniSeiBkOcLeMy8bq1oaNPZ2ZkA1dfXp0ZHR1mZWgxDfhCTO19sAmV4Xt9PLWho4w/A19/f
-        H9ggLn5+VI23HFSz01MxWQtlW4zyosk79xTMwQF9f9WgoY05ANHd3a0GBgZUNBqlxZh4PK4mJiZUKpVS
-        c3Nzau6br/MlZ/bteYify/5jIgWr2uMWtlcbGtqwAfhkEENDQyVLLiwsqJWVFbW6ulrgxvCQXm6t3mb7
-        LYeGNihacgC+UChUVLKca590sEK6P+EvIzO1s/2WQ0MbFAx8AFm8K5IH97NS38Iz/to4fhZ+8M4VXKfv
-        sVI0tEHBwAcgrn7wnllqH1tf4Fyrce1P7DobGtqgYHADwCu/OHpG3fhuWC+jZtta78paON4OHf7aOP4S
-        HveOz4P/nH/hLWj648fR7f71NjS0QcHgBjA9VVDcd/PC+d9kLRyPwO/+2t75Hu/4Be9xAQyg4q9FGtqg
-        YHADmOIDyN66NSlr4fgfeABPgHzvy/mMd26H97gABlDxVyINbVBw/QewtDQla+H4Xi57Zee9yV0vy72B
-        nE975/yBFNhcA5i5UlRAzJ8+9RD3EfMXOz8tOhdvaw3JPnC8xzwnMICK7wdoaIOCwQ0gm1W302m1bLwT
-        Zva/r2LnzuVupi61H8rncqucu8mKRicTr+7KaM/5G56GHWzPpdDQBgWDG4Bmtv2jfFFx6eO23BB+PnE8
-        n10YHFSxs1EVbz5QcC2cZHu1oaENbnfnWWldtQPILC6oq+++Y5ZSY99HigYg9GvExJuv3/+l59hzbL/l
-        0NCmq6uLltZVO4BZvNpmKVHpAMTl1g9VMpms6oaIhjYoeNssbKp2AHIzhE/5olJsAJdHRgquEdNvvKaW
-        r0zL70qwPZdCQxsUXJfPgMXTp/JDSB0+pBJ4VyTHx1VSu0tcmhjPFb1+tEtd6zhslhebdwBiMhJWZz7r
-        VNlMJp/l3h3aAPxcrjl77Ct1HX/d9jPY3ANgbo6N5Qew8usMvUaz9QYgsniLZ1Mpes7waAxgEB9WZHMb
-        YWu+A6pQHwDbcyk0tEHB+gDMwqb6AOoDqA+AbW4j1AfA9lwKDW1QsD4As7Bpqw+gGR7ohU1begACJRtg
-        WC+t26ABzEMCjngaoap/FqNhNVBWBlH0RyLAAeglm0FKFv1XmrWi4VqgdCPkB1HlAPIl0+n0IH5K0ZfY
-        OkGjYS1Qfi/cIQNY11dyrWgYhHA4vPtRKVkODV1CQ5fQ0CU0dAkNXUJDl9DQJTR0CQ1dQkOX0NAdatt/
-        CAURQvxtjUYAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAABHVJREFUWEft
+        ll1sk1Ucxo83eoGiiYnBDObHjSI3RmMwXhgm3dr14/3q59a161awZbh1q0gksAiOTKJAQENQ47JAYgbL
+        Mi5ANta+H+3WscVEndGLcWcU1Bj0ToMfqc+/Oe9S3rUUZoxe7J/8svS8p8/zdO8553/Yaq3W/6aKxSJr
+        eHdxJQyA6+BbcBEkwf3gpnmkT1StFQR4EvwKihX4DTjA0vx/I8A8MA1/Bgvgu7IxYhCU5tcMoPlkNtkS
+        YFrI36i5mguaLIzlt3XWAZaPd5QwxcBBYJoc4mMmG8AvwHy+F9xegClZYLrHmc0E/a+pspDRXI4DWUVk
+        qiyyjOg2DdaAnwCJD/OxStC6oDnf0+eaAXRFbNAcjed1r3RS98qGGvCexK+/T4+0Mi0cKgGhu0AHFyae
+        BVZjkxeBOa+pdgCPc0EN+NK65CkYHuefqiKdyoQC9ZNBP5tUJKa2R0j0OXCKi+aA1dTKVUBz99YOIAvj
+        +Lefxqt4XxVcI4bk/hx/jYzgOjDhlZkabSPBAChwUVoHVkMr5wDNHa4doCX40NTWLYN6PLYmF+94OCcL
+        Ob2t5WnV45xVXY5pLdq2DkL94EcumgCVTMv5AtDczpoBtFCATdhtTO+IstnuLpZTxMM5v3JWw+rX7Laz
+        2BWnIfQ6uMZFFVDJ1CQOaN7vYP1tBZhEAKO9jc33pdjl7p3MkIXFQiQ8oO9MsimHbSOE9gPa8yTsBJWM
+        CQHQHKJ0FtxZgFf72PyuNJuJhh837LYL40ND9WPHj5FwD7jChfeRsAXaoh8B0/wSKD2rGYAempNvQUOi
+        f3w6tefjYrJ/fBafm4EPtAMVmMbEGbD03X8SYC1IgQy4/mbPsaLucRVHwomi/ehCuaHJl4CC3aSz0gDU
+        2f4ASwbJfWPFnLu5xJ70B39hjE46CkddcfPo0NBjqt22eyYWYXN9vWw+3Vd6rfR66TVXrQoB6Jg1jadB
+        K3hioOfoI0d2HLx2/OU3irt2D89h7B5Q+s6F7XF28dDgvXlJ+Gq6NRimdUTraSUBaOWa5i18rJxOYD5f
+        2g1q00tJHOksH4s+hXPkRmF7fN1cbzfT7zDAZmCKu/hYJT4DNIcuIutpTA/530E/uZoJ+uu0oD+cE93Z
+        QleC4XArnTFaS5C7VaiyAKOAhI/wz9V4AZhB6QKykfpFRvSkcXJ+k/VKnbrg0o1Y5HkjFn0ma2u4bAT9
+        Dm63vHiA+jLRR4HV1Ep5Z7wB6j4RPWxCcG3KOO3n0UtUzeP6FA1uGt01pQvur7nd8uIB2rjYBLCaVUMG
+        9J0fwNpsa4jpWIwaLjKqX/kwj91ieKVz1F110X2G2y0vHuAwF6OmYzWqxt0gChpUn8IM3Bvy2IL5aNip
+        eaURhHgLC3NYbW5M4a7xALdbXjzAOKAAErAaLbH1vUXWdOIK22IZV9G2s3R7kgSmeZy9aO9G1qec0ET3
+        6CWEo1tX1eIB3gYUYJMpWolqAWZ2JEoUupJs5pUupinifq25aVRtDT04gR1wywCr9d8UY38DixHZ2932
+        ZNkAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Solid.Repair.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.PolyCurve.Heal.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        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
+        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
 </value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.Surface.Repair.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAATJSURBVHhe7Zl/aJRlAMeNQtQ6jNEPGMpCEumXThYxGMWU
-        jKQkEFeOS9ks3zZy4/Rm0815l2uao62bw368FASSRoEZgySIXL8M4Tkmo6VzO2fbbNlsGZaxzK7vc7wv
-        vPf03d117nZnz/3x4X3f7/Pcc+/3s90979i0cDisNTTUCRrqBA11goY6QUOdoKFO0FAnaKgTNNQJGuoE
-        DXWChplEb3vbbaAFvGnxMpjB5iYDDTOJzx9fXgLCCoVsbjLQMJ2gXDXYD26yrjcCVUCJNZYHBKh2rvFf
-        oGG6QBFn2W7Q67hWOQYGHNcb2ZrxoGE6QAH5k3cWTIZn2dqxoGE6wM3LX3tWymYM/KJkKnVs7VjQMB3g
-        5meCLx1lbEww3zFvEXjfGoua51wvUWiYLlBCfq6dpcrZPAnGapS5h9i8eNBwqrh986+u0p0nl+0p3VL7
-        9pNVu5VC++UcHHNAg/0anDeDmdb5x8Cefxm4QcnQhwdz7PnxoOHVckPFldzr1odXXP/cFWN65V/mjOf/
-        NG/cMC5c1X+Imz2XRM6m38St3osCAkRT4JuzjhJOIns9jvvAoL22NdZinT9qXUcBAQlvizRMBhQqnu25
-        5J+1YbwDAgQECAgQECAgQEwkYFfgKBVw//a+h+W6OB8HF8BsIPd9OR6yxuZY11FAQMJbIg0TZb7vnOuO
-        +vNGbu2FDlkIAgQEiMkQkO8788W9jWddOD9vZXKevQt0yffH0RYSxZQIuKfxh2II6IQAAQGRQskI8LUe
-        G2Il1ng+6oOAFpzXqWPALe8Bx7VKHgECEn4eoGE88ncO+SFAQIC4WgF5W8aCBd6T3cs8R79zltj3VMXF
-        hTuGggubhv24liLsscjnG8fpQD4t2vnvYB6Yo95vLGgYiweaB/wQICZLgHzt3K1jIq/+Z/F6aU3Ug05z
-        WeO5/JcGg1sr9zr3/UIgy6sPTu3sfuNBw4koau03IECkQsB9tQPH31u1Tv4UnaXCSxu6uis8B0KOTAqQ
-        RM0DXSDh7c+Ghowle3pzIUCkSsAbq73ym14t9S8BdVWvyQcgJkDyDrv3WNCQAQH+VApYU3kwdGTFY3+r
-        pVQB7vrDJ8rrO75yzrGQu8WiW6qGC2atHzFYBwYNGRDQmUoB8jugvPKD07aEve4Xxl5d2zD6kO/b46qA
-        1f5Pe9qfqR99q8wr/0AKf/LEysvLN33WM3fzoIAAAQGCdWDQUAXlXUCkWsC8baPikXXv9rtXbhu5+8Xh
-        ILZBgV1AqAKKWkPiwUCfWBI4ESx72j+81Hu4Z0HDgPhfCLhz+09igf9HcdeOEWELKKs5dMoWsMp3pMcW
-        UNx2ShS19InFTSGRUgGSdApYvGtQ+Ns6z3gDX/cXvnIa96GhgILd30feOysgKyArICsgKyArICsgKyAr
-        gAswIcCAgALWgUFDRoYKMCHAgICEC6vQkJEhAkwIMCAg6cIqNGSkSYAJAQYETFphFRoypkiACQEGBKSs
-        sAoNGSkSYOK1BgRMWWEVGjImSYAJAQYEpK2wCg0ZSQowIcCAgIwprEJDRoICTAgwICBjC6vQkDGBABMC
-        5D9Hr5nCKjRkWAJMCDAg4JotrEJDnaChTtBQJ2ioEzTUCRrqBA11goY6QUOdoKE+hKf9A9QjJ/p2UnKN
-        AAAAAElFTkSuQmCC
+        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
+        zj7/A/Setgi2TnrWAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Solid.Repair.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Solid.Repair.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DQAACw0B7QfALAAAAlRJREFUWEft1FFLU3EYBnA/QfgBuugThFfdttugiygqvGp1EWKms6guljXXHLsY
+        TCgkCMm5jJFBh2143JFqWcOtmGw52ZiHzeuCLr19e94/HdnOebWjwpGgix//43M8ex50Wx8RHSsx9JIY
+        ekkMvSSGXhLDv8nlcv3gk+4dlBiyVCo1wCUQgBBoUADqsg1+6Xm3xJDF4/G5ZDLZXbafKqi/yPr4WBDK
+        MGZ/TYkYsnA4HAKKxWKUTqelUiWfz9PHTIZWh25SaepJ4dP5c1tAUIc7sA4npQ4mhswaYEkkEqTrOpXL
+        ZarX69RoNKjT6Sil0REu7LZj+1mXOpgYMvsApmnabmm3jYVXqujL4JWfOAf4eZxnwOQcLtpf3yKGzO2A
+        pvaOitevqQH1xTcvcE7x8zhjcJZz2Pw+Ebxn72COwOJ2wObMU1XO2ubWJM6dDzf8POQHnLDuYcCy1OMI
+        LG4HtJZ1WhseUiUlvFlXHj9S10Z48tfKRHD6z4AiBogfV0dgiUajz90MYNZ7YHXwKulzL9X10vw8FS5f
+        UtfvR4ajUgcTQ4YBX90OKAVGVRHTZ2d7Tvb57jjVarVpqccRWFDo+lPQqtUoc/sWFV8vUNUwVGmrtEbf
+        3i7S0oP7ZDab/HshqccRWOwDIpFIzwDTNHevu7Xx/bAx84zarZb93tEGsGw2a3/Rgzj6gL3+BS79H/Dv
+        DQgc6wCGUh9UDzGgABqEwA8+OCV1OAIJyv2wbRvQU1KpVB7iPC09vx8x3IthGBdQ0i/dOywx9JIYekkM
+        vSSGXhJD71Dfb76e7Fn5zaPyAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.Surface.Repair.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAABYkAAAWJAW1onfoAAAEfSURBVDhPY/j//z9FGKsgKRirICkYqyA6PpEYZw3E84F4
-        OhA7IMuhKMSGT6UlWx708fwPxHuB+ACIfSo9RQomj6LYrOs+r0L1G1+unJ+9bJl/ZgkUfFvWmzPl9arg
-        xMdAjb5AHADEx4AG+GAY4DjpJi/QgGVAA84ADTgDNOAM0IAzrbmzXiwJTf+yJDx9D1BzLxCfARrgis2A
-        YqABZ9AN8Cg+cx2o6X93YtOryYnVN0Fst+yD8UQbIFX+4YxO2ZWLnjUnrvg1H7ts33LqgkjukzRsBqTh
-        MkCl7tUZvdYnZyx67p2x7r19ZkAM2Aw0oAFogC/QAHgU4jNgM9CABqABvkADUDSgYzgDaIAx0ABfoAF4
-        NaBjrIKkYKyCxOP/DAB5JqfWiUMxRAAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DgAACw4BQL7hQQAAAk1JREFUWEftk01IVFEYhm3TojBa1CaEWoQR1RAMWFBRLQMH0yxDEmoxRwanNGPS
+        mUGZFKOkQKrVJSjozzYtTCjoh4xaCB+DhVk5Q1pIiSRORYIhnN4T50Kc+1nelNPGxcO988yc+z6LO3lS
+        yv8KK23CSpuw0iastAkrbcLKuZA+XpsEvaCW+96ElX7pKd5TAJ6BYyADJOgH9SANCrhzClb6BQNqXI26
+        TBqf73HnFKz0CwbCeug12KxdEchqX2aecWElx5LoVP6isAwujkyLpdEpsbxuUqw88S11On67t2vvwZwe
+        2gLa1O9xPQN2av/qZVMyZj5T4RG/s6H1Y/6a5OdKDN1EACGAEEAIIAQQPHUmLn7RIzKQ+nAI1+8gAcbA
+        MuUVCLjPbXiES1H7UCEC7iLg19BMATXxB8M3ysNqVFbWdb+4s6/qkh5VL2BI3z9HwGFuxyMUuy+8LUTA
+        EwTQ3wJWNeSoWlwfVkPdpRU/yhoekx7dCEb1fRW3o2AlAhwE0GwDrhyo+aqHZPnJh+pFlJFY52XXPQqF
+        ulYcHQlyWx6hQAD5CdgUG+w7VVKd2x+5lS1p7BlQo6Wpp/1H6q9mWyqi44HEQBoBxG15hMJvwOrkOK1t
+        HqP1LZ9oe+tg37V4x8Su9jfpHR0Z2nY+Q+uahshaQKBthIJn39PWc+9oIWAhwAhwuC2PUMxTgIMAgQD2
+        /+/Cyn8McBAgEPDHQRNWzjLAgRcI8DVowsoZAhwECATMadCElTrAQYBAwLwOmrDSJqy0CSttwkqbsNIe
+        Mu8nODTyykwNhJ0AAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Curve.NormalAtParameter.double-bool.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        RU5ErkJggg==
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Curve.NormalAtParameter.double-bool.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAyNJREFUWEft
+        lltIVFEUhhdhvgiRRC/dKDEoCAwEyywinaJiigiCEKEIMSKygm6QiVGm2dUsaV7qLcLCoMtDVkjP9WDm
+        ON5y1Eoxx5kzZpaVs/vXae3xOKlzrJce5oePffZlrfW79maQYoopppjGk9/vn4yNYBeYBabLGqlhgxo6
+        +mhteTOtuNRE6641a5zABzZL+ujSSScgByjQA2bKGqnvQXrT/okyrjRR+uUxBsqBAmclfXTppBMwD/QB
+        NrFb1swOuNGBVSiednGMgWoxkCvpoyto+McQCPipf9RAAogHTsAm8oF5jrtw4kEHJZ12U1aFWTwe9IqB
+        DEkfXeqrMcoQ+BkkpQZIfTPosxgyfpvSJo7298MAztR6eiml1ENrrppd2CDFO0GcpI+u/CpvmLw77XSh
+        povuv+qmOtxxCCbUDxiCqRG0Pej3O2CETRSywZaPPsq83qyv4YkYKAaS3YaWFDeGWQqSz7hpEdq6Eq/7
+        0D0vHav2UuHDDmr/4CMVQmdCwdVfggE1MmSc83b7yHmzhVLLPHuk+AhInpIBPhxJJuAXrg0tKHKbr/1g
+        VTs9re+h0JCRotSgMgYCudtcrWnLz3u4OHNY57AtHTAZDjyydHRkIYywqezbbVRZ+z6br6PocafCGhev
+        sMbYljVoHOaC7eAIKMBrL8CPT+Wyksb6OYUNaqurVe281abQrQI5H8a2IgOFLaAO6Nb+Acwo3P1dvJXF
+        DjxErI3BtiICZ4AXQBcaBjWgDJwEp8B+kAkSQGR8GNuyBCUCD+DCg2AfmAasZ2xjW5ag54CLN4DZsvbX
+        2JYEHABc3ADzZe2fsC0JcAM2sJfnL52bksBr4AdVslZq+eY9fYZHB3/L3nHgkvTRhaD1gIt3gThJ4gJV
+        IBVwkTyZs6EdMvKeOUoM73Nxc03SRxeCSwAbuMGJrMms3zKyGd2ZSAN6bnbJtnD4EWADORzIcBJQKt/P
+        gDbA4zvwhwE5y3PTuG3hcCNgA1kcyCAJ3yknY7hgItAGGAW0AQ2/BR6nbID/jXoL+HfANMAgERe1/nXh
+        fb2OkYuykfBcn4npPxTRL54f1KT3FD1uAAAAAElFTkSuQmCC
 </value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
@@ -300,20 +300,24 @@ namespace Dynamo.Models
         }
     }
 
-    internal class SettingsMigrationEventArgs : EventArgs
+    /// <summary>
+    /// Event arguments when creating a splash screen event
+    /// </summary>
+    internal class SplashScreenLoadEventArgs : EventArgs
     {
-        public enum EventStatusType
-        { 
-            Invalid = 0,
-            Begin,
-            End 
-        }
+        public string LoadDescription { get; set; }
+        
+        public float BarSize { get; set; }
 
-        public EventStatusType EventStatus;
-
-        public SettingsMigrationEventArgs(EventStatusType eventStatus)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="loadDescription">Load message</param>
+        /// <param name="barSize">Load bar size</param>
+        public SplashScreenLoadEventArgs(string loadDescription, float barSize)
         {
-            EventStatus = eventStatus;
+            LoadDescription = loadDescription;
+            BarSize = barSize;
         }
 
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
@@ -83,7 +83,7 @@ namespace Dynamo.Manipulation
                 if (null == curve)
                     return;
             }
-            catch (Exception ex) 
+            catch (Exception) 
             { 
                 return; 
             }

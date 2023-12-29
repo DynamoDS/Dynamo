@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,19 +9,6 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.PythonServices.EventHandlers;
 
-namespace PythonNodeModels
-{
-    /// <summary>
-    /// Enum of possible values of python engine versions.
-    /// </summary>
-    [Obsolete("This Enum will be remove in Dynamo 3.0")]
-    public enum PythonEngineVersion
-    {
-        Unspecified,
-        IronPython2,
-        CPython3
-    }
-}
 
 namespace Dynamo.PythonServices.EventHandlers
 {
@@ -43,17 +30,17 @@ namespace Dynamo.PythonServices.EventHandlers
 
 namespace Dynamo.PythonServices
 {
-    [SupressImportIntoVM]
     /// <summary>
     /// Enum of possible python evaluation states.
     /// </summary>
+    [SupressImportIntoVM]
     public enum EvaluationState { Success, Failed }
 
-    [SupressImportIntoVM]
-    [IsVisibleInDynamoLibrary(false)]
     /// <summary>
     /// This abstract class is intended to act as a base class for different python engines
     /// </summary>
+    [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public abstract class PythonEngine
     {
         /// <summary>
@@ -83,13 +70,11 @@ namespace Dynamo.PythonServices
         /// <summary>
         /// Add an event handler before the Python evaluation begins
         /// </summary>
-        /// <param name="callback"></param>
         public abstract event EvaluationStartedEventHandler EvaluationStarted;
 
         /// <summary>
         /// Add an event handler after the Python evaluation has finished
         /// </summary>
-        /// <param name="callback"></param>
         public abstract event EvaluationFinishedEventHandler EvaluationFinished;
 
         /// <summary>
@@ -126,9 +111,11 @@ namespace Dynamo.PythonServices
         public static PythonEngineManager Instance { get { return lazy.Value; } }
         #endregion
 
+        //TODO see DYN-6550 when hiding/replacing this obsolete field.
         /// <summary>
         /// An observable collection of all the loaded Python engines
         /// </summary>
+        [Obsolete("AvailableEngines field will be replaced in a future Dynamo release.")]
         public ObservableCollection<PythonEngine> AvailableEngines;
 
         #region Constant strings
@@ -197,9 +184,9 @@ namespace Dynamo.PythonServices
             }
         }
 
-        private PythonEngine GetEngine(string version)
+        private PythonEngine GetEngine(string name)
         {
-            return AvailableEngines.FirstOrDefault(x => x.Name == version);
+            return AvailableEngines.FirstOrDefault(x => x.Name == name);
         }
 
         // This method can throw exceptions.
@@ -319,10 +306,8 @@ namespace Dynamo.PythonServices
         internal static readonly string atLeastOneSpaceRegex = @"(\s+)";
         internal static readonly string dictRegex = "({.*})";
         internal static readonly string basicImportRegex = @"(import)";
-        internal static readonly string fromImportRegex = @"^(from)"; internal static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
-        internal static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        internal static readonly string fromImportRegex = @"^(from)";
         internal static string arrayRegex = "(\\[.*\\])";
-        internal static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
         internal static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
         internal static string intRegex = @"([-+]?\d+)[\s\n]*$";
         internal const string quotesStringRegex = "[\"']([^\"']*)[\"']";
@@ -706,7 +691,7 @@ namespace Dynamo.PythonServices
                     var type = Type.GetType(typeName);
                     ImportedTypes.Add(name, type);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     LogError(String.Format("Failed to load module: {0}, with statement: {1}", memberName, statement));
                     // Log(e.ToString());
@@ -1020,7 +1005,6 @@ namespace Dynamo.PythonServices
         /// the given regex
         /// </summary>
         /// <param name="code">The code to search</param>
-        /// <param name="valueRegex">Your regex to match the type</param>
         /// <returns>A dictionary of name to assignment line pairs</returns>
         internal Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
         {

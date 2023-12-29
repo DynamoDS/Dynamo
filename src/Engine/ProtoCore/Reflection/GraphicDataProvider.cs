@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -141,49 +141,30 @@ namespace ProtoCore.Mirror
             return null;
         }
 
-        //Store marshaller for repeated calls to GetCLRObject.  Used for short-circuit of re-allocation of marshaller / interpreter object.
-        private static Interpreter interpreter;
-        private static ProtoFFI.FFIObjectMarshaler marshaler;
-        
         internal object GetCLRObject(StackValue svData, RuntimeCore runtimeCore)
         {
             if (null == runtimeCore.DSExecutable.classTable)
                 return null;
 
-            //The GetCLRObject function is typically utilized to retrieve a ClrObject from a StackValue of type pointer.
-            //There is an edge cases for pointers where the pointer references a non CLR object.  This code
-            //checks for this edge case by verifying that the requested StackValue pointer is associated with an
-            //imported library.  An example is the "Function" pointer which does not have an associated CLRObject.
-            //In that case, the return value should be null.
-            var classNode = runtimeCore.DSExecutable.classTable.GetClassNodeAtIndex(svData.metaData.type);
-            if (classNode != null  && !classNode.IsImportedClass)
-            {
+            IList<ClassNode> classNodes = runtimeCore.DSExecutable.classTable.ClassNodes;
+            if (null == classNodes || (classNodes.Count <= 0))
                 return null;
-            }
 
-            if (marshaler != null)
-            {
-                return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
-            }
+            ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[svData.metaData.type];
+            if (!classnode.IsImportedClass) //TODO: look at properties to see if it contains any FFI objects.
+                return null;
 
             try
             {
-                interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
+                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
                 var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                marshaler = helper.GetMarshaler(runtimeCore);
+                var marshaler = helper.GetMarshaler(runtimeCore);
                 return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
             }
             catch (System.Exception)
             {
-                marshaler = null;
                 return null;
             }
-        }
-
-        internal static void ClearMarshaller()
-        {
-            interpreter = null;
-            marshaler = null;
         }
     }
 

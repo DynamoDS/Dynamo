@@ -1,0 +1,282 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Insert",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Name": "String",
+      "Type": "string",
+      "Value": "Hello World",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "76b24f0487ce4d7893211ecce93be062",
+      "Name": "String",
+      "Type": "string",
+      "Value": "HI!",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "c2cdeef07e344f9388719d5a6371f08a",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Value": "4",
+      "MaximumValue": 15.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "Hello World",
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4edb3f07b0634846877dbc11872f44c0",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "1f79f9e394fc4650ad0f49067625f89a",
+      "Inputs": [
+        {
+          "Id": "f7f7dbef05d44a448cd3b0c6db892015",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "35663d000e6a4485a077054c289aa1c3",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "HI!",
+      "Id": "76b24f0487ce4d7893211ecce93be062",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "42628c9ff963424ba090ccb5c9145212",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.Insert@string,int,string",
+      "Id": "852da31b93ea490b99d4c26d9aa6e749",
+      "Inputs": [
+        {
+          "Id": "ef6aa6126c184dd3b49f9d24e8189381",
+          "Name": "str",
+          "Description": "String to insert into.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4c94861d01cf40af981315171e32f3d9",
+          "Name": "index",
+          "Description": "Index to insert at.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ad719aa559c0449a9a96c4e6f223ae16",
+          "Name": "toInsert",
+          "Description": "String to be inserted.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a113ef431fc64565a3a4986e5bade9f7",
+          "Name": "str",
+          "Description": "String with inserted substring.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Inserts a string into another string at a given index.\n\nString.Insert (str: string, index: int, toInsert: string): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 4,
+      "MaximumValue": 15,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "c2cdeef07e344f9388719d5a6371f08a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "91bbb8f6bf39416c9b25a5c813ec9b93",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4edb3f07b0634846877dbc11872f44c0",
+      "End": "ef6aa6126c184dd3b49f9d24e8189381",
+      "Id": "3f5191a44cb344b0a54491a95a212533"
+    },
+    {
+      "Start": "42628c9ff963424ba090ccb5c9145212",
+      "End": "ad719aa559c0449a9a96c4e6f223ae16",
+      "Id": "d86aaeaf666d4370a375a88ac9240fae"
+    },
+    {
+      "Start": "a113ef431fc64565a3a4986e5bade9f7",
+      "End": "f7f7dbef05d44a448cd3b0c6db892015",
+      "Id": "b7874caa6ca74730bc355b3d046a7ffd"
+    },
+    {
+      "Start": "91bbb8f6bf39416c9b25a5c813ec9b93",
+      "End": "4c94861d01cf40af981315171e32f3d9",
+      "Id": "75e1dc4f38c6452d9a87f0dc0ce44a08"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "8f335c73856340f8ab161a8c0eda22f1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 323.739384331773,
+        "Y": 222.50429561769
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "1f79f9e394fc4650ad0f49067625f89a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 697.786590542415,
+        "Y": 222.50429561769
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "76b24f0487ce4d7893211ecce93be062",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 358.939384331773,
+        "Y": 344.649111440617
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String.Insert",
+        "Id": "852da31b93ea490b99d4c26d9aa6e749",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 499.79146564342943,
+        "Y": 222.50429561769
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "c2cdeef07e344f9388719d5a6371f08a",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 118.939384331773,
+        "Y": 283.576703529154
+      }
+    ],
+    "Annotations": [],
+    "X": -96.3300578530784,
+    "Y": -186.337886737402,
+    "Zoom": 1.30764135636719
+  }
+}

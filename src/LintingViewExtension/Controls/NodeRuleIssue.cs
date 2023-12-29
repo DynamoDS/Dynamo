@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Linting.Rules;
 

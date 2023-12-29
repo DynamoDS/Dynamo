@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
@@ -29,7 +30,8 @@ namespace Dynamo.Tests.Loggings
                 PathResolver = pathResolver,
                 StartInTestMode = false,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
-                ProcessMode = TaskProcessMode.Synchronous
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = new PreferenceSettings()
             };
         }
 
@@ -141,8 +143,8 @@ namespace Dynamo.Tests.Loggings
 
             //Assert
             //We just check the consistence of the inserted registry value
-            Assert.IsNotNullOrEmpty(Registry.GetValue(keyName, "InstrumentationGUID", null) as string);
-            Assert.IsNotNullOrEmpty(guid);
+            Assert.That(Registry.GetValue(keyName, "InstrumentationGUID", null) as string, Is.Not.Null.Or.Empty);
+            Assert.That(guid, Is.Not.Null.Or.Empty);
             //The FileAction throws an ArgumentException when the action is not in the list (switch)
             Assert.Throws<ArgumentException>(() => Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Copy, 5));
         }

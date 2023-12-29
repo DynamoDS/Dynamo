@@ -1,0 +1,279 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Or",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "c5b52b608fef4ee18959d561bdd8c83f",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "false",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "Id": "9700ac1cef524d9caae0563be053a8f1",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "false",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "Id": "be6dbe3b93244fc595ba3cf5e6fbbd27",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "true",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "c5b52b608fef4ee18959d561bdd8c83f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d7765c5a9c504049b92e7adb233be787",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "9700ac1cef524d9caae0563be053a8f1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5997de2d3f8340cbaa97a33c335da3e1",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "be6dbe3b93244fc595ba3cf5e6fbbd27",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6a3a185c86e5487caa319c3a504c7aa9",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "088c5644bfd74940aef10d9b93c038cd",
+      "Inputs": [
+        {
+          "Id": "ce4aac4ec07242f380faf675d85a9e82",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "846682b191ba4a36b7396dc3aa185e7f",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.Or, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "860b637c31b34c3b8276199df978cc45",
+      "Inputs": [
+        {
+          "Id": "58c8ba6e34bb49a19d01f6743b84a4f4",
+          "Name": "bool0",
+          "Description": "operand",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c1d400bf8baf4a459e1935921482ef31",
+          "Name": "bool1",
+          "Description": "operand",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bb64d2a05a514b038bcc1dc7876f1059",
+          "Name": "bool2",
+          "Description": "Boolean #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "02a6b9eefe1b4e3a941485853b88a60a",
+          "Name": "",
+          "Description": "result",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d7765c5a9c504049b92e7adb233be787",
+      "End": "58c8ba6e34bb49a19d01f6743b84a4f4",
+      "Id": "eb2fd3f9c8034ad38410e09bba42f1e5"
+    },
+    {
+      "Start": "5997de2d3f8340cbaa97a33c335da3e1",
+      "End": "bb64d2a05a514b038bcc1dc7876f1059",
+      "Id": "3b680b1dfe8747c69d65f88064cc029b"
+    },
+    {
+      "Start": "6a3a185c86e5487caa319c3a504c7aa9",
+      "End": "c1d400bf8baf4a459e1935921482ef31",
+      "Id": "38420b7357c44944837215f736b1a278"
+    },
+    {
+      "Start": "02a6b9eefe1b4e3a941485853b88a60a",
+      "End": "ce4aac4ec07242f380faf675d85a9e82",
+      "Id": "ce574628af1941be8870eaef34c51a43"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -29.209306716918945,
+      "EyeY": 25.530412673950195,
+      "EyeZ": 30.849649429321289,
+      "LookX": 28.522310256958008,
+      "LookY": -14.32728385925293,
+      "LookZ": -38.002834320068359,
+      "UpX": 0.046052273362874985,
+      "UpY": 0.99705272912979126,
+      "UpZ": -0.061359576880931854
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "c5b52b608fef4ee18959d561bdd8c83f",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.71814811807,
+        "Y": -15.6060598390177
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "9700ac1cef524d9caae0563be053a8f1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.71814811807,
+        "Y": 99.8734824787418
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "be6dbe3b93244fc595ba3cf5e6fbbd27",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 278.71814811807,
+        "Y": 42.1337113198621
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "088c5644bfd74940aef10d9b93c038cd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 735.85877846501,
+        "Y": -15.6060598390177
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Or",
+        "Id": "860b637c31b34c3b8276199df978cc45",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 576.705759054533,
+        "Y": -15.606059839017703
+      }
+    ],
+    "Annotations": [],
+    "X": 59.1848215217248,
+    "Y": 100.295914796788,
+    "Zoom": 0.983759492495547
+  }
+}

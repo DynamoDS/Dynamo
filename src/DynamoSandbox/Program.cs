@@ -1,4 +1,4 @@
-﻿using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.Utilities;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -39,12 +39,11 @@ namespace DynamoSandbox
         /// <returns></returns>
         public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
-            var assemblyPath = string.Empty;
             var assemblyName = new AssemblyName(args.Name).Name + ".dll";
 
             try
             {
-                assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
+                string assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
                 if (File.Exists(assemblyPath))
                     return Assembly.LoadFrom(assemblyPath);
 
@@ -134,7 +133,7 @@ namespace DynamoSandbox
                     MessageBoxButton.OKCancel,
                     MessageBoxImage.Error))
             {
-                Process.Start("http://dynamobim.org/download/");
+                Process.Start(new ProcessStartInfo("http://dynamobim.org/download/") { UseShellExecute = true });
             }
         }
     }

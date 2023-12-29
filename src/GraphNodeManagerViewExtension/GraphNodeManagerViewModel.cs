@@ -1,24 +1,23 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
-//using System.Windows.Input;
 using Dynamo.Core;
+using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.GraphNodeManager.Properties;
 using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Models;
-using Dynamo.Wpf.Extensions;
-using Dynamo.Extensions;
-using Dynamo.GraphNodeManager.Properties;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Microsoft.Practices.Prism.Commands;
+using Dynamo.Wpf.Extensions;
+using Newtonsoft.Json;
+using Prism.Commands;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 using GridNodeViewModel = Dynamo.GraphNodeManager.ViewModels.GridNodeViewModel;
-using Newtonsoft.Json;
 
 namespace Dynamo.GraphNodeManager
 {
@@ -196,8 +195,7 @@ namespace Dynamo.GraphNodeManager
 
             DynamoVersion = p.StartupParams.DynamoVersion.ToString();
 
-            var dynamoViewModel = p.DynamoWindow.DataContext as DynamoViewModel;
-            HostName = dynamoViewModel.Model.HostName;  // will become obsolete in Dynamo 3.0
+            HostName = DynamoModel.HostAnalyticsInfo.HostName;
 
             // For node package info
             var pmExtension = viewLoadedParams.ViewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
@@ -483,11 +481,11 @@ namespace Dynamo.GraphNodeManager
                         NodesCollection.View.Refresh();
                 });
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (InvalidOperationException)
             {
                 return;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return;
             }

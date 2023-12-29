@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
@@ -500,7 +500,7 @@ namespace Dynamo.Tests
 
         #region to string test cases  
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void TestToStringEmptyInput()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestToString_emptyString.dyn");
@@ -510,7 +510,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void TestToStringFileInput()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestToString_fromFile.dyn");
@@ -520,7 +520,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void TestToStringFunctionInput()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestToString_fromFunction.dyn");
@@ -530,7 +530,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void TestToStringNormalInput()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestToString_normal.dyn");

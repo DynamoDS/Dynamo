@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Configuration;
+using System.Runtime.Loader;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
@@ -19,9 +19,6 @@ namespace Dynamo.PackageManager
     public struct LoadPackageParams
     {
         public IPreferences Preferences { get; set; }
-
-        [Obsolete("Do not use. This will be removed in Dynamo 3.0")]
-        public IPathManager PathManager { get; set; }
     }
 
     public enum AssemblyLoadingState
@@ -73,23 +70,10 @@ namespace Dynamo.PackageManager
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
         /// <summary>
-        /// Returns the default package directory where new packages will be installed
-        /// This is the first non builtin packages directory
-        /// The first entry is the builtin packages.
-        /// </summary>
-        /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
-        [Obsolete("This property is redundant, please use the PathManager.DefaultPackagesDirectory property instead.")]
-        public string DefaultPackagesDirectory
-        {
-            get { return pathManager.DefaultPackagesDirectory; }
-        }
-
-        /// <summary>
         /// Combines the extension with the root path and returns it if the path exists. 
         /// If not, the root path is returned unchanged.
         /// </summary>
         /// <param name="root">root path to transform</param>
-        /// <param name="userDataFolder"></param>
         /// <param name="extension">subdirectory or subpath</param>
         /// <returns>combined root and extension path</returns>
         private static string TransformPath(string root, string extension)
@@ -111,26 +95,6 @@ namespace Dynamo.PackageManager
 
         private readonly IPathManager pathManager;
 
-        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
-        /// <summary>
-        /// This constructor is currently being used for testing and these tests should be updated to use 
-        /// another constructor when this is obsoleted.
-        /// </summary>
-        public PackageLoader(string overridePackageDirectory)
-            : this(new[] { overridePackageDirectory })
-        {
-        }
-
-        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
-        /// <summary>
-        /// This constructor is currently being used by other constructors that have also been deprecated and by tests,
-        /// which should be updated to use another constructor when this is obsoleted.
-        /// </summary>
-        public PackageLoader(IEnumerable<string> packagesDirectories)
-        {
-            InitPackageLoader(packagesDirectories, null);
-        }
-
         internal PackageLoader(IPathManager pathManager)
         {
             this.pathManager = pathManager;
@@ -140,23 +104,6 @@ namespace Dynamo.PackageManager
             {
                 packagesDirectoriesToVerifyCertificates.Add(pathManager.CommonDataDirectory);
             }
-        }
-
-        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
-        /// <summary>
-        /// Initialize a new instance of PackageLoader class.
-        /// This constructor is currently being used for testing and these tests should be updated to use 
-        /// another constructor when this is obsoleted.
-        /// </summary>
-        /// <param name="packagesDirectories">Default package directories</param>
-        /// <param name="packageDirectoriesToVerify">Default package directories where node library files require certificate verification before loading</param>
-        public PackageLoader(IEnumerable<string> packagesDirectories, IEnumerable<string> packageDirectoriesToVerify)
-            : this(packagesDirectories)
-        {
-            if (packageDirectoriesToVerify == null)
-                throw new ArgumentNullException("packageDirectoriesToVerify");
-
-            packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
         }
 
         private void InitPackageLoader(IEnumerable<string> packagesDirectories, string builtinPackagesDir)
@@ -315,10 +262,12 @@ namespace Dynamo.PackageManager
                 }
 
                 package.SetAsLoaded();
-                PackgeLoaded?.Invoke(package);
+
 
                 PythonServices.PythonEngineManager.Instance.
                     LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
+
+                PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
             {
@@ -350,21 +299,6 @@ namespace Dynamo.PackageManager
         {
             var handler = ConflictingCustomNodePackageLoaded;
             handler?.Invoke(installed, conflicting);
-        }
-
-        /// <summary>
-        ///     Load the package into Dynamo (including all node libraries and custom nodes)
-        ///     and add to LocalPackages.
-        /// </summary>
-        // TODO: Remove in 3.0 (Refer to PR #9736).
-        [Obsolete("This API will be deprecated in 3.0. Use LoadPackages(IEnumerable<Package> packages) instead.")]
-        public void Load(Package package)
-        {
-            TryLoadPackageIntoLibrary(package);
-
-            var assemblies =
-                LocalPackages.SelectMany(x => x.EnumerateAndLoadAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
-            PackagesLoaded?.Invoke(assemblies.Select(x => x.Assembly));
         }
 
         /// <summary>
@@ -572,9 +506,9 @@ namespace Dynamo.PackageManager
                     
                 }
             }
-            catch (UnauthorizedAccessException ex) { }
-            catch (IOException ex) { }
-            catch (ArgumentException ex) { }
+            catch (UnauthorizedAccessException) { }
+            catch (IOException) { }
+            catch (ArgumentException) { }
         }
 
         public Package ScanPackageDirectory(string directory)
@@ -692,15 +626,14 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="packageDirectoryPath">path to package location</param>
         /// <param name="discoveredPkg">package object to check</param>
-        private static void CheckPackageNodeLibraryCertificates(string packageDirectoryPath, Package discoveredPkg)
+        private void CheckPackageNodeLibraryCertificates(string packageDirectoryPath, Package discoveredPkg)
         {
             var dllfiles = new System.IO.DirectoryInfo(discoveredPkg.BinaryDirectory).EnumerateFiles("*.dll");
             if (discoveredPkg.Header.node_libraries.Count() == 0 && dllfiles.Count() != 0)
             {
-                throw new LibraryLoadFailedException(packageDirectoryPath,
-                    String.Format(
-                        Resources.InvalidPackageNoNodeLibrariesDefinedInPackageJson,
-                        discoveredPkg.Name, discoveredPkg.RootDirectory));
+                Log(String.Format(
+                    String.Format(Resources.InvalidPackageNoNodeLibrariesDefinedInPackageJson,
+                    discoveredPkg.Name, discoveredPkg.RootDirectory)));
             }
 
             foreach (var nodeLibraryAssembly in discoveredPkg.Header.node_libraries)
@@ -724,7 +657,10 @@ namespace Dynamo.PackageManager
                 var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename);
                 try
                 {
-                    CertificateVerification.CheckAssemblyForValidCertificate(filepath);
+                    if (OSHelper.IsWindows())
+                    {
+                        CertificateVerification.CheckAssemblyForValidCertificate(filepath);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -740,28 +676,38 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Attempt to load a managed assembly in to ReflectionOnlyLoadFrom context. 
+        ///     Attempt to load a managed assembly in to MetaDataLoad context. 
         /// </summary>
         /// <param name="filename">The filename of a DLL</param>
+        /// <param name="mlc">The MetaDataLoadContext to load the package assemblies into for inspection.</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns Success if success, NotManagedAssembly if BadImageFormatException, AlreadyLoaded if FileLoadException</returns>
-        internal static AssemblyLoadingState TryReflectionOnlyLoadFrom(string filename, out Assembly assem)
+        internal static AssemblyLoadingState TryMetaDataContextLoad(string filename,MetadataLoadContext mlc, out Assembly assem)
         {
-            try
-            {
-                assem = Assembly.ReflectionOnlyLoadFrom(filename);
-                return AssemblyLoadingState.Success;
-            }
-            catch (BadImageFormatException)
-            {
-                assem = null;
-                return AssemblyLoadingState.NotManagedAssembly;
-            }
-            catch (FileLoadException)
-            {
-                assem = null;
-                return AssemblyLoadingState.AlreadyLoaded;
-            }
+                try
+                {
+                    var mlcAssemblies = mlc.GetAssemblies();
+                    assem = mlc.LoadFromAssemblyPath(filename);
+                    var mlcAssemblies2 = mlc.GetAssemblies();
+                    //if loading the assembly did not actually add a new assembly to the MLC
+                    //then we've loaded it already, and our current behavior is to
+                    //disable publish when a package contains the same assembly twice.
+                    if (mlcAssemblies2.Count() == mlcAssemblies.Count())
+                    {
+                        throw new FileLoadException(filename);
+                    }
+                    return AssemblyLoadingState.Success;
+                }
+                catch (BadImageFormatException)
+                {
+                    assem = null;
+                    return AssemblyLoadingState.NotManagedAssembly;
+                }
+                catch (FileLoadException)
+                {
+                    assem = null;
+                    return AssemblyLoadingState.AlreadyLoaded;
+                }
         }
 
         /// <summary>

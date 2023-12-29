@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
-using System.Linq;
 
 namespace Dynamo.PackageManager
 {
@@ -14,6 +14,7 @@ namespace Dynamo.PackageManager
         #region Properties/Fields
 
         public const string PackageEngineName = "dynamo";
+        private IEnumerable<string> cachedHosts;
 
         // These were used early on in order to identify packages with binaries and python scripts
         // This is now a bona fide field in the DB so they are obsolete. 
@@ -62,6 +63,18 @@ namespace Dynamo.PackageManager
                 var pkgResponse = this.client.ExecuteAndDeserialize(new Upvote(packageId));
                 return pkgResponse.success;
             }, false);
+        }
+
+        internal List<string> UserVotes()
+        {
+            var votes = FailFunc.TryExecute(() =>
+            {
+                var nv = new GetUserVotes();
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<UserVotes>(nv);
+                return pkgResponse.content;
+            }, null);
+
+            return votes?.has_upvoted;
         }
 
         internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)
@@ -160,7 +173,8 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Gets the metadata for a specific version of a package.
         /// </summary>
-        /// <param name="packageInfo">Name and version of a package</param>
+        /// <param name="id">Name and version of a package</param>
+        /// <param name="version"></param>
         /// <returns>Package version metadata</returns>
         internal virtual PackageVersion GetPackageVersionHeader(string id, string version)
         {
@@ -179,12 +193,16 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal virtual IEnumerable<string> GetKnownHosts()
         {
-            return FailFunc.TryExecute(() =>
+            if (cachedHosts == null)
             {
-                var hosts = new Hosts();
-                var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
-                return hostsResponse.content;
-            }, new List<string>());
+                cachedHosts = FailFunc.TryExecute(() =>
+                {
+                    var hosts = new Hosts();
+                    var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
+                    return hostsResponse.content;
+                }, new List<string>());
+            }
+            return cachedHosts;
         }
 
         internal bool GetTermsOfUseAcceptanceStatus()
@@ -207,33 +225,46 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, bool isNewVersion)
+        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
             Task.Factory.StartNew(() =>
             {
-                Publish(package, files, isNewVersion, packageUploadHandle);
+                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle);
             });
 
             return packageUploadHandle;
         }
 
-        internal void Publish(Package package, IEnumerable<string> files, bool isNewVersion, PackageUploadHandle packageUploadHandle)
+
+        internal PackageUploadHandle PublishRetainAsync(Package package, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, bool isNewVersion)
+        {
+            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
+
+            Task.Factory.StartNew(() =>
+            {
+                PublishRetainFolderStructure(package, files, markdownFiles, isNewVersion, packageUploadHandle);
+            });
+
+            return packageUploadHandle;
+        }
+
+        internal void Publish(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle)
         {
             try
             {
                 ResponseBody ret = null;
                 if (isNewVersion)
                 {
-                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, files,
+                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
                 }
                 else
                 {
-                    var pkg = uploadBuilder.NewPackageUpload(package, packageUploadDirectory, files,
+                    var pkg = uploadBuilder.NewPackageUpload(package, packageUploadDirectory, files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
@@ -258,26 +289,54 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete("No longer used. Delete in 3.0")]
-        internal PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
+        /// <summary>
+        /// This method allows the user to publish a package retaining their predefined folder structure
+        /// In this case, Dynamo will not allocate files in specific folders, but instead will replicate the folder structure under the chosen publish path
+        /// </summary>
+        /// <param name="package">The newly created package</param>
+        /// <param name="files">List of folders. Each list of lists represents a root folder. There can be one or many root folders.</param>
+        /// <param name="markdownFiles">Any files located in the user specified markdown folder.</param>
+        /// <param name="isNewVersion">A boolean showing if this is a new package, or an update to an existing package.</param>
+        /// <param name="packageUploadHandle">The PackageUploadHandle used to communicate the status of the upload.</param>
+        internal void PublishRetainFolderStructure(Package package, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle)
         {
-            var pkgDownload = new HeaderDownload(id);
-
             try
             {
-                var response = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgDownload);
-                if (!response.success) throw new Exception(response.message);
-                header = response.content;
+                ResponseBody ret = null;
+                if (isNewVersion)
+                {
+                    var pkg = uploadBuilder.NewPackageVersionRetainUpload(package, packageUploadDirectory, files, markdownFiles,
+                        packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                else
+                {
+                    var pkg = uploadBuilder.NewPackageRetainUpload(package, packageUploadDirectory, files, markdownFiles,
+                        packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                if (ret == null)
+                {
+                    packageUploadHandle.Error("Failed to submit.  Try again later.");
+                    return;
+                }
+
+                if (ret != null && !ret.success)
+                {
+                    packageUploadHandle.Error(ret.message);
+                    return;
+                }
+
+                packageUploadHandle.Done(null);
             }
             catch (Exception e)
             {
-                var a = PackageManagerResult.Failed(e.Message);
-                header = null;
-                return a;
+                packageUploadHandle.Error(e.GetType() + ": " + e.Message);
             }
-
-            return new PackageManagerResult("", true);
         }
+
 
         internal PackageManagerResult Deprecate(string name)
         {

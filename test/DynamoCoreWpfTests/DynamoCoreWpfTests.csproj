@@ -1,4 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
@@ -14,20 +17,36 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="HelixToolkit" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
+    </ItemGroup>
   <ItemGroup>
-	  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
-    <PackageReference Include="Moq" Version="4.2.1507.0118" />
+	  <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+
+      <!--roslyn compiler apis direct references so we can copy them to the test_dependencies folder-->
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" GeneratePathProperty="true">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.11.0" GeneratePathProperty="true">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      
+    <PackageReference Include="Moq" Version="4.18.4" />
 	  <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-	  <PackageReference Include="Greg" Version="2.3.0.2505">
+	  <PackageReference Include="Greg" Version="3.0.0.3175">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
-	  <PackageReference Include="HelixToolkit" Version="2.17.0" />
-	  <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
-	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
-	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
-	  <PackageReference Include="NUnit" Version="2.6.3" />
-	  <PackageReference Include="RestSharp" Version="106.12.0" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	  <PackageReference Include="NUnit" Version="3.13.3" />
+	  <PackageReference Include="RestSharp" Version="108.0.1">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="SharpDX" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
@@ -35,21 +54,9 @@
 	  <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
+      <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+      <PackageReference Include="Prism.Core" Version="8.1.97" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj">
@@ -126,11 +133,9 @@
       <Name>DynamoConVersions</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
-      <Name>Units</Name>
-      <Private>False</Private>
-    </ProjectReference>
+      <ProjectReference Include="..\..\src\Libraries\DynamoUnits\UnitsCore.csproj">
+        <Private>False</Private>
+      </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
       <Project>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</Project>
       <Name>PythonNodeModelsWpf</Name>
@@ -209,4 +214,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\DocumentationBrowserScriptsTest.html" />
   </ItemGroup>
+
+    <Target Name="CopyRoslynToTestDepsFolder" AfterTargets="Build">
+        <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
+        <!--roslyn compiler api and deps-->
+        <Copy SourceFiles="$(PkgMicrosoft_CodeAnalysis_CSharp)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll" DestinationFolder="$(TestDependenciesPath)" />
+        <Copy SourceFiles="$(PkgMicrosoft_CodeAnalysis_Common)\lib\netstandard2.0\Microsoft.CodeAnalysis.dll" DestinationFolder="$(TestDependenciesPath)" />
+
+    </Target>
 </Project>
