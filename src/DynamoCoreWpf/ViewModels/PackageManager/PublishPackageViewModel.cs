@@ -1463,7 +1463,7 @@ namespace Dynamo.PackageManager
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select( ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
-                MessageBoxService.Show(System.Windows.Application.Current.MainWindow, Resources.MessageUnsavedChanges0, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, Resources.MessageUnsavedChanges0, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 throw new Exception(Resources.MessageUnsavedChanges0 +
                                     String.Join(", ", unsavedWorkspaceNames) +
                                     Resources.MessageUnsavedChanges1);
