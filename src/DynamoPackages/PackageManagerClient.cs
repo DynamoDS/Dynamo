@@ -337,26 +337,6 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete("No longer used. Delete in 3.0")]
-        internal PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
-        {
-            var pkgDownload = new HeaderDownload(id);
-
-            try
-            {
-                var response = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgDownload);
-                if (!response.success) throw new Exception(response.message);
-                header = response.content;
-            }
-            catch (Exception e)
-            {
-                var a = PackageManagerResult.Failed(e.Message);
-                header = null;
-                return a;
-            }
-
-            return new PackageManagerResult("", true);
-        }
 
         internal PackageManagerResult Deprecate(string name)
         {

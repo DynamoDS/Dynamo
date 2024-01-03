@@ -13,7 +13,3 @@ using System.Runtime.InteropServices;
 [assembly:InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
 [assembly: InternalsVisibleTo("UnitsNodeModels")]
-
-
-//move DynamoUnits.Display to DynamoServices.dll
-[assembly: TypeForwardedTo(typeof(DynamoUnits.Display))]

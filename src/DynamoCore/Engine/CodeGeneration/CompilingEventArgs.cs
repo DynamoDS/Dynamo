@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Dynamo.Engine.CodeGeneration
 {
@@ -13,18 +13,6 @@ namespace Dynamo.Engine.CodeGeneration
         public CompilingEventArgs(Guid node)
         {
             nodeId = node;
-        }
-
-        /// <summary>
-        /// Guid of NodeModel that is being compiled to AST.
-        /// </summary>
-        [Obsolete("This item is being obsoleted due to the incorrect namimg, the new property to use is NodeId")]
-        public Guid Node
-        {
-            get
-            {
-                return nodeId;
-            }
         }
 
         /// <summary>

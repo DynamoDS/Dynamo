@@ -316,20 +316,6 @@ namespace Dynamo.Models
         /// This method will always try to show the Autodesk CER UI first (if the CER tool is found on disk). 
         /// If the CER tool is not found, the Dynamo in-house crash prompt will be shown.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args">Can be called with CrashErrorReportArgs or CrashPromptArgs</param>
-        [Obsolete("Will be removed in Dynamo3.0. Please use 'OnRequestsCrashPrompt(CrashErrorReportArgs args)' instead.")]
-        public void OnRequestsCrashPrompt(object sender, CrashPromptArgs args)
-        {
-            if (RequestsCrashPrompt != null)
-                RequestsCrashPrompt(this, args);
-        }
-
-        /// <summary>
-        /// Shows the crash error reporting window.
-        /// This method will always try to show the Autodesk CER UI first (if the CER tool is found on disk). 
-        /// If the CER tool is not found, the Dynamo in-house crash prompt will be shown.
-        /// </summary>
         /// <param name="args">CER options</param>
         public void OnRequestsCrashPrompt(CrashErrorReportArgs args)
         {

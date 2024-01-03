@@ -216,14 +216,6 @@ namespace Dynamo.UI
             }
         }
 
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortsDictionary or OutPortsDictionary")]
-        public static ResourceDictionary PortsDictionary
-        {
-            get {
-                return _portsDictionary ?? (_portsDictionary = new ResourceDictionary() {Source = PortsDictionaryUri});
-            }
-        }
-
         public static ResourceDictionary OutPortsDictionary
         {
             get
