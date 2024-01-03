@@ -238,5 +238,11 @@ namespace Dynamo.PackageManager.UI
                 }
             }
         }
+
+        private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
+        {
+            this.PackageManagerViewModel.PackageSearchViewModel
+                .PackageManagerClientViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
+        }
     }
 }
