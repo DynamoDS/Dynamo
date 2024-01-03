@@ -195,8 +195,7 @@ namespace Dynamo.GraphNodeManager
 
             DynamoVersion = p.StartupParams.DynamoVersion.ToString();
 
-            var dynamoViewModel = p.DynamoWindow.DataContext as DynamoViewModel;
-            HostName = dynamoViewModel.Model.HostName;  // will become obsolete in Dynamo 3.0
+            HostName = DynamoModel.HostAnalyticsInfo.HostName;
 
             // For node package info
             var pmExtension = viewLoadedParams.ViewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();

@@ -56,8 +56,6 @@ namespace Dynamo.ViewModels
     public class PackagePathViewModel : ViewModelBase
     {
         public ObservableCollection<string> RootLocations { get; private set; }
-        [Obsolete("SelectedIndex is no longer referenced, do not use.")]
-        public int SelectedIndex { get; set; }
        
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)

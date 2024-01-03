@@ -660,17 +660,6 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="parseParams">Container for compilation related parameters</param>
         /// <returns>true if code compilation succeeds, false otherwise</returns>
-        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
-        public bool PreCompileCodeBlock(ref ParseParam parseParams)
-        {
-            return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);
-        }
-
-        /// <summary>
-        /// Pre-compiles Design script code in code block node.
-        /// </summary>
-        /// <param name="parseParams">Container for compilation related parameters</param>
-        /// <returns>true if code compilation succeeds, false otherwise</returns>
         internal bool PreCompileCodeBlock(ParseParam parseParams)
         {
             return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);
