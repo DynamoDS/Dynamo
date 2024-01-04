@@ -392,7 +392,7 @@ namespace Dynamo.PackageManager
 
 
         /// <summary>
-        /// Utility method to get the common file path 
+        /// Utility method to get the common file path, this may fail for files with the same partial name.
         /// </summary>
         /// <param name="s">A collection of filepaths</param>
         /// <returns></returns>
@@ -409,7 +409,7 @@ namespace Dynamo.PackageManager
                         break;
                     }
             }
-            return s[0].Substring(0, k);
+            return Path.GetDirectoryName(s[0].Substring(0, k));
         }
 
         #endregion
