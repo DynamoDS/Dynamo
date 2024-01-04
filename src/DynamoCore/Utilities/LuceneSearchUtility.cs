@@ -82,6 +82,13 @@ namespace Dynamo.Utilities
             FILE_SYSTEM
         }
 
+        public enum SearchType
+        {
+            Normal,
+            ByCategory,
+            ByEmptySpace
+        }
+
         // Used for creating the StandardAnalyzer
         internal Analyzer Analyzer;
 
@@ -264,7 +271,9 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         internal string CreateSearchQuery(string[] fields, string SearchTerm)
         {
+            SearchType searchType = SearchType.Normal;
             int fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMinEdits;
+            const int MaxNodeNamesRepeated = 20;
             // Use a larger max edit value - more tolerant with typo when search term is longer than threshold
             if (SearchTerm.Length > LuceneConfig.FuzzySearchMaxEditsThreshold)
             {
@@ -273,13 +282,21 @@ namespace Dynamo.Utilities
 
             var booleanQuery = new BooleanQuery();
             string searchTerm = QueryParser.Escape(SearchTerm);
-            var bCategoryBasedSearch = searchTerm.Contains('.') ? true : false;
+
+            if (searchTerm.Contains('.'))
+                searchType = SearchType.ByCategory;
+            else if (searchTerm.Contains(' '))
+                searchType = SearchType.ByEmptySpace;
+            else
+                searchType = SearchType.Normal;
+
+            var trimmedSearchTerm = searchType == SearchType.ByEmptySpace ? searchTerm.Replace(" ", "") : searchTerm;
 
             foreach (string f in fields)
             {
                 //Needs to be again due that now a query can contain different values per field (e.g. CategorySplitted:list, Name:tr)
                 searchTerm = QueryParser.Escape(SearchTerm);
-                if (bCategoryBasedSearch == true)
+                if (searchType == SearchType.ByCategory)
                 {
                     //This code section should be only executed if the search criteria is CategoryBased like "category.nodename"
                     if (f != nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) &&
@@ -297,26 +314,26 @@ namespace Dynamo.Utilities
                     }                   
                 }
 
-                FuzzyQuery fuzzyQuery;
-                if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
-                {
-                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicMaxEdits);
-                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-                }
-
                 //For normal search we don't consider the fields NameSplitted and CategorySplitted
                 if ((f == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ||
-                    f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted)) && bCategoryBasedSearch == false)
+                    f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted)) && searchType != SearchType.ByCategory)
                     continue;
 
                 //This case is for when the user type something like "list.", I mean, not specifying the node name or part of it
                 if (string.IsNullOrEmpty(searchTerm))
                     continue;
 
-                var fieldQuery = CalculateFieldWeight(f, searchTerm);
-                var wildcardQuery = CalculateFieldWeight(f, searchTerm, true);
+                FuzzyQuery fuzzyQuery;
+                if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
+                {
+                    fuzzyQuery = new FuzzyQuery(new Term(f, searchType == SearchType.ByEmptySpace ? trimmedSearchTerm : searchTerm), fuzzyLogicMaxEdits);
+                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+                }
 
-                if (bCategoryBasedSearch && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                var fieldQuery = CalculateFieldWeight(f, searchType == SearchType.ByEmptySpace ? trimmedSearchTerm : searchTerm);
+                var wildcardQuery = CalculateFieldWeight(f, searchType == SearchType.ByEmptySpace ? trimmedSearchTerm : searchTerm, true);
+
+                if (searchType == SearchType.ByCategory && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
                 {
                     booleanQuery.Add(fieldQuery, Occur.MUST);
                     booleanQuery.Add(wildcardQuery, Occur.MUST);
@@ -331,6 +348,9 @@ namespace Dynamo.Utilities
                 {
                     foreach (string s in searchTerm.Split(' ', '.'))
                     {
+                        int nodesFrequency = dynamoModel.SearchModel.Entries.Where(entry => entry.Name.ToLower().Contains(s) && !string.IsNullOrEmpty(s)).Count();
+                        if (nodesFrequency > MaxNodeNamesRepeated) continue;
+
                         if (string.IsNullOrEmpty(s)) continue;
 
                         if (s.Length > LuceneConfig.FuzzySearchMinimalTermLength)
