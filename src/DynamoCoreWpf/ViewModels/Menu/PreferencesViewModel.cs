@@ -1425,17 +1425,15 @@ namespace Dynamo.ViewModels
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScale = new GeometryScalingOptions();
 
-            optionsGeometryScale.DescriptionScaleRange =
-            [
-                string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item2,
-                                                                                                  GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item3),
-                string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item2,
-                                                                                                  GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item3),
-                string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item2,
-                                                                                                  GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item3),
-                string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
-                                                                                                  GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item3),
-            ];
+            optionsGeometryScale.DescriptionScaleRange = new ObservableCollection<string>();
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item3));
 
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
