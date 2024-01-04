@@ -8082,7 +8082,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn More about publishing a package.
+        ///   Looks up a localized string similar to Learn more about packages.
         /// </summary>
         public static string PublishPackageDocTooltipText {
             get {
