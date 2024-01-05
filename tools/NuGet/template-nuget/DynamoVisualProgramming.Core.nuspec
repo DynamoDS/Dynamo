@@ -17,6 +17,8 @@
         <dependencies>
             <group targetFramework="$TargetFramework$">
                 <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
+                <!--NewtonSoft types are exposed in Dynamo public APIs-->
+                <dependency id="Newtonsoft.Json" version="13.0.1"/>
             </group>
         </dependencies>
     </metadata>

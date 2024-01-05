@@ -306,8 +306,20 @@ namespace SystemTestServices
             Assert.AreEqual(count, data.GetElements().ToList().Count);
         }
 
-        protected NodeModel GetNode(string guid)
+        /// <summary>
+        /// Returns the NodeModel corresponding to the input guid as type T
+        /// </summary>
+        /// <typeparam name="T">A NodeModel (or derived) type</typeparam>
+        /// <param name="guid">The node Guid</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
+        public NodeModel GetNode<T>(string guid) where T : class
         {
+            if (typeof(T) == typeof(NodeModel) || typeof(T).IsSubclassOf(typeof(NodeModel)))
+            {
+                throw new Exception($"{typeof(T)} is not of type NodeModel");
+            }
             var allNodes = ViewModel.Model.CurrentWorkspace.Nodes;
             var nodes = allNodes.Where(x => string.CompareOrdinal(x.GUID.ToString(), guid) == 0);
             if (nodes.Count() < 1)
