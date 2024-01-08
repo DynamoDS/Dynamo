@@ -98,6 +98,8 @@ namespace Dynamo.Notifications
             };
             logger = dynLogger;
 
+            System.Console.WriteLine($"NotificationCenterController WebView2 created {notificationUIPopup.webView.GetHashCode()}");
+
             // If user turns on the feature, they will need to restart Dynamo to see the count
             // This ensures no network traffic when Notification center feature is turned off
             if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter && !dynamoViewModel.Model.NoNetworkMode )
@@ -331,6 +333,8 @@ namespace Dynamo.Notifications
 
                 if (notificationUIPopup.webView != null)
                 {
+                    System.Console.WriteLine($"NotificationCenterController WebView2 disposed {notificationUIPopup.webView.GetHashCode()}");
+
                     notificationUIPopup.webView.Visibility = Visibility.Hidden;
                     notificationUIPopup.webView.Loaded -= InitializeBrowserAsync;
                     notificationUIPopup.webView.NavigationCompleted -= WebView_NavigationCompleted;

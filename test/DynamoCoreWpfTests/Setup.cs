@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows.Threading;
@@ -14,7 +15,7 @@ using NUnit.Framework;
         private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             e.Handled = true;
-            System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message + Environment.NewLine + e.Exception.StackTrace}");
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message + Environment.NewLine + e.Exception.StackTrace}");
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -22,8 +23,8 @@ using NUnit.Framework;
             var ex = e.ExceptionObject as Exception;
 
             string flPath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, "crash.log");
-            File.WriteAllText(flPath, $"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {ex.Message + Environment.NewLine + ex.StackTrace}");
-            System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {ex.Message + Environment.NewLine + ex.StackTrace}");
+            File.WriteAllText(flPath, $"PID {Process.GetCurrentProcess().Id} Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {ex.Message + Environment.NewLine + ex.StackTrace}");
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {ex.Message + Environment.NewLine + ex.StackTrace}");
         }
 
         [OneTimeSetUp]

@@ -85,7 +85,7 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
-            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
 
             var testConfig = GetTestSessionConfiguration();
 
@@ -167,7 +167,7 @@ namespace SystemTestServices
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name} ");
         }
 
         [OneTimeTearDown]

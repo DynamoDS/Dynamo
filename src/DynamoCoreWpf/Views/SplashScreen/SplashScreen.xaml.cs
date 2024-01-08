@@ -144,6 +144,9 @@ namespace Dynamo.UI.Views
 
             webView = new WebView2();
             ShadowGrid.Children.Add(webView);
+
+            System.Console.WriteLine($"SplashScreen WebView2 created {webView.GetHashCode()}");
+
             // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
@@ -553,6 +556,8 @@ namespace Dynamo.UI.Views
             }
             webView.Dispose();
             webView = null;
+
+            System.Console.WriteLine($"SplashScreen WebView2 disposed {webView.GetHashCode()}");
 
             GC.SuppressFinalize(this);
         }

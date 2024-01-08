@@ -42,6 +42,7 @@ namespace Dynamo.DocumentationBrowser
         public DocumentationBrowserView(DocumentationBrowserViewModel viewModel)
         {
             InitializeComponent();
+            System.Console.WriteLine($"Documentation browser WebView2 created {this.documentationBrowser.GetHashCode()}");
             this.DataContext = viewModel;
             this.viewModel = viewModel;
 
@@ -115,6 +116,8 @@ namespace Dynamo.DocumentationBrowser
             this.viewModel.LinkChanged -= NavigateToPage;
             if (this.documentationBrowser != null)
             {
+                System.Console.WriteLine($"Documentation browser WebView2 disposed {this.documentationBrowser.GetHashCode()}");
+
                 this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
                 this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
                 if (this.documentationBrowser.CoreWebView2 != null)

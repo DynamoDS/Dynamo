@@ -14,7 +14,6 @@ using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
 using Dynamo.LibraryViewExtensionWebView2.Views;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -125,12 +124,15 @@ namespace Dynamo.LibraryViewExtensionWebView2
             /// Also load the library.html and js files.
             LibraryViewModel model = new LibraryViewModel();
             LibraryView view = new LibraryView(model);
-
+           
             //Adding the LibraryView to the sidebar ensures that the webview2 component is visible.
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
 
             browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
+
+            System.Console.WriteLine($"LibraryView WebView2 created {browser.GetHashCode()}");
+
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
 
@@ -716,6 +718,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
             if (this.browser != null)
             {
+                System.Console.WriteLine($"LibraryView WebView2 disposed {browser.GetHashCode()}");
+
                 browser.CoreWebView2.RemoveHostObjectFromScript("bridgeTwoWay");
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;

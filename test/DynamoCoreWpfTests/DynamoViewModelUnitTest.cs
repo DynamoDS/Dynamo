@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -48,7 +49,7 @@ namespace Dynamo.Tests
         private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             e.Handled = true;
-            System.Console.WriteLine($"Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message}");
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {e.Exception.Message}");
         }
 
         public override void Cleanup()

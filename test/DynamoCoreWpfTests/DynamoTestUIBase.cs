@@ -40,7 +40,7 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
-            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -142,7 +142,7 @@ namespace DynamoCoreWpfTests
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)

@@ -90,6 +90,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             if (webBrowserComponent != null)
             {
+                System.Console.WriteLine($"PopUpWindow WebView2 collapsed {webBrowserComponent.GetHashCode()}");
                 webBrowserComponent.Visibility = Visibility.Collapsed;
             }
 
@@ -115,6 +116,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private async void InitWebView2Component()
         {
             webBrowserComponent = new WebView2();
+
+            System.Console.WriteLine($"PopUpWindow WebView2 disposed {webBrowserComponent.GetHashCode()}");
+
             webBrowserComponent.Margin = new System.Windows.Thickness(popupBordersOffSet, 0, 0, 0);
             webBrowserComponent.Width = popupViewModel.Width;
             //The height is subtracted by a const that sums the height of the header and footer of the popup
