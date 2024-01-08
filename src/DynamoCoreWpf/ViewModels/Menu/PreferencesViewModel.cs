@@ -1394,7 +1394,7 @@ namespace Dynamo.ViewModels
 
             // Chose the scaling unit, if option is allowed by user
             UnitList = Configurations.SupportedUnits.Keys.Select(x => GetLocalizedUnits(x)).ToObservableCollection();
-            SelectedUnits = Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key.ToString();
+            SelectedUnits = GetLocalizedUnits(Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key);
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
@@ -1439,11 +1439,13 @@ namespace Dynamo.ViewModels
             SavedChangesTooltip = string.Empty;
 
             // Add tabs
-            preferencesTabs = new Dictionary<string, TabSettings>();
-            preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
-            preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
-            preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
-            preferencesTabs.Add("Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty });
+            preferencesTabs = new Dictionary<string, TabSettings>
+            {
+                { "General", new TabSettings() { Name = "General", ExpanderActive = string.Empty } },
+                { "Features", new TabSettings() { Name = "Features", ExpanderActive = string.Empty } },
+                { "VisualSettings", new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty } },
+                { "Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty } }
+            };
 
             //create a packagePathsViewModel we'll use to interact with the package search paths list.
             var loadPackagesParams = new LoadPackageParams
