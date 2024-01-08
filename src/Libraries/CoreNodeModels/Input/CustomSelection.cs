@@ -130,36 +130,5 @@ namespace CoreNodeModels.Input
         {
             serializedItems = Items.ToList();
         }
-
-        [Obsolete]
-        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
-        {
-            nodeElement.SetAttribute("serializedItems", JsonConvert.SerializeObject(Items));
-
-            base.SerializeCore(nodeElement, context);
-        }
-
-        [Obsolete]
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
-        {
-            XmlAttribute itemsAttribute = nodeElement.Attributes["serializedItems"];
-
-            if (itemsAttribute == null)
-            {
-                return;
-            }
-
-            List<DynamoDropDownItem> items = JsonConvert.DeserializeObject<List<DynamoDropDownItem>>(itemsAttribute.Value);
-
-            Items.Clear();
-
-            foreach (DynamoDropDownItem item in items)
-            {
-                Items.Add(item);
-            }
-
-            base.DeserializeCore(nodeElement, context);
-        }
-
     }
 }

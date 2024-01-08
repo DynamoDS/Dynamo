@@ -187,7 +187,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), LibraryViewExtensionWebView2.ExtensionName);
-                LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
 
                 this.disableObserver = false;
             }));
@@ -201,19 +200,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
                 dynamoViewModel.ImportLibraryCommand.Execute(null)
             ));
-        }
-
-        /// <summary>
-        /// This function logs events to instrumentation if it matches a set of known events
-        /// </summary>
-        /// <param name="eventName">Event Name that gets logged to instrumentation</param>
-        /// <param name="data"> Data that gets logged to instrumentation </param>
-        public void LogEventsToInstrumentation(string eventName, string data)
-        {
-            if (eventName == "Search" || eventName == "Filter-Categories" || eventName == "Search-NodeAdded")
-            {
-                Analytics.LogPiiInfo(eventName, data);
-            }
         }
 
         /// <summary>

@@ -241,6 +241,7 @@ namespace Dynamo.Notifications
                     new ScriptObject(OnMarkAllAsRead, OnNotificationPopupUpdated));
 
                 notificationUIPopup.webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                notificationUIPopup.webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
             }
         }
 

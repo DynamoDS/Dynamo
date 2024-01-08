@@ -42,3 +42,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoPlayer")]
 [assembly: InternalsVisibleTo("DynamoConnector")]
 [assembly: InternalsVisibleTo("DynamoApplications")]
+[assembly: InternalsVisibleTo("DynamoUnits")]
