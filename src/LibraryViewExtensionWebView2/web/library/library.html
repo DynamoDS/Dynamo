@@ -88,11 +88,25 @@
             margin-top: 0.15rem;
             vertical-align: top !important;
         }
+
+        #overlay {
+            position: fixed;
+            display: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2;
+        }
     </style>
 
 </head>
 
 <body onresize="bodyResizeEvent()">
+    <div id="overlay"></div>
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
     <!-- The main library view component -->
@@ -412,6 +426,14 @@
             });
 
             document.dispatchEvent(kbEvent);
+        }
+
+        //This function will show the overlay over the Library when the Preferences/PackageManagerSearch are opened otherwiser is not visible
+        function fullOverlayVisible(enableOverlay) {
+            if (enableOverlay)
+                document.getElementById("overlay").style.display = "block";
+            else
+                document.getElementById("overlay").style.display = "none";
         }
     </script>
 
