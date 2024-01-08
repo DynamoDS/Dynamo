@@ -1,4 +1,4 @@
-@DYNAMO v.3.0.1 © 2023 Autodesk, Inc.  All rights reserved.
+@DYNAMO v.3.0.2 © 2023 Autodesk, Inc.  All rights reserved.
 Dynamo License
 
 Those portions created by Ian are provided with the following copyright:
