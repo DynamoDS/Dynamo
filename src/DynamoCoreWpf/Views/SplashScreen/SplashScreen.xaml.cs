@@ -554,10 +554,10 @@ namespace Dynamo.UI.Views
             {
                 authManager.LoginStateChanged -= OnLoginStateChanged;
             }
+            System.Console.WriteLine($"SplashScreen WebView2 disposed {webView.GetHashCode()}");
+
             webView.Dispose();
             webView = null;
-
-            System.Console.WriteLine($"SplashScreen WebView2 disposed {webView.GetHashCode()}");
 
             GC.SuppressFinalize(this);
         }
