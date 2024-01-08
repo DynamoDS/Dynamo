@@ -307,7 +307,7 @@ namespace SystemTestServices
         }
 
         /// <summary>
-        /// Returns the NodeModel corresponding to the input guid as type T
+        /// Returns the NodeModel corresponding to the input guid
         /// </summary>
         /// <typeparam name="T">A NodeModel (or derived) type</typeparam>
         /// <param name="guid">The node Guid</param>
@@ -316,7 +316,9 @@ namespace SystemTestServices
         [Obsolete("This method will be removed in a future version of Dynamo")]
         public NodeModel GetNode<T>(string guid) where T : class
         {
-            if (typeof(T) == typeof(NodeModel) || typeof(T).IsSubclassOf(typeof(NodeModel)))
+            bool isNodeModel = typeof(T) == typeof(NodeModel);
+            bool isDerivedFromNodeModel = typeof(T).IsSubclassOf(typeof(NodeModel));
+            if ( !isNodeModel && !isDerivedFromNodeModel)
             {
                 throw new Exception($"{typeof(T)} is not of type NodeModel");
             }
