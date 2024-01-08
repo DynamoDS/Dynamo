@@ -164,6 +164,9 @@ namespace SystemTestServices
             {
                 Console.WriteLine(ex.StackTrace);
             }
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
             System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 

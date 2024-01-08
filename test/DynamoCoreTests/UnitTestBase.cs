@@ -99,6 +99,9 @@ namespace Dynamo
             {
                 AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             }
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
             System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
         }
 
