@@ -1,8 +1,8 @@
 {
   "product_id": "DYN",
-  "release_id": "3.0.1",
-  "name": "DynamoCore3.0.1",
-  "marketing_release_name": "DynamoCore3.0.1",
-  "description":"DynamoCore3.0.1",
-  "code_name": "DynamoCore3.0.1"
+  "release_id": "3.0.0",
+  "name": "DynamoCore3.0.0",
+  "marketing_release_name": "DynamoCore3.0.0",
+  "description":"DynamoCore3.0.0",
+  "code_name": "DynamoCore3.0.0"
 }
