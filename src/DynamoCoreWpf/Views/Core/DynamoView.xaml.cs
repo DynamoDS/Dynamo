@@ -2344,8 +2344,8 @@ namespace Dynamo.Controls
 
                 //adds the overlay to the main Dynamo grid
                 mainGrid.Children.Add(backgroundElement);
-                Grid.SetColumnSpan(backgroundElement, 5);
-                Grid.SetRowSpan(backgroundElement, 6);
+                Grid.SetColumnSpan(backgroundElement, mainGrid.ColumnDefinitions.Count);
+                Grid.SetRowSpan(backgroundElement, mainGrid.RowDefinitions.Count);
             }
             else
             {
