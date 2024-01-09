@@ -72,6 +72,8 @@ namespace Dynamo.UI.Controls
         public string Caption { get; private set; }
         public string SubScript { get; set; }
         public string ToolTip { get; set; }
+        public string DateModified { get; set; }
+        public string Location { get; set; }
         public string ContextData { get; set; }
         public Action ClickAction { get; set; }
 
@@ -382,13 +384,36 @@ namespace Dynamo.UI.Controls
                         ContextData = filePath,
                         ToolTip = filePath,
                         SubScript = subScript,
-                        ClickAction = StartPageListItem.Action.FilePath
-                    });
+                        Location = filePath,
+                        DateModified = GetDateModified(filePath),
+                        ClickAction = StartPageListItem.Action.FilePath,
+
+                    }); ;
                 }
                 catch (ArgumentException ex)
                 {
                     DynamoViewModel.Model.Logger.Log("File path is not valid: " + ex.StackTrace);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Utility method to get the last time a file has been modified
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        private string GetDateModified(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+
+            if (fileInfo.Exists)
+            {
+                DateTime lastModified = fileInfo.LastWriteTime;
+                return lastModified.ToString();
+            }
+            else
+            {
+                return string.Empty;
             }
         }
 

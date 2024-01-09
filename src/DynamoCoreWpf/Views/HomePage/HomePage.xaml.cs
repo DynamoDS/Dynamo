@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +24,8 @@ namespace Dynamo.UI.Views
     {
         // These are hardcoded string and should only change when npm package structure changed or image path changed
         private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.bundle.js";
+        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.bundle.js";
+        //private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.bundle.js";
         private static readonly string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderName = "embeddedFonts";
         private static readonly string virtualFolderPath = Path.Combine(Path.GetTempPath(), virtualFolderName);
@@ -36,6 +38,11 @@ namespace Dynamo.UI.Views
         /// The WebView2 Browser instance used to display splash screen
         /// </summary>
         internal WebView2 webView;
+
+        internal Action<string> RequestOpenFile;
+        internal Action RequestNewWorkspace;
+        internal Action RequestOpenWorkspace;
+        internal Action RequestNewCustomNodeWorkspace;
 
         public HomePage()
         {   
@@ -50,7 +57,12 @@ namespace Dynamo.UI.Views
             webView.ZoomFactor = 1.0;  // Set zoom factor (optional)
                 
             HostGrid.Children.Add(webView);
+
             // Bind event handlers
+            RequestOpenFile = OpenFile;
+            RequestNewWorkspace = NewWorkspace;
+            RequestOpenWorkspace = OpenWorkspace;
+            RequestNewCustomNodeWorkspace = NewCustomNodeWorkspace;
             //webView.NavigationCompleted += WebView_NavigationCompleted;
             //DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
             //DynamoModel.LanguageDetected += DynamoModel_LanguageDetected;
@@ -125,7 +137,7 @@ namespace Dynamo.UI.Views
             using (Stream stream = assembly.GetManifestResourceStream(jsEmbeddedFile))
             using (StreamReader reader = new StreamReader(stream))
             {
-                var jsString = reader.ReadToEnd();
+                var jsString = reader.ReadToEnd();  
                 jsonString = jsString;
             }
 
@@ -160,9 +172,11 @@ namespace Dynamo.UI.Views
                 Debug.WriteLine(ex.Message);
             }
 
+            // Exposing commands to the React front-end
+            webView.CoreWebView2.AddHostObjectToScript("scriptObject",
+               new ScriptHomeObject(RequestOpenFile, RequestNewWorkspace, RequestOpenWorkspace, RequestNewCustomNodeWorkspace));
+
             LoadingDone();
-            //webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-            //   new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
         }
 
         internal async void LoadingDone()
@@ -196,6 +210,28 @@ namespace Dynamo.UI.Views
             }
         }
 
+        internal void OpenFile(string path)
+        {
+            if (String.IsNullOrEmpty(path)) return;
+
+            this.startPage.DynamoViewModel.OpenCommand.Execute(path);
+        }
+
+        internal void NewWorkspace()
+        {
+            this.startPage.DynamoViewModel.NewHomeWorkspaceCommand.Execute(null);
+        }
+
+        internal void OpenWorkspace()
+        {
+            this.startPage.DynamoViewModel.ShowOpenDialogAndOpenResultCommand.Execute(null);
+        }
+
+        internal void NewCustomNodeWorkspace()
+        {
+            this.startPage.DynamoViewModel.ShowNewFunctionDialogCommand.Execute(null);
+        }
+
         public void Dispose()
         {
             DataContextChanged -= OnDataContextChanged;
@@ -204,6 +240,45 @@ namespace Dynamo.UI.Views
             {
                 File.Delete(fontFilePath);
             }
+        }
+    }
+
+
+    [ClassInterface(ClassInterfaceType.AutoDual)]
+    [ComVisible(true)]
+    public class ScriptHomeObject
+    {
+        readonly Action<string> RequestOpenFile;
+        readonly Action RequestNewWorkspace;
+        readonly Action RequestOpenWorkspace;
+        readonly Action RequestNewCustomNodeWorkspace;
+
+        public ScriptHomeObject(Action<string> requestOpenFile, Action requestNewWorkspace, Action requestOpenWorkspace, Action requestNewCustomNodeWorkspace)
+        {
+            RequestOpenFile = requestOpenFile;
+            RequestNewWorkspace = requestNewWorkspace;
+            RequestOpenWorkspace = requestOpenWorkspace;
+            RequestNewCustomNodeWorkspace = requestNewCustomNodeWorkspace;
+        }
+
+        public void OpenFile(string path)
+        {
+            RequestOpenFile(path);
+        }
+
+        public void NewWorkspace()
+        {
+            RequestNewWorkspace();
+        }
+
+        public void OpenWorkspace()
+        {
+            RequestOpenWorkspace();
+        }
+
+        public void NewCustomNodeWorkspace()
+        {
+            RequestNewCustomNodeWorkspace();
         }
     }
 }
