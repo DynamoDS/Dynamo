@@ -256,50 +256,50 @@
         In either case, the assembly must be tagged as a node library. Currently, for assemblies marked as node library that contain NodeModel or NodeCustomization types, all other types will be ignored. For this reason, it is important to separate NodeModel/NodeViewCustomization types from types you wish to import using ZeroTouch import.
     </p>
     </p>
-    <!--
-        <p>
+    <!-- TODO, uncomment after DYN-6589
+    <p>
 
-            <b>Retain folder structure:</b><br />
-            <p>
-                Advanced package authors with complex package folder structures may want to enable the Retain Folder Structure toggle below the package contents preview panel.
-                When this setting is toggled on, Dynamo won’t make changes to your package folder structure; instead, the package will be uploaded as is.
-            </p>
-            <p>
-                This is an advanced setting because packages need to be set up in a certain way to ensure they work and to avoid any issues.
-                When in doubt, toggle the setting off to allow Dynamo to set up the folder structure.
-            </p>
-        </p>
-        -->
+        <b>Retain folder structure:</b><br />
         <p>
-            <b>Preview Package Contents:</b><br />
-                When you are satisfied with your package contents, click Next to see a preview of how the package files will be set up once they are published.
-                This page is view only; to make additional changes to the package contents, go back to the previous page. Click Finish to return to the package details page.
+            Advanced package authors with complex package folder structures may want to enable the Retain Folder Structure toggle below the package contents preview panel.
+            When this setting is toggled on, Dynamo won’t make changes to your package folder structure; instead, the package will be uploaded as is.
         </p>
         <p>
-            <b>Add markdown file path (optional):</b><br />
-            You have the option to specify a file path that hosts markdown (.md) documentation for your package in the Markdown Files Path section.
+            This is an advanced setting because packages need to be set up in a certain way to ensure they work and to avoid any issues.
+            When in doubt, toggle the setting off to allow Dynamo to set up the folder structure.
         </p>
-        <p>
-            <b>Publishing your package</b><br />
-            After filling in all the required details, you can publish the package locally or online. When publishing locally, the package will be published in the local root directory, whereas when publishing online, the package will be uploaded to the Package Manager.
-        </p>
+    </p>
+    -->
+    <p>
+        <b>Preview Package Contents:</b><br />
+        When you are satisfied with your package contents, click Next to see a preview of how the package files will be set up once they are published.
+        This page is view only; to make additional changes to the package contents, go back to the previous page. Click Finish to return to the package details page.
+    </p>
+    <p>
+        <b>Add markdown file path (optional):</b><br />
+        You have the option to specify a file path that hosts markdown (.md) documentation for your package in the Markdown Files Path section.
+    </p>
+    <p>
+        <b>Publishing your package</b><br />
+        After filling in all the required details, you can publish the package locally or online. When publishing locally, the package will be published in the local root directory, whereas when publishing online, the package will be uploaded to the Package Manager.
+    </p>
 
-        <hr />
+    <hr />
 
-        <h3>Anti-virus Scans</h3>
-        <p>
-            To provide a secure environment to all Dynamo package users, we have introduced anti-virus scans for new packages.
-            When a user uploads a package, it will be scanned for viruses and will only be available publicly once it has been flagged as safe.
-            The scan will happen during the package upload process and will not add to the usual duration of 10-15 minutes for the new package to be available online.
-            If your package is flagged as infected, the Package Manager search page will display a notification stating that the uploaded package has been found to be infected and won't be published online.
-            To make the package publicly available, check the files included with the package and upload a new version through the Package Manager.
-        </p>
-        <h3>Managing your packages</h3>
-        <p>
-            You can find a list of your published packages in the My Packages tab of the Package Manager, where you can deprecate them, publish a new version, etc.
-        </p>
-        <h3>Package Settings</h3>
-        <p>
-            You can view your package-related settings in the Package Settings tab of the Package Manager, including new package download paths and package/library search paths. To edit your settings, click the Preferences link in the Package Settings tab to access the Preferences panel.
-        </p>
-    </body>
+    <h3>Anti-virus Scans</h3>
+    <p>
+        To provide a secure environment to all Dynamo package users, we have introduced anti-virus scans for new packages.
+        When a user uploads a package, it will be scanned for viruses and will only be available publicly once it has been flagged as safe.
+        The scan will happen during the package upload process and will not add to the usual duration of 10-15 minutes for the new package to be available online.
+        If your package is flagged as infected, the Package Manager search page will display a notification stating that the uploaded package has been found to be infected and won't be published online.
+        To make the package publicly available, check the files included with the package and upload a new version through the Package Manager.
+    </p>
+    <h3>Managing your packages</h3>
+    <p>
+        You can find a list of your published packages in the My Packages tab of the Package Manager, where you can deprecate them, publish a new version, etc.
+    </p>
+    <h3>Package Settings</h3>
+    <p>
+        You can view your package-related settings in the Package Settings tab of the Package Manager, including new package download paths and package/library search paths. To edit your settings, click the Preferences link in the Package Settings tab to access the Preferences panel.
+    </p>
+</body>
