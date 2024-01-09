@@ -13,6 +13,10 @@ namespace DynamoUtilities
         private static ConcurrentDictionary<string, int> WebView2Counter = new ConcurrentDictionary<string, int>();
         internal static void IncrementWebView2(string containingType)
         {
+            if (!WebView2Counter.TryGetValue(containingType, out _))
+            {
+                WebView2Counter.TryAdd(containingType, 0);
+            }
             WebView2Counter[containingType]++;
         }
 
