@@ -2408,7 +2408,7 @@ Uninstall the following packages: {0}?</value>
     <comment>File menu | Export</comment>
   </data>
   <data name="PublishPackageDocTooltipText" xml:space="preserve">
-    <value>Learn More about publishing a package</value>
+    <value>Learn more about packages</value>
   </data>
   <data name="PreferencesViewFeaturesTab" xml:space="preserve">
     <value>Features</value>

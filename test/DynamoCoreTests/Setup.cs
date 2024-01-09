@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using Dynamo.Models;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -9,20 +8,6 @@ using NUnit.Framework;
     public class Setup
     {
         private AssemblyHelper assemblyHelper;
-
-        /// <summary>
-        /// Skip loading WPF nodes during DynamoCore tests because they will fail to load and will generate too many useless logs
-        /// </summary>
-        /// <param name="assemblyPath"></param>
-        /// <returns></returns>
-        private bool NodeModelAssemblyLoader_shouldLoadAssemblyPath(string assemblyPath)
-        {
-            if (assemblyPath.Contains("WPF", StringComparison.OrdinalIgnoreCase) || assemblyPath.Contains("UI", StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-            return true;
-        }
 
         [OneTimeSetUp]
         public void RunBeforeAllTests()
@@ -39,7 +24,6 @@ using NUnit.Framework;
 
             assemblyHelper = new AssemblyHelper(moduleRootFolder.FullName, resolutionPaths);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
-            NodeModelAssemblyLoader.shouldLoadAssemblyPath += NodeModelAssemblyLoader_shouldLoadAssemblyPath;
         }
 
         [OneTimeTearDown]
@@ -47,6 +31,5 @@ using NUnit.Framework;
         {
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
-            NodeModelAssemblyLoader.shouldLoadAssemblyPath -= NodeModelAssemblyLoader_shouldLoadAssemblyPath;
         }
     }
