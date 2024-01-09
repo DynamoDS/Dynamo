@@ -17,6 +17,7 @@ using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
+using DynamoUtilities;
 using NUnit.Framework;
 using TestServices;
 
@@ -41,6 +42,8 @@ namespace DynamoCoreWpfTests
         public virtual void Start()
         {
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.AssertCounters();
+            
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -142,6 +145,8 @@ namespace DynamoCoreWpfTests
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
+
+            TestUtilities.AssertCounters();
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
         }
 

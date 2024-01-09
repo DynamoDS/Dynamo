@@ -13,13 +13,19 @@ namespace DynamoCoreWpfTests
             var ss = new Dynamo.UI.Views.SplashScreen();
             ss.RequestLaunchDynamo(true);
             Assert.IsFalse(ss.CloseWasExplicit);
+
+            ss.CloseWindow();
         }
+
         [Test]
         public void SplashScreen_CloseExplicitPropIsCorrect2()
         {
             var ss = new Dynamo.UI.Views.SplashScreen();
             Assert.IsFalse(ss.CloseWasExplicit);
+
+            ss.CloseWindow();
         }
+
         [Test]
         public void SplashScreen_CloseExplicitPropIsCorrect3()
         {
@@ -27,7 +33,5 @@ namespace DynamoCoreWpfTests
             ss.CloseWindow();
             Assert.IsTrue(ss.CloseWasExplicit);
         }
-
-
     }
 }

@@ -5,9 +5,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
+using DynamoUtilities;
 using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.Wpf.Views.GuidedTour
@@ -90,10 +92,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             if (webBrowserComponent != null)
             {
-                System.Console.WriteLine($"PopUpWindow WebView2 collapsed {webBrowserComponent.GetHashCode()}");
                 webBrowserComponent.Visibility = Visibility.Collapsed;
             }
-
 
             if (isClosingTour)
             {
@@ -117,7 +117,10 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             webBrowserComponent = new WebView2();
 
-            System.Console.WriteLine($"PopUpWindow WebView2 disposed {webBrowserComponent.GetHashCode()}");
+            if (DynamoModel.IsTestMode)
+            {
+                TestUtilities.IncrementWebView2(nameof(PopupWindow));
+            }
 
             webBrowserComponent.Margin = new System.Windows.Thickness(popupBordersOffSet, 0, 0, 0);
             webBrowserComponent.Width = popupViewModel.Width;

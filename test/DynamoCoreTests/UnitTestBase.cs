@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using NUnit.Framework;
 
 namespace Dynamo
@@ -68,6 +69,8 @@ namespace Dynamo
         {
             
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.AssertCounters();
+
             SetupDirectories();
 
             if (assemblyHelper == null)
@@ -104,6 +107,8 @@ namespace Dynamo
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
+
+            TestUtilities.AssertCounters();
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
         }
 

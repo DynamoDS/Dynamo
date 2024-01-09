@@ -24,5 +24,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoApplications")]
 [assembly: InternalsVisibleTo("DynamoCLI")]
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
-[assembly: InternalsVisibleTo("DynamoUtilitiesTests")]
+[assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
 [assembly: InternalsVisibleTo("Notifications")]
+[assembly: InternalsVisibleTo("SystemTestServices")]

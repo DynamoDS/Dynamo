@@ -18,7 +18,8 @@ using Dynamo.Tests;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
-
+using DynamoUtilities;
+using ICSharpCode.AvalonEdit.Document;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
@@ -86,6 +87,7 @@ namespace SystemTestServices
         public virtual void Setup()
         {
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.AssertCounters();
 
             var testConfig = GetTestSessionConfiguration();
 
@@ -167,6 +169,8 @@ namespace SystemTestServices
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
+
+            TestUtilities.AssertCounters();
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name} ");
         }
 

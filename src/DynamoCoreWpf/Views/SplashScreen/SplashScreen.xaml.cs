@@ -145,7 +145,10 @@ namespace Dynamo.UI.Views
             webView = new WebView2();
             ShadowGrid.Children.Add(webView);
 
-            System.Console.WriteLine($"SplashScreen WebView2 created {webView.GetHashCode()}");
+            if (DynamoModel.IsTestMode)
+            {
+                TestUtilities.IncrementWebView2(nameof(SplashScreen));
+            }
 
             // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
@@ -554,7 +557,11 @@ namespace Dynamo.UI.Views
             {
                 authManager.LoginStateChanged -= OnLoginStateChanged;
             }
-            System.Console.WriteLine($"SplashScreen WebView2 disposed {webView.GetHashCode()}");
+
+            if (DynamoModel.IsTestMode)
+            {
+                TestUtilities.DecrementWebView2(nameof(SplashScreen));
+            }
 
             webView.Dispose();
             webView = null;

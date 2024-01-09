@@ -21,6 +21,8 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels;
+using DynamoUtilities;
+using ICSharpCode.AvalonEdit.Document;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
@@ -131,7 +133,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
             browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
 
-            System.Console.WriteLine($"LibraryView WebView2 created {browser.GetHashCode()}");
+            if (DynamoModel.IsTestMode)
+            {
+                TestUtilities.IncrementWebView2(nameof(LibraryView));
+            }
 
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
@@ -718,7 +723,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
             if (this.browser != null)
             {
-                System.Console.WriteLine($"LibraryView WebView2 disposed {browser.GetHashCode()}");
+                if (DynamoModel.IsTestMode)
+                {
+                    TestUtilities.DecrementWebView2(nameof(LibraryView));
+                }
 
                 browser.CoreWebView2.RemoveHostObjectFromScript("bridgeTwoWay");
                 browser.SizeChanged -= Browser_SizeChanged;
