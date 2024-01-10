@@ -6,6 +6,9 @@ using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.Wpf.Utilities
 {
+    /// <summary>
+    /// Custom Webview2 class designed to have a safer cleanup logic and give better debugging capabilities   
+    /// </summary>
     public class DynamoWebView2 : WebView2
     {
         #region API/Data used for debugging/testing
@@ -23,6 +26,8 @@ namespace Dynamo.Wpf.Utilities
             {
                 System.Console.WriteLine($"WebView2 instance with stamp {stamp} is being disposed of on non-UI thread");
             }
+            // We should dispose of webview2 only in the UI thread.
+            // Dispose can be called from the Finalizer (which can run on a non UI thread)
             if (Dispatcher != null)
             {
                 Dispatcher.Invoke(() =>
@@ -33,7 +38,7 @@ namespace Dynamo.Wpf.Utilities
             else
             {
                 System.Console.WriteLine($"WebView2 instance with stamp {stamp} is being disposed of but has no valid Dispatcher");
-                // Should we still try to dispose ?
+                // Should we still try to dispose ? (might crash if not on UI thread)
                 base.Dispose(disposing);
             }
         }
