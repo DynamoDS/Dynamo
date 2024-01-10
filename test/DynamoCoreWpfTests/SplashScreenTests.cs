@@ -11,13 +11,13 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public void SetUp()
         {
-            TestUtilities.AssertCounters();
+            TestUtilities.WebView2Stamp = TestContext.CurrentContext.Test.Name;
         }
 
         [TearDown]
         public void CleanUp()
         {
-            TestUtilities.AssertCounters();
+            TestUtilities.WebView2Stamp = string.Empty;
         }
 
         [Test]

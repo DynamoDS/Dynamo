@@ -98,11 +98,6 @@ namespace Dynamo.Notifications
             };
             logger = dynLogger;
 
-            if (TestUtilities.RunningFromNUnit)
-            {
-                TestUtilities.IncrementWebView2(nameof(Notifications));
-            }
-
             // If user turns on the feature, they will need to restart Dynamo to see the count
             // This ensures no network traffic when Notification center feature is turned off
             if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter && !dynamoViewModel.Model.NoNetworkMode )
@@ -336,11 +331,6 @@ namespace Dynamo.Notifications
 
                 if (notificationUIPopup.webView != null)
                 {
-                    if (TestUtilities.RunningFromNUnit)
-                    {
-                        TestUtilities.DecrementWebView2(nameof(Notifications));
-                    }
-
                     notificationUIPopup.webView.Visibility = Visibility.Hidden;
                     notificationUIPopup.webView.Loaded -= InitializeBrowserAsync;
                     notificationUIPopup.webView.NavigationCompleted -= WebView_NavigationCompleted;

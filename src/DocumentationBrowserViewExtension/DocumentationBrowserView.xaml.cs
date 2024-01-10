@@ -43,11 +43,6 @@ namespace Dynamo.DocumentationBrowser
         {
             InitializeComponent();
 
-            if (TestUtilities.RunningFromNUnit)
-            {
-                TestUtilities.IncrementWebView2(nameof(DocumentationBrowserView));
-            }
-
             this.DataContext = viewModel;
             this.viewModel = viewModel;
 
@@ -121,11 +116,6 @@ namespace Dynamo.DocumentationBrowser
             this.viewModel.LinkChanged -= NavigateToPage;
             if (this.documentationBrowser != null)
             {
-                if (TestUtilities.RunningFromNUnit)
-                {
-                    TestUtilities.DecrementWebView2(nameof(DocumentationBrowserView));
-                }
-
                 this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
                 this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
                 if (this.documentationBrowser.CoreWebView2 != null)

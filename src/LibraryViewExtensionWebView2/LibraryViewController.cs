@@ -20,6 +20,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit.Document;
@@ -76,7 +77,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private FloatingLibraryTooltipPopup libraryViewTooltip;
         // private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
-        internal WebView2 browser;
+        internal DynamoWebView2 browser;
         ScriptingObject twoWayScriptingObject;
         private const string CreateNodeInstrumentationString = "Search-NodeAdded";
         // TODO remove this when we can control the library state from Dynamo more precisely.
@@ -131,12 +132,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
 
-            browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
-
-            if (TestUtilities.RunningFromNUnit)
-            {
-                TestUtilities.IncrementWebView2(nameof(LibraryView));
-            }
+            browser = view.mainGrid.Children.OfType<DynamoWebView2>().FirstOrDefault();
 
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
@@ -723,11 +719,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
             if (this.browser != null)
             {
-                if (TestUtilities.RunningFromNUnit)
-                {
-                    TestUtilities.DecrementWebView2(nameof(LibraryView));
-                }
-
                 browser.CoreWebView2.RemoveHostObjectFromScript("bridgeTwoWay");
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;

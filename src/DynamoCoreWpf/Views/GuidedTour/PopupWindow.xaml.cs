@@ -5,12 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.GuidedTour;
-using DynamoUtilities;
-using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.Wpf.Views.GuidedTour
 {
@@ -29,7 +27,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         //Field that indicates wheter popups are left-aligned or right-aligned
         private const string menuDropAligment = "_menuDropAlignment";
 
-        internal WebView2 webBrowserComponent;
+        internal DynamoWebView2 webBrowserComponent;
         //Assembly path to the Font file
         private const string mainFontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
         //Assembly path to the Resources folder
@@ -115,12 +113,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private async void InitWebView2Component()
         {
-            webBrowserComponent = new WebView2();
-
-            if (TestUtilities.RunningFromNUnit)
-            {
-                TestUtilities.IncrementWebView2(nameof(PopupWindow));
-            }
+            webBrowserComponent = new DynamoWebView2();
 
             webBrowserComponent.Margin = new System.Windows.Thickness(popupBordersOffSet, 0, 0, 0);
             webBrowserComponent.Width = popupViewModel.Width;
