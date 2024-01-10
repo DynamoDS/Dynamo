@@ -178,7 +178,7 @@ namespace Dynamo.Tests
             Service.Instance.Unregister(factoryName);
         }
 
-        [Test, Order(1)]
+        [Test]
         public void AnalyticsTrackingEnabled()
         {
             VerifyEventTracking(Times.Exactly(1));
@@ -186,7 +186,7 @@ namespace Dynamo.Tests
             trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.AtLeast(10));
         }
 
-        [Test, Order(1)]
+        [Test]
         public void CreateDisposableEvents()
         {
             var variable = "TimeVariable";
@@ -211,6 +211,5 @@ namespace Dynamo.Tests
             //1 Create + 1 Dispose
             trackerMoq.Verify(t => t.Track(e as FileOperationEvent, factoryMoq.Object), Times.Exactly(2));
         }
-        
     }
 }
