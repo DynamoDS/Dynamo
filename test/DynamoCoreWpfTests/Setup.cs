@@ -21,9 +21,6 @@ using NUnit.Framework;
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = e.ExceptionObject as Exception;
-
-            string flPath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, "crash.log");
-            File.WriteAllText(flPath, $"PID {Process.GetCurrentProcess().Id} Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {ex.Message + Environment.NewLine + ex.StackTrace}");
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Unhandled exception thrown during test {TestContext.CurrentContext.Test.Name} with message : {ex.Message + Environment.NewLine + ex.StackTrace}");
         }
 

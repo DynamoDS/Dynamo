@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Threading;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.PackageManager;
@@ -1874,58 +1873,6 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(packageContents.Count, 2); // We expect 2 separate root item here
 
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(packageContents.First()));
-        }
-
-        private async void AsyncException()
-        {
-            await Task.Delay(500);
-            throw new Exception("Async Exception");
-        }
-
-        /// <summary>
-        /// DispatcherUtil.DoEvents (during testing) handles exceptions in a different way than the way Dynamo Live.
-        /// This test crashes Dynamo live but during testing the exception seems to be caught inside the internals of DispatcherUtil.DoEvents
-        /// Some tests might trigger continuation of async methods through other codepaths (not DoEvents) which might cause the test runner to crash
-        /// </summary>
-        [Test, Category("Failure")]
-        [Description("Does not crash the test runner. Hits CurrentDispatcher_UnhandledException.")]
-        public void Crash1()
-        {
-            AsyncException();
-        }
-
-        [Test, Category("Failure")]
-        [Description("Run together with Crash1.")]
-        public void Crash1Continuation()
-        {
-            int ii = 0;
-            while (ii < 10) { Utility.DispatcherUtil.DoEvents(); Thread.Sleep(100); ii++; }
-        }
-
-
-        /// <summary>
-        /// DispatcherUtil.DoEvents (during testing) handles exceptions in a different way than the way Dynamo Live.
-        /// This test crashes Dynamo live but during testing the exception seems to be caught inside the internals of DispatcherUtil.DoEvents
-        /// Some tests might trigger continuation of async methods through other codepaths (not DoEvents) which might cause the test runner to crash
-        /// </summary>
-        [Test, Category("Failure")]
-        [Description("Does not crash the test runner. Hits CurrentDispatcher_UnhandledException.")]
-        public void Crash2()
-        {
-            Dispatcher.CurrentDispatcher.BeginInvoke(AsyncException);
-
-            int ii = 0;
-            while (ii < 10) { Utility.DispatcherUtil.DoEvents(); Thread.Sleep(100); ii++; }
-        }
-
-        [Test, Category("Failure")]
-        [Description("Crashes the test runner. Hits CurrentDomain_UnhandledException")]
-        public void Crash3()
-        {
-            Task.Run(AsyncException).Wait();
-
-            int ii = 0;
-            while (ii < 10) { Utility.DispatcherUtil.DoEvents(); Thread.Sleep(100); ii++; }
         }
 
         [Test]

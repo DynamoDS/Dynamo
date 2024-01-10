@@ -18,7 +18,6 @@ namespace DynamoCoreWpfTests
     {
 
         [Test]
-        [Category("Failure")]
         public void AddingDyfRaisesCanExecuteChangeOnDelegateCommand()
         {
             
@@ -46,7 +45,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void SetsErrorState()
         {
             //open a dyf file and modify it
@@ -80,7 +78,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void CanPublishLateInitializedJsonCustomNode()
         {
 
@@ -102,7 +99,6 @@ namespace DynamoCoreWpfTests
 
 
         [Test]
-        [Category("Failure")]
         public void NewPackageDoesNotThrow_NativeBinaryIsAddedAsAdditionalFile_NotBinary()
         {
             string packagesDirectory = Path.Combine(TestDirectory, "pkgs");
@@ -130,7 +126,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void NewPackageVersionUpload_DoesNotThrowExceptionWhenDLLIsLoadedSeveralTimes()
         {
             string packagesDirectory = Path.Combine(TestDirectory, "pkgs");
@@ -155,7 +150,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void NewPackageVersionUpload_CanAddAndRemoveFiles()
         {
             string packagesDirectory = Path.Combine(TestDirectory, "pkgs");

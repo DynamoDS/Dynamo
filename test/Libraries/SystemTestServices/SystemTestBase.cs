@@ -15,11 +15,9 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Tests;
-using Dynamo.Updates;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using DynamoUtilities;
-using ICSharpCode.AvalonEdit.Document;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
@@ -28,30 +26,6 @@ using TestServices;
 
 namespace SystemTestServices
 {
-    public sealed class CustomSynchronizationContext : SynchronizationContext
-    {
-        private void EnsureExceptionHandlers()
-        {
-            Dispatcher.FromThread(Thread.CurrentThread).UnhandledException += QueueSynchronizationContext_UnhandledException;
-        }
-
-        private void QueueSynchronizationContext_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            e.Handled = true;
-            System.Console.WriteLine($"Unhandled exception thrown with message : {e.Exception.Message}");
-        }
-
-        public override void Post(SendOrPostCallback d, object? state)
-        {
-            EnsureExceptionHandlers();
-            base.Post(d, state);
-        }
-        public override void Send(SendOrPostCallback d, object? state)
-        {
-            EnsureExceptionHandlers();
-            base.Send(d, state);
-        }
-    }
     /// <summary>
     /// SystemTestBase is the base class for all 
     /// Dynamo system tests.

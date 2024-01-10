@@ -22,8 +22,6 @@ using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
-using DynamoUtilities;
-using ICSharpCode.AvalonEdit.Document;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
