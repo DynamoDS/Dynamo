@@ -30,14 +30,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="0.11.4" />
-        <PackageReference Include="CommandLineParser" Version="2.8.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.6.0" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+        <PackageReference Include="CommandLineParser" Version="2.9.1" />
+        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-        <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
+        <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-        <PackageReference Include="System.Management" Version="7.0.1" />
+        <PackageReference Include="System.Management" Version="8.0.0" />
     </ItemGroup>
 
     <PropertyGroup>
