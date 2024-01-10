@@ -145,7 +145,7 @@ namespace Dynamo.UI.Views
             webView = new WebView2();
             ShadowGrid.Children.Add(webView);
 
-            if (DynamoModel.IsTestMode)
+            if (TestUtilities.RunningFromNUnit)
             {
                 TestUtilities.IncrementWebView2(nameof(SplashScreen));
             }
@@ -558,7 +558,7 @@ namespace Dynamo.UI.Views
                 authManager.LoginStateChanged -= OnLoginStateChanged;
             }
 
-            if (DynamoModel.IsTestMode)
+            if (TestUtilities.RunningFromNUnit)
             {
                 TestUtilities.DecrementWebView2(nameof(SplashScreen));
             }

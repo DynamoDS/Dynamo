@@ -133,7 +133,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
             browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
 
-            if (DynamoModel.IsTestMode)
+            if (TestUtilities.RunningFromNUnit)
             {
                 TestUtilities.IncrementWebView2(nameof(LibraryView));
             }
@@ -723,7 +723,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
             if (this.browser != null)
             {
-                if (DynamoModel.IsTestMode)
+                if (TestUtilities.RunningFromNUnit)
                 {
                     TestUtilities.DecrementWebView2(nameof(LibraryView));
                 }

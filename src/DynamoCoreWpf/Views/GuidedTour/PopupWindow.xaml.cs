@@ -117,7 +117,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             webBrowserComponent = new WebView2();
 
-            if (DynamoModel.IsTestMode)
+            if (TestUtilities.RunningFromNUnit)
             {
                 TestUtilities.IncrementWebView2(nameof(PopupWindow));
             }

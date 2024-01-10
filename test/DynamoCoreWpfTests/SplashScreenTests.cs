@@ -1,5 +1,6 @@
 
 
+using DynamoUtilities;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -7,6 +8,18 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     internal class SplashScreenTests
     {
+        [SetUp]
+        public void SetUp()
+        {
+            TestUtilities.AssertCounters();
+        }
+
+        [TearDown]
+        public void CleanUp()
+        {
+            TestUtilities.AssertCounters();
+        }
+
         [Test]
         public void SplashScreen_CloseExplicitPropIsCorrect1()
         {

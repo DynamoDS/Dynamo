@@ -43,7 +43,7 @@ namespace Dynamo.DocumentationBrowser
         {
             InitializeComponent();
 
-            if (DynamoModel.IsTestMode)
+            if (TestUtilities.RunningFromNUnit)
             {
                 TestUtilities.IncrementWebView2(nameof(DocumentationBrowserView));
             }
@@ -121,7 +121,7 @@ namespace Dynamo.DocumentationBrowser
             this.viewModel.LinkChanged -= NavigateToPage;
             if (this.documentationBrowser != null)
             {
-                if (DynamoModel.IsTestMode)
+                if (TestUtilities.RunningFromNUnit)
                 {
                     TestUtilities.DecrementWebView2(nameof(DocumentationBrowserView));
                 }

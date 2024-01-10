@@ -98,7 +98,7 @@ namespace Dynamo.Notifications
             };
             logger = dynLogger;
 
-            if (DynamoModel.IsTestMode)
+            if (TestUtilities.RunningFromNUnit)
             {
                 TestUtilities.IncrementWebView2(nameof(Notifications));
             }
@@ -336,7 +336,7 @@ namespace Dynamo.Notifications
 
                 if (notificationUIPopup.webView != null)
                 {
-                    if (DynamoModel.IsTestMode)
+                    if (TestUtilities.RunningFromNUnit)
                     {
                         TestUtilities.DecrementWebView2(nameof(Notifications));
                     }
