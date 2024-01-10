@@ -185,10 +185,10 @@ namespace DynamoSandbox
 
         private void CrashGracefully(Exception ex)
         {
-            viewModel?.Model?.Logger?.LogError($"Unhandled exception {ex.Message}");
-
             try
             {
+                viewModel?.Model?.Logger?.LogError($"Unhandled exception {ex.Message}");
+
                 DynamoModel.IsCrashing = true;
                 Analytics.TrackException(ex, true);
                 CrashReportTool.ShowCrashErrorReportWindow(viewModel, new Dynamo.Core.CrashErrorReportArgs(ex));
