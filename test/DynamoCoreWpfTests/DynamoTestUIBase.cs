@@ -43,7 +43,7 @@ namespace DynamoCoreWpfTests
         public virtual void Start()
         {
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
-            TestUtilities.WebView2Stamp = TestContext.CurrentContext.Test.Name;
+            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
 
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
@@ -144,7 +144,7 @@ namespace DynamoCoreWpfTests
                 Console.WriteLine(ex.StackTrace);
             }
 
-            TestUtilities.WebView2Stamp = string.Empty;
+            TestUtilities.WebView2Tag = string.Empty;
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
         }
 

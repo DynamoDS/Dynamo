@@ -10,6 +10,6 @@ namespace DynamoUtilities
     internal static class TestUtilities
     {
         // Simple string that we can store in DynamoWebView2 instances so that we can track them down more easily
-        internal static string WebView2Stamp;
+        internal static string WebView2Tag;
     }
 }

@@ -12,19 +12,19 @@ namespace Dynamo.Wpf.Utilities
     public class DynamoWebView2 : WebView2
     {
         #region API/Data used for debugging/testing
-        private string stamp;
+        private string tag;
         #endregion
 
         public DynamoWebView2() : base()
         {
-            stamp = TestUtilities.WebView2Stamp;
+            tag = TestUtilities.WebView2Tag;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (System.Environment.CurrentManagedThreadId != Dispatcher.Thread.ManagedThreadId)
             {
-                System.Console.WriteLine($"WebView2 instance with stamp {stamp} is being disposed of on non-UI thread");
+                System.Console.WriteLine($"WebView2 instance with stamp {tag} is being disposed of on non-UI thread");
             }
             // We should dispose of webview2 only in the UI thread.
             // Dispose can be called from the Finalizer (which can run on a non UI thread)
@@ -37,7 +37,7 @@ namespace Dynamo.Wpf.Utilities
             }
             else
             {
-                System.Console.WriteLine($"WebView2 instance with stamp {stamp} is being disposed of but has no valid Dispatcher");
+                System.Console.WriteLine($"WebView2 instance with stamp {tag} is being disposed of but has no valid Dispatcher");
                 // Should we still try to dispose ? (might crash if not on UI thread)
                 base.Dispose(disposing);
             }
