@@ -601,7 +601,6 @@ namespace Dynamo.Utilities
                     };
                 }
 
-                System.Console.WriteLine("Popup windows EnsureCoreWebView2Async called");
                 await webBrowserComponent.EnsureCoreWebView2Async();
                 // Context menu disabled
                 webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;

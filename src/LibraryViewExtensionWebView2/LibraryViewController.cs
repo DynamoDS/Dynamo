@@ -331,8 +331,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 };
             }
 
-            System.Console.WriteLine("LibraryView EnsureCoreWebView2Async called");
-
             await browser.EnsureCoreWebView2Async();
             this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
             twoWayScriptingObject = new ScriptingObject(this);

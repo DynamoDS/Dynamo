@@ -307,8 +307,6 @@ namespace Dynamo.UI.Views
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
 
-            System.Console.WriteLine("Splashscreen EnsureCoreWebView2Async called");
-
             //ContentRendered ensures that the webview2 component is visible.
             await webView.EnsureCoreWebView2Async();
             // Context menu disabled
