@@ -2288,7 +2288,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display the dialog of agreement on data collecting and Machine Learning Node Autocomplete terms of use.
+        ///   Looks up a localized string similar to Display the dialog of agreements for data collecting in Dynamo and Machine Learning Node Autocomplete.
         /// </summary>
         public static string DynamoViewSettingMenuShowDataReportingDialogTooltip {
             get {
