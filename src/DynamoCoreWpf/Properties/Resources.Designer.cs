@@ -2279,20 +2279,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement and _Terms of Use.
+        ///   Looks up a localized string similar to Agreements for _Data Collection.
         /// </summary>
         public static string DynamoViewSettingMenuShowDataReportingDialog {
             get {
                 return ResourceManager.GetString("DynamoViewSettingMenuShowDataReportingDialog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Display the dialog of agreements for data collecting in Dynamo and Machine Learning Node Autocomplete.
-        /// </summary>
-        public static string DynamoViewSettingMenuShowDataReportingDialogTooltip {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuShowDataReportingDialogTooltip", resourceCulture);
             }
         }
         

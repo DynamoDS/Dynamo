@@ -306,9 +306,6 @@
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
-                            <MenuItem.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                            </MenuItem.ToolTip>
                         </MenuItem>
                             <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"

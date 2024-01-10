@@ -764,7 +764,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement for _Data Collection</value>
+    <value>Agreements for _Data Collection</value>
     <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
@@ -2314,9 +2314,6 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PackageSearchViewFilterByButton" xml:space="preserve">
     <value>Filter by</value>
-  </data>
-  <data name="DynamoViewSettingMenuShowDataReportingDialogTooltip" xml:space="preserve">
-    <value>Display the dialog of agreements for data collecting in Dynamo and Machine Learning Node Autocomplete</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
