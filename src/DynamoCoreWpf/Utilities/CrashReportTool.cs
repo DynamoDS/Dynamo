@@ -210,7 +210,7 @@ namespace Dynamo.Wpf.Utilities
                     }
                     catch(Exception ex)
                     {
-                        model?.Logger?.LogError($"Failed to send Log file due to the following error : {ex.Message}");
+                        model?.Logger?.LogError($"Failed to send Log file to CER due to the following error : {ex.Message}");
                     }
                 }
 
@@ -227,7 +227,7 @@ namespace Dynamo.Wpf.Utilities
                     }
                     catch (Exception ex)
                     {
-                        model?.Logger?.LogError($"Failed to send Settings file due to the following error : {ex.Message}");
+                        model?.Logger?.LogError($"Failed to send Settings file to CER due to the following error : {ex.Message}");
                     }
                 }
 
@@ -246,7 +246,7 @@ namespace Dynamo.Wpf.Utilities
                     }
                     catch (Exception ex)
                     {
-                        model?.Logger?.LogError($"Failed to send Commands file due to the following error : {ex.Message}");
+                        model?.Logger?.LogError($"Failed to send Commands file to CER due to the following error : {ex.Message}");
                     }
                 }
 
@@ -268,7 +268,7 @@ namespace Dynamo.Wpf.Utilities
                 }
                 catch (Exception ex)
                 {
-                    model?.Logger?.LogError($"Failed to generate minidump file due to the following error : {ex.Message}");
+                    model?.Logger?.LogError($"Failed to generate minidump file for CER due to the following error : {ex.Message}");
                 }
 
                 if (string.IsNullOrEmpty(miniDumpFilePath))
