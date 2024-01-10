@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Threading;
 using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Core;
@@ -58,6 +59,9 @@ namespace DynamoSandbox
         {
             try
             {
+                Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
+                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
                 // This line validates if the WebView2 Runtime is installed in the computer before launching DynamoSandbox,
                 // if is not we return and then exit Dynamo Sandbox
                 if (!WebView2Utilities.ValidateWebView2RuntimeInstalled())
@@ -160,6 +164,39 @@ namespace DynamoSandbox
         private void ASMPreloadFailureHandler(string failureMessage)
         {
             MessageBoxService.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (e.Handled)
+            {
+                return;
+            }
+
+            e.Handled = true;
+            CrashGracefully(e.Exception);
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex = e.ExceptionObject as Exception;
+            CrashGracefully(ex);
+        }
+
+        private void CrashGracefully(Exception ex)
+        {
+            viewModel?.Model?.Logger?.LogError($"Unhandled exception {ex.Message}");
+
+            try
+            {
+                DynamoModel.IsCrashing = true;
+                Analytics.TrackException(ex, true);
+                CrashReportTool.ShowCrashErrorReportWindow(viewModel, new Dynamo.Core.CrashErrorReportArgs(ex));
+            }
+            catch
+            { }
+
+            viewModel?.Exit(false); // don't allow cancellation
         }
     }
 }
