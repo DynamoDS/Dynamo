@@ -1151,10 +1151,10 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Cancel</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement and Terms of Use</value>
+    <value>Agreements for Data Collection</value>
   </data>
   <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
-    <value>I would like to participate in data collection</value>
+    <value>I would like to participate in data collection for Machine Learning Programs</value>
   </data>
   <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
     <value>Clear</value>

@@ -160,7 +160,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I would like to participate in data collection.
+        ///   Looks up a localized string similar to I would like to participate in data collection for Machine Learning Programs.
         /// </summary>
         public static string AgreeToMLAutocompleteTOUText {
             get {
@@ -9962,7 +9962,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement and Terms of Use.
+        ///   Looks up a localized string similar to Agreements for Data Collection.
         /// </summary>
         public static string UsageReportPromptDialogTitle {
             get {
