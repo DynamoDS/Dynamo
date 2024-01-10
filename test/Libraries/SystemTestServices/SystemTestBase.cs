@@ -167,9 +167,6 @@ namespace SystemTestServices
                 Console.WriteLine(ex.StackTrace);
             }
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
             TestUtilities.AssertCounters();
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name} ");
         }
