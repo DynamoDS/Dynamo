@@ -28,5 +28,9 @@ jobs:
           base-ref: ${{ github.event.inputs.base-ref }}
       - name: Summary
         run: |
-          echo "# Changelog" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.generate_changelog.outputs.changelog }}" >> $GITHUB_STEP_SUMMARY
+          cat <<EOF >> $GITHUB_STEP_SUMMARY
+          # Changelog
+          [changes](${{ format('{0}/compare/{1}...{2})', github.repository, github.event.inputs.base-ref, github.event.inputs.head-ref) }})
+
+          ${{ steps.generate_changelog.outputs.changelog }}
+          EOF
