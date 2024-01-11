@@ -36,7 +36,7 @@ namespace Dynamo.PackageManager
         public string LatestVersion { get { return Header.versions != null ? Header.versions[Header.versions.Count - 1].version : String.Empty; } }
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
 
-        public IEnumerable<string> PackageVersions { get { return Header.versions.Select(x => x.version); } }
+        public IEnumerable<string> PackageVersions { get { return Header.versions.OrderByDescending(x => x.version).Select(x => x.version); } }
 
         /// <summary>
         /// Hosts dependencies specified for latest version of particular package
