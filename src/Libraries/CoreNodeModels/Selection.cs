@@ -161,8 +161,8 @@ namespace CoreNodeModels
 
             Prefix = prefix;
 
-            State = ElementState.Warning; 
-            
+            Warning(Resources.SelectionNodeNothingSelected);
+
             ShouldDisplayPreviewCore = true;
         }
 
@@ -183,7 +183,7 @@ namespace CoreNodeModels
 
             Prefix = prefix;
 
-            State = ElementState.Warning;
+            Warning(Resources.SelectionNodeNothingSelected);
 
             ShouldDisplayPreviewCore = true;
 
