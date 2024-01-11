@@ -360,7 +360,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, Math.Round(result.Score * 100));
                             results.Add(viewModelElement);
                         }
                     }
@@ -393,7 +393,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, Math.Round(result.Score * 100));
                             results.Add(viewModelElement);
                         }
                     }
