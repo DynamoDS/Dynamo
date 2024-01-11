@@ -7,6 +7,7 @@
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
         xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
         xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
         WindowStartupLocation="CenterOwner"
@@ -108,16 +109,34 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="46" />
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="HeaderTitle"
+                <StackPanel Grid.Column="0"
+                            VerticalAlignment="Top"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left">
+                    <TextBlock x:Name="HeaderTitle"
                            Text="{x:Static p:Resources.PackageManagerTitle}"
                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                           Grid.Column="0"
                            Margin="14,16,0,0"
                            TextAlignment="Left"
                            FontSize="20"
                            FontFamily="Helvetica"
-                           HorizontalAlignment="Left"
-                           Width="459" />
+                           HorizontalAlignment="Left" />
+                    <Label HorizontalAlignment="Left" 
+                           DockPanel.Dock="Left"
+                           Name="Titleinfo" 
+                           VerticalAlignment="Top" 
+                           Height="26" 
+                           Width="26" 
+                           Margin="10,16,0,0"
+                           MouseLeftButtonDown="OnMoreInfoClicked">
+                        <Label.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageDocTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Label.ToolTip>
+                        <Label.Content>
+                            <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="Regular_QuestionCircle" Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                        </Label.Content>
+                    </Label>
+                </StackPanel>
                 <StackPanel Grid.Column="1"
                             VerticalAlignment="Top"
                             Orientation="Horizontal"
