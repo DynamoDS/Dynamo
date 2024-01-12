@@ -2589,7 +2589,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Package/Library Search Paths</value>
   </data>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
-    <value>Switchable only when the current workspace is in Manual run mode.</value>
+    <value>To preview the execution state of your graph, wires connected to ports that will be affected by a graph run are highlighted in orange. Available only when the current workspace is in Manual run mode.</value>
   </data>
   <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
     <value>Issues found</value>

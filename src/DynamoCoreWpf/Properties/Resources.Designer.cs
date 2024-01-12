@@ -7674,7 +7674,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switchable only when the current workspace is in Manual run mode..
+        ///   Looks up a localized string similar to To preview the execution state of your graph, wires connected to ports that will be affected by a graph run are highlighted in orange. Available only when the current workspace is in Manual run mode..
         /// </summary>
         public static string PreferencesViewShowRunPreviewTooltip {
             get {
