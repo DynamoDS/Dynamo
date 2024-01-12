@@ -22,6 +22,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -46,6 +47,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
+using static Dynamo.ViewModels.SearchViewModel;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -675,6 +677,8 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
+            Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
+
             this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures
@@ -752,6 +756,32 @@ namespace Dynamo.ViewModels
             }
 
             FileTrustViewModel = new FileTrustWarningViewModel();
+        }
+
+        private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (e.Handled)
+            {
+                return;
+            }
+
+            e.Handled = true;
+            CrashGracefully(e.Exception);
+        }
+
+        private void CrashGracefully(Exception ex)
+        {
+            try
+            {
+                Model?.Logger?.LogError($"Unhandled exception {ex.Message}");
+
+                DynamoModel.IsCrashing = true;
+                Analytics.TrackException(ex, true);
+                CrashReportTool.ShowCrashErrorReportWindow(this, new Dynamo.Core.CrashErrorReportArgs(ex));
+            }
+            catch
+            { }
+            Exit(false); // don't allow cancellation
         }
 
         /// <summary>
@@ -3412,6 +3442,8 @@ namespace Dynamo.ViewModels
         /// 
         public bool PerformShutdownSequence(ShutdownParams shutdownParams)
         {
+            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
+
             if (shutdownSequenceInitiated)
             {
                 // There was a prior call to shutdown. This could happen for example
