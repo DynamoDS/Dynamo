@@ -9184,6 +9184,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Signing out of Dynamo will sign you out of all Autodesk desktop products..
+        /// </summary>
+        public static string SignOutConfirmationDialogText {
+            get {
+                return ResourceManager.GetString("SignOutConfirmationDialogText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign out of Dynamo.
+        /// </summary>
+        public static string SignOutConfirmationDialogTitle {
+            get {
+                return ResourceManager.GetString("SignOutConfirmationDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please update the permissions or go to Preferences &gt;Node and Package Paths...&apos; to change your default directory..
         /// </summary>
         public static string SolutionToFolderNotWritatbleError {

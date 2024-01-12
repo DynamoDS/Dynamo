@@ -3866,4 +3866,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="GESUnitMillimeters" xml:space="preserve">
     <value>Millimeters</value>
   </data>
+  <data name="SignOutConfirmationDialogText" xml:space="preserve">
+    <value>Signing out of Dynamo will sign you out of all Autodesk desktop products.</value>
+  </data>
+  <data name="SignOutConfirmationDialogTitle" xml:space="preserve">
+    <value>Sign out of Dynamo</value>
+  </data>
 </root>
