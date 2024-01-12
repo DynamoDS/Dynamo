@@ -764,7 +764,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement and _Terms of Use</value>
+    <value>Agreements for _Data Collection</value>
     <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
@@ -2220,10 +2220,10 @@ Installing the latest update requires Dynamo and any host applications to close.
 Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement and Terms of Use</value>
+    <value>Agreements for Data Collection</value>
   </data>
   <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
-    <value>I would like to participate in data collection</value>
+    <value>I would like to participate in data collection for Machine Learning Programs</value>
   </data>
   <data name="UseLevelKeepListStructureHint" xml:space="preserve">
     <value>Keep 1 input list's nesting</value>
@@ -2315,9 +2315,6 @@ Uninstall the following packages: {0}?</value>
   <data name="PackageSearchViewFilterByButton" xml:space="preserve">
     <value>Filter by</value>
   </data>
-  <data name="DynamoViewSettingMenuShowDataReportingDialogTooltip" xml:space="preserve">
-    <value>Display the dialog of agreement on data collecting and Machine Learning Node Autocomplete terms of use</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -2408,7 +2405,7 @@ Uninstall the following packages: {0}?</value>
     <comment>File menu | Export</comment>
   </data>
   <data name="PublishPackageDocTooltipText" xml:space="preserve">
-    <value>Learn More about publishing a package</value>
+    <value>Learn more about packages</value>
   </data>
   <data name="PreferencesViewFeaturesTab" xml:space="preserve">
     <value>Features</value>
@@ -3859,7 +3856,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
   </data>
   <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
-    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use.</value>
+    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreements for Data Collection.</value>
   </data>
   <data name="GESUnitCentimeters" xml:space="preserve">
     <value>Centimeters</value>

@@ -37,8 +37,6 @@ namespace Dynamo.Logging
         public string UserId { get; private set; }
 
         public string SessionId { get; private set; }
-        [Obsolete("Do not use, will be removed, was only used by legacy instrumentation.")]
-        public ILogger Logger => throw new NotImplementedException();
 
         public static String GetUserID()
         {
@@ -462,11 +460,6 @@ namespace Dynamo.Logging
                     break;
             }
             throw new ArgumentException("Invalid action for FileOperation.");
-        }
-
-        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
-        public void LogPiiInfo(string tag, string data)
-        {
         }
 
         public void Dispose()

@@ -38,18 +38,6 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
 
-        /// <summary>
-        /// Maximum width of Watch Node
-        /// </summary>
-        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
-        public static readonly double MaxWatchNodeWidth = 280.0;
-
-        /// <summary>
-        /// Maximum height of Watch Node
-        /// </summary>
-        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
-        public static readonly double MaxWatchNodeHeight = 310.0;
-
         #endregion
 
         #region Usage Reporting Error Message
@@ -251,12 +239,6 @@ namespace Dynamo.Configuration
         #endregion
 
         #region CodeBlockNode
-
-        /// <summary>
-        ///     Default height of CodeBlock's port. Now obsolete.
-        ///     Inputs height are set in the normal way, outputs height is set to CodeBlockOutputPortHeightInPixels
-        /// </summary>
-        [Obsolete] public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
 
         /// <summary>
         ///     Code Block outputs have a condensed port height

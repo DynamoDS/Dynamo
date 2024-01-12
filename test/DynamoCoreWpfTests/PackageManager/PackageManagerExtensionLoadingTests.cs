@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
@@ -86,7 +86,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Model.CurrentWorkspace.AddAndRegisterNode(node);
 
             //assert a menu item was added with the correct header.
-            var mi = View.viewMenu.Items.Cast<MenuItem>().Where
+            var mi = View.ExtensionsMenu.Items.Cast<MenuItem>().Where
                 (x => (string)x.Header == "Show View Extension Sample Window").FirstOrDefault();
             Assert.IsNotNull(mi);
         }

@@ -68,12 +68,6 @@ namespace Dynamo.ViewModels
             authenticationManager = touParams.AuthenticationManager;
         }
 
-        [Obsolete("Please use the other overridden method")]
-        public void Execute()
-        {
-            Execute(true); // Redirected to call the alternative method.
-        }
-
         internal void Execute(bool preventReentrant)
         {
             if (preventReentrant && Interlocked.Increment(ref lockCount) > 1)
@@ -123,7 +117,7 @@ namespace Dynamo.ViewModels
             var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
             var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
             var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
-            
+
             var termsOfUseView = new TermsOfUseView(touFilePath);
             termsOfUseView.Closed += TermsOfUseView_Closed;
             isTermsOfUseCreated = true;
@@ -202,9 +196,6 @@ namespace Dynamo.ViewModels
 
         private readonly string QUARANTINED = "quarantined";
 
-        [Obsolete("This property will be removed in Dynamo 3.0 - please use ViewModelOwner")]
-        public PackageManagerSearchView Owner { get; set; }
-
         /// <summary>
         /// The System.Windows.Window owner of the view model.
         /// Used to align messagebox dialogs created by this model
@@ -265,7 +256,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private List<string> Uservotes { get; set; }
 
-        internal PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
+        internal PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model)
         {
             this.DynamoViewModel = dynamoViewModel;
             this.AuthenticationManager = dynamoViewModel.Model.AuthenticationManager;
@@ -283,9 +274,9 @@ namespace Dynamo.ViewModels
                 };
             }
 
-            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn))
+            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn) && !dynamoViewModel.Model.NoNetworkMode)
             {
-                Task.Run(() => this.Uservotes = this.Model.UserVotes());                
+                Task.Run(() => this.Uservotes = this.Model.UserVotes());
             }
         }
 
@@ -333,11 +324,11 @@ namespace Dynamo.ViewModels
                     };
 
                     var termsOfUseCheck = new TermsOfUseHelper(touParams);
-                    termsOfUseCheck.Execute();
+                    termsOfUseCheck.Execute(true);
                     return;
                 }
             }
-            
+
             MessageBoxService.Show(
                 ViewModelOwner,
                 Resources.MessageSelectSymbolNotFound,
@@ -360,7 +351,7 @@ namespace Dynamo.ViewModels
                 AcceptanceCallback = ShowNodePublishInfo
             });
 
-            termsOfUseCheck.Execute();
+            termsOfUseCheck.Execute(true);
         }
 
         public bool CanPublishNewPackage(object m)
@@ -386,7 +377,7 @@ namespace Dynamo.ViewModels
                     })
                 });
 
-                termsOfUseCheck.Execute();
+                termsOfUseCheck.Execute(true);
             }
         }
 
@@ -431,8 +422,8 @@ namespace Dynamo.ViewModels
                 }
                 MessageBoxService.Show(
                     ViewModelOwner,
-                    Resources.MessageGettingNodeError, 
-                    Resources.SelectionErrorMessageBoxTitle, 
+                    Resources.MessageGettingNodeError,
+                    Resources.SelectionErrorMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Question);
             }
 
@@ -444,7 +435,7 @@ namespace Dynamo.ViewModels
                 AcceptanceCallback = () => ShowNodePublishInfo(defs)
             });
 
-            termsOfUseCheck.Execute();
+            termsOfUseCheck.Execute(true);
         }
 
         public bool CanPublishSelectedNodes(object m)
@@ -467,7 +458,7 @@ namespace Dynamo.ViewModels
 
                 if (pkg != null)
                 {
-                    var m = Dynamo.Wpf.Utilities.MessageBoxService.Show(ViewModelOwner, 
+                    var m = Dynamo.Wpf.Utilities.MessageBoxService.Show(ViewModelOwner,
                         String.Format(Resources.MessageSubmitSameNamePackage,
                         DynamoViewModel.BrandingResourceProvider.ProductName, pkg.Name),
                         Resources.PackageWarningMessageBoxTitle,
@@ -501,7 +492,7 @@ namespace Dynamo.ViewModels
                     ele.HasUpvote = Uservotes.Contains(header._id);
                 }
 
-                CachedPackageList.Add( ele );
+                CachedPackageList.Add(ele);
             }
 
             return CachedPackageList;
@@ -565,7 +556,7 @@ namespace Dynamo.ViewModels
                     MessageBoxImage.Error);
                 return;
             }
-            
+
             ExecutePackageDownload(packageInfo.Name, version, downloadPath);
         }
 
@@ -581,8 +572,8 @@ namespace Dynamo.ViewModels
         /// <param name="duplicatePackage">local package found to be duplicate of one being downloaded</param>
         /// <param name="dependencyConflicts">List of packages that are in conflict with the dependencies of the package version to be downloaded (does not include the main package)</param>
         /// <returns>True if the User opted to continue with the download operation. False otherwise</returns>
-        private bool WarnAboutDuplicatePackageConflicts(PackageVersion package, 
-                                                        Package duplicatePackage, 
+        private bool WarnAboutDuplicatePackageConflicts(PackageVersion package,
+                                                        Package duplicatePackage,
                                                         List<Package> dependencyConflicts)
         {
             var packageToDownload = $"{package.name} {package.version}";
@@ -640,9 +631,9 @@ namespace Dynamo.ViewModels
                     {
                         dialogResult = MessageBoxService.Show(
                             String.Format(Resources.MessageAlreadyInstallDynamo,
-                            DynamoViewModel.BrandingResourceProvider.ProductName, dupPkg, packageToDownload), 
+                            DynamoViewModel.BrandingResourceProvider.ProductName, dupPkg, packageToDownload),
                             Resources.PackagesInUseConflictMessageBoxTitle,
-                            MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel }, 
+                            MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel },
                             MessageBoxImage.Exclamation);
 
                         if (dialogResult != MessageBoxResult.OK)
@@ -682,7 +673,7 @@ namespace Dynamo.ViewModels
 
                 immediateUninstalls.Add(pkg);
             }
-                
+
             if (builtinPackages.Any())
             {
                 // Conflicts with builtin packages
@@ -693,7 +684,7 @@ namespace Dynamo.ViewModels
                     Resources.BuiltInPackageConflictMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
-                if(dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return false;
+                if (dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return false;
             }
 
             if (uninstallRequiringUserModifications.Any())
@@ -701,12 +692,12 @@ namespace Dynamo.ViewModels
                 var conflictingPkgs = JoinPackageNames(uninstallRequiringUserModifications);
                 var message = string.Format(Resources.MessageForceInstallOrUninstallToContinue, packageToDownload, conflictingPkgs,
                     DynamoViewModel.BrandingResourceProvider.ProductName);
-                
+
                 var dialogResult = MessageBoxService.Show(ViewModelOwner, message,
                     Resources.PackagesInUseConflictMessageBoxTitle,
                     MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
-                if(dialogResult == MessageBoxResult.No || dialogResult == MessageBoxResult.None) return false;
+                if (dialogResult == MessageBoxResult.No || dialogResult == MessageBoxResult.None) return false;
             }
 
             var settings = DynamoViewModel.Model.PreferenceSettings;
@@ -950,16 +941,6 @@ namespace Dynamo.ViewModels
                 }
             }
         }
-       
-
-        /// <summary>
-        ///     Returns a newline delimited string representing the package name and version of the argument
-        /// </summary>
-        [Obsolete("No longer used. Remove in 3.0.")]
-        public static string FormatPackageVersionList(IEnumerable<Tuple<PackageHeader, PackageVersion>> packages)
-        {
-            return String.Join("\r\n", packages.Select(x => x.Item1.name + " " + x.Item2.version));
-        }
 
         /// <summary>
         /// This method downloads the package represented by the PackageDownloadHandle,
@@ -976,7 +957,7 @@ namespace Dynamo.ViewModels
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
-       
+
             return Task.Factory.StartNew(() =>
             {
                 // Attempt to download package
