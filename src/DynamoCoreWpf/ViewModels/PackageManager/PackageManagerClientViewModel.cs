@@ -273,11 +273,6 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Username");
                 };
             }
-
-            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn) && !dynamoViewModel.Model.NoNetworkMode)
-            {
-                Task.Run(() => this.Uservotes = this.Model.UserVotes());
-            }
         }
 
         private void ToggleLoginState()
@@ -481,6 +476,12 @@ namespace Dynamo.ViewModels
         public List<PackageManagerSearchElement> ListAll()
         {
             CachedPackageList = new List<PackageManagerSearchElement>();
+
+            // Attempt to load user votes prior to using it
+            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn) && Uservotes == null)
+            {
+                Task.Run(() => this.Uservotes = this.Model.UserVotes());
+            }
 
             foreach (var header in Model.ListAll())
             {
