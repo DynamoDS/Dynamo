@@ -130,8 +130,7 @@ namespace Dynamo.PackageManager.UI
         /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Analytics.TrackEvent(Actions.Close, Categories.PackageManager);
-            (this.Owner as DynamoView).EnableOverlayBlocker(false);
+            Analytics.TrackEvent(Actions.Close, Categories.PackageManager);           
 
             Close();
         }
@@ -143,6 +142,7 @@ namespace Dynamo.PackageManager.UI
         {
             this.packageManagerPublish?.Dispose();
             this.packageManagerSearch?.Dispose();
+            (this.Owner as DynamoView).EnableOverlayBlocker(false);
 
             if (PackageManagerViewModel == null) return;
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
