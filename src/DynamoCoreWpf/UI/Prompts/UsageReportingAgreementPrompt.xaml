@@ -222,7 +222,7 @@
                             Grid.Row="4">
                     <CheckBox x:Name="AgreeToMLAutocompleteTOUCheckbox"/>
                     <TextBlock x:Name="AgreeToMLAutocompleteTOUTextbox"
-                               Margin="10,0,0,0"
+                               Margin="0,1,0,0"
                                Text="{x:Static p:Resources.AgreeToMLAutocompleteTOUText}"/>
                 </StackPanel>
                 <!--Configure ADP Consent-->
