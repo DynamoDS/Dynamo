@@ -43,6 +43,7 @@ namespace Dynamo.UI.Views
         internal Action RequestNewWorkspace;
         internal Action RequestOpenWorkspace;
         internal Action RequestNewCustomNodeWorkspace;
+        internal Action RequestApplicationLoaded;
 
         public HomePage()
         {   
@@ -63,6 +64,7 @@ namespace Dynamo.UI.Views
             RequestNewWorkspace = NewWorkspace;
             RequestOpenWorkspace = OpenWorkspace;
             RequestNewCustomNodeWorkspace = NewCustomNodeWorkspace;
+            RequestApplicationLoaded = ApplicationLoaded;
             //webView.NavigationCompleted += WebView_NavigationCompleted;
             //DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
             //DynamoModel.LanguageDetected += DynamoModel_LanguageDetected;
@@ -74,6 +76,7 @@ namespace Dynamo.UI.Views
             //this.enableSignInButton = enableSignInButton;
             DataContextChanged += OnDataContextChanged; 
         }
+
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -174,12 +177,12 @@ namespace Dynamo.UI.Views
 
             // Exposing commands to the React front-end
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptHomeObject(RequestOpenFile, RequestNewWorkspace, RequestOpenWorkspace, RequestNewCustomNodeWorkspace));
+               new ScriptHomeObject(RequestOpenFile, RequestNewWorkspace, RequestOpenWorkspace, RequestNewCustomNodeWorkspace, RequestApplicationLoaded));
 
-            LoadingDone();
+            //LoadingDone();
         }
 
-        internal async void LoadingDone()
+        internal async void LoadingDone()   
         {
             if (startPage == null) { return; }
 
@@ -232,6 +235,11 @@ namespace Dynamo.UI.Views
             this.startPage.DynamoViewModel.ShowNewFunctionDialogCommand.Execute(null);
         }
 
+        internal void ApplicationLoaded()
+        {
+            LoadingDone();
+        }
+
         public void Dispose()
         {
             DataContextChanged -= OnDataContextChanged;
@@ -252,13 +260,19 @@ namespace Dynamo.UI.Views
         readonly Action RequestNewWorkspace;
         readonly Action RequestOpenWorkspace;
         readonly Action RequestNewCustomNodeWorkspace;
+        readonly Action RequestApplicationLoaded;
 
-        public ScriptHomeObject(Action<string> requestOpenFile, Action requestNewWorkspace, Action requestOpenWorkspace, Action requestNewCustomNodeWorkspace)
+        public ScriptHomeObject(Action<string> requestOpenFile,
+            Action requestNewWorkspace,
+            Action requestOpenWorkspace,
+            Action requestNewCustomNodeWorkspace,
+            Action requestApplicationLoaded)
         {
             RequestOpenFile = requestOpenFile;
             RequestNewWorkspace = requestNewWorkspace;
             RequestOpenWorkspace = requestOpenWorkspace;
             RequestNewCustomNodeWorkspace = requestNewCustomNodeWorkspace;
+            RequestApplicationLoaded = requestApplicationLoaded;
         }
 
         public void OpenFile(string path)
@@ -279,6 +293,11 @@ namespace Dynamo.UI.Views
         public void NewCustomNodeWorkspace()
         {
             RequestNewCustomNodeWorkspace();
+        }
+
+        public void ApplicationLoaded()
+        {
+            RequestApplicationLoaded();
         }
     }
 }

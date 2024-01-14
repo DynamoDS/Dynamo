@@ -30,7 +30,6 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
-using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Interfaces;
