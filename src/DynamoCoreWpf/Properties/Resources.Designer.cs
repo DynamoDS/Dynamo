@@ -7674,7 +7674,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switchable only when the current workspace is in Manual run mode..
+        ///   Looks up a localized string similar to To preview the execution state of your graph, wires connected to ports that will be affected by a graph run are highlighted in orange. Available only when the current workspace is in Manual run mode..
         /// </summary>
         public static string PreferencesViewShowRunPreviewTooltip {
             get {
@@ -9180,6 +9180,24 @@ namespace Dynamo.Wpf.Properties {
         public static string SigningInButtonText {
             get {
                 return ResourceManager.GetString("SigningInButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing out of Dynamo will sign you out of all Autodesk desktop products..
+        /// </summary>
+        public static string SignOutConfirmationDialogText {
+            get {
+                return ResourceManager.GetString("SignOutConfirmationDialogText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign out of Dynamo.
+        /// </summary>
+        public static string SignOutConfirmationDialogTitle {
+            get {
+                return ResourceManager.GetString("SignOutConfirmationDialogTitle", resourceCulture);
             }
         }
         
