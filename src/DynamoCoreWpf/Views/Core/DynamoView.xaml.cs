@@ -2316,11 +2316,6 @@ namespace Dynamo.Controls
             cmd.Dispose();
         }
 
-        internal void EnableEnvironment(bool isEnabled)
-        {
-            this.mainGrid.IsEnabled = isEnabled;       
-        }
-
         /// <summary>
         /// Adds/Removes an overlay so the user won't be able to interact with the background (this behavior was implemented for Dynamo and for Library)
         /// </summary>
@@ -2329,6 +2324,7 @@ namespace Dynamo.Controls
         {
             object[] parametersInvokeScript = new object[] { "fullOverlayVisible", new object[] { isEnabled } };
             ResourceUtilities.ExecuteJSFunction(this, parametersInvokeScript);
+            var backgroundName = "BackgroundBlocker";
 
             if (isEnabled)
             {
@@ -2336,7 +2332,7 @@ namespace Dynamo.Controls
                 Panel.SetZIndex(shortcutsBarGrid, 0);
                 var backgroundElement = new GuideBackground(this)
                 {
-                    Name = "BackgroundBlocker",
+                    Name = backgroundName,
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
                     Visibility = Visibility.Visible
@@ -2351,7 +2347,7 @@ namespace Dynamo.Controls
             {
                 //Restoring the ZIndex value to the default one.
                 Panel.SetZIndex(shortcutsBarGrid, 1);
-                var backgroundElement = mainGrid.Children.OfType<GuideBackground>().FirstOrDefault();
+                var backgroundElement = mainGrid.Children.OfType<GuideBackground>().Where(element => element.Name == backgroundName).FirstOrDefault();
                 if (backgroundElement != null)
                 {
                     mainGrid.Children.Remove(backgroundElement);
