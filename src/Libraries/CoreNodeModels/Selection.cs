@@ -161,7 +161,7 @@ namespace CoreNodeModels
 
             Prefix = prefix;
 
-            Warning(Resources.SelectionNodeNothingSelected);
+            Warning(Resources.SelectionNodeNothingSelected, true);
 
             ShouldDisplayPreviewCore = true;
         }
@@ -220,9 +220,13 @@ namespace CoreNodeModels
         private void SetSelectionNodeState()
         {
             if (null == selectionResults || selectionResults.Count == 0)
+            {
                 State = ElementState.Warning;
-            else if (State == ElementState.Warning)
-                State = ElementState.Active;
+            }
+            else if (State == ElementState.Warning || State == ElementState.PersistentWarning)
+            {
+                base.ClearErrorsAndWarnings();
+            }
         }
 
         public bool CanBeginSelect()
