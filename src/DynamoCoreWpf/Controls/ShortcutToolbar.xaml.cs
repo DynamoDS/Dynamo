@@ -56,12 +56,17 @@ namespace Dynamo.UI.Controls
             var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
             authManager = dynamoViewModel.Model.AuthenticationManager;
-            if (authManager.IsLoggedInInitial())
+            if (authManager != null)
             {
                 authManager.LoginStateChanged += AuthChangeHandler;
-            }
-            else {
-                logoutOption.Visibility = Visibility.Collapsed;
+                if (authManager.LoginState == LoginState.LoggedIn && loginMenu.Items.Count == 0)
+                {
+                    loginMenu.Items.Add(logoutOption);
+                }
+                else
+                {
+                    loginMenu.Items.Remove(logoutOption);
+                }
             }
 
             this.Loaded += ShortcutToolbar_Loaded;
@@ -90,12 +95,17 @@ namespace Dynamo.UI.Controls
                 LoginButton.ToolTip = Wpf.Properties.Resources.SignInButtonContentToolTip;
                 txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
                 logoutOption.Visibility = Visibility.Collapsed;
+                loginMenu.Items.Remove(logoutOption);
             }
             else if (status == LoginState.LoggedIn)
             {
                 txtSignIn.Text = authManager.Username;
-                logoutOption.Visibility = Visibility.Visible;
                 LoginButton.ToolTip = null;
+                if (loginMenu.Items.Count == 0)
+                {
+                    loginMenu.Items.Add(logoutOption);
+                }
+                logoutOption.Visibility = Visibility.Visible;
             }
         }
 
@@ -130,6 +140,18 @@ namespace Dynamo.UI.Controls
                     tb.Text = authManager.Username;
                     logoutOption.Visibility = Visibility.Visible;
                     LoginButton.ToolTip = null;
+                }
+            }
+        }
+
+        private void LogoutOption_Click(object sender, RoutedEventArgs e)
+        {
+            if (authManager.LoginState == LoginState.LoggedIn)
+            {
+                var result = Wpf.Utilities.MessageBoxService.Show(Application.Current?.MainWindow, Wpf.Properties.Resources.SignOutConfirmationDialogText, Wpf.Properties.Resources.SignOutConfirmationDialogTitle,MessageBoxButton.OKCancel, new List<string>() { "Sign Out", "Cancel"}, MessageBoxImage.Information);
+                if (result == MessageBoxResult.OK)
+                {
+                    authManager.ToggleLoginState(null);
                 }
             }
         }
