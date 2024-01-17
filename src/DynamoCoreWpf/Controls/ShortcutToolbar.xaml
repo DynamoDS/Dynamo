@@ -219,7 +219,7 @@
                                               Click="LogoutOption_Click"
                                               Name="logoutOption">
                             <MenuItem.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.LogoutMenuItemText}" Style="{StaticResource GenericToolTipLight}"/>
+                                <ToolTip Content="{x:Static p:Resources.SignOutConfirmationDialogText}" Style="{StaticResource GenericToolTipLight}"/>
                             </MenuItem.ToolTip>
                         </MenuItem>
                     </MenuItem>
