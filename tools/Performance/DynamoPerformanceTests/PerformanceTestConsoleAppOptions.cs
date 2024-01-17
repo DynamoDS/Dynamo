@@ -14,7 +14,7 @@ namespace DynamoPerformanceTests
             "DebugInProcess: Use this call to get debug in process config in order to debug benchmarks\n" +
             "Compare: Compare results from two performance test runs";
 
-        [Option('g', "graphs", Required = false, HelpText = GraphsHelpText, Default = "../../../../graphs/")]
+        [Option('g', "graphs", Required = false, HelpText = GraphsHelpText, Default = "../../../graphs/")]
         public string TestDirectory { get; set; }
 
         [Option('b', "base", Required = false, HelpText = BaseHelpText, Default = "")]

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -104,13 +104,13 @@ namespace DynamoPerformanceTests
 
             public DynamoBenchmarkConfig()
             {
-                Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
-                Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
+                AddLogger(DefaultConfig.Instance.GetLoggers().ToArray());
+                AddExporter(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
 
                 var defaultColumns = DefaultConfig.Instance.GetColumnProviders().ToList();
                 defaultColumns.RemoveAt(3); // Remove DynamoFilePath column
-                Add(defaultColumns.ToArray());
-                Add(new GraphNameColumn()); // Add Graph Name column
+                AddColumnProvider(defaultColumns.ToArray());
+                AddColumn(new GraphNameColumn()); // Add Graph Name column
             }
         }
 
@@ -122,7 +122,7 @@ namespace DynamoPerformanceTests
         {
             public BenchmarkDebugConfig() : base()
             {
-                Add(JitOptimizationsValidator.DontFailOnError);
+                AddValidator(JitOptimizationsValidator.DontFailOnError);
             }
         }
 
@@ -134,7 +134,7 @@ namespace DynamoPerformanceTests
         {
             public FastBenchmarkReleaseConfig() : base()
             {
-                Add(Job.Default
+                AddJob(Job.Default
                     .WithMinWarmupCount(DynamoMinWarmupCount)
                     .WithMaxWarmupCount(DynamoMaxWarmuoCount)
                     .WithLaunchCount(DynamoLaunchCount)
