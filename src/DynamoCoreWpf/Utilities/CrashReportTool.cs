@@ -199,30 +199,59 @@ namespace Dynamo.Wpf.Utilities
                 {
                     string logFile = Path.Combine(cerDir.FullName, "DynamoLog.log");
 
-                    File.Copy(model.Logger.LogPath, logFile);
-                    // might be usefull to dump all loaded Packages into
-                    // the log at this point.
-                    filesToSend.Add(logFile);
+                    try
+                    {
+                        File.Copy(model.Logger.LogPath, logFile);
+                        // might be useful to dump all loaded Packages into
+                        // the log at this point.
+                        filesToSend.Add(logFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to add DynamoLog.log to CER with the following error : {ex.Message}");
+                    }
                 }
 
                 if (args.SendSettingsFile && model != null)
                 {
                     string settingsFile = Path.Combine(cerDir.FullName, "DynamoSettings.xml");
-                    File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
 
-                    filesToSend.Add(settingsFile);
+                    try
+                    {
+                        File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
+
+                        filesToSend.Add(settingsFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to add DynamoSettings.xml to CER with the following error : {ex.Message}");
+                    }
                 }
 
                 if (args.HasDetails())
                 {
                     var stackTracePath = Path.Combine(cerDir.FullName, "StackTrace.log");
-                    File.WriteAllText(stackTracePath, args.Details);
-                    filesToSend.Add(stackTracePath);
+                    try
+                    {
+                        File.WriteAllText(stackTracePath, args.Details);
+                        filesToSend.Add(stackTracePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to add StackTrace.log to CER with the following error : {ex.Message}");
+                    }
                 }
 
                 if (args.SendRecordedCommands && viewModel != null)
                 {
-                    filesToSend.Add(viewModel.DumpRecordedCommands());
+                    try
+                    {
+                        filesToSend.Add(viewModel.DumpRecordedCommands());
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to add recorded commands to CER with the following error : {ex.Message}");
+                    }
                 }
 
                 string appConfig = "";
