@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -36,6 +37,9 @@ namespace Dynamo.UI.Views
 
         // Timer used for Splash Screen loading
         internal Stopwatch loadingTimer;
+
+        // Indicates if the SplashScren close button has already been hit.
+        private bool closeCalled;
 
         /// <summary>
         /// Total loading time for the Dynamo loading tasks in milliseconds
@@ -155,6 +159,19 @@ namespace Dynamo.UI.Views
             RequestSignOut = SignOut;
             this.enableSignInButton = enableSignInButton;
         }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (!closeCalled)
+            {
+                closeCalled = true;
+
+                // In case the splash screen's close button is hit multiple times, 
+                // so we need to call the Window.Closing event only one time.
+                // (if we call this multiple times, webview2.IsVisible setter can be called after webview2.Dispose resulting in a crash)
+                base.OnClosing(e);
+            }
+        }   
 
         private void DynamoModel_LanguageDetected()
         {
