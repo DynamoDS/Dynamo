@@ -8806,6 +8806,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your changes will be lost if you proceed..
+        /// </summary>
+        public static string ResetChangesWarningPopupMessage {
+            get {
+                return ResourceManager.GetString("ResetChangesWarningPopupMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset CPython.
         /// </summary>
         public static string ResetCPythonButtonText {

@@ -3884,4 +3884,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PackageDetailsLinks" xml:space="preserve">
     <value>LINKS</value>
   </data>
+  <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
+    <value>Your changes will be lost if you proceed.</value>
+  </data>
 </root>
