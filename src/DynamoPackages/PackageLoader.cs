@@ -713,23 +713,39 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Attempt to load a managed assembly in to LoadFrom context. 
         /// </summary>
-        /// <param name="filename">The filename of a DLL</param>
+        /// <param name="filePath">The filename of a DLL</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns true if success, false if BadImageFormatException (i.e. not a managed assembly)</returns>
-        internal static bool TryLoadFrom(string filename, out Assembly assem)
+        internal static bool TryLoadFrom(string filePath, out Assembly assem)
         {
             try
             {
-                assem = Assembly.LoadFrom(filename);
+                assem = Assembly.LoadFrom(filePath);
                 return true;
             }
             catch (FileLoadException e)
             {
+                // If the exception is having HRESULT of 0x80131621 ( a dll with the same name is already loaded ), then we will attempt to use that loaded dll.
+                if (e.HResult == unchecked((int)0x80131621))
+                {
+                    Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    string fileName = Path.GetFileNameWithoutExtension(filePath);
+                    foreach (Assembly loadedAssembly in loadedAssemblies)
+                    {
+                        if (loadedAssembly.FullName.StartsWith(fileName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            assem = loadedAssembly;
+                            return true;
+                        }
+                    }
+                }
+
                 // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
                 if (e.HResult == unchecked((int)0x80131515))
                 {
                     throw new DynamoServices.AssemblyBlockedException(e.Message);
                 }
+
                 assem = null;
                 return false;
             }
