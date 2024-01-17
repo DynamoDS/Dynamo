@@ -103,14 +103,14 @@ jobs:
           body-includes: UI Smoke Tests
           direction: last
       - name: Create comment
-        if: env.PR_NUMBER != ''
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ env.PR_NUMBER }}
           body: |
             ${{ steps.create_comment.outputs.pr_comment }}
       - name: Update comment
-        if: env.PR_NUMBER != ''
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
