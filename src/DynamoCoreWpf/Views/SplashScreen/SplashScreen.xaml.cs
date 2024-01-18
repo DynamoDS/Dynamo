@@ -513,9 +513,14 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// If the user wants to close the window, we shutdown the application and don't launch Dynamo
         /// </summary>
-        internal void CloseWindow()
+        /// <param name="isCheckboxChecked">If true, the user has chosen to not show splash screen on next run.</param>
+        internal void CloseWindow(bool isCheckboxChecked = false)
         {
             CloseWasExplicit = true;
+            if (viewModel != null && isCheckboxChecked)
+            {
+                viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            }
 
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
             {
@@ -571,9 +576,9 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestImportSettings;
         readonly Func<bool> RequestSignIn;
         readonly Func<bool> RequestSignOut;
-        readonly Action RequestCloseWindow;
+        readonly Action<bool> RequestCloseWindow;
 
-        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestCloseWindow)
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action<bool> requestCloseWindow)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
             RequestImportSettings = requestImportSettings;
@@ -600,9 +605,9 @@ namespace Dynamo.UI.Views
         {
             return RequestSignOut();
         }
-        public void CloseWindow()
+        public void CloseWindow(bool isCheckboxChecked)
         {
-            RequestCloseWindow();
+            RequestCloseWindow(isCheckboxChecked);
         }
     }
 }
