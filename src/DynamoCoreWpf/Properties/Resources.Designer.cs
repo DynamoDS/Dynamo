@@ -5456,6 +5456,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GROUP.
+        /// </summary>
+        public static string PackageDetailsGroup {
+            get {
+                return ResourceManager.GetString("PackageDetailsGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Host.
         /// </summary>
         public static string PackageDetailsHost {
@@ -5465,11 +5474,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to KEYWORDS.
+        /// </summary>
+        public static string PackageDetailsKeywords {
+            get {
+                return ResourceManager.GetString("PackageDetailsKeywords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to LICENSE OF LATEST PACKAGE.
         /// </summary>
         public static string PackageDetailsLicense {
             get {
                 return ResourceManager.GetString("PackageDetailsLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LINKS.
+        /// </summary>
+        public static string PackageDetailsLinks {
+            get {
+                return ResourceManager.GetString("PackageDetailsLinks", resourceCulture);
             }
         }
         
@@ -5488,6 +5515,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageDetailsPython {
             get {
                 return ResourceManager.GetString("PackageDetailsPython", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string PackageDetailsSize {
+            get {
+                return ResourceManager.GetString("PackageDetailsSize", resourceCulture);
             }
         }
         

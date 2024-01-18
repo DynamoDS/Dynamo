@@ -3885,6 +3885,18 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="SignOutConfirmationDialogTitle" xml:space="preserve">
     <value>Sign out of Dynamo</value>
   </data>
+  <data name="PackageDetailsGroup" xml:space="preserve">
+    <value>GROUP</value>
+  </data>
+  <data name="PackageDetailsKeywords" xml:space="preserve">
+    <value>KEYWORDS</value>
+  </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="PackageDetailsLinks" xml:space="preserve">
+    <value>LINKS</value>
+  </data>
   <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
     <value>Your changes will be lost if you proceed.</value>
   </data>
