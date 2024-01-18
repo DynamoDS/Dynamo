@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
 using Dynamo.Graph;
@@ -775,7 +776,7 @@ namespace Dynamo.ViewModels
 
                 DynamoModel.IsCrashing = true;
                 Analytics.TrackException(ex, true);
-                CrashReportTool.ShowCrashErrorReportWindow(this, new Dynamo.Core.CrashErrorReportArgs(ex));
+                Model?.OnRequestsCrashPrompt(new CrashErrorReportArgs(ex));
             }
             catch
             { }
