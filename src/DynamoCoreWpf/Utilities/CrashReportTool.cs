@@ -200,14 +200,14 @@ namespace Dynamo.Wpf.Utilities
                 {
                     string logFile = Path.Combine(cerDir.FullName, "DynamoLog.log");
 
-                    if(File.Exists(logFile))
+                    if(File.Exists(model.Logger.LogPath))
                     {
                         File.Copy(model.Logger.LogPath, logFile);
                         filesToSend.Add(logFile);
                     }
                     else
                     {
-                        model?.Logger?.LogError($"Failed to add DynamoLog.log to CER with the following error : {logFile} Not Found");
+                        model?.Logger?.LogError($"Failed to add DynamoLog.log to CER with the following error : {model.Logger.LogPath} Not Found");
                     }
                 }
 
@@ -215,7 +215,7 @@ namespace Dynamo.Wpf.Utilities
                 {
                     string settingsFile = Path.Combine(cerDir.FullName, "DynamoSettings.xml");
 
-                    if (File.Exists(settingsFile))
+                    if (File.Exists(model.PathManager.PreferenceFilePath))
                     {
                         File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
 
@@ -223,21 +223,21 @@ namespace Dynamo.Wpf.Utilities
                     }
                     else
                     {
-                        model?.Logger?.LogError($"Failed to add DynamoSettings.xml to CER with the following error : {settingsFile} Not Found");
+                        model?.Logger?.LogError($"Failed to add DynamoSettings.xml to CER with the following error : {model.PathManager.PreferenceFilePath} Not Found");
                     }
                 }
 
                 if (args.HasDetails())
                 {
                     var stackTracePath = Path.Combine(cerDir.FullName, "StackTrace.log");
-                    if(File.Exists(stackTracePath))
+                    try
                     {
                         File.WriteAllText(stackTracePath, args.Details);
                         filesToSend.Add(stackTracePath);
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        model?.Logger?.LogError($"Failed to add StackTrace.log to CER with the following error : {stackTracePath} Not Found ");
+                        model?.Logger?.LogError($"Failed to add StackTrace.log to CER with the following error : {ex.Message}");
                     }
                 }
 
