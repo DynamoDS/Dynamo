@@ -5,5 +5,5 @@ The Rectangle By Width Length node creates a rectangle on the Z-base plane with 
 ___
 ## Example File
 
-![ByWidthLength (width, length)](./Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(width,%20length)_img.png)
+![ByWidthLength (width, length)](./CMTCHCAMGXJZYOGATCJYXZM5UMWN5Y5GZ22WIK5267BVMYHEGSCQ_img.png)
 
