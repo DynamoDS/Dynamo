@@ -2607,6 +2607,19 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// A feature flag controlling the appearance of the Dynamo home navigation page
+        /// </summary>
+        public bool UseNewDynamoHomePage
+        {
+            get
+            {
+                return true;
+                // TODO: replace with a similar flag to the below when deploying the feature
+                //return DynamoModel.FeatureFlags?.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false) ?? false;
+            }
+        }
+
         // Check if library is collapsed or expanded and apply appropriate button state
         private void UpdateLibraryCollapseIcon()
         {

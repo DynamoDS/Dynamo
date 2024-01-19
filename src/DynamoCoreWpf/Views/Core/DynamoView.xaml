@@ -1758,46 +1758,54 @@
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
         <!--Start Page-->
-        <ItemsControl Name="startPageItemsControl"
-                      Opacity="0"
-                      Grid.Row="2"
-                      Grid.RowSpan="4"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="5">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type uictrls:StartPageViewModel}">
-                    <Grid>
-                        <Grid.Height>
-                            <Binding Path="ActualHeight"
-                                     Mode="OneWay"
-                                     RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
-                        </Grid.Height>
-                        <uictrls:StartPageView />
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.Visibility>
-                <Binding Path="DataContext.ShowStartPage"
-                         Mode="OneWay"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                         Converter="{StaticResource BooleanToVisibilityConverter}"
-                         UpdateSourceTrigger="Explicit" />
-            </ItemsControl.Visibility>
-        </ItemsControl>
-
-        <uiviews:HomePage x:Name="homePage"
-                          Grid.Row="2"
-                          Grid.RowSpan="4"
-                          Grid.Column="0"
-                          Grid.ColumnSpan="5">
-            <uiviews:HomePage.Visibility>
-                <Binding Path="DataContext.ShowStartPage"
-                         Mode="OneWay"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                         Converter="{StaticResource BooleanToVisibilityConverter}"
-                         UpdateSourceTrigger="Explicit" />
-            </uiviews:HomePage.Visibility>
-        </uiviews:HomePage>
+        <Grid x:Name="oldHomePageContainer"
+              Visibility="{Binding UseNewDynamoHomePage,
+                                    Converter={StaticResource InverseBoolToVisibilityConverter},
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+              Grid.Row="2"
+              Grid.RowSpan="4"
+              Grid.Column="0"
+              Grid.ColumnSpan="5">
+            <ItemsControl Name="startPageItemsControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type uictrls:StartPageViewModel}">
+                        <Grid>
+                            <Grid.Height>
+                                <Binding Path="ActualHeight"
+                                         Mode="OneWay"
+                                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
+                            </Grid.Height>  
+                            <uictrls:StartPageView />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.Visibility>
+                    <Binding Path="DataContext.ShowStartPage"
+                             Mode="OneWay"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                             UpdateSourceTrigger="Explicit" />
+                </ItemsControl.Visibility>
+            </ItemsControl>
+            </Grid>
+        <Grid x:Name="newHomePageContainer"
+              Visibility="{Binding UseNewDynamoHomePage, 
+                                    Converter={StaticResource BooleanToVisibilityConverter}, 
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+              Grid.Row="2"
+              Grid.RowSpan="4"
+              Grid.Column="0"
+              Grid.ColumnSpan="5">
+            <uiviews:HomePage x:Name="homePage">
+                <uiviews:HomePage.Visibility>
+                    <Binding Path="DataContext.ShowStartPage"
+                             Mode="OneWay"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                             UpdateSourceTrigger="Explicit" />
+                </uiviews:HomePage.Visibility>
+            </uiviews:HomePage>
+        </Grid>
 
         <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
     </Grid>

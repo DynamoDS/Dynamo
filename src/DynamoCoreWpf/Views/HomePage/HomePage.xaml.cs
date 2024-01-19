@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
+using Dynamo.Wpf.UI.GuidedTour;
 using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
@@ -40,17 +42,18 @@ namespace Dynamo.UI.Views
         internal WebView2 webView;
 
         internal Action<string> RequestOpenFile;
+        internal Action<string> RequestShowGuidedTour;
         internal Action RequestNewWorkspace;
         internal Action RequestOpenWorkspace;
         internal Action RequestNewCustomNodeWorkspace;
         internal Action RequestApplicationLoaded;
 
+        private List<GuidedTourItem> guidedTourItems;
+
         public HomePage()
         {   
             InitializeComponent();
-
-            //loadingTimer = new Stopwatch();
-            //loadingTimer.Start();
+            InitializeGuideTourItems();
 
             webView = new WebView2();
 
@@ -61,20 +64,22 @@ namespace Dynamo.UI.Views
 
             // Bind event handlers
             RequestOpenFile = OpenFile;
+            RequestShowGuidedTour = StartGuidedTour;
             RequestNewWorkspace = NewWorkspace;
             RequestOpenWorkspace = OpenWorkspace;
             RequestNewCustomNodeWorkspace = NewCustomNodeWorkspace;
             RequestApplicationLoaded = ApplicationLoaded;
-            //webView.NavigationCompleted += WebView_NavigationCompleted;
-            //DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
-            //DynamoModel.LanguageDetected += DynamoModel_LanguageDetected;
-            //StaticSplashScreenReady += OnStaticScreenReady;
-            //RequestLaunchDynamo = LaunchDynamo;
-            //RequestImportSettings = ImportSettings;
-            //RequestSignIn = SignIn;
-            //RequestSignOut = SignOut;
-            //this.enableSignInButton = enableSignInButton;
             DataContextChanged += OnDataContextChanged; 
+        }
+
+        private void InitializeGuideTourItems()
+        {
+            guidedTourItems = new List<GuidedTourItem>
+            {
+                new GuidedTourItem(Wpf.Properties.Resources.GetStartedGuide, "Description of the guide", GuidedTourType.UserInterface.ToString()),
+                new GuidedTourItem(Wpf.Properties.Resources.OnboardingGuide, "Description of the guide", GuidedTourType.GetStarted.ToString()),
+                new GuidedTourItem(Wpf.Properties.Resources.PackagesGuide, "Description of the guide", GuidedTourType.Packages.ToString())
+            };
         }
 
 
@@ -83,15 +88,6 @@ namespace Dynamo.UI.Views
             startPage = this.DataContext as StartPageViewModel;
         }
 
-        private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            if (webView != null)
-            {
-                webView.NavigationCompleted -= WebView_NavigationCompleted;
-                webView.Focus();
-                System.Windows.Forms.SendKeys.SendWait("{TAB}");
-            }
-        }
 
         /// <summary>
         /// This is used before DynamoModel initialization specifically to get user data dir
@@ -177,9 +173,12 @@ namespace Dynamo.UI.Views
 
             // Exposing commands to the React front-end
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptHomeObject(RequestOpenFile, RequestNewWorkspace, RequestOpenWorkspace, RequestNewCustomNodeWorkspace, RequestApplicationLoaded));
-
-            //LoadingDone();
+               new ScriptHomeObject(RequestOpenFile,
+               RequestNewWorkspace,
+               RequestOpenWorkspace,
+               RequestNewCustomNodeWorkspace,
+               RequestApplicationLoaded,
+               RequestShowGuidedTour));
         }
 
         internal async void LoadingDone()   
@@ -190,12 +189,15 @@ namespace Dynamo.UI.Views
             if (recentFiles == null || !recentFiles.Any()) { return; }
 
             LoadGraphs(recentFiles);
+            SendGuidesData();
 
             var testMessage = "I am being tested";
+            var userLocale = "en";
 
             if (webView?.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLoadingDone('{testMessage}')");
+                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");
             }
         }
 
@@ -213,11 +215,104 @@ namespace Dynamo.UI.Views
             }
         }
 
+        /// <summary>
+        /// Sends guided tour data to react app
+        /// </summary>
+        private async void SendGuidesData()
+        {
+            if (!this.guidedTourItems.Any()) return;
+
+            string jsonData = JsonSerializer.Serialize(this.guidedTourItems);
+
+            if (webView?.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveInteractiveGuidesDataFromDotNet({jsonData})");
+            }
+        }
+
+        #region Interactive Guides Commands
+        internal void ShowGuidedTour(string typeString)
+        {
+            if (!Enum.TryParse(typeString, true, out GuidedTourType type))
+            {
+                return;
+            }
+
+            switch (type)
+            {
+                case GuidedTourType.UserInterface:
+                    // This is the LandingPage, so we need to open a blank Workspace before running the Guided Tours
+                    NewWorkspace();
+                    ShowUserInterfaceGuidedTour();  
+                    break;
+                case GuidedTourType.GetStarted:
+                    ShowGettingStartedGuidedTour();
+                    break;
+                case GuidedTourType.Packages:
+                    // This is the LandingPage, so we need to open a blank Workspace before running the Guided Tours
+                    NewWorkspace();
+                    ShowPackagesGuidedTour();
+                    break;
+            }
+        }
+
+        private void ShowUserInterfaceGuidedTour()
+        {
+            //We pass the root UIElement to the GuidesManager so we can found other child UIElements
+            try
+            {
+                this.startPage.DynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
+            }
+            catch (Exception)
+            {
+                return;
+                //sidebarGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void ShowGettingStartedGuidedTour()
+        {
+            try
+            {
+                if (this.startPage.DynamoViewModel.ClearHomeWorkspaceInternal())
+                {
+                    this.startPage.DynamoViewModel.OpenOnboardingGuideFile();
+                    this.startPage.DynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.OnboardingGuideName);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                this.startPage.DynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            }
+        }
+
+        private void ShowPackagesGuidedTour()
+        {
+            try
+            {
+                this.startPage.DynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);
+            }
+            catch (Exception)
+            {
+                return;
+                //sidebarGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        #endregion
+
+        #region Relay Commands
         internal void OpenFile(string path)
         {
             if (String.IsNullOrEmpty(path)) return;
-
             this.startPage.DynamoViewModel.OpenCommand.Execute(path);
+        }
+
+        internal void StartGuidedTour(string path)
+        {
+            if (String.IsNullOrEmpty(path)) return;
+            ShowGuidedTour(path);
         }
 
         internal void NewWorkspace()
@@ -240,6 +335,9 @@ namespace Dynamo.UI.Views
             LoadingDone();
         }
 
+        #endregion
+
+        #region Dispose
         public void Dispose()
         {
             DataContextChanged -= OnDataContextChanged;
@@ -249,6 +347,7 @@ namespace Dynamo.UI.Views
                 File.Delete(fontFilePath);
             }
         }
+        #endregion
     }
 
 
@@ -261,23 +360,30 @@ namespace Dynamo.UI.Views
         readonly Action RequestOpenWorkspace;
         readonly Action RequestNewCustomNodeWorkspace;
         readonly Action RequestApplicationLoaded;
+        readonly Action<string> RequestShowGuidedTour;
 
         public ScriptHomeObject(Action<string> requestOpenFile,
             Action requestNewWorkspace,
             Action requestOpenWorkspace,
             Action requestNewCustomNodeWorkspace,
-            Action requestApplicationLoaded)
+            Action requestApplicationLoaded,
+            Action<string> requestShowGuidedTour)
         {
             RequestOpenFile = requestOpenFile;
             RequestNewWorkspace = requestNewWorkspace;
             RequestOpenWorkspace = requestOpenWorkspace;
             RequestNewCustomNodeWorkspace = requestNewCustomNodeWorkspace;
             RequestApplicationLoaded = requestApplicationLoaded;
+            RequestShowGuidedTour = requestShowGuidedTour;
         }
 
         public void OpenFile(string path)
         {
             RequestOpenFile(path);
+        }
+        public void StartGuidedTour(string path)
+        {
+            RequestShowGuidedTour(path);
         }
 
         public void NewWorkspace()
@@ -298,6 +404,28 @@ namespace Dynamo.UI.Views
         public void ApplicationLoaded()
         {
             RequestApplicationLoaded();
+        }
+
+    }
+
+    public enum GuidedTourType
+    {
+        UserInterface,
+        GetStarted,
+        Packages
+    }
+
+    public class GuidedTourItem
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
+
+        public GuidedTourItem(string name, string description, string type)
+        {
+            Name = name;
+            Description = description;
+            Type = type;
         }
     }
 }
