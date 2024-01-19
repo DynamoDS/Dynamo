@@ -777,10 +777,11 @@ namespace Dynamo.ViewModels
                 DynamoModel.IsCrashing = true;
                 Analytics.TrackException(ex, true);
                 Model?.OnRequestsCrashPrompt(new CrashErrorReportArgs(ex));
+
+                Exit(false); // don't allow cancellation
             }
             catch
             { }
-            Exit(false); // don't allow cancellation
         }
 
         /// <summary>
