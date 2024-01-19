@@ -5,5 +5,5 @@ Create a Rectangle centered at the origin of the input plane, with specified wid
 ___
 ## Example File
 
-![ByWidthLength (plane, width, length)](./Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(plane,%20width,%20length)_img.png)
+![ByWidthLength (plane, width, length)](./MNNWHJCYE2KIJHONO2J56LQNPLRQZZARI7KF2BP4OJ6BRWGDXPAQ_img.png)
 
