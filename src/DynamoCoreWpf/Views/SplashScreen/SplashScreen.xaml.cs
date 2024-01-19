@@ -5,7 +5,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Input;
 using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -35,11 +34,12 @@ namespace Dynamo.UI.Views
         /// </summary>
         public bool CloseWasExplicit { get; private set; }
 
+        // Indicates if the SplashScren close button was hit.
+        // Used to ensure that OnClosing is called only once.
+        private bool IsClosing = false;
+
         // Timer used for Splash Screen loading
         internal Stopwatch loadingTimer;
-
-        // Indicates if the SplashScren close button has already been hit.
-        private bool closeCalled;
 
         /// <summary>
         /// Total loading time for the Dynamo loading tasks in milliseconds
@@ -162,16 +162,19 @@ namespace Dynamo.UI.Views
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (!closeCalled)
+            if (!IsClosing)
             {
-                closeCalled = true;
-
-                // In case the splash screen's close button is hit multiple times, 
-                // so we need to call the Window.Closing event only one time.
-                // (if we call this multiple times, webview2.IsVisible setter can be called after webview2.Dispose resulting in a crash)
-                base.OnClosing(e);
+                // First call to OnClosing
+                IsClosing = true;
             }
-        }   
+            else
+            {
+                // Multiple calls to OnClosing
+                // Cancel the Close action for all subsequent calls
+                e.Cancel = true;
+            }
+            base.OnClosing(e);
+        }
 
         private void DynamoModel_LanguageDetected()
         {
@@ -566,8 +569,12 @@ namespace Dynamo.UI.Views
             {
                 authManager.LoginStateChanged -= OnLoginStateChanged;
             }
-            webView.Dispose();
-            webView = null;
+
+            if (webView != null)
+            {
+                webView.Dispose();
+                webView = null;
+            }
 
             GC.SuppressFinalize(this);
         }
