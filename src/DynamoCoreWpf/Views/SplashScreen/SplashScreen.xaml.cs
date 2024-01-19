@@ -162,6 +162,10 @@ namespace Dynamo.UI.Views
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            // If we have multiple OnClosing events (ex Clicking the close button multiple times)
+            // we need to only process the first one. THe rest should be canceled so that we can avoid timing issues with the order of windows messages
+            // Ex  WM_CLOSE => webview2.Visibility.Set => waits for windows message =>  WM_DESTROY =>
+            // webview2.Dispose => webview2.Visible.Set receives windows message => crash because object got disposed. 
             if (!IsClosing)
             {
                 // First call to OnClosing
@@ -169,7 +173,6 @@ namespace Dynamo.UI.Views
             }
             else
             {
-                // Multiple calls to OnClosing
                 // Cancel the Close action for all subsequent calls
                 e.Cancel = true;
             }
