@@ -568,6 +568,9 @@ namespace Dynamo.UI.Views
         success
     }
 
+    /// <summary>
+    /// This class is used to expose the methods that can be called from the webview2 component, SplashScreen.
+    /// </summary>
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
     public class ScriptObject
@@ -576,15 +579,31 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestImportSettings;
         readonly Func<bool> RequestSignIn;
         readonly Func<bool> RequestSignOut;
-        readonly Action<bool> RequestCloseWindow;
+        readonly Action RequestCloseWindow;
+        readonly Action<bool> RequestCloseWindowPreserve;
 
-        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action<bool> requestCloseWindow)
+        /// <summary>
+        /// [Obsolete] Constructor for ScriptObject
+        /// </summary>
+        [Obsolete]
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestCloseWindow)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
             RequestImportSettings = requestImportSettings;
             RequestSignIn = requestSignIn;
             RequestSignOut = requestSignOut;
             RequestCloseWindow = requestCloseWindow;
+        }
+        /// <summary>
+        /// Constructor for ScriptObject with an overload for close window method, to preserve "Don't show again" setting on splash screen on explicit close event.
+        /// </summary>
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func<bool> requestSignIn, Func<bool> requestSignOut, Action<bool> requestCloseWindow)
+        {
+            RequestLaunchDynamo = requestLaunchDynamo;
+            RequestImportSettings = requestImportSettings;
+            RequestSignIn = requestSignIn;
+            RequestSignOut = requestSignOut;
+            RequestCloseWindowPreserve = requestCloseWindow;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
@@ -605,9 +624,13 @@ namespace Dynamo.UI.Views
         {
             return RequestSignOut();
         }
-        public void CloseWindow(bool isCheckboxChecked)
+        public void CloseWindow()
         {
-            RequestCloseWindow(isCheckboxChecked);
+            RequestCloseWindow();
+        }
+        public void CloseWindowPreserve(bool isCheckboxChecked)
+        {
+            RequestCloseWindowPreserve(isCheckboxChecked);
         }
     }
 }
