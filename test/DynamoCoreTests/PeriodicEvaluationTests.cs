@@ -127,7 +127,7 @@ namespace Dynamo.Tests
             Workspace.AddAndRegisterNode(new ActionNodeModel(() =>
             {
                 count++;
-                Thread.Sleep(200);
+                Thread.Sleep(nodeSleep);
             }, true));
 
             Workspace.StartPeriodicEvaluation();
