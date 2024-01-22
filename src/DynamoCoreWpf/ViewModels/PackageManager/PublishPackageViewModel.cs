@@ -644,15 +644,6 @@ namespace Dynamo.PackageManager
             get { return Dependencies.Count > 0; }
         }
 
-        /// <summary>
-        /// This property seems dup with HasDependencies
-        /// TODO: Remove in Dynamo 3.0
-        /// </summary>
-        public bool HasNoDependencies
-        {
-            get { return !HasDependencies; }
-        }
-
         private string markdownFilesDirectory;
 
         /// <summary>
@@ -1472,9 +1463,10 @@ namespace Dynamo.PackageManager
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select( ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
-                throw new Exception(Wpf.Properties.Resources.MessageUnsavedChanges0 +
+                MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, Resources.MessageUnsavedChanges0, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                throw new Exception(Resources.MessageUnsavedChanges0 +
                                     String.Join(", ", unsavedWorkspaceNames) +
-                                    Wpf.Properties.Resources.MessageUnsavedChanges1);
+                                    Resources.MessageUnsavedChanges1);
             }
 
             var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();

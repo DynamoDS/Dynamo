@@ -394,29 +394,15 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             ElementResolver = new ElementResolver();
         }
 
-        // TODO - Dynamo 3.0 - use JSONConstructor on this method
-        // and remove custom logic in nodeReadConverter for symbol nodes.
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="Symbol"/> class.
         /// </summary>
+        [JsonConstructor]
         public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter, ElementResolver elementResolver) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InputSymbol = parameter.ToCommentNameString();
             ElementResolver = elementResolver ?? new ElementResolver();
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Symbol"/> class.
-        /// </summary>
-        [JsonConstructor]
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the constructor with ElementResolver parameter ")]
-        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter) : base(inPorts, outPorts)
-        {
-            ArgumentLacing = LacingStrategy.Disabled;
-            InputSymbol = parameter.ToCommentNameString();
-            ElementResolver = new ElementResolver();
         }
 
         /// <summary>

@@ -197,13 +197,14 @@ namespace Dynamo.ViewModels
 
                     if (UseHostScaleUnits && IsDynamoRevit) return;
 
-                    var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
+                    var enUnit = LocalizedUnitsMap.FirstOrDefault(x => x.Key == selectedUnits).Value;
+                    var result = Enum.TryParse(enUnit, out Configurations.Units currentUnit);
                     if (!result) return;
 
                     if (Configurations.SupportedUnits.TryGetValue(currentUnit, out double units))
                     {
                         // Update preferences setting and update the grapic helpers
-                        preferenceSettings.GraphicScaleUnit = value;
+                        preferenceSettings.GraphicScaleUnit = currentUnit.ToString();
                         preferenceSettings.GridScaleFactor = (float)units;
                         dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
 
@@ -962,23 +963,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Hide IronPython alerts" toggle button
-        /// </summary>
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
-        public bool HideIronPythonAlertsIsChecked
-        {
-            get
-            {
-                return preferenceSettings.IsIronPythonDialogDisabled;
-            }
-            set
-            {
-                preferenceSettings.IsIronPythonDialogDisabled = value;
-                RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
-            }
-        }
-
-        /// <summary>
         /// Controls the IsChecked property in the "Show Whitespace in Python editor" toggle button
         /// </summary>
         public bool ShowWhitespaceIsChecked
@@ -1309,6 +1293,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// The dictionary that contains the localized resource strings for Units.
+        /// This is done to avoid a breaking change that is storing the selected unit in settings file in english language.
+        /// </summary>
+        private Dictionary<string, string> LocalizedUnitsMap;
+
+        /// <summary>
         /// Returns localized resource strings for Units
         /// </summary>
         private string GetLocalizedUnits(Enum value)
@@ -1409,9 +1399,15 @@ namespace Dynamo.ViewModels
             LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
             SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
 
+            LocalizedUnitsMap = new Dictionary<string, string>();
+            foreach (var unit in Configurations.SupportedUnits)
+            {
+                LocalizedUnitsMap.Add(GetLocalizedUnits(unit.Key), unit.Key.ToString());
+            }
+
             // Chose the scaling unit, if option is allowed by user
             UnitList = Configurations.SupportedUnits.Keys.Select(x => GetLocalizedUnits(x)).ToObservableCollection();
-            SelectedUnits = Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key.ToString();
+            SelectedUnits = GetLocalizedUnits(Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key);
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
@@ -1456,11 +1452,13 @@ namespace Dynamo.ViewModels
             SavedChangesTooltip = string.Empty;
 
             // Add tabs
-            preferencesTabs = new Dictionary<string, TabSettings>();
-            preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
-            preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
-            preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
-            preferencesTabs.Add("Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty });
+            preferencesTabs = new Dictionary<string, TabSettings>
+            {
+                { "General", new TabSettings() { Name = "General", ExpanderActive = string.Empty } },
+                { "Features", new TabSettings() { Name = "Features", ExpanderActive = string.Empty } },
+                { "VisualSettings", new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty } },
+                { "Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty } }
+            };
 
             //create a packagePathsViewModel we'll use to interact with the package search paths list.
             var loadPackagesParams = new LoadPackageParams
@@ -1907,10 +1905,6 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class GeometryScalingOptions
     {
-        //The Enum values can be Small, Medium, Large or Extra Large
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
-        public GeometryScaleSize EnumProperty { get; set; }
-
         /// <summary>
         /// This property will contain the description of each of the radio buttons in the Visual Settings -> Geometry Scaling section
         /// </summary>

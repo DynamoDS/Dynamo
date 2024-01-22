@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
+using DesignScript.Builtin;
 using Dynamo.Configuration;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -101,11 +104,13 @@ namespace Dynamo.Tests
             var e = Analytics.TrackCommandEvent("TestCommand");
             clientMoq.Verify(c => c.CreateCommandEvent("TestCommand", "", null), times);
 
+            Task task = Analytics.TrackTaskCommandEvent("TestCommand", "TestCommand description", null, new Dictionary<string, object>() { } );
+            task.Wait();
+
+            clientMoq.Verify(c => c.CreateCommandEvent("TestCommand", "", null), times);
+
             e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5);
             clientMoq.Verify(c => c.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5, ""), times);
-
-            Analytics.LogPiiInfo("tag", "data");
-            clientMoq.Verify(c => c.LogPiiInfo("tag", "data"), times);
         }
 
         [Test]
