@@ -84,8 +84,13 @@ namespace Dynamo.Utilities
 
         public enum SearchType
         {
+            //Normal search using just one word matching a specific node name
             Normal,
+
+            //Search by category using the "." character for example "list.re"
             ByCategory,
+
+            //Search using an empty space as separator like "get parameters" or "set parameters"
             ByEmptySpace
         }
 
@@ -271,9 +276,13 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         internal string CreateSearchQuery(string[] fields, string SearchTerm)
         {
+            //By Default the search will be normal
             SearchType searchType = SearchType.Normal;
             int fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMinEdits;
+
+            //Max number of nodes allowed in the search when is a ByEmptySpace search
             const int MaxNodeNamesRepeated = 20;
+
             // Use a larger max edit value - more tolerant with typo when search term is longer than threshold
             if (SearchTerm.Length > LuceneConfig.FuzzySearchMaxEditsThreshold)
             {
@@ -348,6 +357,7 @@ namespace Dynamo.Utilities
                 {
                     foreach (string s in searchTerm.Split(' ', '.'))
                     {
+                        //If is a ByEmptySpace search and the splitted words match with more than MaxNodeNamesRepeated nodes then the word is skipped
                         int nodesFrequency = dynamoModel.SearchModel.Entries.Where(entry => entry.Name.ToLower().Contains(s) && !string.IsNullOrEmpty(s)).Count();
                         if (nodesFrequency > MaxNodeNamesRepeated) continue;
 
