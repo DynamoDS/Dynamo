@@ -69,8 +69,10 @@ namespace Dynamo.UI.Views
             RequestOpenWorkspace = OpenWorkspace;
             RequestNewCustomNodeWorkspace = NewCustomNodeWorkspace;
             RequestApplicationLoaded = ApplicationLoaded;
+
             DataContextChanged += OnDataContextChanged; 
         }
+
 
         private void InitializeGuideTourItems()
         {
@@ -189,6 +191,7 @@ namespace Dynamo.UI.Views
             if (recentFiles == null || !recentFiles.Any()) { return; }
 
             LoadGraphs(recentFiles);
+            SendSamplesData();
             SendGuidesData();
 
             var testMessage = "I am being tested";
@@ -214,6 +217,22 @@ namespace Dynamo.UI.Views
                 await webView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveGraphDataFromDotNet({jsonData})");
             }
         }
+
+        /// <summary>
+        /// Sends samples data to react app
+        /// </summary>
+        private async void SendSamplesData()
+        {
+            if (!this.startPage.SampleFiles.Any()) return;
+
+            string jsonData = JsonSerializer.Serialize(this.startPage.SampleFiles);
+
+            if (webView?.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveSamplesDataFromDotNet({jsonData})");
+            }
+        }
+
 
         /// <summary>
         /// Sends guided tour data to react app
@@ -306,7 +325,8 @@ namespace Dynamo.UI.Views
         internal void OpenFile(string path)
         {
             if (String.IsNullOrEmpty(path)) return;
-            this.startPage.DynamoViewModel.OpenCommand.Execute(path);
+            if(this.startPage.DynamoViewModel.OpenCommand.CanExecute(path))
+                this.startPage.DynamoViewModel.OpenCommand.Execute(path);
         }
 
         internal void StartGuidedTour(string path)
@@ -328,6 +348,14 @@ namespace Dynamo.UI.Views
         internal void NewCustomNodeWorkspace()
         {
             this.startPage.DynamoViewModel.ShowNewFunctionDialogCommand.Execute(null);
+        }
+
+        internal void ShowSampleFilesInFolder()
+        {
+            if (this.startPage == null) return;
+            Process.Start(new ProcessStartInfo("explorer.exe", "/select,"
+                + this.startPage.SampleFolderPath)
+            { UseShellExecute = true });
         }
 
         internal void ApplicationLoaded()
