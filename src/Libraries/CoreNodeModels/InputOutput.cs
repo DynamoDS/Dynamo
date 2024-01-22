@@ -10,7 +10,7 @@ using Dynamo.Graph.Nodes;
 namespace CoreNodeModels
 {
     [NodeName("Inputs Outputs")]
-    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [OutPortTypes("inputOutput")]
     public class InputOutput : DSDropDownBase
     {

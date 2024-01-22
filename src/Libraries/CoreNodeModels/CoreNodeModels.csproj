@@ -55,6 +55,7 @@
       <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoUnits\UnitsCore.csproj" />
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
