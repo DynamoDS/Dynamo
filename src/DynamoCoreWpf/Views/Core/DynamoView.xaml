@@ -112,6 +112,9 @@
         <KeyBinding Key="O"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="T"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.ShowOpenTemplateDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="I"
                     Modifiers="Control+Shift"
                     Command="{Binding Path=DataContext.ShowInsertDialogAndInsertResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -334,9 +337,17 @@
                             </MenuItem>
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpen}"
-                                  Command="{Binding ShowOpenDialogAndOpenResultCommand}"
-                                  Name="openButton"
-                                  InputGestureText="Ctrl + O">
+                                  Name="openButton">
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpenFile}"
+                                      Name="openFileMenuItem"
+                                      Command="{Binding ShowOpenDialogAndOpenResultCommand}"
+                                      InputGestureText="Ctrl + O">
+                            </MenuItem>
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpenTemplate}"
+                                      Name="openTemplateMenuItem"
+                                      Command="{Binding ShowOpenTemplateDialogCommand}"
+                                      InputGestureText="Ctrl + T">
+                            </MenuItem>
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuInsert}"
                                   Command="{Binding ShowInsertDialogAndInsertResultCommand}"

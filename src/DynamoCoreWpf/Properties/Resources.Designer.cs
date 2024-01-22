@@ -1802,6 +1802,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _File.
+        /// </summary>
+        public static string DynamoViewFileMenuOpenFile {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuOpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Template.
+        /// </summary>
+        public static string DynamoViewFileMenuOpenTemplate {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuOpenTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open _Recent Files.
         /// </summary>
         public static string DynamoViewFileMenuRecentFiles {
