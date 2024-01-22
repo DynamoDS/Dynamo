@@ -751,30 +751,32 @@ namespace Dynamo.PackageManager
         /// <returns>Returns Success if success, NotManagedAssembly if BadImageFormatException, AlreadyLoaded if FileLoadException</returns>
         internal static AssemblyLoadingState TryMetaDataContextLoad(string filename,MetadataLoadContext mlc, out Assembly assem)
         {
-                try
+            Assembly assemName = null;
+            try
+            {
+                var mlcAssemblies = mlc.GetAssemblies();
+                assemName = mlc.LoadFromAssemblyPath(filename);
+                var mlcAssemblies2 = mlc.GetAssemblies();
+                //if loading the assembly did not actually add a new assembly to the MLC
+                //then we've loaded it already, and our current behavior is to
+                //disable publish when a package contains the same assembly twice.
+                if (mlcAssemblies2.Count() == mlcAssemblies.Count())
                 {
-                    var mlcAssemblies = mlc.GetAssemblies();
-                    assem = mlc.LoadFromAssemblyPath(filename);
-                    var mlcAssemblies2 = mlc.GetAssemblies();
-                    //if loading the assembly did not actually add a new assembly to the MLC
-                    //then we've loaded it already, and our current behavior is to
-                    //disable publish when a package contains the same assembly twice.
-                    if (mlcAssemblies2.Count() == mlcAssemblies.Count())
-                    {
-                        throw new FileLoadException(filename);
-                    }
-                    return AssemblyLoadingState.Success;
+                    throw new FileLoadException(filename);
                 }
-                catch (BadImageFormatException)
-                {
-                    assem = null;
-                    return AssemblyLoadingState.NotManagedAssembly;
-                }
-                catch (FileLoadException)
-                {
-                    assem = null;
-                    return AssemblyLoadingState.AlreadyLoaded;
-                }
+                assem = assemName;
+                return AssemblyLoadingState.Success;
+            }
+            catch (BadImageFormatException)
+            {
+                assem = null;
+                return AssemblyLoadingState.NotManagedAssembly;
+            }
+            catch (FileLoadException)
+            {
+                assem = assemName;
+                return AssemblyLoadingState.AlreadyLoaded;
+            }
         }
 
         /// <summary>

@@ -882,6 +882,7 @@ namespace Dynamo.PackageManager
             }
         }
 
+        internal static bool IsFolderStructureRetained;
         private bool _retainFolderStructureOverride;
         /// <summary>
         /// Controls if the automatic folder structure should be used, or retain existing one
@@ -1179,7 +1180,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Decides if any user changes have been made in the current packge publish session
         /// </summary>
-        /// <returns>true if any changes have been made, otehrwise false</returns>
+        /// <returns>true if any changes have been made, otherwise false</returns>
         internal bool AnyUserChanges()
         {             
             if(!String.IsNullOrEmpty(this.Name)) return true;
@@ -1298,7 +1299,9 @@ namespace Dynamo.PackageManager
                 SelectedHosts = pkg.HostDependencies as List<string>,
                 CopyrightHolder = pkg.CopyrightHolder,
                 CopyrightYear = pkg.CopyrightYear,
-                IsPublishFromLocalPackage = true
+                IsPublishFromLocalPackage = true,
+                //default retain folder structure to true when publishing a new version from local.
+                RetainFolderStructureOverride = IsFolderStructureRetained
             };
 
             // add additional files
@@ -1336,7 +1339,21 @@ namespace Dynamo.PackageManager
                         }
                     case AssemblyLoadingState.AlreadyLoaded:
                         {
-                            assembliesLoadedTwice.Add(file);
+                            // When retaining the folder structure, we bypass this check (for now!)
+                            if (pkgViewModel.RetainFolderStructureOverride)
+                            {
+                                var isNodeLibrary = nodeLibraryNames == null || assem == null || nodeLibraryNames.Contains(assem.FullName);
+                                pkgViewModel.Assemblies.Add(new PackageAssembly()
+                                {
+                                    IsNodeLibrary = isNodeLibrary,
+                                    Assembly = assem
+                                });
+                                //pkgViewModel.AdditionalFiles.Add(file);
+                            }
+                            else
+                            {
+                                assembliesLoadedTwice.Add(file);
+                            }
                             break;
                         }
                 }
@@ -1346,7 +1363,7 @@ namespace Dynamo.PackageManager
             pkgViewModel.RefreshPackageContents();
             pkgViewModel.UpdateDependencies();
 
-            if (assembliesLoadedTwice.Any())
+            if (!pkgViewModel.RetainFolderStructureOverride && assembliesLoadedTwice.Any())
             {
                 pkgViewModel.UploadState = PackageUploadHandle.State.Error;
                 pkgViewModel.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);

@@ -438,6 +438,7 @@ namespace Dynamo.ViewModels
         private void PublishNewPackageVersion()
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
+            PublishPackageViewModel.IsFolderStructureRetained = true;
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
             vm.IsNewVersion = true;
 

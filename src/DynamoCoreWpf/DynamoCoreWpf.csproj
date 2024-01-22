@@ -21,36 +21,7 @@
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
 
-  <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-      <!--This command gets the latest build from the splash screen-->
-      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
-      <Exec Command="npm pack @dynamods/splash-screen@latest" />
-  </Target>
-
-    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">        
-        <!--Locates the .tgz files-->
-        <ItemGroup>
-            <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
-        </ItemGroup>
-
-        <!--Reverse the order of the files to get the higher version-->
-        <ItemGroup>
-            <Reversed Include="@(TGZFiles-&gt;Reverse())" />
-        </ItemGroup>
-        
-        <PropertyGroup>
-            <Last>%(TGZFiles.Filename)</Last>
-        </PropertyGroup>
-
-        <!--Creates the folder for the package-->
-        <MakeDir Directories="Packages/SplashScreen" />
-
-        <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/SplashScreen"></Exec>
-
-        <!--Deletes the tgz file-->
-        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
-    </Target>    
+   
    
   <ItemGroup>
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
