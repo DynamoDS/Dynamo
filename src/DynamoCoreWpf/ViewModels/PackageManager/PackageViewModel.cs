@@ -188,9 +188,6 @@ namespace Dynamo.ViewModels
             PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), IsOwner);
             PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), () => CanPublish);
 
-            PublishNewPackageVersionRetainCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersionRetainFolderStructure), IsOwner);
-            PublishNewPackageRetainCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageRetainFolderStructure), () => CanPublish);
-
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
@@ -449,24 +446,6 @@ namespace Dynamo.ViewModels
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
-            vm.IsNewVersion = false;
-
-            dynamoViewModel.OnRequestPackagePublishDialog(vm);
-        }
-
-        private void PublishNewPackageVersionRetainFolderStructure()
-        {
-            Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
-            var vm = PublishPackageViewModel.FromLocalPackageRetainFolderStructure(dynamoViewModel, Model);
-            vm.IsNewVersion = true;
-
-            dynamoViewModel.OnRequestPackagePublishDialog(vm);
-        }
-
-        private void PublishNewPackageRetainFolderStructure()
-        {
-            Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
-            var vm = PublishPackageViewModel.FromLocalPackageRetainFolderStructure(dynamoViewModel, Model);
             vm.IsNewVersion = false;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
