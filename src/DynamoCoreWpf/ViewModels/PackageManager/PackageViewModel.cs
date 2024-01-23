@@ -164,12 +164,10 @@ namespace Dynamo.ViewModels
         [Obsolete("Do not use. This command will be removed. It does nothing.")]
         public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
-        public DelegateCommand PublishNewPackageVersionRetainCommand { get; set; }
         public DelegateCommand UninstallCommand { get; set; }
         public DelegateCommand UnmarkForUninstallationCommand { get; set; }
         public DelegateCommand LoadCommand { get; set; }
         public DelegateCommand PublishNewPackageCommand { get; set; }
-        public DelegateCommand PublishNewPackageRetainCommand { get; set; }
         public DelegateCommand DeprecateCommand { get; set; }
         public DelegateCommand UndeprecateCommand { get; set; }
         public DelegateCommand GoToRootDirectoryCommand { get; set; }
@@ -187,7 +185,6 @@ namespace Dynamo.ViewModels
             GetLatestVersionCommand = new DelegateCommand(() => { }, () => false);
             PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), IsOwner);
             PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), () => CanPublish);
-
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
