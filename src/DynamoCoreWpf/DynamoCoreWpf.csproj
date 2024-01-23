@@ -21,13 +21,13 @@
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
 
- <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+  <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <!--This command gets the latest build from the splash screen-->
       <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
       <Exec Command="npm pack @dynamods/splash-screen@latest" />
   </Target>
 
-    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">        
+  <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">        
         <!--Locates the .tgz files-->
         <ItemGroup>
             <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
@@ -50,7 +50,7 @@
 
         <!--Deletes the tgz file-->
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
-    </Target>       
+  </Target>
    
   <ItemGroup>
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
