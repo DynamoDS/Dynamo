@@ -242,6 +242,9 @@ namespace Dynamo.Core
             get { return samplesDirectory; }
         }
 
+        /// <summary>
+        /// Dynamo Templates folder
+        /// </summary>
         public string TemplatesDirectory
         {
             get { return templatesDirectory; }
@@ -724,6 +727,11 @@ namespace Dynamo.Core
             return sampleDirectory;
         }
 
+        /// <summary>
+        /// Get template folder path from common data directory
+        /// </summary>
+        /// <param name="dataRootDirectory"></param>
+        /// <returns></returns>
         private string GetTemplateFolder(string dataRootDirectory)
         {
             var versionedDirectory = dataRootDirectory;
@@ -737,7 +745,7 @@ namespace Dynamo.Core
             else if (!Directory.Exists(Path.Combine(versionedDirectory, TemplateDirectoryName)))
             {
                 // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
-                // if the folder "%ProgramData%\{...}\{major}.{minor}\samples" exists. If it
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\templates" exists. If it
                 // doesn't exist, then root directory would be "%ProgramData%\{...}".
                 //
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
