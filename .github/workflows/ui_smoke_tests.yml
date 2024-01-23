@@ -92,7 +92,7 @@ jobs:
           Workflow Run: [${{ github.workflow }}](${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }})
           Check: [$env:CHECK_NAME](${{ steps.test_report.outputs.url_html }})
           "@
-          $pr_comment | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          $pr_comment | Out-File -FilePath pr_comment.md
       - name: Find Comment
         if: env.PR_NUMBER != ''
         uses: peter-evans/find-comment@v2
@@ -107,13 +107,11 @@ jobs:
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ env.PR_NUMBER }}
-          body: |
-            ${{ steps.create_comment.outputs.pr_comment }}
+          body-path: pr_comment.md
       - name: Update comment
         if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           edit-mode: replace
-          body: |
-            ${{ steps.create_comment.outputs.pr_comment }}
+          body-path: pr_comment.md
