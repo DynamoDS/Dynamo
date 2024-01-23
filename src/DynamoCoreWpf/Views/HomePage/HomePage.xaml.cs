@@ -26,8 +26,7 @@ namespace Dynamo.UI.Views
     {
         // These are hardcoded string and should only change when npm package structure changed or image path changed
         private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.bundle.js";
-        //private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.bundle.js";
+        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.bundle.js";
         private static readonly string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderName = "embeddedFonts";
         private static readonly string virtualFolderPath = Path.Combine(Path.GetTempPath(), virtualFolderName);
