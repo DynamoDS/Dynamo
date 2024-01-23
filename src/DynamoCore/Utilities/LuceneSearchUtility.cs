@@ -73,6 +73,8 @@ namespace Dynamo.Utilities
         /// </summary>
         internal static readonly LuceneStartConfig DefaultPkgIndexStartConfig = new LuceneStartConfig(LuceneSearchUtility.LuceneStorage.FILE_SYSTEM, LuceneConfig.PackagesIndexingDirectory);
 
+        private bool hasEmptySpaces { get; set; }
+
         public enum LuceneStorage
         {
             //Lucene Storage will be located in RAM and all the info indexed will be lost when Dynamo app is closed
@@ -88,10 +90,7 @@ namespace Dynamo.Utilities
             Normal,
 
             //Search by category using the "." character for example "list.re"
-            ByCategory,
-
-            //Search using an empty space as separator like "get parameters" or "set parameters"
-            ByEmptySpace
+            ByCategory
         }
 
         // Used for creating the StandardAnalyzer
@@ -279,6 +278,7 @@ namespace Dynamo.Utilities
             //By Default the search will be normal
             SearchType searchType = SearchType.Normal;
             int fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMinEdits;
+            hasEmptySpaces = false;
 
             //Max number of nodes allowed in the search when is a ByEmptySpace search
             const int MaxNodeNamesRepeated = 20;
@@ -295,11 +295,11 @@ namespace Dynamo.Utilities
             if (searchTerm.Contains('.'))
                 searchType = SearchType.ByCategory;
             else if (searchTerm.Contains(' '))
-                searchType = SearchType.ByEmptySpace;
+                hasEmptySpaces = true;
             else
                 searchType = SearchType.Normal;
 
-            var trimmedSearchTerm = searchType == SearchType.ByEmptySpace ? searchTerm.Replace(" ", "") : searchTerm;
+            var trimmedSearchTerm = hasEmptySpaces == true ? searchTerm.Replace(" ", "") : searchTerm;
 
             foreach (string f in fields)
             {
@@ -335,12 +335,12 @@ namespace Dynamo.Utilities
                 FuzzyQuery fuzzyQuery;
                 if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
                 {
-                    fuzzyQuery = new FuzzyQuery(new Term(f, searchType == SearchType.ByEmptySpace ? trimmedSearchTerm : searchTerm), fuzzyLogicMaxEdits);
+                    fuzzyQuery = new FuzzyQuery(new Term(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm), fuzzyLogicMaxEdits);
                     booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
                 }
 
-                var fieldQuery = CalculateFieldWeight(f, searchType == SearchType.ByEmptySpace ? trimmedSearchTerm : searchTerm);
-                var wildcardQuery = CalculateFieldWeight(f, searchType == SearchType.ByEmptySpace ? trimmedSearchTerm : searchTerm, true);
+                var fieldQuery = CalculateFieldWeight(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm);
+                var wildcardQuery = CalculateFieldWeight(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm, true);
 
                 if (searchType == SearchType.ByCategory && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
                 {
