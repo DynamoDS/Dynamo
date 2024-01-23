@@ -1281,11 +1281,6 @@ namespace Dynamo.Models
             // Override in derived classes to deal with orphaned serializables.
         }
 
-        void UpdateManager_Log(LogEventArgs args)
-        {
-            Logger.Log(args.Message, args.Level);
-        }
-
         /// <summary>
         /// LibraryLoaded event handler.
         /// </summary>
