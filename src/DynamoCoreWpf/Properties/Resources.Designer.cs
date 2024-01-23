@@ -6627,7 +6627,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to \nIf you need other software or tools in order to use this package, they are listed under Dependencies..
+        ///   Looks up a localized string similar to \nIf you need other software or tools in order to use this package, they are listed under Versions and Package Requirements..
         /// </summary>
         public static string PackagesGuideDependenciesText {
             get {
