@@ -38,7 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-		<PackageReference Include="RestSharp" Version="109.0.1" />
+        <PackageReference Include="RestSharp" Version="108.0.1" />
   </ItemGroup>
   <ItemGroup>
 	<ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
@@ -107,4 +107,10 @@
 	<None Include="App.config" />
 	<None Include="packages.config" />
   </ItemGroup>
+  <Target Name="AfterBuildOps" AfterTargets="Build">
+    <ItemGroup>
+      <ExtensionDefinition Include="DynamoForgeDataExchange_ExtensionDefinition.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\extensions\" />
+  </Target>
 </Project>

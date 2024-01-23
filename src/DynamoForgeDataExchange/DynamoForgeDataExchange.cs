@@ -8,16 +8,47 @@ using Greg;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using ContentType = RestSharp.ContentType;
+using ContentType = RestSharp.DataFormat;
 
 namespace DynamoForgeDataExchange
 {
 
-    internal class DynamoForgeDataExchange : IExtension, IExtensionSource
+    internal class DynamoFDXExtension : IExtension, IExtensionSource
     {
-        public static string CollectionId { get; set; }
-        public static string ExchangeContainerId { get; set; }
-        public static string BinaryAssetGuid { get; set; }
+        internal static string CollectionId { get; set; }
+        internal static string ExchangeContainerId { get; set; }
+        internal static string BinaryAssetGuid { get; set; }
+
+        internal string StagingClientUrl {
+            get
+            {
+                return DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "StagingClientUrl");
+            }
+        }
+
+        internal string ProductionClientUrl
+        {
+            get
+            {
+                return DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "ProductionClientUrl");
+            }
+        }
+
+        internal string StagingCollectionID {
+            get
+            {
+                return DynamoUtilities.PathHelper.getServiceConfigValues(this, "StagingCollectionID");
+            }
+        }
+
+
+        internal string ProductionCollectionID
+        {
+            get
+            {
+                return DynamoUtilities.PathHelper.getServiceConfigValues(this, "ProductionCollectionID");
+            }
+        }
 
         internal static IOAuth2AccessTokenProvider AuthTokenProvider { get; set; }
 
@@ -195,7 +226,8 @@ namespace DynamoForgeDataExchange
             var base64CompressedBuffer = ConvertDynToBase64(filePath);
 
             uploadBinaryRequest.AddHeader("Content-Type", ContentType.Binary);
-            uploadBinaryRequest.AddParameter(ContentType.Binary, base64CompressedBuffer, ParameterType.RequestBody);
+
+            uploadBinaryRequest.AddOrUpdateParameter(ContentType.Binary.ToString(), base64CompressedBuffer);
             var uploadBinaryResponse = fileUploadClient.ExecutePut(uploadBinaryRequest);
             if (uploadBinaryResponse.StatusCode != System.Net.HttpStatusCode.OK)
             {
@@ -217,7 +249,7 @@ namespace DynamoForgeDataExchange
             finishBinaryUploadRequest.AddStringBody(finishBinaryUploadBody, ContentType.Json);
             AddHeadersToPostRequest(finishBinaryUploadRequest, token);
             var finishBinaryUploadResponse = client.ExecutePost(finishBinaryUploadRequest);
-            if (finishBinaryUploadResponse.IsSuccessStatusCode)
+            if (finishBinaryUploadResponse.IsSuccessful)
             {
                 Console.WriteLine("Binary upload completed!");
             }
@@ -233,6 +265,7 @@ namespace DynamoForgeDataExchange
             // Construct request body for an insert operation, i.e. fulfilling an initial excahnge
             string syncAssetRequestBody = ConstructCreateAssetRequestBody(schemaNamespaceId, BinaryAssetGuid, "insert");
 
+            //HttpClient client = new HttpClient();
             RestRequest syncAssetRequest = new RestRequest(syncAssetUrl);
             syncAssetRequest.AddStringBody(syncAssetRequestBody, ContentType.Json);
             AddHeadersToPostRequest(syncAssetRequest, token);
@@ -276,23 +309,20 @@ namespace DynamoForgeDataExchange
             File.WriteAllText(dynamoParsedPath, uncompressedString);
         }
 
-        internal static void DataExchange(string filePath)
+        public void DataExchange(string filePath)
         {
             // The Forge team has recommended to use the Stage environment for testing.
             // Depending on whether we are using Stage or Prod, a Forge token needs to be retrieved 
             // using client and secret id from a Forge app created in the respective environment.
             // Assuming there is a way to retrieve the 3-leg Forge token in Dynamo, I will use a hardcoded one here.
             var token = GetAuthorizationToken();
-            var stageClientUrl = "https://developer-stg.api.autodesk.com/exchange";
-            //var prodClientUrl = "https://developer.api.autodesk.com/exchange";
 
             // Stage collectionId created for Dynamo
-            CollectionId = "9R09ArUBUEDVRIGQ5OE373_L2C"; // for staging
-            CollectionId = ""; // for production
+            CollectionId = StagingCollectionID;
 
             //ExchangeContainerId = "";
 
-            var forgeClient = new RestClient(stageClientUrl);
+            var forgeClient = new RestClient(StagingClientUrl);
 
             DataExchangeToForge(filePath, forgeClient, token);
 
@@ -318,6 +348,9 @@ namespace DynamoForgeDataExchange
         public void Ready(ReadyParams sp)
         {
             throw new NotImplementedException();
+            /*var extraPath = Path.Combine(new FileInfo(Assembly.GetAssembly(typeof(DynamoFDXExtension)).Location).Directory.Parent.FullName, "extra");
+            var alc = new IsolatedFDXContext(Path.Combine(extraPath, "RestSharp.dll"));
+            alc.LoadFromAssemblyName(new AssemblyName("DSIronPython"));*/
         }
 
         public void Shutdown()
@@ -330,4 +363,36 @@ namespace DynamoForgeDataExchange
             throw new NotImplementedException();
         }
     }
+
+    /*internal class IsolatedFDXContext : AssemblyLoadContext
+    {
+        private AssemblyDependencyResolver resolver;
+
+        public IsolatedFDXContext(string libPath)
+        {
+            resolver = new AssemblyDependencyResolver(libPath);
+        }
+
+        protected override Assembly Load(AssemblyName assemblyName)
+        {
+            string assemblyPath = resolver.ResolveAssemblyToPath(assemblyName);
+            if (assemblyPath != null)
+            {
+                return LoadFromAssemblyPath(assemblyPath);
+            }
+
+            return null;
+        }
+
+        protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+        {
+            string libraryPath = resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
+            if (libraryPath != null)
+            {
+                return LoadUnmanagedDllFromPath(libraryPath);
+            }
+
+            return IntPtr.Zero;
+        }
+    }*/
 }
