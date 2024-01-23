@@ -1963,6 +1963,31 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Opens a Dynamo workspace from a path to a template on disk.
+        /// </summary>
+        /// <param name="filePath">Path to file</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
+        public void OpenTemplateFromPath(string filePath, bool forceManualExecutionMode = false, bool isTemplate = false)
+        {
+
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex))
+            {
+                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                return;
+            }
+            else
+            {
+                // These kind of exceptions indicate that file is not accessible 
+                if (ex is IOException || ex is UnauthorizedAccessException || ex is JsonReaderException)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        /// <summary>
         /// Inserts a Dynamo graph or Custom Node inside the current workspace from a file path
         /// </summary>
         /// <param name="filePath"></param>

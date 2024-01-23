@@ -1744,6 +1744,92 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Open a definition or workspace temlate.
+        /// For most cases, parameters variable refers to the file path to open
+        /// However, when this command is used in OpenFileDialog, the variable is
+        /// a Tuple{string, bool} instead. The boolean flag is used to override the
+        /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
+        private void OpenTemplate(object parameters)
+        {
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            filePath = string.Empty;
+            fileContents = string.Empty;
+            bool forceManualMode = false;
+            try
+            {
+                if (parameters is Tuple<string, bool> packedParams)
+                {
+                    filePath = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    filePath = parameters as string;
+                }
+
+                var directoryName = Path.GetDirectoryName(filePath);
+
+                // Display trust warning when file is not among trust location and warning feature is on
+                bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                    && !filePath.EndsWith("dyf")
+                    && !DynamoModel.IsTestMode
+                    && !PreferenceSettings.DisableTrustWarnings
+                    && FileTrustViewModel != null;
+                RunSettings.ForceBlockRun = displayTrustWarning;
+                // Execute graph open command
+                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, true));
+                // Only show trust warning popop when current opened workspace is homeworkspace and not custom node workspace
+                if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
+                {
+                    // Skip these when opening dyf
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                    FileTrustViewModel.AllowOneTimeTrust = false;
+                }
+            }
+            catch (Exception e)
+            {
+                if (!DynamoModel.IsTestMode)
+                {
+                    string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
+                    string errorMsgString;
+                    // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException || e is UnauthorizedAccessException)
+                    {
+                        errorMsgString = String.Format(e.Message, filePath);
+                    }
+                    else if (e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException)
+                    {
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
+                    }
+                    else
+                    {
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
+                    }
+                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    MessageBoxService.Show(
+                        Owner,
+                        errorMsgString,
+                        commandString,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+                else
+                {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
+                }
+                return;
+            }
+            this.ShowStartPage = false; // Hide start page if there's one.
+        }
+
+        /// <summary>
         /// Insert a definition or a custom node.
         /// For most cases, parameters variable refers to the file path to open
         /// However, when this command is used in InsertFileDialog, the variable is
@@ -1989,7 +2075,7 @@ namespace Dynamo.ViewModels
                 if (CanOpen(_fileDialog.FileName))
                 {
                     // Replace with the template file opening API which does not modify the template file
-                    Open(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                    OpenTemplate(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
                 }
             }
         }

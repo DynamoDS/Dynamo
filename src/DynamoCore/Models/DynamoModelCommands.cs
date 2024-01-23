@@ -46,10 +46,19 @@ namespace Dynamo.Models
         {
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
+            bool isTemplate = command.IsTemplate;
             OpenFileFromPath(filePath, forceManualMode);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
+        }
+
+        protected virtual void OpenTemplateImpl(OpenFileCommand command)
+        {
+            string filePath = command.FilePath;
+            bool forceManualMode = command.ForceManualExecutionMode;
+            bool isTemplate = command.IsTemplate;
+            OpenTemplateFromPath(filePath, forceManualMode, isTemplate);
         }
 
         protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
