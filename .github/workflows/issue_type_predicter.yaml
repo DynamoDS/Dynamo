@@ -1,69 +1,66 @@
-name: Issue Predicter
-on: 
+name: Issue Type Predicter
+# This workflow uses https://github.com/DynamoDS/IssuesTypePredicter to predict the type of a github issue
+
+on:
   issues:
-    types: [opened,edited]
-jobs: 
-  issuePredicterType:
-    name: Issue Predicter
+    types: [opened, edited]
+
+jobs:
+  issue_type_Predicter:
+    name: Issue Type Predicter
     runs-on: ubuntu-latest
     env:
-      #The 'analysis_response' variable is used to store the script response on step one, 
-      #and then checked on step two to know if adding the label and comment is necessary.
-      #The initial 'undefined' value will be overridden when the script runs.
+      # The 'analysis_response' variable is used to store the response returned by issue_analyzer.ps1
+      # The initial 'undefined' value will be overridden when the script runs
       analysis_response: undefined
-      #The 'parsed_issue_body' variable is used to store the parsed issue body (after removing some sections of the body like Stack Trace)
+      # The 'parsed_issue_body' variable is used to store the parsed issue body (after removing some sections of the body like Stack Trace)
       parsed_issue_body: undefined
-      #The 'issue_json_string' variable is used to store in a json string (parsed info of the issue body)
+      # The 'issue_json_string' variable is used to store parsed info of the issue body as a json string
       issue_json_string: undefined
-      #The 'is_wish_list' variable is used to store the value returned by the IssuesTypePredicter project
+      # The 'is_wish_list' variable is used to store the value returned by the IssuesTypePredicter project
       is_wish_list: undefined
-      #template file name
+      # issue template file name
       template: "ISSUE_TEMPLATE.md"
-      #amount of sections from the template that can be missing information for the issue to still be considered complete
+      # amount of sections from the template that can be missing information for the issue to still be considered valid
       acceptable_missing_info: 1
+
     steps:
-      #Removes conflicting characters before using the issue content as a script parameter
-      - uses: actions/checkout@v4
-      - name: Remove conflicting chars
-        env:
-          ISSUE_BODY: ${{github.event.issue.body}}
+        # Removes quotes before using the issue content as a script parameter
+      - name: Remove Quotes
+        id: remove_quotes
         uses: frabert/replace-string-action@v2.4
-        id: remove_quotations
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
         with:
           pattern: "\""
-          string: ${{env.ISSUE_BODY}}
+          string: ${{ env.ISSUE_BODY }}
           replace-with: '-'
 
-       #Checks for missing information inside the issue content
-      - name: Check Information
-        id: check-info
+       # Analyze for missing information inside the issue content
+      - name: Analyze Issue Body
         env:
-          ISSUE_BODY: ${{ steps.remove_quotations.outputs.replaced }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ steps.remove_quotes.outputs.replaced }}
         run: |
-          echo "analysis_response=$(pwsh .\\.github\\scripts\\issue_analyzer.ps1 "${{ env.template }}" "${{ env.acceptable_missing_info }}" )" >> $GITHUB_ENV
-      
-      #Remove sections in the issue body like "Dynamo version", "Stack Trace" because won't be used to predict the issue type
+          echo "analysis_response=$(pwsh .\\.github\\scripts\\issue_analyzer.ps1 "${{ env.template }}" "${{ env.acceptable_missing_info }}")" >> $GITHUB_ENV
+
+      # Remove sections in the issue body like "Dynamo version", "Stack Trace" because won't be used to predict the issue type
       - name: Clean Issue Body
-        env:
-          ISSUE_BODY_PARSED: ${{steps.remove_quotations.outputs.replaced}}
         if: env.analysis_response == 'Valid'
-        id: clean-issue-body
+        env:
+          ISSUE_BODY_PARSED: ${{ steps.remove_quotes.outputs.replaced }}
         run: |
-          echo "parsed_issue_body="$(pwsh  .\\.github\\scripts\\issue_body_cleaner.ps1 )"" >> $GITHUB_ENV
+          echo "parsed_issue_body="$(pwsh .\\.github\\scripts\\issue_body_cleaner.ps1 )"" >> $GITHUB_ENV
 
-      #The IssuesTypePredicter program receives as a parameter a json string with the issue content, then It's creating the json string in this section based in the issue body
+      # Create json string from the issue body
       - name: Create Issue JSON String
-        env:
-          ISSUE_NUMBER: ${{github.event.issue.number}}
-          ISSUE_TITLE:  ${{github.event.issue.title}}
         if: env.analysis_response == 'Valid'
-        id: create-issue-json
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE:  ${{ github.event.issue.title }}
         run: |
-          mkdir IssuesTypePredicter
-          echo "issue_json_string="$(pwsh  .\\.github\\scripts\\get_issue_json_body.ps1 "$ISSUE_NUMBER")""  >> $GITHUB_ENV
+          echo "issue_json_string="$(pwsh .\\.github\\scripts\\get_issue_json_body.ps1 "$ISSUE_NUMBER")"" >> $GITHUB_ENV
 
-      #Now checkout the IssuesTypePredicter source code from the repo https://github.com/DynamoDS/IssuesTypePredicter
+      # Checkout the IssuesTypePredicter repo (https://github.com/DynamoDS/IssuesTypePredicter)
       - name: Checkout IssuesTypePredicter
         if: env.analysis_response == 'Valid'
         uses: actions/checkout@v4
@@ -71,28 +68,36 @@ jobs:
           repository: DynamoDS/IssuesTypePredicter
           path: IssuesTypePredicter
 
-      #Builds the solution IssuesTypePredicter.sln (this contains two VS2019 ML.NET projects)
-      - name: Build Issues Type Predicter 
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1.0'
+
+      # Build the solution IssuesTypePredicter.sln (this contains two VS2019 ML.NET projects)
+      - name: Build Issues Type Predicter
         if: env.analysis_response == 'Valid'
-        run: | 
+        run: |
           dotnet build ./IssuesTypePredicter/IssuesTypePredicter.sln --configuration Release
           cp ./IssuesTypePredicter/IssuesTypePredicterML.ConsoleApp/bin/Release/netcoreapp3.1/MLModel.zip .
-      
-      #Execute the IssuesTypePredicter program and pass as a parameter the json string (which contains the issue info)
+
+      # Execute the IssuesTypePredicter program and pass 'issue_json_string' as a parameter
       - name: Run Issues Type Predicter
         if: env.analysis_response == 'Valid'
-        run: | 
-          echo "is_wish_list="$(dotnet run -p ./IssuesTypePredicter/IssuesTypePredicterML.ConsoleApp/IssuesTypePredicterML.ConsoleApp.csproj -v q "${{env.issue_json_string}}")"" >> $GITHUB_ENV
-
-      #If the is_wish_list variable contains 1 means that is a wishlist issue and label the issue with the word "Wishlist"
-      - name: Label Wishlist
-        if: contains(env.is_wish_list,'IsWishlist:1') && env.analysis_response == 'Valid'
         run: |
-          curl -v -u admin:${{ secrets.DYNAMOBOTTOKEN }} -d '{"labels": ["Wishlist"]}' ${{ github.event.issue.url }}/labels
+          echo "is_wish_list="$(dotnet run -p ./IssuesTypePredicter/IssuesTypePredicterML.ConsoleApp/IssuesTypePredicterML.ConsoleApp.csproj -v q "${{ env.issue_json_string }}")"" >> $GITHUB_ENV
 
-      #When the issue is missing important information (don't follow the template structure) the issue will be labeled as "NotMLEvaluated"
-      - name: Label NotMLEvaluated
+      #  If the is_wish_list variable contains 1, label the issue as "Wishlist"
+      - name: Label issue as 'Wishlist'
+        if: env.analysis_response == 'Valid' && contains(env.is_wish_list, 'IsWishlist:1')
+        env:
+          GH_TOKEN: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
+        run: |
+          gh issue edit ${{ github.event.issue.number }} --add-label "Wishlist" --repo ${{ github.repository }}
+
+      #  If the issue is missing important information (don't follow the template structure), label the issue as "NotMLEvaluated"
+      - name: Label issue as 'NotMLEvaluated'
         if: env.analysis_response != 'Valid' || env.issue_json_string == ''
+        env:
+          GH_TOKEN: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
         run: |
-          curl -v -u admin:${{ secrets.DYNAMOBOTTOKEN }} -d '{"labels": ["NotMLEvaluated"]}' ${{ github.event.issue.url }}/labels
-    
+          gh issue edit ${{ github.event.issue.number }} --add-label "NotMLEvaluated" --repo ${{ github.repository }}
