@@ -433,7 +433,7 @@ namespace Dynamo.ViewModels
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
             PublishPackageViewModel.IsFolderStructureRetained = true;
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, true);
             vm.IsNewVersion = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
@@ -442,7 +442,7 @@ namespace Dynamo.ViewModels
         private void PublishNewPackage()
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, false);
             vm.IsNewVersion = false;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
