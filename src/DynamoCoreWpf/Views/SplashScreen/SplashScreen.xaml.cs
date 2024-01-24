@@ -13,6 +13,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Greg.AuthProviders;
 using Microsoft.Web.WebView2.Core;
@@ -88,7 +89,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// The WebView2 Browser instance used to display splash screen
         /// </summary>
-        internal WebView2 webView;
+        internal DynamoWebView2 webView;
 
         /// <summary>
         /// This delegate is used in StaticSplashScreenReady events
@@ -142,8 +143,9 @@ namespace Dynamo.UI.Views
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
 
-            webView = new WebView2();
+            webView = new DynamoWebView2();
             ShadowGrid.Children.Add(webView);
+
             // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
@@ -554,6 +556,7 @@ namespace Dynamo.UI.Views
             {
                 authManager.LoginStateChanged -= OnLoginStateChanged;
             }
+
             webView.Dispose();
             webView = null;
 
