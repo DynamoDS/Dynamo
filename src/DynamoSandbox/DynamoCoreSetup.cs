@@ -59,7 +59,6 @@ namespace DynamoSandbox
         {
             try
             {
-                Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
                 // This line validates if the WebView2 Runtime is installed in the computer before launching DynamoSandbox,
@@ -86,7 +85,51 @@ namespace DynamoSandbox
             }
             catch (Exception e)
             {
-                HandleException(e);
+                try
+                {
+#if DEBUG
+                    // Display the recorded command XML when the crash happens, 
+                    // so that it maybe saved and re-run later
+                    if (viewModel != null)
+                        viewModel.SaveRecordedCommand.Execute(null);
+#endif
+
+                    DynamoModel.IsCrashing = true;
+                    Analytics.TrackException(e, true);
+
+                    if (viewModel != null)
+                    {
+                        // Show the unhandled exception dialog so user can copy the 
+                        // crash details and report the crash if she chooses to.
+                        viewModel.Model.OnRequestsCrashPrompt(new CrashErrorReportArgs(e));
+
+                        // Give user a chance to save (but does not allow cancellation)
+                        viewModel.Exit(allowCancel: false);
+                    }
+                    else
+                    {
+                        //show a message dialog box with the exception so the user
+                        //can effectively report the issue.
+                        var shortStackTrace = String.Join(Environment.NewLine, e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
+
+                        var result = MessageBoxService.Show(e.Message +
+                            $"  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
+                             Environment.NewLine + string.Format(Resources.SandboxBuildsPageDialogMessage, sandboxWikiPage),
+                             Resources.SandboxCrashMessage, MessageBoxButton.YesNo, MessageBoxImage.Error);
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            Process.Start(new ProcessStartInfo(sandboxWikiPage) { UseShellExecute = true });
+                        }
+                    }
+                }
+                catch
+                {
+                    // Do nothing for now.
+                }
+
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
             }
         }
 
@@ -122,70 +165,10 @@ namespace DynamoSandbox
             MessageBoxService.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
-        private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            if (e.Handled)
-            {
-                return;
-            }
-
-            e.Handled = true;
-            HandleException(e.Exception);
-        }
-
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = e.ExceptionObject as Exception;
-            HandleException(ex);
-        }
-
-        private void HandleException(Exception e)
-        {
-            try
-            {
-#if DEBUG
-                // Display the recorded command XML when the crash happens, 
-                // so that it maybe saved and re-run later
-                if (viewModel != null)
-                    viewModel.SaveRecordedCommand.Execute(null);
-#endif
-
-                DynamoModel.IsCrashing = true;
-                Analytics.TrackException(e, true);
-
-                if (viewModel != null)
-                {
-                    // Show the unhandled exception dialog so user can copy the 
-                    // crash details and report the crash if she chooses to.
-                    viewModel.Model.OnRequestsCrashPrompt(new CrashErrorReportArgs(e));
-
-                    // Give user a chance to save (but does not allow cancellation)
-                    viewModel.Exit(allowCancel: false);
-                }
-                else
-                {
-                    //show a message dialog box with the exception so the user
-                    //can effectively report the issue.
-                    var shortStackTrace = String.Join(Environment.NewLine, e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
-
-                    var result = MessageBoxService.Show(e.Message +
-                        $"  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
-                         Environment.NewLine + string.Format(Resources.SandboxBuildsPageDialogMessage, sandboxWikiPage),
-                         Resources.SandboxCrashMessage, MessageBoxButton.YesNo, MessageBoxImage.Error);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        Process.Start(new ProcessStartInfo(sandboxWikiPage) { UseShellExecute = true });
-                    }
-                }
-            }
-            catch
-            {
-                // Do nothing for now.
-            }
-
-            Debug.WriteLine(e.Message);
-            Debug.WriteLine(e.StackTrace);
+            viewModel?.Model?.OnRequestsCrashPrompt(new CrashErrorReportArgs(ex));
         }
     }
 }
