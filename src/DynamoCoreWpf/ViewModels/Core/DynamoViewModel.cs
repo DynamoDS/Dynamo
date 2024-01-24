@@ -911,11 +911,6 @@ namespace Dynamo.ViewModels
             model.Logger.PropertyChanged -= Instance_PropertyChanged;
         }
 
-        private void UnsubscribeUpdateManagerEvents()
-        {
-
-        }
-
         private void SubscribeModelUiEvents()
         {
             model.RequestBugReport += ReportABug;
