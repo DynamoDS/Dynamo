@@ -882,7 +882,6 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal static bool IsFolderStructureRetained;
         private bool _retainFolderStructureOverride;
         /// <summary>
         /// Controls if the automatic folder structure should be used, or retain existing one
@@ -1366,6 +1365,14 @@ namespace Dynamo.PackageManager
 
         }
 
+        /// <summary>
+        /// The method is used to create a PublishPackageViewModel from a Package object.
+        /// If retainFolderStructure is set to true, the folder structure of the package will be retained. Else, the default folder structure will be imposed.
+        /// </summary>
+        /// <param name="dynamoViewModel"></param>
+        /// <param name="pkg">The package to be loaded</param>
+        /// <param name="retainFolderStructure">If true, the folder structure of the package will be retained as set by the user</param>
+        /// <returns></returns>
         internal static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg, bool retainFolderStructure)
         {
             var defs = new List<CustomNodeDefinition>();
