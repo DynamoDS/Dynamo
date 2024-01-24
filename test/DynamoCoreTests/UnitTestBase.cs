@@ -1,9 +1,12 @@
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using NUnit.Framework;
 
 namespace Dynamo
@@ -64,7 +67,10 @@ namespace Dynamo
         [SetUp]
         public virtual void Setup()
         {
-            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
+            
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
+
             SetupDirectories();
 
             if (assemblyHelper == null)
@@ -98,7 +104,8 @@ namespace Dynamo
             {
                 AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             }
-            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
+            TestUtilities.WebView2Tag = string.Empty;
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
         }
 
         public string GetNewFileNameOnTempPath(string fileExtension = "dyn")

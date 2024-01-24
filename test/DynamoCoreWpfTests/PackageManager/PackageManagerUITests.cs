@@ -1875,7 +1875,6 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(packageContents.First()));
         }
 
-
         [Test]
         public void AddsFilesAndFoldersFromMultipleFilePathsCorrectly()
         {
