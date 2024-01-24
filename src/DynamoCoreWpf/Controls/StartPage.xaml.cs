@@ -374,7 +374,7 @@ namespace Dynamo.UI.Controls
                 try
                 {
                     // Skip files which were moved or deleted (consistent with Revit behavior)
-                    if (!Path.Exists(filePath)) continue;
+                    if (!System.IO.Path.Exists(filePath)) continue;
 
                     var extension = Path.GetExtension(filePath).ToUpper();
                     // If not extension specified and code reach here, this means this is still a valid file
