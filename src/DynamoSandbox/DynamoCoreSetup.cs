@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Threading;
 using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Core;
