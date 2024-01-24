@@ -2182,7 +2182,16 @@ namespace Dynamo.ViewModels
             try
             {
                 Model.Logger.Log(string.Format(Properties.Resources.SavingInProgress, path));
-                var hasSaved = CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
+                var hasSaved = false;
+                if (path.Contains(Model.PathManager.TemplatesDirectory))
+                {
+                    // Give user notifications
+                    MainGuideManager.CreateRealTimeInfoWindow("Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file.");
+                }
+                else
+                {
+                    hasSaved = CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
+                }
 
                 if (!isBackup && hasSaved)
                 {
