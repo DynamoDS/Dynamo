@@ -4,6 +4,7 @@ using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
 using System;
 using CoreNodeModels;
+using System.Linq;
 
 namespace Dynamo.Controls
 {
@@ -68,7 +69,7 @@ namespace Dynamo.Controls
 
             if (e.PropertyName == nameof(WatchViewModel.IsCollection))
             {
-                // // The WatchTree controll will resize only if its role is a WatchNode (starts with an specific height), otherwise it won't resize (Bubble role).
+                // The WatchTree controll will resize only if its role is a WatchNode (starts with an specific height), otherwise it won't resize (Bubble role).
                 if (!Double.IsNaN(this.Height))
                 {
                     if (_vm.IsCollection)
@@ -100,10 +101,13 @@ namespace Dynamo.Controls
                 {
                     if (!_vm.Children[0].IsCollection)
                     {
-                        // We will use 7.5 as width factor for each character.
+                        // if multiline string
+                        if (NodeLabel.Contains(Environment.NewLine) || NodeLabel.Contains("\n"))
+                            this.Height = defaultHeightSize;
 
-                        double requiredWidth = (NodeLabel.Length * widthPerCharacter);
-                        if (requiredWidth > (MaxWidthSize))
+                        // We will use 7.5 as width factor for each character.
+                        double requiredWidth = NodeLabel.Length * widthPerCharacter;
+                        if (requiredWidth > MaxWidthSize)
                         {
                             requiredWidth = MaxWidthSize;
                         }
@@ -123,6 +127,8 @@ namespace Dynamo.Controls
                     // Forcing not to display the Levels content when is being used for display info from another node like the Color Range
                     this.ListLevelsDisplay.Visibility = Visibility.Hidden;
                     this.ListLevelsDisplay.Height = 0;
+                    // Hide resize grip
+                    resizeThumb.Visibility = Visibility.Collapsed;
                 }
             }
         }

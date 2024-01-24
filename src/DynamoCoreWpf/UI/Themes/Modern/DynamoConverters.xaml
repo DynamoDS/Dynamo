@@ -97,7 +97,6 @@
     <controls:EmptyToZeroLengthConverter x:Key="EmptyToZeroLengthConverter"/>
     <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
     <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />
-    <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter" />
     <controls:ZoomToOpacityConverter x:Key="ZoomToOpacityConverter" />
     <controls:ZoomToBooleanConverter x:Key="ZoomToBooleanConverter" />
     <controls:ZoomToVisibilityCollapsedConverter x:Key="ZoomToVisibilityCollapsedConverter" />

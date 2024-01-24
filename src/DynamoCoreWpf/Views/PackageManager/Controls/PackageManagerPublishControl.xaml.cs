@@ -347,8 +347,8 @@ namespace Dynamo.PackageManager.UI
             MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK :
                MessageBoxService.Show(
                    Owner,
-                   Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupMessage,
-                   Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupCaption,
+                   Wpf.Properties.Resources.ResetChangesWarningPopupMessage,
+                   Wpf.Properties.Resources.DiscardChangesWarningPopupCaption,
                    MessageBoxButton.OKCancel,
                    MessageBoxImage.Warning);
 

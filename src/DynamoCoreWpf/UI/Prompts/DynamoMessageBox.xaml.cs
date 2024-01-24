@@ -272,6 +272,27 @@ namespace Dynamo.UI.Prompts
             return dynamoMessageBox.CustomDialogResult;
         }
 
+        internal static MessageBoxResult Show(Window owner, string messageBoxText, string caption, MessageBoxButton button, IEnumerable<string> buttonNames,
+            MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+
+            if (owner != null && owner.IsLoaded)
+            {
+                dynamoMessageBox.Owner = owner;
+            }
+
+            dynamoMessageBox.ConfigureButtons(button, buttonNames);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
