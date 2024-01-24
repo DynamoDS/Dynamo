@@ -1,5 +1,4 @@
 using Dynamo.Core;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using System;
@@ -178,9 +177,6 @@ namespace Dynamo.Wpf.Utilities
             }
 
             DynamoModel model = viewModel?.Model;
-  
-            string cerToolDir = !string.IsNullOrEmpty(model?.CERLocation) ?
-                model?.CERLocation : FindCERToolInInstallLocations();
 
             string cerToolDir = !string.IsNullOrEmpty(model?.CERLocation) ?
                 model?.CERLocation : FindCERToolInInstallLocations();
@@ -285,6 +281,7 @@ namespace Dynamo.Wpf.Utilities
                 }
 
                 var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
+
                 using (var cerDLL = new CerDLL(cerToolPath)) 
                 {
                     cerDLL.ToggleCER(true);
