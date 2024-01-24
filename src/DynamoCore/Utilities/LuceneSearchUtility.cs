@@ -84,6 +84,9 @@ namespace Dynamo.Utilities
             FILE_SYSTEM
         }
 
+        /// <summary>
+        /// This enum will be used to identify which can of search should be executed based in the user search criteria 
+        /// </summary>
         public enum SearchType
         {
             //Normal search using just one word matching a specific node name
