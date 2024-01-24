@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
-using Dynamo.Models;
 
 namespace Dynamo.PackageManager
 {
@@ -755,7 +754,9 @@ namespace Dynamo.PackageManager
             try
             {
                 var mlcAssemblies = mlc.GetAssemblies();
-                assemName = mlc.LoadFromAssemblyPath(filename);
+                assemName = mlcAssemblies.FirstOrDefault(x => x.GetName().FullName.Contains(Path.GetFileNameWithoutExtension(filename)), null);
+                assem = mlc.LoadFromAssemblyPath(filename);
+                
                 var mlcAssemblies2 = mlc.GetAssemblies();
                 //if loading the assembly did not actually add a new assembly to the MLC
                 //then we've loaded it already, and our current behavior is to
@@ -764,7 +765,6 @@ namespace Dynamo.PackageManager
                 {
                     throw new FileLoadException(filename);
                 }
-                assem = assemName;
                 return AssemblyLoadingState.Success;
             }
             catch (BadImageFormatException)

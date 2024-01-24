@@ -1269,6 +1269,7 @@ namespace Dynamo.PackageManager
             }
         }
 
+        [Obsolete]
         public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg)
         {
             var defs = new List<CustomNodeDefinition>();
@@ -1298,10 +1299,7 @@ namespace Dynamo.PackageManager
                 License = pkg.License,
                 SelectedHosts = pkg.HostDependencies as List<string>,
                 CopyrightHolder = pkg.CopyrightHolder,
-                CopyrightYear = pkg.CopyrightYear,
-                IsPublishFromLocalPackage = true,
-                //default retain folder structure to true when publishing a new version from local.
-                RetainFolderStructureOverride = IsFolderStructureRetained
+                CopyrightYear = pkg.CopyrightYear
             };
 
             // add additional files
@@ -1339,16 +1337,121 @@ namespace Dynamo.PackageManager
                         }
                     case AssemblyLoadingState.AlreadyLoaded:
                         {
-                            // When retaining the folder structure, we bypass this check (for now!)
+                            // When retaining the folder structure, we bypass this check as users are in full control of the folder structure.
+                            assembliesLoadedTwice.Add(file);
+                            break;
+                        }
+                }
+            }
+
+            //after dependencies are loaded refresh package contents
+            pkgViewModel.RefreshPackageContents();
+            pkgViewModel.UpdateDependencies();
+
+            if (assembliesLoadedTwice.Any())
+            {
+                pkgViewModel.UploadState = PackageUploadHandle.State.Error;
+                pkgViewModel.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);
+            }
+
+            if (pkg.VersionName == null) return pkgViewModel;
+
+            var parts = pkg.VersionName.Split('.');
+            if (parts.Count() != 3) return pkgViewModel;
+
+            pkgViewModel.MajorVersion = parts[0];
+            pkgViewModel.MinorVersion = parts[1];
+            pkgViewModel.BuildVersion = parts[2];
+            return pkgViewModel;
+
+        }
+
+        internal static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg, bool retainFolderStructure)
+        {
+            var defs = new List<CustomNodeDefinition>();
+
+            foreach (var x in pkg.LoadedCustomNodes)
+            {
+                CustomNodeDefinition def;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(
+                    x.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out def))
+                {
+                    defs.Add(def);
+                }
+            }
+
+            var pkgViewModel = new PublishPackageViewModel(dynamoViewModel)
+            {
+                Group = pkg.Group,
+                Description = pkg.Description,
+                Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : "",
+                CustomNodeDefinitions = defs,
+                Name = pkg.Name,
+                RepositoryUrl = pkg.RepositoryUrl ?? "",
+                SiteUrl = pkg.SiteUrl ?? "",
+                Package = pkg,
+                License = pkg.License,
+                SelectedHosts = pkg.HostDependencies as List<string>,
+                CopyrightHolder = pkg.CopyrightHolder,
+                CopyrightYear = pkg.CopyrightYear,
+                IsPublishFromLocalPackage = true,
+                //default retain folder structure to true when publishing a new version from local.
+                RetainFolderStructureOverride = retainFolderStructure
+            };
+
+            // add additional files
+            pkg.EnumerateAdditionalFiles();
+            foreach (var file in pkg.AdditionalFiles)
+            {
+                pkgViewModel.AdditionalFiles.Add(file.Model.FullName);
+            }
+
+            var nodeLibraryNames = pkg.Header.node_libraries;
+
+            var assembliesLoadedTwice = new List<string>();
+            foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
+            {
+                Assembly assem;
+                var result = PackageLoader.TryMetaDataContextLoad(file, SharedPublishLoadContext, out assem);
+
+                switch (result)
+                {
+                    case AssemblyLoadingState.Success:
+                        {
+                            var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
+                            pkgViewModel.Assemblies.Add(new PackageAssembly()
+                            {
+                                IsNodeLibrary = isNodeLibrary,
+                                Assembly = assem
+                            });
+                            break;
+                        }
+                    case AssemblyLoadingState.NotManagedAssembly:
+                        {
+                            // if it's not a .NET assembly, we load it as an additional file
+                            pkgViewModel.AdditionalFiles.Add(file);
+                            break;
+                        }
+                    case AssemblyLoadingState.AlreadyLoaded:
+                        {
+                            // When retaining the folder structure, we bypass this check as users are in full control of the folder structure.
                             if (pkgViewModel.RetainFolderStructureOverride)
                             {
-                                var isNodeLibrary = nodeLibraryNames == null || assem == null || nodeLibraryNames.Contains(assem.FullName);
-                                pkgViewModel.Assemblies.Add(new PackageAssembly()
+                                if (assem == null)
                                 {
-                                    IsNodeLibrary = isNodeLibrary,
-                                    Assembly = assem
-                                });
-                                //pkgViewModel.AdditionalFiles.Add(file);
+                                    pkgViewModel.AdditionalFiles.Add(file);
+                                }
+                                else
+                                {
+                                    var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
+                                    pkgViewModel.Assemblies.Add(new PackageAssembly()
+                                    {
+                                        IsNodeLibrary = isNodeLibrary,
+                                        Assembly = assem
+                                    });
+                                }
                             }
                             else
                             {

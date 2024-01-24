@@ -117,7 +117,7 @@ namespace DynamoCoreWpfTests
             var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "package with native assembly");
             Assert.DoesNotThrow(() =>
             {
-                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package);
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, false);
             });
             
             Assert.AreEqual(1, vm.AdditionalFiles.Count);
@@ -144,7 +144,7 @@ namespace DynamoCoreWpfTests
             var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
             Assert.DoesNotThrow(() =>
             {
-                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package);
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, true);
             });
 
             Assert.AreEqual(PackageUploadHandle.State.Error, vm.UploadState);
@@ -170,7 +170,7 @@ namespace DynamoCoreWpfTests
             var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
             Assert.DoesNotThrow(() =>
             {
-                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package);
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, true);
             });
 
             vm.AddFile(addFilePath);
