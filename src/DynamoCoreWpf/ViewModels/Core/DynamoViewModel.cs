@@ -47,6 +47,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -2186,7 +2187,8 @@ namespace Dynamo.ViewModels
                 if (path.Contains(Model.PathManager.TemplatesDirectory))
                 {
                     // Give user notifications
-                    MainGuideManager.CreateRealTimeInfoWindow("Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file.");
+                    DynamoMessageBox.Show(WpfResources.WorkspaceSaveTemplateDirectoryBlockMsg, WpfResources.WorkspaceSaveTemplateDirectoryBlockTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 else
                 {
