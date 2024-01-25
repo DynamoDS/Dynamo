@@ -2076,6 +2076,53 @@ namespace Dynamo.Controls
         }
     }
 
+    public class CopyrightInfoTooltipConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
+            {
+                return null;
+            }
+            if (values != null && values.Count() > 0)
+            {
+                var cph = string.IsNullOrEmpty((string)values[0]) ? "N/A" : (string)values[0];
+                var cpy = string.IsNullOrEmpty((string)values[1]) ? "N/A" : (string)values[1];
+                var tooltip = Resources.PackageDetailsCopyRightHolder + ": " + cph + Environment.NewLine +
+                    Resources.PackageDetailsCopyRightYear + ": " + cpy;
+                return tooltip;
+            }
+            return "";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class PackageDetailsLinkCollapseOnEmpty : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
+            {
+                return null;
+            }
+            if (values != null && values.Count() > 0)
+            {
+                if (!string.IsNullOrEmpty((string)values[0]) || !string.IsNullOrEmpty((string)values[1]))
+                return Visibility.Visible; ;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public sealed class WarningLevelToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
