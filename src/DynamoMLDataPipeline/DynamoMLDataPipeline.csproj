@@ -8,10 +8,10 @@
   <PropertyGroup>
 	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-	<ProjectGuid>{F2FCFD49-84BC-4C0E-90C1-5A327D017C4E}</ProjectGuid>
+	<ProjectGuid>{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}</ProjectGuid>
 	<OutputType>Library</OutputType>
-	<RootNamespace>DynamoForgeDataExchange</RootNamespace>
-	<AssemblyName>DynamoForgeDataExchange</AssemblyName>
+	<RootNamespace>DynamoMLDataPipeline</RootNamespace>
+	<AssemblyName>DynamoMLDataPipeline</AssemblyName>
 	<FileAlignment>512</FileAlignment>
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	<Deterministic>true</Deterministic>
@@ -37,7 +37,7 @@
 	<WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="RestSharp" Version="108.0.1" />
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +100,7 @@
 	<Compile Include="ParameterComponent.cs" />
 	<Compile Include="Schema.cs" />
 	<Compile Include="UploadAssetsRequestBody.cs" />
-	<Compile Include="DynamoForgeDataExchange.cs" />
+	<Compile Include="DynamoMLDataPipelineExtension.cs" />
 	<Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -109,7 +109,7 @@
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
-      <ExtensionDefinition Include="DynamoForgeDataExchange_ExtensionDefinition.xml" />
+      <ExtensionDefinition Include="DynamoMLDataPipeline_ExtensionDefinition.xml" />
     </ItemGroup>
     <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\extensions\" />
   </Target>

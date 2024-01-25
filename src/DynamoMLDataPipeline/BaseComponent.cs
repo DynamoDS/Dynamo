@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace DynamoForgeDataExchange
+namespace DynamoMLDataPipeline
 {
     class BaseComponent : Dictionary<string, Dictionary<string, ObjectInfo>>
     {

@@ -203,7 +203,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfVisualizationTests", "..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoPythonTests", "..\test\Libraries\DynamoPythonTests\DynamoPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoForgeDataExchange", "DynamoForgeDataExchange\DynamoForgeDataExchange.csproj", "{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoMLDataPipeline", "DynamoMLDataPipeline\DynamoMLDataPipeline.csproj", "{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

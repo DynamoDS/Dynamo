@@ -42,7 +42,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using DynamoForgeDataExchange;
+using DynamoMLDataPipeline;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
@@ -2105,7 +2105,7 @@ namespace Dynamo.ViewModels
                         Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
                         Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
                         Model.Logger.Log("The Workspace has Substantial checksum, so is ready to send to FDX : " + HasSubstantialCheckSum().ToString());
-                        DynamoFDXExtension extension = new DynamoFDXExtension();
+                        DynamoMLDataPipelineExtension extension = new DynamoMLDataPipelineExtension();
                         extension.DataExchange(path);
                     }
                 }                           

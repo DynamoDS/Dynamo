@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace DynamoForgeDataExchange
+namespace DynamoMLDataPipeline
 {
     class Attribute
     {

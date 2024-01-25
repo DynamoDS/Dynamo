@@ -10,11 +10,12 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using ContentType = RestSharp.DataFormat;
 
-namespace DynamoForgeDataExchange
+namespace DynamoMLDataPipeline
 {
 
-    internal class DynamoFDXExtension : IExtension, IExtensionSource
+    internal class DynamoMLDataPipelineExtension : IExtension, IExtensionSource
     {
+        private ReadyParams ReadyParams;
         internal static string CollectionId { get; set; }
         internal static string ExchangeContainerId { get; set; }
         internal static string BinaryAssetGuid { get; set; }
@@ -52,9 +53,12 @@ namespace DynamoForgeDataExchange
 
         internal static IOAuth2AccessTokenProvider AuthTokenProvider { get; set; }
 
-        public string UniqueId => throw new NotImplementedException();
+        public string UniqueId
+        {
+            get { return "FCABC211-D56B-4109-AF18-F434DFE48138"; }
+        }
 
-        public string Name => throw new NotImplementedException();
+        public string Name { get { return "DynamoMLDataPipelineExtension"; } }
 
         public IEnumerable<IExtension> RequestedExtensions => throw new NotImplementedException();
 
@@ -347,7 +351,7 @@ namespace DynamoForgeDataExchange
 
         public void Ready(ReadyParams sp)
         {
-            throw new NotImplementedException();
+            ReadyParams = sp;
             /*var extraPath = Path.Combine(new FileInfo(Assembly.GetAssembly(typeof(DynamoFDXExtension)).Location).Directory.Parent.FullName, "extra");
             var alc = new IsolatedFDXContext(Path.Combine(extraPath, "RestSharp.dll"));
             alc.LoadFromAssemblyName(new AssemblyName("DSIronPython"));*/

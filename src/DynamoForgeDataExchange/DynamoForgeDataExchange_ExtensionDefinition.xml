@@ -1,4 +1,0 @@
-<ViewExtensionDefinition>
-  <AssemblyPath>..\DynamoForgeDataExchange.dll</AssemblyPath>
-  <TypeName>DynamoForgeDataExchange.DynamoFDXExtension</TypeName>
-</ViewExtensionDefinition>

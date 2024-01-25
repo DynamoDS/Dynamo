@@ -2,7 +2,7 @@ using System.IO;
 using System.IO.Compression;
 
 
-namespace DynamoForgeDataExchange
+namespace DynamoMLDataPipeline
 {
     public static class DataUtilities
     {
