@@ -460,7 +460,7 @@ namespace Dynamo.PackageManager.Tests
             var listOfEmptyEnumerables = Enumerable.Range(1, 5)
                                                    .Select(_ => Enumerable.Empty<string>());
 
-            pc.PublishRetainFolderStructure(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, true);
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -482,7 +482,7 @@ namespace Dynamo.PackageManager.Tests
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
             var listOfEmptyEnumerables = Enumerable.Range(1, 5)
                                                    .Select(_ => Enumerable.Empty<string>());
-            pc.PublishRetainFolderStructure(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, true);
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -500,7 +500,7 @@ namespace Dynamo.PackageManager.Tests
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
             var listOfEmptyEnumerables = Enumerable.Range(1, 5)
                                                    .Select(_ => Enumerable.Empty<string>());
-            pc.PublishRetainFolderStructure(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, true);
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }
@@ -521,7 +521,7 @@ namespace Dynamo.PackageManager.Tests
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
             var listOfEmptyEnumerables = Enumerable.Range(1, 5)
                                                    .Select(_ => Enumerable.Empty<string>());
-            pc.PublishRetainFolderStructure(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), true, handle);
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), true, handle, true);
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }

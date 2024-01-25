@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
@@ -744,17 +745,19 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Attempt to load a managed assembly in to MetaDataLoad context. 
         /// </summary>
+        /// <param name="rootDir">The root directory of the package</param>
         /// <param name="filename">The filename of a DLL</param>
         /// <param name="mlc">The MetaDataLoadContext to load the package assemblies into for inspection.</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns Success if success, NotManagedAssembly if BadImageFormatException, AlreadyLoaded if FileLoadException</returns>
-        internal static AssemblyLoadingState TryMetaDataContextLoad(string filename,MetadataLoadContext mlc, out Assembly assem)
+        internal static AssemblyLoadingState TryMetaDataContextLoad(string rootDir, string filename, MetadataLoadContext mlc, out Assembly assem)
         {
             Assembly assemName = null;
+            assem = null;
             try
             {
                 var mlcAssemblies = mlc.GetAssemblies();
-                assemName = mlcAssemblies.FirstOrDefault(x => x.GetName().FullName.Contains(Path.GetFileNameWithoutExtension(filename)), null);
+                assemName = mlcAssemblies.FirstOrDefault(x => x.GetName().Name.ToLower().Equals(Path.GetFileNameWithoutExtension(filename).ToLower()), null);
                 assem = mlc.LoadFromAssemblyPath(filename);
                 
                 var mlcAssemblies2 = mlc.GetAssemblies();
@@ -774,9 +777,22 @@ namespace Dynamo.PackageManager
             }
             catch (FileLoadException)
             {
-                assem = assemName;
+                assem = assem == null ? assemName : assem;
                 return AssemblyLoadingState.AlreadyLoaded;
             }
+        }
+
+        internal static MetadataLoadContext InitSharedPublishLoadContext()
+        {
+            // Retrieve the location of the assembly and the referenced assemblies used by the domain
+            var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+            // Create PathAssemblyResolver that can resolve assemblies using the created list.
+            var resolver = new PathAssemblyResolver(runtimeAssemblies);
+            return new MetadataLoadContext(resolver);
+        }
+        internal static void CleanSharedPublishLoadContext(MetadataLoadContext mlc)
+        {
+            mlc.Dispose();
         }
 
         /// <summary>

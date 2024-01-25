@@ -912,7 +912,16 @@ namespace Dynamo.PackageManager
         {
             get
             {
-                sharedMetaDataLoadContext ??= InitSharedPublishLoadContext();
+                try
+                {
+                    sharedMetaDataLoadContext = sharedMetaDataLoadContext == null || sharedMetaDataLoadContext.CoreAssembly == null ? PackageLoader.InitSharedPublishLoadContext() : sharedMetaDataLoadContext;
+                }
+                    catch (ObjectDisposedException)
+                {
+                    // This can happen if the shared context has been disposed before.
+                    // In this case, we create a new one.
+                    sharedMetaDataLoadContext = PackageLoader.InitSharedPublishLoadContext();
+                }
                 return sharedMetaDataLoadContext;
             }
         }
@@ -1314,7 +1323,7 @@ namespace Dynamo.PackageManager
             foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
             {
                 Assembly assem;
-                var result = PackageLoader.TryMetaDataContextLoad(file, SharedPublishLoadContext, out assem);
+                var result = PackageLoader.TryMetaDataContextLoad("",file, SharedPublishLoadContext, out assem);
 
                 switch (result)
                 {
@@ -1421,7 +1430,7 @@ namespace Dynamo.PackageManager
             foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
             {
                 Assembly assem;
-                var result = PackageLoader.TryMetaDataContextLoad(file, SharedPublishLoadContext, out assem);
+                var result = PackageLoader.TryMetaDataContextLoad(pkg.RootDirectory , file, SharedPublishLoadContext, out assem);
 
                 switch (result)
                 {
@@ -1446,18 +1455,26 @@ namespace Dynamo.PackageManager
                             // When retaining the folder structure, we bypass this check as users are in full control of the folder structure.
                             if (pkgViewModel.RetainFolderStructureOverride)
                             {
+                                //pkgViewModel.AdditionalFiles.Add(file);
                                 if (assem == null)
                                 {
                                     pkgViewModel.AdditionalFiles.Add(file);
                                 }
                                 else
                                 {
-                                    var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
-                                    pkgViewModel.Assemblies.Add(new PackageAssembly()
+                                    if (!pkgViewModel.Assemblies.Any(x => x.Assembly == assem))
                                     {
-                                        IsNodeLibrary = isNodeLibrary,
-                                        Assembly = assem
-                                    });
+                                        var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
+                                        pkgViewModel.Assemblies.Add(new PackageAssembly()
+                                        {
+                                            IsNodeLibrary = isNodeLibrary,
+                                            Assembly = assem
+                                        });
+                                    }
+                                    else
+                                    {
+                                        pkgViewModel.AdditionalFiles.Add(file);
+                                    }
                                 }
                             }
                             else
@@ -2103,24 +2120,23 @@ namespace Dynamo.PackageManager
 
             var contentFiles = BuildPackage();
 
+            //if buildPackage() returns no files then the package
+            //is empty so we should return
+            if (contentFiles == null || contentFiles.Count() < 1) return;
+
             //do not create the updatedFiles used for retain folder route unless needed
             IEnumerable<IEnumerable<string>> updatedFiles = null;
-            if(RetainFolderStructureOverride)
+            if (RetainFolderStructureOverride)
+            {
                 updatedFiles = UpdateFilesForRetainFolderStructure(contentFiles);
+                if (updatedFiles == null || updatedFiles.Count() < 1) return;
+            }
 
             try
             {
-                //if buildPackage() returns no files then the package
-                //is empty so we should return
-                if (contentFiles == null || contentFiles.Count() < 1)
-                {
-                    return;
-                }
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                var handle = RetainFolderStructureOverride ?
-                    pmExtension.PackageManagerClient.PublishRetainAsync(Package, updatedFiles, MarkdownFiles, IsNewVersion) :
-                    pmExtension.PackageManagerClient.PublishAsync(Package, contentFiles, MarkdownFiles, IsNewVersion);
+                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, RetainFolderStructureOverride ? updatedFiles : contentFiles, MarkdownFiles, IsNewVersion, RetainFolderStructureOverride);
 
                 // start upload
                 Uploading = true;
@@ -2338,6 +2354,8 @@ namespace Dynamo.PackageManager
 
                 Package.AddAssemblies(Assemblies);
                 Package.LoadState.SetAsLoaded();
+                //clean shared load context when publishing package
+                PackageLoader.CleanSharedPublishLoadContext(SharedPublishLoadContext);
                 return files;
             }
             catch (Exception e)
@@ -2683,13 +2701,13 @@ namespace Dynamo.PackageManager
             return rootItemPreview;
         }
 
-        private static MetadataLoadContext InitSharedPublishLoadContext()
-        {
-            // Retrieve the location of the assembly and the referenced assemblies used by the domain
-            var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
-            // Create PathAssemblyResolver that can resolve assemblies using the created list.
-            var resolver = new PathAssemblyResolver(runtimeAssemblies);
-             return new MetadataLoadContext(resolver);
-        }
+        //private static MetadataLoadContext InitSharedPublishLoadContext()
+        //{
+        //    // Retrieve the location of the assembly and the referenced assemblies used by the domain
+        //    var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+        //    // Create PathAssemblyResolver that can resolve assemblies using the created list.
+        //    var resolver = new PathAssemblyResolver(runtimeAssemblies);
+        //    return new MetadataLoadContext(resolver);
+        //}
     }
 }
