@@ -73,14 +73,12 @@ namespace Dynamo.PackageManager
 
             var dyfFiles = new List<string>();
 
-            WritePackageHeader(package, rootDir);
-
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, rootDir, out dyfFiles);
             RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
             
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
-
+            WritePackageHeader(package, rootDir);
 
             return rootDir;
         }
@@ -246,7 +244,7 @@ namespace Dynamo.PackageManager
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
                     // We are already creating the pkg.json file ourselves, so skip it
-                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")))
+                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
                     {
                         continue;
                     }
