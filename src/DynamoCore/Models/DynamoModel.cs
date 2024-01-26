@@ -1963,13 +1963,12 @@ namespace Dynamo.Models
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
-        /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
-        public void OpenTemplateFromPath(string filePath, bool forceManualExecutionMode = false, bool isTemplate = false)
+        public void OpenTemplateFromPath(string filePath, bool forceManualExecutionMode = false)
         {
 
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex))
             {
-                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, isTemplate);
+                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, true);
                 return;
             }
             else

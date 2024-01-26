@@ -57,8 +57,7 @@ namespace Dynamo.Models
         {
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
-            bool isTemplate = command.IsTemplate;
-            OpenTemplateFromPath(filePath, forceManualMode, isTemplate);
+            OpenTemplateFromPath(filePath, forceManualMode);
         }
 
         protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
