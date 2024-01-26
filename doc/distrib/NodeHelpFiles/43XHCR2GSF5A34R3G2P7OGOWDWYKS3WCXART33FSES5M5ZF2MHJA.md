@@ -5,4 +5,4 @@ CoordinateSystem.Transform will transform the given Coordinate System from a sou
 ___
 ## Example File
 
-![CoordinateSystem.Transform](./Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(CS,%20fromCS,%20contextCS)_img.png)
+![CoordinateSystem.Transform](./43XHCR2GSF5A34R3G2P7OGOWDWYKS3WCXART33FSES5M5ZF2MHJA_img.jpg)

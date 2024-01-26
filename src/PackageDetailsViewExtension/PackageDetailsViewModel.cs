@@ -56,7 +56,7 @@ namespace Dynamo.PackageDetails
             get => license;
             set
             {
-                license = value ?? "MIT";
+                license = string.IsNullOrEmpty(value) ? "MIT" : value;
                 RaisePropertyChanged(nameof(License));
             }
         }
@@ -113,6 +113,16 @@ namespace Dynamo.PackageDetails
         /// The repository URL of the package whose details are being inspected.
         /// </summary>
         public string PackageRepositoryURL { get; }
+
+        /// <summary>
+        /// The keywords associated with the package whose details are being inspected.
+        /// </summary>
+        public string Keywords { get; }
+
+        /// <summary>
+        /// The group associated with the package whose details are being inspected.
+        /// </summary>
+        public string Group { get; }
 
         /// <summary>
         /// Returns, true if custom package paths are not disabled,
@@ -277,6 +287,8 @@ namespace Dynamo.PackageDetails
             PackageSiteURL = packageManagerSearchElement.SiteUrl;
             PackageRepositoryURL = packageManagerSearchElement.RepositoryUrl;
             HasVoted = packageManagerSearchElement.HasUpvote;
+            Keywords = packageManagerSearchElement.Keywords;
+            Group = packageManagerSearchElement.Header.group;
 
             if (!Models.DynamoModel.IsTestMode)
             {
