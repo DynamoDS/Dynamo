@@ -927,7 +927,17 @@
                                                       StrokeThickness="0">
                                                 </Path>
                                             </Viewbox>
-                                            <TextBlock Style="{StaticResource SubLabelStyle}" Text="{x:Static p:Resources.PackagePathAddPathButtonName}" Margin="10 3 0 0"/>
+                                            <TextBlock Text="{x:Static p:Resources.PackagePathAddPathButtonName}" Margin="10 3 0 0">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource SubLabelStyle}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}}" Value="True">
+                                                                <Setter Property="Foreground" Value="#6AC0E7"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </StackPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -936,7 +946,7 @@
                                                     Property="Fill"
                                                     Value="#6AC0E7" />
                                         </Trigger>
-                                    </ControlTemplate.Triggers>
+                                    </ControlTemplate.Triggers> 
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
