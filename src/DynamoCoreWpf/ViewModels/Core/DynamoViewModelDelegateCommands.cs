@@ -100,7 +100,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
         public DelegateCommand ShowOpenTemplateDialogCommand { get; set; }
-
         public DelegateCommand ShowInsertDialogAndInsertResultCommand { get; set; }
         public DelegateCommand WriteToLogCmd { get; set; }
         public DelegateCommand PostUiActivationCommand { get; set; }

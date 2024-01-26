@@ -47,7 +47,6 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
