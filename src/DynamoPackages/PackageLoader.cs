@@ -120,7 +120,7 @@ namespace Dynamo.PackageManager
 
         private void OnPackageAdded(Package pkg)
         {
-            OnPackageMessageLogged(LogMessage.Info($"attempting to load {pkg.Name} {pkg.VersionName} from {pkg.RootDirectory}"));
+            Log($"attempting to load {pkg.Name} {pkg.VersionName} from {pkg.RootDirectory}");
 
             if (PackageAdded != null)
             {
