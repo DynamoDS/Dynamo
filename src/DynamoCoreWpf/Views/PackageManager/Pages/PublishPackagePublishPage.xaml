@@ -917,15 +917,18 @@
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="Transparent" Margin="0 -1 0 0">
-                                        <Viewbox Width="16"
-                                                 Height="16"
-                                                 VerticalAlignment="Top">
-                                            <Path x:Name="Folder"
-                                                  Fill="#999999"
-                                                  Data="M2.00016 6.66667H6.84016L7.8535 6H13.3335V12H14.0002V5.33333H7.86016L6.00016 4H1.3335V14.6667H8.66683V14H2.00016V6.66667ZM2.00016 4.66667H6.00016L7.20016 5.61333L6.66683 6H2.00016V4.66667ZM12.6668 10.6667V12.6667H14.6668V14H12.6668V16H11.3335V14H9.3335V12.6667H11.3335V10.6667H12.6668Z"
-                                                  StrokeThickness="0">
-                                            </Path>
-                                        </Viewbox>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Viewbox Width="16"
+                                                     Height="16"
+                                                     VerticalAlignment="Top">
+                                                <Path x:Name="Folder"
+                                                      Fill="#999999"
+                                                      Data="M2.00016 6.66667H6.84016L7.8535 6H13.3335V12H14.0002V5.33333H7.86016L6.00016 4H1.3335V14.6667H8.66683V14H2.00016V6.66667ZM2.00016 4.66667H6.00016L7.20016 5.61333L6.66683 6H2.00016V4.66667ZM12.6668 10.6667V12.6667H14.6668V14H12.6668V16H11.3335V14H9.3335V12.6667H11.3335V10.6667H12.6668Z"
+                                                      StrokeThickness="0">
+                                                </Path>
+                                            </Viewbox>
+                                            <TextBlock Style="{StaticResource SubLabelStyle}" Text="{x:Static p:Resources.PackagePathAddPathButtonName}" Margin="10 3 0 0"/>
+                                        </StackPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
@@ -937,7 +940,6 @@
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
-                        <TextBlock Style="{StaticResource SubLabelStyle}" Text="{x:Static p:Resources.PackagePathAddPathButtonName}" Margin="10 0 0 0"/>
                     </StackPanel>
                     <Grid Margin="0,0,0,15"
                           Visibility="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged,
