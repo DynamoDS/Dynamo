@@ -346,6 +346,7 @@
                             <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpenTemplate}"
                                       Name="openTemplateMenuItem"
                                       Command="{Binding ShowOpenTemplateDialogCommand}"
+                                      CommandParameter="Template"
                                       InputGestureText="Ctrl + T">
                             </MenuItem>
                         </MenuItem>

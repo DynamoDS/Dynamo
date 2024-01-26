@@ -1929,6 +1929,8 @@ namespace Dynamo.ViewModels
                     return;
             }
 
+            bool isTemplate = (parameter as string).Equals("Template");
+
             DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
             {
                 Filter = string.Format(Resources.FileDialogDynamoDefinitions,
@@ -1937,8 +1939,18 @@ namespace Dynamo.ViewModels
                 Title = string.Format(Resources.OpenDynamoDefinitionDialogTitle,BrandingResourceProvider.ProductName)
             };
 
-            // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
+            // If opening a template, use templates dir as the initial dir
+            if (isTemplate && !string.IsNullOrEmpty(Model.PathManager.TemplatesDirectory))
+            {
+                string path = Model.PathManager.TemplatesDirectory;
+                if (Directory.Exists(path))
+                {
+                    var di = new DirectoryInfo(Model.PathManager.TemplatesDirectory);
+                    _fileDialog.InitialDirectory = di.FullName;
+                }
+            }
+            // otherwise, if you've got the current space path, use it as the initial dir
+            else if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
                 string path = Model.CurrentWorkspace.FileName;
                 if (File.Exists(path))
@@ -1961,74 +1973,25 @@ namespace Dynamo.ViewModels
                 if (Directory.Exists(path))
                     _fileDialog.InitialDirectory = path;
             }
-
+                
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
-                    Open(new Tuple<string,bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                    if (isTemplate)
+                    {
+                        // File opening API which does not modify the original template file
+                        Open(new Tuple<string, bool, bool>(_fileDialog.FileName, _fileDialog.RunManualMode, true));
+                    }
+                    else
+                    {
+                        Open(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                    }
                 }
             }
         }
 
         private bool CanShowOpenDialogAndOpenResultCommand(object parameter) => CanRunGraph;
-
-        /// <summary>
-        /// Present the open dialog and open the template that is selected.
-        /// </summary>
-        /// <param name="parameter"></param>
-        private void ShowOpenTemplateDialog(object parameter)
-        {
-            if (HomeSpace.HasUnsavedChanges)
-            {
-                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
-                    return;
-            }
-
-            DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
-            {
-                Filter = string.Format(Resources.FileDialogDynamoDefinitions,
-                         BrandingResourceProvider.ProductName, "*.dyn;*.dyf") + "|" +
-                         string.Format(Resources.FileDialogAllFiles, "*.*"),
-                Title = string.Format(Resources.OpenDynamoDefinitionDialogTitle, BrandingResourceProvider.ProductName)
-            };
-
-            // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(Model.PathManager.TemplatesDirectory))
-            {
-                string path = Model.PathManager.TemplatesDirectory;
-                if (Directory.Exists(path))
-                {
-                    var di = new DirectoryInfo(Model.PathManager.TemplatesDirectory);
-                    _fileDialog.InitialDirectory = di.FullName;
-                }
-                else
-                {
-                    _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
-                }
-            }
-            else // use the samples directory, if it exists
-            {
-                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
-                string location = Path.GetDirectoryName(dynamoAssembly.Location);
-                string UICulture = CultureInfo.CurrentUICulture.Name;
-                string path = Path.Combine(location, "samples", UICulture);
-
-                if (Directory.Exists(path))
-                    _fileDialog.InitialDirectory = path;
-            }
-
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
-            {
-                if (CanOpen(_fileDialog.FileName))
-                {
-                    // Replace with the template file opening API which does not modify the template file
-                    Open(new Tuple<string, bool, bool>(_fileDialog.FileName, _fileDialog.RunManualMode, true));
-                }
-            }
-        }
-
-        private bool CanShowOpenTemplateDialog(object parameter) => CanRunGraph;
 
         /// <summary>
         /// Present the open dialog and open the workspace that is selected.
