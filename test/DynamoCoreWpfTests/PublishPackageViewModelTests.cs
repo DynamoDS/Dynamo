@@ -47,7 +47,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void SetsErrorState()
         {
-           
             //open a dyf file and modify it
             string packagedirectory = Path.Combine(TestDirectory, "pkgs");
             var packages = Directory.EnumerateDirectories(packagedirectory);
@@ -220,7 +219,6 @@ namespace DynamoCoreWpfTests
         public void PublishingCustomNodeAsNewVersionWorks_SetsPackageInfoCorrectly()
         {
             throw new NotImplementedException();
-
         }
     }
 }

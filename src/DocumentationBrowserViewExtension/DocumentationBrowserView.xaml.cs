@@ -42,6 +42,7 @@ namespace Dynamo.DocumentationBrowser
         public DocumentationBrowserView(DocumentationBrowserViewModel viewModel)
         {
             InitializeComponent();
+
             this.DataContext = viewModel;
             this.viewModel = viewModel;
 

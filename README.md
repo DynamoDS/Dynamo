@@ -38,9 +38,8 @@ You can learn more about developing libraries for Dynamo on the [Dynamo wiki](ht
 You will need the following to build the latest Dynamo on Windows:
 
 - [Microsoft Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) (any edition)
-- [Microsoft .NET Framework 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) (included with Visual Studio 2022)
+- [Microsoft .NET Framework 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) (included with Visual Studio 2022)
 - [Node.js LTS](https://nodejs.org/en/download/) and npm
-- [NUnit Test Adapter 2](https://marketplace.visualstudio.com/items?itemName=NUnitDevelopers.NUnitTestAdapter) (For runnning Dynamo tests within Visual Studio)
 
 If you are working on legacy branches, you may need to install legacy .NET Framework versions through Visual Studio `Tools > Get Tools and Features...` or downloading from [the archive here](https://www.microsoft.com/net/download/archives).
 
