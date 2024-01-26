@@ -1,16 +1,46 @@
-Rename Command4/11/2023 7:20:23 PM
+Rename Command1/12/2024 3:03:41 PM
+renamed Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle.md : T4ELVGYIGJW62SQ52OSQTHK7FD4HPDADDXLQ3W54SUACRRXKXZGQ.md
+renamed Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle.dyn : T4ELVGYIGJW62SQ52OSQTHK7FD4HPDADDXLQ3W54SUACRRXKXZGQ.dyn
+renamed Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle_img.jpg : T4ELVGYIGJW62SQ52OSQTHK7FD4HPDADDXLQ3W54SUACRRXKXZGQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates.md : HJVNQTWA5OIN3IEMTVCDNHS4EDEZD7QGICLE5I7LFBSR5XR6NZXQ.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates.dyn : HJVNQTWA5OIN3IEMTVCDNHS4EDEZD7QGICLE5I7LFBSR5XR6NZXQ.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates_img.jpg : HJVNQTWA5OIN3IEMTVCDNHS4EDEZD7QGICLE5I7LFBSR5XR6NZXQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin, xAxis, yAxis).md : OH554N4PUDZNL4VT5CUWEDPC3OHVKCDBCOPHIXQAIDMNWPFEREUQ.md
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin, xAxis, yAxis).dyn : OH554N4PUDZNL4VT5CUWEDPC3OHVKCDBCOPHIXQAIDMNWPFEREUQ.dyn
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin, xAxis, yAxis)_img.jpg : OH554N4PUDZNL4VT5CUWEDPC3OHVKCDBCOPHIXQAIDMNWPFEREUQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin, xAxis, yAxis, zAxis).md : KLFVJ5DI7APVNODARMSE3JM5C27DG62OXUUQRS3HCDTZYO6IBOZA.md
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin, xAxis, yAxis, zAxis).dyn : KLFVJ5DI7APVNODARMSE3JM5C27DG62OXUUQRS3HCDTZYO6IBOZA.dyn
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin, xAxis, yAxis, zAxis)_img.jpg : KLFVJ5DI7APVNODARMSE3JM5C27DG62OXUUQRS3HCDTZYO6IBOZA_img.jpg
-renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(amount).md : RDCTCOVW6BS5FRXZS3PR264DLYDXTBQLYNP6TATAOVQALTU6V3SA.md
-renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(amount).dyn : RDCTCOVW6BS5FRXZS3PR264DLYDXTBQLYNP6TATAOVQALTU6V3SA.dyn
-renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(amount)_img.jpg : RDCTCOVW6BS5FRXZS3PR264DLYDXTBQLYNP6TATAOVQALTU6V3SA_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates.md : UYY33O65ZLXAIX5KFQN2EYDM2O5XLAGJFC4EWEKGUHZDIXLTI5BA.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates.dyn : UYY33O65ZLXAIX5KFQN2EYDM2O5XLAGJFC4EWEKGUHZDIXLTI5BA.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates_img.jpg : UYY33O65ZLXAIX5KFQN2EYDM2O5XLAGJFC4EWEKGUHZDIXLTI5BA_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(coordinateSystem, origin, axis, degrees).md : AUJIYC7MERJPYMO5VHIFF7FPJD5YMEBOHOMWKROVKZCF66ZIBZ2A.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(coordinateSystem, origin, axis, degrees).dyn : AUJIYC7MERJPYMO5VHIFF7FPJD5YMEBOHOMWKROVKZCF66ZIBZ2A.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(coordinateSystem, origin, axis, degrees)_img.jpg : AUJIYC7MERJPYMO5VHIFF7FPJD5YMEBOHOMWKROVKZCF66ZIBZ2A_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(coordinateSystem, plane, degrees).md : ZF4ATQU6FEYXLGNLBEREZ7EQLGEQUAOWM5PGJ2LCQJBV3EEJUIPQ.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(coordinateSystem, plane, degrees).dyn : ZF4ATQU6FEYXLGNLBEREZ7EQLGEQUAOWM5PGJ2LCQJBV3EEJUIPQ.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(coordinateSystem, plane, degrees)_img.jpg : ZF4ATQU6FEYXLGNLBEREZ7EQLGEQUAOWM5PGJ2LCQJBV3EEJUIPQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(origin, axis, degrees).md : 3JO6UW566EG3MSCU25AGJTTDKZSMAZZO7D4VC5APLFDZVUEMPDSA.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(origin, axis, degrees).dyn : 3JO6UW566EG3MSCU25AGJTTDKZSMAZZO7D4VC5APLFDZVUEMPDSA.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(origin, axis, degrees)_img.jpg : 3JO6UW566EG3MSCU25AGJTTDKZSMAZZO7D4VC5APLFDZVUEMPDSA_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(plane, degrees).md : EFSMOCLY4VKHHCT3366EWQTFWSXBTMVTLKT2H53S3PZFKGNNWXNQ.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(plane, degrees).dyn : EFSMOCLY4VKHHCT3366EWQTFWSXBTMVTLKT2H53S3PZFKGNNWXNQ.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(plane, degrees)_img.jpg : EFSMOCLY4VKHHCT3366EWQTFWSXBTMVTLKT2H53S3PZFKGNNWXNQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(basePoint, from, to).md : ZQ5G3XLBM6AP62MCXAVZY7HD4ZQ7VGZPQJXEUD75YACYNU2RIDHQ.md
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(basePoint, from, to).dyn : ZQ5G3XLBM6AP62MCXAVZY7HD4ZQ7VGZPQJXEUD75YACYNU2RIDHQ.dyn
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(basePoint, from, to)_img.jpg : ZQ5G3XLBM6AP62MCXAVZY7HD4ZQ7VGZPQJXEUD75YACYNU2RIDHQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, amount).md : LH2OMC6QECNGXILBERSJIZPNQ7BJYOSSOBDJC2VICMMYXJ7BJRUA.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, amount).dyn : LH2OMC6QECNGXILBERSJIZPNQ7BJYOSSOBDJC2VICMMYXJ7BJRUA.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, amount)_img.jpg : LH2OMC6QECNGXILBERSJIZPNQ7BJYOSSOBDJC2VICMMYXJ7BJRUA_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, basePoint, from, to).md : DXEUCQG4Y4M6N76367ZJYZYJJOLPKVDC5UFPTIBMDW6CC5ORFAXQ.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, basePoint, from, to).dyn : DXEUCQG4Y4M6N76367ZJYZYJJOLPKVDC5UFPTIBMDW6CC5ORFAXQ.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, basePoint, from, to)_img.jpg : DXEUCQG4Y4M6N76367ZJYZYJJOLPKVDC5UFPTIBMDW6CC5ORFAXQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, plane, xamount, yamount, zamount).md : NE2FY5VUCEZ5FDNQJAZD74HKN3WQSOQJXNOQ77SK3PFIJQCTF23Q.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, plane, xamount, yamount, zamount).dyn : NE2FY5VUCEZ5FDNQJAZD74HKN3WQSOQJXNOQ77SK3PFIJQCTF23Q.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, plane, xamount, yamount, zamount)_img.jpg : NE2FY5VUCEZ5FDNQJAZD74HKN3WQSOQJXNOQ77SK3PFIJQCTF23Q_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, xamount, yamount, zamount).md : FPPU5FCLXHQEPRW7XPEABZGTPZWIO4HFADTOKNKVF4776WBW7AMQ.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, xamount, yamount, zamount).dyn : FPPU5FCLXHQEPRW7XPEABZGTPZWIO4HFADTOKNKVF4776WBW7AMQ.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(coordinateSystem, xamount, yamount, zamount)_img.jpg : FPPU5FCLXHQEPRW7XPEABZGTPZWIO4HFADTOKNKVF4776WBW7AMQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(plane, xamount, yamount, zamount).md : VK6GQ42BUN4KBY4KJUYSHBYUP6QQDHLXPGOYWHT6TYV3KTFHSJOQ.md
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(plane, xamount, yamount, zamount).dyn : VK6GQ42BUN4KBY4KJUYSHBYUP6QQDHLXPGOYWHT6TYV3KTFHSJOQ.dyn
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(plane, xamount, yamount, zamount)_img.jpg : VK6GQ42BUN4KBY4KJUYSHBYUP6QQDHLXPGOYWHT6TYV3KTFHSJOQ_img.jpg
@@ -24,6 +54,15 @@ renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(coordinateSyst
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(coordinateSystem, fromCoordinateSystem, contextCoordinateSystem).md : 43XHCR2GSF5A34R3G2P7OGOWDWYKS3WCXART33FSES5M5ZF2MHJA.md
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(coordinateSystem, fromCoordinateSystem, contextCoordinateSystem).dyn : 43XHCR2GSF5A34R3G2P7OGOWDWYKS3WCXART33FSES5M5ZF2MHJA.dyn
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(coordinateSystem, fromCoordinateSystem, contextCoordinateSystem)_img.jpg : 43XHCR2GSF5A34R3G2P7OGOWDWYKS3WCXART33FSES5M5ZF2MHJA_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(coordinateSystem, direction).md : HEBF4GCPFFMBMYJFF6Z43YJXGHIM7MAZKEXMJR4UQ4BDSV22EUOA.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(coordinateSystem, direction).dyn : HEBF4GCPFFMBMYJFF6Z43YJXGHIM7MAZKEXMJR4UQ4BDSV22EUOA.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(coordinateSystem, direction)_img.jpg : HEBF4GCPFFMBMYJFF6Z43YJXGHIM7MAZKEXMJR4UQ4BDSV22EUOA_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(coordinateSystem, direction, distance).md : D7TPJG7RLZUUPHJENWETOGTAX7U3ZWFXG4BAAHEGVXCRSUW3IVCQ.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(coordinateSystem, direction, distance).dyn : D7TPJG7RLZUUPHJENWETOGTAX7U3ZWFXG4BAAHEGVXCRSUW3IVCQ.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(coordinateSystem, direction, distance)_img.jpg : D7TPJG7RLZUUPHJENWETOGTAX7U3ZWFXG4BAAHEGVXCRSUW3IVCQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(coordinateSystem, xTranslation, yTranslation, zTranslation).md : WC63DIVH2PMDYNEMXAKVSTWOLAWHKDASMASHVO3GK3SW7CAXFLDA.md
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(coordinateSystem, xTranslation, yTranslation, zTranslation).dyn : WC63DIVH2PMDYNEMXAKVSTWOLAWHKDASMASHVO3GK3SW7CAXFLDA.dyn
+renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(coordinateSystem, xTranslation, yTranslation, zTranslation)_img.jpg : WC63DIVH2PMDYNEMXAKVSTWOLAWHKDASMASHVO3GK3SW7CAXFLDA_img.jpg
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(direction).md : J6B66BZEMF27NPFMYVT6JCYWPDCWFILNXLELR2HGZK3CRUODWPUA.md
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(direction).dyn : J6B66BZEMF27NPFMYVT6JCYWPDCWFILNXLELR2HGZK3CRUODWPUA.dyn
 renamed Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(direction)_img.jpg : J6B66BZEMF27NPFMYVT6JCYWPDCWFILNXLELR2HGZK3CRUODWPUA_img.jpg
@@ -45,36 +84,114 @@ renamed Autodesk.DesignScript.Geometry.Cuboid.ByLengths(width, length, height).m
 renamed Autodesk.DesignScript.Geometry.Cuboid.ByLengths(width, length, height).dyn : VKEUCM7XUAJICNIO5W65KAFEAZH4TUWVV7BPRMZSI5H5TPFZESTA.dyn
 renamed Autodesk.DesignScript.Geometry.Cuboid.ByLengths(width, length, height)_img.jpg : VKEUCM7XUAJICNIO5W65KAFEAZH4TUWVV7BPRMZSI5H5TPFZESTA_img.jpg
 renamed Autodesk.DesignScript.Geometry.Cuboid.ByLengths(width, length, height)_img.png : VKEUCM7XUAJICNIO5W65KAFEAZH4TUWVV7BPRMZSI5H5TPFZESTA_img.png
+renamed Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments.md : WCLH3WPRENEP5UME2OH55K7MQBNQV27U5PEFCF6YZBPO2CNXKJ2Q.md
+renamed Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments.dyn : WCLH3WPRENEP5UME2OH55K7MQBNQV27U5PEFCF6YZBPO2CNXKJ2Q.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments_img.jpg : WCLH3WPRENEP5UME2OH55K7MQBNQV27U5PEFCF6YZBPO2CNXKJ2Q_img.jpg
+renamed Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength.md : ZNPLCTHUSPIP3EMDAM4IGJTCBFMOVDXMVS2J4XSXYSX3WEWBWS5Q.md
+renamed Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength.dyn : ZNPLCTHUSPIP3EMDAM4IGJTCBFMOVDXMVS2J4XSXYSX3WEWBWS5Q.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength_img.jpg : ZNPLCTHUSPIP3EMDAM4IGJTCBFMOVDXMVS2J4XSXYSX3WEWBWS5Q_img.jpg
+renamed Autodesk.DesignScript.Geometry.Curve.Extrude(curve, direction, distance).md : 5NB3FDYBJDTGURCB4X7W2I7P2TIGXAXPEUVWUMM2BTWHJ3GXRJQA.md
+renamed Autodesk.DesignScript.Geometry.Curve.Extrude(curve, direction, distance).dyn : 5NB3FDYBJDTGURCB4X7W2I7P2TIGXAXPEUVWUMM2BTWHJ3GXRJQA.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.Extrude(curve, direction, distance)_img.jpg : 5NB3FDYBJDTGURCB4X7W2I7P2TIGXAXPEUVWUMM2BTWHJ3GXRJQA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(curve, direction).md : 32PIZL43K2RTMXYNALUOXTTTTLRY2XQHUK22D2A7KI7NAA5JTXBA.md
+renamed Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(curve, direction).dyn : 32PIZL43K2RTMXYNALUOXTTTTLRY2XQHUK22D2A7KI7NAA5JTXBA.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(curve, direction)_img.jpg : 32PIZL43K2RTMXYNALUOXTTTTLRY2XQHUK22D2A7KI7NAA5JTXBA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(curve, direction, distance).md : EXQDCVFI3OT5SKR7TAAZHHPRQTFTGPSESCN2SXOJLSORL2ATIOCA.md
+renamed Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(curve, direction, distance).dyn : EXQDCVFI3OT5SKR7TAAZHHPRQTFTGPSESCN2SXOJLSORL2ATIOCA.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(curve, direction, distance)_img.jpg : EXQDCVFI3OT5SKR7TAAZHHPRQTFTGPSESCN2SXOJLSORL2ATIOCA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(curve, distance).md : NWZ4OHZGJ3DY35YJAGFATFVE4TKRWATQD3KYVPZ6JOGMLBYXOLLA.md
+renamed Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(curve, distance).dyn : NWZ4OHZGJ3DY35YJAGFATFVE4TKRWATQD3KYVPZ6JOGMLBYXOLLA.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(curve, distance)_img.jpg : NWZ4OHZGJ3DY35YJAGFATFVE4TKRWATQD3KYVPZ6JOGMLBYXOLLA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(curve, param).md : 5EEABYHH2K4RVCNKX3VDCP7ZRLFAMGC7UDSBANQMVEBFNNE3SPYQ.md
+renamed Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(curve, param).dyn : 5EEABYHH2K4RVCNKX3VDCP7ZRLFAMGC7UDSBANQMVEBFNNE3SPYQ.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(curve, param)_img.jpg : 5EEABYHH2K4RVCNKX3VDCP7ZRLFAMGC7UDSBANQMVEBFNNE3SPYQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(curve, param, side).md : PEZAIOOYHWK3SBHRTJTFKB4CTMRQFK7MX4N6YFCSNPDG5ICCLYBQ.md
+renamed Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(curve, param, side).dyn : PEZAIOOYHWK3SBHRTJTFKB4CTMRQFK7MX4N6YFCSNPDG5ICCLYBQ.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(curve, param, side)_img.jpg : PEZAIOOYHWK3SBHRTJTFKB4CTMRQFK7MX4N6YFCSNPDG5ICCLYBQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(curve, path, cutEndOff).md : LUVHU25JWECNEBKIBZFH6N5EUAM42XM3BSEOTMCI3TQDNS5EKLXA.md
+renamed Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(curve, path, cutEndOff).dyn : LUVHU25JWECNEBKIBZFH6N5EUAM42XM3BSEOTMCI3TQDNS5EKLXA.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(curve, path, cutEndOff)_img.jpg : LUVHU25JWECNEBKIBZFH6N5EUAM42XM3BSEOTMCI3TQDNS5EKLXA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(curve, parameters, discardEvenSegments).md : BZCTQI2SIMCNMSCEHGSQLE6G74ND4ZQRICVGQCLVQ3OGHPBNX5NQ.md
+renamed Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(curve, parameters, discardEvenSegments).dyn : BZCTQI2SIMCNMSCEHGSQLE6G74ND4ZQRICVGQCLVQ3OGHPBNX5NQ.dyn
+renamed Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(curve, parameters, discardEvenSegments)_img.jpg : BZCTQI2SIMCNMSCEHGSQLE6G74ND4ZQRICVGQCLVQ3OGHPBNX5NQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(parameters).md : G7Y5XS6FB4HO3WXDT5L7AR6OH54FV7RMJHVJMG2MHDHAMGF2ZVPQ.md
 renamed Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(parameters).dyn : G7Y5XS6FB4HO3WXDT5L7AR6OH54FV7RMJHVJMG2MHDHAMGF2ZVPQ.dyn
 renamed Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(parameters)_img.jpg : G7Y5XS6FB4HO3WXDT5L7AR6OH54FV7RMJHVJMG2MHDHAMGF2ZVPQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(parameters, discardEvenSegments).md : NAWUT5OCSCDDXI56BOEKQ7CUY4GXWEKG7CU3SYRVPVT2RF4VOOKQ.md
 renamed Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(parameters, discardEvenSegments).dyn : NAWUT5OCSCDDXI56BOEKQ7CUY4GXWEKG7CU3SYRVPVT2RF4VOOKQ.dyn
 renamed Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(parameters, discardEvenSegments)_img.jpg : NAWUT5OCSCDDXI56BOEKQ7CUY4GXWEKG7CU3SYRVPVT2RF4VOOKQ_img.jpg
-renamed Autodesk.DesignScript.Geometry.Geometry.Transform(geometry, cs).md : FYPDHZXND4VQKFSL7IXEWDONQWVSV7GLPRPS3VGIQTCEC2GVTC7A.md
-renamed Autodesk.DesignScript.Geometry.Geometry.Transform(geometry, cs).dyn : FYPDHZXND4VQKFSL7IXEWDONQWVSV7GLPRPS3VGIQTCEC2GVTC7A.dyn
-renamed Autodesk.DesignScript.Geometry.Geometry.Transform(geometry, cs)_img.jpg : FYPDHZXND4VQKFSL7IXEWDONQWVSV7GLPRPS3VGIQTCEC2GVTC7A_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometry, filePath).md : JH36N5G6EIZEJ76U2VOWYIWXR6YQWP4IHRIMTPOZSNO2AH62Y7TA.md
+renamed Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometry, filePath).dyn : JH36N5G6EIZEJ76U2VOWYIWXR6YQWP4IHRIMTPOZSNO2AH62Y7TA.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometry, filePath)_img.jpg : JH36N5G6EIZEJ76U2VOWYIWXR6YQWP4IHRIMTPOZSNO2AH62Y7TA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.Rotate(geometry, basePlane, degrees).md : XFRRMCMTIOHR6PV6TSFT3WDOBWKWHFMLXAMO7W5HDBP47YU5C2WQ.md
+renamed Autodesk.DesignScript.Geometry.Geometry.Rotate(geometry, basePlane, degrees).dyn : XFRRMCMTIOHR6PV6TSFT3WDOBWKWHFMLXAMO7W5HDBP47YU5C2WQ.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.Rotate(geometry, basePlane, degrees)_img.jpg : XFRRMCMTIOHR6PV6TSFT3WDOBWKWHFMLXAMO7W5HDBP47YU5C2WQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.Rotate(geometry, origin, axis, degrees).md : Z62AE2MAWASIXXZ7HW3OJ37OGY24A3M2KOTCHO7DR52NRIL2JQCA.md
+renamed Autodesk.DesignScript.Geometry.Geometry.Rotate(geometry, origin, axis, degrees).dyn : Z62AE2MAWASIXXZ7HW3OJ37OGY24A3M2KOTCHO7DR52NRIL2JQCA.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.Rotate(geometry, origin, axis, degrees)_img.jpg : Z62AE2MAWASIXXZ7HW3OJ37OGY24A3M2KOTCHO7DR52NRIL2JQCA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.Rotate(origin, axis, degrees).md : CGMTJF4G5CTK6EB36WTQMM4CXAQI7MUY7663A6FKXLX43NPGZ2VA.md
+renamed Autodesk.DesignScript.Geometry.Geometry.Rotate(origin, axis, degrees).dyn : CGMTJF4G5CTK6EB36WTQMM4CXAQI7MUY7663A6FKXLX43NPGZ2VA.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.Rotate(origin, axis, degrees)_img.jpg : CGMTJF4G5CTK6EB36WTQMM4CXAQI7MUY7663A6FKXLX43NPGZ2VA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(geometry, basePoint, from, to).md : GYGTDRZBKUXMUX6NHZN4KHZ5XUBTIO3F5BLLADD7ADVJ2SMJZLCA.md
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(geometry, basePoint, from, to).dyn : GYGTDRZBKUXMUX6NHZN4KHZ5XUBTIO3F5BLLADD7ADVJ2SMJZLCA.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(geometry, basePoint, from, to)_img.jpg : GYGTDRZBKUXMUX6NHZN4KHZ5XUBTIO3F5BLLADD7ADVJ2SMJZLCA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(geometry, plane, xamount, yamount, zamount).md : EWHQFBJJR5GL3IN7LJ7T7SOY4G24EIBASTHDIRIYQ27HIKC2MGYQ.md
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(geometry, plane, xamount, yamount, zamount).dyn : EWHQFBJJR5GL3IN7LJ7T7SOY4G24EIBASTHDIRIYQ27HIKC2MGYQ.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(geometry, plane, xamount, yamount, zamount)_img.jpg : EWHQFBJJR5GL3IN7LJ7T7SOY4G24EIBASTHDIRIYQ27HIKC2MGYQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(geometry, xamount, yamount, zamount).md : SJMZSTNGGMBIKKM3WNMNAKWFRS7HQPJRSJNIZIC755BAXDNI6GJA.md
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(geometry, xamount, yamount, zamount).dyn : SJMZSTNGGMBIKKM3WNMNAKWFRS7HQPJRSJNIZIC755BAXDNI6GJA.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(geometry, xamount, yamount, zamount)_img.jpg : SJMZSTNGGMBIKKM3WNMNAKWFRS7HQPJRSJNIZIC755BAXDNI6GJA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(plane, xamount, yamount, zamount).md : VH3KQEMEQFHQ4Z45T42EMLXFENVMZSCLRKQMQVBQNLE4YVTF5HTA.md
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(plane, xamount, yamount, zamount).dyn : VH3KQEMEQFHQ4Z45T42EMLXFENVMZSCLRKQMQVBQNLE4YVTF5HTA.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.Scale(plane, xamount, yamount, zamount)_img.jpg : VH3KQEMEQFHQ4Z45T42EMLXFENVMZSCLRKQMQVBQNLE4YVTF5HTA_img.jpg
 renamed Autodesk.DesignScript.Geometry.Geometry.Transform(geometry, fromCoordinateSystem, contextCoordinateSystem).md : OC4QHO6N4KYVUT4GX3X6NKCYO22OJ6JU6DCATPIKSF4G7DF6CZJA.md
 renamed Autodesk.DesignScript.Geometry.Geometry.Transform(geometry, fromCoordinateSystem, contextCoordinateSystem).dyn : OC4QHO6N4KYVUT4GX3X6NKCYO22OJ6JU6DCATPIKSF4G7DF6CZJA.dyn
 renamed Autodesk.DesignScript.Geometry.Geometry.Transform(geometry, fromCoordinateSystem, contextCoordinateSystem)_img.jpg : OC4QHO6N4KYVUT4GX3X6NKCYO22OJ6JU6DCATPIKSF4G7DF6CZJA_img.jpg
-renamed Autodesk.DesignScript.Geometry.Geometry.Translate(direction).md : 4HVWIMWUUU4ZQWQXKFRWMQ5JABJVFMYBXFJZTHB2CQKCRQQ2FDVQ.md
-renamed Autodesk.DesignScript.Geometry.Geometry.Translate(direction).dyn : 4HVWIMWUUU4ZQWQXKFRWMQ5JABJVFMYBXFJZTHB2CQKCRQQ2FDVQ.dyn
-renamed Autodesk.DesignScript.Geometry.Geometry.Translate(direction)_img.jpg : 4HVWIMWUUU4ZQWQXKFRWMQ5JABJVFMYBXFJZTHB2CQKCRQQ2FDVQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.Geometry.Translate(direction, distance).md : M4QGSXM2OJC62OCBK7RPJB4QI2KY3B3N3OAB4I4GHJNAOMXLKKRA.md
 renamed Autodesk.DesignScript.Geometry.Geometry.Translate(direction, distance).dyn : M4QGSXM2OJC62OCBK7RPJB4QI2KY3B3N3OAB4I4GHJNAOMXLKKRA.dyn
 renamed Autodesk.DesignScript.Geometry.Geometry.Translate(direction, distance)_img.jpg : M4QGSXM2OJC62OCBK7RPJB4QI2KY3B3N3OAB4I4GHJNAOMXLKKRA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.Translate(geometry, direction, distance).md : VFC6POT43M5NJWDFF7AUKJGGSYBTQR6NTLNU7SFQHJ4F52OTF5KA.md
+renamed Autodesk.DesignScript.Geometry.Geometry.Translate(geometry, direction, distance).dyn : VFC6POT43M5NJWDFF7AUKJGGSYBTQR6NTLNU7SFQHJ4F52OTF5KA.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.Translate(geometry, direction, distance)_img.jpg : VFC6POT43M5NJWDFF7AUKJGGSYBTQR6NTLNU7SFQHJ4F52OTF5KA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Geometry.Translate(geometry, xtranslation, ytranslation, ztranslation).md : Z7RCGSZ7PG327WNJNF5LAVZMVCYSSBNPUFE666HLMLY4QCDT4TDQ.md
+renamed Autodesk.DesignScript.Geometry.Geometry.Translate(geometry, xtranslation, ytranslation, ztranslation).dyn : Z7RCGSZ7PG327WNJNF5LAVZMVCYSSBNPUFE666HLMLY4QCDT4TDQ.dyn
+renamed Autodesk.DesignScript.Geometry.Geometry.Translate(geometry, xtranslation, ytranslation, ztranslation)_img.jpg : Z7RCGSZ7PG327WNJNF5LAVZMVCYSSBNPUFE666HLMLY4QCDT4TDQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.Geometry.Translate(xTranslation, yTranslation, zTranslation).md : CAQVXZBP5BJQVX7OKQYBMFD4SIBKAOGY3GDMXALYEEBP4UKHEUMQ.md
 renamed Autodesk.DesignScript.Geometry.Geometry.Translate(xTranslation, yTranslation, zTranslation).dyn : CAQVXZBP5BJQVX7OKQYBMFD4SIBKAOGY3GDMXALYEEBP4UKHEUMQ.dyn
 renamed Autodesk.DesignScript.Geometry.Geometry.Translate(xTranslation, yTranslation, zTranslation)_img.jpg : CAQVXZBP5BJQVX7OKQYBMFD4SIBKAOGY3GDMXALYEEBP4UKHEUMQ_img.jpg
-renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points).md : UBBQRVGE4HKFTNK4OFRC7ZXLV26MFZNZQZQ5FXSM3ABCG36L4XBQ.md
-renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points).dyn : UBBQRVGE4HKFTNK4OFRC7ZXLV26MFZNZQZQ5FXSM3ABCG36L4XBQ.dyn
-renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points)_img.jpg : UBBQRVGE4HKFTNK4OFRC7ZXLV26MFZNZQZQ5FXSM3ABCG36L4XBQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points, degree).md : M7MZHZHWH4ZKVKUYXLRW627FB62D73CFFTQ2Q4CDDYU24PMN4A2A.md
 renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points, degree).dyn : M7MZHZHWH4ZKVKUYXLRW627FB62D73CFFTQ2Q4CDDYU24PMN4A2A.dyn
 renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points, degree)_img.jpg : M7MZHZHWH4ZKVKUYXLRW627FB62D73CFFTQ2Q4CDDYU24PMN4A2A_img.jpg
 renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points, degree, closeCurve).md : EEK2MZQNIS3F4JP5TCEY6FFPZJ6INBUWD2P7FWPXS6O7IBVMTZCQ.md
 renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points, degree, closeCurve).dyn : EEK2MZQNIS3F4JP5TCEY6FFPZJ6INBUWD2P7FWPXS6O7IBVMTZCQ.dyn
 renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points, degree, closeCurve)_img.jpg : EEK2MZQNIS3F4JP5TCEY6FFPZJ6INBUWD2P7FWPXS6O7IBVMTZCQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots.md : T6GEU2COB3ZCMHPIT6WYQEY7NOLFALMOFIPSGLNKU5GNGESBEB7Q.md
+renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots.dyn : T6GEU2COB3ZCMHPIT6WYQEY7NOLFALMOFIPSGLNKU5GNGESBEB7Q.dyn
+renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots_img.jpg : T6GEU2COB3ZCMHPIT6WYQEY7NOLFALMOFIPSGLNKU5GNGESBEB7Q_img.jpg
+renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(points, closeCurve).md : R56RKDC3YJDKDO3WMJD2V4SIMHIJCNVQ6PZV7SMATQASDKE7WEMA.md
+renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(points, closeCurve).dyn : R56RKDC3YJDKDO3WMJD2V4SIMHIJCNVQ6PZV7SMATQASDKE7WEMA.dyn
+renamed Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(points, closeCurve)_img.jpg : R56RKDC3YJDKDO3WMJD2V4SIMHIJCNVQ6PZV7SMATQASDKE7WEMA_img.jpg
+renamed Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPointsWeightsKnots.md : 2SAWXHRQ333U2VRTKOVHZ2L5U6OPIQ2DHLI3MRGJWLXPMDUKVQZA.md
+renamed Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPointsWeightsKnots.dyn : 2SAWXHRQ333U2VRTKOVHZ2L5U6OPIQ2DHLI3MRGJWLXPMDUKVQZA.dyn
+renamed Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPointsWeightsKnots_img.jpg : 2SAWXHRQ333U2VRTKOVHZ2L5U6OPIQ2DHLI3MRGJWLXPMDUKVQZA_img.jpg
+renamed Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives.md : RV2SASIKSEDOUBHRUROUQ4CVIRQAGMTKGBFMRRLXVRULYUOVADQQ.md
+renamed Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives.dyn : RV2SASIKSEDOUBHRUROUQ4CVIRQAGMTKGBFMRRLXVRULYUOVADQQ.dyn
+renamed Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives_img.jpg : RV2SASIKSEDOUBHRUROUQ4CVIRQAGMTKGBFMRRLXVRULYUOVADQQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(curves, joinTolerance, trimCurves, trimLength).md : 6Z5ORNUUOKVQFG6ZBYHMWKQR457NCZXFTI27PNFF3MSQGVPTVZ2A.md
+renamed Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(curves, joinTolerance, trimCurves, trimLength).dyn : 6Z5ORNUUOKVQFG6ZBYHMWKQR457NCZXFTI27PNFF3MSQGVPTVZ2A.dyn
+renamed Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(curves, joinTolerance, trimCurves, trimLength)_img.jpg : 6Z5ORNUUOKVQFG6ZBYHMWKQR457NCZXFTI27PNFF3MSQGVPTVZ2A_img.jpg
+renamed Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(curves, joinTolerance, trimCurves, trimLength).md : NHC5UY7UTB4NA5X3EXEIVOE3EOF7CFAXOVVAHYJ7ZSKC76OLPPYA.md
+renamed Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(curves, joinTolerance, trimCurves, trimLength).dyn : NHC5UY7UTB4NA5X3EXEIVOE3EOF7CFAXOVVAHYJ7ZSKC76OLPPYA.dyn
+renamed Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(curves, joinTolerance, trimCurves, trimLength)_img.jpg : NHC5UY7UTB4NA5X3EXEIVOE3EOF7CFAXOVVAHYJ7ZSKC76OLPPYA_img.jpg
+renamed Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs.md : CT4U4755MIGFNI35WRSJ3HCWSD6YXTW5YXJUSHYG656EL5ROU3MQ.md
+renamed Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs.dyn : CT4U4755MIGFNI35WRSJ3HCWSD6YXTW5YXJUSHYG656EL5ROU3MQ.dyn
+renamed Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs_img.jpg : CT4U4755MIGFNI35WRSJ3HCWSD6YXTW5YXJUSHYG656EL5ROU3MQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.PolySurface.ByLoft(crossSections, guideCurve).md : KMSTMOWKW27MXHCUOIX46TZTXOOZLNUKTB4PHKIEB7ZYDANXLSFQ.md
+renamed Autodesk.DesignScript.Geometry.PolySurface.ByLoft(crossSections, guideCurve).dyn : KMSTMOWKW27MXHCUOIX46TZTXOOZLNUKTB4PHKIEB7ZYDANXLSFQ.dyn
+renamed Autodesk.DesignScript.Geometry.PolySurface.ByLoft(crossSections, guideCurve)_img.jpg : KMSTMOWKW27MXHCUOIX46TZTXOOZLNUKTB4PHKIEB7ZYDANXLSFQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(p1, p2, p3, p4).md : OPQ3MDKAFIBB5WD3XJ65RI5GHYZKCQG4WU3XBCFBOP526FMMNPZQ.md
+renamed Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(p1, p2, p3, p4).dyn : OPQ3MDKAFIBB5WD3XJ65RI5GHYZKCQG4WU3XBCFBOP526FMMNPZQ.dyn
+renamed Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(p1, p2, p3, p4)_img.jpg : OPQ3MDKAFIBB5WD3XJ65RI5GHYZKCQG4WU3XBCFBOP526FMMNPZQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(coordinateSystem, width, length).md : LMVGRWYVOONMRPCSD3NCYVD776V33DFYWXC2F5S3KREHPOX5A2FA.md
 renamed Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(coordinateSystem, width, length)_img.png : LMVGRWYVOONMRPCSD3NCYVD776V33DFYWXC2F5S3KREHPOX5A2FA_img.png
 renamed Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(plane, width, length).md : MNNWHJCYE2KIJHONO2J56LQNPLRQZZARI7KF2BP4OJ6BRWGDXPAQ.md
@@ -85,20 +202,116 @@ renamed Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(width, length).md
 renamed Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(width, length).dyn : CMTCHCAMGXJZYOGATCJYXZM5UMWN5Y5GZ22WIK5267BVMYHEGSCQ.dyn
 renamed Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(width, length)_img.jpg : CMTCHCAMGXJZYOGATCJYXZM5UMWN5Y5GZ22WIK5267BVMYHEGSCQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(width, length)_img.png : CMTCHCAMGXJZYOGATCJYXZM5UMWN5Y5GZ22WIK5267BVMYHEGSCQ_img.png
+renamed Autodesk.DesignScript.Geometry.Solid.ByLoft(crossSections, guideCurves).md : L2FVRQ5TN5PVLYNQW2GAMUC7ERMJJMQS7TSOYXVL75IED5KQPCPQ.md
+renamed Autodesk.DesignScript.Geometry.Solid.ByLoft(crossSections, guideCurves).dyn : L2FVRQ5TN5PVLYNQW2GAMUC7ERMJJMQS7TSOYXVL75IED5KQPCPQ.dyn
+renamed Autodesk.DesignScript.Geometry.Solid.ByLoft(crossSections, guideCurves)_img.jpg : L2FVRQ5TN5PVLYNQW2GAMUC7ERMJJMQS7TSOYXVL75IED5KQPCPQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Solid.BySweep(profile, path, cutEndOff).md : X65A3XAWWVM3XWMAZHZFLL5HTXCJAGYISLC4VHRMPHEV3MBYIRXQ.md
+renamed Autodesk.DesignScript.Geometry.Solid.BySweep(profile, path, cutEndOff).dyn : X65A3XAWWVM3XWMAZHZFLL5HTXCJAGYISLC4VHRMPHEV3MBYIRXQ.dyn
+renamed Autodesk.DesignScript.Geometry.Solid.BySweep(profile, path, cutEndOff)_img.jpg : X65A3XAWWVM3XWMAZHZFLL5HTXCJAGYISLC4VHRMPHEV3MBYIRXQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Surface.ByLoft(crossSections, guideCurves).md : SINCXSXBHUIGJR3UTLPZRANLRDQTQ7J3YRTX5LDDY2BOYA4F6XYQ.md
+renamed Autodesk.DesignScript.Geometry.Surface.ByLoft(crossSections, guideCurves).dyn : SINCXSXBHUIGJR3UTLPZRANLRDQTQ7J3YRTX5LDDY2BOYA4F6XYQ.dyn
+renamed Autodesk.DesignScript.Geometry.Surface.ByLoft(crossSections, guideCurves)_img.jpg : SINCXSXBHUIGJR3UTLPZRANLRDQTQ7J3YRTX5LDDY2BOYA4F6XYQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Surface.BySweep(profile, path, cutEndOff).md : PQ27ZE4XS2FHDBHXA6BY6FYFII5PDNG3ZXNQMB4GDZEPNQHUZH3A.md
+renamed Autodesk.DesignScript.Geometry.Surface.BySweep(profile, path, cutEndOff).dyn : PQ27ZE4XS2FHDBHXA6BY6FYFII5PDNG3ZXNQMB4GDZEPNQHUZH3A.dyn
+renamed Autodesk.DesignScript.Geometry.Surface.BySweep(profile, path, cutEndOff)_img.jpg : PQ27ZE4XS2FHDBHXA6BY6FYFII5PDNG3ZXNQMB4GDZEPNQHUZH3A_img.jpg
+renamed Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter.md : NQ2UYUO5AOUOJKI6R3LJ6WF42LNGGMNBYD567DQ737Q2ZM3FP6IQ.md
+renamed Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter.dyn : NQ2UYUO5AOUOJKI6R3LJ6WF42LNGGMNBYD567DQ737Q2ZM3FP6IQ.dyn
+renamed Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter_img.jpg : NQ2UYUO5AOUOJKI6R3LJ6WF42LNGGMNBYD567DQ737Q2ZM3FP6IQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter.md : VQHTU47YI7VCJWMQZ6UQGNNGBZZD7KX3UZHFGPYMVRITKMY3HB6Q.md
+renamed Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter.dyn : VQHTU47YI7VCJWMQZ6UQGNNGBZZD7KX3UZHFGPYMVRITKMY3HB6Q.dyn
+renamed Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter_img.jpg : VQHTU47YI7VCJWMQZ6UQGNNGBZZD7KX3UZHFGPYMVRITKMY3HB6Q_img.jpg
+renamed Autodesk.DesignScript.Geometry.Surface.Thicken(surface, thickness, both_sides).md : 5HLUQKT3UZOAWPJMHUXPRYXIG5HOMTLY5RMTZVDGAABIO5MZ3OVQ.md
+renamed Autodesk.DesignScript.Geometry.Surface.Thicken(surface, thickness, both_sides).dyn : 5HLUQKT3UZOAWPJMHUXPRYXIG5HOMTLY5RMTZVDGAABIO5MZ3OVQ.dyn
+renamed Autodesk.DesignScript.Geometry.Surface.Thicken(surface, thickness, both_sides)_img.jpg : 5HLUQKT3UZOAWPJMHUXPRYXIG5HOMTLY5RMTZVDGAABIO5MZ3OVQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Surface.Thicken(thickness, both_sides).md : 4FFK6PGYCVKERZWXQC6TEBOQTHVXXN3QLAX5MTLXGZEAB4KH4WEQ.md
+renamed Autodesk.DesignScript.Geometry.Surface.Thicken(thickness, both_sides).dyn : 4FFK6PGYCVKERZWXQC6TEBOQTHVXXN3QLAX5MTLXGZEAB4KH4WEQ.dyn
+renamed Autodesk.DesignScript.Geometry.Surface.Thicken(thickness, both_sides)_img.jpg : 4FFK6PGYCVKERZWXQC6TEBOQTHVXXN3QLAX5MTLXGZEAB4KH4WEQ_img.jpg
+renamed Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(surface, limitSurface).md : 62R7TNV2KCZCI3DMDQF7KVWE5WHQRXUHIVL625TVQLCENC23EMBA.md
+renamed Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(surface, limitSurface).dyn : 62R7TNV2KCZCI3DMDQF7KVWE5WHQRXUHIVL625TVQLCENC23EMBA.dyn
+renamed Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(surface, limitSurface)_img.jpg : 62R7TNV2KCZCI3DMDQF7KVWE5WHQRXUHIVL625TVQLCENC23EMBA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(surface, loops, tolerance).md : IHQBNPJ223NVYG6Y4542YTEX7XGP53QRWLFA6633XPAJMTTLNO7A.md
+renamed Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(surface, loops, tolerance).dyn : IHQBNPJ223NVYG6Y4542YTEX7XGP53QRWLFA6633XPAJMTTLNO7A.dyn
+renamed Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(surface, loops, tolerance)_img.jpg : IHQBNPJ223NVYG6Y4542YTEX7XGP53QRWLFA6633XPAJMTTLNO7A_img.jpg
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial.md : JD64YTCISTRATZEZRPXZEAEJDPRE7LPFJKKEAMZPJO2POFCEJDGA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByRadial.md : PK6P6YKREOU7DHO6OXJFT6PUF5LSO2W7ZW4IOTGWYPW3BJYASCOQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.IsRadial.md : KB37RARA32V2WDFDQAYZ4ZFBA3AOPWGQNDOAMYU4G6VXI5W6TR3Q.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.RadialSymmetryFaces.md : KEPMQRB4UWQVYMWKTRJCLWPDVWKZZWWGLXPFTHDOMJBKQKGTWA7A.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.SegmentAngle.md : M2WJT5G52MFWUUNWUZWTY2TSRSRY6GVVIAT4LLVJUC2VVLHVGW7A.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.SegmentsCount.md : GLVHD43IRWFTZKY7UVDJ7PNERQN5Z3PWTMFYVJ537HCGJCHCQQAQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.AddReflections.md : 6YGBDRGYLRW3BW4XJHLHBBRSCHYWA2UCJ5FQAESHDY2HMUBDUSLQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeEdgesToEdges.md : NTIOVTTOXGWZ33W6ET5JH4PSYC7L3IFSWCJV4Y3IG3CTARQGOG3A.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeEdgesToFaces.md : GPVBCDN6ZVPTEE3IRF75ZGB7GIXLQYURCVYFV424TOUBVACZY44A.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeFacesToEdges.md : DVNDD4ZUEDM4QCH35SLRIEZJLS266CIRRB7MZMMNDBI5W6UPBSQA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeFacesToFaces.md : MQJ667AXSQFCK2Z2B7G2MNL35OIFJYLSADFLGXFJUJCA27FCHVHQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildFromLines.md : UZBX3TZTQ23FP32HELAYI7UOVGU7J6ACDZ5C3DTCYCIVJOHYWCCQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCombinedTSplineSurfaces.md : U35TWGXYHIE46AYX3QP45IXNCZJAFUT62AN4GKHWSYFDMJWZ2WZQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadii.md : O4AZYQKKSK7J5LQTW2WAZMMEFQCRSMDS5RYJ7LGVKPDRQOPRHILQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadius.md : WG4273QZLTXFNOZTJWMFHD4JKB67IIQBJCQNC5SMOC43VJNXKACA.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadii.md : H54SEHAY3YGO3MOAVNNGUJ3QI6IP6X6CQRV54A3GDLT46TUD6UHA.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConePointsRadius.md : GVO3NNSNHNAH3DJS5OR37DI2A457QGYX4BQGMHO4IGUUUHZV3HSQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCylinderPointsRadius.md : AUSALFCUDD62GV5ALRNIDJ43LBF3FWW5HY5WNAQBKRB7E2JF7WUQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCylinderRadiusHeight.md : WGMB4D4GWPYAS6YAOVBQIXYPGCBRH3KEF437CWWZGSXVEZXLRGTQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceCurvature.md : GO6D5UXWAXIC6JMDUDLIKMABU2I4XHLVLAL77BROSGFAFN7455KA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceUniform.md : C4KTVIQMR24V34QUQQ3FENYOOIOHKLUQ3SSJL3SVKQ2Z4QHWN4ZQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneBestFitThroughPoints.md : QMBSK3FVRYFQCMSXFIPKLNLYVY5W4C4PNN7IGZUPDZOVWUPWZNZQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneLineAndPoint.md : SFB4J46343LP6YKDRW2FPILSS6UXITLDXWQKYJRD6LWHQJY2IYOA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal.md : DWYJGQGBW2MD57NAYFKR3UEMPTHASLR2IV2X2SUK3OKI35GCEVHQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormalXAxis.md : IPJR2I55VFC67ZT5OYCCOOAEDH2AHY3CSCZKVXKIXALKV7IBDERA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginXAxisYAxis.md : JDRXXB3ZLF7RXZJRV66VKV5ZDAZGN5YCY7ZLVWABJQNDVHNU4QKA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneThreePoints.md : SFTUBFPMM3AWPUQ6E6XPGTDHXANNIVC3ZHSMIP63ZGMSHIEQMWFQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCenterRadius.md : E6WVV65M7FG2AAAGG4DXIQJPDKVNYXI5GRVNBAR4TR6T6356R2TQ.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCoordinateSystemRadius.md : NVXHF2HNH7CSSHULY6RSEYZOUROO42KV2T34SGQYWK4T7S3I3OYQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereBestFit.md : RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius.md : 3W2XHZKQEZFB7P3OTUVOZUMCD3M7PKUFQZI42URWMPFARFIN2NVQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereFourPoints.md : GLX34N2BPR4CQLUZBB4FTQ47NECC2T5CQ6KSRZQXSOY6HIHL5YGQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByTorusCenterRadii.md : TAX4CBLVHC7JXO4PNOKK44X5VVCC377TK4Q3R5UBTYQROUPG4VCQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByTorusCoordinateSystemRadii.md : TTAJ2WGGNFLM755ADOCD3G7N4MJBQI66CAC7SXM3XCYLEIPLBOCQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CompressIndexes.md : ARIV6OQ22ACATWAIKGM7OHNEJS2TQUOKUSEU6UNX6EAAVSJIMK3A.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreaseVertices.md : ZLORG7PG4XWDBYXJHH7YVPDCIU4QYMZWAMABFPVWNAZ7VTQTX2YQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeleteVertices.md : 76IVI422OMRMPHCWZHTETSZ3PJF22AOV2AX274LZCNLPCK664PGQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeserializeFromTSM.md : HBD752E5KQ2LBVQYS575OP546LHHTXJCD4I2NUKGZV4QDHJLBMMQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DuplicateFaces.md : QVBZTZWGLGK2PKP6QSZJI7UBI2Y5Z7HF4ZG7JKETOZCBLOF5IIPA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.EnableSmoothMode.md : NN2ZH7ONXE6AF3LL2XG7BSXNABGZRF4KYTGXDYF24O5PLZ2GWW4Q.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeEdgesAlongCurve.md : RJA3JYUP36W2AR37ZYMWTK2ZDSFS6YXA5LMXE5CAYOZZDO6754CQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeFacesAlongCurve.md : XTER6KGCJ3OP43RH5L4IEBVIW7JTSDB46DYI7BVE2UMG3DXB7HLQ.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices(vertices).md : Z33WEP7GM2ITUCGHRE7TSZF3EUZ3STUBRGVVQBKNLQBOU373Y67Q.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices(vertices, parallelPlane).md : NHQVVQWQ6XMS33AREGCIWPI3NQ35CZSJNUCLSOYL47HZ6KIFTJUA.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ImportFromTSM(file, inSmoothMode).md : H7WNBOQXEC5RUVELW464ZP2E7CYHSPZ22TJHQJO4AKA4LHFB6N3A.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ImportFromTSM(filePath, inSmoothMode).md : SEK72377I2YNUG2LJNOJ6APT3WYI3HJW6FDSVZL3LX2XEMYIA4OQ.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ImportFromTSS(file, inSmoothMode).md : GD5OJ5UNM2WTBIO7EKGVKBLXL5UMKVOXBJKW2YFKOPVHUIHDCIFA.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ImportFromTSS(filePath, inSmoothMode).md : ZBLSFRQNVI3VPC3KTS3XZI6VXSAJAON2ETVE46OLR7NMYOY6INXA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.RemoveReflections.md : B6UBJT6X5TJMS4P6CSS7JRJI6HDOCJMIND4VHXATYF2L5IPVPQBQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SerializeAsTSM.md : HPPPUZ44WSFE77XKRGFZMFM4FVPCIAERWGT6OF6U3ECKGKVBF3FA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SubdivideFaces.md : WKY3SVAE74IVMZW7MVT4F5TGIUFXAGA2W2FN6Q6PACG3NH6AMVFA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Thicken(distance, softEdges).md : 2ULSD2KOLBO3IDZALZJCIBZDTDFEHC5YE6E5LZW5YR2P3X36HORQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Thicken(vector, softEdges).md : MS2A3PWAXUYTPSR62D5ZRG7DWFP5RZNTOOV6RZ3PHK4HNFYHA3OA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UncreaseVertices.md : UCHS6CZOTWQLL24MRS4TPZS4UDBURP3SZIIW4TRSPQVRTMYBAVVA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldVertices.md : D6ESVRBW5SSM4F7J65W7OKR5DTKJAFW5F5AP23FRRR3MGXKIFVOQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldCoincidentVertices.md : UZA22A4OYIXSIP3U5CUGNZ3WBDHIEMOS2MYI5GKTJJJFBTGI5JTA.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices(firstGroup, secondGroup, keepSubdCreases).md : DS4BI3OOQ6GTVCM6F64SO22MKNHTPB5W3AQLNUVK4NBPN7TFT3IQ.md
 renamed Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices(vertices, newPosition, keepSubdCreases).md : RPFCJKZ7BVVWRMBZEPLCOJOF273SQDQQD7LR2P7CVR65L52KJEWA.md
-renamed Autodesk.DesignScript.Geometry.Vector.Scale(scale_factor).md : UNW3BJQZLUPQBNSPIOZP5QAFHL3GMBHAQBSV4IPTCMKOFUPI42NA.md
-renamed Autodesk.DesignScript.Geometry.Vector.Scale(scale_factor).dyn : UNW3BJQZLUPQBNSPIOZP5QAFHL3GMBHAQBSV4IPTCMKOFUPI42NA.dyn
-renamed Autodesk.DesignScript.Geometry.Vector.Scale(scale_factor)_img.jpg : UNW3BJQZLUPQBNSPIOZP5QAFHL3GMBHAQBSV4IPTCMKOFUPI42NA_img.jpg
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.BorderVertices.md : HQ6POKIVNCM33NLZR7L63JAH22EKXEGGTWB4ZJMFEMLFXZYJDPHQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.DecomposedEdges.md : 7LMFKLQNCV53W7KLS5QWD3E27NGGA33QPHSXMUGH323WVXWJY3GQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.DecomposedFaces.md : VIA3XNZWZWW3XHWL222NGHWM22VLSA4QXMZCPWZ6JO6G3P7H2WGA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.DecomposedVertices.md : GNCPW2XCPOITIUUDNZKISNP347TEGTDWVI5SQTBJX3JWFZTVRXGA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.InnerVertices.md : UZ7LZDBGWQPVR7727ZYQZDLUW55DWAGDHV5P5O7EVZL4HMD3B7TQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.NonManifoldEdges.md : RTIWDKESEBH6BZLFB4NRIVBLFZ72VYNZW4TBWEI6EEYG22TE6NBA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.NonManifoldVertices.md : OIJALKI73VKASCFK5TTWV255GAJ6VI4DQDKA5BCILT7GMGHVQ3CA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.RegularVertices.md : 3FD66JH7OUVHRJOXDSO6GCVCZV63VG7PUZEMJMDZBM67ASM2XLRA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.StarPointVertices.md : RMKGTFPZFLM5GGB475DWTHXFTJCBZQXE2HEVNUZA6OS72LH53HVQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.TPointVertices.md : 3JL6REDTXILJYKG3YL47NDNEA5YHNLEAYOO3JNMRUUBMWI4GDGHA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.VertexByIndex.md : 7LRWGLADXMQPJN33WBBRTYBBK4NO6FQADRQICYVBDCTWPJ3FOONQ.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.VerticesCount.md : OUBDJTXQVGIEZZTOCO3QDFCDT73JUQD54U6YYFBJZUKZDZEYPYKA.md
+renamed Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.FunctionalValence.md : N44VZ3AJYWSL6V3DZOJYGO3ER47KV2Q6UNXWX7N6U47NDLFO3TBQ.md
+renamed Autodesk.DesignScript.Geometry.Vector.ByCoordinates(x, y, z, normalized).md : D37XBKNJBX5AZGHXPUHHK5DDGNDHLDGPI2QPK63TZHRZVREQ6MNA.md
+renamed Autodesk.DesignScript.Geometry.Vector.ByCoordinates(x, y, z, normalized).dyn : D37XBKNJBX5AZGHXPUHHK5DDGNDHLDGPI2QPK63TZHRZVREQ6MNA.dyn
+renamed Autodesk.DesignScript.Geometry.Vector.ByCoordinates(x, y, z, normalized)_img.jpg : D37XBKNJBX5AZGHXPUHHK5DDGNDHLDGPI2QPK63TZHRZVREQ6MNA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Vector.Rotate(vector, plane, degrees).md : KIWQMTKYTV555M5VBMXQPP5T2SOWPLBC5NHE2QXRVMJY5EJJY7BA.md
+renamed Autodesk.DesignScript.Geometry.Vector.Rotate(vector, plane, degrees).dyn : KIWQMTKYTV555M5VBMXQPP5T2SOWPLBC5NHE2QXRVMJY5EJJY7BA.dyn
+renamed Autodesk.DesignScript.Geometry.Vector.Rotate(vector, plane, degrees)_img.jpg : KIWQMTKYTV555M5VBMXQPP5T2SOWPLBC5NHE2QXRVMJY5EJJY7BA_img.jpg
+renamed Autodesk.DesignScript.Geometry.Vector.Scale(vector, xScaleFactor, yScaleFactor, zScaleFactor).md : JAQZIUEI4HVTL2VSANJDP5ZVTBVZCVAK3YM4PMUM7WIQ3TLZIKAQ.md
+renamed Autodesk.DesignScript.Geometry.Vector.Scale(vector, xScaleFactor, yScaleFactor, zScaleFactor).dyn : JAQZIUEI4HVTL2VSANJDP5ZVTBVZCVAK3YM4PMUM7WIQ3TLZIKAQ.dyn
+renamed Autodesk.DesignScript.Geometry.Vector.Scale(vector, xScaleFactor, yScaleFactor, zScaleFactor)_img.jpg : JAQZIUEI4HVTL2VSANJDP5ZVTBVZCVAK3YM4PMUM7WIQ3TLZIKAQ_img.jpg
 renamed Autodesk.DesignScript.Geometry.Vector.Scale(xScaleFactor, yScaleFactor, zScaleFactor).md : CCR7BJ5XIJULEXEPYBKPPRN72GCPWJFM6VM5D7WFWVQPPL62SAJQ.md
 renamed Autodesk.DesignScript.Geometry.Vector.Scale(xScaleFactor, yScaleFactor, zScaleFactor).dyn : CCR7BJ5XIJULEXEPYBKPPRN72GCPWJFM6VM5D7WFWVQPPL62SAJQ.dyn
 renamed Autodesk.DesignScript.Geometry.Vector.Scale(xScaleFactor, yScaleFactor, zScaleFactor)_img.jpg : CCR7BJ5XIJULEXEPYBKPPRN72GCPWJFM6VM5D7WFWVQPPL62SAJQ_img.jpg

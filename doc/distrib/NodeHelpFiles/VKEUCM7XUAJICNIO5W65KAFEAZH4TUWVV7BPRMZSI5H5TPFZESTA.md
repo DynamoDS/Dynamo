@@ -5,5 +5,5 @@ Cuboid By Lengths creates a cuboid with the input width, legth, and height, and 
 ___
 ## Example File
 
-![ByLengths (width, length, height)](./Autodesk.DesignScript.Geometry.Cuboid.ByLengths(width,%20length,%20height)_img.png)
+![ByLengths (width, length, height)](./VKEUCM7XUAJICNIO5W65KAFEAZH4TUWVV7BPRMZSI5H5TPFZESTA_img.png)
 

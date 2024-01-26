@@ -3183,7 +3183,7 @@ To install the latest version of a package, click Install. \n
 %./UI/Images/alert.png% The sample Autodesk package is already installed on your computer.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nIf you need other software or tools in order to use this package, they are listed under Dependencies.</value>
+    <value>\nIf you need other software or tools in order to use this package, they are listed under Versions and Package Requirements.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
@@ -3884,6 +3884,18 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="SignOutConfirmationDialogTitle" xml:space="preserve">
     <value>Sign out of Dynamo</value>
+  </data>
+  <data name="PackageDetailsGroup" xml:space="preserve">
+    <value>GROUP</value>
+  </data>
+  <data name="PackageDetailsKeywords" xml:space="preserve">
+    <value>KEYWORDS</value>
+  </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="PackageDetailsLinks" xml:space="preserve">
+    <value>LINKS</value>
   </data>
   <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
     <value>Your changes will be lost if you proceed.</value>

@@ -61,7 +61,7 @@ namespace Dynamo.UI.Controls
                 authManager.LoginStateChanged += AuthChangeHandler;
                 if (authManager.LoginState == LoginState.LoggedIn)
                 {
-                    if(loginMenu.Items.Count == 0)
+                    if (loginMenu.Items.Count == 0)
                     {
                         loginMenu.Items.Add(logoutOption);
                     }
