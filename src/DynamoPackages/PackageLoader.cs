@@ -120,6 +120,8 @@ namespace Dynamo.PackageManager
 
         private void OnPackageAdded(Package pkg)
         {
+            OnPackageMessageLogged(LogMessage.Info($"attempting to load {pkg.Name} {pkg.VersionName} from {pkg.RootDirectory}"));
+
             if (PackageAdded != null)
             {
                 PackageAdded(pkg);
@@ -267,6 +269,7 @@ namespace Dynamo.PackageManager
                 PythonServices.PythonEngineManager.Instance.
                     LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
 
+                Log($"Loaded Package {package.Name} {package.VersionName} from {package.RootDirectory}");
                 PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
