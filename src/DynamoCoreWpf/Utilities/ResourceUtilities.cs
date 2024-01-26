@@ -5,6 +5,7 @@ using Dynamo.Wpf.Utilities;
 using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -583,7 +584,7 @@ namespace Dynamo.Utilities
         /// <param name="fontStylePath">Path to the Font Style that will be used in some part of the HTML page</param>
         /// <param name="localAssembly">Local Assembly in which the resource will be loaded</param>
         /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
-        internal static async void LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
+        internal static async void LoadWebBrowser(HtmlPage htmlPage, DynamoWebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
         {
             try
             {
@@ -601,13 +602,21 @@ namespace Dynamo.Utilities
                     };
                 }
 
-                await webBrowserComponent.EnsureCoreWebView2Async();
-                // Context menu disabled
-                webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                webBrowserComponent.NavigateToString(bodyHtmlPage);
+                try
+                {
+                    await webBrowserComponent.Initialize();
 
-                webBrowserComponent.CoreWebView2.Settings.IsZoomControlEnabled = false;
-                webBrowserComponent.CoreWebView2.Settings.IsPinchZoomEnabled = false;
+                    // Context menu disabled
+                    webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                    webBrowserComponent.NavigateToString(bodyHtmlPage);
+
+                    webBrowserComponent.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                    webBrowserComponent.CoreWebView2.Settings.IsPinchZoomEnabled = false;
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
             catch (Exception ex)
             {

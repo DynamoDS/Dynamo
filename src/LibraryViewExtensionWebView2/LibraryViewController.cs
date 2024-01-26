@@ -329,12 +329,20 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 };
             }
 
-            await browser.EnsureCoreWebView2Async();
-            this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
-            twoWayScriptingObject = new ScriptingObject(this);
-            //register the interop object into the browser.
-            this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
-            browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+            try
+            {
+                await browser.Initialize(LogToDynamoConsole);
+
+                this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+                twoWayScriptingObject = new ScriptingObject(this);
+                //register the interop object into the browser.
+                this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
+                browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+            }
+            catch (ObjectDisposedException ex)
+            {
+                LogToDynamoConsole(ex.Message);
+            }
         }
 
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs args)
@@ -702,6 +710,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         protected void Dispose(bool disposing)
         {
             if (!disposing) return;
+
             if (observer != null) observer.Dispose();
             observer = null;
             if (this.dynamoWindow != null)

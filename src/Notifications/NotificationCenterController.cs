@@ -119,9 +119,17 @@ namespace Dynamo.Notifications
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
 
-            initState = AsyncMethodState.Started;
-            await notificationUIPopup.webView.EnsureCoreWebView2Async();
-            initState = AsyncMethodState.Done;
+            try
+            {
+                initState = AsyncMethodState.Started;
+                await notificationUIPopup.webView.Initialize(Log);
+                // Do continue to access members if this class has been disposed
+                initState = AsyncMethodState.Done;
+            }
+            catch(ObjectDisposedException ex)
+            {
+                Log(ex.Message);
+            }
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -349,10 +357,6 @@ namespace Dynamo.Notifications
         /// </summary>
         public void Dispose()
         {
-            if (initState == AsyncMethodState.Started)
-            {
-                Log("NotificationCenterController is being disposed but async initialization is still not done");
-            }
             Dispose(true);
             GC.SuppressFinalize(this);
         }
