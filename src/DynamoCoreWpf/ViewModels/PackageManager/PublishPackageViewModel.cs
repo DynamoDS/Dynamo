@@ -1336,7 +1336,6 @@ namespace Dynamo.PackageManager
                         }
                     case AssemblyLoadingState.AlreadyLoaded:
                         {
-                            // When retaining the folder structure, we bypass this check as users are in full control of the folder structure.
                             assembliesLoadedTwice.Add(file);
                             break;
                         }
@@ -1427,12 +1426,7 @@ namespace Dynamo.PackageManager
                 {
                     case AssemblyLoadingState.Success:
                         {
-                            var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
-                            pkgViewModel.Assemblies.Add(new PackageAssembly()
-                            {
-                                IsNodeLibrary = isNodeLibrary,
-                                Assembly = assem
-                            });
+                            pkgViewModel.Assemblies.Add(GetPackageAssembly(nodeLibraryNames, assem));
                             break;
                         }
                     case AssemblyLoadingState.NotManagedAssembly:
@@ -1446,7 +1440,6 @@ namespace Dynamo.PackageManager
                             // When retaining the folder structure, we bypass this check as users are in full control of the folder structure.
                             if (pkgViewModel.RetainFolderStructureOverride)
                             {
-                                //pkgViewModel.AdditionalFiles.Add(file);
                                 if (assem == null)
                                 {
                                     pkgViewModel.AdditionalFiles.Add(file);
@@ -1455,12 +1448,7 @@ namespace Dynamo.PackageManager
                                 {
                                     if (!pkgViewModel.Assemblies.Any(x => x.Assembly == assem))
                                     {
-                                        var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
-                                        pkgViewModel.Assemblies.Add(new PackageAssembly()
-                                        {
-                                            IsNodeLibrary = isNodeLibrary,
-                                            Assembly = assem
-                                        });
+                                        pkgViewModel.Assemblies.Add(GetPackageAssembly(nodeLibraryNames, assem));
                                     }
                                     else
                                     {
@@ -1497,6 +1485,22 @@ namespace Dynamo.PackageManager
             pkgViewModel.BuildVersion = parts[2];
             return pkgViewModel;
 
+        }
+
+        /// <summary>
+        /// Gets a Package Assembly object, if the assembly exist in the node libraries list, the IsNodeLibrary flag will be set to true.
+        /// </summary>
+        /// <param name="nodeLibraries">List of existing node libraries</param>
+        /// <param name="assem">Assembly file</param>
+        /// <returns>Package Assembly</returns>
+        private static PackageAssembly GetPackageAssembly(IEnumerable<string> nodeLibraries, Assembly assem)
+        {
+            var isNodeLibrary = nodeLibraries == null || nodeLibraries.Contains(assem.FullName);
+            return new PackageAssembly()
+            {
+                IsNodeLibrary = isNodeLibrary,
+                Assembly = assem
+            };
         }
 
         public void OnPublishSuccess()
@@ -2696,14 +2700,5 @@ namespace Dynamo.PackageManager
 
             return rootItemPreview;
         }
-
-        //private static MetadataLoadContext InitSharedPublishLoadContext()
-        //{
-        //    // Retrieve the location of the assembly and the referenced assemblies used by the domain
-        //    var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
-        //    // Create PathAssemblyResolver that can resolve assemblies using the created list.
-        //    var resolver = new PathAssemblyResolver(runtimeAssemblies);
-        //    return new MetadataLoadContext(resolver);
-        //}
     }
 }
