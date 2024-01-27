@@ -14,13 +14,13 @@ using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
 using Dynamo.LibraryViewExtensionWebView2.Views;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
@@ -75,7 +75,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private FloatingLibraryTooltipPopup libraryViewTooltip;
         // private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
-        internal WebView2 browser;
+        internal DynamoWebView2 browser;
         ScriptingObject twoWayScriptingObject;
         private const string CreateNodeInstrumentationString = "Search-NodeAdded";
         // TODO remove this when we can control the library state from Dynamo more precisely.
@@ -125,12 +125,13 @@ namespace Dynamo.LibraryViewExtensionWebView2
             /// Also load the library.html and js files.
             LibraryViewModel model = new LibraryViewModel();
             LibraryView view = new LibraryView(model);
-
+           
             //Adding the LibraryView to the sidebar ensures that the webview2 component is visible.
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
 
-            browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
+            browser = view.mainGrid.Children.OfType<DynamoWebView2>().FirstOrDefault();
+
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
 

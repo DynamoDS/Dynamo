@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,10 +15,9 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Tests;
-using Dynamo.Updates;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
-
+using DynamoUtilities;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
@@ -53,7 +53,6 @@ namespace SystemTestServices
         }
 
         protected string TempFolder { get; private set; }
-
         #endregion
 
         #region public methods
@@ -61,7 +60,9 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
-            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
+
             var testConfig = GetTestSessionConfiguration();
 
             if (assemblyResolver == null)
@@ -139,7 +140,9 @@ namespace SystemTestServices
             {
                 Console.WriteLine(ex.StackTrace);
             }
-            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
+
+            TestUtilities.WebView2Tag = string.Empty;
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name} ");
         }
 
         [OneTimeTearDown]
