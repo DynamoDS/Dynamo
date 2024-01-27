@@ -53,6 +53,8 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
+[assembly: InternalsVisibleTo("DynamoPlayer.WorkflowsUi")]
+[assembly: InternalsVisibleTo("UnitsUI")]
 [assembly: InternalsVisibleTo("DynamoPlayer")]
 [assembly: InternalsVisibleTo("DynamoConnector")]
 

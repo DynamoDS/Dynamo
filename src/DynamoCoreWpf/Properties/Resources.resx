@@ -487,7 +487,7 @@
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement and _Terms of Use</value>
+    <value>Agreements for _Data Collection</value>
     <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
@@ -1151,10 +1151,10 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Cancel</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement and Terms of Use</value>
+    <value>Agreements for Data Collection</value>
   </data>
   <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
-    <value>I would like to participate in data collection</value>
+    <value>I would like to participate in data collection for Machine Learning Programs</value>
   </data>
   <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
     <value>Clear</value>
@@ -2605,9 +2605,6 @@ Uninstall the following packages: {0}?</value>
   <data name="PackageSearchViewFilterByButton" xml:space="preserve">
     <value>Filter by</value>
   </data>
-  <data name="DynamoViewSettingMenuShowDataReportingDialogTooltip" xml:space="preserve">
-    <value>Display the dialog of agreement on data collecting and Machine Learning Node Autocomplete terms of use</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -2693,7 +2690,7 @@ Uninstall the following packages: {0}?</value>
     <comment>File menu | Export</comment>
   </data>
   <data name="PublishPackageDocTooltipText" xml:space="preserve">
-    <value>Learn More about publishing a package</value>
+    <value>Learn more about packages</value>
   </data>
   <data name="PreferencesViewFeaturesTab" xml:space="preserve">
     <value>Features</value>
@@ -2880,7 +2877,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Package/Library Search Paths</value>
   </data>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
-    <value>Switchable only when the current workspace is in Manual run mode.</value>
+    <value>To preview the execution state of your graph, wires connected to ports that will be affected by a graph run are highlighted in orange. Available only when the current workspace is in Manual run mode.</value>
   </data>
   <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
     <value>Issues found</value>
@@ -3180,7 +3177,7 @@ Delete the following packages: {2}?
     <value>\nSearch results display summary information for each package: -author- -likes and downloads- -date of the most recent version- \n**Click View Details** to see more information about a package.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nIf you need other software or tools in order to use this package, they are listed under Dependencies.</value>
+    <value>\nIf you need other software or tools in order to use this package, they are listed under Versions and Package Requirements.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
@@ -3846,7 +3843,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
   </data>
   <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
-    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use.</value>
+    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreements for Data Collection.</value>
   </data>
   <data name="GESUnitCentimeters" xml:space="preserve">
     <value>Centimeters</value>
@@ -3868,5 +3865,26 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="GESUnitMillimeters" xml:space="preserve">
     <value>Millimeters</value>
+  </data>
+  <data name="SignOutConfirmationDialogText" xml:space="preserve">
+    <value>Signing out of Dynamo will sign you out of all Autodesk desktop products.</value>
+  </data>
+  <data name="SignOutConfirmationDialogTitle" xml:space="preserve">
+    <value>Sign out of Dynamo</value>
+  </data>
+  <data name="PackageDetailsGroup" xml:space="preserve">
+    <value>GROUP</value>
+  </data>
+  <data name="PackageDetailsKeywords" xml:space="preserve">
+    <value>KEYWORDS</value>
+  </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="PackageDetailsLinks" xml:space="preserve">
+    <value>LINKS</value>
+  </data>
+  <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
+    <value>Your changes will be lost if you proceed.</value>
   </data>
 </root>

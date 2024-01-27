@@ -644,15 +644,6 @@ namespace Dynamo.PackageManager
             get { return Dependencies.Count > 0; }
         }
 
-        /// <summary>
-        /// This property seems dup with HasDependencies
-        /// TODO: Remove in Dynamo 3.0
-        /// </summary>
-        public bool HasNoDependencies
-        {
-            get { return !HasDependencies; }
-        }
-
         private string markdownFilesDirectory;
 
         /// <summary>
@@ -1622,9 +1613,10 @@ namespace Dynamo.PackageManager
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select( ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
-                throw new Exception(Wpf.Properties.Resources.MessageUnsavedChanges0 +
+                MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, Resources.MessageUnsavedChanges0, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                throw new Exception(Resources.MessageUnsavedChanges0 +
                                     String.Join(", ", unsavedWorkspaceNames) +
-                                    Wpf.Properties.Resources.MessageUnsavedChanges1);
+                                    Resources.MessageUnsavedChanges1);
             }
 
             var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
@@ -2063,6 +2055,10 @@ namespace Dynamo.PackageManager
             }
         }
 
+        // A boolean flag used to trigger only once the message prompt
+        // When the user has attempted to load an existing dll from another path
+        private bool duplicateAssemblyWarningTriggered = false;
+
         private void AddDllFile(string filename)
         {
             try
@@ -2076,14 +2072,14 @@ namespace Dynamo.PackageManager
 
                     // The user has attempted to load an existing dll from another path. This is not allowed 
                     // as the existing assembly cannot be modified while Dynamo is active.
-                    if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name))
+                    if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name) && !duplicateAssemblyWarningTriggered)
                     {
                         MessageBoxService.Show(Owner, string.Format(Resources.PackageDuplicateAssemblyWarning, 
                                         dynamoViewModel.BrandingResourceProvider.ProductName),
                                         Resources.PackageDuplicateAssemblyWarningTitle, 
                                         MessageBoxButton.OK, 
                                         MessageBoxImage.Stop);
-                        //return; // DO NOT skip loading assembly
+                        duplicateAssemblyWarningTriggered = true;
                     }
 
                     Assemblies.Add(new PackageAssembly()

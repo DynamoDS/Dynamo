@@ -1,0 +1,73 @@
+name: Move issue by labels
+# This workflow transfers or moves issues based upon assigned labels.
+
+# DynamoIssues project https://github.com/orgs/DynamoDS/projects/4
+# Built-in workflow https://github.com/orgs/DynamoDS/projects/4/workflows
+
+# The built-in workflow
+#   - adds any new issues to DynamoIssues project
+#   - sets status as 'Triage' when an item is added to the project
+#   - sets status as 'Backlog' when an item is reopened
+#   - sets status as 'Done' when an item is closed
+
+# This workflow complements the built in workflow and
+#   - transfers issue labeled as 'Revit' to 'DynamoDS/DynamoRevit' repository
+#   - transfers issue labeled as 'Advance-Steel' to 'DynamoDS/Dynamo-Advance-Steel' repository
+#   - transfers issue labeled as 'Wishlist' to 'DynamoDS/DynamoWishlist' repository
+#   - moves issue labeled as 'tracked' to 'Todo' column in the project
+
+on:
+  issues:
+    types: [labeled]
+
+env:
+  project_id: 4
+  project_name: Dynamo Issues
+
+jobs:
+  transfer_issue_labeled_as_revit:
+    name: Transfer issue labeled as 'Revit'
+    runs-on: ubuntu-latest
+    if: ${{ github.event.label.name == 'Revit' }}
+    steps:
+      - name: Transfer issue to DynamoRevit Repository
+        env:
+          GH_TOKEN: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
+        run: |
+          gh issue edit ${{ github.event.issue.number }} --remove-project "${{ env.project_name }}" --repo ${{ github.repository }}
+          gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoRevit --repo ${{ github.repository }}
+  transfer_issue_labeled_as_dynamo_advance_steel:
+    name: Transfer issue labeled as 'Advance-Steel'
+    runs-on: ubuntu-latest
+    if: ${{ github.event.label.name == 'Advance-Steel' }}
+    steps:
+      - name: Transfer issue to Dynamo-Advance-Steel Repository
+        env:
+          GH_TOKEN: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
+        run: |
+          gh issue edit ${{ github.event.issue.number }} --remove-project "${{ env.project_name }}" --repo ${{ github.repository }}
+          gh issue transfer ${{ github.event.issue.number }} DynamoDS/Dynamo-Advance-Steel --repo ${{ github.repository }}
+  transfer_issue_labeled_as_wishlist:
+    name: Transfer issue labeled as 'Wishlist'
+    runs-on: ubuntu-latest
+    if: ${{ github.event.label.name == 'Wishlist' }}
+    steps:
+      - name: Transfer issue to DynamoWishlist Repository
+        env:
+          GH_TOKEN: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
+        run: |
+          gh issue edit ${{ github.event.issue.number }} --remove-project "${{ env.project_name }}"  --repo ${{ github.repository }}
+          gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoWishlist --repo ${{ github.repository }}
+  move_issue_labeled_as_tracked:
+    name: Move issue labeled as 'tracked'
+    runs-on: ubuntu-latest
+    if: ${{ github.event.label.name == 'tracked' }}
+    steps:
+      - name: Move issue to Todo
+        uses: leonsteinhaeuser/project-beta-automations@v2.2.1
+        with:
+          gh_token: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
+          organization: ${{ github.repository_owner }}
+          project_id: ${{ env.project_id }}
+          resource_node_id: ${{ github.event.issue.node_id }}
+          status_value: Todo

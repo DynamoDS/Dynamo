@@ -326,7 +326,7 @@ namespace Dynamo.Models
                     EndShiftReconnections(nodeId, command.PortIndex, command.Type);
                     break;
 
-                // TODO - can be removed in Dynamo 3.0 - DYN-1729
+                // TODO - can be removed in a future version of Dynamo - DYN-1729
                 case MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
                     BeginCreateConnections(nodeId, command.PortIndex, command.Type);
                     break;

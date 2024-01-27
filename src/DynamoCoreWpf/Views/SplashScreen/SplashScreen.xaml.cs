@@ -13,6 +13,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Greg.AuthProviders;
 using Microsoft.Web.WebView2.Core;
@@ -88,7 +89,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// The WebView2 Browser instance used to display splash screen
         /// </summary>
-        internal WebView2 webView;
+        internal DynamoWebView2 webView;
 
         /// <summary>
         /// This delegate is used in StaticSplashScreenReady events
@@ -142,8 +143,9 @@ namespace Dynamo.UI.Views
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
 
-            webView = new WebView2();
+            webView = new DynamoWebView2();
             ShadowGrid.Children.Add(webView);
+
             // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
@@ -513,9 +515,14 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// If the user wants to close the window, we shutdown the application and don't launch Dynamo
         /// </summary>
-        internal void CloseWindow()
+        /// <param name="isCheckboxChecked">If true, the user has chosen to not show splash screen on next run.</param>
+        internal void CloseWindow(bool isCheckboxChecked = false)
         {
             CloseWasExplicit = true;
+            if (viewModel != null && isCheckboxChecked)
+            {
+                viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            }
 
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
             {
@@ -549,6 +556,7 @@ namespace Dynamo.UI.Views
             {
                 authManager.LoginStateChanged -= OnLoginStateChanged;
             }
+
             webView.Dispose();
             webView = null;
 
@@ -563,6 +571,9 @@ namespace Dynamo.UI.Views
         success
     }
 
+    /// <summary>
+    /// This class is used to expose the methods that can be called from the webview2 component, SplashScreen.
+    /// </summary>
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
     public class ScriptObject
@@ -572,7 +583,12 @@ namespace Dynamo.UI.Views
         readonly Func<bool> RequestSignIn;
         readonly Func<bool> RequestSignOut;
         readonly Action RequestCloseWindow;
+        readonly Action<bool> RequestCloseWindowPreserve;
 
+        /// <summary>
+        /// [Obsolete] Constructor for ScriptObject
+        /// </summary>
+        [Obsolete]
         public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestCloseWindow)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
@@ -580,6 +596,17 @@ namespace Dynamo.UI.Views
             RequestSignIn = requestSignIn;
             RequestSignOut = requestSignOut;
             RequestCloseWindow = requestCloseWindow;
+        }
+        /// <summary>
+        /// Constructor for ScriptObject with an overload for close window method, to preserve "Don't show again" setting on splash screen on explicit close event.
+        /// </summary>
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func<bool> requestSignIn, Func<bool> requestSignOut, Action<bool> requestCloseWindow)
+        {
+            RequestLaunchDynamo = requestLaunchDynamo;
+            RequestImportSettings = requestImportSettings;
+            RequestSignIn = requestSignIn;
+            RequestSignOut = requestSignOut;
+            RequestCloseWindowPreserve = requestCloseWindow;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
@@ -603,6 +630,10 @@ namespace Dynamo.UI.Views
         public void CloseWindow()
         {
             RequestCloseWindow();
+        }
+        public void CloseWindowPreserve(bool isCheckboxChecked)
+        {
+            RequestCloseWindowPreserve(isCheckboxChecked);
         }
     }
 }

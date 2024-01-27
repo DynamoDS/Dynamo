@@ -1,0 +1,133 @@
+# Runs on every pull request
+#
+# - Builds Dynamo current branch and master and performs a Bin Diff
+# - Triggers Dynamo Post Build Bin Diff job on completion
+name: Dynamo Bin Diff
+
+on:
+  pull_request:
+
+jobs:
+  build_current:
+    name: Build Current
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v4
+        with:
+          path: Dynamo
+          repository: DynamoDS/Dynamo
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Disable problem matcher
+        run: Write-Output "::remove-matcher owner=csc::"
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v1.3
+      - name: Install dependencies for windows runtime
+        run: |
+          dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net8.0
+      - name: Build Dynamo with MSBuild
+        run: |
+          Write-Output "***Continue with the build, Good luck developer!***"
+          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release /p:DotNet=net8.0
+      - name: Look for DynamoCLI.exe
+        run: |
+          Write-Output "***Locating DynamoCLI.exe!***"
+          if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\AnyCPU\Release\DynamoCLI.exe") {
+            Write-Output "DynamoCLI.exe exists!"
+          } else {
+            Write-Error "DynamoCLI.exe was not found!"
+          }
+      - name: Cache Current Build
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
+            ${{ github.workspace }}\Dynamo\.github\scripts
+          key: ${{ github.run_id }}-${{ github.run_attempt }}-current
+  build_master:
+    name: Build Master
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v4
+        with:
+          path: master
+          ref: master
+          repository: DynamoDS/Dynamo
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Disable problem matcher
+        run: Write-Output "::remove-matcher owner=csc::"
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v1.3
+      - name: Install dependencies for windows runtime
+        run: |
+          dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net8.0
+      - name: Build Dynamo with MSBuild
+        run: |
+          Write-Output "***Continue with the build, Good luck developer!***"
+          msbuild ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release /p:DotNet=net8.0
+      - name: Look for DynamoCLI.exe
+        run: |
+          Write-Output "***Locating DynamoCLI.exe!***"
+          if (Test-Path -Path "${{ github.workspace }}\master\bin\AnyCPU\Release\DynamoCLI.exe") {
+            Write-Output "DynamoCLI.exe exists!"
+          } else {
+            Write-Error "DynamoCLI.exe was not found!"
+          }
+      - name: Cache Master Build
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ github.workspace }}\master\bin\AnyCPU\Release
+          key: ${{ github.run_id }}-${{ github.run_attempt }}-master
+  bin_diff:
+    name: Binary Diff
+    needs: [build_current, build_master]
+    runs-on: windows-latest
+    steps:
+      - name: Restore Current Build
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: |
+            ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
+            ${{ github.workspace }}\Dynamo\.github\scripts
+          key: ${{ github.run_id }}-${{ github.run_attempt }}-current
+      - name: Restore Master Build
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: ${{ github.workspace }}\master\bin\AnyCPU\Release
+          key: ${{ github.run_id }}-${{ github.run_attempt }}-master
+      - name: Run Binary Diff Job
+        id: diff
+        run: |
+          Write-Output "***Running the binary diff job between the current branch and the master branch!***"
+          Set-Location -Path "${{ github.workspace }}\Dynamo\.github\scripts"
+          .\bin_diff.ps1 ${{ github.workspace }}\master\bin\AnyCPU\Release, ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release -src ${{ github.job }}
+          Get-Content -Path result.txt | ? { $_ -ne "" } | Out-File -Path result.txt
+      - name: Upload Binary Diff Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: bin_diff_result
+          path: ${{ github.workspace }}\Dynamo\.github\scripts\result.txt
+  save_pr_data:
+    name: Save PR Data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save PR Data
+        run: |
+          mkdir -p ${{ github.workspace }}/pr
+          echo ${{ github.event.number }} > ${{ github.workspace }}/pr/pr_number.txt
+      - name: Upload PR Data
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr_data
+          path: ${{ github.workspace }}/pr
+          if-no-files-found: warn
+          retention-days: 3

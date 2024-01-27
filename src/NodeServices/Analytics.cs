@@ -142,8 +142,6 @@ namespace Dynamo.Logging
             sb.AppendLine("Fatal: " + isFatal);
             sb.AppendLine("Message: " + ex.Message);
             sb.AppendLine("StackTrace: " + ex.StackTrace);
-
-            LogPiiInfo("Analytics.TrackException", sb.ToString());
         }
 
         /// <summary>
@@ -253,17 +251,6 @@ namespace Dynamo.Logging
             }
 
             return client.TrackTaskFileOperationEvent(filepath, operation, size, description);
-        }
-
-        /// <summary>
-        /// Logs usage data
-        /// </summary>
-        /// <param name="tag">Usage tag</param>
-        /// <param name="data">Usage data</param>
-        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
-        public static void LogPiiInfo(string tag, string data)
-        {
-            if (client != null) client.LogPiiInfo(tag, data);
         }
     }
 }

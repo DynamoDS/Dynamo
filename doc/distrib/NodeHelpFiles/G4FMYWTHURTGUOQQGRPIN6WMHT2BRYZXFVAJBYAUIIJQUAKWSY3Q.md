@@ -5,5 +5,5 @@ Translates any CoordinateSystem type by the given distance in the given directio
 ___
 ## Example File
 
-![Translate (direction, distance)](./Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(direction,%20distance)_img.jpg)
+![Translate (direction, distance)](./G4FMYWTHURTGUOQQGRPIN6WMHT2BRYZXFVAJBYAUIIJQUAKWSY3Q_img.jpg)
 

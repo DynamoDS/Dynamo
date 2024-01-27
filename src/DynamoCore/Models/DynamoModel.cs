@@ -211,8 +211,8 @@ namespace Dynamo.Models
         /// <summary>
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
-        [Obsolete("This property will be removed in Dynamo 3.0 - please use HostAnalyticsInfo")]
-        public string HostName { get; set; }
+        [Obsolete("This property will be removed in a future version of Dynamo - please use HostAnalyticsInfo")]
+        internal string HostName { get; set; }
 
         /// <summary>
         /// Host analytics info
@@ -570,12 +570,6 @@ namespace Dynamo.Models
             /// Default Python script engine
             /// </summary>
             public string DefaultPythonEngine { get; set; }
-
-            /// <summary>
-            /// Disables ADP for the entire process for the lifetime of the process.
-            /// </summary>
-            [Obsolete("This property is no longer used and will be removed in Dynamo 3.0 - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
-            public bool DisableADP { get; set; }
 
             public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
@@ -1285,11 +1279,6 @@ namespace Dynamo.Models
         public virtual void PostTraceReconciliation(Dictionary<Guid, List<string>> orphanedSerializables)
         {
             // Override in derived classes to deal with orphaned serializables.
-        }
-
-        void UpdateManager_Log(LogEventArgs args)
-        {
-            Logger.Log(args.Message, args.Level);
         }
 
         /// <summary>
@@ -3365,9 +3354,6 @@ namespace Dynamo.Models
             var xmlDummyNodeCount = this.CurrentWorkspace.Nodes.OfType<DummyNode>().
                  Where(node => node.OriginalNodeContent is XmlElement).Count();
 
-            Logging.Analytics.LogPiiInfo("XmlDummyNodeWarning",
-                xmlDummyNodeCount.ToString());
-
             string summary = Resources.UnresolvedNodesWarningShortMessage;
             var description = Resources.UnresolvedNodesWarningMessage;
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
@@ -3399,10 +3385,6 @@ namespace Dynamo.Models
         {
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
             var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
-
-            Logging.Analytics.LogPiiInfo(
-                "ObsoleteFileMessage",
-                fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
             string summary = Resources.FileCannotBeOpened;
             var description =
@@ -3472,9 +3454,6 @@ namespace Dynamo.Models
         {
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
             var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
-
-            Logging.Analytics.LogPiiInfo("FutureFileMessage", fullFilePath +
-                " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
             string summary = Resources.FutureFileSummary;
             var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);

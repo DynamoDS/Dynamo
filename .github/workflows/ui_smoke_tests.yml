@@ -64,8 +64,8 @@ jobs:
       - name: Add Test Summary
         if: always()
         run: |
-          if (Test-Path -Path summary.md) {
-            Get-Content -Path summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          if (Test-Path -Path reports/summary.md) {
+            Get-Content -Path reports/summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
       - name: Add Run Summary
         if: always()
@@ -79,8 +79,9 @@ jobs:
           })
           "@
           $run_summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-      - name: Add Pull Request Comment
+      - name: Create Pull Request Comment
         if: always()
+        id: create_comment
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -91,6 +92,26 @@ jobs:
           Workflow Run: [${{ github.workflow }}](${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }})
           Check: [$env:CHECK_NAME](${{ steps.test_report.outputs.url_html }})
           "@
-          if ($env:PR_NUMBER) {
-            gh pr comment $env:PR_NUMBER --body $pr_comment --repo ${{ github.repository }}
-          }
+          $pr_comment | Out-File -FilePath pr_comment.md
+      - name: Find Comment
+        if: env.PR_NUMBER != ''
+        uses: peter-evans/find-comment@v2
+        id: find_comment
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          comment-author: github-actions[bot]
+          body-includes: UI Smoke Tests
+          direction: last
+      - name: Create comment
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          body-path: pr_comment.md
+      - name: Update comment
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          edit-mode: replace
+          body-path: pr_comment.md

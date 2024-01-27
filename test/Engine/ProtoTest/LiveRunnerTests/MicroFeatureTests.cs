@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -28,6 +28,17 @@ namespace ProtoTest.LiveRunner
             base.TearDown();
             liveRunner.Dispose();
         }
+
+        private void UpdateDsInterpreter(ProtoScript.Runners.LiveRunner liverunner, string code)
+        {
+            Guid guid = Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            Subtree st = TestFrameWork.CreateSubTreeFromCode(guid, code);
+            added.Add(st);
+            var syncData = new GraphSyncData(null, added, null);
+            liverunner.UpdateGraph(syncData);
+        }
+
 
         [Test]
         public void SimulateCBNExecution()
@@ -581,7 +592,6 @@ namespace ProtoTest.LiveRunner
             mirror = liveRunner.InspectNodeValue("d");
             Assert.IsTrue((Int64)mirror.GetData().Data == 10);
         }
-     
 
         [Test]
         public void TestDeltaExpression_01()
@@ -589,7 +599,7 @@ namespace ProtoTest.LiveRunner
             liveRunner = new ProtoScript.Runners.LiveRunner();
 
             // emit the DS code from the AST tree
-            liveRunner.UpdateCmdLineInterpreter("a=10;");
+            UpdateDsInterpreter(liveRunner,"a=10;");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 10);
@@ -597,7 +607,7 @@ namespace ProtoTest.LiveRunner
             //string o = liveRunner.GetCoreDump();
 
             // emit the DS code from the AST tree
-            liveRunner.UpdateCmdLineInterpreter("c=20;");
+            UpdateDsInterpreter(liveRunner,"c=20;");
 
             mirror = liveRunner.InspectNodeValue("c");
             Assert.IsTrue((Int64)mirror.GetData().Data == 20);
@@ -607,7 +617,7 @@ namespace ProtoTest.LiveRunner
             //string o = liveRunner.GetCoreDump();
 
             // emit the DS code from the AST tree
-            liveRunner.UpdateCmdLineInterpreter("b = a+c;");
+            UpdateDsInterpreter(liveRunner,"b = a+c;");
 
             mirror = liveRunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 10);
@@ -619,7 +629,7 @@ namespace ProtoTest.LiveRunner
             //o = liveRunner.GetCoreDump();
 
             // emit the DS code from the AST tree
-            liveRunner.UpdateCmdLineInterpreter("c= 30;");
+            UpdateDsInterpreter(liveRunner,"c= 30;");
 
             mirror = liveRunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 10);
@@ -637,7 +647,7 @@ namespace ProtoTest.LiveRunner
             liveRunner = new ProtoScript.Runners.LiveRunner();
 
             // emit the DS code from the AST tree
-            liveRunner.UpdateCmdLineInterpreter("x=99;");
+            UpdateDsInterpreter(liveRunner,"x=99;");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("x");
             Assert.IsTrue((Int64)mirror.GetData().Data == 99);
@@ -645,7 +655,7 @@ namespace ProtoTest.LiveRunner
             //string o = liveRunner.GetCoreDump();
 
             // emit the DS code from the AST tree
-            liveRunner.UpdateCmdLineInterpreter("y=x;");
+            UpdateDsInterpreter(liveRunner,"y=x;");
 
             mirror = liveRunner.InspectNodeValue("y");
             Assert.IsTrue((Int64)mirror.GetData().Data == 99);
@@ -655,7 +665,7 @@ namespace ProtoTest.LiveRunner
             //string o = liveRunner.GetCoreDump();
 
             // emit the DS code from the AST tree
-            liveRunner.UpdateCmdLineInterpreter("x = 100;");
+            UpdateDsInterpreter(liveRunner, "x = 100;");
 
             mirror = liveRunner.InspectNodeValue("x");
             Assert.IsTrue((Int64)mirror.GetData().Data == 100);
@@ -669,8 +679,8 @@ namespace ProtoTest.LiveRunner
         {
             liveRunner = new ProtoScript.Runners.LiveRunner();
 
-            liveRunner.UpdateCmdLineInterpreter(@"import (""FFITarget.dll"");");
-            liveRunner.UpdateCmdLineInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
+            UpdateDsInterpreter(liveRunner, @"import (""FFITarget.dll"");");
+            UpdateDsInterpreter(liveRunner, "p = DummyPoint.ByCoordinates(10,10,10);");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("p");
 
@@ -679,14 +689,14 @@ namespace ProtoTest.LiveRunner
             // newPoint = p.Translate(1,2,3);
             //==============================================
 
-            liveRunner.UpdateCmdLineInterpreter("newPoint = p.Translate(1,2,3);");
+            UpdateDsInterpreter(liveRunner, "newPoint = p.Translate(1,2,3);");
             mirror = liveRunner.InspectNodeValue("newPoint");
 
             //==============================================
             // Build a binary expression to retirieve the x property
             // xval = newPoint.X
             //==============================================
-            liveRunner.UpdateCmdLineInterpreter("xval = newPoint.X;");
+            UpdateDsInterpreter(liveRunner, "xval = newPoint.X;");
             mirror = liveRunner.InspectNodeValue("xval");
 
             //==============================================
@@ -709,8 +719,8 @@ namespace ProtoTest.LiveRunner
             //string code = @"class Point{ X : double; constructor ByCoordinates(x : double, y : double, z : double){X = x;} def Translate(x : double, y : double, z : double){return = Point.ByCoordinates(11,12,13);} }";
 
             //liveRunner.UpdateCmdLineInterpreter(code);
-            liveRunner.UpdateCmdLineInterpreter(@"import (""FFITarget.dll"");");
-            liveRunner.UpdateCmdLineInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
+            UpdateDsInterpreter(liveRunner, @"import (""FFITarget.dll"");");
+            UpdateDsInterpreter(liveRunner, "p = DummyPoint.ByCoordinates(10,10,10);");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("p");
 
@@ -718,7 +728,7 @@ namespace ProtoTest.LiveRunner
             // Build a binary expression to retirieve the x property
             // xval = newPoint.X
             //==============================================
-            liveRunner.UpdateCmdLineInterpreter("xval = p.X;");
+            UpdateDsInterpreter(liveRunner,"xval = p.X;");
             mirror = liveRunner.InspectNodeValue("xval");
 
             //==============================================
@@ -735,7 +745,7 @@ namespace ProtoTest.LiveRunner
             // newPoint = p.Translate(1,2,3);
             //==============================================
 
-            liveRunner.UpdateCmdLineInterpreter("p = p.Translate(1,2,3);");
+            UpdateDsInterpreter(liveRunner,"p = p.Translate(1,2,3);");
 
             mirror = liveRunner.InspectNodeValue("p");
 

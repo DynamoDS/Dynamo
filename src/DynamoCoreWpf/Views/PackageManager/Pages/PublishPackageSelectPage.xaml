@@ -583,6 +583,7 @@
         </Rectangle>
 
         <!--Toggle-->
+        <!-- TODO, uncomment after DYN-6589
         <StackPanel Orientation="Horizontal"
                     Grid.Column="1"
                     Grid.Row="2">
@@ -609,7 +610,6 @@
                              Style="{StaticResource GenericToolTipLight}" />
                 </Rectangle.ToolTip>
             </Rectangle>
-
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </Page>
