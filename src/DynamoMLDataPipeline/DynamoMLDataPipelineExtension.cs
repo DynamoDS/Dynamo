@@ -322,11 +322,11 @@ namespace DynamoMLDataPipeline
             var token = GetAuthorizationToken();
 
             // Stage collectionId created for Dynamo
-            CollectionId = StagingCollectionID;
+            CollectionId = ProductionCollectionID;
 
             //ExchangeContainerId = "";
 
-            var forgeClient = new RestClient(StagingClientUrl);
+            var forgeClient = new RestClient(ProductionClientUrl);
 
             DataExchangeToForge(filePath, forgeClient, token);
 
