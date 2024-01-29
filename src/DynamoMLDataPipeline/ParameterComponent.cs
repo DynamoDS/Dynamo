@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 
 namespace DynamoMLDataPipeline
 {
+    // Parameters like host and user info for the request schema
     class ParameterComponent: Dictionary<string, Dictionary<string, Parameter>>
     {
         private string objectId = "autodesk.design:components.parameter-1.0.0";

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace DynamoMLDataPipeline
 {
-
+    // Schema for the parameters used in the request.
     class StringParameterSchema : Schema
     {
         public StringParameterSchema(string value, string schemaNamespaceId, string schemaId)
