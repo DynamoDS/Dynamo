@@ -26,7 +26,8 @@ namespace Dynamo.UI.Views
     {
         // These are hardcoded string and should only change when npm package structure changed or image path changed
         private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.bundle.js";
+        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.bundle.js";
+        //private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.bundle.js";
         private static readonly string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderName = "embeddedFonts";
         private static readonly string virtualFolderPath = Path.Combine(Path.GetTempPath(), virtualFolderName);
@@ -81,9 +82,12 @@ namespace Dynamo.UI.Views
         {
             guidedTourItems = new List<GuidedTourItem>
             {
-                new GuidedTourItem(Wpf.Properties.Resources.GetStartedGuide, "Description of the guide", GuidedTourType.UserInterface.ToString()),
-                new GuidedTourItem(Wpf.Properties.Resources.OnboardingGuide, "Description of the guide", GuidedTourType.GetStarted.ToString()),
-                new GuidedTourItem(Wpf.Properties.Resources.PackagesGuide, "Description of the guide", GuidedTourType.Packages.ToString())
+                new GuidedTourItem(Wpf.Properties.Resources.GetStartedGuide.TrimStart('_'),
+                    Wpf.Properties.Resources.GetStartedGuideDescription, GuidedTourType.UserInterface.ToString()),
+                new GuidedTourItem(Wpf.Properties.Resources.OnboardingGuide.TrimStart('_'),
+                    Wpf.Properties.Resources.OnboardingGuideDescription, GuidedTourType.GetStarted.ToString()),
+                new GuidedTourItem(Wpf.Properties.Resources.PackagesGuide.TrimStart('_'),
+                    Wpf.Properties.Resources.PackagesGuideDescription, GuidedTourType.Packages.ToString())
             };
         }
 

@@ -574,6 +574,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <EmbeddedResource Include="..\..\..\DynamoLandingPage\landing-page-react\dist\bundle.js" Link="Packages\HomePage\bundle.js" />
     <None Include="UI\Themes\Modern\InPorts.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
