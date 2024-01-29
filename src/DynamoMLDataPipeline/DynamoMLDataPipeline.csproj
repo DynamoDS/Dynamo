@@ -71,6 +71,7 @@
 	<Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoMLDataPipeline.cs" />
 	<Compile Include="Attribute.cs" />
 	<Compile Include="BaseComponent.cs" />
 	<Compile Include="BinaryAsset.cs" />

@@ -70,8 +70,6 @@ namespace Dynamo.ViewModels
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
         private ObservableCollection<TabItem> sideBarTabItems = new ObservableCollection<TabItem>();
 
-        private DynamoMLDataPipelineExtension extension = new DynamoMLDataPipelineExtension();
-
         /// <summary>
         /// An observable collection of workspace view models which tracks the model.
         /// </summary>
@@ -86,6 +84,8 @@ namespace Dynamo.ViewModels
         ///  Node window's state, either DockRight or FloatingWindow.
         /// </summary>
         internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
+
+        internal DynamoMLDataPipelineExtension MLDataPipelineextension { get; set; }
 
         /// <summary>
         /// Collection of Right SideBar tab items: view extensions and docked windows.
@@ -765,6 +765,7 @@ namespace Dynamo.ViewModels
             }
 
             FileTrustViewModel = new FileTrustWarningViewModel();
+            MLDataPipelineextension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
         }
 
         /// <summary>
@@ -2118,7 +2119,7 @@ namespace Dynamo.ViewModels
                         Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
                         Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
                         Model.Logger.Log("The Workspace has Substantial checksum, so is ready to send to FDX : " + HasSubstantialCheckSum().ToString());
-                        extension.DataExchange(path);
+                        MLDataPipelineextension.DynamoMLDataPipeline.DataExchange(path);
                     }
                 }                           
             }
