@@ -276,13 +276,16 @@ namespace Dynamo.PackageManager
                 }
                 packageUploadHandle.Done(null);
             }
-            catch (IOException e)
+            catch (Exception ex)
             {
-                packageUploadHandle.Error(DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyTitle + ": " + DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyMessage + "(" + e.Message + ")");
-            }
-            catch (Exception e)
-            {
-                packageUploadHandle.Error(e.GetType() + ": " + e.Message);
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    packageUploadHandle.Error(DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyTitle + ": " + DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyMessage + "(" + ex.Message + ")");
+                }
+                else
+                {
+                    packageUploadHandle.Error(ex.GetType() + ": " + ex.Message);
+                }
             }
         }
 
