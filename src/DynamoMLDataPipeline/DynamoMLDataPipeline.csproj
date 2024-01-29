@@ -17,25 +17,6 @@
 	<Deterministic>true</Deterministic>
 	<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	<PlatformTarget>AnyCPU</PlatformTarget>
-	<DebugSymbols>true</DebugSymbols>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<OutputPath>bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE</DefineConstants>
-	<ErrorReport>prompt</ErrorReport>
-	<WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-	<PlatformTarget>AnyCPU</PlatformTarget>
-	<DebugType>pdbonly</DebugType>
-	<Optimize>true</Optimize>
-	<OutputPath>bin\Release\</OutputPath>
-	<DefineConstants>TRACE</DefineConstants>
-	<ErrorReport>prompt</ErrorReport>
-	<WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="RestSharp" Version="108.0.1" />
@@ -105,9 +86,8 @@
   </ItemGroup>
   <ItemGroup>
 	<None Include="App.config" />
-	<None Include="packages.config" />
   </ItemGroup>
-  <Target Name="AfterBuildOps" AfterTargets="Build">
+  <Target Name="GenerateExtension" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="DynamoMLDataPipeline_ExtensionDefinition.xml" />
     </ItemGroup>
