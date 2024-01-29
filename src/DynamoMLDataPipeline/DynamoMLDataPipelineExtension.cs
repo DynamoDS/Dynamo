@@ -335,8 +335,6 @@ namespace DynamoMLDataPipeline
             // as COMPLETED the upload is not done.
             Thread.Sleep(5000);
             TestPipeline(filePath, token, forgeClient);
-
-            Console.ReadKey();
         }
 
         private static string GetAuthorizationToken()
