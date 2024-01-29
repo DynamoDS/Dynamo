@@ -194,6 +194,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the the ML data ingestion pipeline is beta from feature flag
+        /// </summary>
+        public bool MLDataIngestionPipelineTest
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("MLDataIngestionPipelineTest", false) ?? false;
+            }
+        }
+
+        /// <summary>
         /// Count of unresolved issues on the linter manager.
         /// This is used for binding in the NotificationsControl
         /// </summary>
@@ -2101,7 +2112,7 @@ namespace Dynamo.ViewModels
                 {
                     AddToRecentFiles(path);
 
-                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
+                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX && MLDataIngestionPipelineTest && currentWorkspaceViewModel.Checksum != string.Empty)
                     {
                         Model.Logger.Log("The Workspace is valid for FDX");
                         Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
