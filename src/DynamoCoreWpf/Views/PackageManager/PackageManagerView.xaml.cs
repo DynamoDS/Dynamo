@@ -68,7 +68,7 @@ namespace Dynamo.PackageManager.UI
                 Categories.PackageManager);
 
             this.dynamoView = dynamoView;
-            dynamoView.EnableEnvironment(false);
+            dynamoView.EnableOverlayBlocker(true);
         }
 
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -130,8 +130,7 @@ namespace Dynamo.PackageManager.UI
         /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Analytics.TrackEvent(Actions.Close, Categories.PackageManager);
-            (this.Owner as DynamoView).EnableEnvironment(true);
+            Analytics.TrackEvent(Actions.Close, Categories.PackageManager);           
 
             Close();
         }
@@ -143,6 +142,7 @@ namespace Dynamo.PackageManager.UI
         {
             this.packageManagerPublish?.Dispose();
             this.packageManagerSearch?.Dispose();
+            (this.Owner as DynamoView).EnableOverlayBlocker(false);
 
             if (PackageManagerViewModel == null) return;
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
@@ -239,6 +239,12 @@ namespace Dynamo.PackageManager.UI
                     e.Handled = true;
                 }
             }
+        }
+
+        private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
+        {
+            this.PackageManagerViewModel.PackageSearchViewModel
+                .PackageManagerClientViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
         }
     }
 }

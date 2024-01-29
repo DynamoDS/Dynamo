@@ -18,7 +18,6 @@ using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
-using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
@@ -165,26 +164,6 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-
-    /// <summary>
-    /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
-    /// </summary>
-    [Obsolete("This class will be removed in Dynamo 3.0")]
-    public class EmptyDepStringToCollapsedConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter,
-          CultureInfo culture)
-        {
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-          CultureInfo culture)
         {
             return null;
         }
@@ -1759,38 +1738,6 @@ namespace Dynamo.Controls
         }
     }
 
-    //TODO remove(this is not used anywhere) in Dynamo 3.0
-    public class ZoomToVisibilityConverter : IValueConverter
-    {
-        /// <summary>
-        /// Returns hidden for small zoom sizes - appears unused.
-        /// </summary>
-        /// <param name="value">zoom size</param>
-        /// <param name="targetType">unused</param>
-        /// <param name="parameter">unused</param>
-        /// <param name="culture">unused</param>
-        /// <returns></returns>
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            try
-            {
-                double zoom = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
-                if (zoom < .5)
-                    return Visibility.Hidden;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"problem attempting to parse zoomsize or param {value}{ e.Message}");
-            }
-            return Visibility.Visible;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-    }
-
     public class ZoomToBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2129,6 +2076,53 @@ namespace Dynamo.Controls
         }
     }
 
+    public class CopyrightInfoTooltipConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
+            {
+                return null;
+            }
+            if (values != null && values.Count() > 0)
+            {
+                var cph = string.IsNullOrEmpty((string)values[0]) ? "N/A" : (string)values[0];
+                var cpy = string.IsNullOrEmpty((string)values[1]) ? "N/A" : (string)values[1];
+                var tooltip = Resources.PackageDetailsCopyRightHolder + ": " + cph + Environment.NewLine +
+                    Resources.PackageDetailsCopyRightYear + ": " + cpy;
+                return tooltip;
+            }
+            return "";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class PackageDetailsLinkCollapseOnEmpty : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
+            {
+                return null;
+            }
+            if (values != null && values.Count() > 0)
+            {
+                if (!string.IsNullOrEmpty((string)values[0]) || !string.IsNullOrEmpty((string)values[1]))
+                return Visibility.Visible; ;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public sealed class WarningLevelToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2223,8 +2217,8 @@ namespace Dynamo.Controls
         }
     }
 
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
-    public class MeasureConverter : IValueConverter
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the ForgeUnit SDK based methods")]
+    internal class MeasureConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -3898,10 +3892,7 @@ namespace Dynamo.Controls
             CultureInfo culture)
         {
             if (value is string nullOrEmptyString && String.IsNullOrEmpty(nullOrEmptyString)) return Visibility.Visible;
-            if (value is string zeroString && zeroString.Equals("0"))
-            {
-                return Visibility.Visible;
-            }
+            
             return Visibility.Collapsed;
         }
 

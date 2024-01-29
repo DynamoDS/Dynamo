@@ -15,8 +15,10 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
+using DynamoUtilities;
 using NUnit.Framework;
 using TestServices;
 
@@ -40,7 +42,9 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
-            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
+
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -139,7 +143,9 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
+
+            TestUtilities.WebView2Tag = string.Empty;
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)

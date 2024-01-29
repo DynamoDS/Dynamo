@@ -206,6 +206,33 @@ namespace DynamoCoreWpfTests
             // Act
             var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
             this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
+
+            WaitForWebView2Initialization();
+
+            var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
+            var htmlContent = GetSidebarDocsBrowserContents();
+
+            // Assert
+            Assert.IsFalse(docsEvent.IsRemoteResource);
+            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+            Assert.IsTrue(htmlContent.Contains(excelDocsFileHtmlHeader));
+        }
+
+        [Test]
+        public void CanHandleDocsEventTriggeredFromDynamoViewModelMultipleTimes()
+        {
+            // Arrange
+            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(localDocsFileLink, UriKind.Relative));
+
+            // Act
+            var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
+            this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
+            this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
+            this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
+
+            WaitForWebView2Initialization();
+
             var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
 

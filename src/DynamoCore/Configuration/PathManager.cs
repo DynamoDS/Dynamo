@@ -66,13 +66,10 @@ namespace Dynamo.Core
         public const string ViewExtensionsDirectoryName = "viewExtensions";
         public const string DefinitionsDirectoryName = "definitions";
         public const string SamplesDirectoryName = "samples";
-        [Obsolete("This property will be removed in Dynamo 3.0")]
-        public const string GalleryDirectoryName = "gallery";
+        public const string TemplateDirectoryName = "templates";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
         public const string PythonTemplateFileName = "PythonTemplate.py";
-        [Obsolete("This property will be removed in Dynamo 3.0")]
-        public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
@@ -86,6 +83,7 @@ namespace Dynamo.Core
         private string commonPackages;
         private string logDirectory;
         private string samplesDirectory;
+        private string templatesDirectory;
         private string backupDirectory;
         private string defaultBackupDirectory;
         private string preferenceFilePath;
@@ -244,6 +242,14 @@ namespace Dynamo.Core
             get { return samplesDirectory; }
         }
 
+        /// <summary>
+        /// Dynamo Templates folder
+        /// </summary>
+        public string TemplatesDirectory
+        {
+            get { return templatesDirectory; }
+        }
+
         public string BackupDirectory
         {
             get { return backupDirectory; }
@@ -262,12 +268,6 @@ namespace Dynamo.Core
         public string PythonTemplateFilePath
         {
             get { return pythonTemplateFilePath; }
-        }
-
-        [Obsolete("This property will be removed in Dynamo 3.0")]
-        public string GalleryFilePath
-        {
-            get;
         }
 
         public IEnumerable<string> NodeDirectories
@@ -582,6 +582,7 @@ namespace Dynamo.Core
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
+            templatesDirectory = GetTemplateFolder(commonDataDir);
 
             rootDirectories = new List<string> { userDataDir };
 
@@ -725,7 +726,51 @@ namespace Dynamo.Core
 
             return sampleDirectory;
         }
-        
+
+        /// <summary>
+        /// Get template folder path from common data directory
+        /// </summary>
+        /// <param name="dataRootDirectory"></param>
+        /// <returns></returns>
+        private string GetTemplateFolder(string dataRootDirectory)
+        {
+            var versionedDirectory = dataRootDirectory;
+            if (!Directory.Exists(versionedDirectory))
+            {
+                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
+                // does not, then root directory would be "%ProgramData%\{...}".
+                //
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+            }
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, TemplateDirectoryName)))
+            {
+                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\templates" exists. If it
+                // doesn't exist, then root directory would be "%ProgramData%\{...}".
+                //
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+            }
+
+            var uiCulture = CultureInfo.CurrentUICulture.Name;
+            var templateDirectory = Path.Combine(dataRootDirectory, TemplateDirectoryName, uiCulture);
+
+            // If the localized template directory does not exist then fall back 
+            // to using the en-US template folder. Do an additional check to see 
+            // if the localized folder is available but is empty.
+            // 
+            var di = new DirectoryInfo(templateDirectory);
+            if (!Directory.Exists(templateDirectory) ||
+                !di.GetDirectories().Any() ||
+                !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
+            {
+                var neturalCommonTemplates = Path.Combine(dataRootDirectory, TemplateDirectoryName, "en-US");
+                if (Directory.Exists(neturalCommonTemplates))
+                    templateDirectory = neturalCommonTemplates;
+            }
+
+            return templateDirectory;
+        }
+
         private IEnumerable<string> LibrarySearchPaths(string library)
         {
             // Strip out possible directory from library path.

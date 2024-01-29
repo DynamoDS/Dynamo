@@ -274,7 +274,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
             string packageVersionNumber = "1.0.0.0";
             string newAndUpdatedPackageCreatedDateString = DateTime.Now.ToString("yyyy - MM - ddTHH:mm:ss.ffffff K");
-            string activePackageCreatedDateString = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, DateTime.Now.Day).ToString("yyyy - MM - ddTHH:mm:ss.ffffff K");
+            string activePackageCreatedDateString = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy - MM - ddTHH:mm:ss.ffffff K");
             string advSteelFilterName = "Advance Steel";
             string formItFilterName = "FormIt";
 

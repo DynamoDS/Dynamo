@@ -157,6 +157,11 @@ namespace Dynamo.Interfaces
         string SamplesDirectory { get; }
 
         /// <summary>
+        /// The root directory where all template files are stored
+        /// </summary>
+        string TemplatesDirectory { get; }
+
+        /// <summary>
         /// The directory where the automatically saved files will be stored.
         /// </summary>
         string BackupDirectory { get; }
@@ -172,12 +177,6 @@ namespace Dynamo.Interfaces
         /// to the current user.
         /// </summary>
         string PythonTemplateFilePath { get; }
-
-        /// <summary>
-        /// Full path to the legacy GalleryContent xml file.
-        /// </summary>
-        [System.Obsolete("This property will be removed in Dynamo 3.0")]
-        string GalleryFilePath { get; }
 
         /// <summary>
         /// Folders in which node assemblies can be located.

@@ -6,6 +6,7 @@ using ProtoCore.BuildData;
 using ProtoScript.Runners;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 
 namespace Dynamo.Scheduler
 {
@@ -103,7 +104,10 @@ namespace Dynamo.Scheduler
             // EngineController might be disposed and become invalid.
             // After MAGN-5167 is done, we could remove this checking.
             if (!engineController.IsDisposed)
+            {
+                Analytics.TrackActivityStatus(HeartBeatType.Machine.ToString());
                 engineController.UpdateGraphImmediate(graphSyncData);
+            }
         }
 
         protected override void HandleTaskCompletionCore()
@@ -116,6 +120,7 @@ namespace Dynamo.Scheduler
             }
             else
             {
+                Analytics.TrackActivityStatus(HeartBeatType.Machine.ToString());
                 // Retrieve warnings in the context of ISchedulerThread.
                 BuildWarnings = engineController.GetBuildWarnings();
                 RuntimeWarnings = engineController.GetRuntimeWarnings();
@@ -148,14 +153,14 @@ namespace Dynamo.Scheduler
                     // Clear node warning or info messages because if node is involved in new graph execution, message should be refreshed
                     if (node.State == ElementState.Warning)
                     {
-                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
                         {
                             node.ClearErrorsAndWarnings();
                         }
                     }
                     if (node.State == ElementState.Info)
                     {
-                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
                         {
                             node.ClearInfoMessages();
                         }

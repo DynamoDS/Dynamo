@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Microsoft.Web.WebView2.Wpf;
 using Dynamo.Utilities;
 using Dynamo.Configuration;
+using Dynamo.Models;
 
 namespace Dynamo.Notifications
 {
@@ -238,6 +239,7 @@ namespace Dynamo.Notifications
                     new ScriptObject(OnMarkAllAsRead, OnNotificationPopupUpdated));
 
                 notificationUIPopup.webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                notificationUIPopup.webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
             }
         }
 
@@ -263,8 +265,12 @@ namespace Dynamo.Notifications
         /// <param name="e"></param>
         private void DynamoView_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            string popupBellID = "FontAwesome5.FontAwesome";
             if (!notificationUIPopup.IsOpen) return;
-            notificationUIPopup.IsOpen = false;
+            if(e.OriginalSource.ToString() != popupBellID)
+            {
+                notificationUIPopup.IsOpen = false;
+            }
         }
 
         /// <summary>
@@ -345,10 +351,22 @@ namespace Dynamo.Notifications
         {
             if (initState == AsyncMethodState.Started)
             {
-                logger?.Log("NotificationCenterController is being disposed but async initialization is still not done");
+                Log("NotificationCenterController is being disposed but async initialization is still not done");
             }
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        private void Log(string msg)
+        {
+            if (DynamoModel.IsTestMode)
+            {
+                System.Console.WriteLine(msg);
+            }
+            else
+            {
+                logger?.Log(msg);
+            }
         }
     }
 }

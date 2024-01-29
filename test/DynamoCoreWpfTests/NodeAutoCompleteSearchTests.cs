@@ -67,6 +67,7 @@ namespace DynamoCoreWpfTests
         public void NodeSuggestions_CanAutoCompleteInCustomNodeWorkspace()
         {
             Open(@"pkgs\EvenOdd2\dyf\EvenOdd.dyf");
+            ViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Pick the % node
             NodeView nodeView = NodeViewWithGuid(Guid.Parse("1ddf4b4cc39f42acadd578db42bcb6d3").ToString());
@@ -192,6 +193,7 @@ namespace DynamoCoreWpfTests
         public void NodeSuggestions_InputPortZeroTouchNode_AreCorrect()
         {
             Open(@"UI\ffitarget_inputport_suggestion.dyn");
+            ViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Get the node view for a specific node in the graph
             NodeView nodeView = NodeViewWithGuid(Guid.Parse("9aeba33453a34c73823976222b44375b").ToString());
@@ -496,6 +498,37 @@ namespace DynamoCoreWpfTests
             // Filter the node elements using the search field.
             searchViewModel.SearchAutoCompleteCandidates("ar");
             Assert.AreEqual(5 , searchViewModel.FilteredResults.Count());
+        }
+
+        [Test]
+        public void CloseNodeAutocompleteWhenParentNodeDeleted()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("77aad5875f124bf59a4ece6b30813d3b").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(2, inPorts.Count());
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("DSCore.Color[]", type);
+
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = inPorts[0];
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+
+            // Get the matching node elements for the specific node port.
+            searchViewModel.PopulateAutoCompleteCandidates();
+            // Show Node AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            //remove the parent node
+            searchViewModel.dynamoViewModel.CurrentSpaceViewModel.Model.RemoveAndDisposeNode(nodeView.ViewModel.NodeModel);
+
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            //confirm if the AutoCompleteSearchBar is closed.
+            Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+
         }
 
         [Test]

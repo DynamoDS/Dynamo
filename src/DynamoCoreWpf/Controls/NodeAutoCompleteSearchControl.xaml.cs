@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -213,6 +214,19 @@ namespace Dynamo.UI.Controls
                 SearchTextBox.Focus();
                 ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
+
+            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
+        }
+
+        //Removes nodeautocomplete menu when the associated parent node is removed.
+        private void OnParentNodeRemoved(NodeModel node)
+        {
+            NodeModel parent_node = ViewModel.PortViewModel?.PortModel.Owner;
+            if (node == parent_node)
+            {
+                OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+            }
         }
 
         private void OnMembersListBoxUpdated(object sender, DataTransferEventArgs e)
@@ -351,12 +365,13 @@ namespace Dynamo.UI.Controls
 
         internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
         {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            CloseAutoCompletion();
         }
 
         internal void CloseAutoCompletion()
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            ViewModel?.OnNodeAutoCompleteWindowClosed();
         }
 
         /// <summary>

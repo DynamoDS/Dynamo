@@ -1,5 +1,8 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Dynamo.PackageManager.ViewModels;
+using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
@@ -25,7 +28,20 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// PublishPackageViewModel containing information about all the published packages
         /// </summary>
-        public PublishPackageViewModel PublishPackageViewModel { get; set; }
+        ///
+        private PublishPackageViewModel publishPackageViewModel;
+        public PublishPackageViewModel PublishPackageViewModel
+        {
+            get { return publishPackageViewModel; }
+            set
+            {
+                if (publishPackageViewModel != value)
+                {
+                    publishPackageViewModel = value;
+                    RaisePropertyChanged(nameof(PublishPackageViewModel));
+                }
+            }
+        }
 
         /// <summary>
         /// Returns all installed packages
@@ -37,6 +53,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
 
+        public DelegateCommand PublishNewVersionCommand { get; set; }
 
         //Width of the PackageManagerView the default value is 1076
         public double Width
@@ -89,6 +106,21 @@ namespace Dynamo.PackageManager
             if (String.IsNullOrEmpty(PreferencesViewModel?.SelectedPackagePathForInstall))
             {
                 PreferencesViewModel.SelectedPackagePathForInstall = dynamoViewModel.PreferenceSettings.SelectedPackagePathForInstall;
+            }
+
+            PublishNewVersionCommand = new DelegateCommand(PublishNewPackageVersionRelayCommand);
+        }
+
+
+        private void PublishNewPackageVersionRelayCommand(object obj)
+        {
+            var searchElement = obj as PackageManagerSearchElementViewModel;
+            if(searchElement != null)
+            {
+                var localPackage = LocalPackages.First(x => x.Model.Name.Equals(searchElement.Name));
+
+                if (localPackage == null) { return; }
+                localPackage.PublishNewPackageVersionCommand.Execute();
             }
         }
 

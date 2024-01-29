@@ -6,6 +6,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
@@ -41,6 +42,7 @@ namespace Dynamo.DocumentationBrowser
         public DocumentationBrowserView(DocumentationBrowserViewModel viewModel)
         {
             InitializeComponent();
+
             this.DataContext = viewModel;
             this.viewModel = viewModel;
 
@@ -181,16 +183,21 @@ namespace Dynamo.DocumentationBrowser
 
                 initState = AsyncMethodState.Done;
             }
+            //if we make it this far, for example to do re-entry to to this method, while we're still
+            //initializing, don't do anything, just bail.
+            if(initState == AsyncMethodState.Done)
+            {
+                if (Directory.Exists(VirtualFolderPath))
+                {
+                    //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
+                    this.documentationBrowser?.CoreWebView2?.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, VirtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
+                }
+                string htmlContent = this.viewModel.GetContent();
 
-            if(Directory.Exists(VirtualFolderPath))
-                //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
-                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, VirtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
+                htmlContent = ResourceUtilities.LoadResourceAndReplaceByKey(htmlContent, "#fontStyle", fontStylePath);
 
-            string htmlContent = this.viewModel.GetContent();
-
-            htmlContent = ResourceUtilities.LoadResourceAndReplaceByKey(htmlContent, "#fontStyle", fontStylePath);
-
-            this.documentationBrowser.NavigateToString(htmlContent);
+                this.documentationBrowser.NavigateToString(htmlContent);
+            }
         }
 
         private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
@@ -216,7 +223,14 @@ namespace Dynamo.DocumentationBrowser
         #region ILogSource Implementation
         private void Log(string message)
         {
-            viewModel.MessageLogged?.Invoke(LogMessage.Info(message));
+            if (DynamoModel.IsTestMode)
+            {
+                System.Console.WriteLine(message);
+            }
+            else
+            {
+                viewModel?.MessageLogged?.Invoke(LogMessage.Info(message));
+            }
         }
         #endregion
     }
