@@ -70,6 +70,8 @@ namespace Dynamo.ViewModels
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
         private ObservableCollection<TabItem> sideBarTabItems = new ObservableCollection<TabItem>();
 
+        private DynamoMLDataPipelineExtension extension = new DynamoMLDataPipelineExtension();
+
         /// <summary>
         /// An observable collection of workspace view models which tracks the model.
         /// </summary>
@@ -2105,7 +2107,6 @@ namespace Dynamo.ViewModels
                         Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
                         Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
                         Model.Logger.Log("The Workspace has Substantial checksum, so is ready to send to FDX : " + HasSubstantialCheckSum().ToString());
-                        DynamoMLDataPipelineExtension extension = new DynamoMLDataPipelineExtension();
                         extension.DataExchange(path);
                     }
                 }                           
