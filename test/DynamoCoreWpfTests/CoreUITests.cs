@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
 using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -786,7 +787,7 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         private void RestartTestSetupWithNewSettings(Dynamo.Models.DynamoModel.IStartConfiguration configuration, bool startInTestMode)
@@ -819,7 +820,7 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         #endregion

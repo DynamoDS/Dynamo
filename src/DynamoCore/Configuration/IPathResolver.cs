@@ -157,6 +157,11 @@ namespace Dynamo.Interfaces
         string SamplesDirectory { get; }
 
         /// <summary>
+        /// The root directory where all template files are stored
+        /// </summary>
+        string TemplatesDirectory { get; }
+
+        /// <summary>
         /// The directory where the automatically saved files will be stored.
         /// </summary>
         string BackupDirectory { get; }
