@@ -1,5 +1,6 @@
 
 
+using DynamoCoreWpfTests.Utility;
 using DynamoUtilities;
 using NUnit.Framework;
 using System;
@@ -7,8 +8,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-
 
 namespace DynamoCoreWpfTests
 {
@@ -73,10 +72,6 @@ namespace DynamoCoreWpfTests
         public void SplashScreen_MultipleCloseMessages()
         {
             var ss = new Dynamo.UI.Views.SplashScreen();
-            Application app = new()
-            {
-                MainWindow = ss
-            };
 
             void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
             {
@@ -112,9 +107,11 @@ namespace DynamoCoreWpfTests
             ss.Closed += WindowClosed;
 
             ss.Show();
-            app.Run();
 
-            Assert.IsTrue(windoClosed);
+            DispatcherUtil.DoEventsLoop(() => windoClosed);
+
+            Assert.IsNull(ss.webView);// Make sure webview2 was disposed
+            Assert.IsTrue(windoClosed);// Make sure the window was closed
         }
     }
 }
