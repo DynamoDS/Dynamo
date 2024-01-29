@@ -104,13 +104,13 @@ jobs:
           direction: last
       - name: Create comment
         if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ env.PR_NUMBER }}
           body-path: pr_comment.md
       - name: Update comment
         if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id != ''
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           edit-mode: replace
