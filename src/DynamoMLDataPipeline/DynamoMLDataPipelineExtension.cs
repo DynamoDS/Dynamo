@@ -352,9 +352,6 @@ namespace DynamoMLDataPipeline
         public void Ready(ReadyParams sp)
         {
             ReadyParams = sp;
-            /*var extraPath = Path.Combine(new FileInfo(Assembly.GetAssembly(typeof(DynamoFDXExtension)).Location).Directory.Parent.FullName, "extra");
-            var alc = new IsolatedFDXContext(Path.Combine(extraPath, "RestSharp.dll"));
-            alc.LoadFromAssemblyName(new AssemblyName("DSIronPython"));*/
         }
 
         public void Shutdown()
@@ -367,36 +364,4 @@ namespace DynamoMLDataPipeline
             throw new NotImplementedException();
         }
     }
-
-    /*internal class IsolatedFDXContext : AssemblyLoadContext
-    {
-        private AssemblyDependencyResolver resolver;
-
-        public IsolatedFDXContext(string libPath)
-        {
-            resolver = new AssemblyDependencyResolver(libPath);
-        }
-
-        protected override Assembly Load(AssemblyName assemblyName)
-        {
-            string assemblyPath = resolver.ResolveAssemblyToPath(assemblyName);
-            if (assemblyPath != null)
-            {
-                return LoadFromAssemblyPath(assemblyPath);
-            }
-
-            return null;
-        }
-
-        protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
-        {
-            string libraryPath = resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
-            if (libraryPath != null)
-            {
-                return LoadUnmanagedDllFromPath(libraryPath);
-            }
-
-            return IntPtr.Zero;
-        }
-    }*/
 }
