@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
@@ -273,8 +274,11 @@ namespace Dynamo.PackageManager
                     packageUploadHandle.Error(ret.message);
                     return;
                 }
-               
                 packageUploadHandle.Done(null);
+            }
+            catch (IOException e)
+            {
+                packageUploadHandle.Error(DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyTitle + ": " + DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyMessage + "(" + e.Message + ")");
             }
             catch (Exception e)
             {

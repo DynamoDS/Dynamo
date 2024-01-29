@@ -220,7 +220,7 @@ namespace Dynamo.PackageManager
             {
                 // We expect that files are bundled in root folders
                 // For single files, just get its folder
-                var commonPath = files.Count() > 1 ? GetLongestCommonPrefix(files.ToArray()) : Path.GetDirectoryName(files.First());
+                var commonPath = files.Count() > 1 ? GetLongestCommonPrefix(files.ToArray()) : Path.GetDirectoryName(files.FirstOrDefault());
                 commonPath = commonPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                 var commonRootPath = Path.GetDirectoryName(commonPath);
                 if (commonRootPath == null) commonRootPath = commonPath; // already at the root
