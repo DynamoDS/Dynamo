@@ -35,7 +35,7 @@ jobs:
           echo "DIFF=$(cat ${{ github.workspace }}/bin_diff_result/result.txt)" >> $GITHUB_OUTPUT
           echo "TIMESTAMP=$(date +%Y-%m-%d-%H:%M:%S)" >> $GITHUB_OUTPUT
       - name: Find Comment
-        uses: peter-evans/find-comment@v2
+        uses: peter-evans/find-comment@v3
         id: find_comment
         with:
           issue-number: ${{ steps.set_details.outputs.PR_NUMBER }}

@@ -95,7 +95,7 @@ jobs:
           $pr_comment | Out-File -FilePath pr_comment.md
       - name: Find Comment
         if: env.PR_NUMBER != ''
-        uses: peter-evans/find-comment@v2
+        uses: peter-evans/find-comment@v3
         id: find_comment
         with:
           issue-number: ${{ env.PR_NUMBER }}
