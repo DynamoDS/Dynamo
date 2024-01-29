@@ -1901,6 +1901,10 @@ namespace Dynamo.PackageManager
             }
         }
 
+        // A boolean flag used to trigger only once the message prompt
+        // When the user has attempted to load an existing dll from another path
+        private bool duplicateAssemblyWarningTriggered = false;
+
         private void AddDllFile(string filename)
         {
             try
@@ -1914,13 +1918,14 @@ namespace Dynamo.PackageManager
 
                     // The user has attempted to load an existing dll from another path. This is not allowed 
                     // as the existing assembly cannot be modified while Dynamo is active.
-                    if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name))
+                    if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name) && !duplicateAssemblyWarningTriggered)
                     {
                         MessageBoxService.Show(Owner, string.Format(Resources.PackageDuplicateAssemblyWarning, 
                                         dynamoViewModel.BrandingResourceProvider.ProductName),
                                         Resources.PackageDuplicateAssemblyWarningTitle, 
                                         MessageBoxButton.OK, 
                                         MessageBoxImage.Stop);
+                        duplicateAssemblyWarningTriggered = true;
                         return; // skip loading assembly
                     }
 

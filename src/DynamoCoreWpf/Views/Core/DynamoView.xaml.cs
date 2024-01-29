@@ -2166,7 +2166,7 @@ namespace Dynamo.Controls
                 string[] filePaths = Directory.GetFiles(samplesDirectory, "*.dyn");
 
                 // handle top-level files
-                if (filePaths.Any())
+                if (filePaths.Length != 0)
                 {
                     foreach (string path in filePaths)
                     {
