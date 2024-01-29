@@ -1928,7 +1928,7 @@ namespace Dynamo.ViewModels
                     return;
             }
 
-            bool isTemplate = (parameter as string).Equals("Template");
+            bool isTemplate = parameter != null && (parameter as string).Equals("Template");
 
             DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
             {
