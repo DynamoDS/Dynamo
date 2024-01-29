@@ -1314,7 +1314,7 @@ namespace Dynamo.PackageManager
             foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
             {
                 Assembly assem;
-                var result = PackageLoader.TryMetaDataContextLoad("",file, SharedPublishLoadContext, out assem);
+                var result = PackageLoader.TryMetaDataContextLoad(string.Empty, file, SharedPublishLoadContext, out assem);
 
                 switch (result)
                 {
@@ -1392,11 +1392,11 @@ namespace Dynamo.PackageManager
             {
                 Group = pkg.Group,
                 Description = pkg.Description,
-                Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : "",
+                Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : string.Empty,
                 CustomNodeDefinitions = defs,
                 Name = pkg.Name,
-                RepositoryUrl = pkg.RepositoryUrl ?? "",
-                SiteUrl = pkg.SiteUrl ?? "",
+                RepositoryUrl = pkg.RepositoryUrl ?? string.Empty,
+                SiteUrl = pkg.SiteUrl ?? string.Empty,
                 Package = pkg,
                 License = pkg.License,
                 SelectedHosts = pkg.HostDependencies as List<string>,
@@ -1493,7 +1493,7 @@ namespace Dynamo.PackageManager
         /// <param name="nodeLibraries">List of existing node libraries</param>
         /// <param name="assem">Assembly file</param>
         /// <returns>Package Assembly</returns>
-        private static PackageAssembly GetPackageAssembly(IEnumerable<string> nodeLibraries, Assembly assem)
+        internal static PackageAssembly GetPackageAssembly(IEnumerable<string> nodeLibraries, Assembly assem)
         {
             var isNodeLibrary = nodeLibraries == null || nodeLibraries.Contains(assem.FullName);
             return new PackageAssembly()
@@ -2122,7 +2122,7 @@ namespace Dynamo.PackageManager
 
             //if buildPackage() returns no files then the package
             //is empty so we should return
-            if (contentFiles == null || contentFiles.Count() < 1) return;
+            if (!contentFiles.Any()) return;
 
             //do not create the updatedFiles used for retain folder route unless needed
             IEnumerable<IEnumerable<string>> updatedFiles = null;

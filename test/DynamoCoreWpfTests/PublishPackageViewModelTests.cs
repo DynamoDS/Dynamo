@@ -146,7 +146,9 @@ namespace DynamoCoreWpfTests
                 vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, true);
             });
 
-            Assert.AreEqual(PackageUploadHandle.State.Error, vm.UploadState);
+            //while uploading a new version retain option is true, and we add the already loaded assembly to the additional files list now,
+            //and the state of the upload remains Ready.
+            Assert.AreEqual(PackageUploadHandle.State.Ready, vm.UploadState);
         }
 
         [Test]
@@ -172,11 +174,25 @@ namespace DynamoCoreWpfTests
                 vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, true);
             });
 
+            //since retain is true, we will retain both the (renamed)assembly and the additional file.
+            //the already loaded assembly is added to the additional files list as well
             vm.AddFile(addFilePath);
-            Assert.AreEqual(1, vm.AdditionalFiles.Count);
+            Assert.AreEqual(2, vm.AdditionalFiles.Count);
 
             vm.RemoveItemCommand.Execute(pkgItem);
-            Assert.AreEqual(0, vm.AdditionalFiles.Count);
+            Assert.AreEqual(1, vm.AdditionalFiles.Count);
+
+            //arrange node libraries
+            var assem = vm.Assemblies.FirstOrDefault().Assembly;
+            var nodeLibraryNames = (IEnumerable<string>) new [] { assem.FullName };
+
+            //act
+            var pa = PublishPackageViewModel.GetPackageAssembly(nodeLibraryNames, assem);
+
+            //assert
+            Assert.NotNull(pa.Assembly);
+            Assert.AreEqual(pa.Assembly.FullName, assem.FullName);
+            Assert.IsTrue(pa.IsNodeLibrary);
         }
 
         [Test]
