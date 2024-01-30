@@ -583,7 +583,6 @@
         </Rectangle>
 
         <!--Toggle-->
-        <!-- TODO, uncomment after DYN-6589
         <StackPanel Orientation="Horizontal"
                     Grid.Column="1"
                     Grid.Row="2">
@@ -595,7 +594,7 @@
                           IsChecked="{Binding Path=RetainFolderStructureOverride, Mode=TwoWay}"
                           IsTabStop="False"
                           Style="{StaticResource EllipseToggleButton1}" />
-            <TextBlock Text="Retain folder structure (Advanced)"
+            <TextBlock Text="{x:Static p:Resources.PublishPackageRetainFolderStructureToggleButtonText}"
                        Style="{StaticResource LabelStyle}"
                        Margin="5 0"
                        VerticalAlignment="Center" />
@@ -610,6 +609,6 @@
                              Style="{StaticResource GenericToolTipLight}" />
                 </Rectangle.ToolTip>
             </Rectangle>
-        </StackPanel>-->
+        </StackPanel>
     </Grid>
 </Page>

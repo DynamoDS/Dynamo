@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 
 namespace Dynamo.Applications
@@ -62,7 +63,7 @@ namespace Dynamo.Applications
         {
             get { return Path.Combine(Environment.GetFolderPath(
                 Environment.SpecialFolder.ApplicationData),
-                "Dynamo", "Dynamo Core").ToString(); }
+                Configurations.DynamoAsString, "Dynamo Core").ToString(); }
         }
 
         public string CommonDataRootFolder
@@ -80,7 +81,7 @@ namespace Dynamo.Applications
         public IEnumerable<string> GetDynamoUserDataLocations()
         {
             var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var dynamoFolder = Path.Combine(appDatafolder, "Dynamo");
+            var dynamoFolder = Path.Combine(appDatafolder, Configurations.DynamoAsString);
             if (!Directory.Exists(dynamoFolder)) return Enumerable.Empty<string>();
 
             var paths = new List<string>();

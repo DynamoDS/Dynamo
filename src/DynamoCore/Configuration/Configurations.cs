@@ -38,6 +38,16 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
 
+        /// <summary>
+        /// Const string of Autodesk
+        /// </summary>
+        public static readonly string AutodeskAsString = "Autodesk";
+
+        /// <summary>
+        /// Const string of Dynamo
+        /// </summary>
+        public static readonly string DynamoAsString = "Dynamo";
+
         #endregion
 
         #region Usage Reporting Error Message
