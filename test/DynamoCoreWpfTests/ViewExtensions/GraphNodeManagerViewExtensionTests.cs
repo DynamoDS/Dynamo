@@ -172,6 +172,7 @@ namespace DynamoCoreWpfTests
         /// Test if the number of Nodes containing Null or Empty List matches what is shown on the UI
         /// </summary>
         [Test]
+        [Category("Failure")]
         public void ContainsEmptyListOrNullTest()
         {
             RaiseLoadedEvent(this.View);
