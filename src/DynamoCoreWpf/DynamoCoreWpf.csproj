@@ -50,7 +50,7 @@
 
         <!--Deletes the tgz file-->
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
-    </Target>    
+    </Target> 
    
   <ItemGroup>
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />

@@ -71,7 +71,7 @@ namespace Dynamo.PackageManager.UI
             this.DependencyType = DependencyType.Assembly;
             this.Assembly = assembly;
             this.DisplayName = assembly.Name;
-            this.FilePath = assembly.LocalFilePath;
+            this.FilePath = assembly.LocalFilePath != null ? assembly.LocalFilePath : assembly.Assembly.Location;
             this.DirectoryName = Path.GetDirectoryName(this.FilePath);
             this.BuildDependencies(new HashSet<object>());
             this.isChild = true;
