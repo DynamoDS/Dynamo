@@ -31,6 +31,7 @@ using System.Runtime.CompilerServices;
 // For workspace package dependency collection
 [assembly: InternalsVisibleTo("DynamoPackages")]
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
+[assembly: InternalsVisibleTo("DynamoMLDataPipeline")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonNodeModels")]
 [assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
