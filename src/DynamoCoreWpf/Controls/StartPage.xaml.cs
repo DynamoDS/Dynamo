@@ -123,9 +123,6 @@ namespace Dynamo.UI.Controls
         internal readonly DynamoViewModel DynamoViewModel;
         private readonly bool isFirstRun;
 
-        // The width of the SideBar as measured from the 'LeftExtensionsViewColumn' at the moment of initalization
-        public double SideBarWidth { get; internal set; }
-
         internal StartPageViewModel(DynamoViewModel dynamoViewModel, bool isFirstRun)
         {
             this.DynamoViewModel = dynamoViewModel;
@@ -377,6 +374,10 @@ namespace Dynamo.UI.Controls
             IEnumerable<string> filePaths)
         {
             files.Clear();
+
+
+            Stopwatch stopwatch = new Stopwatch();
+
             foreach (var filePath in filePaths.Where(x => x != null))
             {
                 try
@@ -389,9 +390,15 @@ namespace Dynamo.UI.Controls
                     // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
                     var subScript = extension.IndexOf(".") == 0 ? extension.Substring(1) : "";
                     var caption = Path.GetFileNameWithoutExtension(filePath);
-                    var description = GetGraphDescription(filePath);
-                    var thumbnail = GetGraphThumbnail(filePath);
-                    var author = GetGraphAuthor(filePath);
+
+                    // Measure the performance for this region
+                    // deserializes the file only once
+                    var jsonObject = DeserializeJsonFile(filePath); 
+                    var description = GetGraphDescription(jsonObject);
+                    var thumbnail = GetGraphThumbnail(jsonObject);
+                    var author = GetGraphAuthor(jsonObject);
+
+                    var date = GetDateModified(filePath);
 
                     files.Add(new StartPageListItem(caption)
                     {
@@ -401,7 +408,7 @@ namespace Dynamo.UI.Controls
                         Description = description,
                         Thumbnail = thumbnail,
                         Author = author,
-                        DateModified = GetDateModified(filePath),
+                        DateModified = date,
                         ClickAction = StartPageListItem.Action.FilePath,
 
                     }); ;
@@ -411,6 +418,10 @@ namespace Dynamo.UI.Controls
                     DynamoViewModel.Model.Logger.Log("File path is not valid: " + ex.StackTrace);
                 }
             }
+
+            stopwatch.Stop(); // Stop the stopwatch
+
+            Debug.WriteLine($"Time taken to load {filePaths.Count()} files: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         /// <summary>
@@ -433,13 +444,16 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private const string BASE64PREFIX = "data:image/png;base64,";
-
-        private string GetGraphThumbnail(string filePath)
+        private Dictionary<string, object> DeserializeJsonFile(string filePath)
         {
             var jsonString = File.ReadAllText(filePath);
-            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+            return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+        }
 
+        private const string BASE64PREFIX = "data:image/png;base64,";
+
+        private string GetGraphThumbnail(Dictionary<string, object> jsonObject)
+        {
             jsonObject.TryGetValue("Thumbnail", out object thumbnail);
 
             if (string.IsNullOrEmpty(thumbnail as string)) return string.Empty;
@@ -449,21 +463,15 @@ namespace Dynamo.UI.Controls
             return base64;
         }
 
-        private string GetGraphDescription(string filePath)
+        private string GetGraphDescription(Dictionary<string, object> jsonObject)
         {
-            var jsonString = File.ReadAllText(filePath);
-            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
-
             jsonObject.TryGetValue("Description", out object description);
 
             return description as string;
         }
 
-        private string GetGraphAuthor(string filePath)
+        private string GetGraphAuthor(Dictionary<string, object> jsonObject)
         {
-            var jsonString = File.ReadAllText(filePath);
-            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
-
             jsonObject.TryGetValue("Author", out object author);
 
             return author as string;

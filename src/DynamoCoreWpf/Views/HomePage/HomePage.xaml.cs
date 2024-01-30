@@ -49,6 +49,7 @@ namespace Dynamo.UI.Views
         internal Action RequestApplicationLoaded;
         internal Action RequestShowSampleFilesInFolder;
         internal Action RequestShowBackupFilesInFolder;
+        internal Action RequestShowTemplate;
 
         private List<GuidedTourItem> guidedTourItems;
 
@@ -72,6 +73,7 @@ namespace Dynamo.UI.Views
             RequestNewCustomNodeWorkspace = NewCustomNodeWorkspace;
             RequestShowSampleFilesInFolder = ShowSampleFilesInFolder;
             RequestShowBackupFilesInFolder = ShowBackupFilesInFolder;
+            RequestShowTemplate = ShowTemplate;
             RequestApplicationLoaded = ApplicationLoaded;
 
             DataContextChanged += OnDataContextChanged;
@@ -203,7 +205,8 @@ namespace Dynamo.UI.Views
                RequestApplicationLoaded,
                RequestShowGuidedTour,
                RequestShowSampleFilesInFolder,
-               RequestShowBackupFilesInFolder));
+               RequestShowBackupFilesInFolder,
+               RequestShowTemplate));
         }
 
         internal async void LoadingDone()   
@@ -224,7 +227,6 @@ namespace Dynamo.UI.Views
             {
                 await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLoadingDone('{testMessage}')");
                 await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");
-                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.updateSidebarWidth('{this.startPage.SideBarWidth}');");
             }
         }
 
@@ -361,17 +363,17 @@ namespace Dynamo.UI.Views
 
         internal void NewWorkspace()
         {
-            this.startPage.DynamoViewModel.NewHomeWorkspaceCommand.Execute(null);
+            this.startPage?.DynamoViewModel?.NewHomeWorkspaceCommand.Execute(null);
         }
 
         internal void OpenWorkspace()
         {
-            this.startPage.DynamoViewModel.ShowOpenDialogAndOpenResultCommand.Execute(null);
+            this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultCommand.Execute(null);
         }
 
         internal void NewCustomNodeWorkspace()
         {
-            this.startPage.DynamoViewModel.ShowNewFunctionDialogCommand.Execute(null);
+            this.startPage?.DynamoViewModel?.ShowNewFunctionDialogCommand.Execute(null);
         }
 
         internal void ShowSampleFilesInFolder()
@@ -387,6 +389,12 @@ namespace Dynamo.UI.Views
             if (this.startPage == null) return;
             Process.Start(new ProcessStartInfo("explorer.exe", this.startPage.DynamoViewModel.Model.PathManager.BackupDirectory)
             { UseShellExecute = true });
+        }
+
+        internal void ShowTemplate()
+        {
+            // Equivalent to CommandParameter="Template"
+            this.startPage?.DynamoViewModel?.ShowOpenTemplateDialogCommand.Execute("Template"); 
         }
 
         internal void ApplicationLoaded()
@@ -424,6 +432,7 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestShowGuidedTour;
         readonly Action RequestShowSampleFilesInFolder;
         readonly Action RequestShowBackupFilesInFolder;
+        readonly Action RequestShowTemplate;
 
         public ScriptHomeObject(Action<string> requestOpenFile,
             Action requestNewWorkspace,
@@ -432,7 +441,8 @@ namespace Dynamo.UI.Views
             Action requestApplicationLoaded,
             Action<string> requestShowGuidedTour,
             Action requestShowSampleFilesInFolder,
-            Action requestShowBackupFilesInFolder)
+            Action requestShowBackupFilesInFolder,
+            Action requestShowTemplate)
         {
             RequestOpenFile = requestOpenFile;
             RequestNewWorkspace = requestNewWorkspace;
@@ -442,6 +452,7 @@ namespace Dynamo.UI.Views
             RequestShowGuidedTour = requestShowGuidedTour;
             RequestShowSampleFilesInFolder = requestShowSampleFilesInFolder;
             RequestShowBackupFilesInFolder = requestShowBackupFilesInFolder;
+            RequestShowTemplate = requestShowTemplate;
 
         }
 
@@ -449,6 +460,7 @@ namespace Dynamo.UI.Views
         {
             RequestOpenFile(path);
         }
+
         public void StartGuidedTour(string path)
         {
             RequestShowGuidedTour(path);
@@ -477,6 +489,12 @@ namespace Dynamo.UI.Views
         public void ShowBackupFilesInFolder()
         {
             RequestShowBackupFilesInFolder();
+        }
+
+
+        public void ShowTempalte()
+        {
+            RequestShowTemplate();
         }
 
         public void ApplicationLoaded()
