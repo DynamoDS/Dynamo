@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+		<UILib>true</UILib>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+		<Import Project="$(SolutionDir)Config\CS_SDK.props" />
+  </ImportGroup>
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProjectGuid>{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<RootNamespace>DynamoMLDataPipeline</RootNamespace>
+	<AssemblyName>DynamoMLDataPipeline</AssemblyName>
+	<FileAlignment>512</FileAlignment>
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	<Deterministic>true</Deterministic>
+	<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="RestSharp" Version="108.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+	<ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+	  <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+	  <Name>DynamoCore</Name>
+	</ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+	<Reference Include="System.Web" />
+	<Reference Include="System.Xml.Linq" />
+	<Reference Include="System.Data.DataSetExtensions" />
+	<Reference Include="Microsoft.CSharp" />
+	<Reference Include="System.Data" />
+	<Reference Include="System.Net.Http" />
+	<Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DynamoMLDataPipeline.cs" />
+	<Compile Include="Attribute.cs" />
+	<Compile Include="BaseComponent.cs" />
+	<Compile Include="BinaryAsset.cs" />
+	<Compile Include="BinaryReferenceComponent.cs" />
+	<Compile Include="DataUtilities.cs" />
+	<Compile Include="ExchangeComponent.cs" />
+	<Compile Include="InstanceAsset.cs" />
+	<Compile Include="ParameterComponent.cs" />
+	<Compile Include="Schema.cs" />
+	<Compile Include="UploadAssetsRequestBody.cs" />
+	<Compile Include="DynamoMLDataPipelineExtension.cs" />
+	<Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+	<None Include="App.config" />
+  </ItemGroup>
+  <Target Name="GenerateExtension" AfterTargets="Build">
+    <ItemGroup>
+      <ExtensionDefinition Include="DynamoMLDataPipeline_ExtensionDefinition.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\extensions\" />
+  </Target>
+</Project>
