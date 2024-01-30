@@ -1268,7 +1268,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete]
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
         public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg)
         {
             var defs = new List<CustomNodeDefinition>();
