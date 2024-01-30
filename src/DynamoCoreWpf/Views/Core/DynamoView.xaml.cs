@@ -1204,6 +1204,7 @@ namespace Dynamo.Controls
 
                 startPage = new StartPageViewModel(dynamoViewModel, isFirstRun);
                 startPageItemsControl.Items.Add(startPage);
+                startPage.SideBarWidth = this.LeftExtensionsViewColumn.Width.Value;
 
                 homePage.DataContext = startPage;
             }

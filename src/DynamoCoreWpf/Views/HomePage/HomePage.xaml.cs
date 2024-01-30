@@ -107,7 +107,7 @@ namespace Dynamo.UI.Views
         {
             if(webView?.CoreWebView2 != null && e.PropertyName.Equals(nameof(startPage.DynamoViewModel.ShowStartPage)))
             {
-                webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLoadingDone('{startPage.DynamoViewModel.ShowStartPage}')");
+                webView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
             }
         }
 
@@ -224,6 +224,7 @@ namespace Dynamo.UI.Views
             {
                 await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLoadingDone('{testMessage}')");
                 await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");
+                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.updateSidebarWidth('{this.startPage.SideBarWidth}');");
             }
         }
 

@@ -123,6 +123,9 @@ namespace Dynamo.UI.Controls
         internal readonly DynamoViewModel DynamoViewModel;
         private readonly bool isFirstRun;
 
+        // The width of the SideBar as measured from the 'LeftExtensionsViewColumn' at the moment of initalization
+        public double SideBarWidth { get; internal set; }
+
         internal StartPageViewModel(DynamoViewModel dynamoViewModel, bool isFirstRun)
         {
             this.DynamoViewModel = dynamoViewModel;
