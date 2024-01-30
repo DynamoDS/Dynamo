@@ -1844,7 +1844,8 @@ namespace DynamoCoreWpfTests.PackageManager
 
             // Assert that the PackageContents still contains the correct number of items
             allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
-            Assert.AreEqual(allFilesAndFoldres.Count, allFiles.Count + allFolders.Count + 1);
+            //since we donot skip loading asemblies which are already loaded..
+            Assert.AreEqual(allFilesAndFoldres.Count, assemblies.Count + additionalFiles.Count+ allFolders.Count + 1);
             Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
             Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
             Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + 1);
@@ -2011,7 +2012,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var testFoldersCount = testRootItems.Count(x => x.DependencyType.Equals(DependencyType.Folder));
             var testFilesCount = testRootItems.Count(x => !x.DependencyType.Equals(DependencyType.Folder));
 
-            Assert.AreEqual(foldersCount, testFoldersCount);
+            Assert.AreEqual(foldersCount, testFoldersCount - 1);
             Assert.AreEqual(filesCount, testFilesCount);
         }
 
