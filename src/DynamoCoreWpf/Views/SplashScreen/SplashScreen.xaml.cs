@@ -309,7 +309,7 @@ namespace Dynamo.UI.Views
             var version = AssemblyHelper.GetDynamoVersion();
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+            return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"),
                             String.Format("{0}.{1}", version.Major, version.Minor));
         }
 
