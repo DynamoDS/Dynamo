@@ -2129,7 +2129,7 @@ namespace Dynamo.PackageManager
             if (RetainFolderStructureOverride)
             {
                 updatedFiles = UpdateFilesForRetainFolderStructure(contentFiles);
-                if (updatedFiles == null || updatedFiles.Count() < 1) return;
+                if (!updatedFiles.Any()) return;
             }
 
             try
