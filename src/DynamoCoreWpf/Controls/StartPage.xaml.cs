@@ -15,6 +15,7 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
+using Newtonsoft.Json;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.UI.Controls
@@ -73,7 +74,9 @@ namespace Dynamo.UI.Controls
         public string SubScript { get; set; }
         public string ToolTip { get; set; }
         public string DateModified { get; set; }
-        public string Location { get; set; }
+        public string Description { get; internal set; }
+        public string Thumbnail { get; set; }
+        public string Author { get; internal set; }
         public string ContextData { get; set; }
         public Action ClickAction { get; set; }
 
@@ -87,6 +90,8 @@ namespace Dynamo.UI.Controls
         {
             get { return ((icon == null) ? Visibility.Collapsed : Visibility.Visible); }
         }
+
+
 
         #endregion
 
@@ -381,13 +386,18 @@ namespace Dynamo.UI.Controls
                     // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
                     var subScript = extension.IndexOf(".") == 0 ? extension.Substring(1) : "";
                     var caption = Path.GetFileNameWithoutExtension(filePath);
+                    var description = GetGraphDescription(filePath);
+                    var thumbnail = GetGraphThumbnail(filePath);
+                    var author = GetGraphAuthor(filePath);
 
                     files.Add(new StartPageListItem(caption)
                     {
                         ContextData = filePath,
                         ToolTip = filePath,
                         SubScript = subScript,
-                        Location = filePath,
+                        Description = description,
+                        Thumbnail = thumbnail,
+                        Author = author,
                         DateModified = GetDateModified(filePath),
                         ClickAction = StartPageListItem.Action.FilePath,
 
@@ -418,6 +428,42 @@ namespace Dynamo.UI.Controls
             {
                 return string.Empty;
             }
+        }
+
+        private const string BASE64PREFIX = "data:image/png;base64,";
+
+        private string GetGraphThumbnail(string filePath)
+        {
+            var jsonString = File.ReadAllText(filePath);
+            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+
+            jsonObject.TryGetValue("Thumbnail", out object thumbnail);
+
+            if (string.IsNullOrEmpty(thumbnail as string)) return string.Empty;
+
+            var base64 = String.Format("{0}{1}", BASE64PREFIX, thumbnail as string);
+
+            return base64;
+        }
+
+        private string GetGraphDescription(string filePath)
+        {
+            var jsonString = File.ReadAllText(filePath);
+            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+
+            jsonObject.TryGetValue("Description", out object description);
+
+            return description as string;
+        }
+
+        private string GetGraphAuthor(string filePath)
+        {
+            var jsonString = File.ReadAllText(filePath);
+            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+
+            jsonObject.TryGetValue("Author", out object author);
+
+            return author as string;
         }
 
         private void HandleRegularCommand(StartPageListItem item)

@@ -74,7 +74,8 @@ namespace Dynamo.UI.Views
             RequestShowBackupFilesInFolder = ShowBackupFilesInFolder;
             RequestApplicationLoaded = ApplicationLoaded;
 
-            DataContextChanged += OnDataContextChanged; 
+            DataContextChanged += OnDataContextChanged;
+
         }
 
 
@@ -95,6 +96,19 @@ namespace Dynamo.UI.Views
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             startPage = this.DataContext as StartPageViewModel;
+                
+            if (startPage != null)
+            {
+                startPage.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            }
+        }
+
+        private void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(webView?.CoreWebView2 != null && e.PropertyName.Equals(nameof(startPage.DynamoViewModel.ShowStartPage)))
+            {
+                webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLoadingDone('{startPage.DynamoViewModel.ShowStartPage}')");
+            }
         }
 
 
@@ -385,6 +399,8 @@ namespace Dynamo.UI.Views
         public void Dispose()
         {
             DataContextChanged -= OnDataContextChanged;
+            startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+
 
             if (File.Exists(fontFilePath))
             {
