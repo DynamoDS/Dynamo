@@ -903,7 +903,16 @@ namespace Dynamo.PackageManager
         {
             get
             {
-                sharedMetaDataLoadContext ??= InitSharedPublishLoadContext();
+                try
+                {
+                    sharedMetaDataLoadContext = sharedMetaDataLoadContext == null || sharedMetaDataLoadContext.CoreAssembly == null ? PackageLoader.InitSharedPublishLoadContext() : sharedMetaDataLoadContext;
+                }
+                    catch (ObjectDisposedException)
+                {
+                    // This can happen if the shared context has been disposed before.
+                    // In this case, we create a new one.
+                    sharedMetaDataLoadContext = PackageLoader.InitSharedPublishLoadContext();
+                }
                 return sharedMetaDataLoadContext;
             }
         }
@@ -930,6 +939,11 @@ namespace Dynamo.PackageManager
         {
             get { return AnyUserChanges(); }
         }
+
+        /// <summary>
+        /// Indicates if this view model is created during a FromLocalPackage routine
+        /// </summary>
+        private bool IsPublishFromLocalPackage = false;
 
         #endregion
                 
@@ -1165,7 +1179,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Decides if any user changes have been made in the current packge publish session
         /// </summary>
-        /// <returns>true if any changes have been made, otehrwise false</returns>
+        /// <returns>true if any changes have been made, otherwise false</returns>
         internal bool AnyUserChanges()
         {             
             if(!String.IsNullOrEmpty(this.Name)) return true;
@@ -1254,6 +1268,7 @@ namespace Dynamo.PackageManager
             }
         }
 
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
         public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg)
         {
             var defs = new List<CustomNodeDefinition>();
@@ -1299,7 +1314,7 @@ namespace Dynamo.PackageManager
             foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
             {
                 Assembly assem;
-                var result = PackageLoader.TryMetaDataContextLoad(file, SharedPublishLoadContext, out assem);
+                var result = PackageLoader.TryMetaDataContextLoad(string.Empty, file, SharedPublishLoadContext, out assem);
 
                 switch (result)
                 {
@@ -1347,6 +1362,145 @@ namespace Dynamo.PackageManager
             pkgViewModel.BuildVersion = parts[2];
             return pkgViewModel;
 
+        }
+
+        /// <summary>
+        /// The method is used to create a PublishPackageViewModel from a Package object.
+        /// If retainFolderStructure is set to true, the folder structure of the package will be retained. Else, the default folder structure will be imposed.
+        /// </summary>
+        /// <param name="dynamoViewModel"></param>
+        /// <param name="pkg">The package to be loaded</param>
+        /// <param name="retainFolderStructure">If true, the folder structure of the package will be retained as set by the user</param>
+        /// <returns></returns>
+        internal static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg, bool retainFolderStructure)
+        {
+            var defs = new List<CustomNodeDefinition>();
+
+            foreach (var x in pkg.LoadedCustomNodes)
+            {
+                CustomNodeDefinition def;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(
+                    x.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out def))
+                {
+                    defs.Add(def);
+                }
+            }
+
+            var pkgViewModel = new PublishPackageViewModel(dynamoViewModel)
+            {
+                Group = pkg.Group,
+                Description = pkg.Description,
+                Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : string.Empty,
+                CustomNodeDefinitions = defs,
+                Name = pkg.Name,
+                RepositoryUrl = pkg.RepositoryUrl ?? string.Empty,
+                SiteUrl = pkg.SiteUrl ?? string.Empty,
+                Package = pkg,
+                License = pkg.License,
+                SelectedHosts = pkg.HostDependencies as List<string>,
+                CopyrightHolder = pkg.CopyrightHolder,
+                CopyrightYear = pkg.CopyrightYear,
+                IsPublishFromLocalPackage = true,
+                //default retain folder structure to true when publishing a new version from local.
+                RetainFolderStructureOverride = retainFolderStructure
+            };
+
+            // add additional files
+            pkg.EnumerateAdditionalFiles();
+            foreach (var file in pkg.AdditionalFiles)
+            {
+                pkgViewModel.AdditionalFiles.Add(file.Model.FullName);
+            }
+
+            var nodeLibraryNames = pkg.Header.node_libraries;
+
+            var assembliesLoadedTwice = new List<string>();
+            foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
+            {
+                Assembly assem;
+                var result = PackageLoader.TryMetaDataContextLoad(pkg.RootDirectory , file, SharedPublishLoadContext, out assem);
+
+                switch (result)
+                {
+                    case AssemblyLoadingState.Success:
+                        {
+                            pkgViewModel.Assemblies.Add(GetPackageAssembly(nodeLibraryNames, assem));
+                            break;
+                        }
+                    case AssemblyLoadingState.NotManagedAssembly:
+                        {
+                            // if it's not a .NET assembly, we load it as an additional file
+                            pkgViewModel.AdditionalFiles.Add(file);
+                            break;
+                        }
+                    case AssemblyLoadingState.AlreadyLoaded:
+                        {
+                            // When retaining the folder structure, we bypass this check as users are in full control of the folder structure.
+                            if (pkgViewModel.RetainFolderStructureOverride)
+                            {
+                                if (assem == null)
+                                {
+                                    pkgViewModel.AdditionalFiles.Add(file);
+                                }
+                                else
+                                {
+                                    if (!pkgViewModel.Assemblies.Any(x => x.Assembly == assem))
+                                    {
+                                        pkgViewModel.Assemblies.Add(GetPackageAssembly(nodeLibraryNames, assem));
+                                    }
+                                    else
+                                    {
+                                        pkgViewModel.AdditionalFiles.Add(file);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                assembliesLoadedTwice.Add(file);
+                            }
+                            break;
+                        }
+                }
+            }
+
+            //after dependencies are loaded refresh package contents
+            pkgViewModel.RefreshPackageContents();
+            pkgViewModel.UpdateDependencies();
+
+            if (!pkgViewModel.RetainFolderStructureOverride && assembliesLoadedTwice.Any())
+            {
+                pkgViewModel.UploadState = PackageUploadHandle.State.Error;
+                pkgViewModel.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);
+            }
+
+            if (pkg.VersionName == null) return pkgViewModel;
+
+            var parts = pkg.VersionName.Split('.');
+            if (parts.Count() != 3) return pkgViewModel;
+
+            pkgViewModel.MajorVersion = parts[0];
+            pkgViewModel.MinorVersion = parts[1];
+            pkgViewModel.BuildVersion = parts[2];
+            return pkgViewModel;
+
+        }
+
+        /// <summary>
+        /// Gets a Package Assembly object, if the assembly exist in the node libraries list, the IsNodeLibrary flag will be set to true.
+        /// </summary>
+        /// <param name="nodeLibraries">List of existing node libraries</param>
+        /// <param name="assem">Assembly file</param>
+        /// <returns>Package Assembly</returns>
+        internal static PackageAssembly GetPackageAssembly(IEnumerable<string> nodeLibraries, Assembly assem)
+        {
+            var isNodeLibrary = nodeLibraries == null || nodeLibraries.Contains(assem.FullName);
+            return new PackageAssembly()
+            {
+                IsNodeLibrary = isNodeLibrary,
+                Assembly = assem
+            };
         }
 
         public void OnPublishSuccess()
@@ -1463,7 +1617,7 @@ namespace Dynamo.PackageManager
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select( ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
-                MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, Resources.MessageUnsavedChanges0, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                if (!DynamoModel.IsTestMode) MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, Resources.MessageUnsavedChanges0, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 throw new Exception(Resources.MessageUnsavedChanges0 +
                                     String.Join(", ", unsavedWorkspaceNames) +
                                     Resources.MessageUnsavedChanges1);
@@ -1481,7 +1635,11 @@ namespace Dynamo.PackageManager
 
             // union with additional files
             files = files.Union(AdditionalFiles);
-            files = files.Union(Assemblies.Select(x => x.Assembly.Location));
+            // if we retain the folder structure, we don't want to lose assemblies in sub-folders
+            // othrewise we need to delete duplicate assemblies which will end up in the same `dll` folder
+            files = RetainFolderStructureOverride && !IsPublishFromLocalPackage ?
+                files.Union(Assemblies.Select(x => x.LocalFilePath)) :
+                files.Union(Assemblies.Select(x => x.Assembly.Location));  
 
             return files;
         }
@@ -1901,6 +2059,10 @@ namespace Dynamo.PackageManager
             }
         }
 
+        // A boolean flag used to trigger only once the message prompt
+        // When the user has attempted to load an existing dll from another path
+        private bool duplicateAssemblyWarningTriggered = false;
+
         private void AddDllFile(string filename)
         {
             try
@@ -1914,14 +2076,15 @@ namespace Dynamo.PackageManager
 
                     // The user has attempted to load an existing dll from another path. This is not allowed 
                     // as the existing assembly cannot be modified while Dynamo is active.
-                    if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name))
+                    if (!this.RetainFolderStructureOverride && this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name) && !duplicateAssemblyWarningTriggered)
                     {
                         MessageBoxService.Show(Owner, string.Format(Resources.PackageDuplicateAssemblyWarning, 
                                         dynamoViewModel.BrandingResourceProvider.ProductName),
                                         Resources.PackageDuplicateAssemblyWarningTitle, 
                                         MessageBoxButton.OK, 
                                         MessageBoxImage.Stop);
-                        return; // skip loading assembly
+                        duplicateAssemblyWarningTriggered = true;
+                        return;
                     }
 
                     Assemblies.Add(new PackageAssembly()
@@ -1958,24 +2121,23 @@ namespace Dynamo.PackageManager
 
             var contentFiles = BuildPackage();
 
+            //if buildPackage() returns no files then the package
+            //is empty so we should return
+            if (!contentFiles.Any()) return;
+
             //do not create the updatedFiles used for retain folder route unless needed
             IEnumerable<IEnumerable<string>> updatedFiles = null;
-            if(RetainFolderStructureOverride)
+            if (RetainFolderStructureOverride)
+            {
                 updatedFiles = UpdateFilesForRetainFolderStructure(contentFiles);
+                if (!updatedFiles.Any()) return;
+            }
 
             try
             {
-                //if buildPackage() returns no files then the package
-                //is empty so we should return
-                if (contentFiles == null || contentFiles.Count() < 1)
-                {
-                    return;
-                }
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                var handle = RetainFolderStructureOverride ?
-                    pmExtension.PackageManagerClient.PublishRetainAsync(Package, updatedFiles, MarkdownFiles, IsNewVersion) :
-                    pmExtension.PackageManagerClient.PublishAsync(Package, contentFiles, MarkdownFiles, IsNewVersion);
+                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, RetainFolderStructureOverride ? updatedFiles : contentFiles, MarkdownFiles, IsNewVersion, RetainFolderStructureOverride);
 
                 // start upload
                 Uploading = true;
@@ -2103,21 +2265,12 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="files"></param>
         /// <returns></returns>
-        private IEnumerable<IEnumerable<string>> UpdateFilesForRetainFolderStructure(IEnumerable<string> files)
+        internal IEnumerable<IEnumerable<string>> UpdateFilesForRetainFolderStructure(IEnumerable<string> files)
         {
             if (!files.Any() || !PreviewPackageContents.Any())
             {
                 return Enumerable.Empty<IEnumerable<string>>();
             }
-
-            var updatedFiles = files.Select(file =>
-            {
-                if (Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))))
-                {
-                    return Assemblies.First(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))).LocalFilePath;
-                }
-                return file;
-            }).ToList();
 
             if (PreviewPackageContents.Count() > 1)
             {
@@ -2137,7 +2290,7 @@ namespace Dynamo.PackageManager
                     foreach (var item in folderContents)
                     {
                         if (item.DependencyType.Equals(DependencyType.Folder) || item.DependencyType.Equals(DependencyType.CustomNode)) continue;
-                        if (updatedFiles.Contains(item.FilePath))
+                        if (files.Contains(item.FilePath))
                         {
                             updatedFolder.Add(item.FilePath);
                         }
@@ -2159,7 +2312,7 @@ namespace Dynamo.PackageManager
         }
 
         // build the package
-        private IEnumerable<string> BuildPackage()
+        internal IEnumerable<string> BuildPackage()
         {
             try
             {
@@ -2202,6 +2355,8 @@ namespace Dynamo.PackageManager
 
                 Package.AddAssemblies(Assemblies);
                 Package.LoadState.SetAsLoaded();
+                //clean shared load context when publishing package
+                PackageLoader.CleanSharedPublishLoadContext(SharedPublishLoadContext);
                 return files;
             }
             catch (Exception e)
@@ -2324,6 +2479,8 @@ namespace Dynamo.PackageManager
 
         private bool CheckPackageValidity()
         {
+            if (ErrorString.StartsWith(Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage)) return false;
+
             if (!string.IsNullOrEmpty(Name) && Name.IndexOfAny(PathHelper.SpecialAndInvalidCharacters()) >= 0)
             {
                 ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(PathHelper.SpecialAndInvalidCharacters());
@@ -2459,12 +2616,12 @@ namespace Dynamo.PackageManager
         {
             if (!PackageContents.Any()) return null;
             if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1) {
+                // If there is only one root item, nest it under the new root package folder
                 var item = PackageContents.First(x => x.DependencyType.Equals(DependencyType.Folder));
-                if(item.DisplayName != packageName)
-                {
-                    item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
-                    item.AddChildren(PackageContents.First().ChildItems.ToList());
-                }
+                
+                item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
+                item.AddChildren(new List<PackageItemRootViewModel> { PackageContents.First() } );
+
                 return item;
             }
 
@@ -2543,15 +2700,6 @@ namespace Dynamo.PackageManager
             rootItemPreview.AddChild(docItemPreview);
 
             return rootItemPreview;
-        }
-
-        private static MetadataLoadContext InitSharedPublishLoadContext()
-        {
-            // Retrieve the location of the assembly and the referenced assemblies used by the domain
-            var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
-            // Create PathAssemblyResolver that can resolve assemblies using the created list.
-            var resolver = new PathAssemblyResolver(runtimeAssemblies);
-             return new MetadataLoadContext(resolver);
         }
     }
 }

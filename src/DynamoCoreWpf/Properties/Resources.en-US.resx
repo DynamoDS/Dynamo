@@ -3909,4 +3909,19 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
     <value>Your changes will be lost if you proceed.</value>
   </data>
+  <data name="DynamoViewFileMenuOpenFile" xml:space="preserve">
+    <value>_File</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
+    <value>_Template</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
+    <value>Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file.</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockTitle" xml:space="preserve">
+    <value>Invalid Save Path</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureToggleButtonText" xml:space="preserve">
+    <value>Retain folder structure</value>
+  </data>
 </root>

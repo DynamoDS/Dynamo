@@ -1802,6 +1802,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _File.
+        /// </summary>
+        public static string DynamoViewFileMenuOpenFile {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuOpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Template.
+        /// </summary>
+        public static string DynamoViewFileMenuOpenTemplate {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuOpenTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open _Recent Files.
         /// </summary>
         public static string DynamoViewFileMenuRecentFiles {
@@ -8245,6 +8263,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Retain folder structure.
+        /// </summary>
+        public static string PublishPackageRetainFolderStructureToggleButtonText {
+            get {
+                return ResourceManager.GetString("PublishPackageRetainFolderStructureToggleButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
         ///
         ///Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
@@ -10167,6 +10194,24 @@ namespace Dynamo.Wpf.Properties {
         public static string WebView2RequiredTitle {
             get {
                 return ResourceManager.GetString("WebView2RequiredTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file..
+        /// </summary>
+        public static string WorkspaceSaveTemplateDirectoryBlockMsg {
+            get {
+                return ResourceManager.GetString("WorkspaceSaveTemplateDirectoryBlockMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Save Path.
+        /// </summary>
+        public static string WorkspaceSaveTemplateDirectoryBlockTitle {
+            get {
+                return ResourceManager.GetString("WorkspaceSaveTemplateDirectoryBlockTitle", resourceCulture);
             }
         }
         
