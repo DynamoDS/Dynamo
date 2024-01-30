@@ -1557,6 +1557,11 @@
       <Name>DynamoPackages</Name>
       <Private>False</Private>
     </ProjectReference>
+	<ProjectReference Include="..\DynamoMLDataPipeline\DynamoMLDataPipeline.csproj">
+	  <Project>{F2FCFD49-84BC-4C0E-90C1-5A327D017C4E}</Project>
+	  <Name>DynamoMLDataPipeline</Name>
+	  <Private>False</Private>
+	</ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>

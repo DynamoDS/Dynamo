@@ -43,6 +43,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using DynamoMLDataPipeline;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
@@ -84,6 +85,8 @@ namespace Dynamo.ViewModels
         ///  Node window's state, either DockRight or FloatingWindow.
         /// </summary>
         internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
+
+        internal DynamoMLDataPipelineExtension MLDataPipelineExtension { get; set; }
 
         /// <summary>
         /// Collection of Right SideBar tab items: view extensions and docked windows.
@@ -189,6 +192,17 @@ namespace Dynamo.ViewModels
         public WorkspaceModel CurrentSpace
         {
             get { return model.CurrentWorkspace; }
+        }
+
+        /// <summary>
+        /// Controls if the the ML data ingestion pipeline is beta from feature flag
+        /// </summary>
+        internal bool IsMLDataIngestionPipelineinBeta
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsMLDataIngestionPipelineinBeta", false) ?? false;
+            }
         }
 
         /// <summary>
@@ -752,6 +766,7 @@ namespace Dynamo.ViewModels
             }
 
             FileTrustViewModel = new FileTrustWarningViewModel();
+            MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
         }
 
         /// <summary>
@@ -2099,14 +2114,15 @@ namespace Dynamo.ViewModels
                 {
                     AddToRecentFiles(path);
 
-                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty) 
+                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX && IsMLDataIngestionPipelineinBeta && currentWorkspaceViewModel.Checksum != string.Empty)
                     {
                         Model.Logger.Log("The Workspace is valid for FDX");
                         Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
                         Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
                         Model.Logger.Log("The Workspace has Substantial checksum, so is ready to send to FDX : " + HasSubstantialCheckSum().ToString());
+                        MLDataPipelineExtension.DynamoMLDataPipeline.DataExchange(path);
                     }
-                }                                    
+                }                           
             }
             catch (Exception ex)
             {
