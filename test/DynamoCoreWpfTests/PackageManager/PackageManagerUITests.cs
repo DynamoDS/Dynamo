@@ -10,6 +10,8 @@ using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.PackageManager;
+using Dynamo.PackageManager.Interfaces;
+using Dynamo.PackageManager.Tests;
 using Dynamo.PackageManager.UI;
 using Dynamo.Tests;
 using Dynamo.UI.Prompts;
@@ -64,6 +66,10 @@ namespace DynamoCoreWpfTests.PackageManager
             {
                 yield return (Window)enumerator.Current;
             }
+        }
+        public static bool ComparePaths(string path1, string path2)
+        {
+            return PackageDirectoryBuilder.NormalizePath(path1) == PackageDirectoryBuilder.NormalizePath(path2);
         }
 
         public void AssertWindowOwnedByDynamoView<T>()
@@ -2293,6 +2299,55 @@ namespace DynamoCoreWpfTests.PackageManager
 
             // Assert
             Assert.AreEqual(PackageUploadHandle.UploadType.Local, newPkgVm.UploadType);
+
+            // Clean up
+            Directory.Delete(publishPath, true);
+        }
+
+        [Test]
+        public void AssertPublishNewPackageVersion_SuccessfulForLoadedPackages()
+        {
+            var packageName = "Package";
+            var pathManager = this.ViewModel.Model.PathManager as PathManager;
+            var publishPath = Path.Combine(pathManager.DefaultPackagesDirectory, packageName);
+            var pkgLoader = GetPackageLoader();
+
+            // Load a package
+            string packageLocation = Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs", packageName);
+            pkgLoader.ScanPackageDirectory(packageLocation);
+
+            var package = pkgLoader.LocalPackages.Where(x => x.Name == packageName).FirstOrDefault();
+            package.SetAsLoaded();
+            Assert.IsNotNull(package);
+
+            PublishPackageViewModel vm = null;
+            Assert.DoesNotThrow(() =>
+            {
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, true);
+            });
+            vm.MajorVersion = "0";
+            vm.MinorVersion = "0";
+            vm.BuildVersion = "99";
+
+            var allFiles = vm.BuildPackage();
+            Assert.IsNotNull(allFiles);
+            var updatedFiles = vm.UpdateFilesForRetainFolderStructure(allFiles);
+            Assert.IsNotNull(updatedFiles);
+
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
+            var fs = new RecordedFileSystem((fn) => updatedFiles.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
+
+            var zipper = new Mock<IFileCompressor>();
+            zipper.Setup((x) => x.Zip(It.IsAny<IDirectoryInfo>())).Returns((new Mock<IFileInfo>()).Object);
+            var m = new PackageUploadBuilder(db, zipper.Object);
+
+            // Assert
+            Assert.DoesNotThrow(() =>
+            {
+                m.NewPackageVersionRetainUpload(package, publishPath, updatedFiles, Enumerable.Empty<string>(), handle);
+            });
+            Assert.AreNotEqual(PackageUploadHandle.State.Error, handle.UploadState);
 
             // Clean up
             Directory.Delete(publishPath, true);
