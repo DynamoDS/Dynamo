@@ -782,9 +782,9 @@
 
             <!--  Right: DataGrid  -->
             <Grid Name="packageContentsGrid"
-                    Grid.Column="2"
-                    Margin="25,16,25,15"
-                    VerticalAlignment="Top">
+                  Grid.Column="2"
+                Margin="25,16,25,15"
+                VerticalAlignment="Top">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -796,124 +796,131 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <!--  Package Contents Label  -->
-                    <DockPanel>                        
+                    <DockPanel Grid.Row="0">
                         <TextBlock DockPanel.Dock="Left"
-                                   Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackagePackageContent}" />
+                                Style="{StaticResource LabelStyle}"
+                                Text="{x:Static p:Resources.PublishPackagePackageContent}" />
 
 
                         <Button Content="Edit"
-                                Tag="Next"
-                                DockPanel.Dock="Right"
-                                Click="NavigationButton_Click"
-                                HorizontalAlignment="Right"
-                                Foreground="#38ABDF"
-                                FontSize="12"
-                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                Visibility="{Binding PreviewPackageContents, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
+                            Tag="Next"
+                            DockPanel.Dock="Right"
+                            Click="NavigationButton_Click"
+                            HorizontalAlignment="Right"
+                            Foreground="#38ABDF"
+                            FontSize="12"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                            Visibility="{Binding PreviewPackageContents, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
                     </DockPanel>
 
                     <Border Grid.Row="1"
-                            Background="#343434"
-                            Padding="0"
-                            Margin="0 10 0 20">
+                        Background="#343434"
+                        Padding="0"
+                        Margin="0 10 0 20">
 
-                        <Grid>                            
-                             <!--  Top Row: Buttons and Label  -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <!--  Top Row: Buttons and Label  -->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                                        Margin="30"
-                                        Visibility="{Binding PreviewPackageContents,                                
-                                                             UpdateSourceTrigger=PropertyChanged,
-                                                             Mode=TwoWay,
-                                                             Converter={StaticResource EmptyListToVisibilityConverter}}">
-                            
+                                    Margin="30" Grid.Row="0"
+                                    Visibility="{Binding PreviewPackageContents,                                
+                                                            UpdateSourceTrigger=PropertyChanged,
+                                                            Mode=TwoWay,
+                                                            Converter={StaticResource EmptyListToVisibilityConverter}}">
+
                                 <!--  Add Files  -->
                                 <Button Click="NavigationButton_Click"
-                                        Tag="Next"
-                                        Command="{Binding Path=ShowAddFileDialogAndAddCommand}" 
-                                        Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
-                                        Margin="0,0,20,0"
-                                        Background="#0696D7"
-                                        Foreground="White"
-                                        BorderBrush="#0696D7"
-                                        Style="{StaticResource CtaButtonStyle}"
-                                        TabIndex="15">
+                                    Tag="Next"
+                                    Command="{Binding Path=ShowAddFileDialogAndAddCommand}" 
+                                    Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
+                                    Margin="0,0,20,0"
+                                    Background="#0696D7"
+                                    Foreground="White"
+                                    BorderBrush="#0696D7"
+                                    Style="{StaticResource CtaButtonStyle}"
+                                    TabIndex="15">
                                     <Button.ToolTip>
                                         <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
-                                                 Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                                Style="{StaticResource GenericToolTipLight}"></ToolTip>
                                     </Button.ToolTip>
                                 </Button>
-                            
+
                                 <!--  Add Directory  -->
                                 <Button Click="NavigationButton_Click"
-                                        Tag="Next"
-                                        Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
-                                        Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
-                                        Margin="20,0,0,0"
-                                        Background="#0696D7"
-                                        Foreground="White"
-                                        BorderBrush="#0696D7"
-                                        Style="{StaticResource CtaButtonStyle}"
-                                        TabIndex="16">
+                                    Tag="Next"
+                                    Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
+                                    Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
+                                    Margin="20,0,0,0"
+                                    Background="#0696D7"
+                                    Foreground="White"
+                                    BorderBrush="#0696D7"
+                                    Style="{StaticResource CtaButtonStyle}"
+                                    TabIndex="16">
                                     <Button.ToolTip>
                                         <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}"
-                                                 Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                                Style="{StaticResource GenericToolTipLight}"></ToolTip>
                                     </Button.ToolTip>
-                                </Button>                    
+                                </Button>
                             </StackPanel>
-                            
+
                             <local:CustomBrowserControl x:Name="previewBrowserControl"
-                                                        Loaded="previewBrowserControl_Loaded"
-                                                        IsEnabled="False"
-                                                        Margin="0 5"
-                                                        Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                                                        Visibility="{Binding PreviewPackageContents,
-                                                                             UpdateSourceTrigger=PropertyChanged,
-                                                                             Mode=TwoWay,
-                                                                             Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"/>
+                                                    Loaded="previewBrowserControl_Loaded"
+                                                    Margin="0 5"
+                                                    Grid.Row="1"
+                                                    IsEnabled="True"
+                                                    Tag="True"
+                                                    MaxHeight="380"
+                                                    Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                                    Visibility="{Binding PreviewPackageContents,
+                                                                            UpdateSourceTrigger=PropertyChanged,
+                                                                            Mode=TwoWay,
+                                                                            Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"/>
                         </Grid>
 
                     </Border>
                 </Grid>
 
-                <!--  Bottom: Markdown Files & Depende  ncies  -->
+                <!--  Bottom: Markdown Files & Dependencies  -->
                 <StackPanel Grid.Row="1"
-                            Margin="0,0,0,0"
-                            VerticalAlignment="Top">
+                        Margin="0,0,0,0"
+                        VerticalAlignment="Top">
 
                     <!--  Markdown Files Directory  -->
                     <DockPanel LastChildFill="False" Margin="0 0 0 4">
                         <DockPanel.ToolTip>
                             <ToolTip Content="{x:Static p:Resources.PreferencesViewMarkdownDirectoryTooltip}"
-                                        Style="{StaticResource GenericToolTipLight}" />
+                                    Style="{StaticResource GenericToolTipLight}" />
                         </DockPanel.ToolTip>
                         <TextBlock Style="{StaticResource LabelStyle}"
-                                    Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
+                                Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
                         <Border Background="Transparent" 
-                                DockPanel.Dock="Left"
-                                Margin="8,3,0,0">
+                            DockPanel.Dock="Left"
+                            Margin="8,3,0,0">
                             <Viewbox Width="14"
-                                     Height="14"
-                                     VerticalAlignment="Top">
+                                    Height="14"
+                                    VerticalAlignment="Top">
                                 <Path x:Name="Info"
-                                     Fill="#999999"
-                                     Data="M7 0C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14C10.866 14 14 10.866 14 7C14 5.14348 13.2625 3.36301 11.9497 2.05025C10.637 0.737498 8.85652 0 7 0ZM8 11H6V6H8V11ZM7 5.25C6.30964 5.25 5.75 4.69036 5.75 4C5.75 3.30964 6.30964 2.75 7 2.75C7.69036 2.75 8.25 3.30964 8.25 4C8.25 4.33152 8.1183 4.64946 7.88388 4.88388C7.64946 5.1183 7.33152 5.25 7 5.25Z"
-                                     StrokeThickness="0">
+                                    Fill="#999999"
+                                    Data="M7 0C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14C10.866 14 14 10.866 14 7C14 5.14348 13.2625 3.36301 11.9497 2.05025C10.637 0.737498 8.85652 0 7 0ZM8 11H6V6H8V11ZM7 5.25C6.30964 5.25 5.75 4.69036 5.75 4C5.75 3.30964 6.30964 2.75 7 2.75C7.69036 2.75 8.25 3.30964 8.25 4C8.25 4.33152 8.1183 4.64946 7.88388 4.88388C7.64946 5.1183 7.33152 5.25 7 5.25Z"
+                                    StrokeThickness="0">
                                 </Path>
                             </Viewbox>
                         </Border>
                     </DockPanel>
                     <StackPanel Orientation="Horizontal"
-                                Margin="0,0,0,15"
-                                Visibility="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged,
-                                                                 Converter={StaticResource NullOrEmptyStringToVisibiltyCollapsedConverter},
-                                                                 ConverterParameter=invert}">
+                            Margin="0,0,0,15"
+                            Visibility="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged,
+                                                                Converter={StaticResource NullOrEmptyStringToVisibiltyCollapsedConverter},
+                                                                ConverterParameter=invert}">
                         <!--  Add Markup Folder  -->
                         <Button Command="{Binding Path=SelectMarkdownDirectoryCommand}"
-                                Background="{StaticResource PrimaryCharcoal300Brush}"
-                                BorderThickness="0"
-                                Cursor="Hand">
+                            Background="{StaticResource PrimaryCharcoal300Brush}"
+                            BorderThickness="0"
+                            Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="Transparent" Margin="0 -1 0 0">
@@ -943,8 +950,8 @@
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="Folder"
-                                                    Property="Fill"
-                                                    Value="#6AC0E7" />
+                                                Property="Fill"
+                                                Value="#6AC0E7" />
                                         </Trigger>
                                     </ControlTemplate.Triggers> 
                                 </ControlTemplate>
@@ -952,54 +959,54 @@
                         </Button>
                     </StackPanel>
                     <Grid Margin="0,0,0,15"
-                          Visibility="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged,
-                                                                 Converter={StaticResource NullOrEmptyStringToVisibiltyCollapsedConverter}}">
+                        Visibility="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged,
+                                                                Converter={StaticResource NullOrEmptyStringToVisibiltyCollapsedConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Column="0"
-                                 Margin="0"
-                                 HorizontalAlignment="Stretch"
-                                 Background="#343434"
-                                 IsHitTestVisible="False"
-                                 IsReadOnly="True"
-                                 Style="{StaticResource InputStyle}"    
-                                 Tag="{Binding Source={x:Static p:Resources.NoneString}, Converter={StaticResource ToTitleCaseStringConverter}}"
-                                 Text="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged}" />
+                                Margin="0"
+                                HorizontalAlignment="Stretch"
+                                Background="#343434"
+                                IsHitTestVisible="False"
+                                IsReadOnly="True"
+                                Style="{StaticResource InputStyle}"    
+                                Tag="{Binding Source={x:Static p:Resources.NoneString}, Converter={StaticResource ToTitleCaseStringConverter}}"
+                                Text="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged}" />
 
                         <StackPanel Orientation="Horizontal"
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Margin="0 0 0 5">    
-                            
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Margin="0 0 0 5">
+
                             <Button Name="markdownFilesDirectoryButton"
-                                    Grid.Column="1"
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5 0"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Top"
-                                    BorderThickness="0"
-                                    Command="{Binding SelectMarkdownDirectoryCommand}"
-                                    Cursor="Hand"
-                                    DockPanel.Dock="Right"
-                                    IsHitTestVisible="True"
-                                    TabIndex="18">
+                                Grid.Column="1"
+                                Width="20"
+                                Height="20"
+                                Margin="5 0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                BorderThickness="0"
+                                Command="{Binding SelectMarkdownDirectoryCommand}"
+                                Cursor="Hand"
+                                DockPanel.Dock="Right"
+                                IsHitTestVisible="True"
+                                TabIndex="18">
                                 <Button.ToolTip>
                                     <ToolTip Content="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectoryToolTip}"
-                                                Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                            Style="{StaticResource GenericToolTipLight}"></ToolTip>
                                 </Button.ToolTip>
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border Background="Transparent">
                                             <Viewbox Width="16" Height="16" VerticalAlignment="Center">
                                                 <Path x:Name="Folder"
-                                                    Fill="#F5F5F5"
-                                                    Data="M12.3807 13.3333H1.34863V2.66663H5.83292L7.85591 3.99996H13.4866V5.99996H14.6262L12.3807 13.3333ZM2.82532 12.6666H11.895L13.6955 6.66663H4.62578L2.82532 12.6666ZM2.02296 3.33329V12.6666H2.11737L4.14036 5.99996H12.8122V4.66663H7.65361L5.63063 3.33329H2.02296Z"
-                                                    StrokeThickness="0">
+                                                Fill="#F5F5F5"
+                                                Data="M12.3807 13.3333H1.34863V2.66663H5.83292L7.85591 3.99996H13.4866V5.99996H14.6262L12.3807 13.3333ZM2.82532 12.6666H11.895L13.6955 6.66663H4.62578L2.82532 12.6666ZM2.02296 3.33329V12.6666H2.11737L4.14036 5.99996H12.8122V4.66663H7.65361L5.63063 3.33329H2.02296Z"
+                                                StrokeThickness="0">
                                                 </Path>
-                                            </Viewbox>                                           
+                                            </Viewbox>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
@@ -1010,35 +1017,35 @@
                                 </Button.Template>
                             </Button>
                             <Button Command="{Binding Path=ClearMarkdownDirectoryCommand}"
-                                    IsEnabled="{Binding Path=MarkdownFilesDirectory, Converter={StaticResource EmptyStringToFalseConverter}}"
-                                    Style="{StaticResource TextButtonStyle}"
-                                    Margin="0"
-                                    VerticalAlignment="Center"
-                                    TabIndex="17">
+                                IsEnabled="{Binding Path=MarkdownFilesDirectory, Converter={StaticResource EmptyStringToFalseConverter}}"
+                                Style="{StaticResource TextButtonStyle}"
+                                Margin="0"
+                                VerticalAlignment="Center"
+                                TabIndex="17">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border Background="Transparent">
                                             <Viewbox Width="14" Height="14" VerticalAlignment="Center">
                                                 <Path x:Name="Folder"
-                                                        Fill="#999999"
-                                                        Data="M13.3996 3.39998L12.5996 2.59998L7.99961 7.29998L3.39961 2.59998L2.59961 3.39998L7.29961 7.99998L2.59961 12.6L3.39961 13.4L7.99961 8.69998L12.5996 13.4L13.3996 12.6L8.69961 7.99998L13.3996 3.39998Z"
-                                                        StrokeThickness="0">
+                                                    Fill="#999999"
+                                                    Data="M13.3996 3.39998L12.5996 2.59998L7.99961 7.29998L3.39961 2.59998L2.59961 3.39998L7.29961 7.99998L2.59961 12.6L3.39961 13.4L7.99961 8.69998L12.5996 13.4L13.3996 12.6L8.69961 7.99998L13.3996 3.39998Z"
+                                                    StrokeThickness="0">
                                                 </Path>
                                             </Viewbox>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
-                                                        Value="True">
+                                                    Value="True">
                                                 <Setter TargetName="Folder"
-                                                        Property="Fill"
-                                                        Value="#6AC0E7" />
+                                                    Property="Fill"
+                                                    Value="#6AC0E7" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
                                 <Button.ToolTip>
                                     <ToolTip Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButtonToolTip}"
-                                                Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                            Style="{StaticResource GenericToolTipLight}"></ToolTip>
                                 </Button.ToolTip>
                             </Button>
                         </StackPanel>
@@ -1047,9 +1054,9 @@
 
                     <!--  External Package Dependencies  -->
                     <TextBlock Style="{StaticResource LabelStyle}"
-                                Text="{x:Static p:Resources.PublishPackageExternalPackageDependencies}" />
+                            Text="{x:Static p:Resources.PublishPackageExternalPackageDependencies}" />
                     <TextBlock Style="{StaticResource SubLabelStyle}"
-                                Text="{Binding DependencyNames, UpdateSourceTrigger=PropertyChanged}" />
+                            Text="{Binding DependencyNames, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </Grid>
 
