@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Xml;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -21,7 +21,7 @@ namespace Dynamo.Tests.ModelsTest
         {
             //Arrange
             string wspath = Path.Combine(TestDirectory, @"core\callsite\RebindingSingleDimension.dyn");
-            var fileCommand = new DynamoModel.OpenFileCommand(wspath);
+            var fileCommand = new DynamoModel.OpenFileCommand(wspath, false);
 
             var runCancelCommand = new DynamoModel.ForceRunCancelCommand(false, false);
             CurrentDynamoModel.ExecuteCommand(runCancelCommand);

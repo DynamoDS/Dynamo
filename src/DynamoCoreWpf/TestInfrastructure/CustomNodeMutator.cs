@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -68,7 +68,7 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoModel.OpenFileCommand openFile =
-                        new DynamoModel.OpenFileCommand(customNodeFilePath);
+                        new DynamoModel.OpenFileCommand(customNodeFilePath, false);
 
                     DynamoViewModel.ExecuteCommand(openFile);
                 }));

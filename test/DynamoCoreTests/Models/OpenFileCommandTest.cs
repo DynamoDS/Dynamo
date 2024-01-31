@@ -24,7 +24,7 @@ namespace Dynamo.Tests.ModelsTest
         {
             //Arrange
             string wspath = Path.Combine(TestDirectory, @"core\callsite\RebindingSingleDimension.dyn");
-            var fileCommand = new DynamoModel.OpenFileCommand(wspath);          
+            var fileCommand = new DynamoModel.OpenFileCommand(wspath, false);          
 
             //We need a XmlDocument instance to create a new custom XmlElement
             XmlDocument xmlDocument = new XmlDocument();
@@ -56,7 +56,7 @@ namespace Dynamo.Tests.ModelsTest
             //The dyn file passed as parameter doesn't exists, so a different part in TryFindFile method will be executed
             string wspath = Path.Combine(TestDirectory, @"core\callsite\RebindingSingleDimension1.dyn");
 
-            var fileCommand = new DynamoModel.OpenFileCommand(wspath);
+            var fileCommand = new DynamoModel.OpenFileCommand(wspath, false);
 
             CustomXmlDocument xmlDocument = new CustomXmlDocument();
 
@@ -186,7 +186,7 @@ namespace Dynamo.Tests.ModelsTest
     /// </summary>
     class OpenFileCommandDerivedTest : OpenFileCommand
     {
-        public OpenFileCommandDerivedTest(string filePath) : base(filePath)
+        public OpenFileCommandDerivedTest(string filePath) : base(filePath, false)
         {
         }
 

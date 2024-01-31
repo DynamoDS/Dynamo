@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Dynamo.Models;
 using NUnit.Framework;
 
@@ -52,7 +52,7 @@ namespace Dynamo.Tests.Engine
 
             //Act
             //Internally this will execute the UpdateGraph() method
-            var commandFile = new DynamoModel.OpenFileCommand(openPath2);
+            var commandFile = new DynamoModel.OpenFileCommand(openPath2, false);
             CurrentDynamoModel.ExecuteCommand(commandFile);
 
 

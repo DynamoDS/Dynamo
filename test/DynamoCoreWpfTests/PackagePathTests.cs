@@ -210,7 +210,7 @@ namespace DynamoCoreWpfTests
             var dynFilePath = Path.Combine(path, @"dynFile\Number1.dyn");
             vm.AddPathCommand.Execute(null);
             vm.SaveSettingCommand.Execute(null);
-            Model.ExecuteCommand(new DynamoModel.OpenFileCommand(dynFilePath));
+            Model.ExecuteCommand(new DynamoModel.OpenFileCommand(dynFilePath, false));
             Assert.AreEqual(1,GetPreviewValue("07d62dd8-b2f3-40a8-a761-013d93300444"));
         }
 

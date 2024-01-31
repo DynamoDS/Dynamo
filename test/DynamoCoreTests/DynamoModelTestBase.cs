@@ -125,7 +125,7 @@ namespace Dynamo
         protected T Open<T>(params string[] relativePathParts) where T : WorkspaceModel
         {
             var path = Path.Combine(relativePathParts);
-            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(path));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(path, false));
             return CurrentDynamoModel.CurrentWorkspace as T;
         }
 
@@ -145,7 +145,7 @@ namespace Dynamo
         protected void OpenModel(string relativeFilePath)
         {
             string openPath = Path.Combine(TestDirectory, relativeFilePath);
-            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath, false));
         }
 
         protected void OpenModelInManualMode(string relativeFilePath)
@@ -157,7 +157,7 @@ namespace Dynamo
         protected void OpenSampleModel(string relativeFilePath)
         {
             string openPath = Path.Combine(SampleDirectory, relativeFilePath);
-            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath, false));
         }
 
         protected void RunModel(string relativeDynFilePath)

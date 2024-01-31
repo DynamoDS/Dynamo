@@ -462,6 +462,18 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="filePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
+            public OpenFileCommand(string filePath, bool forceManualExecutionMode = false)
+            {
+                FilePath = filePath;
+                ForceManualExecutionMode = forceManualExecutionMode;
+                IsTemplate = false;
+            }
+
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="filePath">The path to the file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
             /// <param name="isTemplate">Is Dynamo opening a template file?</param>
             public OpenFileCommand(string filePath, bool forceManualExecutionMode = false, bool isTemplate = false)
             {
@@ -499,7 +511,7 @@ namespace Dynamo.Models
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
                 string xmlFilePath = TryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
-                return new OpenFileCommand(xmlFilePath);
+                return new OpenFileCommand(xmlFilePath, false);
             }
 
             #endregion
