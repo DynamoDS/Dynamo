@@ -33,6 +33,7 @@ namespace Dynamo.Wpf.Utilities
                 DLL.FreeLibrary(m_dll);
                 m_dll = IntPtr.Zero;
             }
+            Initialized = false;
         }
 
         private static bool Initialized;
