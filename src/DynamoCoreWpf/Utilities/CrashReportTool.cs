@@ -116,7 +116,6 @@ namespace Dynamo.Wpf.Utilities
                     return outputFile;
                 }
             }
-
             return null;
         }
 
