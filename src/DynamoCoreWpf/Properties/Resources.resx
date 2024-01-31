@@ -3899,4 +3899,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="WorkspaceSaveTemplateDirectoryBlockTitle" xml:space="preserve">
     <value>Invalid Save Path</value>
   </data>
+  <data name="PublishPackageRetainFolderStructureToggleButtonText" xml:space="preserve">
+    <value>Retain folder structure</value>
+  </data>
 </root>

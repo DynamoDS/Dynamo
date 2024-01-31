@@ -73,14 +73,12 @@ namespace Dynamo.PackageManager
 
             var dyfFiles = new List<string>();
 
-            WritePackageHeader(package, rootDir);
-
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, rootDir, out dyfFiles);
             RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
             
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
-
+            WritePackageHeader(package, rootDir);
 
             return rootDir;
         }
@@ -222,7 +220,7 @@ namespace Dynamo.PackageManager
             {
                 // We expect that files are bundled in root folders
                 // For single files, just get its folder
-                var commonPath = files.Count() > 1 ? GetLongestCommonPrefix(files.ToArray()) : Path.GetDirectoryName(files.First());
+                var commonPath = files.Count() > 1 ? GetLongestCommonPrefix(files.ToArray()) : Path.GetDirectoryName(files.FirstOrDefault());
                 commonPath = commonPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                 var commonRootPath = Path.GetDirectoryName(commonPath);
                 if (commonRootPath == null) commonRootPath = commonPath; // already at the root
@@ -245,8 +243,8 @@ namespace Dynamo.PackageManager
 
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
-                    // We are already creating the pkg.json file ourselves, so skip it
-                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")))
+                    // We are already creating the pkg.json file ourselves, so skip it, also skip if we are copying the file to itself.
+                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
                     {
                         continue;
                     }
@@ -392,7 +390,7 @@ namespace Dynamo.PackageManager
 
 
         /// <summary>
-        /// Utility method to get the common file path 
+        /// Utility method to get the common file path, this may fail for files with the same partial name.
         /// </summary>
         /// <param name="s">A collection of filepaths</param>
         /// <returns></returns>
@@ -409,7 +407,7 @@ namespace Dynamo.PackageManager
                         break;
                     }
             }
-            return s[0].Substring(0, k);
+            return Path.GetDirectoryName(s[0].Substring(0, k));
         }
 
         #endregion

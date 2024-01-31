@@ -414,7 +414,7 @@ namespace Dynamo.Core
         public IEnumerable<string> GetDynamoUserDataLocations()
         {
             var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var dynamoFolder = Path.Combine(appDatafolder, "Dynamo");
+            var dynamoFolder = Path.Combine(appDatafolder, Configurations.DynamoAsString);
             if (!Directory.Exists(dynamoFolder)) return Enumerable.Empty<string>();
 
             var paths = new List<string>();
