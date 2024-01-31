@@ -166,8 +166,11 @@ namespace DynamoSandbox
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            var ex = e.ExceptionObject as Exception;
-            viewModel?.Model?.OnRequestsCrashPrompt(new CrashErrorReportArgs(ex));
+            if (!DynamoModel.IsCrashing)//Avoid duplicate CER reports
+            {
+                var ex = e.ExceptionObject as Exception;
+                viewModel?.Model?.OnRequestsCrashPrompt(new CrashErrorReportArgs(ex));
+            }
         }
     }
 }

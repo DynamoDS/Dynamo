@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -691,6 +692,7 @@ namespace Dynamo.ViewModels
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
             Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
             this.ShowLogin = startConfiguration.ShowLogin;
 
@@ -772,13 +774,28 @@ namespace Dynamo.ViewModels
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
         }
 
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            try
+            {
+                var crashData = new CrashErrorReportArgs(e.Exception);
+                Model?.Logger?.LogError($"Unobserved task exception: {crashData.Details}");
+                Analytics.TrackException(e.Exception, true);
+            }
+            catch
+            { }
+        }
+
         private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            if (e.Handled)
+            if (e.Handled || DynamoModel.IsCrashing)
             {
                 return;
             }
 
+            // Try to handle the exception so that the host app can continue in most cases.
+            // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases we might see 2 CER windows (the extra one from the host app)
             e.Handled = true;
             CrashGracefully(e.Exception);
         }
@@ -787,12 +804,12 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                Model?.Logger?.LogError($"Unhandled exception {ex.Message}");
-
                 DynamoModel.IsCrashing = true;
+                var crashData = new CrashErrorReportArgs(ex);
+                Model?.Logger?.LogError($"Unhandled exception: {crashData.Details} ");
                 Analytics.TrackException(ex, true);
-                Model?.OnRequestsCrashPrompt(new CrashErrorReportArgs(ex));
 
+                Model?.OnRequestsCrashPrompt(crashData);
                 Exit(false); // don't allow cancellation
             }
             catch
@@ -3491,6 +3508,7 @@ namespace Dynamo.ViewModels
         public bool PerformShutdownSequence(ShutdownParams shutdownParams)
         {
             Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
+            TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
 
             if (shutdownSequenceInitiated)
             {
