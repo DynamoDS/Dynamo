@@ -800,7 +800,7 @@ namespace Dynamo.ViewModels
             CrashGracefully(e.Exception);
         }
 
-        private void CrashGracefully(Exception ex)
+        internal void CrashGracefully(Exception ex)
         {
             try
             {

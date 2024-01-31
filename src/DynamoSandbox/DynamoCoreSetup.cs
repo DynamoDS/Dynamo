@@ -168,8 +168,7 @@ namespace DynamoSandbox
         {
             if (!DynamoModel.IsCrashing)//Avoid duplicate CER reports
             {
-                var ex = e.ExceptionObject as Exception;
-                viewModel?.Model?.OnRequestsCrashPrompt(new CrashErrorReportArgs(ex));
+                viewModel?.CrashGracefully(e.ExceptionObject as Exception);
             }
         }
     }
