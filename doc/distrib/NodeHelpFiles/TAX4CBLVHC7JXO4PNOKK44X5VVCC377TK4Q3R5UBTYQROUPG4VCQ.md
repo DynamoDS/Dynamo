@@ -5,6 +5,6 @@ In the example below, a T-Spline torus surface is created around a given `center
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByTorusCenterRadii_img.jpg)
+![Example](./TAX4CBLVHC7JXO4PNOKK44X5VVCC377TK4Q3R5UBTYQROUPG4VCQ_img.jpg)
 
 
