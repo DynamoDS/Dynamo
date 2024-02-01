@@ -7,4 +7,4 @@ In the example below, a T-Spline surface is created with added Reflections. Late
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.SegmentsCount_img.jpg)
+![Example](./GLVHD43IRWFTZKY7UVDJ7PNERQN5Z3PWTMFYVJ537HCGJCHCQQAQ_img.jpg)
