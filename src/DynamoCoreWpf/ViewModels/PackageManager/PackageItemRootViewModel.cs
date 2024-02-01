@@ -133,7 +133,7 @@ namespace Dynamo.PackageManager.UI
         }
         /// <summary>
         /// The methods is used for adding a child item to all the encountered parent folders in a nested path
-        /// and make sure all the intermediate file paths are created as separte PackageItemRootViewModel.
+        /// and make sure all the intermediate file paths are created as separate PackageItemRootViewModel.
         /// For example if we have a path like "\dir1\dir2\dir3" and we want to add a child item to "dir1", the method will
         /// add "dir 3" to "dir2" and then "dir2" to "dir1".
         /// </summary>
