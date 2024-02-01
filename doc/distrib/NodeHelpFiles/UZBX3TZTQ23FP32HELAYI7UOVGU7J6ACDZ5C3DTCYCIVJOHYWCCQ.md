@@ -14,4 +14,4 @@ In the example below, two T-Spline surfaces are created to illustrate the use of
 ___
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildFromLines_img.jpg)
+![Example](./UZBX3TZTQ23FP32HELAYI7UOVGU7J6ACDZ5C3DTCYCIVJOHYWCCQ_img.jpg)
