@@ -121,6 +121,7 @@ namespace Dynamo.Controls
         /// <param name="dynamoViewModel">Dynamo view model</param>
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
+            dynamoViewModel.Model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
             // The user's choice to enable hardware acceleration is now saved in
             // the Dynamo preferences. It is set to true by default. 
             // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
@@ -1335,7 +1336,6 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestSave3DImage += DynamoViewModelRequestSave3DImage;
             dynamoViewModel.SidebarClosed += DynamoViewModelSidebarClosed;
 
-            dynamoViewModel.Model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
             dynamoViewModel.Model.RequestTaskDialog += Controller_RequestTaskDialog;
 
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
