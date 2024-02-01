@@ -5,4 +5,4 @@ In the example below, a plane primitive T-Spline surface is created using a `TSp
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeleteVertices_img.jpg)
+![Example](./76IVI422OMRMPHCWZHTETSZ3PJF22AOV2AX274LZCNLPCK664PGQ_img.jpg)
