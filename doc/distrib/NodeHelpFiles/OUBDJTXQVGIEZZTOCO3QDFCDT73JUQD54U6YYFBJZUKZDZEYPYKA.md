@@ -5,4 +5,4 @@ In the example below, a `TSplineTopology.VerticesCount` node is used to return t
 ___
 ## Example File
 
-![TSplineTopology.VerticesCount](./Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.VerticesCount_img.jpg)
+![TSplineTopology.VerticesCount](./OUBDJTXQVGIEZZTOCO3QDFCDT73JUQD54U6YYFBJZUKZDZEYPYKA_img.jpg)
