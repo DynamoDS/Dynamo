@@ -46,10 +46,18 @@ namespace Dynamo.Models
         {
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
+            bool isTemplate = command.IsTemplate;
             OpenFileFromPath(filePath, forceManualMode);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
+        }
+
+        protected virtual void OpenTemplateImpl(OpenFileCommand command)
+        {
+            string filePath = command.FilePath;
+            bool forceManualMode = command.ForceManualExecutionMode;
+            OpenTemplateFromPath(filePath, forceManualMode);
         }
 
         protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
@@ -326,7 +334,7 @@ namespace Dynamo.Models
                     EndShiftReconnections(nodeId, command.PortIndex, command.Type);
                     break;
 
-                // TODO - can be removed in Dynamo 3.0 - DYN-1729
+                // TODO - can be removed in a future version of Dynamo - DYN-1729
                 case MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
                     BeginCreateConnections(nodeId, command.PortIndex, command.Type);
                     break;

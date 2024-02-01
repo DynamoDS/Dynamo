@@ -123,6 +123,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSOffice", "Libraries\DSOff
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSOfficeUtilities", "Libraries\DSOfficeUtilities\DSOfficeUtilities.csproj", "{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoMLDataPipeline", "DynamoMLDataPipeline\DynamoMLDataPipeline.csproj", "{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|NET60_Linux = Debug|NET60_Linux
@@ -275,6 +277,14 @@ Global
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Debug|NET60_Linux.ActiveCfg = Debug|NET60_Linux
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Debug|NET60_Linux.Build.0 = Debug|NET60_Linux
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Release|NET60_Linux.ActiveCfg = Release|NET60_Linux
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}.Debug|NET60_Linux.ActiveCfg = Debug|NET60_Linux
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}.Debug|NET60_Linux.Build.0 = Debug|NET60_Linux
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

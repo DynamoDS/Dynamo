@@ -6,7 +6,9 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -21,7 +23,7 @@ namespace Dynamo.DocumentationBrowser
         private readonly DocumentationBrowserViewModel viewModel;
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
-        private bool hasBeenInitialized;
+        internal AsyncMethodState initState = AsyncMethodState.NotStarted;
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
@@ -40,6 +42,7 @@ namespace Dynamo.DocumentationBrowser
         public DocumentationBrowserView(DocumentationBrowserViewModel viewModel)
         {
             InitializeComponent();
+
             this.DataContext = viewModel;
             this.viewModel = viewModel;
 
@@ -104,26 +107,22 @@ namespace Dynamo.DocumentationBrowser
         /// <param name="link"></param>
         public void NavigateToPage(Uri link)
         {
-            InitializeAsync();
+            Dispatcher.Invoke(InitializeAsync);
         }
 
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
-            this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
-            this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
-
-            if (this.documentationBrowser.CoreWebView2 != null)
+            if (this.documentationBrowser != null)
             {
-                this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
-            }
+                this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
+                this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
+                if (this.documentationBrowser.CoreWebView2 != null)
+                {
+                    this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+                }
 
-            // Note to test writers
-            // Disposing the document browser will cause future tests
-            // that uses the Browser component to crash
-            if (!Models.DynamoModel.IsTestMode)
-            {
                 this.documentationBrowser.Dispose();
             }
         }
@@ -159,8 +158,9 @@ namespace Dynamo.DocumentationBrowser
             }
 
             // Only initialize once 
-            if (!hasBeenInitialized)
+            if (initState == AsyncMethodState.NotStarted)
             {
+                initState = AsyncMethodState.Started;
                 if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
                 {
                     //This indicates in which location will be created the WebView2 cache folder
@@ -169,9 +169,9 @@ namespace Dynamo.DocumentationBrowser
                         UserDataFolder = WebBrowserUserDataFolder
                     };
                 }
+
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
-                
            
                 this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
                 comScriptingObject = new ScriptingObject(this.viewModel);
@@ -181,21 +181,23 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
                 this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
 
-                hasBeenInitialized = true;
+                initState = AsyncMethodState.Done;
             }
-
-            if(Directory.Exists(VirtualFolderPath))
-                //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
-                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, VirtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
-
-            string htmlContent = this.viewModel.GetContent();
-
-            htmlContent = ResourceUtilities.LoadResourceAndReplaceByKey(htmlContent, "#fontStyle", fontStylePath);
-
-            Dispatcher.BeginInvoke(new Action(() =>
+            //if we make it this far, for example to do re-entry to to this method, while we're still
+            //initializing, don't do anything, just bail.
+            if(initState == AsyncMethodState.Done)
             {
+                if (Directory.Exists(VirtualFolderPath))
+                {
+                    //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
+                    this.documentationBrowser?.CoreWebView2?.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, VirtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
+                }
+                string htmlContent = this.viewModel.GetContent();
+
+                htmlContent = ResourceUtilities.LoadResourceAndReplaceByKey(htmlContent, "#fontStyle", fontStylePath);
+
                 this.documentationBrowser.NavigateToString(htmlContent);
-            }));
+            }
         }
 
         private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
@@ -209,6 +211,11 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
+            if (initState == AsyncMethodState.Started)
+            {
+                Log("DocumentationBrowserView is being disposed but async initialization is still not done");
+            }
+
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -216,7 +223,14 @@ namespace Dynamo.DocumentationBrowser
         #region ILogSource Implementation
         private void Log(string message)
         {
-            viewModel.MessageLogged?.Invoke(LogMessage.Info(message));
+            if (DynamoModel.IsTestMode)
+            {
+                System.Console.WriteLine(message);
+            }
+            else
+            {
+                viewModel?.MessageLogged?.Invoke(LogMessage.Info(message));
+            }
         }
         #endregion
     }

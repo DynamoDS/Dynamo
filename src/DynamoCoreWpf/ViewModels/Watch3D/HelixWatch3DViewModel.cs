@@ -220,11 +220,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 try
                 {
-
-                    if (Environment.Is64BitProcess)
-                        NativeMethods.LoadNvApi64();
-                    else
-                        NativeMethods.LoadNvApi32();
+                    NativeMethods.LoadNvApi64();
                 }
                 catch { } // will always fail since 'fake' entry point doesn't exists
             }
@@ -3010,27 +3006,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <returns>A <see cref="BoundingBox"/> object encapsulating the geometry.</returns>
         internal static BoundingBox Bounds(this GeometryModel3D geom, float defaultBoundsSize = 5.0f)
         {
-            if (geom.Geometry.Positions == null || geom.Geometry.Positions.Count == 0)
+            var bounds = geom.Bounds;
+
+            //if the actual bounds diagonal are smaller than the default bounds diagonal then return
+            //a new default bounds centered on the actual bounds center.
+            if(bounds.Size.LengthSquared() < defaultBoundsSize * defaultBoundsSize * 3)
             {
-                return new BoundingBox();
+                var pos = bounds.Center();
+                var min = pos + new Vector3(-defaultBoundsSize, -defaultBoundsSize, -defaultBoundsSize);
+                var max = pos + new Vector3(defaultBoundsSize, defaultBoundsSize, defaultBoundsSize);
+                return new BoundingBox(min, max);
             }
 
-            if (geom.Geometry.Positions.Count > 1)
-            {
-                return BoundingBox.FromPoints(geom.Geometry.Positions.ToArray());
-            }
-
-            var pos = geom.Geometry.Positions.First();
-            var min = pos + new Vector3(-defaultBoundsSize, -defaultBoundsSize, -defaultBoundsSize);
-            var max = pos + new Vector3(defaultBoundsSize, defaultBoundsSize, defaultBoundsSize);
-            return new BoundingBox(min, max);
+            return bounds;
         }
 
         public static Vector3 Center(this BoundingBox bounds)
         {
             return (bounds.Maximum + bounds.Minimum)/2;
         }
-
     }
 
     internal static class Vector3Extensions

@@ -1,81 +1,621 @@
-<Workspace Version="1.1.0.2093" X="-820.221915579678" Y="-3739.37074087327" zoom="1.43027392074538" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
-  <NamespaceResolutionMap />
-  <Elements>
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="f7058e21-f1f9-4f85-aa25-ed681df09793" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Math.RandomList" x="314.387851842135" y="2860.94490344006" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Math.RandomList@int" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="06fdd0d7-2e5b-4989-9fa1-4e30dc84b7fc" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Count" x="204.366055827885" y="2857.88874243967" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="BuiltIn" function="Count@var[]..[]" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="e7b1435e-a114-4f7e-a4ae-63596344ac65" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-233.513222838676" y="2694.94333349202" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="0..10..#20;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="9330acaa-2ecc-49f4-9dcd-f0eae55dfbac" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Point.ByCoordinates" x="43.7033115747824" y="2694.94333349202" isVisible="false" isUpstreamVisible="true" lacing="CrossProduct" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
-      <PortInfo index="0" default="True" />
-      <PortInfo index="1" default="True" />
-    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="d3f9e36a-fa6d-4682-843b-e493d924399b" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Vector.Scale" x="507.057645025365" y="2776.02058989381" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Vector.Scale@double">
-      <PortInfo index="1" default="True" />
-    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="906e8f5b-880d-4f02-9680-2c3e4bb45b17" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Vector.ZAxis" x="379.679331141527" y="2776.60230144434" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Vector.ZAxis" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="6059da7e-c545-4ee3-884e-6e71b070eb8f" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Geometry.Translate" x="720.516211491836" y="2694.94333349202" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Geometry.Translate@Autodesk.DesignScript.Geometry.Vector" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="c0ccb982-eb66-4b48-a494-8251acab3be8" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-82.5187441539243" y="2694.94333349202" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="x*2;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="9ca4b806-76e2-4dda-89e2-43ee960e744f" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="NurbsSurface.ByPointsTangents" x="997.996622127472" y="2831.71643148004" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangents@Autodesk.DesignScript.Geometry.Point[][],Autodesk.DesignScript.Geometry.Vector[],Autodesk.DesignScript.Geometry.Vector[],Autodesk.DesignScript.Geometry.Vector[],Autodesk.DesignScript.Geometry.Vector[]" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="fda5925f-0bfb-4183-9f73-afe490e1bec6" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Vector.ByCoordinates" x="780.671496436764" y="2867.70525717166" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double">
-      <PortInfo index="0" default="True" />
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="c22bcf48-39e9-48ef-a5cc-bd4eac93a416" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="665.155881766148" y="2885.05062421082" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="ffd1746e-a456-4c82-96cd-40dd01640042" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="621.135485731136" y="2976.26089540367" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1..400..1;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="024f85ed-ecb6-4b5d-a6bc-6923b7fea01b" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Vector.ByCoordinates" x="777.840915131343" y="3059.33646063502" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double">
-      <PortInfo index="0" default="True" />
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="ef427e18-44f8-41a2-a1e0-b2e69f053438" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="662.325300460727" y="3076.68182767418" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="36c1c54b-7b68-4bd0-bebd-fa5e0ba848b0" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="618.304904425715" y="3167.89209886703" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1..400..1;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="02b0825b-64db-4a42-9bb7-86c1e4a4d87d" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Vector.ByCoordinates" x="769.040701530232" y="3442.90884123452" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double">
-      <PortInfo index="0" default="True" />
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="468b9551-4c94-4912-9aac-82250eb23270" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Vector.ByCoordinates" x="771.871282835652" y="3251.27763777116" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double">
-      <PortInfo index="0" default="True" />
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="e6cdabc3-d468-40a8-a3e4-6e4325485b08" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="656.355668165037" y="3268.62300481032" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="9bac3b3c-576f-4837-b709-f3b79b4e180c" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="612.335272130025" y="3359.83327600317" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1..400..1;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="6db24d47-599d-4cd8-af34-d92b85c0345f" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="653.525086859616" y="3460.25420827368" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="e1537a03-a1fe-4256-93a0-1dd47a4e215f" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="609.504690824604" y="3551.46447946653" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1..400..1;" ShouldFocus="false" />
-  </Elements>
-  <Connectors>
-    <Dynamo.Graph.Connectors.ConnectorModel start="f7058e21-f1f9-4f85-aa25-ed681df09793" start_index="0" end="d3f9e36a-fa6d-4682-843b-e493d924399b" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="06fdd0d7-2e5b-4989-9fa1-4e30dc84b7fc" start_index="0" end="f7058e21-f1f9-4f85-aa25-ed681df09793" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="e7b1435e-a114-4f7e-a4ae-63596344ac65" start_index="0" end="c0ccb982-eb66-4b48-a494-8251acab3be8" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="9330acaa-2ecc-49f4-9dcd-f0eae55dfbac" start_index="0" end="06fdd0d7-2e5b-4989-9fa1-4e30dc84b7fc" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="9330acaa-2ecc-49f4-9dcd-f0eae55dfbac" start_index="0" end="6059da7e-c545-4ee3-884e-6e71b070eb8f" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="d3f9e36a-fa6d-4682-843b-e493d924399b" start_index="0" end="6059da7e-c545-4ee3-884e-6e71b070eb8f" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="906e8f5b-880d-4f02-9680-2c3e4bb45b17" start_index="0" end="d3f9e36a-fa6d-4682-843b-e493d924399b" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="6059da7e-c545-4ee3-884e-6e71b070eb8f" start_index="0" end="9ca4b806-76e2-4dda-89e2-43ee960e744f" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="c0ccb982-eb66-4b48-a494-8251acab3be8" start_index="0" end="9330acaa-2ecc-49f4-9dcd-f0eae55dfbac" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="c0ccb982-eb66-4b48-a494-8251acab3be8" start_index="0" end="9330acaa-2ecc-49f4-9dcd-f0eae55dfbac" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="fda5925f-0bfb-4183-9f73-afe490e1bec6" start_index="0" end="9ca4b806-76e2-4dda-89e2-43ee960e744f" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="c22bcf48-39e9-48ef-a5cc-bd4eac93a416" start_index="0" end="fda5925f-0bfb-4183-9f73-afe490e1bec6" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="c22bcf48-39e9-48ef-a5cc-bd4eac93a416" start_index="0" end="fda5925f-0bfb-4183-9f73-afe490e1bec6" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="ffd1746e-a456-4c82-96cd-40dd01640042" start_index="0" end="fda5925f-0bfb-4183-9f73-afe490e1bec6" end_index="2" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="024f85ed-ecb6-4b5d-a6bc-6923b7fea01b" start_index="0" end="9ca4b806-76e2-4dda-89e2-43ee960e744f" end_index="2" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="ef427e18-44f8-41a2-a1e0-b2e69f053438" start_index="0" end="024f85ed-ecb6-4b5d-a6bc-6923b7fea01b" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="ef427e18-44f8-41a2-a1e0-b2e69f053438" start_index="0" end="024f85ed-ecb6-4b5d-a6bc-6923b7fea01b" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="36c1c54b-7b68-4bd0-bebd-fa5e0ba848b0" start_index="0" end="024f85ed-ecb6-4b5d-a6bc-6923b7fea01b" end_index="2" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="02b0825b-64db-4a42-9bb7-86c1e4a4d87d" start_index="0" end="9ca4b806-76e2-4dda-89e2-43ee960e744f" end_index="4" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="468b9551-4c94-4912-9aac-82250eb23270" start_index="0" end="9ca4b806-76e2-4dda-89e2-43ee960e744f" end_index="3" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="e6cdabc3-d468-40a8-a3e4-6e4325485b08" start_index="0" end="468b9551-4c94-4912-9aac-82250eb23270" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="e6cdabc3-d468-40a8-a3e4-6e4325485b08" start_index="0" end="468b9551-4c94-4912-9aac-82250eb23270" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="9bac3b3c-576f-4837-b709-f3b79b4e180c" start_index="0" end="468b9551-4c94-4912-9aac-82250eb23270" end_index="2" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="6db24d47-599d-4cd8-af34-d92b85c0345f" start_index="0" end="02b0825b-64db-4a42-9bb7-86c1e4a4d87d" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="6db24d47-599d-4cd8-af34-d92b85c0345f" start_index="0" end="02b0825b-64db-4a42-9bb7-86c1e4a4d87d" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="e1537a03-a1fe-4256-93a0-1dd47a4e215f" start_index="0" end="02b0825b-64db-4a42-9bb7-86c1e4a4d87d" end_index="2" portType="0" />
-  </Connectors>
-  <Notes />
-  <Annotations />
-  <Presets />
-  <Cameras>
-    <Camera Name="Background Preview" eyeX="-10.3516321182251" eyeY="13.9155826568604" eyeZ="16.0006294250488" lookX="16.1289100646973" lookY="-8.16507530212402" lookZ="-20.5040168762207" upX="0.0538851283490658" upY="0.996194660663605" upZ="-0.0685019418597221" />
-  </Cameras>
-</Workspace>
+{
+  "Uuid": "139aa0df-4b26-45f7-b486-f11ec05fb55f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangents",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "e65b8d5c43f6410da92f5c71a1e08e97",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "9dedbd1eb7b44c049138d793fdfe18b1",
+          "Name": "points",
+          "Description": "Point[][]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "df3780ef5f4740978dcdabc99f9c0dc5",
+          "Name": "startUTangents",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "424b9a0c69a84d7e8d38ce5322b8015a",
+          "Name": "endUTangents",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c7cc031741394b919ba8c12deb6db88e",
+          "Name": "startVTangents",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "631b9050cd414403b3d69616b9b4d5ed",
+          "Name": "endVTangents",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "06d69a7ef4c94603aacb36dae14b952b",
+          "Name": "NurbsSurface",
+          "Description": "NurbsSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangents@Autodesk.DesignScript.Geometry.Point[][],Autodesk.DesignScript.Geometry.Vector[],Autodesk.DesignScript.Geometry.Vector[],Autodesk.DesignScript.Geometry.Vector[],Autodesk.DesignScript.Geometry.Vector[]",
+      "Replication": "Auto",
+      "Description": "Creates a NurbsSurface with specified interpolated points and U and V degrees. The resultant surface will pass through all of the points. The number of tangents must match the number of points in the corresponding direction. The resultant surface will be degree 3 in both the U and V direction.\n\nNurbsSurface.ByPointsTangents (points: Point[][], startUTangents: Vector[], endUTangents: Vector[], startVTangents: Vector[], endVTangents: Vector[]): NurbsSurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "1073f72361d841178f067c91f46f106f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8d4cff0f6d564e0fb68e027f0107c606",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8817b6e2f80b4705b50a10de8b405038",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "852e62b88f0f46808abbed7e76918806",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c2f0f95cf86b43aeb644b5cc537f97cf",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "CrossProduct",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "226bc7a252134fdc9cbb0bfc06747b03",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d53af992a87142ca816dfde94064362e",
+          "Name": "",
+          "Description": "xPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d22a1accec614d7fba5de3e2f92d2a45",
+          "Name": "",
+          "Description": "yPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "xPoints = [-10,0,10];\nyPoints = [-10,0];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "9647dfaa7b0641b8b05d66894647f218",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ae1012df66144c56860eeccde70475e4",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "352044ad6b5c4ef89f7f3a929e2017d8",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "90618cc70cc4432abe4493bcc6238cb5",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "31e337fead2647c9ac653051434a4e57",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "Vector.ByCoordinates(1, 0, 1);\nVector.ByCoordinates(1, 0, -1);\nVector.ByCoordinates(0, 1, 1);\nVector.ByCoordinates(0, 1, -1);"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "6e2ec52e9d8241c4b88d8356a2d7c3cb",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "c7bdf57e4dd9461c9ab6a95576cdff53",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6428b68adfb8445ba38ddd8604399f3e",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ba44f097731b4c00aaba97247285be87",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "abb8a1efddf44b5ca424e3954d0a4664",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "9e8760f3086a41c6897b7ae64abd943a",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a88edb46265f449484fdc7e993ba5cfd",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8a7a1f44f0c14117bc73c82eb3a85ae2",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4ebe7ef90ffd4fb0bb169f868cef0631",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "1eb53eae24f64958972f730df928de1b",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "c3c0d73bb2ed45c0b14484166c104e2c",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9aa4292ce82c4d4fbcb836d56b834e1e",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "19fef117ae814a85988620d1566bc4b2",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "461b7caa5e784739abe593a24fde85ed",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "c19a1613bf8344a8a4dcd09b757bde5a",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7c93c2f80a404bb5a5050abfd115030c",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "814e8dedd3994739a2e6a18153c074da",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "876df1e6312d407f92646289ad36a148",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "c2f0f95cf86b43aeb644b5cc537f97cf",
+      "End": "9dedbd1eb7b44c049138d793fdfe18b1",
+      "Id": "6d1b60e119104583beb799367abc7af7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d53af992a87142ca816dfde94064362e",
+      "End": "8d4cff0f6d564e0fb68e027f0107c606",
+      "Id": "d0a392345dbc4bcb8b6efaf2abaec453",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d22a1accec614d7fba5de3e2f92d2a45",
+      "End": "8817b6e2f80b4705b50a10de8b405038",
+      "Id": "470b0767a7884d20a4a22a3c76900a46",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ae1012df66144c56860eeccde70475e4",
+      "End": "c3c0d73bb2ed45c0b14484166c104e2c",
+      "Id": "d9a516a3edc14e878a4744ae8103b01a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ae1012df66144c56860eeccde70475e4",
+      "End": "9aa4292ce82c4d4fbcb836d56b834e1e",
+      "Id": "47f5df2494474924ad2f35522e6dd84c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "352044ad6b5c4ef89f7f3a929e2017d8",
+      "End": "c7bdf57e4dd9461c9ab6a95576cdff53",
+      "Id": "7267382642fb438588798273ff461d1c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "352044ad6b5c4ef89f7f3a929e2017d8",
+      "End": "6428b68adfb8445ba38ddd8604399f3e",
+      "Id": "754c9109ee2041b4b3da4a2bf07834fe",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "90618cc70cc4432abe4493bcc6238cb5",
+      "End": "9e8760f3086a41c6897b7ae64abd943a",
+      "Id": "871da3db24fc491cb5aedfc9fceecf5b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "90618cc70cc4432abe4493bcc6238cb5",
+      "End": "8a7a1f44f0c14117bc73c82eb3a85ae2",
+      "Id": "5ee0186231a744f981daa4928f3f03fb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "90618cc70cc4432abe4493bcc6238cb5",
+      "End": "c19a1613bf8344a8a4dcd09b757bde5a",
+      "Id": "7787c6ac2f28404c8a89dc815d21c364",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "90618cc70cc4432abe4493bcc6238cb5",
+      "End": "7c93c2f80a404bb5a5050abfd115030c",
+      "Id": "ffb9f4aaf678487f96ca417cb59946f3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "90618cc70cc4432abe4493bcc6238cb5",
+      "End": "814e8dedd3994739a2e6a18153c074da",
+      "Id": "8dcd7f1fa786460cb23344c71088706e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "31e337fead2647c9ac653051434a4e57",
+      "End": "a88edb46265f449484fdc7e993ba5cfd",
+      "Id": "81e8b5ac920f45baa55d224b633cce95",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ba44f097731b4c00aaba97247285be87",
+      "End": "631b9050cd414403b3d69616b9b4d5ed",
+      "Id": "8c656e8a9cdc4b82affbb11cea5700ce",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4ebe7ef90ffd4fb0bb169f868cef0631",
+      "End": "df3780ef5f4740978dcdabc99f9c0dc5",
+      "Id": "a3ed56e73ab94153bcb00563193f79e3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "19fef117ae814a85988620d1566bc4b2",
+      "End": "c7cc031741394b919ba8c12deb6db88e",
+      "Id": "af295549bc544298b6bcac00e6e3438a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "876df1e6312d407f92646289ad36a148",
+      "End": "424b9a0c69a84d7e8d38ce5322b8015a",
+      "Id": "50c4a445f50e4d8d82f0e860e286efbe",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "1.2",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.4.6632",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -24.607419967651367,
+      "EyeY": 18.742544174194336,
+      "EyeZ": 24.380161285400391,
+      "LookX": 12.4334716796875,
+      "LookY": -22.468406677246094,
+      "LookZ": -29.738014221191406,
+      "UpX": 0.14761900901794434,
+      "UpY": 0.92387807369232178,
+      "UpZ": -0.35306951403617859
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "e65b8d5c43f6410da92f5c71a1e08e97",
+        "Name": "NurbsSurface.ByPointsTangents",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 642.46989114363782,
+        "Y": 642.07014983825218
+      },
+      {
+        "Id": "1073f72361d841178f067c91f46f106f",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 254.23717479918491,
+        "Y": 361.60201788790584
+      },
+      {
+        "Id": "226bc7a252134fdc9cbb0bfc06747b03",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -141.91207690459345,
+        "Y": 373.4394804730947
+      },
+      {
+        "Id": "9647dfaa7b0641b8b05d66894647f218",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -241.02660259946924,
+        "Y": 663.31007029105763
+      },
+      {
+        "Id": "6e2ec52e9d8241c4b88d8356a2d7c3cb",
+        "Name": "List Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 307.47385082604796,
+        "Y": 726.91581222865761
+      },
+      {
+        "Id": "abb8a1efddf44b5ca424e3954d0a4664",
+        "Name": "List Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 307.44183174349894,
+        "Y": 888.00466968781313
+      },
+      {
+        "Id": "1eb53eae24f64958972f730df928de1b",
+        "Name": "List Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 304.78385020161238,
+        "Y": 573.43189852076284
+      },
+      {
+        "Id": "461b7caa5e784739abe593a24fde85ed",
+        "Name": "List Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 314.43060565733447,
+        "Y": 1092.9848485927082
+      }
+    ],
+    "Annotations": [],
+    "X": 226.36047026720104,
+    "Y": -113.7022393531912,
+    "Zoom": 0.639847040084828
+  }
+}

@@ -487,7 +487,7 @@
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement to _Collect Usability Data</value>
+    <value>Agreements for _Data Collection</value>
     <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
@@ -1151,7 +1151,10 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Cancel</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement to Collect Usability Data</value>
+    <value>Agreements for Data Collection</value>
+  </data>
+  <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
+    <value>I would like to participate in data collection for Machine Learning Programs</value>
   </data>
   <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
     <value>Clear</value>
@@ -1283,6 +1286,9 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="PackageManagerPublishTab" xml:space="preserve">
     <value>Publish a Package</value>
   </data>
+  <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
+    <value>Virus scan in progress. Your package will be searchable in approximately 15 minutes.</value>
+  </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Installed Packages</value>
   </data>
@@ -1303,6 +1309,12 @@ Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
     <value>Once you install a package, you can find it here.</value>
+  </data>
+  <data name="PackagerManageUserNotSignedPackagesMessage" xml:space="preserve">
+    <value>Sign in to your Dynamo account to view your published packages.</value>
+  </data>
+  <data name="PackageManagerUserNotSignedPackagesSubMessage" xml:space="preserve">
+    <value>Once signed in, you can find your published packages here.</value>
   </data>
   <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
     <value>Search for Packages</value>
@@ -1465,7 +1477,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Install latest version</value>
   </data>
   <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
-    <value>Install latest version to folder...</value>
+    <value>Install to folder...</value>
   </data>
   <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
     <value>Install this version</value>
@@ -1589,6 +1601,9 @@ If the toggle is off custom packages that are not already loaded will load once 
   <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
     <value>Add File To Package</value>
   </data>
+  <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
+    <value>Remove from package</value>
+  </data>
   <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
     <value>Add Directory And Its Files To Package</value>
   </data>
@@ -1661,7 +1676,22 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Build</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
-    <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
+    <value>A version name helps a submitter keep track of updates to the package. When a new version of a package is added, version number must be increased.</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
+    <value>Website link for the package.</value>
+  </data>
+  <data name="PublishPackageViewGithubLinkTooltip" xml:space="preserve">
+    <value>GitHub repository link for the package.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderTooltip" xml:space="preserve">
+    <value>The package's copyright holder.</value>
+  </data>
+  <data name="PublishPackageViewLicenceTooltip" xml:space="preserve">
+    <value>The package's licence.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearTooltip" xml:space="preserve">
+    <value>The copyright year for the package.</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -1670,7 +1700,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>0</value>
   </data>
   <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
-    <value>1</value>
+    <value>0</value>
   </data>
   <data name="PublishPackageGroupWatermark" xml:space="preserve">
     <value>Group</value>
@@ -1706,6 +1736,15 @@ If the toggle is off custom packages that are not already loaded will load once 
   <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
     <value>Node Library</value>
   </data>
+  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+    <value>When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
+
+Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
+    </value>
+  </data>
+  <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
+    <value>DLL file containing types and methods that Dynamo imports as nodes. Mark ZeroTouch, NodeModel, or NodeViewCustomization DLLs and types you want to import into Dynamo as node libraries.</value>
+  </data>
   <data name="ShowClassicNodeLibrary" xml:space="preserve">
     <value>Show Classic Node Library</value>
   </data>
@@ -1737,7 +1776,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <comment>ErrorString</comment>
   </data>
   <data name="MajorVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Major version as a non-negative integer.</value>
+    <value>Provide major, minor, and build version number.</value>
     <comment>ErrorString</comment>
   </data>
   <data name="MinorVersionNonNegative" xml:space="preserve">
@@ -1745,7 +1784,31 @@ If the toggle is off custom packages that are not already loaded will load once 
     <comment>ErrorString</comment>
   </data>
   <data name="NameNeedMoreCharacters" xml:space="preserve">
-    <value>Name must be at least 3 characters.</value>
+    <value>Must be at least 3 characters</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageName" xml:space="preserve">
+    <value>Provide package name</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndFiles" xml:space="preserve">
+    <value>Provide package name and file(s)</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndVersion" xml:space="preserve">
+    <value>Provide package name and version number</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideVersion" xml:space="preserve">
+    <value>Provide version number</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideVersionAndFiles" xml:space="preserve">
+    <value>Provide version number and file(s)</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideFiles" xml:space="preserve">
+    <value>Provide file(s)</value>
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
@@ -2211,6 +2274,15 @@ Do you want to install the latest Dynamo update?</value>
     <value>Move the selected path upward</value>
     <comment>Tool-tip for up arrow</comment>
   </data>
+  <data name="PackageManagerFinishedPackagePackagePath" xml:space="preserve">
+    <value>Package Path</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesUploadedMessage" xml:space="preserve">
+    <value> files uploaded</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesPublishedMessage" xml:space="preserve">
+    <value> files published</value>
+  </data>
   <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
     <value>Package Path Added</value>
   </data>
@@ -2249,6 +2321,15 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
+  </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
+    <value>Select package contents</value>
+  </data>
+  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
+    <value>Preview package contents (read only)</value>
   </data>
   <data name="BackgroundPreviewName" xml:space="preserve">
     <value>_Background Preview</value>
@@ -2322,6 +2403,9 @@ Do you want to install the latest Dynamo update?</value>
     <value>Please, load assembly just one time.
 Next assemblies were loaded several times:
 </value>
+  </data>
+  <data name="PackageManagerReadyToPublish" xml:space="preserve">
+    <value>Ready to publish</value>
   </data>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Failed to add file: {0}</value>
@@ -2521,9 +2605,6 @@ Uninstall the following packages: {0}?</value>
   <data name="PackageSearchViewFilterByButton" xml:space="preserve">
     <value>Filter by</value>
   </data>
-  <data name="DynamoViewSettingMenuShowDataReportingDialogTooltip" xml:space="preserve">
-    <value>Display the dialog for user to pick agreement on data collecting.</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -2609,7 +2690,7 @@ Uninstall the following packages: {0}?</value>
     <comment>File menu | Export</comment>
   </data>
   <data name="PublishPackageDocTooltipText" xml:space="preserve">
-    <value>Learn More about publishing a package</value>
+    <value>Learn more about packages</value>
   </data>
   <data name="PreferencesViewFeaturesTab" xml:space="preserve">
     <value>Features</value>
@@ -2796,7 +2877,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Package/Library Search Paths</value>
   </data>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
-    <value>Switchable only when the current workspace is in Manual run mode.</value>
+    <value>To preview the execution state of your graph, wires connected to ports that will be affected by a graph run are highlighted in orange. Available only when the current workspace is in Manual run mode.</value>
   </data>
   <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
     <value>Issues found</value>
@@ -3045,7 +3126,7 @@ Delete the following packages: {2}?
     <value>Hide Wire</value>
   </data>
   <data name="PackagesGuideFindPackageText" xml:space="preserve">
-    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**.</value>
+    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Package Manager...**.</value>
   </data>
   <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
     <value>Find a package</value>
@@ -3096,7 +3177,7 @@ Delete the following packages: {2}?
     <value>\nSearch results display summary information for each package: -author- -likes and downloads- -date of the most recent version- \n**Click View Details** to see more information about a package.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nIf you need other software or tools in order to use this package, they are listed under Dependencies.</value>
+    <value>\nIf you need other software or tools in order to use this package, they are listed under Versions and Package Requirements.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
@@ -3280,6 +3361,12 @@ Try placing the highlighted **ByOrigin** node.</value>
   </data>
   <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
     <value>No, close file</value>
+  </data>
+  <data name="DiscardChangesWarningPopupCaption" xml:space="preserve">
+    <value>Discard changes?</value>
+  </data>
+  <data name="DiscardChangesWarningPopupMessage" xml:space="preserve">
+    <value>Your changes will be lost if you navigate away from the package upload screen.</value>
   </data>
   <data name="FileTrustWarningPopupSettings" xml:space="preserve">
     <value>Settings</value>
@@ -3511,6 +3598,9 @@ You can manage this in Preferences -&gt; Security.</value>
   </data>
   <data name="PackageDeprecatedTooltip" xml:space="preserve">
     <value>This package is outdated and cannot be installed.</value>
+  </data>
+  <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
+    <value>Publish Version</value>
   </data>
   <data name="SplashScreenViewExtensions" xml:space="preserve">
     <value>Loading View Extensions...</value>
@@ -3751,5 +3841,65 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="ElementBindingDesc" xml:space="preserve">
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
+  </data>
+  <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
+    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreements for Data Collection.</value>
+  </data>
+  <data name="GESUnitCentimeters" xml:space="preserve">
+    <value>Centimeters</value>
+  </data>
+  <data name="GESUnitFeet" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="GESUnitInches" xml:space="preserve">
+    <value>Inches</value>
+  </data>
+  <data name="GESUnitKilometers" xml:space="preserve">
+    <value>Kilometers</value>
+  </data>
+  <data name="GESUnitMeters" xml:space="preserve">
+    <value>Meters</value>
+  </data>
+  <data name="GESUnitMiles" xml:space="preserve">
+    <value>Miles</value>
+  </data>
+  <data name="GESUnitMillimeters" xml:space="preserve">
+    <value>Millimeters</value>
+  </data>
+  <data name="SignOutConfirmationDialogText" xml:space="preserve">
+    <value>Signing out of Dynamo will sign you out of all Autodesk desktop products.</value>
+  </data>
+  <data name="SignOutConfirmationDialogTitle" xml:space="preserve">
+    <value>Sign out of Dynamo</value>
+  </data>
+  <data name="PackageDetailsGroup" xml:space="preserve">
+    <value>GROUP</value>
+  </data>
+  <data name="PackageDetailsKeywords" xml:space="preserve">
+    <value>KEYWORDS</value>
+  </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="PackageDetailsLinks" xml:space="preserve">
+    <value>LINKS</value>
+  </data>
+  <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
+    <value>Your changes will be lost if you proceed.</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenFile" xml:space="preserve">
+    <value>_File</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
+    <value>_Template</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
+    <value>Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file.</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockTitle" xml:space="preserve">
+    <value>Invalid Save Path</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureToggleButtonText" xml:space="preserve">
+    <value>Retain folder structure</value>
   </data>
 </root>

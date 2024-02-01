@@ -1,3 +1,5 @@
+<!--- Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.DecomposedFaces --->
+<!--- VIA3XNZWZWW3XHWL222NGHWM22VLSA4QXMZCPWZ6JO6G3P7H2WGA --->
 ## In Depth
 In the example below, a planar T-Spline surface with extruded, subdivided, and pulled vertices and faces is inspected with the `TSplineTopology.DecomposedFaces` node, which returns a list of the following types of faces contained in the TSpline surface:
 

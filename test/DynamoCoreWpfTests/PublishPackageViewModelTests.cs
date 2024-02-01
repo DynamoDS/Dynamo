@@ -6,10 +6,10 @@ using Dynamo;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
-using Dynamo.Tests;
-using NUnit.Framework;
-using Moq;
 using Dynamo.PackageManager.UI;
+using Dynamo.Tests;
+using Moq;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
@@ -17,7 +17,7 @@ namespace DynamoCoreWpfTests
     public class PublishPackageViewModelTests: DynamoViewModelUnitTest
     {
 
-        [Test, Category("Failure")]
+        [Test]
         public void AddingDyfRaisesCanExecuteChangeOnDelegateCommand()
         {
             
@@ -47,7 +47,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void SetsErrorState()
         {
-           
             //open a dyf file and modify it
             string packagedirectory = Path.Combine(TestDirectory, "pkgs");
             var packages = Directory.EnumerateDirectories(packagedirectory);
@@ -99,7 +98,34 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test, Category("Failure")]
+        [Test]
+        public void NewPackageDoesNotThrow_NativeBinaryIsAddedAsAdditionalFile_NotBinary()
+        {
+            string packagesDirectory = Path.Combine(TestDirectory, "pkgs");
+
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { packagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = ViewModel.Model.PreferenceSettings
+            });
+
+            PublishPackageViewModel vm = null;
+            var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "package with native assembly");
+            Assert.DoesNotThrow(() =>
+            {
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, false);
+            });
+            
+            Assert.AreEqual(1, vm.AdditionalFiles.Count);
+            Assert.AreEqual(0, vm.Assemblies.Count);
+
+            Assert.AreEqual(PackageUploadHandle.State.Ready, vm.UploadState);
+        }
+
+        [Test]
         public void NewPackageVersionUpload_DoesNotThrowExceptionWhenDLLIsLoadedSeveralTimes()
         {
             string packagesDirectory = Path.Combine(TestDirectory, "pkgs");
@@ -117,13 +143,15 @@ namespace DynamoCoreWpfTests
             var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
             Assert.DoesNotThrow(() =>
             {
-                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package);
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, true);
             });
 
-            Assert.AreEqual(PackageUploadHandle.State.Error, vm.UploadState);
+            //while uploading a new version retain option is true, and we add the already loaded assembly to the additional files list now,
+            //and the state of the upload remains Ready.
+            Assert.AreEqual(PackageUploadHandle.State.Ready, vm.UploadState);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void NewPackageVersionUpload_CanAddAndRemoveFiles()
         {
             string packagesDirectory = Path.Combine(TestDirectory, "pkgs");
@@ -143,14 +171,28 @@ namespace DynamoCoreWpfTests
             var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
             Assert.DoesNotThrow(() =>
             {
-                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package);
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, true);
             });
 
+            //since retain is true, we will retain both the (renamed)assembly and the additional file.
+            //the already loaded assembly is added to the additional files list as well
             vm.AddFile(addFilePath);
-            Assert.AreEqual(1, vm.AdditionalFiles.Count);
+            Assert.AreEqual(2, vm.AdditionalFiles.Count);
 
             vm.RemoveItemCommand.Execute(pkgItem);
-            Assert.AreEqual(0, vm.AdditionalFiles.Count);
+            Assert.AreEqual(1, vm.AdditionalFiles.Count);
+
+            //arrange node libraries
+            var assem = vm.Assemblies.FirstOrDefault().Assembly;
+            var nodeLibraryNames = (IEnumerable<string>) new [] { assem.FullName };
+
+            //act
+            var pa = PublishPackageViewModel.GetPackageAssembly(nodeLibraryNames, assem);
+
+            //assert
+            Assert.NotNull(pa.Assembly);
+            Assert.AreEqual(pa.Assembly.FullName, assem.FullName);
+            Assert.IsTrue(pa.IsNodeLibrary);
         }
 
         [Test]
@@ -178,7 +220,7 @@ namespace DynamoCoreWpfTests
             newPkgVm.PublishLocallyCommand.Execute();
 
             Assert.IsTrue(GetModel().GetPackageManagerExtension().PackageLoader.LocalPackages.Any
-                (x => x.Name == "PublishingACustomNodeSetsPackageInfoCorrectly" && x.Loaded == true && x.LoadedCustomNodes.Count ==1));
+                (x => x.Name == "PublishingACustomNodeSetsPackageInfoCorrectly" && x.LoadState.State == PackageLoadState.StateTypes.Loaded && x.LoadedCustomNodes.Count ==1));
 
 
             Assert.AreEqual(new PackageInfo("PublishingACustomNodeSetsPackageInfoCorrectly", new Version(0,0,1))
@@ -193,7 +235,6 @@ namespace DynamoCoreWpfTests
         public void PublishingCustomNodeAsNewVersionWorks_SetsPackageInfoCorrectly()
         {
             throw new NotImplementedException();
-
         }
     }
 }

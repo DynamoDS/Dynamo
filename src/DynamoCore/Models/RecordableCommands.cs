@@ -458,14 +458,16 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            ///
+            /// Constructor
             /// </summary>
             /// <param name="filePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
-            public OpenFileCommand(string filePath, bool forceManualExecutionMode = false)
+            /// <param name="isTemplate">Is Dynamo opening a template file?</param>
+            public OpenFileCommand(string filePath, bool forceManualExecutionMode = false, bool isTemplate = false)
             {
                 FilePath = filePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
+                IsTemplate = isTemplate;
             }
 
             private static string TryFindFile(string xmlFilePath, string uriString = null)
@@ -507,6 +509,7 @@ namespace Dynamo.Models
             [DataMember]
             internal string FilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
+            internal bool IsTemplate { get; private set; }
             private DynamoModel dynamoModel;
 
             #endregion
@@ -516,7 +519,14 @@ namespace Dynamo.Models
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 this.dynamoModel = dynamoModel;
-                dynamoModel.OpenFileImpl(this);
+                if (IsTemplate)
+                {
+                    dynamoModel.OpenTemplateImpl(this);
+                }
+                else
+                {
+                    dynamoModel.OpenFileImpl(this);
+                }
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -528,7 +538,7 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
                     FilePath,
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
@@ -628,7 +638,7 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
                     FilePath,
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
@@ -705,7 +715,7 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
                     "In memory json file",
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
@@ -1795,7 +1805,7 @@ namespace Dynamo.Models
 
             internal override void TrackAnalytics()
             {
-                Dynamo.Logging.Analytics.TrackCommandEvent(
+                Dynamo.Logging.Analytics.TrackTaskCommandEvent(
                     CmdOperation.ToString()); // "Undo" or "Redo"
             }
 

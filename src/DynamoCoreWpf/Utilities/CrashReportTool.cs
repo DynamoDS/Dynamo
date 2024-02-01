@@ -177,10 +177,11 @@ namespace Dynamo.Wpf.Utilities
 
             DynamoModel model = viewModel?.Model;
 
-            string cerToolDir = !string.IsNullOrEmpty(model.CERLocation) ?
-                model.CERLocation : FindCERToolInInstallLocations();
+            string cerToolDir = !string.IsNullOrEmpty(model?.CERLocation) ?
+                model?.CERLocation : FindCERToolInInstallLocations();
 
-            var cerToolPath = Path.Combine(cerToolDir, CERDllName);
+            var cerToolPath = !string.IsNullOrEmpty(cerToolDir) ? Path.Combine(cerToolDir, CERDllName) : string.Empty;
+
             if (string.IsNullOrEmpty(cerToolPath) || !File.Exists(cerToolPath))
             {
                 model?.Logger?.LogError($"The CER tool was not found at location {cerToolPath}");
@@ -199,44 +200,85 @@ namespace Dynamo.Wpf.Utilities
                 {
                     string logFile = Path.Combine(cerDir.FullName, "DynamoLog.log");
 
-                    File.Copy(model.Logger.LogPath, logFile);
-                    // might be usefull to dump all loaded Packages into
-                    // the log at this point.
-                    filesToSend.Add(logFile);
+                    if(File.Exists(model.Logger.LogPath))
+                    {
+                        File.Copy(model.Logger.LogPath, logFile);
+                        filesToSend.Add(logFile);
+                    }
+                    else
+                    {
+                        model?.Logger?.LogError($"Failed to add DynamoLog.log to CER with the following error : {model.Logger.LogPath} Not Found");
+                    }
                 }
 
                 if (args.SendSettingsFile && model != null)
                 {
                     string settingsFile = Path.Combine(cerDir.FullName, "DynamoSettings.xml");
-                    File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
 
-                    filesToSend.Add(settingsFile);
+                    if (File.Exists(model.PathManager.PreferenceFilePath))
+                    {
+                        File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
+
+                        filesToSend.Add(settingsFile);
+                    }
+                    else
+                    {
+                        model?.Logger?.LogError($"Failed to add DynamoSettings.xml to CER with the following error : {model.PathManager.PreferenceFilePath} Not Found");
+                    }
                 }
 
                 if (args.HasDetails())
                 {
                     var stackTracePath = Path.Combine(cerDir.FullName, "StackTrace.log");
-                    File.WriteAllText(stackTracePath, args.Details);
-                    filesToSend.Add(stackTracePath);
+                    try
+                    {
+                        File.WriteAllText(stackTracePath, args.Details);
+                        filesToSend.Add(stackTracePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to add StackTrace.log to CER with the following error : {ex.Message}");
+                    }
                 }
 
                 if (args.SendRecordedCommands && viewModel != null)
                 {
-                    filesToSend.Add(viewModel.DumpRecordedCommands());
+                    try
+                    {
+                        filesToSend.Add(viewModel.DumpRecordedCommands());
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to add recorded commands to CER with the following error : {ex.Message}");
+                    }
                 }
 
                 string appConfig = "";
                 if (model != null)
                 {
-                    var appName = GetHostAppName(model);
-                    appConfig = $"<ProductInformation name=\"{appName}\" build_version=\"{model.Version}\" " +
-                                $"registry_version=\"{model.Version}\" registry_localeID=\"{CultureInfo.CurrentCulture.LCID}\" uptime=\"0\" " +
+                    var appName = GetHostAppName();
+                    appConfig = $"<ProductInformation name=\"{appName}\" build_version=\"{DynamoModel.Version}\" " +
+                                $"registry_version=\"{DynamoModel.Version}\" registry_localeID=\"{CultureInfo.CurrentCulture.LCID}\" uptime=\"0\" " +
                                 $"session_start_count=\"0\" session_clean_close_count=\"0\" current_session_length=\"0\" />";
                 }
 
-                string dynName = viewModel?.Model.CurrentWorkspace.Name;
+                string dynName = model?.CurrentWorkspace.Name;
 
-                var miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
+                var miniDumpFilePath = string.Empty;
+                try
+                {
+                    miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
+                }
+                catch (Exception ex)
+                {
+                    model?.Logger?.LogError($"Failed to generate minidump file for CER due to the following error : {ex.Message}");
+                }
+
+                if (string.IsNullOrEmpty(miniDumpFilePath))
+                {
+                    return false;
+                }
+
                 var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
 
                 using (var cerDLL = new CerDLL(cerToolPath)) 
@@ -271,18 +313,14 @@ namespace Dynamo.Wpf.Utilities
             return false;
         }
 
-        internal static string GetHostAppName(DynamoModel model)
+        internal static string GetHostAppName()
         {
             //default to app name being process name, but prefer HostAnalyticsInfo.HostName
             //then legacy Model.HostName
             var appName = Process.GetCurrentProcess().ProcessName;
-            if (!string.IsNullOrEmpty(model.HostAnalyticsInfo.HostName))
+            if (!string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
             {
-                appName = model.HostAnalyticsInfo.HostName;
-            }
-            else if (!string.IsNullOrEmpty(model.HostName))
-            {
-                appName = model.HostName;
+                appName = DynamoModel.HostAnalyticsInfo.HostName;
             }
 
             return appName;

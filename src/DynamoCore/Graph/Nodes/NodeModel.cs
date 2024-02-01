@@ -404,28 +404,6 @@ namespace Dynamo.Graph.Nodes
         public bool PreviewPinned { get; internal set; }
 
         /// <summary>
-        ///     Text that is displayed as this Node's tooltip.
-        /// </summary>
-        [JsonIgnore]
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
-        public string ToolTipText
-        {
-            get 
-            {
-                var builder = new System.Text.StringBuilder();
-                foreach(var info in Infos)
-                {
-                    builder.AppendLine(info.ToString());
-                }
-                return builder.ToString();
-            }
-            set
-            {
-                RaisePropertyChanged(nameof(ToolTipText));
-            }
-        }
-
-        /// <summary>
         /// Collection of warnings, errors and info items applied to the NodeModel.
         /// </summary>
         internal ObservableHashSet<Info> Infos
@@ -476,12 +454,6 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
-            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
-            set
-            {
-                inPorts = value;
-                RaisePropertyChanged("InPorts");
-            }
         }
 
         /// <summary>
@@ -491,12 +463,6 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
-            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
-            set
-            {
-                outPorts = value;
-                RaisePropertyChanged("OutPorts");
-            }
         }
 
         [JsonIgnore]
@@ -1874,18 +1840,6 @@ namespace Dynamo.Graph.Nodes
         /// Set an info on a node.
         /// </summary>
         /// <param name="p">The info text.</param>
-        [Obsolete("Info(string p) is deprecated, please use Info(string p, bool isPersistent = false) instead.")]
-
-        public void Info(string p)
-        {
-            State = ElementState.Info;
-            infos.Add(new Info(p, ElementState.Info));
-        }
-
-        /// <summary>
-        /// Set an info on a node.
-        /// </summary>
-        /// <param name="p">The info text.</param>
         /// <param name="isPersistent">Is the info persistent? If true, the info will not be
         /// cleared when the node is next evaluated. If false, the info will be cleared on the next evaluation.</param>
         public void Info(string p, bool isPersistent = false)
@@ -1987,6 +1941,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
+        ///     TODO: DYN-6445 - evaluate if this API can be removed.
         /// </summary>
         [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts(IEnumerable<PortData> portDatas)
@@ -2012,6 +1967,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         ///     Reads outputs list and adds ports for each output
+        ///     TODO: DYN-6445 - evaluate if this API can be removed.
         /// </summary>
         [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public void RegisterOutputPorts(IEnumerable<PortData> portDatas)
@@ -2252,54 +2208,6 @@ namespace Dynamo.Graph.Nodes
         }
 
         #endregion
-
-        #endregion
-
-        #region Code Serialization
-
-        /// <summary>
-        ///     Creates a Scheme representation of this dynNode and all connected dynNodes.
-        /// </summary>
-        /// <returns>S-Expression</returns>
-        [Obsolete("PrintExpression is deprecated and will be removed, please refer to the Node2Code functionality instead for conversion to DesignScript code.")]
-        public virtual string PrintExpression()
-        {
-            string nick = Name.Replace(' ', '_');
-
-            if (!InPorts.Any(p => p.IsConnected))
-                return nick;
-
-            string s = "";
-
-            if (InPorts.All(p => p.IsConnected))
-            {
-                s += "(" + nick;
-                foreach (int data in Enumerable.Range(0, InPorts.Count))
-                {
-                    Tuple<int, NodeModel> input;
-                    TryGetInput(data, out input);
-                    s += " " + input.Item2.PrintExpression();
-                }
-                s += ")";
-            }
-            else
-            {
-                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !InPorts[i].IsConnected).Select(x => x.Name))
-                     + ") (" + nick;
-                foreach (int data in Enumerable.Range(0, InPorts.Count))
-                {
-                    s += " ";
-                    Tuple<int, NodeModel> input;
-                    if (TryGetInput(data, out input))
-                        s += input.Item2.PrintExpression();
-                    else
-                        s += InPorts[data].Name;
-                }
-                s += "))";
-            }
-
-            return s;
-        }
 
         #endregion
 

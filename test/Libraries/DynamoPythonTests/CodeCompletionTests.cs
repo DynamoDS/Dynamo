@@ -42,7 +42,11 @@ namespace DynamoPythonTests
 
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
+#if NET8_0_OR_GREATER
+            Assert.IsTrue(completionData.Length == 32);
+#else
             Assert.IsTrue(completionData.Length == 31);
+#endif
         }
     }
 
@@ -236,7 +240,11 @@ namespace DynamoPythonTests
 
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
+#if NET8_0_OR_GREATER
+            Assert.IsTrue(completionData.Length == 32);
+#else
             Assert.IsTrue(completionData.Length == 31);
+#endif
         }
 
         [Test]

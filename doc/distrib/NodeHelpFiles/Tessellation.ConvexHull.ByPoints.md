@@ -1,5 +1,8 @@
 ## In Depth
-Revit will generate and contour a mesh from a list of supplied points. The points cannot be collinear.
+`ConvexHull.ByPoints` returns a list of curves that represent the convex hull of a set of points. 
+
+In the example below, a list of points randomly placed in 3D returns a list of curves representing their convex hull.
+
 ___
 ## Example File
 
