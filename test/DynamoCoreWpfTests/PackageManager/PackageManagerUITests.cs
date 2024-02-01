@@ -2273,6 +2273,46 @@ namespace DynamoCoreWpfTests.PackageManager
         }
 
         [Test]
+        public void AssertPreviewPackageRetainFolderStructureEqualsPublishLocalPackageResultsForNestedFolders()
+        {
+            var packageName = "NestedPackage";
+            var pathManager = this.ViewModel.Model.PathManager as PathManager;
+            var publishPath = Path.Combine(pathManager.DefaultPackagesDirectory, packageName);
+
+            string nodePath = Path.Combine(TestDirectory, "pkgs", packageName);
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var allFolders = Directory.GetDirectories(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            //now lets publish this package.
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+            newPkgVm.RetainFolderStructureOverride = true;
+            newPkgVm.AddAllFilesAfterSelection(allFiles);
+
+            var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
+            var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            newPkgVm.Name = packageName;
+            newPkgVm.MajorVersion = "0";
+            newPkgVm.MinorVersion = "0";
+            newPkgVm.BuildVersion = "1";
+            newPkgVm.PublishLocallyCommand.Execute();
+
+            Assert.IsTrue(Directory.Exists(publishPath));
+
+            // Arrange
+            var createdFiles = Directory.GetFiles(publishPath, "*", SearchOption.AllDirectories).ToList();
+            var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
+
+            // Assert
+            Assert.AreEqual(createdFiles.Count(), previewFiles.Count() + 1);
+            Assert.AreEqual(1, createdFolders.Count(), previewFolders.Count());  // One subfolder was created
+
+            // Clean up
+            Directory.Delete(publishPath, true);
+        }
+
+        [Test]
         public void AssertPublishLocalHandleType()
         {
             var packageName = "SingleFolderPublishPackage";

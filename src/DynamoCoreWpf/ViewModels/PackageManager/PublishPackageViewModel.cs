@@ -893,6 +893,9 @@ namespace Dynamo.PackageManager
                 }
             }
         }
+        /// <summary>
+        /// The root directory of the package
+        /// </summary>
         private string CurrentPackageDirectory { get; set; }
         private static MetadataLoadContext sharedMetaDataLoadContext = null;
         /// <summary>
@@ -990,17 +993,14 @@ namespace Dynamo.PackageManager
             var itemsToAdd = CustomNodeDefinitions
                 .Select(def => new PackageItemRootViewModel(def))
                 .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
-                .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
+                .Concat(AdditionalFiles.Where(x => !x.ToLower().EndsWith("pkg.json")).Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
                 .Concat(CustomDyfFilepaths.Select((s) => new PackageItemRootViewModel((string)s.Key, (string)s.Value)))
                 .ToList()
                 .ToObservableCollection();
 
             var items = new Dictionary<string, PackageItemRootViewModel>();
-            if (!String.IsNullOrEmpty(this.CurrentPackageDirectory))
-            {
-                var v = 1;
-            }
-            if(!String.IsNullOrEmpty(RootFolder))
+
+            if (!String.IsNullOrEmpty(RootFolder))
             {
                 var root = new PackageItemRootViewModel(RootFolder);
                 items[RootFolder] = root;
@@ -1073,18 +1073,24 @@ namespace Dynamo.PackageManager
             return updatedItems;
         }
 
+        /// <summary>
+        /// Gets the list PackageItemRootViewModel items which will be at the root directory of the package with all the child items.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
         private List<PackageItemRootViewModel> GetRootItems(Dictionary<string, PackageItemRootViewModel> items)
         {
             var rootItems = items.Values.Where(x => !x.isChild).ToList();
             if (!rootItems.Any()) return rootItems;
+            var packageSourceDir = CurrentPackageDirectory ??= GetLongestCommonPrefix(items.Keys.ToArray());
 
-            var root = new PackageItemRootViewModel(CurrentPackageDirectory);
+            var root = new PackageItemRootViewModel(packageSourceDir);
             var updatedItems = new List<PackageItemRootViewModel>();
             //check each root item and create any missing connections
             foreach (var item in rootItems)
             {
                 var itemDir = new DirectoryInfo(item.DirectoryName);
-                if (!itemDir.Parent.FullName.Equals(CurrentPackageDirectory))
+                if (!itemDir.Parent.FullName.Equals(packageSourceDir))
                 {
                     root.AddChild(item);
                 }
@@ -1098,7 +1104,6 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// Test if path2 is subpath of path1
-        /// If it is, make sure all the intermediate file paths are created as separte PackageItemRootViewModel
         /// </summary>
         /// <param name="path1"></param>
         /// <param name="path2"></param>
@@ -1122,6 +1127,27 @@ namespace Dynamo.PackageManager
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Utility method to get the common file path, this may fail for files with the same partial name.
+        /// </summary>
+        /// <param name="s">A collection of filepaths</param>
+        /// <returns></returns>
+        internal string GetLongestCommonPrefix(string[] s)
+        {
+            int k = s[0].Length;
+            for (int i = 1; i < s.Length; i++)
+            {
+                k = Math.Min(k, s[i].Length);
+                for (int j = 0; j < k; j++)
+                    if (s[i][j] != s[0][j])
+                    {
+                        k = j;
+                        break;
+                    }
+            }
+            return Path.GetDirectoryName(s[0].Substring(0, k));
         }
 
         /// <summary>
@@ -2262,6 +2288,10 @@ namespace Dynamo.PackageManager
                     var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
                         DynamoModel.IsTestMode);
                     var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
+                    if (string.IsNullOrEmpty(Package.RootDirectory))
+                    {
+                        Package.RootDirectory = CurrentPackageDirectory;
+                    }
                     builder.BuildRetainDirectory(Package, publishPath, updatedFiles, MarkdownFiles);
                     UploadState = PackageUploadHandle.State.Uploaded;
                 }

@@ -69,13 +69,13 @@ namespace Dynamo.PackageManager
             
             var rootPath = Path.Combine(packagesDirectory, package.Name);
             var rootDir = fileSystem.TryCreateDirectory(rootPath);
-            var oldDir = package.RootDirectory;
+            var sourcePackageDir = package.RootDirectory;
             package.RootDirectory = rootDir.FullName;
 
             var dyfFiles = new List<string>();
 
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
-            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, oldDir, rootDir, out dyfFiles);
+            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, sourcePackageDir, rootDir, out dyfFiles);
             RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
             
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
@@ -213,7 +213,7 @@ namespace Dynamo.PackageManager
             fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 
-        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles, string oldDir, IDirectoryInfo rootDir, out List<string> dyfFiles)
+        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles, string sourcePackageDir, IDirectoryInfo rootDir, out List<string> dyfFiles)
         {
             dyfFiles = new List<string>();
 
@@ -227,7 +227,7 @@ namespace Dynamo.PackageManager
                         continue;
                     }
 
-                    var relativePath = file.Substring(oldDir.Length);
+                    var relativePath = file.Substring(sourcePackageDir.Length);
 
                     // Ensure the relative path starts with a directory separator.
                     if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
