@@ -5,4 +5,4 @@ In the example below, two halves of a T-Spline surface are joined into one using
 ___
 ## Example File
 
-![TSplineSurface.WeldCoincidentVertices](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldCoincidentVertices_img.jpg)
+![TSplineSurface.WeldCoincidentVertices](./UZA22A4OYIXSIP3U5CUGNZ3WBDHIEMOS2MYI5GKTJJJFBTGI5JTA_img.jpg)
