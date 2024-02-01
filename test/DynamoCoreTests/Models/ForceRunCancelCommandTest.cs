@@ -21,7 +21,7 @@ namespace Dynamo.Tests.ModelsTest
         {
             //Arrange
             string wspath = Path.Combine(TestDirectory, @"core\callsite\RebindingSingleDimension.dyn");
-            var fileCommand = new DynamoModel.OpenFileCommand(wspath, false);
+            var fileCommand = new DynamoModel.OpenFileCommand(wspath);
 
             var runCancelCommand = new DynamoModel.ForceRunCancelCommand(false, false);
             CurrentDynamoModel.ExecuteCommand(runCancelCommand);

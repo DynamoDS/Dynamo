@@ -52,7 +52,7 @@ namespace Dynamo.Tests.Engine
 
             //Act
             //Internally this will execute the UpdateGraph() method
-            var commandFile = new DynamoModel.OpenFileCommand(openPath2, false);
+            var commandFile = new DynamoModel.OpenFileCommand(openPath2);
             CurrentDynamoModel.ExecuteCommand(commandFile);
 
 

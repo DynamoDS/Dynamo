@@ -68,7 +68,7 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoModel.OpenFileCommand openFile =
-                        new DynamoModel.OpenFileCommand(customNodeFilePath, false);
+                        new DynamoModel.OpenFileCommand(customNodeFilePath);
 
                     DynamoViewModel.ExecuteCommand(openFile);
                 }));

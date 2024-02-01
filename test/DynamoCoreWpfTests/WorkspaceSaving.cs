@@ -442,7 +442,7 @@ namespace Dynamo.Tests
             //attach handler to the save request
             ViewModel.RequestUserSaveWorkflow += handler;
             //send the command
-            ViewModel.OpenIfSavedCommand.Execute(new Dynamo.Models.DynamoModel.OpenFileCommand(openPath, false));
+            ViewModel.OpenIfSavedCommand.Execute(new Dynamo.Models.DynamoModel.OpenFileCommand(openPath));
 
             //dispose handler
             ViewModel.RequestUserSaveWorkflow -= handler;
@@ -492,7 +492,7 @@ namespace Dynamo.Tests
             //openPath
             string openPath = Path.Combine(TestDirectory, (@"UI\GroupTest.dyn"));
             //send the command
-            ViewModel.OpenIfSavedCommand.Execute(new Dynamo.Models.DynamoModel.OpenFileCommand(openPath, false));
+            ViewModel.OpenIfSavedCommand.Execute(new Dynamo.Models.DynamoModel.OpenFileCommand(openPath));
 
             Assert.GreaterOrEqual(2, GetModel().CurrentWorkspace.Nodes.ToList().Count());
 
