@@ -7,4 +7,4 @@ In the example below, two T-Spline Surfaces are created through `TSplineSurface.
 ___
 ## Example File
 
-![TSplineTopology.BorderVertices](./Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.BorderVertices_img.jpg)
+![TSplineTopology.BorderVertices](./HQ6POKIVNCM33NLZR7L63JAH22EKXEGGTWB4ZJMFEMLFXZYJDPHQ_img.jpg)
