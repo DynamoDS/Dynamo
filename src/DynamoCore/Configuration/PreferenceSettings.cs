@@ -1145,9 +1145,11 @@ namespace Dynamo.Configuration
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                NamespacesToExcludeFromLibrary.Add(
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
-                );
+                NamespacesToExcludeFromLibrary = new List<string>()
+                {
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel"
+                };  
                 NamespacesToExcludeFromLibrarySpecified = true;
             }
         }
