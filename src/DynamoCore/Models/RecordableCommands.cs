@@ -511,7 +511,7 @@ namespace Dynamo.Models
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
                 string xmlFilePath = TryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
-                return new OpenFileCommand(xmlFilePath, false);
+                return new OpenFileCommand(xmlFilePath);
             }
 
             #endregion
