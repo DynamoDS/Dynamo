@@ -8,4 +8,4 @@ The nodes `TSplineVertex.UVNFrame` and `TSplineUVNFrame.Position` are used to hi
 ___
 ## Example File
 
-![TSplineTopology.TPointVertices](./Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.TPointVertices_img.jpg)
+![TSplineTopology.TPointVertices](./3JL6REDTXILJYKG3YL47NDNEA5YHNLEAYOO3JNMRUUBMWI4GDGHA_img.jpg)
