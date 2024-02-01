@@ -1,0 +1,79 @@
+# Runs on completion of Dynamo Bin Diff workflow
+#
+# - Adds Bin Diff result as comment to Pull Request
+# - Deletes caches created by Bin Diff job
+name: Dynamo Post Bin Diff
+
+on:
+  workflow_run:
+    workflows: [Dynamo Bin Diff]
+    types:
+      - completed
+
+jobs:
+  pr_comment:
+    name: Pull Request Comment
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Download Pull Request Data
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          name: pr_data
+          run_id: ${{ github.event.workflow_run.id }}
+          path: ${{ github.workspace }}/pr
+      - name: Download Bin Diff Result
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          name: bin_diff_result
+          run_id: ${{ github.event.workflow_run.id }}
+          path: ${{ github.workspace }}/bin_diff_result
+      - name: Set Details
+        id: set_details
+        run: |
+          echo "PR_NUMBER=$(cat ${{ github.workspace }}/pr/pr_number.txt)" >> $GITHUB_OUTPUT
+          echo "DIFF=$(cat ${{ github.workspace }}/bin_diff_result/result.txt)" >> $GITHUB_OUTPUT
+          echo "TIMESTAMP=$(date +%Y-%m-%d-%H:%M:%S)" >> $GITHUB_OUTPUT
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: find_comment
+        with:
+          issue-number: ${{ steps.set_details.outputs.PR_NUMBER }}
+          comment-author: github-actions[bot]
+          body-includes: Files Added/Deleted
+          direction: last
+      - name: Create comment
+        if: steps.find_comment.outputs.comment-id == '' && steps.set_details.outputs.DIFF != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ steps.set_details.outputs.PR_NUMBER }}
+          body: |
+            ${{ steps.set_details.outputs.DIFF }}
+      - name: Update comment
+        if: steps.find_comment.outputs.comment-id != '' && steps.set_details.outputs.DIFF != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            ${{ steps.set_details.outputs.DIFF }}
+            (♻️ Updated: ${{ steps.set_details.outputs.TIMESTAMP }})
+      - name: Update comment as resolved
+        if: steps.find_comment.outputs.comment-id != '' && steps.set_details.outputs.DIFF == ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            :white_check_mark: **Bin Diff Issue Resolved.**
+            (♻️ Updated: ${{ steps.set_details.outputs.TIMESTAMP }})
+  delete_cache:
+    name: Delete Cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete Cache
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh cache delete ${{ github.event.workflow_run.id }}-${{ github.event.workflow_run.run_attempt }}-current --repo ${{ github.repository}} || true
+          gh cache delete ${{ github.event.workflow_run.id }}-${{ github.event.workflow_run.run_attempt }}-master --repo ${{ github.repository}} || true

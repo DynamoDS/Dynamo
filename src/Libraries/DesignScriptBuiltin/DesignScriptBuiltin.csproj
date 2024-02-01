@@ -15,7 +15,7 @@
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+  <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
@@ -49,7 +49,7 @@
   </ItemGroup>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DesignScriptBuiltinImages.resx" OutputResources="$(ProjectDir)DesignScriptBuiltinImages.resources" References="$(SystemDrawingDllPath)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DesignScriptBuiltinImages.resx" OutputResources="$(ProjectDir)DesignScriptBuiltinImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DesignScriptBuiltinImages.resources" OutputAssembly="$(OutDir)DesignScriptBuiltin.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

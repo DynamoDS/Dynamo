@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Dynamo.Logging
 {
@@ -444,6 +446,12 @@ namespace Dynamo.Logging
         Export
     }
 
+    public enum HeartBeatType
+    {
+        User,
+        Machine
+    }
+
     /// <summary>
     /// Implements analytics and logging functions. This interface is defined 
     /// for internal use only to implement analytics functions and mock the tests.
@@ -506,6 +514,13 @@ namespace Dynamo.Logging
         void TrackException(Exception ex, bool isFatal);
 
         /// <summary>
+        /// This API is used to track user/machine's activity status.
+        /// </summary>
+        /// <param name="activityType">Value must be: machine or user. If no value is provided the API will default to user activity type.</param>
+        /// <returns>0 if successful, otherwise returns an error code.</returns>
+        void TrackActivityStatus(string activityType);
+
+        /// <summary>
         /// Creates a new timed event with start state and tracks its start.
         /// Disposing the returnd event will record the event completion.
         /// </summary>
@@ -517,6 +532,17 @@ namespace Dynamo.Logging
         IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value);
 
         /// <summary>
+        /// Creates a new task timed event with start state and tracks its start.
+        /// After task is compoleted, disposing the returnd event will record the event completion.
+        /// </summary>
+        /// <param name="category">Event category</param>
+        /// <param name="variable">Timed varaible name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <returns>Event as IDisposable</returns>
+        Task<IDisposable> CreateTaskTimedEvent(Categories category, string variable, string description, int? value);
+
+        /// <summary>
         /// Creates a new command event of the given name. Start of the 
         /// command is tracked. When the event is disposed, it's completion is tracked.
         /// </summary>
@@ -525,6 +551,23 @@ namespace Dynamo.Logging
         /// <param name="value">A metric value associated with the event</param>
         /// <returns>Event as IDisposable</returns>
         IDisposable CreateCommandEvent(string name, string description, int? value);
+
+        /// <summary>
+        /// Creates a new task command event of the given name. Start of the 
+        /// command is tracked. When the task is completed and the event is disposed, it's completion is tracked.
+        /// </summary>
+        /// <param name="name">Command name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <param name="parameters">A dictionary of (string, object) associated with the event</param>
+        /// <returns>Event as IDisposable</returns>
+        Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null);
+
+        /// <summary>
+        /// Waits for the given task to end so that it can dispose the event and
+        /// complete the tracking.
+        /// </summary>
+        void EndEventTask(Task<IDisposable> taskToEnd);
 
         /// <summary>
         /// Creates a new file operation event and tracks the start of the event.
@@ -538,10 +581,14 @@ namespace Dynamo.Logging
         IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description);
 
         /// <summary>
-        /// Logs usage data
+        /// Creates a new file operation task event and tracks the start of the event.
+        /// After the task is completed, disposing the returned event will record its completion.
         /// </summary>
-        /// <param name="tag">Usage tag</param>
-        /// <param name="data">Usage data</param>
-        void LogPiiInfo(string tag, string data);
+        /// <param name="filepath">File path</param>
+        /// <param name="operation">File operation</param>
+        /// <param name="size">Size parameter</param>
+        /// <param name="description">Event description</param>
+        /// <returns>Event as IDisposable</returns>
+        Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description);
     }
 }

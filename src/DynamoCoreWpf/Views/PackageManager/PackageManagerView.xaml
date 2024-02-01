@@ -7,14 +7,15 @@
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
         xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
         xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         Closed="WindowClosed"
         mc:Ignorable="d"
-        Width="1076"
-        Height="718"
+        Width="{Binding PackageManagerViewModel.Width}"
+        Height="{Binding PackageManagerViewModel.Height}"
         MinWidth="810"
         MinHeight="540"
         ResizeMode="NoResize"
@@ -32,7 +33,7 @@
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
+            
             <Style x:Key="PkgMngTextBlockStyle" TargetType="TextBlock">
                 <Setter Property="Width" Value="Auto" />
                 <Setter Property="Margin" Value="0 5" />
@@ -93,7 +94,10 @@
                 <RowDefinition Height="55"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-
+            <!--Invisible border to help dragging the main window-->
+            <Border Grid.Row="0"
+                    Background="Transparent"
+                    MouseDown="PackageManagerPanel_MouseDown"/>
             <!--Section/Row of the TitleBar it contains a TextBlock for the windows title and the close button-->
             <!--The CloseButtonStyle and Color Styles are located in the DynamoModer.xaml file-->
             <Grid x:Name="TitleBar"
@@ -105,16 +109,34 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="46" />
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="HeaderTitle"
+                <StackPanel Grid.Column="0"
+                            VerticalAlignment="Top"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left">
+                    <TextBlock x:Name="HeaderTitle"
                            Text="{x:Static p:Resources.PackageManagerTitle}"
                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                           Grid.Column="0"
                            Margin="14,16,0,0"
                            TextAlignment="Left"
-                           FontSize="18"
+                           FontSize="20"
                            FontFamily="Helvetica"
-                           HorizontalAlignment="Left"
-                           Width="459" />
+                           HorizontalAlignment="Left" />
+                    <Label HorizontalAlignment="Left" 
+                           DockPanel.Dock="Left"
+                           Name="Titleinfo" 
+                           VerticalAlignment="Top" 
+                           Height="26" 
+                           Width="26" 
+                           Margin="10,16,0,0"
+                           MouseLeftButtonDown="OnMoreInfoClicked">
+                        <Label.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageDocTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Label.ToolTip>
+                        <Label.Content>
+                            <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="Regular_QuestionCircle" Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                        </Label.Content>
+                    </Label>
+                </StackPanel>
                 <StackPanel Grid.Column="1"
                             VerticalAlignment="Top"
                             Orientation="Horizontal"
@@ -149,7 +171,8 @@
                                 Background="{StaticResource PreferencesWindowBackgroundColor}">
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerSearchTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown">
                             <!--Search Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -229,7 +252,9 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerPublishTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown"
+                                 x:Name="publishTab">
                             <!--Publish Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -249,7 +274,8 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerInstalledPackagesTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown">
                             <!--Installed Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -307,7 +333,8 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerMyPackagesTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown">
                             <!--My Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -377,13 +404,37 @@
                                                Height="Auto"
                                                Margin="0 0 0 50"
                                                Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/PackageManager/empty-state-first-use-light-gray.png"></Image>
-                                        <TextBlock Style="{StaticResource LabelStyle}"
-                                                   FontSize="18px"
-                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}" />
-                                        <TextBlock Style="{StaticResource SubLabelStyle}"
-                                                   FontSize="13px"
-                                                   HorizontalAlignment="Center"
-                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}" />
+                                        <TextBlock FontSize="18px">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource LabelStyle}">
+                                                    <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}"/> 
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="True">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="False">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageUserNotSignedPackagesMessage}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock FontSize="13px"
+                                                   HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource SubLabelStyle}">
+                                                    <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}"/> 
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="True">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="False">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackageManagerUserNotSignedPackagesSubMessage}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                         <Button Content="{x:Static p:Resources.PackageManagerPublishPackageButton}"
                                                 Margin="0 25"
                                                 Background="#0696D7"
@@ -459,7 +510,8 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerPackageSettingsTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown">
                             <!--Package Settings Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -479,7 +531,7 @@
                                                 HorizontalAlignment="Stretch">
                                         <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                   FontSize="13"
+                                                   FontSize="14"
                                                    Margin="0 5 0 20">
                                             <Run Text="{x:Static p:Resources.PackageManagerSettingsRunPrefix}" />
                                             <Hyperlink Click="OnPackageManagerSettingsHyperlinkClicked"
@@ -491,7 +543,7 @@
                                         </TextBlock>
                                         <Label Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}"
                                                Padding="5,5,5,5"
-                                               FontSize="13"
+                                               FontSize="14"
                                                Foreground="{StaticResource PreferencesWindowFontColor}">
                                             <Label.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"
@@ -511,7 +563,7 @@
 
                                         <Label Content="{x:Static p:Resources.PackagePathPreferencesTitle}"
                                                Padding="5,5,5,5"
-                                               FontSize="13"
+                                               FontSize="14"
                                                Foreground="{StaticResource PreferencesWindowFontColor}">
                                             <Label.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"

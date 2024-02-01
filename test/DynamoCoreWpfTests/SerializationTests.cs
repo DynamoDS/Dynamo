@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
@@ -854,7 +855,7 @@ namespace DynamoCoreWpfTests
                 var valueB = b.NodeViewDataMap[kvp.Key];
                 Assert.AreEqual(valueA, valueB,
                 string.Format("Node View Data:{0} value, {1} is not equal to {2}",
-                a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
+                a.NodeViewDataMap[kvp.Key].Name, JsonSerializer.Serialize(valueA), JsonSerializer.Serialize(valueB)));
             }
         }
 
@@ -901,7 +902,7 @@ namespace DynamoCoreWpfTests
 
                 Assert.AreEqual(valueA, valueB,
                 string.Format("Node View Data:{0} value, {1} is not equal to {2}",
-                a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
+                a.NodeViewDataMap[kvp.Key].Name, JsonSerializer.Serialize(valueA), JsonSerializer.Serialize(valueB)));
             }
         }
 
@@ -962,7 +963,7 @@ namespace DynamoCoreWpfTests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude"), Category("Failure")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationTest(string filePath)
         {
             DoWorkspaceOpenAndCompareView(filePath,
@@ -981,7 +982,7 @@ namespace DynamoCoreWpfTests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude"), Category("Failure")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
@@ -1067,7 +1068,7 @@ namespace DynamoCoreWpfTests
             File.Delete(savePath);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void AllTypesSerialize()
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");

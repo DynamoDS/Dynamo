@@ -5,5 +5,5 @@ Nurbs Curve By Control Points inputs a list of control points to draw the Nurbs 
 ___
 ## Example File
 
-![ByControlPoints (points, degree, closeCurve)](./Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(points,%20degree,%20closeCurve)_img.jpg)
+![ByControlPoints (points, degree, closeCurve)](./EEK2MZQNIS3F4JP5TCEY6FFPZJ6INBUWD2P7FWPXS6O7IBVMTZCQ_img.jpg)
 

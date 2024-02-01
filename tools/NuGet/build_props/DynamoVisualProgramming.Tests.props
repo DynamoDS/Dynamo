@@ -1,0 +1,9 @@
+<Project>
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)TestServices.dll.config">
+            <Link>TestServices.dll.config</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <Visible>True</Visible>
+        </Content>
+    </ItemGroup>
+</Project>

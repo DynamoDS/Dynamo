@@ -387,8 +387,8 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "`!\"£$%^&*()_+-[{]}#~'@;:|\\,<.>/? Special character node",
         "Id": "da61a0ad7b024ec3bc05c63503a70358",
+        "Name": "`!£$%^&*()_+-[{]}#~'@;:|\\,<.>/? Special character node",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,

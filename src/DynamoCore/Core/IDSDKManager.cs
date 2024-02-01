@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using Autodesk.IDSDK;
+using Dynamo.Configuration;
 using Greg;
 using Greg.AuthProviders;
 using RestSharp;
@@ -10,7 +11,7 @@ namespace Dynamo.Core
     /// <summary>
     /// The class to provide auth APIs for IDSDK related methods.
     /// </summary>
-    public class IDSDKManager : IOAuth2AuthProvider, IOAuth2AccessTokenProvider
+    public class IDSDKManager : IOAuth2AuthProvider, IOAuth2AccessTokenProvider, IDisposable
     {
         /// <summary>
         /// Used by the auth provider to request authentication.
@@ -228,9 +229,11 @@ namespace Dynamo.Core
                         }
 
                         bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
-                        if (ret) 
+                        if (ret)
                         {
-                            ret = SetProductConfigs("Dynamo", server, client_id);
+                            Client.LogoutCompleteEvent += AuthCompleteEventHandler;
+                            Client.LoginCompleteEvent += AuthCompleteEventHandler;
+                            ret = SetProductConfigs(Configurations.DynamoAsString, server, client_id);
                             Client.SetServer(server);
                             return ret;
                         }
@@ -253,6 +256,11 @@ namespace Dynamo.Core
             }
             return false;
         }
+        public void Dispose()
+        {
+            Client.LoginCompleteEvent -= AuthCompleteEventHandler;
+            Client.LogoutCompleteEvent -= AuthCompleteEventHandler;
+        }
         private bool GetClientIDAndServer(out idsdk_server server, out string client_id)
         {
             server = idsdk_server.IDSDK_PRODUCTION_SERVER;
@@ -272,6 +280,12 @@ namespace Dynamo.Core
                 }
             }
             return !string.IsNullOrEmpty(client_id);
+        }
+
+        // Event handler for LogoutCompleteEvent and LoginCompleteEvent that is thrown whenever the user's auth state changes.
+        private void AuthCompleteEventHandler(object sender, Client.TypedEventArgs e)
+        {
+            OnLoginStateChanged(LoginState);
         }
         #endregion
     }

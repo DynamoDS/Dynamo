@@ -75,48 +75,6 @@ namespace Dynamo.Applications
         /// </summary>
         public static event Action<string> ASMPreloadFailure;
 
-#if NET6_0_OR_GREATER
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
-        internal class SandboxLookUp : DynamoLookUp
-        {
-            public override IEnumerable<string> GetDynamoInstallLocations()
-            {
-                const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
-                //Open HKLM for 64bit registry
-                var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-                //Open Windows/CurrentVersion/Uninstall registry key
-                regKey = regKey.OpenSubKey(regKey64);
-
-                //Get "InstallLocation" value as string for all the subkey that starts with "Dynamo"
-                return regKey.GetSubKeyNames().Where(s => s.StartsWith("Dynamo")).Select(
-                    (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
-            }
-        }
-
-        /// <summary>
-        ///this class is left unimplemented,unclear how to
-        ///lookup installation locations on nix/mac
-        /// </summary>
-        internal class CLILookUp : DynamoLookUp
-        {
-            public override IEnumerable<string> GetDynamoInstallLocations()
-            {
-                throw new NotImplementedException();
-                int p = (int)Environment.OSVersion.Platform;
-                if ((p == 4) || (p == 6) || (p == 128))
-                {
-                    Console.WriteLine("Running on Unix");
-                }
-                else
-                {
-                    Console.WriteLine("NOT running on Unix");
-                }
-
-                return null;
-            }
-        }
-
         public struct CommandLineArguments
         {
             public static CommandLineArguments Parse(string[] args)
@@ -173,8 +131,6 @@ namespace Dynamo.Applications
             public bool NoConsole { get; set; }
             public string UserDataFolder { get; set; }
             public string CommonDataFolder { get; set; }
-            [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
-            public string HostName { get; set; }
             public bool DisableAnalytics { get; set; }
             public bool NoNetworkMode { get; set; }
             public HostAnalyticsInfo AnalyticsInfo { get; set; }
@@ -209,22 +165,6 @@ namespace Dynamo.Applications
             preloader.Preload();
             geometryFactoryPath = preloader.GeometryFactoryPath;
             preloaderLocation = preloader.PreloaderLocation;
-        }
-
-        /// <summary>
-        ///if we are building a model for CLI mode, then we don't want to start an updateManager
-        ///for now, building an updatemanager instance requires finding Dynamo install location
-        ///which if we are running on mac os or *nix will use different logic then SandboxLookup 
-        /// </summary>
-#if NET6_0_OR_GREATER
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
-        private static IUpdateManager InitializeUpdateManager()
-        {
-            var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
-            var um = new Dynamo.Updates.UpdateManager(cfg);
-            Debug.Assert(cfg.DynamoLookUp != null);
-            return um;
         }
 
         /// <summary>
@@ -391,7 +331,6 @@ namespace Dynamo.Applications
                 HostAnalyticsInfo = info,
                 CLIMode = CLImode,
                 AuthProvider = CLImode || noNetworkMode ? null : new Core.IDSDKManager(),
-                UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
                 PathResolver = CreatePathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,

@@ -12,8 +12,14 @@ namespace Dynamo.PackageManager
         PackageUpload NewPackageUpload(Package package, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownFiles,
             PackageUploadHandle handle);
 
+        PackageUpload NewPackageRetainUpload(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles,
+            PackageUploadHandle handle);
+
         PackageVersionUpload NewPackageVersionUpload(Package package, string packagesDirectory,
             IEnumerable<string> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle);
+
+        PackageVersionUpload NewPackageVersionRetainUpload(Package package, string packagesDirectory,
+            IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle);
     }
 
     internal class PackageUploadBuilder : IPackageUploadBuilder
@@ -78,6 +84,28 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Build a new package and upload retaining folder structure
+        /// TODO: Should that be a separate method or an override? Break API ok?
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="packagesDirectory"></param>
+        /// <param name="files"></param>
+        /// <param name="markdownFiles"></param>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public PackageUpload NewPackageRetainUpload(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
+
+            return new PackageUpload(NewRequestBody(package),
+                BuildAndZip(package, packagesDirectory, files, markdownFiles, handle).Name);
+        }
+
+        /// <summary>
         /// Build a new version of the package and upload
         /// </summary>
         /// <param name="package"></param>
@@ -97,6 +125,26 @@ namespace Dynamo.PackageManager
             return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, files, markdownFiles, handle).Name);
         }
 
+        /// <summary>
+        /// Build a new version of the package and upload retaining folder structure
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="packagesDirectory"></param>
+        /// <param name="files"></param>
+        /// <param name="markdownFiles"></param>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public PackageVersionUpload NewPackageVersionRetainUpload(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
+
+            return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, files, markdownFiles, handle).Name);
+        }
+
         #endregion
 
         #region Private Class Methods
@@ -106,6 +154,17 @@ namespace Dynamo.PackageManager
             handle.UploadState = PackageUploadHandle.State.Copying;
 
             var dir = builder.BuildDirectory(package, packagesDirectory, files, markdownFiles);
+
+            handle.UploadState = PackageUploadHandle.State.Compressing;
+
+            return Zip(dir);
+        }
+
+        private IFileInfo BuildAndZip(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            handle.UploadState = PackageUploadHandle.State.Copying;
+
+            var dir = builder.BuildRetainDirectory(package, packagesDirectory, files, markdownFiles);
 
             handle.UploadState = PackageUploadHandle.State.Compressing;
 

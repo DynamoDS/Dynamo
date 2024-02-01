@@ -73,6 +73,8 @@ namespace Dynamo.Utilities
         /// </summary>
         internal static readonly LuceneStartConfig DefaultPkgIndexStartConfig = new LuceneStartConfig(LuceneSearchUtility.LuceneStorage.FILE_SYSTEM, LuceneConfig.PackagesIndexingDirectory);
 
+        private bool hasEmptySpaces { get; set; }
+
         public enum LuceneStorage
         {
             //Lucene Storage will be located in RAM and all the info indexed will be lost when Dynamo app is closed
@@ -80,6 +82,18 @@ namespace Dynamo.Utilities
 
             //Lucene Storage will be located in the local File System and the files will remain in ...AppData\Roaming\Dynamo\Dynamo Core\2.19\Index folder
             FILE_SYSTEM
+        }
+
+        /// <summary>
+        /// This enum will be used to identify which can of search should be executed based in the user search criteria 
+        /// </summary>
+        public enum SearchType
+        {
+            //Normal search using just one word matching a specific node name
+            Normal,
+
+            //Search by category using the "." character for example "list.re"
+            ByCategory
         }
 
         // Used for creating the StandardAnalyzer
@@ -163,7 +177,9 @@ namespace Dynamo.Utilities
             if (DynamoModel.IsTestMode && startConfig.StorageType == LuceneStorage.FILE_SYSTEM) return null;
 
             var name = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Name), string.Empty, Field.Store.YES);
+            var nameSplitted = new TextField(nameof(LuceneConfig.NodeFieldsEnum.NameSplitted), string.Empty, Field.Store.YES);
             var fullCategory = new TextField(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
+            var categorySplitted = new TextField(nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted), string.Empty, Field.Store.YES);          
             var description = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Description), string.Empty, Field.Store.YES);
             var keywords = new TextField(nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
             var docName = new StringField(nameof(LuceneConfig.NodeFieldsEnum.DocName), string.Empty, Field.Store.YES);
@@ -172,8 +188,10 @@ namespace Dynamo.Utilities
 
             var d = new Document()
             {
-                fullCategory,
                 name,
+                nameSplitted,
+                fullCategory,
+                categorySplitted,                
                 description,
                 keywords,
                 fullDoc,
@@ -260,7 +278,14 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         internal string CreateSearchQuery(string[] fields, string SearchTerm)
         {
+            //By Default the search will be normal
+            SearchType searchType = SearchType.Normal;
             int fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMinEdits;
+            hasEmptySpaces = false;
+
+            //Max number of nodes allowed in the search when is a ByEmptySpace search
+            const int MaxNodeNamesRepeated = 20;
+
             // Use a larger max edit value - more tolerant with typo when search term is longer than threshold
             if (SearchTerm.Length > LuceneConfig.FuzzySearchMaxEditsThreshold)
             {
@@ -270,25 +295,75 @@ namespace Dynamo.Utilities
             var booleanQuery = new BooleanQuery();
             string searchTerm = QueryParser.Escape(SearchTerm);
 
+            if (searchTerm.Contains('.'))
+                searchType = SearchType.ByCategory;
+            else if (searchTerm.Contains(' '))
+                hasEmptySpaces = true;
+            else
+                searchType = SearchType.Normal;
+
+            var trimmedSearchTerm = hasEmptySpaces == true ? searchTerm.Replace(" ", "") : searchTerm;
+
             foreach (string f in fields)
             {
+                //Needs to be again due that now a query can contain different values per field (e.g. CategorySplitted:list, Name:tr)
+                searchTerm = QueryParser.Escape(SearchTerm);
+                if (searchType == SearchType.ByCategory)
+                {
+                    //This code section should be only executed if the search criteria is CategoryBased like "category.nodename"
+                    if (f != nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) &&
+                        f != nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                        continue;
+
+                    var categorySearchBased = searchTerm.Split('.');
+                    //In the case the search criteria is like "Core.File.FileSystem.a" it will take only the last two sections Category=FileSystem and Name=a*
+                    if (categorySearchBased.Length > 1 && !string.IsNullOrEmpty(categorySearchBased[categorySearchBased.Length - 2]))
+                    {
+                        if (f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                            searchTerm = categorySearchBased[categorySearchBased.Length - 2];
+                        else
+                            searchTerm = categorySearchBased[categorySearchBased.Length - 1];
+                    }                   
+                }
+
+                //For normal search we don't consider the fields NameSplitted and CategorySplitted
+                if ((f == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ||
+                    f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted)) && searchType != SearchType.ByCategory)
+                    continue;
+
+                //This case is for when the user type something like "list.", I mean, not specifying the node name or part of it
+                if (string.IsNullOrEmpty(searchTerm))
+                    continue;
+
                 FuzzyQuery fuzzyQuery;
                 if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
                 {
-                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicMaxEdits);
+                    fuzzyQuery = new FuzzyQuery(new Term(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm), fuzzyLogicMaxEdits);
                     booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
                 }
 
-                var fieldQuery = CalculateFieldWeight(f, searchTerm);
-                var wildcardQuery = CalculateFieldWeight(f, searchTerm, true);
+                var fieldQuery = CalculateFieldWeight(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm);
+                var wildcardQuery = CalculateFieldWeight(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm, true);
 
-                booleanQuery.Add(fieldQuery, Occur.SHOULD);
-                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                if (searchType == SearchType.ByCategory && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                {
+                    booleanQuery.Add(fieldQuery, Occur.MUST);
+                    booleanQuery.Add(wildcardQuery, Occur.MUST);
+                }
+                else
+                {
+                    booleanQuery.Add(fieldQuery, Occur.SHOULD);
+                    booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                }
 
-                if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
+                if (searchTerm.Contains(' '))
                 {
                     foreach (string s in searchTerm.Split(' ', '.'))
                     {
+                        //If is a ByEmptySpace search and the splitted words match with more than MaxNodeNamesRepeated nodes then the word is skipped
+                        int nodesFrequency = dynamoModel.SearchModel.Entries.Where(entry => entry.Name.ToLower().Contains(s) && !string.IsNullOrEmpty(s)).Count();
+                        if (nodesFrequency > MaxNodeNamesRepeated) continue;
+
                         if (string.IsNullOrEmpty(s)) continue;
 
                         if (s.Length > LuceneConfig.FuzzySearchMinimalTermLength)
@@ -317,8 +392,11 @@ namespace Dynamo.Utilities
         {
             WildcardQuery query;
 
+            //In case we are weighting the NameSplitted field then means that is a search based on Category of the type "cat.node" so we will be using the wilcard "category.node*" otherwise will be the normal wildcard
+            var termText = fieldName == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ? searchTerm + "*" : "*" + searchTerm + "*";
+
             query = isWildcard == false ?
-                new WildcardQuery(new Term(fieldName, searchTerm)) : new WildcardQuery(new Term(fieldName, "*" + searchTerm + "*"));
+                new WildcardQuery(new Term(fieldName, searchTerm)) : new WildcardQuery(new Term(fieldName, termText));
 
             switch (fieldName)
             {
@@ -326,9 +404,19 @@ namespace Dynamo.Utilities
                     query.Boost = isWildcard == false?
                         LuceneConfig.SearchNameWeight :  LuceneConfig.WildcardsSearchNameWeight;
                     break;
+                case nameof(LuceneConfig.NodeFieldsEnum.NameSplitted):
+                    //Under this case the NameSplitted field will have less weight than CategorySplitted
+                    query.Boost = isWildcard == false ?
+                        LuceneConfig.SearchCategoryWeight : LuceneConfig.WildcardsSearchCategoryWeight;
+                    break;
                 case nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName):
                     query.Boost = isWildcard == false?
                         LuceneConfig.SearchCategoryWeight : LuceneConfig.WildcardsSearchCategoryWeight;
+                    break;
+                case nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted):
+                    //Under this case the CategorySplitted field will have more weight than NameSplitted
+                    query.Boost = isWildcard == false ?
+                        LuceneConfig.SearchNameWeight : LuceneConfig.WildcardsSearchNameWeight;
                     break;
                 case nameof(LuceneConfig.NodeFieldsEnum.Description):
                     query.Boost = isWildcard == false ?
@@ -431,7 +519,18 @@ namespace Dynamo.Utilities
             if (writer == null) return;
 
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+
+            var categoryParts = node.FullCategoryName.Split('.');
+            string categoryParsed = categoryParts.Length > 1 ? categoryParts[categoryParts.Length - 1] : node.FullCategoryName;
+            //In case the search criteria is like "filesystem.replace" we will be storing the value "filesystem" inside the CategorySplitted field
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted), categoryParsed);
+
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+
+            var nameParts = node.Name.Split('.');
+            string nameParsed = nameParts.Length > 1 ? nameParts[nameParts.Length - 1] : node.Name;
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.NameSplitted), nameParsed);
+
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
             if (node.SearchKeywords.Count > 0)
             {

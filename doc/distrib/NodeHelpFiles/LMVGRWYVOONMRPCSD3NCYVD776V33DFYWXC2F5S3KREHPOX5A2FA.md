@@ -5,4 +5,4 @@ Rectangle.ByWidthLength will create a rectangle at the given coordinate system w
 ___
 ## Example File
 
-![Rectangle.ByWidthLength](./Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(coordinateSystem,%20width,%20length)_img.png)
+![Rectangle.ByWidthLength](./LMVGRWYVOONMRPCSD3NCYVD776V33DFYWXC2F5S3KREHPOX5A2FA_img.png)

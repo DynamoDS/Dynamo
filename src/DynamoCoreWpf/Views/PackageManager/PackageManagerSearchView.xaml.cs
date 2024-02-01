@@ -69,11 +69,10 @@ namespace Dynamo.PackageManager.UI
         }
 
         /// <summary>
-        /// TODO: mark private in Dynamo 3.0
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void ItemStackPanel_MouseDown(object sender, RoutedEventArgs e)
+        private void ItemStackPanel_MouseDown(object sender, RoutedEventArgs e)
         {
             var lbi = sender as StackPanel;
             if (lbi == null) return;
@@ -81,7 +80,7 @@ namespace Dynamo.PackageManager.UI
             var viewModel = lbi.DataContext as PackageManagerSearchElementViewModel;
             if (viewModel == null) return;
 
-            viewModel.Model.IsExpanded = !viewModel.Model.IsExpanded;
+            viewModel.SearchElementModel.IsExpanded = !viewModel.SearchElementModel.IsExpanded;
         }
 
         private void OnShowContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
@@ -190,7 +189,7 @@ namespace Dynamo.PackageManager.UI
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
-            ViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+            ViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
         }
 
         /// <summary>

@@ -196,17 +196,13 @@ namespace Dynamo.Tests
         public void TestAppNameSentToCER()
         {
             CurrentDynamoModel.HostName = null;
-            var name = CrashReportTool.GetHostAppName(CurrentDynamoModel);
+            var name = CrashReportTool.GetHostAppName();
             //if both hostname and hostinfo.hostname are null, then use proc name.
             Assert.True(name.Contains("testhost") ||  name.Contains("nunit-agent"));
-            CurrentDynamoModel.HostName = "dynamotestmock";
-            name = CrashReportTool.GetHostAppName(CurrentDynamoModel);
-            //use hostname over proc name
-            Assert.AreEqual(CurrentDynamoModel.HostName, name);
-            CurrentDynamoModel.HostAnalyticsInfo = new  HostAnalyticsInfo(){HostName = "123"};
-            name = CrashReportTool.GetHostAppName(CurrentDynamoModel);
+            DynamoModel.HostAnalyticsInfo = new  HostAnalyticsInfo(){HostName = "123"};
+            name = CrashReportTool.GetHostAppName();
             //prefer hostinfo.hostname over others.
-            Assert.AreEqual(CurrentDynamoModel.HostAnalyticsInfo.HostName, name);
+            Assert.AreEqual(DynamoModel.HostAnalyticsInfo.HostName, name);
         }
     }
 }

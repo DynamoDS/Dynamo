@@ -1,5 +1,8 @@
 ## In Depth
-Text note height is returned as a double. The height value is relative to the view scale.
+`Cone.Height` finds the height of a cone, which is equal to the distance between its start point and end point. 
+
+In the example below, we create a cone by specifying a start and end point, as well as a start and end radius. We can then extract the height of the cone with `Cone.Height`.
+
 ___
 ## Example File
 

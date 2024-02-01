@@ -1,5 +1,8 @@
 ## In Depth
-Room area is returned as a double.
+`Surface.Area` returns the area of a given surface. 
+
+In the example below, we create a surface by filling in a NurbsCurve. We then use `Surface.Area` to find the total area of this surface.
+
 ___
 ## Example File
 
