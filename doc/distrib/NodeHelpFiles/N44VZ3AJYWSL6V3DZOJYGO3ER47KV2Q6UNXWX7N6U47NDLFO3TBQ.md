@@ -8,4 +8,4 @@ In the example below, the `TSplineVertex.FunctionalValence` is used on two T-Poi
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.FunctionalValence_img.jpg)
+![Example](./N44VZ3AJYWSL6V3DZOJYGO3ER47KV2Q6UNXWX7N6U47NDLFO3TBQ_img.jpg)
