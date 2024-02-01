@@ -19,4 +19,4 @@ In the example below, two T-Spline planes are created and sets of edges and face
 
 ## Example File
 
-![BridgeFacesToEdges](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeFacesToEdges_img.gif)
+![BridgeFacesToEdges](./DVNDD4ZUEDM4QCH35SLRIEZJLS266CIRRB7MZMMNDBI5W6UPBSQA_img.gif)
