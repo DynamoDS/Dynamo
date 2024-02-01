@@ -1692,7 +1692,7 @@ namespace Dynamo.PackageManager
             // union with additional files
             files = files.Union(AdditionalFiles);
             // if we retain the folder structure, we don't want to lose assemblies in sub-folders
-            // othrewise we need to delete duplicate assemblies which will end up in the same `dll` folder
+            // otherwise we need to delete duplicate assemblies which will end up in the same `dll` folder
             files = RetainFolderStructureOverride && !IsPublishFromLocalPackage ?
                 files.Union(Assemblies.Select(x => x.LocalFilePath)) :
                 files.Union(Assemblies.Select(x => x.Assembly.Location));  
