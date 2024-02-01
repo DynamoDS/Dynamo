@@ -5,4 +5,4 @@ In the example below, a new T-Spline surface is created from two surfaces mirror
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCombinedTSplineSurfaces_img.jpg)
+![Example](./U35TWGXYHIE46AYX3QP45IXNCZJAFUT62AN4GKHWSYFDMJWZ2WZQ_img.jpg)
