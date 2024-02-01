@@ -5,4 +5,4 @@ In the example below, a single face of a box T-Spline surface is selected using 
 ___
 ## Example File
 
-![TSplineSurface.ExtrudeFacesAlongCurve](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeFacesAlongCurve_img.jpg)
+![TSplineSurface.ExtrudeFacesAlongCurve](./XTER6KGCJ3OP43RH5L4IEBVIW7JTSDB46DYI7BVE2UMG3DXB7HLQ_img.jpg)
