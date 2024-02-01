@@ -9,4 +9,4 @@ The nodes `TSplineFace.UVNFrame` and `TSplineUVNFrame.Position` are used to high
 ___
 ## Example File
 
-![TSplineSurface.SubdivideFaces](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SubdivideFaces_img.jpg)
+![TSplineSurface.SubdivideFaces](./WKY3SVAE74IVMZW7MVT4F5TGIUFXAGA2W2FN6Q6PACG3NH6AMVFA_img.jpg)
