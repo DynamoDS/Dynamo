@@ -12,4 +12,4 @@ In the example below, a T-Spline planar surface is created by three randomly gen
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneThreePoints_img.jpg)
+![Example](./SFTUBFPMM3AWPUQ6E6XPGTDHXANNIVC3ZHSMIP63ZGMSHIEQMWFQ_img.jpg)
