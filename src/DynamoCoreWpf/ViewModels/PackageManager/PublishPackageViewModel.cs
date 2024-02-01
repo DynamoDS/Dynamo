@@ -893,6 +893,7 @@ namespace Dynamo.PackageManager
                 }
             }
         }
+        private string CurrentPackageDirectory { get; set; }
         private static MetadataLoadContext sharedMetaDataLoadContext = null;
         /// <summary>
         /// A shared MetaDataLoadContext that is used for assembly inspection during package publishing.
@@ -995,7 +996,10 @@ namespace Dynamo.PackageManager
                 .ToObservableCollection();
 
             var items = new Dictionary<string, PackageItemRootViewModel>();
-
+            if (!String.IsNullOrEmpty(this.CurrentPackageDirectory))
+            {
+                var v = 1;
+            }
             if(!String.IsNullOrEmpty(RootFolder))
             {
                 var root = new PackageItemRootViewModel(RootFolder);
@@ -1022,7 +1026,7 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            var updatedItems = BindParentToChild(items);   
+            var updatedItems = BindParentToChild(items);
 
             updatedItems.AddRange(itemsToAdd.Where(pa => pa.DependencyType.Equals(DependencyType.CustomNode)));
 
@@ -1050,8 +1054,6 @@ namespace Dynamo.PackageManager
 
         private List<PackageItemRootViewModel> BindParentToChild(Dictionary<string, PackageItemRootViewModel> items)
         {
-            var updatedItems = new List<PackageItemRootViewModel>();
-
             foreach (var parent in items)
             {
                 foreach(var child in items)
@@ -1067,9 +1069,32 @@ namespace Dynamo.PackageManager
             }
 
             // Only add the folder items, they contain the files
-            updatedItems = items.Values.Where(x => !x.isChild).ToList();
+            var updatedItems = GetRootItems(items);
             return updatedItems;
         }
+
+        private List<PackageItemRootViewModel> GetRootItems(Dictionary<string, PackageItemRootViewModel> items)
+        {
+            var rootItems = items.Values.Where(x => !x.isChild).ToList();
+            if (!rootItems.Any()) return rootItems;
+
+            var root = new PackageItemRootViewModel(CurrentPackageDirectory);
+            var updatedItems = new List<PackageItemRootViewModel>();
+            //check each root item and create any missing connections
+            foreach (var item in rootItems)
+            {
+                var itemDir = new DirectoryInfo(item.DirectoryName);
+                if (!itemDir.Parent.FullName.Equals(CurrentPackageDirectory))
+                {
+                    root.AddChild(item);
+                }
+                else
+                {
+                    root.ChildItems.Add(item);
+                }
+            }
+            return root.ChildItems.ToList();
+        }   
 
         /// <summary>
         /// Test if path2 is subpath of path1
@@ -1089,7 +1114,11 @@ namespace Dynamo.PackageManager
                 {
                     return true;
                 }
-                else di2 = di2.Parent;
+                else
+                {
+                    if (di2.Parent.FullName.Length < di1.FullName.Length) return false;
+                    di2 = di2.Parent;
+                }
             }
 
             return false;
@@ -1403,6 +1432,7 @@ namespace Dynamo.PackageManager
                 CopyrightHolder = pkg.CopyrightHolder,
                 CopyrightYear = pkg.CopyrightYear,
                 IsPublishFromLocalPackage = true,
+                CurrentPackageDirectory = pkg.RootDirectory,
                 //default retain folder structure to true when publishing a new version from local.
                 RetainFolderStructureOverride = retainFolderStructure
             };
