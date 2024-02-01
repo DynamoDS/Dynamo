@@ -9,8 +9,8 @@ using Dynamo.Core;
 using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Logging;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 

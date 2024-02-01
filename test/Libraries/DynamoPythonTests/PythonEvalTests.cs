@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -7,8 +7,9 @@ using DSCPython;
 using System.IO;
 using Dynamo;
 using Dynamo.PythonServices;
+using Dynamo.PythonServices.EventHandlers;
 
-namespace DSPythonTests
+ namespace DSPythonTests
 {
     public class PythonEvalTests : UnitTestBase
     {
@@ -153,20 +154,20 @@ print 'hello'
         {
 
             var count = 0;
-            DSCPython.EvaluationEventHandler CPythonEvaluator_EvaluationEnd = (state, scope, codeString, bindings) =>
+            EvaluationFinishedEventHandler handler = (state, scope, codeString, bindings) =>
             {
                 count = count + 1;
                 if (count == 1)
                 {
-                    Assert.AreEqual(DSCPython.EvaluationState.Success, state);
+                    Assert.AreEqual(EvaluationState.Success, state);
                 }
                 else if (count == 2)
                 {
-                    Assert.AreEqual(DSCPython.EvaluationState.Failed, state);
+                    Assert.AreEqual(EvaluationState.Failed, state);
                 }
             };
 
-            CPythonEvaluator.EvaluationEnd += CPythonEvaluator_EvaluationEnd;
+            CPythonEvaluator.Instance.EvaluationFinished += handler;
 
             var code = @"1";
             try
@@ -189,7 +190,7 @@ print 'hello'
             }
             finally
             {
-                DSCPython.CPythonEvaluator.EvaluationEnd -= CPythonEvaluator_EvaluationEnd;
+                CPythonEvaluator.Instance.EvaluationFinished -= handler;
                 Assert.AreEqual(2, count);
             }
         }

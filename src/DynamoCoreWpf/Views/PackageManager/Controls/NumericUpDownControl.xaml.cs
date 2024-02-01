@@ -43,24 +43,25 @@ namespace Dynamo.PackageManager.UI
                 new FrameworkPropertyMetadata("0"));
 
         // The Value of the numerical up/down control. Bind to this property
-        public int Value
+        public string Value
         {
-            get { return (int)GetValue(ValueProperty); }
+            get { return (string)GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Value. 
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value",
-                typeof(int),
+                typeof(string),
                 typeof(NumericUpDownControl),
-                new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnValuePropertyChanged)));
+                new FrameworkPropertyMetadata("0", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnValuePropertyChanged)));
 
         // Setting the input TextBox 
         private static void OnValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var numericUpDownControl = d as NumericUpDownControl;
             numericUpDownControl.inputField.Text = e.NewValue.ToString();
+            if (String.IsNullOrEmpty(e.NewValue.ToString())) return;
             if (numericUpDownControl.watermarkLabel.Visibility == Visibility.Visible)
             {
                 numericUpDownControl.watermarkLabel.Visibility = Visibility.Collapsed;
@@ -79,11 +80,11 @@ namespace Dynamo.PackageManager.UI
         #region UI utility functions
         private void spinnerUp_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(   inputField.Text))
+            if (string.IsNullOrEmpty(inputField.Text))
             {
                 if (Int32.TryParse(watermarkLabel.Content as string, out int watermarkValue))
                 {
-                    Value = ++watermarkValue;
+                    Value = (++watermarkValue).ToString();
                     return;
                 }
                 else
@@ -93,7 +94,7 @@ namespace Dynamo.PackageManager.UI
             }
             if (Int32.TryParse(inputField.Text, out int value))
             {
-                Value = ++value;
+                Value = (++value).ToString();
             };
         }
 
@@ -101,9 +102,9 @@ namespace Dynamo.PackageManager.UI
         {
             if (string.IsNullOrEmpty(inputField.Text))
             {
-                if (Int32.TryParse(watermarkLabel.Content as string, out int watermarkValue))
+                if (Int32.TryParse(watermarkLabel.Content as string, out int watermarkValue) && watermarkValue > 0)
                 {
-                    Value = --watermarkValue;
+                    Value = (--watermarkValue).ToString();
                     return;
                 }
                 else
@@ -113,10 +114,19 @@ namespace Dynamo.PackageManager.UI
             }
             if (Int32.TryParse(inputField.Text, out int value))
             {
-                // Allows positive whole numbers
-                if (value <= 0) return;
-                Value = --value;
+                if (value == 0) return;
+                Value = (--value).ToString();
             };
+        }
+
+        /// <summary>
+        /// Checks if the input value passes our criteria
+        /// </summary>
+        /// <param name="text">text string to be tested</param>
+        /// <returns></returns>
+        internal bool IsValidInput(string text)
+        {
+            return _numMatch.IsMatch(text);
         }
 
         // validate data before changing the text (only allow numbers)
@@ -125,7 +135,7 @@ namespace Dynamo.PackageManager.UI
             var tb = (TextBox)sender;
             var text = tb.Text.Insert(tb.CaretIndex, e.Text);
 
-            e.Handled = !_numMatch.IsMatch(text);
+            e.Handled = !IsValidInput(text);
         }
 
         // Handles the direct input of text (via keyboard)
@@ -133,7 +143,7 @@ namespace Dynamo.PackageManager.UI
         {
             if (Int32.TryParse(inputField.Text, out int value))
             {
-                Value = value;
+                Value = value.ToString();
             };
         }
 
@@ -166,7 +176,16 @@ namespace Dynamo.PackageManager.UI
             }
 
             mouseClickSelection = true;
-        } 
+        }
+
+        private void inputField_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                e.Handled = true; // Prevent space from being entered
+            }
+        }
+
         #endregion
     }
 }

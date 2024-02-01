@@ -50,10 +50,9 @@ namespace Dynamo.PackageManager
         {
             get { return "FCABC211-D56B-4109-AF18-F434DFE48139"; }
         }
-        internal HostAnalyticsInfo HostInfo { get; private set; }
 
         // Current host, empty if sandbox, null when running tests
-        internal virtual string Host => HostInfo.HostName;
+        internal virtual string Host => DynamoModel.HostAnalyticsInfo.HostName;
 
         /// <summary>
         ///     Manages loading of packages (property meant solely for tests)
@@ -120,7 +119,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Startup(StartupParams startupParams)
         {
-            string url = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "packageManagerAddress");
+            string url = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "packageManagerAddress");
 
             OnMessageLogged(LogMessage.Info("Dynamo will use the package manager server at : " + url));
 
@@ -177,7 +176,6 @@ namespace Dynamo.PackageManager
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
             currentWorkspace = (sp.CurrentWorkspaceModel as WorkspaceModel);
-            HostInfo = ReadyParams.HostInfo;
         }
 
         public void Shutdown()

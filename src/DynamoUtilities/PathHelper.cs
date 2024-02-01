@@ -282,19 +282,6 @@ namespace DynamoUtilities
             return false;
         }
 
-        /// <summary>
-        /// This is a utility method for generating a default name to the snapshot image. 
-        /// </summary>
-        /// <param name="filePath">File path</param>
-        /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
-        [Obsolete("This function will be removed in future version of Dynamo - please use the version with more parameters")]
-        public static String GetScreenCaptureNameFromPath(String filePath)
-        {
-            FileInfo fileInfo = new FileInfo(filePath);
-            String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
-            String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
-            return snapshotName;
-        }
 
         /// <summary>
         /// This is a utility method for generating a default name to the snapshot image. 
@@ -465,7 +452,7 @@ namespace DynamoUtilities
         /// <param name="serviceKey">Service or feature for which the address is being requested. 
         /// It should match the key specified in the config file.</param>
         /// <returns>Path that will be used to fetch resources</returns>
-        public static string getServiceBackendAddress(object o, string serviceKey)
+        public static string GetServiceBackendAddress(object o, string serviceKey)
         {
             string url = null;
             if (o != null)

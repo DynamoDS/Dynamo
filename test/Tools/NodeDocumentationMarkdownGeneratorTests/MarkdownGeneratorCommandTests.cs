@@ -164,7 +164,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
-            Assert.AreEqual(683, generatedFileNames.Count());
+            Assert.AreEqual(685, generatedFileNames.Count());
         }
 
         [Test]
@@ -518,6 +518,62 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             Assert.IsTrue(mdFiles.Contains(renamedTargetMdFile));
             Assert.IsTrue(content.Contains("CoreNodeModels.HigherOrder.Map"));
+        }
+
+        [Test]
+        public void CanRenameFileLongName()
+        {
+            // Arrange
+            var originalOutDirName = "fallback_docs";
+            var filesDirectory = "LongNameFiles";
+            var emptySpaceChar = "%20";
+            var originalOutDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, originalOutDirName, filesDirectory));
+
+            tempDirectory = CreateTempOutputDirectory();
+            Assert.That(tempDirectory.Exists);
+
+            CopyFilesRecursively(originalOutDir, tempDirectory);
+
+            var originalMdFile = tempDirectory.GetFiles("*.md", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name).FirstOrDefault();
+            Assert.IsNotNull(originalMdFile);
+
+            //Check that the original MD file contains space characters URL encoded
+            var originalMdFileContent = Path.Combine(tempDirectory.FullName, originalMdFile);
+            Assert.IsTrue(File.ReadAllText(originalMdFileContent).Contains(emptySpaceChar));
+
+            // Act
+            var opts = new RenameOptions
+            {
+                InputMdDirectory = tempDirectory.FullName,
+                MaxLength = 90
+            };
+
+            //Rename all the files in the temp directory
+            RenameCommand.HandleRename(opts);
+
+            // Assert
+            var finalMdFile = tempDirectory.GetFiles("*.md", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name).FirstOrDefault();
+            Assert.IsNotNull(finalMdFile);
+
+            var hashedName = Path.GetFileNameWithoutExtension(finalMdFile); 
+
+            //Validates that all the renamed files start with the hashed name
+            var allFiles = tempDirectory.GetFiles("*.*", SearchOption.TopDirectoryOnly).Select(x => x.Name);
+            foreach(var file in allFiles)
+            {
+                Assert.IsTrue(file.StartsWith(hashedName));
+            }
+
+            //Get the image file name renamed
+            var imageFile = tempDirectory.GetFiles("*.jpg", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name).FirstOrDefault();
+            Assert.IsNotNull(imageFile);
+
+            //Validates that the image file name is present inside the md file content.
+            var finalMdFileContent = Path.Combine(tempDirectory.FullName, finalMdFile);
+            Assert.IsTrue(File.ReadAllText(finalMdFileContent).Contains(imageFile));
         }
 
         [Test]

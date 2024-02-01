@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.Serialization;
 using System.IO;
 
@@ -39,12 +39,6 @@ namespace DynamoServices
         }
 
         public NodeInternalException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        protected NodeInternalException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
         {
         }
     }

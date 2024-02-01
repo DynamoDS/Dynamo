@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<PreferenceSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsFirstRun>false</IsFirstRun>
+  <IsAnalyticsReportingApproved>true</IsAnalyticsReportingApproved>
+  <LibraryWidth>335</LibraryWidth>
+  <Locale>en-US</Locale>
+  <GraphicScaleUnit>Millimeters</GraphicScaleUnit>
+  <ConsoleHeight>0</ConsoleHeight>
+  <ShowPreviewBubbles>true</ShowPreviewBubbles>
+  <UseHostScaleUnits>true</UseHostScaleUnits>
+  <ShowCodeBlockLineNumber>true</ShowCodeBlockLineNumber>
+  <ShowConnector>true</ShowConnector>
+  <ShowConnectorToolTip>true</ShowConnectorToolTip>
+  <LibraryZoomScale>100</LibraryZoomScale>
+  <PythonScriptZoomScale>70</PythonScriptZoomScale>
+  <ConnectorType>BEZIER</ConnectorType>
+  <BackgroundPreviews>
+    <BackgroundPreviewActiveState>
+      <Name>IsBackgroundPreviewActive</Name>
+      <IsActive>true</IsActive>
+    </BackgroundPreviewActiveState>
+  </BackgroundPreviews>
+  <IsBackgroundGridVisible>true</IsBackgroundGridVisible>
+  <GridScaleFactor>1</GridScaleFactor>
+  <DefaultScaleFactor>0</DefaultScaleFactor>
+  <RenderPrecision>128</RenderPrecision>
+  <ShowEdges>false</ShowEdges>
+  <ShowDetailedLayout>true</ShowDetailedLayout>
+  <WindowX>245</WindowX>
+  <WindowY>86</WindowY>
+  <WindowW>1539</WindowW>
+  <WindowH>802</WindowH>
+  <UseHardwareAcceleration>true</UseHardwareAcceleration>
+  <NumberFormat>f3</NumberFormat>
+  <MaxNumRecentFiles>10</MaxNumRecentFiles>
+  <RecentFiles>
+    <string>P:\Archilizer\Clients\Autodesk\Projects\23 - Q2\Zoom States\zoom-states.dyn</string>
+    <string>P:\Archilizer\Clients\Autodesk\Projects\23 - Q3\MyPackage\TestPublishMyNode.dyf</string>
+    <string>P:\Archilizer\Clients\Autodesk\Projects\22 - Q4\Python\test_scipy.dyn</string>
+    <string>P:\Archilizer\Clients\Autodesk\Projects\22 - Q4\Python Restyle\color code restyle.dyn</string>
+    <string>P:\Archilizer\Clients\Autodesk\Projects\23 - Q1\DYN-4513 Improvement Allow pin note to node via drag, hover and release\drag&amp;drop.dyn</string>
+    <string>P:\Archilizer\Clients\Autodesk\Projects\23 - Q1\Background Helpers\Plane Axes\axes.dyn</string>
+  </RecentFiles>
+  <BackupLocation>C:\Users\DeyanNenov\AppData\Roaming\Dynamo\Dynamo Core\backup</BackupLocation>
+  <BackupFiles>
+    <string>C:\Users\DeyanNenov\AppData\Roaming\Dynamo\Dynamo Core\backup\backup.DYN</string>
+  </BackupFiles>
+  <CustomPackageFolders>
+    <string>C:\Users\DeyanNenov\AppData\Roaming\Dynamo\Dynamo Core\2.19\packages\MyPackage</string>
+    <string>%BuiltInPackages%</string>
+    <string>C:\Users\DeyanNenov\AppData\Roaming\Dynamo\Dynamo Core\2.19</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\2.19\packages</string>
+  </CustomPackageFolders>
+  <DisableTrustWarnings>false</DisableTrustWarnings>
+  <TrustedLocations>
+    <string>C:\ProgramData\Autodesk</string>
+    <string>C:\Program Files\Autodesk</string>
+  </TrustedLocations>
+  <PackageDirectoriesToUninstall />
+  <PythonTemplateFilePath />
+  <BackupInterval>60000</BackupInterval>
+  <BackupFilesCount>1</BackupFilesCount>
+  <PackageDownloadTouAccepted>true</PackageDownloadTouAccepted>
+  <OpenFileInManualExecutionMode>false</OpenFileInManualExecutionMode>
+  <ShowTabsAndSpacesInScriptEditor>false</ShowTabsAndSpacesInScriptEditor>
+  <EnableNodeAutoComplete>true</EnableNodeAutoComplete>
+  <HideNodesBelowSpecificConfidenceLevel>false</HideNodesBelowSpecificConfidenceLevel>
+  <MLRecommendationConfidenceLevel>10</MLRecommendationConfidenceLevel>
+  <MLRecommendationNumberOfResults>10</MLRecommendationNumberOfResults>
+  <HideAutocompleteMethodOptions>false</HideAutocompleteMethodOptions>
+  <EnableNotificationCenter>true</EnableNotificationCenter>
+  <EnablePersistExtensions>false</EnablePersistExtensions>
+  <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
+  <DefaultPythonEngine />
+  <SelectedPackagePathForInstall>C:\Users\DeyanNenov\AppData\Roaming\Dynamo\Dynamo Core\2.19</SelectedPackagePathForInstall>
+  <NamespacesToExcludeFromLibrary>
+    <string>ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline</string>
+  </NamespacesToExcludeFromLibrary>
+  <ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Documentation Browser</Name>
+      <UniqueId>68B45FC0-0BD1-435C-BF28-B97CB03C71C8</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+      <IsOpen>false</IsOpen>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Workspace References</Name>
+      <UniqueId>A6706BF5-11C2-458F-B7C8-B745A77EF7FD</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+      <IsOpen>false</IsOpen>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Package Details</Name>
+      <UniqueId>C71CA1B9-BF9F-425A-A12C-53DF56770406</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+      <IsOpen>false</IsOpen>
+    </ViewExtensionSettings>
+    <ViewExtensionSettings>
+      <Name>Graph Node Manager</Name>
+      <UniqueId>F76F4274-537D-4782-B1E9-27E8FDE2186F</UniqueId>
+      <DisplayMode>DockRight</DisplayMode>
+      <IsOpen>false</IsOpen>
+    </ViewExtensionSettings>
+  </ViewExtensionSettings>
+  <DisableBuiltinPackages>false</DisableBuiltinPackages>
+  <DisableCustomPackageLocations>false</DisableCustomPackageLocations>
+  <DefaultRunType>Automatic</DefaultRunType>
+  <DefaultNodeAutocompleteSuggestion>MLRecommendation</DefaultNodeAutocompleteSuggestion>
+  <ShowRunPreview>false</ShowRunPreview>
+  <GroupStyleItemsList>
+    <GroupStyleItem>
+      <Name>Actions</Name>
+      <HexColorString>B9F9E1</HexColorString>
+      <IsDefault>true</IsDefault>
+      <FontSize>36</FontSize>
+      <GroupStyleId>4d68be4a-a04d-4945-9dd5-cdf61079d790</GroupStyleId>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Inputs</Name>
+      <HexColorString>FFB8D8</HexColorString>
+      <IsDefault>true</IsDefault>
+      <FontSize>36</FontSize>
+      <GroupStyleId>883066aa-1fe2-44a4-9bd1-c3df86bfe9f6</GroupStyleId>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Outputs</Name>
+      <HexColorString>FFC999</HexColorString>
+      <IsDefault>true</IsDefault>
+      <FontSize>36</FontSize>
+      <GroupStyleId>07655dc1-2d65-4fed-8d6a-37235d3e3a8d</GroupStyleId>
+    </GroupStyleItem>
+    <GroupStyleItem>
+      <Name>Review</Name>
+      <HexColorString>A4E1FF</HexColorString>
+      <IsDefault>true</IsDefault>
+      <FontSize>36</FontSize>
+      <GroupStyleId>bc688959-ce34-4bf5-90f8-6ddd23f80989</GroupStyleId>
+    </GroupStyleItem>
+  </GroupStyleItemsList>
+  <NodeSearchTagSizeLimit>300</NodeSearchTagSizeLimit>
+  <IronPythonResolveTargetVersion>2.4.0</IronPythonResolveTargetVersion>
+  <ReadNotificationIds />
+  <DynamoPlayerFolderGroups />
+</PreferenceSettings>

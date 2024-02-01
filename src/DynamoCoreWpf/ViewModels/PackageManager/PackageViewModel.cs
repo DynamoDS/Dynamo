@@ -12,8 +12,8 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
-using NotificationObject = Dynamo.Core.NotificationObject;
 using Prism.Commands;
+using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.ViewModels
 {
@@ -149,7 +149,7 @@ namespace Dynamo.ViewModels
 
         public bool HasCustomNodes
         {
-            get { return Model.LoadedCustomNodes.Any();  }
+            get { return Model.LoadedCustomNodes.Any(); }
         }
 
         public bool HasAssemblies
@@ -159,10 +159,6 @@ namespace Dynamo.ViewModels
 
         public bool CanPublish => dynamoModel.AuthenticationManager.HasAuthProvider;
 
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
         public DelegateCommand UninstallCommand { get; set; }
         public DelegateCommand UnmarkForUninstallationCommand { get; set; }
@@ -181,14 +177,12 @@ namespace Dynamo.ViewModels
             this.packageManagerClient = pmExtension.PackageManagerClient;
             Model = model;
 
-            ToggleTypesVisibleInManagerCommand = new DelegateCommand(() => { }, () => true);
-            GetLatestVersionCommand = new DelegateCommand(() => { }, () => false);
-            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), () => CanPublish);
+            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), IsOwner);
             PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), () => CanPublish);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
-            DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
+            DeprecateCommand = new DelegateCommand(Deprecate, IsOwner);
             UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
             GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, () => true);
 
@@ -408,7 +402,7 @@ namespace Dynamo.ViewModels
             packageManagerClient.Deprecate(Model.Name);
         }
 
-        private bool CanDeprecate()
+        private bool IsOwner()
         {
             if (!CanPublish) return false;
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
@@ -432,7 +426,7 @@ namespace Dynamo.ViewModels
         private void PublishNewPackageVersion()
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, true);
             vm.IsNewVersion = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
@@ -441,7 +435,7 @@ namespace Dynamo.ViewModels
         private void PublishNewPackage()
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, false);
             vm.IsNewVersion = false;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);

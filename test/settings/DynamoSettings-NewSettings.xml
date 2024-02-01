@@ -46,6 +46,12 @@
     <string>C:\ProgramData\Dynamo\Dynamo Core\2.16\packages</string>
   </CustomPackageFolders>
   <DisableTrustWarnings>true</DisableTrustWarnings>
+  <GraphChecksumItemsList>
+    <GraphChecksumItem>
+      <GraphId>a6f6ab04-752c-4b17-8360-2e563bea7c23</GraphId>
+      <Checksum>588c8174ea314ee3945243a19457796f|[1|f9ec27ad6b584c0babf7055a787df6ad|1]</Checksum>
+    </GraphChecksumItem>
+  </GraphChecksumItemsList>
   <TrustedLocations>
     <string>C:\</string>
     <string>E:\</string>
@@ -61,12 +67,14 @@
   <IsIronPythonDialogDisabled>true</IsIronPythonDialogDisabled>
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
+  <DefaultEnableLegacyPolyCurveBehavior>false</DefaultEnableLegacyPolyCurveBehavior>
   <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
   <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>
   <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
   <HideAutocompleteMethodOptions>true</HideAutocompleteMethodOptions>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
+  <IsMLAutocompleteTOUApproved>false</IsMLAutocompleteTOUApproved>
   <IsTimeStampIncludedInExportFilePath>false</IsTimeStampIncludedInExportFilePath>
   <EnablePersistExtensions>true</EnablePersistExtensions>
   <DefaultPythonEngine/>
@@ -124,10 +132,11 @@
     </GroupStyleItem>
   </GroupStyleItemsList>
   <NodeSearchTagSizeLimit>500</NodeSearchTagSizeLimit>
-  <IronPythonResolveTargetVersion>2.1.X</IronPythonResolveTargetVersion>
+  <IronPythonResolveTargetVersion>2.1.0</IronPythonResolveTargetVersion>
   <ReadNotificationIds>
     <string>1</string>
   </ReadNotificationIds>
+  <EnableDynamoPlayerRenamedWatchAsOutput>true</EnableDynamoPlayerRenamedWatchAsOutput>
   <DynamoPlayerFolderGroups>
    <DynamoPlayerFolderGroup/>
   </DynamoPlayerFolderGroups>

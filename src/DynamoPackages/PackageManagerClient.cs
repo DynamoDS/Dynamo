@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
@@ -225,33 +226,39 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion)
+        internal PackageUploadHandle PublishAsync(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, bool retainFolderStructure)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
             Task.Factory.StartNew(() =>
             {
-                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle);
+                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle, retainFolderStructure);
             });
 
             return packageUploadHandle;
         }
 
-        internal void Publish(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle)
+        internal void Publish(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle, bool retainFolderStructure = false)
         {
             try
             {
                 ResponseBody ret = null;
                 if (isNewVersion)
                 {
-                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, files, markdownFiles,
+                    var pkg = retainFolderStructure ?
+                        uploadBuilder.NewPackageVersionRetainUpload(package, packageUploadDirectory, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
+                        packageUploadHandle)
+                        : uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, (IEnumerable<string>)files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
                 }
                 else
                 {
-                    var pkg = uploadBuilder.NewPackageUpload(package, packageUploadDirectory, files, markdownFiles,
+                    var pkg = retainFolderStructure ?
+                        uploadBuilder.NewPackageRetainUpload(package, packageUploadDirectory, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
+                        packageUploadHandle)
+                        : uploadBuilder.NewPackageUpload(package, packageUploadDirectory, (IEnumerable<string>)files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
@@ -267,34 +274,19 @@ namespace Dynamo.PackageManager
                     packageUploadHandle.Error(ret.message);
                     return;
                 }
-               
                 packageUploadHandle.Done(null);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                packageUploadHandle.Error(e.GetType() + ": " + e.Message);
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    packageUploadHandle.Error(DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyTitle + ": " + DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyMessage + "(" + ex.Message + ")");
+                }
+                else
+                {
+                    packageUploadHandle.Error(ex.GetType() + ": " + ex.Message);
+                }
             }
-        }
-
-        [Obsolete("No longer used. Delete in 3.0")]
-        internal PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
-        {
-            var pkgDownload = new HeaderDownload(id);
-
-            try
-            {
-                var response = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgDownload);
-                if (!response.success) throw new Exception(response.message);
-                header = response.content;
-            }
-            catch (Exception e)
-            {
-                var a = PackageManagerResult.Failed(e.Message);
-                header = null;
-                return a;
-            }
-
-            return new PackageManagerResult("", true);
         }
 
         internal PackageManagerResult Deprecate(string name)

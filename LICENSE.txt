@@ -1,4 +1,4 @@
-@DYNAMO v.3.0.0 © 2023 Autodesk, Inc.  All rights reserved.
+@DYNAMO v.3.1.0 © 2024 Autodesk, Inc.  All rights reserved.
 Dynamo License
 
 Those portions created by Ian are provided with the following copyright:
@@ -21,7 +21,7 @@ All other brand names, product names or trademarks belong to their respective ho
 Autodesk Cloud and Desktop Components
 This Product or Service may incorporate or use background Autodesk online and desktop technology components.  For information about these components, see Autodesk Cloud Platform Components and Autodesk Desktop Platform Components.
 
-LIBG, ProtoGeometry v.2.7.0, DynamoVisualProgramming.Analytics, CER, ADP, GRegRevitAuth, AGET, IDSDK, IDSDK Wrapper, ForgeUnits.NET, ForgeUnits.Schemas, and Autodesk.GeometryPrimitive are closed source files licensed by Autodesk under the license that can be found here https://github.com/DynamoDS/Dynamo/tree/master/doc/distrib/Autodesk.rtf
+LIBG, ProtoGeometry v.2.7.0, DynamoVisualProgramming.Analytics, CER, ADP, GRegRevitAuth, AGET, IDSDK, IDSDK Wrapper, ForgeUnits.NET, ForgeUnits.Schemas, and Autodesk.GeometryPrimitives.Dynamo are closed source files licensed by Autodesk under the license that can be found here https://github.com/DynamoDS/Dynamo/tree/master/doc/distrib/Autodesk.rtf
 
 
 Third-Party Trademarks, Software Credits and Attributions
@@ -91,6 +91,35 @@ CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/)
 Copyright (c) 2022 Fonticons, Inc. (https://fontawesome.com)
 
 In the Font Awesome Free download, the CC BY 4.0 license applies to all icons packaged as SVG and JS file types.
+
+Icons: CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/):  The Font Awesome Free download is licensed under a Creative Commons Attribution 4.0 International License and applies to all icons packaged as SVG and JS file types.
+
+Fonts: SIL OFL 1.1 License
+In the Font Awesome Free download, the SIL OFL license applies to all icons packaged as web and desktop font files.
+Copyright (c) 2023 Fonticons, Inc. (https://fontawesome.com)
+with Reserved Font Name: "Font Awesome".
+This Font Software is licensed under the SIL Open Font License, Version 1.1. 
+This license can be found at: http://scripts.sil.org/OFL
+
+Code: MIT License (https://opensource.org/licenses/MIT)
+In the Font Awesome Free download, the MIT license applies to all non-font and
+non-icon files.
+Copyright 2023 Fonticons, Inc.
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in the
+Software without restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 Cyotek.Drawing.BitmapFont v.2.0.0:
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont
@@ -683,13 +712,6 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-SoapFormatter v1.0.11
-https://github.com/novotnyllc/SoapFormatter/blob/main/LICENSE
-
-In general, the runtime and its class libraries are licensed under the
-terms of the MIT license, and some third party code is licensed under
-the 3-clause BSD license.  See the file "PATENTS.TXT" for Microsoft's
-patent grant on the Mono codebase.
 
 coverlet.collector v.3.1.2
 The MIT License (MIT)

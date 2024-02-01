@@ -242,7 +242,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             packageManagerSearchViewModel.LastSync = new List<PackageManagerSearchElement>();
             foreach (var result in packageManagerSearchViewModel.SearchResults)
             {
-                packageManagerSearchViewModel.LastSync.Add(result.Model);
+                packageManagerSearchViewModel.LastSync.Add(result.SearchElementModel);
             }
 
             //Validate the total added packages match
@@ -274,7 +274,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
             string packageVersionNumber = "1.0.0.0";
             string newAndUpdatedPackageCreatedDateString = DateTime.Now.ToString("yyyy - MM - ddTHH:mm:ss.ffffff K");
-            string activePackageCreatedDateString = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, DateTime.Now.Day).ToString("yyyy - MM - ddTHH:mm:ss.ffffff K");
+            string activePackageCreatedDateString = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy - MM - ddTHH:mm:ss.ffffff K");
             string advSteelFilterName = "Advance Steel";
             string formItFilterName = "FormIt";
 
@@ -370,7 +370,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             packageManagerSearchViewModel.LastSync = new List<PackageManagerSearchElement>();
             foreach (var result in packageManagerSearchViewModel.SearchResults)
             {
-                packageManagerSearchViewModel.LastSync.Add(result.Model);
+                packageManagerSearchViewModel.LastSync.Add(result.SearchElementModel);
             }
 
             //Validate the total added packages match
@@ -510,7 +510,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             packageManagerSearchViewModel.LastSync = new List<PackageManagerSearchElement>();
             foreach (var result in packageManagerSearchViewModel.SearchResults)
             {
-                packageManagerSearchViewModel.LastSync.Add(result.Model);
+                packageManagerSearchViewModel.LastSync.Add(result.SearchElementModel);
             }
 
             //Validate the total added packages match
@@ -586,7 +586,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             foreach (var package in packageManagerSearchViewModel.SearchResults)
             {
                 var iDoc = packageManagerSearchViewModel.LuceneUtility.InitializeIndexDocumentForPackages();
-                packageManagerSearchViewModel.AddPackageToSearchIndex(package.Model, iDoc);
+                packageManagerSearchViewModel.AddPackageToSearchIndex(package.SearchElementModel, iDoc);
             }
 
             packageManagerSearchViewModel.LuceneUtility.CommitWriterChanges();

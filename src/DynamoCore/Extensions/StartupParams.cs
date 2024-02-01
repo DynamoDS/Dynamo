@@ -70,57 +70,13 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Initializes a new instance of the <see cref="StartupParams"/> class.
         /// </summary>
-        /// <param name="provider"><see cref="IAuthProvider"/> for DynamoModel</param>
-        /// <param name="pathManager"><see cref="IPathManager"/> for DynamoModel</param>
-        /// <param name="libraryLoader"><see cref="ILibraryLoader"/> for DynamoModel</param>
-        /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
-        /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
-        /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
-        [Obsolete("Use internal constructor")]
-        public StartupParams(IAuthProvider provider, IPathManager pathManager,
-            ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
-            Version dynamoVersion, IPreferences preferences)
-        {
-            this.authProvider = provider;
-            this.pathManager = pathManager;
-            this.libraryLoader = libraryLoader;
-            this.customNodeManager = customNodeManager;
-            this.dynamoVersion = dynamoVersion;
-            this.preferences = preferences;
-        }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StartupParams"/> class.
-        /// </summary>
-        /// <param name="provider"><see cref="IAuthProvider"/> for DynamoModel</param>
-        /// <param name="pathManager"><see cref="IPathManager"/> for DynamoModel</param>
-        /// <param name="libraryLoader"><see cref="ILibraryLoader"/> for DynamoModel</param>
-        /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
-        /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
-        /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
-        /// <param name="linterManager"><see cref="LinterManager"/> for DynamoModel></param>
-        [Obsolete("Use internal constructor")]
-        public StartupParams(IAuthProvider provider, IPathManager pathManager,
-            ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
-            Version dynamoVersion, IPreferences preferences, LinterManager linterManager)
-        {
-            this.authProvider = provider;
-            this.pathManager = pathManager;
-            this.libraryLoader = libraryLoader;
-            this.customNodeManager = customNodeManager;
-            this.dynamoVersion = dynamoVersion;
-            this.preferences = preferences;
-            this.linterManager = linterManager;
-        }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StartupParams"/> class.
-        /// </summary>
         internal StartupParams(DynamoModel dynamoModel)
         {
             authProvider = dynamoModel.AuthenticationManager?.AuthProvider;
             pathManager = dynamoModel.PathManager;
             libraryLoader = new ExtensionLibraryLoader(dynamoModel);
             customNodeManager = dynamoModel.CustomNodeManager;
-            dynamoVersion = new Version(dynamoModel.Version);
+            dynamoVersion = new Version(DynamoModel.Version);
             preferences = dynamoModel.PreferenceSettings;
             linterManager = dynamoModel.LinterManager;
             IsGeometryLibraryLoaded = dynamoModel.IsASMLoaded;

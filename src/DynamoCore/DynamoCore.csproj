@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -19,23 +19,23 @@
     <ItemGroup>
     <Compile Remove="Graph\ConnectorPinModel.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+  <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
     <!--The System.Drawing package is only included in DynamoCore (and not in all projects that have image resources) for simplicity-->
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
-    <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
-    <PackageReference Include="Greg" Version="3.0.0.2955" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2855" GeneratePathProperty="true" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2880" GeneratePathProperty="true" />
+    <PackageReference Include="Autodesk.IDSDK" Version="1.1.8" />
+    <PackageReference Include="Greg" Version="3.0.0.3175" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.3331" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3421" GeneratePathProperty="true" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
-	  <PackageReference Include="RestSharp" Version="109.0.1" CopyXML="true" />
-	<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
+    <PackageReference Include="RestSharp" Version="108.0.1" CopyXML="true" />
+    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.1.0.2437" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.0.3534" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -89,10 +89,10 @@
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -111,38 +111,38 @@
     <PropertyGroup>
       <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
-      <ItemGroup>
-          <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
-          <LibGProtoGeometryDLL Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
-          <LibGProtoGeometryXML Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
-          <LibG229Deps Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
-          <LibG230Deps Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
-          <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
-          <LibG230 Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_230_0_0\*" />
-          <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_229_0_0\*" />
-          <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
-          <NodeHelpMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.md" />
-		  <NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn" />
-		  <NodeHelpTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.txt" />
-		  <NodeHelpSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.sat" />
-          <NodeHelpJpgImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.jpg" />
-		  <NodeHelpPngImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.png" />
-		  <NodeHelpGifImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.gif" />
-          <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
-          <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
-      </ItemGroup>
+    <ItemGroup>
+        <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
+        <LibGProtoGeometryDLL Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
+        <LibGProtoGeometryXML Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
+        <LibG229Deps Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
+        <LibG230Deps Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
+        <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
+        <LibG230 Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_230_0_0\*" />
+        <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_229_0_0\*" />
+        <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
+        <NodeHelpMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.md" />
+        <NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn" />
+        <NodeHelpTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.txt" />
+        <NodeHelpSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.sat" />
+        <NodeHelpJpgImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.jpg" />
+        <NodeHelpPngImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.png" />
+        <NodeHelpGifImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.gif" />
+        <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
+        <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
+    </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\ADPAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(SolutionDir)..\doc\distrib\MLNodeAutocompleteConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(NodeHelpMDFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
-	<Copy SourceFiles="@(NodeHelpDYNFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+    <Copy SourceFiles="@(NodeHelpDYNFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
+    <Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+    <Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
     <Copy SourceFiles="@(NodeHelpJpgImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
-	<Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
-	<Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
+    <Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
+    <Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
     <Copy SourceFiles="@(OpenSourceLicenses)" DestinationFolder="$(OutputPath)Open Source Licenses\" />
     <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryDLL)" DestinationFolder="$(OutputPath)" />
@@ -169,15 +169,15 @@
     <Copy SourceFiles="@(ASMLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternProtoGeometry)" DestinationFolder="$(OutputPath)" />
   </Target>
-    <Target AfterTargets="AfterBuildOps" Name="gen_resources" Condition=" '$(OS)' != 'Unix' ">
+  <Target AfterTargets="AfterBuildOps" Name="gen_resources" Condition=" '$(OS)' != 'Unix' ">
         <!-- Generate customization dll for DynamoCore -->
-        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(SystemDrawingDllPath)" />
+        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" />
         <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(AssemblyInfo.Version)" />
         <!-- Generate customization dll for Operators -->
-        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(SystemDrawingDllPath)" />
+        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" />
         <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(AssemblyInfo.Version)" />
         <!-- Generate customization dll for BuiltIn -->
-        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(SystemDrawingDllPath)" />
+        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" />
         <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(AssemblyInfo.Version)" />
     </Target>
 </Project>

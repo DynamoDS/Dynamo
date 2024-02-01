@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Dynamo.Configuration;
 using Dynamo.Graph.Connectors;
 
 namespace Dynamo.Interfaces
@@ -48,7 +49,7 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]
+        [Obsolete("Property will be deprecated in a future version of Dynamo, please use BackgroundPreviews")]
         bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
@@ -146,6 +147,11 @@ namespace Dynamo.Interfaces
         /// <param name="name">Background preview name</param>
         /// <param name="value">Active state to set</param>
         void SetIsBackgroundPreviewActive(string name, bool value);
+
+        /// <summary>
+        /// Return a list of GraphChecksumItems
+        /// </summary>
+        List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
     }
 
     /// <summary>

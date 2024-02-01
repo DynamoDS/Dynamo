@@ -18,20 +18,20 @@
     <Compile Remove="AstBuilderTest.cs" />
     <Compile Remove="Saving.cs" />
   </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
+    <ItemGroup>
         <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
         <PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
-        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.1.0.2437">
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.0.3534">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Greg" Version="3.0.0.2955">
+        <PackageReference Include="Greg" Version="3.0.0.3175">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -42,7 +42,7 @@
 
         <PackageReference Include="JUnitTestLogger" Version="1.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="RestSharp" Version="109.0.1">
+        <PackageReference Include="RestSharp" Version="108.0.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -136,7 +136,7 @@
     <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\netstandard2.0\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(TestDependenciesPath)" />
 </Target>
 
-    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' != 'net48' ">
+    <Target Name="MoveSomeTestDepsOutOfBin" AfterTargets="Build">
         <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
         <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
         <!--moq + deps-->
