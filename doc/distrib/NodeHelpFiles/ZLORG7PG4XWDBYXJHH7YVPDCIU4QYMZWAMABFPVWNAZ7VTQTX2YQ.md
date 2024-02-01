@@ -5,4 +5,4 @@ In the example below, a shape with uncreased edges is created using `TSplineSurf
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreaseVertices_img.jpg)
+![Example](./ZLORG7PG4XWDBYXJHH7YVPDCIU4QYMZWAMABFPVWNAZ7VTQTX2YQ_img.jpg)
