@@ -797,7 +797,9 @@ namespace Dynamo.ViewModels
             // Try to handle the exception so that the host app can continue in most cases.
             // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases we might see 2 CER windows (the extra one from the host app)
             e.Handled = true;
+
             CrashGracefully(e.Exception);
+            
         }
 
         internal void CrashGracefully(Exception ex)
@@ -810,7 +812,7 @@ namespace Dynamo.ViewModels
                 Analytics.TrackException(ex, true);
 
                 Model?.OnRequestsCrashPrompt(crashData);
-                Exit(false); // don't allow cancellation
+                UIDispatcher?.BeginInvoke(() => Exit(false), DispatcherPriority.Send);
             }
             catch
             { }
