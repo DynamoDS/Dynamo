@@ -1062,7 +1062,7 @@ namespace Dynamo.PackageManager
                     if (IsSubPathOfDeep(parent.Value, child.Value))
                     {
                         if (child.Value.isChild) continue; // if this was picked up already, don't add it again
-                        parent.Value.AddChild(child.Value);
+                        parent.Value.AddChildRecursively(child.Value);
                         child.Value.isChild = true;
                     }
                 }
@@ -1092,7 +1092,7 @@ namespace Dynamo.PackageManager
                 var itemDir = new DirectoryInfo(item.DirectoryName);
                 if (!itemDir.Parent.FullName.Equals(packageSourceDir))
                 {
-                    root.AddChild(item);
+                    root.AddChildRecursively(item);
                 }
                 else
                 {
@@ -1108,7 +1108,7 @@ namespace Dynamo.PackageManager
         /// <param name="path1"></param>
         /// <param name="path2"></param>
         /// <returns></returns>
-        private bool IsSubPathOfDeep(PackageItemRootViewModel path1, PackageItemRootViewModel path2)
+        internal bool IsSubPathOfDeep(PackageItemRootViewModel path1, PackageItemRootViewModel path2)
         {
             var di1 = new DirectoryInfo(path1.DirectoryName);
             var di2 = new DirectoryInfo(path2.DirectoryName);
@@ -2707,7 +2707,7 @@ namespace Dynamo.PackageManager
             var docItemPreview = new PackageItemRootViewModel(docDir) { isChild = true };
 
             var pkg = new PackageItemRootViewModel(new FileInfo(Path.Combine(rootDir, "pkg.json")));
-            rootItemPreview.AddChild(pkg);
+            rootItemPreview.AddChildRecursively(pkg);
 
             foreach (var file in files)
             {
@@ -2717,12 +2717,12 @@ namespace Dynamo.PackageManager
                 if (Path.GetDirectoryName(file).EndsWith(PackageDirectoryBuilder.DocumentationDirectoryName))
                 {
                     var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(docDir, fileName)));
-                    docItemPreview.AddChild(doc);
+                    docItemPreview.AddChildRecursively(doc);
                 }
                 else if (file.EndsWith(".dyf"))
                 {
                     var dyfPreview = new PackageItemRootViewModel(fileName, Path.Combine(dyfDir, fileName));
-                    dyfItemPreview.AddChild(dyfPreview);
+                    dyfItemPreview.AddChildRecursively(dyfPreview);
                 }
                 else if (file.EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
                 {
@@ -2737,13 +2737,13 @@ namespace Dynamo.PackageManager
                     else
                     {
                         var dll = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
-                        binItemPreview.AddChild(dll);
+                        binItemPreview.AddChildRecursively(dll);
                     }
                 }
                 else
                 {
                     var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(extraDir, fileName)));
-                    extraItemPreview.AddChild(extra);
+                    extraItemPreview.AddChildRecursively(extra);
                 }
             }
 
@@ -2751,13 +2751,13 @@ namespace Dynamo.PackageManager
             {
                 var fileName = Path.GetFileName(docFile);
                 var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(docDir, fileName)));
-                docItemPreview.AddChild(doc);
+                docItemPreview.AddChildRecursively(doc);
             }
 
-            rootItemPreview.AddChild(dyfItemPreview);
-            rootItemPreview.AddChild(binItemPreview);
-            rootItemPreview.AddChild(extraItemPreview);
-            rootItemPreview.AddChild(docItemPreview);
+            rootItemPreview.AddChildRecursively(dyfItemPreview);
+            rootItemPreview.AddChildRecursively(binItemPreview);
+            rootItemPreview.AddChildRecursively(extraItemPreview);
+            rootItemPreview.AddChildRecursively(docItemPreview);
 
             return rootItemPreview;
         }

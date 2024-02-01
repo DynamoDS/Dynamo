@@ -236,5 +236,27 @@ namespace DynamoCoreWpfTests
         {
             throw new NotImplementedException();
         }
+
+        [Test]
+        public void AssertIsSubPathOfDeep_IsSuccessful()
+        {
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+
+            //arrange
+            Dictionary<string, bool> testDirs = new Dictionary<string, bool> {
+                { @"C:\Package\bin\Dir1|C:\Package\bin\Dir1\Dir2", true },
+                { @"C:\Package\bin\Dir1|C:\Package\bin\Dir1", false },
+                { @"C:\Package\bin\Dir1\Dir2\Dir3\Dir4\Dir5\Dir6\Dir7\Dir8\Dir8\Dir9\Dir10|C:\Package\bin\Dir1", false },
+                { @"C:\Package\bin\Dir1|C:\Package\bin\Dir1\Dir2\Dir3\Dir4\Dir5\Dir6\Dir7\Dir8\Dir8\Dir9\Dir10", true },
+                { @"bin\Dir1|bin\Dir1\Dir2", true },
+            };
+
+            //assert
+            foreach (var testDir in testDirs)
+            {
+                var paths = testDir.Key.Split('|');
+                Assert.AreEqual(testDir.Value, newPkgVm.IsSubPathOfDeep(new PackageItemRootViewModel(paths[0]), new PackageItemRootViewModel(paths[1])));
+            }
+        }
     }
 }

@@ -138,7 +138,7 @@ namespace Dynamo.PackageManager.UI
         /// add "dir 3" to "dir2" and then "dir2" to "dir1".
         /// </summary>
         /// <param name="elem">Child item to be added.</param>
-        internal void AddChild(PackageItemRootViewModel elem)
+        internal void AddChildRecursively(PackageItemRootViewModel elem)
         {
             if (elem.DependencyType.Equals(DependencyType.CustomNode)) return;
 
