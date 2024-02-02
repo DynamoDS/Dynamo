@@ -555,14 +555,6 @@ namespace Dynamo.PackageManager.Tests
 
             // Check that node belonging to one of the preloaded packages exists and is unique
             var entries = CurrentDynamoModel.SearchModel.Entries.ToList();
-            foreach (var ent in entries)
-            {
-                var f = ent.FullName;
-                if (f.StartsWith("A"))
-                {
-                    continue;
-                }
-            }
             Assert.IsTrue(entries.Count(x => x.FullName == "AnotherPackage.AnotherPackage.AnotherPackage.HelloAnotherWorld") == 1);
 
             loader.PackagesLoaded -= libraryLoader.LoadPackages;
