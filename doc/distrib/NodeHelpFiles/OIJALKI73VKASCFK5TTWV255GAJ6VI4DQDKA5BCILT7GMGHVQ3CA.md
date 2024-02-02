@@ -7,4 +7,4 @@ In the example below, a non-manifold T-Spline surface is created as a result of 
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.NonManifoldVertices_img.jpg)
+![Example](./OIJALKI73VKASCFK5TTWV255GAJ6VI4DQDKA5BCILT7GMGHVQ3CA_img.jpg)

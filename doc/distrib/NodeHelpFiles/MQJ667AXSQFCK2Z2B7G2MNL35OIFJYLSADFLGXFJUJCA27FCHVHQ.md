@@ -14,4 +14,4 @@ In the example below, a torus surface is created using `TSplineSurface.ByTorusCe
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeFacesToFaces_img.gif)
+![Example](./MQJ667AXSQFCK2Z2B7G2MNL35OIFJYLSADFLGXFJUJCA27FCHVHQ_img.gif)

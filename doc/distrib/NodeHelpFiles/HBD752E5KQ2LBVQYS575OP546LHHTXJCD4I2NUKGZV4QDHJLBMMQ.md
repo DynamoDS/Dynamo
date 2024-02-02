@@ -6,4 +6,4 @@ In the example below, a T-Spline surface is reconstructed from a TSM format usin
 ___
 ## Example File
 
-![TSplineSurface.DeserializeFromTSM](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeserializeFromTSM_img.jpg)
+![TSplineSurface.DeserializeFromTSM](./HBD752E5KQ2LBVQYS575OP546LHHTXJCD4I2NUKGZV4QDHJLBMMQ_img.jpg)

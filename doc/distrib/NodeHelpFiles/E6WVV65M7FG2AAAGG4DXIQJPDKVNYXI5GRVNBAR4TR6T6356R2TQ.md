@@ -5,5 +5,5 @@ In the example below, a T-Spline primitive quadball is created, positioned aroun
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByQuadballCenterRadius_img.jpg)
+![Example](./E6WVV65M7FG2AAAGG4DXIQJPDKVNYXI5GRVNBAR4TR6T6356R2TQ_img.jpg)
 

@@ -5,4 +5,4 @@ In the example below, the node `TSplineSurface.UncreaseVertices` is used on corn
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UncreaseVertices_img.jpg)
+![Example](./UCHS6CZOTWQLL24MRS4TPZS4UDBURP3SZIIW4TRSPQVRTMYBAVVA_img.jpg)

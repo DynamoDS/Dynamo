@@ -7,4 +7,4 @@ In the example below, one of the selected vertices of a T-Spline plane is unweld
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldVertices_img.jpg)
+![Example](./D6ESVRBW5SSM4F7J65W7OKR5DTKJAFW5F5AP23FRRR3MGXKIFVOQ_img.jpg)

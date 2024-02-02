@@ -9,4 +9,4 @@ In the example below, the `TSplineSurface.ByConePointsRadii` is created and radi
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByRadial_img.gif)
+![Example](./PK6P6YKREOU7DHO6OXJFT6PUF5LSO2W7ZW4IOTGWYPW3BJYASCOQ_img.gif)

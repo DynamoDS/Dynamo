@@ -5,4 +5,4 @@ In the example below, a NURBS surface of degree 3 is converted into a T-Spline s
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByNurbsSurfaceCurvature_img.jpg)
+![Example](./GO6D5UXWAXIC6JMDUDLIKMABU2I4XHLVLAL77BROSGFAFN7455KA_img.jpg)

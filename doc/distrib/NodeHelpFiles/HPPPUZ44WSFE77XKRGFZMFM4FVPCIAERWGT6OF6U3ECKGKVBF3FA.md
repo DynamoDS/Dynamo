@@ -5,4 +5,4 @@ In the example below, a simple T-Spline surface is translated into string TSM fo
 ___
 ## Example File
 
-![TSplineSurface.SerializeAsTSM](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SerializeAsTSM_img.jpg)
+![TSplineSurface.SerializeAsTSM](./HPPPUZ44WSFE77XKRGFZMFM4FVPCIAERWGT6OF6U3ECKGKVBF3FA_img.jpg)

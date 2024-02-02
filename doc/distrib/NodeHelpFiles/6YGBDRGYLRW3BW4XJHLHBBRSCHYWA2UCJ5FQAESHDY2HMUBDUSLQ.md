@@ -7,4 +7,4 @@ The example below illustrates how to add multiple reflections to a T-Spline surf
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.AddReflections_img.jpg)
+![Example](./6YGBDRGYLRW3BW4XJHLHBBRSCHYWA2UCJ5FQAESHDY2HMUBDUSLQ_img.jpg)

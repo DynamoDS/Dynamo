@@ -5,4 +5,4 @@ In the example below, a T-Spline primitive cylinder surface is created. The bott
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCylinderPointsRadius_img.jpg)
+![Example](./AUSALFCUDD62GV5ALRNIDJ43LBF3FWW5HY5WNAQBKRB7E2JF7WUQ_img.jpg)

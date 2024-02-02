@@ -5,4 +5,4 @@ In the example below, `TSplineInitialSymmetry.RadialSymmetryFaces` node returns 
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.RadialSymmetryFaces_img.jpg)
+![Example](./KEPMQRB4UWQVYMWKTRJCLWPDVWKZZWWGLXPFTHDOMJBKQKGTWA7A_img.jpg)

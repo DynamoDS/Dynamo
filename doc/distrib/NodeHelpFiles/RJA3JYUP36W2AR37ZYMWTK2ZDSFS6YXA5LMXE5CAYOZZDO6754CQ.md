@@ -5,4 +5,4 @@ In the example below, a set of border edges of a T-Spline surface is selected an
 ___
 ## Example File
 
-![TSplineSurface.ExtrudeEdgesAlongCurve](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeEdgesAlongCurve_img.jpg)
+![TSplineSurface.ExtrudeEdgesAlongCurve](./RJA3JYUP36W2AR37ZYMWTK2ZDSFS6YXA5LMXE5CAYOZZDO6754CQ_img.jpg)

@@ -13,4 +13,4 @@ In the example below, a T-Spline planar surface is created by using the provided
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal_img.jpg)
+![Example](./DWYJGQGBW2MD57NAYFKR3UEMPTHASLR2IV2X2SUK3OKI35GCEVHQ_img.jpg)

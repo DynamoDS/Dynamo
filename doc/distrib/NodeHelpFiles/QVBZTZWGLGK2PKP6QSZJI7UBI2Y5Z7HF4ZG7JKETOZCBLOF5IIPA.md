@@ -8,4 +8,4 @@ A set of faces on the surface is then selected using `TSplineTopology.FaceByInde
 ___
 ## Example File
 
-![TSplineSurface.DuplicateFaces](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DuplicateFaces_img.jpg)    
+![TSplineSurface.DuplicateFaces](./QVBZTZWGLGK2PKP6QSZJI7UBI2Y5Z7HF4ZG7JKETOZCBLOF5IIPA_img.jpg)    

@@ -5,4 +5,4 @@ In the example below, a vertex of a T-Spline surface is collected using the `TSp
 ___
 ## Example File
 
-![TSplineTopology.VertexByIndex](./Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.VertexByIndex_img.jpg)
+![TSplineTopology.VertexByIndex](./7LRWGLADXMQPJN33WBBRTYBBK4NO6FQADRQICYVBDCTWPJ3FOONQ_img.jpg)

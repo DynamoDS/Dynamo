@@ -7,4 +7,4 @@ In the example below, Bevel operation is perfromed on a T-Spline Box surface. Th
 ___
 ## Example File
 
-![TSplineSurface.EnableSmoothMode](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.EnableSmoothMode_img.jpg)
+![TSplineSurface.EnableSmoothMode](./NN2ZH7ONXE6AF3LL2XG7BSXNABGZRF4KYTGXDYF24O5PLZ2GWW4Q_img.jpg)

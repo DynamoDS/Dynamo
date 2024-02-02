@@ -5,4 +5,4 @@ In the example below, `TSplineInitialSymmetry.IsRadial` node confirms if type of
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.IsRadial_img.jpg)
+![Example](./KB37RARA32V2WDFDQAYZ4ZFBA3AOPWGQNDOAMYU4G6VXI5W6TR3Q_img.jpg)

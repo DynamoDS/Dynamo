@@ -5,4 +5,4 @@ In the example below, a T-Spline sphere primitive surface is created using the `
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius_img.jpg)
+![Example](./3W2XHZKQEZFB7P3OTUVOZUMCD3M7PKUFQZI42URWMPFARFIN2NVQ_img.jpg)

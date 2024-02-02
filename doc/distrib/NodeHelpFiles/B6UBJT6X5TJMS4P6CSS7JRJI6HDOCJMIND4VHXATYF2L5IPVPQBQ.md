@@ -7,4 +7,4 @@ In the example below, a T-Spline surface is first created by applying Axial and 
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.RemoveReflections_img.jpg)
+![Example](./B6UBJT6X5TJMS4P6CSS7JRJI6HDOCJMIND4VHXATYF2L5IPVPQBQ_img.jpg)

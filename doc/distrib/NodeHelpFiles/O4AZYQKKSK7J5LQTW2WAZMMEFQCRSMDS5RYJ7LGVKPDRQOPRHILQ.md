@@ -5,4 +5,4 @@ In the example below, a cone is created with its base positioned on the origin o
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByConeCoordinateSystemHeightRadii_img.jpg)
+![Example](./O4AZYQKKSK7J5LQTW2WAZMMEFQCRSMDS5RYJ7LGVKPDRQOPRHILQ_img.jpg)

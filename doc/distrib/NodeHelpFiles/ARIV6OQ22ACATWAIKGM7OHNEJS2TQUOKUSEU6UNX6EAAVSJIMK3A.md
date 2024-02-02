@@ -7,4 +7,4 @@ In the example below, a number of faces is deleted from a quadball primitive sur
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CompressIndexes_img.jpg)
+![Example](./ARIV6OQ22ACATWAIKGM7OHNEJS2TQUOKUSEU6UNX6EAAVSJIMK3A_img.jpg)

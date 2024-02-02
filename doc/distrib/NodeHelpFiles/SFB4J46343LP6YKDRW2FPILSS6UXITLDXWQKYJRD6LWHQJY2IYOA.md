@@ -12,4 +12,4 @@ In the example below, a T-Spline planar surface is created using a line and a pl
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneLineAndPoint_img.jpg)
+![Example](./SFB4J46343LP6YKDRW2FPILSS6UXITLDXWQKYJRD6LWHQJY2IYOA_img.jpg)
