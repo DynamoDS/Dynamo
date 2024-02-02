@@ -691,6 +691,7 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
@@ -799,10 +800,17 @@ namespace Dynamo.ViewModels
             e.Handled = true;
 
             CrashGracefully(e.Exception);
-            
         }
 
-        internal void CrashGracefully(Exception ex)
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (!DynamoModel.IsCrashing)//Avoid duplicate CER reports
+            {
+                CrashGracefully(e.ExceptionObject as Exception, fatal: true);
+            }
+        }
+
+        internal void CrashGracefully(Exception ex, bool fatal = false)
         {
             try
             {
@@ -810,9 +818,31 @@ namespace Dynamo.ViewModels
                 var crashData = new CrashErrorReportArgs(ex);
                 Model?.Logger?.LogError($"Unhandled exception: {crashData.Details} ");
                 Analytics.TrackException(ex, true);
-
                 Model?.OnRequestsCrashPrompt(crashData);
-                UIDispatcher?.BeginInvoke(() => Exit(false), DispatcherPriority.Send);
+
+                if (fatal)
+                {
+                    UIDispatcher?.Invoke(() => {
+                        try
+                        {
+                            Exit(false);
+                        }
+                        catch { }
+                    }, DispatcherPriority.Send);
+                  
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    UIDispatcher?.BeginInvoke(() => {
+                        try
+                        {
+                            Exit(false);
+                        }
+                        catch
+                        { }
+                    }, DispatcherPriority.Send);
+                }
             }
             catch
             { }
@@ -3509,9 +3539,6 @@ namespace Dynamo.ViewModels
         /// 
         public bool PerformShutdownSequence(ShutdownParams shutdownParams)
         {
-            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
-            TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
-
             if (shutdownSequenceInitiated)
             {
                 // There was a prior call to shutdown. This could happen for example
@@ -3548,6 +3575,9 @@ namespace Dynamo.ViewModels
 
             model.ShutDown(shutdownParams.ShutdownHost);
             UsageReportingManager.DestroyInstance();
+
+            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
+            TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
             this.model.CommandStarting -= OnModelCommandStarting;
             this.model.CommandCompleted -= OnModelCommandCompleted;
             BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;

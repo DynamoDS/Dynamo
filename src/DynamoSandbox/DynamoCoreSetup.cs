@@ -10,7 +10,6 @@ using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
@@ -58,8 +57,6 @@ namespace DynamoSandbox
         {
             try
             {
-                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
                 // This line validates if the WebView2 Runtime is installed in the computer before launching DynamoSandbox,
                 // if is not we return and then exit Dynamo Sandbox
                 if (!WebView2Utilities.ValidateWebView2RuntimeInstalled())
@@ -162,14 +159,6 @@ namespace DynamoSandbox
         private void ASMPreloadFailureHandler(string failureMessage)
         {
             MessageBoxService.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            if (!DynamoModel.IsCrashing)//Avoid duplicate CER reports
-            {
-                viewModel?.CrashGracefully(e.ExceptionObject as Exception);
-            }
         }
     }
 }
