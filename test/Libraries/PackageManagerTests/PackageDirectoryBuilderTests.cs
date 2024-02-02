@@ -41,7 +41,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildRetainPackageDirectory_DoesExpectedNumberOfOperations()
         {
-            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\pkg\folder1\file1.dyf" }, new[] { @"C:\pkg\folder2\file2.dyf" } };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
             var fs = new RecordedFileSystem((fn) => files.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
             var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
@@ -86,7 +86,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildRetainPackageDirectory_BuildsExpectedDirectories()
         {
-            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\pkg\folder1\file1.dyf" }, new[] { @"C:\pkg\folder2\file2.dyf" } };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
             var fs = new RecordedFileSystem((fn) => files.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
             var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
@@ -103,7 +103,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildPackageDirectory_FormsPackageHeader()
         {
-            var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
+            var files = new[] { @"C:\pkg\file1.dyf", @"C:\pkg\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn));
@@ -125,7 +125,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildRetainPackageDirectory_FormsPackageHeader()
         {
-            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\pkg\folder1\file1.dyf" }, new[] { @"C:\pkg\folder2\file2.dyf" } };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
             var fs = new RecordedFileSystem((fn) => files.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
 
@@ -176,7 +176,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildRetainPackageDirectory_RemapsCustomNodePaths()
         {
-            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\pkg\folder1\file1.dyf" }, new[] { @"C:\pkg\folder2\file2.dyf" } };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
             var fs = new RecordedFileSystem((fn) => files.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
 
@@ -235,7 +235,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildRetainPackageDirectory_UpdatesTheArgumentPackageWithNewDirectories()
         {
-            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\pkg\folder1\file1.dyf" }, new[] { @"C:\pkg\folder2\file2.dyf" } };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
             var fs = new RecordedFileSystem((fn) => files.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
 
@@ -257,7 +257,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildPackageDirectory_CopiesTheOriginalFiles()
         {
-            var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
+            var files = new[] { @"C:\pkg\file1.dyf", @"C:\pkg\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn));
@@ -282,7 +282,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildPackageRetainDirectory_CopiesTheOriginalFiles()
         {
-            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\pkg\folder1\file1.dyf" }, new[] { @"C:\pkg\folder2\file2.dyf" } };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
             var fs = new RecordedFileSystem((fn) => files.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
 
@@ -307,7 +307,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildPackageDirectory_CopiesMarkDownFiles()
         {
-            var files = new[] { @"C:\file1.dyn", @"C:\file2.dyn" };
+            var files = new[] { @"C:\pkg\file1.dyn", @"C:\pkg\file2.dyn" };
             var markdownFiles = new[] { @"C:\file1.md", @"C:\file2.md", @"C:\image\file3.jpg" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
 
@@ -360,7 +360,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildPackageDirectory_DeletesTheOriginalFiles()
         {
-            var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
+            var files = new[] { @"C:\pkg\file1.dyf", @"C:\pkg\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn));
@@ -385,7 +385,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildRetainPackageDirectory_DeletesTheOriginalFiles()
         {
-            var files = new List<IEnumerable<string>>() { new[] { @"C:\folder1\file1.dyf" }, new[] { @"C:\folder2\file2.dyf" } };
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\pkg\folder1\file1.dyf" }, new[] { @"C:\pkg\folder2\file2.dyf" } };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
             var fs = new RecordedFileSystem((fn) => files.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
 
