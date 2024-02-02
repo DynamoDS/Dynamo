@@ -795,8 +795,9 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            // Try to handle the exception so that the host app can continue in most cases.
-            // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases we might see 2 CER windows (the extra one from the host app)
+            // Try to handle the exception so that the host app can continue (in most cases).
+            // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases
+            // we might see 2 CER windows (the extra one from the host app) - CER tool might handle this in the future.
             e.Handled = true;
 
             CrashGracefully(e.Exception);
@@ -822,6 +823,9 @@ namespace Dynamo.ViewModels
 
                 if (fatal)
                 {
+                    // Fatal exception. Close Dynamo and terminate the process.
+
+                    // Run the Dynamo exit code in the UI thread since CrashGracefully could be called in other threads too.
                     UIDispatcher?.Invoke(() => {
                         try
                         {
@@ -829,11 +833,17 @@ namespace Dynamo.ViewModels
                         }
                         catch { }
                     }, DispatcherPriority.Send);
-                  
+
+                    // We terminate the process here so that no other exceptions can leak to the host apps.
+                    // All fatal exceptions will result in a process termination (either by Dynamo, host app or CLR)
                     Environment.Exit(1);
                 }
                 else
                 {
+                    // Non fatal exception.
+
+                    // We run the Dynamo exit call asyncronously in the dispatcher to ensure that any continuation of code
+                    // manages to run to completion before we start shutting down Dynamo.
                     UIDispatcher?.BeginInvoke(() => {
                         try
                         {
