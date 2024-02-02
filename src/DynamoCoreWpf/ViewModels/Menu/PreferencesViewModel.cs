@@ -1212,9 +1212,9 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Enable Panel nodes" toogle button
+        /// Controls the IsChecked property in the "Enable Paneling nodes" toogle button
         /// </summary>
-        public bool EnablePanelIsChecked
+        public bool EnablePanelingIsChecked
         {
             get
             {
@@ -1224,7 +1224,7 @@ namespace Dynamo.ViewModels
             set
             {
                 HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.Panel");
-                RaisePropertyChanged(nameof(EnablePanelIsChecked));
+                RaisePropertyChanged(nameof(EnablePanelingIsChecked));
             }
         }
 
@@ -1776,8 +1776,8 @@ namespace Dynamo.ViewModels
                 case nameof(EnableTSplineIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableTSplineNodes), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
-                case nameof(EnablePanelIsChecked):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnablePanelNodes), System.Globalization.CultureInfo.InvariantCulture);
+                case nameof(EnablePanelingIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnablePanelingNodes), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowPreviewBubbles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);

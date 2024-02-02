@@ -1048,10 +1048,10 @@
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
                                                       VerticalAlignment="Center"
-                                                      IsChecked="{Binding Path=EnablePanelIsChecked}"
+                                                      IsChecked="{Binding Path=EnablePanelingIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
                                         <StackPanel VerticalAlignment="Center">
-                                            <Label Content="{x:Static p:Resources.PreferencesViewEnablePanelNodes}"
+                                            <Label Content="{x:Static p:Resources.PreferencesViewEnablePanelingNodes}"
                                                    Padding="5,5,5,0"
                                                    Margin="10,0,0,0"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>

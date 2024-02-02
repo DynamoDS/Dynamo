@@ -7485,11 +7485,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Panel nodes.
+        ///   Looks up a localized string similar to Enable Paneling nodes.
         /// </summary>
-        public static string PreferencesViewEnablePanelNodes {
+        public static string PreferencesViewEnablePanelingNodes {
             get {
-                return ResourceManager.GetString("PreferencesViewEnablePanelNodes", resourceCulture);
+                return ResourceManager.GetString("PreferencesViewEnablePanelingNodes", resourceCulture);
             }
         }
         
