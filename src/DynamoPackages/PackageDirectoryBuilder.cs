@@ -232,7 +232,7 @@ namespace Dynamo.PackageManager
                     // Ensure the relative path starts with a directory separator.
                     if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
                     {
-                        relativePath = relativePath.TrimStart(['/', '\\']);
+                        relativePath = relativePath.TrimStart(new char[] { '/', '\\' });
                         relativePath = Path.DirectorySeparatorChar + relativePath;
                     }
 
