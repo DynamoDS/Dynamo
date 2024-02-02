@@ -701,6 +701,7 @@ namespace Dynamo.ViewModels
             this.model = startConfiguration.DynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
+            this.model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
 
             this.HideReportOptions = startConfiguration.HideReportOptions;
             UsageReportingManager.Instance.InitializeCore(this);
@@ -775,6 +776,18 @@ namespace Dynamo.ViewModels
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
         }
 
+        private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
+        {
+            if (CrashReportTool.ShowCrashErrorReportWindow(this,
+                (args is CrashErrorReportArgs cerArgs) ? cerArgs :
+                new CrashErrorReportArgs(args.Details)))
+            {
+                return;
+            }
+            // Backup crash reporting dialog (in case ADSK CER is not found)
+            var prompt = new Nodes.Prompts.CrashPrompt(args, this);
+            prompt.ShowDialog();
+        }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
@@ -826,17 +839,18 @@ namespace Dynamo.ViewModels
                     // Fatal exception. Close Dynamo and terminate the process.
 
                     // Run the Dynamo exit code in the UI thread since CrashGracefully could be called in other threads too.
-                    UIDispatcher?.Invoke(() => {
+                    TryDispatcherInvoke(() => {
                         try
                         {
                             Exit(false);
                         }
                         catch { }
-                    }, DispatcherPriority.Send);
+                    });
 
-                    // We terminate the process here so that no other exceptions can leak to the host apps.
-                    // All fatal exceptions will result in a process termination (either by Dynamo, host app or CLR)
-                    Environment.Exit(1);
+                    // Do not terminate the process in the plugin, because other AppDomain.UnhandledException events will not get a chance to get called
+                    // ex. A host app (like Revit) could have an AppDomain.UnhandledException too.
+                    // If we terminate the process here, the host app will not get a chance to gracefully shut down.
+                    // Environment.Exit(1);
                 }
                 else
                 {
@@ -844,14 +858,14 @@ namespace Dynamo.ViewModels
 
                     // We run the Dynamo exit call asyncronously in the dispatcher to ensure that any continuation of code
                     // manages to run to completion before we start shutting down Dynamo.
-                    UIDispatcher?.BeginInvoke(() => {
+                    TryDispatcherBeginInvoke(() => {
                         try
                         {
                             Exit(false);
                         }
                         catch
                         { }
-                    }, DispatcherPriority.Send);
+                    });
                 }
             }
             catch
@@ -3568,13 +3582,17 @@ namespace Dynamo.ViewModels
             // that the shutdown may not be stopped.
             shutdownSequenceInitiated = true;
 
+            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
+            TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
+            this.Model.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
+
             // Request the View layer to close its window (see 
             // ShutdownParams.CloseDynamoView member for details).
             if (shutdownParams.CloseDynamoView)
             {
                 OnRequestClose(this, EventArgs.Empty);
             }
-
 
             BackgroundPreviewViewModel.Dispose();
             foreach (var wsvm in workspaces)
@@ -3586,8 +3604,6 @@ namespace Dynamo.ViewModels
             model.ShutDown(shutdownParams.ShutdownHost);
             UsageReportingManager.DestroyInstance();
 
-            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
-            TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
             this.model.CommandStarting -= OnModelCommandStarting;
             this.model.CommandCompleted -= OnModelCommandCompleted;
             BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;

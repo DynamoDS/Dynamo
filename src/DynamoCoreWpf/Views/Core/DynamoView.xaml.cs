@@ -121,7 +121,6 @@ namespace Dynamo.Controls
         /// <param name="dynamoViewModel">Dynamo view model</param>
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
-            dynamoViewModel.Model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
             // The user's choice to enable hardware acceleration is now saved in
             // the Dynamo preferences. It is set to true by default. 
             // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
@@ -1606,19 +1605,6 @@ namespace Dynamo.Controls
             dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
         }
 
-        private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
-        {
-            if (CrashReportTool.ShowCrashErrorReportWindow(dynamoViewModel,
-                (args is CrashErrorReportArgs cerArgs) ? cerArgs : 
-                new CrashErrorReportArgs(args.Details)))
-            {
-                return;
-            }
-            // Backup crash reporting dialog (in case ADSK CER is not found)
-            var prompt = new CrashPrompt(args, dynamoViewModel);
-            prompt.ShowDialog();
-        }
-
         private void Controller_RequestTaskDialog(object sender, TaskDialogEventArgs e)
         {
             var taskDialog = new UI.Prompts.GenericTaskDialog(e);
@@ -1982,7 +1968,6 @@ namespace Dynamo.Controls
 
             if (dynamoViewModel.Model != null)
             {
-                dynamoViewModel.Model.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
                 dynamoViewModel.Model.RequestTaskDialog -= Controller_RequestTaskDialog;
                 dynamoViewModel.Model.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
             }
