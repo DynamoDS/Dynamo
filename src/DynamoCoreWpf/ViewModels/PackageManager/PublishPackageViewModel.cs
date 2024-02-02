@@ -993,7 +993,7 @@ namespace Dynamo.PackageManager
             var itemsToAdd = CustomNodeDefinitions
                 .Select(def => new PackageItemRootViewModel(def))
                 .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
-                .Concat(AdditionalFiles.Where(x => !x.ToLower().EndsWith("pkg.json")).Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
+                .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
                 .Concat(CustomDyfFilepaths.Select((s) => new PackageItemRootViewModel((string)s.Key, (string)s.Value)))
                 .ToList()
                 .ToObservableCollection();

@@ -1829,7 +1829,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(additionalFiles.Count, allFiles.Count(f => !f.EndsWith(".dll")));
 
             var packageContents = vm.PackageContents;
-            Assert.AreEqual(packageContents.Count, 1); // We expect only 1 root item here
+            Assert.AreEqual(1, packageContents.Count); // We expect only 1 root item here
 
             // Assert that the PackageContents contains the correct number of items
             var allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
@@ -2162,7 +2162,7 @@ namespace DynamoCoreWpfTests.PackageManager
             // This makes sense as we don't want to try to establish 'common parent' for folders that maybe too far apart in a tree structure
             rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
             Assert.AreEqual(1, rootFolder.Count());
-            Assert.AreEqual(3, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());
+            Assert.AreEqual(4, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());
 
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(rootFolder.First()));
             Assert.IsFalse(vm.PackageContents.Any());
