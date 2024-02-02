@@ -503,7 +503,7 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             });
 
-            // There are 20 packages in "Dynamo\test\pkgs"
+            // There are 21 packages in "Dynamo\test\pkgs"
             Assert.AreEqual(21, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
@@ -541,7 +541,7 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             });
 
-            // There are 20 packages in "Dynamo\test\pkgs"
+            // There are 21 packages in "Dynamo\test\pkgs"
             Assert.AreEqual(21, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
@@ -669,7 +669,7 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             });
 
-            // There are 20 packages in "Dynamo\test\pkgs"
+            // There are 21 packages in "Dynamo\test\pkgs"
             Assert.AreEqual(21, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.Entries.OfType<CustomNodeSearchElement>();
