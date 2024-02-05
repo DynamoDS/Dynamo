@@ -164,8 +164,8 @@ namespace Dynamo.Wpf.Utilities
 
         internal static void ShowCrashWindow(object sender, CrashPromptArgs args)
         {
-            var viewModel = sender as DynamoViewModel
-                ;
+            var viewModel = sender as DynamoViewModel;
+
             if (CrashReportTool.ShowCrashErrorReportWindow(viewModel,
                 (args is CrashErrorReportArgs cerArgs) ? cerArgs :
                 new CrashErrorReportArgs(args.Details)))

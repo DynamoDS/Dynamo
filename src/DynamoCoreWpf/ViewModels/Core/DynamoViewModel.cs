@@ -823,7 +823,7 @@ namespace Dynamo.ViewModels
 
                 if (fatal)
                 {
-                    // Fatal exception. Close Dynamo and terminate the process.
+                    // Fatal exception. Close Dynamo but do not terminate the process.
 
                     // Run the Dynamo exit code in the UI thread since CrashGracefully could be called in other threads too.
                     TryDispatcherInvoke(() => {
