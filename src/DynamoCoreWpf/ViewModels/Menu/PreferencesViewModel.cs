@@ -1128,7 +1128,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", true) ?? false;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false;
             }
         }
 

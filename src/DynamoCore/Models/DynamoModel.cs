@@ -1719,7 +1719,7 @@ namespace Dynamo.Models
             if (PreferenceSettings != null)
             {
                 ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
-                // PreferenceSettings.InitializeNamespacesToExcludeFromLibrary();
+                PreferenceSettings.InitializeNamespacesToExcludeFromLibrary(DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false);
 
                 if (string.IsNullOrEmpty(PreferenceSettings.BackupLocation))
                 {

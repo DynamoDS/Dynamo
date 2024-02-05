@@ -1141,8 +1141,16 @@ namespace Dynamo.Configuration
             return defaultPythonEngine;
         }
 
-        internal void InitializeNamespacesToExcludeFromLibrary()
+        internal void InitializeNamespacesToExcludeFromLibrary(bool isTSplineNodesExperimentToggleVisible)
         {
+            // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
+            if (!isTSplineNodesExperimentToggleVisible)
+            {
+                NamespacesToExcludeFromLibrary.Remove(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
+                );
+                return;
+            }
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
                 NamespacesToExcludeFromLibrary.Add(
