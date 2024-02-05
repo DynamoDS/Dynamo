@@ -51,10 +51,10 @@ namespace Dynamo.Nodes.Prompts
         {
             InitializeComponent();
 
-            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
+            var packageLoader = dynamoViewModel?.Model?.GetPackageManagerExtension()?.PackageLoader;
             markdownPackages = Wpf.Utilities.CrashUtilities.PackagesToMakrdown(packageLoader);
 
-            productName = dynamoViewModel.BrandingResourceProvider.ProductName;
+            productName = dynamoViewModel?.BrandingResourceProvider.ProductName ?? Process.GetCurrentProcess().ProcessName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             TitleTextBlock.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);

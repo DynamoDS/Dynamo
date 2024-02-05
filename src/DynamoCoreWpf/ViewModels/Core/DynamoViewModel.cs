@@ -701,7 +701,7 @@ namespace Dynamo.ViewModels
             this.model = startConfiguration.DynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
-            this.model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
+            this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;
 
             this.HideReportOptions = startConfiguration.HideReportOptions;
             UsageReportingManager.Instance.InitializeCore(this);
@@ -776,19 +776,6 @@ namespace Dynamo.ViewModels
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
         }
 
-        private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
-        {
-            if (CrashReportTool.ShowCrashErrorReportWindow(this,
-                (args is CrashErrorReportArgs cerArgs) ? cerArgs :
-                new CrashErrorReportArgs(args.Details)))
-            {
-                return;
-            }
-            // Backup crash reporting dialog (in case ADSK CER is not found)
-            var prompt = new Nodes.Prompts.CrashPrompt(args, this);
-            prompt.ShowDialog();
-        }
-
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             try
@@ -824,7 +811,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void CrashGracefully(Exception ex, bool fatal = false)
+        private void CrashGracefully(Exception ex, bool fatal = false)
         {
             try
             {
@@ -3585,7 +3572,7 @@ namespace Dynamo.ViewModels
             AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
             Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
             TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
-            this.Model.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
+            this.Model.RequestsCrashPrompt -= CrashReportTool.ShowCrashWindow;
 
             // Request the View layer to close its window (see 
             // ShutdownParams.CloseDynamoView member for details).

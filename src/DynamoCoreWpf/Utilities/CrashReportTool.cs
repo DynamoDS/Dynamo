@@ -162,6 +162,21 @@ namespace Dynamo.Wpf.Utilities
             }
         }
 
+        internal static void ShowCrashWindow(object sender, CrashPromptArgs args)
+        {
+            var viewModel = sender as DynamoViewModel
+                ;
+            if (CrashReportTool.ShowCrashErrorReportWindow(viewModel,
+                (args is CrashErrorReportArgs cerArgs) ? cerArgs :
+                new CrashErrorReportArgs(args.Details)))
+            {
+                return;
+            }
+            // Backup crash reporting dialog (in case ADSK CER is not found)
+            var prompt = new Nodes.Prompts.CrashPrompt(args, viewModel);
+            prompt.ShowDialog();
+        }
+
         /// <summary>
         /// Calls external CER tool (with UI)
         /// </summary>
