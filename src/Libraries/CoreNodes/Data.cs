@@ -1,20 +1,20 @@
-using Autodesk.DesignScript.Geometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autodesk.DesignScript.Runtime;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Drawing;
-using System.IO;
-using System.Drawing.Imaging;
 using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Runtime.Versioning;
+using System.Text;
+using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Events;
 using Dynamo.Logging;
 using Dynamo.Session;
-using System.Globalization;
-using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DSCore
 {
@@ -528,6 +528,36 @@ namespace DSCore
         }
 
         internal static DynamoLogger dynamoLogger = ExecutionEvents.ActiveSession?.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+
+        /// <summary>
+        /// Function to validate input type against supported Dynamo input types
+        /// </summary>
+        /// <param name="inputValue">The incoming data to validate</param>
+        /// <param name="typeID">The input type provided by the user. It has to match the inputValue type</param>
+        /// <param name="context">The value of this boolean decides if the input is a single object or a list</param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool IsSupportedDataType([ArbitraryDimensionArrayImport] object inputValue, string typeID, bool context)
+        {
+            // Make sure the initial inputs are not nulls
+            if (inputValue == null || string.IsNullOrEmpty(typeID))
+            {
+                return false;
+            }
+
+            string newCachedJson;
+            try
+            {
+                newCachedJson = StringifyJSON(inputValue);
+            }
+            catch (Exception ex)
+            {
+                dynamoLogger?.Log("Remember failed to serialize with this exception: " + ex.Message);
+                throw new NotSupportedException(string.Format(Properties.Resources.Exception_Serialize_Unsupported_Type, inputValue.GetType().FullName));
+            }
+
+            return true;
+        }
 
         #endregion
     }

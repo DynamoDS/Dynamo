@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using DynamoUnits;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -572,6 +570,27 @@ namespace Dynamo.Tests
             object unsupportedInput = new FileInfo(Path.Combine(TestDirectory, @"core\json\Solid_Cylinder_JSONParsing.dyn"));
 
             Assert.That(() => DSCore.Data.Remember(unsupportedInput, validCachedJson), Throws.Exception);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void IsSupportedDataTypeFalseOnInitialNullInputs()
+        {
+            object unsupportedInput = null;
+            object supportedInput = "inputValue";
+            var validString = "type";
+            var validate = DSCore.Data.IsSupportedDataType(unsupportedInput, validString, false);
+
+            Assert.AreEqual(false, validate);
+
+            validate = DSCore.Data.IsSupportedDataType(supportedInput, null, false);
+            Assert.AreEqual(false, validate);
+
+            validate = DSCore.Data.IsSupportedDataType(supportedInput, string.Empty, false);
+            Assert.AreEqual(false, validate);
+
+            validate = DSCore.Data.IsSupportedDataType(supportedInput, validString, false);
+            Assert.AreEqual(true, validate);
         }
     }
 }
