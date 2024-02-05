@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using Microsoft.Win32;
 
@@ -122,7 +123,7 @@ namespace Dynamo.Logging
             //Setup Analytics service, and StabilityCookie.
             Session.Start();
 
-            var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? "Dynamo" : hostAnalyticsInfo.HostName;
+            var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? Configurations.DynamoAsString : hostAnalyticsInfo.HostName;
 
             hostInfo = new HostContextInfo() { ParentId = hostAnalyticsInfo.ParentId, SessionId = hostAnalyticsInfo.SessionId };
 

@@ -149,13 +149,12 @@ namespace Dynamo.PackageManager.UI
             return;
         }
 
-       
 
         private void DropDownInstallButton_OnClick(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
-            if (button == null) { return; }
-                       
+            if (button == null || button.DataContext == null) { return; }
+
             var contextMenu = new ContextMenu();
             var commandBinding = new Binding("DownloadLatestToCustomPathCommand");
             commandBinding.Source = button.DataContext;
@@ -187,6 +186,37 @@ namespace Dynamo.PackageManager.UI
 
             // Open the context menu when the left mouse button is pressed
             contextMenu.IsOpen = true;            
-        }   
+        }
+
+        // Attach the 'context menu' button to the parent button
+        private void DropDownInstallButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            var installButton = sender as Button;
+            if (installButton != null)
+            {
+                var dropDownInstallButton = installButton.Template.FindName("dropDownInstallButton", installButton) as Button;
+                if (dropDownInstallButton != null)
+                {
+                    dropDownInstallButton.Click -= DropDownInstallButton_OnClick;
+
+                    // Now that the parent button is loaded, we can assign the Click event to the context menu button
+                    dropDownInstallButton.Click += DropDownInstallButton_OnClick;
+                }
+            }
+        }
+
+        // Dispose of DropDownInstallButton_OnClick when the parent button is unloaded
+        private void DropDownInstallButton_Unloaded(object sender, RoutedEventArgs e)
+        {
+            var installButton = sender as Button;
+            if (installButton != null)
+            {
+                var dropDownInstallButton = installButton.Template.FindName("dropDownInstallButton", installButton) as Button;
+                if (dropDownInstallButton != null)
+                {
+                    dropDownInstallButton.Click -= DropDownInstallButton_OnClick;
+                }
+            }
+        }
     }
 }

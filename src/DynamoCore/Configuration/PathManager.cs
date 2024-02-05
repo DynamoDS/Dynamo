@@ -638,7 +638,7 @@ namespace Dynamo.Core
                 return userDataDir; //Return the cached userDataDir if we have one.
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
+            return GetDynamoDataFolder(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"));
         }
 
         /// <summary>
@@ -659,7 +659,7 @@ namespace Dynamo.Core
                 return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
+            return GetDynamoDataFolder(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"));
         }
 
         private string GetDynamoDataFolder(string folder)

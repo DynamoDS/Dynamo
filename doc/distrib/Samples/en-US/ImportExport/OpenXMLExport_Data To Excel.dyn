@@ -176,8 +176,8 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows you to select a file on the system and returns its file path",
-      "HintPath": "C:\\Users\\DeyanNenov\\Documents\\GitHub\\Dynamo\\doc\\distrib\\Samples\\Data\\icosohedron_points.csv",
-      "InputValue": "..\\..\\Data\\icosohedron_points.csv"
+      "HintPath": "C:\\Users\\tanga\\Documents\\GitHub\\Dynamo\\doc\\distrib\\Samples\\Data\\icosohedron_points.xlsx",
+      "InputValue": "..\\..\\Data\\icosohedron_points.xlsx"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -497,7 +497,7 @@
   "Dependencies": [],
   "NodeLibraryDependencies": [
     {
-      "Name": "icosohedron_points.csv",
+      "Name": "icosohedron_points.xlsx",
       "ReferenceType": "External",
       "Nodes": [
         "0675124556b44d48a4a1832dc0eca24e"
@@ -528,7 +528,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.1.0.3411",
+      "Version": "3.0.3.7594",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -841,7 +841,7 @@
       },
       {
         "Id": "8af3cb853bbb46d3966f061d62f92646",
-        "Title": "The file path to the csv file.",
+        "Title": "The file path to the xlsx file.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
