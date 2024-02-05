@@ -1141,6 +1141,10 @@ namespace Dynamo.Configuration
             return defaultPythonEngine;
         }
 
+        /// <summary>
+        /// Initialize namespaces to exclude from Library based on conditions
+        /// </summary>
+        /// <param name="isTSplineNodesExperimentToggleVisible">indicates if the experiment toggle is visible under feature flag</param>
         internal void InitializeNamespacesToExcludeFromLibrary(bool isTSplineNodesExperimentToggleVisible)
         {
             // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
