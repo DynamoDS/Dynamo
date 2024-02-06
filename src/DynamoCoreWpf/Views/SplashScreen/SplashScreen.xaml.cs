@@ -187,15 +187,30 @@ namespace Dynamo.UI.Views
         }
 
         private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        {            
-            if (webView != null)
+        {
+            try
             {
-                webView.NavigationCompleted -= WebView_NavigationCompleted;
-                webView.Focus();
-                System.Windows.Forms.SendKeys.SendWait("{TAB}");
+                // Exceptions thrown in WebView_NavigationCompleted seem to be silenced somewhere in the webview2 callstack.
+                // If we catch an exceptions here, we log it and close the spash screen.
+                //
+                if (webView != null)
+                {
+                    webView.NavigationCompleted -= WebView_NavigationCompleted;
+                    webView.Focus();
+                    System.Windows.Forms.SendKeys.SendWait("{TAB}");
+                }
+                OnRequestDynamicSplashScreen();
             }
-            OnRequestDynamicSplashScreen();
+            catch (Exception ex)
+            {
+                if (!DynamoModel.IsCrashing && !IsClosing)
+                {
+                    CrashReportTool.ShowCrashWindow(viewModel, new CrashErrorReportArgs(ex));
+                    Close();// Close the SpashScreen
+                }
+            }
         }
+
         /// <summary>
         /// Request to close SplashScreen.
         /// </summary>
