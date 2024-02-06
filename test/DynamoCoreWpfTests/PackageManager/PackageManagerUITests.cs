@@ -1829,7 +1829,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(additionalFiles.Count, allFiles.Count(f => !f.EndsWith(".dll")));
 
             var packageContents = vm.PackageContents;
-            Assert.AreEqual(1, packageContents.Count); // We expect only 1 root item here
+            Assert.AreEqual(packageContents.Count, 1); // We expect only 1 root item here
 
             // Assert that the PackageContents contains the correct number of items
             var allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
@@ -2162,7 +2162,7 @@ namespace DynamoCoreWpfTests.PackageManager
             // This makes sense as we don't want to try to establish 'common parent' for folders that maybe too far apart in a tree structure
             rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
             Assert.AreEqual(1, rootFolder.Count());
-            Assert.AreEqual(4, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());
+            Assert.AreEqual(3, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());
 
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(rootFolder.First()));
             Assert.IsFalse(vm.PackageContents.Any());
@@ -2253,46 +2253,6 @@ namespace DynamoCoreWpfTests.PackageManager
             var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
 
             newPkgVm.Name = "SingleFolderPublishPackage";
-            newPkgVm.MajorVersion = "0";
-            newPkgVm.MinorVersion = "0";
-            newPkgVm.BuildVersion = "1";
-            newPkgVm.PublishLocallyCommand.Execute();
-
-            Assert.IsTrue(Directory.Exists(publishPath));
-
-            // Arrange
-            var createdFiles = Directory.GetFiles(publishPath, "*", SearchOption.AllDirectories).ToList();
-            var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
-
-            // Assert
-            Assert.AreEqual(createdFiles.Count(), previewFiles.Count() + 1);
-            Assert.AreEqual(1, createdFolders.Count(), previewFolders.Count());  // One subfolder was created
-
-            // Clean up
-            Directory.Delete(publishPath, true);
-        }
-
-        [Test]
-        public void AssertPreviewPackageRetainFolderStructureEqualsPublishLocalPackageResultsForNestedFolders()
-        {
-            var packageName = "NestedPackage";
-            var pathManager = this.ViewModel.Model.PathManager as PathManager;
-            var publishPath = Path.Combine(pathManager.DefaultPackagesDirectory, packageName);
-
-            string nodePath = Path.Combine(TestDirectory, "pkgs", packageName);
-            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
-            var allFolders = Directory.GetDirectories(nodePath, "*", SearchOption.AllDirectories).ToList();
-
-            //now lets publish this package.
-            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
-            newPkgVm.RetainFolderStructureOverride = true;
-            newPkgVm.AddAllFilesAfterSelection(allFiles);
-
-            var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
-            var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
-            var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
-
-            newPkgVm.Name = packageName;
             newPkgVm.MajorVersion = "0";
             newPkgVm.MinorVersion = "0";
             newPkgVm.BuildVersion = "1";

@@ -293,14 +293,14 @@
                                                                           DataContext="{Binding PackageManagerViewModel}"
                                                                           VerticalAlignment="Stretch"
                                                                           Height="650"
-                                                                          Visibility="{Binding LocalPackages, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
+                                                                          Visibility="{Binding PackageManagerViewModel.LocalPackages, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
 
 
-                                    <!--Empty list screen-->    
+                                    <!--Empty list screen-->
                                     <StackPanel Orientation="Vertical"
                                                 VerticalAlignment="Center"
                                                 HorizontalAlignment="Center"
-                                                Margin="0 127 0 0"
+                                                Margin="0 0 0 73"
                                                 Visibility="{Binding PackageManagerViewModel.LocalPackages, Converter={StaticResource EmptyListToVisibilityConverter }}">
                                         <Image HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
