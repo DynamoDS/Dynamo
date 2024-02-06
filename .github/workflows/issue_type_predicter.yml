@@ -25,10 +25,14 @@ jobs:
       acceptable_missing_info: 1
 
     steps:
-        # Removes quotes before using the issue content as a script parameter
+      # Checkout Dynamo repo
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v4
+
+      # Removes quotes before using the issue content as a script parameter
       - name: Remove Quotes
         id: remove_quotes
-        uses: frabert/replace-string-action@v2.4
+        uses: frabert/replace-string-action@v2.5
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
         with:
@@ -36,7 +40,7 @@ jobs:
           string: ${{ env.ISSUE_BODY }}
           replace-with: '-'
 
-       # Analyze for missing information inside the issue content
+      # Analyze for missing information inside the issue content
       - name: Analyze Issue Body
         env:
           ISSUE_BODY: ${{ steps.remove_quotes.outputs.replaced }}
@@ -61,13 +65,14 @@ jobs:
           echo "issue_json_string="$(pwsh .\\.github\\scripts\\get_issue_json_body.ps1 "$ISSUE_NUMBER")"" >> $GITHUB_ENV
 
       # Checkout the IssuesTypePredicter repo (https://github.com/DynamoDS/IssuesTypePredicter)
-      - name: Checkout IssuesTypePredicter
+      - name: Checkout IssuesTypePredicter Repo
         if: env.analysis_response == 'Valid'
         uses: actions/checkout@v4
         with:
           repository: DynamoDS/IssuesTypePredicter
           path: IssuesTypePredicter
 
+      # Setup dotnet
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:

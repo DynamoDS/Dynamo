@@ -1958,6 +1958,29 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Opens a Dynamo workspace from a path to a template on disk.
+        /// </summary>
+        /// <param name="filePath">Path to file</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        public void OpenTemplateFromPath(string filePath, bool forceManualExecutionMode = false)
+        {
+
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex))
+            {
+                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, true);
+            }
+            else
+            {
+                // These kind of exceptions indicate that file is not accessible 
+                if (ex is IOException || ex is UnauthorizedAccessException || ex is JsonReaderException)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        /// <summary>
         /// Inserts a Dynamo graph or Custom Node inside the current workspace from a file path
         /// </summary>
         /// <param name="filePath"></param>
@@ -2001,7 +2024,7 @@ namespace Dynamo.Models
             JsonReader reader = new JsonTextReader(new StringReader(json));
             var obj = JObject.Load(reader);
             var viewBlock = obj["View"];
-            var dynamoBlock = viewBlock == null ? null : viewBlock["Dynamo"];
+            var dynamoBlock = viewBlock == null ? null : viewBlock[Configurations.DynamoAsString];
             if (dynamoBlock == null)
                 return DynamoPreferencesData.Default();
 
@@ -2028,8 +2051,9 @@ namespace Dynamo.Models
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
+        /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
+        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
         {
             try
             {
@@ -2040,7 +2064,7 @@ namespace Dynamo.Models
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, isTemplate, out ws))
                         {
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
@@ -2076,7 +2100,7 @@ namespace Dynamo.Models
                 {
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out WorkspaceModel ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, out WorkspaceModel ws))
                         {
                             ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
 
@@ -2268,6 +2292,7 @@ namespace Dynamo.Models
           string fileContents,
           DynamoPreferencesData dynamoPreferences,
           bool forceManualExecutionMode,
+          bool isTemplate,
           out WorkspaceModel workspace)
         {
             if (!string.IsNullOrEmpty(filePath))
@@ -2295,8 +2320,8 @@ namespace Dynamo.Models
                 CustomNodeManager,
                 this.LinterManager);
 
-            workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
-            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
+            workspace.FileName = string.IsNullOrEmpty(filePath) || isTemplate? string.Empty : filePath;
+            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             
             if (!IsTestMode && !IsHeadless)

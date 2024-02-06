@@ -1,10 +1,10 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Input;
 using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -35,6 +35,10 @@ namespace Dynamo.UI.Views
         /// This is useful for knowing if Dynamo is already started or not.
         /// </summary>
         public bool CloseWasExplicit { get; private set; }
+
+        // Indicates if the SplashScren close button was hit.
+        // Used to ensure that OnClosing is called only once.
+        private bool IsClosing = false;
 
         // Timer used for Splash Screen loading
         internal Stopwatch loadingTimer;
@@ -157,6 +161,25 @@ namespace Dynamo.UI.Views
             RequestSignIn = SignIn;
             RequestSignOut = SignOut;
             this.enableSignInButton = enableSignInButton;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            // If we have multiple OnClosing events (ex Clicking the close button multiple times)
+            // we need to only process the first one. THe rest should be canceled so that we can avoid timing issues with the order of windows messages
+            // Ex  WM_CLOSE => webview2.Visibility.Set => waits for windows message =>  WM_DESTROY =>
+            // webview2.Dispose => webview2.Visible.Set receives windows message => crash because object got disposed. 
+            if (!IsClosing)
+            {
+                // First call to OnClosing
+                IsClosing = true;
+            }
+            else
+            {
+                // Cancel the Close action for all subsequent calls
+                e.Cancel = true;
+            }
+            base.OnClosing(e);
         }
 
         private void DynamoModel_LanguageDetected()
@@ -287,7 +310,7 @@ namespace Dynamo.UI.Views
             var version = AssemblyHelper.GetDynamoVersion();
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+            return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"),
                             String.Format("{0}.{1}", version.Major, version.Minor));
         }
 
@@ -565,8 +588,11 @@ namespace Dynamo.UI.Views
                 authManager.LoginStateChanged -= OnLoginStateChanged;
             }
 
-            webView.Dispose();
-            webView = null;
+            if (webView != null)
+            {
+                webView.Dispose();
+                webView = null;
+            }
 
             GC.SuppressFinalize(this);
         }

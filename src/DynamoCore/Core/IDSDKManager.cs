@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using Autodesk.IDSDK;
+using Dynamo.Configuration;
 using Greg;
 using Greg.AuthProviders;
 using RestSharp;
@@ -232,7 +233,7 @@ namespace Dynamo.Core
                         {
                             Client.LogoutCompleteEvent += AuthCompleteEventHandler;
                             Client.LoginCompleteEvent += AuthCompleteEventHandler;
-                            ret = SetProductConfigs("Dynamo", server, client_id);
+                            ret = SetProductConfigs(Configurations.DynamoAsString, server, client_id);
                             Client.SetServer(server);
                             return ret;
                         }
