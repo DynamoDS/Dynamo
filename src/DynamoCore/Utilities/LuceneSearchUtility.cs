@@ -265,6 +265,18 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        /// Check if the term passed as parameter is found inside the FullCategoryName
+        /// </summary>
+        /// <param name="term">Splitted search term e.g. if the search term is "set parameter" the parameter will be "set" or "parameter"</param>
+        /// <param name="FullCategoryName">The complete category used for a specific node, like Core.File.FileSystem</param>
+        /// <returns></returns>
+        private bool IsMatchingCategory(string term, string FullCategoryName)
+        {
+            var categoryTerms = FullCategoryName.Split(".").Select(x => x.ToLower());
+            return categoryTerms.Contains(term);
+        }
+
+        /// <summary>
         /// Creates a search query with adjusted priority, fuzzy logic and wildcards.
         /// Complete Search term appearing in Name of the package will be given highest priority.
         /// Then, complete search term appearing in other metadata,
@@ -306,6 +318,8 @@ namespace Dynamo.Utilities
 
             foreach (string f in fields)
             {
+                Occur occurQuery = Occur.SHOULD;
+
                 //Needs to be again due that now a query can contain different values per field (e.g. CategorySplitted:list, Name:tr)
                 searchTerm = QueryParser.Escape(SearchTerm);
                 if (searchType == SearchType.ByCategory)
@@ -335,6 +349,36 @@ namespace Dynamo.Utilities
                 if (string.IsNullOrEmpty(searchTerm))
                     continue;
 
+                bool firstTermIsCategory = false;
+
+                //This will only valid when the search term has empty spaces
+                if (hasEmptySpaces)
+                {
+                    //Check if the first term of the search criteria match any category
+                    var possibleCategory = searchTerm.Split(' ')[0];
+                    if (string.IsNullOrEmpty(possibleCategory)) continue;
+
+                    var specificCategoryEntries = dynamoModel.SearchModel.Entries.Where(entry => IsMatchingCategory(possibleCategory, entry.FullCategoryName) == true);
+                    firstTermIsCategory = specificCategoryEntries.Any();
+
+                    //Get the node matching the Category provided in the search term
+                    var matchingCategory = specificCategoryEntries.FirstOrDefault();
+                    if (matchingCategory == null && firstTermIsCategory == true) continue;
+
+                    if (f == nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName) && firstTermIsCategory == true)
+                    {
+                        //Means that the first term is a category when we will be using the FullCategoryName for making a specific search based in the category
+                        trimmedSearchTerm = matchingCategory?.FullCategoryName;
+                        occurQuery = Occur.MUST;
+                    }
+                    else if (f == nameof(LuceneConfig.NodeFieldsEnum.Name) && firstTermIsCategory == true)
+                    {
+                        //If the field being iterated is Name and we are sure that the first term is a Category when we remove the term from the string so we can search for the specific node Name
+                        trimmedSearchTerm = trimmedSearchTerm?.Replace(possibleCategory, string.Empty);
+                        if (string.IsNullOrEmpty(trimmedSearchTerm)) continue;
+                    }
+                }
+
                 FuzzyQuery fuzzyQuery;
                 if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
                 {
@@ -347,14 +391,11 @@ namespace Dynamo.Utilities
 
                 if (searchType == SearchType.ByCategory && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
                 {
-                    booleanQuery.Add(fieldQuery, Occur.MUST);
-                    booleanQuery.Add(wildcardQuery, Occur.MUST);
+                    occurQuery = Occur.MUST;
                 }
-                else
-                {
-                    booleanQuery.Add(fieldQuery, Occur.SHOULD);
-                    booleanQuery.Add(wildcardQuery, Occur.SHOULD);
-                }
+               
+                booleanQuery.Add(fieldQuery, occurQuery);
+                booleanQuery.Add(wildcardQuery, occurQuery);
 
                 if (searchTerm.Contains(' '))
                 {
