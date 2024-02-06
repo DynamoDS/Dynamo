@@ -1122,7 +1122,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls if the the Node autocomplete Machine Learning option is beta from feature flag
+        /// Controls if the TSpline nodes experiment toggle is visible from feature flag
         /// </summary>
         public bool IsTSplineNodesExperimentToggleVisible
         {
