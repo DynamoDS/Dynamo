@@ -1144,11 +1144,10 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Initialize namespaces to exclude from Library based on conditions
         /// </summary>
-        /// <param name="isTSplineNodesExperimentToggleVisible">indicates if the experiment toggle is visible under feature flag</param>
-        internal void InitializeNamespacesToExcludeFromLibrary(bool isTSplineNodesExperimentToggleVisible)
+        internal void InitializeNamespacesToExcludeFromLibrary()
         {
             // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
-            if (!isTSplineNodesExperimentToggleVisible)
+            if (!DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false)
             {
                 NamespacesToExcludeFromLibrary.Remove(
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
