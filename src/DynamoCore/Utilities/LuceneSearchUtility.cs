@@ -356,19 +356,22 @@ namespace Dynamo.Utilities
                 {
                     //Check if the first term of the search criteria match any category
                     var possibleCategory = searchTerm.Split(' ')[0];
-                    firstTermIsCategory = dynamoModel.SearchModel.Entries.Where(entry => IsMatchingCategory(possibleCategory, entry.FullCategoryName) == true && !string.IsNullOrEmpty(possibleCategory)).Any();
+                    if (string.IsNullOrEmpty(possibleCategory)) continue;
+
+                    var specificCategoryEntries = dynamoModel.SearchModel.Entries.Where(entry => IsMatchingCategory(possibleCategory, entry.FullCategoryName) == true);
+                    firstTermIsCategory = specificCategoryEntries.Any();
 
                     //Get the node matching the Category provided in the search term
-                    var matchingCategory = dynamoModel.SearchModel.Entries.Where(entry => IsMatchingCategory(possibleCategory, entry.FullCategoryName) == true && !string.IsNullOrEmpty(possibleCategory)).FirstOrDefault();
+                    var matchingCategory = specificCategoryEntries.FirstOrDefault();
                     if (matchingCategory == null && firstTermIsCategory == true) continue;
 
-                    if (f == nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName) && firstTermIsCategory)
+                    if (f == nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName) && firstTermIsCategory == true)
                     {
                         //Means that the first term is a category when we will be using the FullCategoryName for making a specific search based in the category
                         trimmedSearchTerm = matchingCategory?.FullCategoryName;
                         occurQuery = Occur.MUST;
                     }
-                    else if (f == nameof(LuceneConfig.NodeFieldsEnum.Name) && firstTermIsCategory)
+                    else if (f == nameof(LuceneConfig.NodeFieldsEnum.Name) && firstTermIsCategory == true)
                     {
                         //If the field being iterated is Name and we are sure that the first term is a Category when we remove the term from the string so we can search for the specific node Name
                         trimmedSearchTerm = trimmedSearchTerm?.Replace(possibleCategory, string.Empty);
