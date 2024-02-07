@@ -186,8 +186,11 @@ namespace Dynamo.ViewModels
             get { return isCollection; }
             set
             {
-                isCollection = value;
-                RaisePropertyChanged("IsCollection");
+                if (isCollection != value)
+                {
+                    isCollection = value;
+                    RaisePropertyChanged(nameof(IsCollection));
+                }
             }
         }
 
@@ -199,8 +202,11 @@ namespace Dynamo.ViewModels
             get { return levels; }
             set
             {
-                levels = value;
-                RaisePropertyChanged("Levels");
+                if (levels != value)
+                {
+                    levels = value;
+                    RaisePropertyChanged(nameof(Levels));
+                }
             }
         }
 

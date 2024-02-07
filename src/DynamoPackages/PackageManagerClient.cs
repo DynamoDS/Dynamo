@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
@@ -225,46 +226,39 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion)
+        internal PackageUploadHandle PublishAsync(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, bool retainFolderStructure)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
             Task.Factory.StartNew(() =>
             {
-                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle);
+                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle, retainFolderStructure);
             });
 
             return packageUploadHandle;
         }
 
-
-        internal PackageUploadHandle PublishRetainAsync(Package package, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, bool isNewVersion)
-        {
-            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
-
-            Task.Factory.StartNew(() =>
-            {
-                PublishRetainFolderStructure(package, files, markdownFiles, isNewVersion, packageUploadHandle);
-            });
-
-            return packageUploadHandle;
-        }
-
-        internal void Publish(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle)
+        internal void Publish(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle, bool retainFolderStructure = false)
         {
             try
             {
                 ResponseBody ret = null;
                 if (isNewVersion)
                 {
-                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, files, markdownFiles,
+                    var pkg = retainFolderStructure ?
+                        uploadBuilder.NewPackageVersionRetainUpload(package, packageUploadDirectory, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
+                        packageUploadHandle)
+                        : uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, (IEnumerable<string>)files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
                 }
                 else
                 {
-                    var pkg = uploadBuilder.NewPackageUpload(package, packageUploadDirectory, files, markdownFiles,
+                    var pkg = retainFolderStructure ?
+                        uploadBuilder.NewPackageRetainUpload(package, packageUploadDirectory, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
+                        packageUploadHandle)
+                        : uploadBuilder.NewPackageUpload(package, packageUploadDirectory, (IEnumerable<string>)files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
@@ -280,63 +274,20 @@ namespace Dynamo.PackageManager
                     packageUploadHandle.Error(ret.message);
                     return;
                 }
-               
                 packageUploadHandle.Done(null);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                packageUploadHandle.Error(e.GetType() + ": " + e.Message);
-            }
-        }
-
-        /// <summary>
-        /// This method allows the user to publish a package retaining their predefined folder structure
-        /// In this case, Dynamo will not allocate files in specific folders, but instead will replicate the folder structure under the chosen publish path
-        /// </summary>
-        /// <param name="package">The newly created package</param>
-        /// <param name="files">List of folders. Each list of lists represents a root folder. There can be one or many root folders.</param>
-        /// <param name="markdownFiles">Any files located in the user specified markdown folder.</param>
-        /// <param name="isNewVersion">A boolean showing if this is a new package, or an update to an existing package.</param>
-        /// <param name="packageUploadHandle">The PackageUploadHandle used to communicate the status of the upload.</param>
-        internal void PublishRetainFolderStructure(Package package, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle)
-        {
-            try
-            {
-                ResponseBody ret = null;
-                if (isNewVersion)
+                if (ex is IOException || ex is UnauthorizedAccessException)
                 {
-                    var pkg = uploadBuilder.NewPackageVersionRetainUpload(package, packageUploadDirectory, files, markdownFiles,
-                        packageUploadHandle);
-                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
-                    ret = this.client.ExecuteAndDeserialize(pkg);
+                    packageUploadHandle.Error(DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyTitle + ": " + DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyMessage + "(" + ex.Message + ")");
                 }
                 else
                 {
-                    var pkg = uploadBuilder.NewPackageRetainUpload(package, packageUploadDirectory, files, markdownFiles,
-                        packageUploadHandle);
-                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
-                    ret = this.client.ExecuteAndDeserialize(pkg);
+                    packageUploadHandle.Error(ex.GetType() + ": " + ex.Message);
                 }
-                if (ret == null)
-                {
-                    packageUploadHandle.Error("Failed to submit.  Try again later.");
-                    return;
-                }
-
-                if (ret != null && !ret.success)
-                {
-                    packageUploadHandle.Error(ret.message);
-                    return;
-                }
-
-                packageUploadHandle.Done(null);
-            }
-            catch (Exception e)
-            {
-                packageUploadHandle.Error(e.GetType() + ": " + e.Message);
             }
         }
-
 
         internal PackageManagerResult Deprecate(string name)
         {

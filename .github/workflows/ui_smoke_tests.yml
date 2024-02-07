@@ -56,7 +56,7 @@ jobs:
       - name: Publish Test Report
         id: test_report
         if: always()
-        uses: dorny/test-reporter@v1.7.0
+        uses: dorny/test-reporter@v1.8.0
         with:
           name: ${{ env.CHECK_NAME }}
           path: reports/report.xml
@@ -79,8 +79,9 @@ jobs:
           })
           "@
           $run_summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-      - name: Add Pull Request Comment
+      - name: Create Pull Request Comment
         if: always()
+        id: create_comment
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -91,6 +92,26 @@ jobs:
           Workflow Run: [${{ github.workflow }}](${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }})
           Check: [$env:CHECK_NAME](${{ steps.test_report.outputs.url_html }})
           "@
-          if ($env:PR_NUMBER) {
-            gh pr comment $env:PR_NUMBER --body $pr_comment --repo ${{ github.repository }}
-          }
+          $pr_comment | Out-File -FilePath pr_comment.md
+      - name: Find Comment
+        if: env.PR_NUMBER != ''
+        uses: peter-evans/find-comment@v3
+        id: find_comment
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          comment-author: github-actions[bot]
+          body-includes: UI Smoke Tests
+          direction: last
+      - name: Create comment
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          body-path: pr_comment.md
+      - name: Update comment
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          edit-mode: replace
+          body-path: pr_comment.md

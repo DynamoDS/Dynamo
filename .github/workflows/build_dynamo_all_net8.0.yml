@@ -46,16 +46,18 @@ jobs:
           path: ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
           if-no-files-found: warn
           retention-days: 3
-      - name: Save Pull Request Artifact
-        env:
-          PR_NUMBER: ${{ github.event.number }}
+  save_pr_data:
+    name: Save PR Data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save PR Data
         run: |
-          New-Item -Path ${{ github.workspace }}\pr -ItemType Directory -Force
-          $env:PR_NUMBER | Out-File -FilePath ${{ github.workspace }}\pr\pr_number.txt
-      - name: Upload Pull Request Artifact
+          mkdir -p ${{ github.workspace }}/pr
+          echo ${{ github.event.number }} > ${{ github.workspace }}/pr/pr_number.txt
+      - name: Upload PR Data
         uses: actions/upload-artifact@v4
         with:
           name: pr_data
-          path: ${{ github.workspace }}\pr
+          path: ${{ github.workspace }}/pr
           if-no-files-found: warn
           retention-days: 3

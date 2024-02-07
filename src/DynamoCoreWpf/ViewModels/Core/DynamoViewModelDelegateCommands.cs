@@ -18,6 +18,7 @@ namespace Dynamo.ViewModels
             SaveCommand = new DelegateCommand(Save, CanSave);
             SaveAsCommand = new DelegateCommand(SaveAs, CanSaveAs);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
+            ShowOpenTemplateDialogCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
             ShowInsertDialogAndInsertResultCommand = new DelegateCommand(ShowInsertDialogAndInsertResult, CanShowInsertDialogAndInsertResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
@@ -98,6 +99,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenIfSavedCommand { get; set; }
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
+        public DelegateCommand ShowOpenTemplateDialogCommand { get; set; }
         public DelegateCommand ShowInsertDialogAndInsertResultCommand { get; set; }
         public DelegateCommand WriteToLogCmd { get; set; }
         public DelegateCommand PostUiActivationCommand { get; set; }

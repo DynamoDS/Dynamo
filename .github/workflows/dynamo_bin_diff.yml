@@ -41,7 +41,7 @@ jobs:
             Write-Error "DynamoCLI.exe was not found!"
           }
       - name: Cache Current Build
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: |
             ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
@@ -81,7 +81,7 @@ jobs:
             Write-Error "DynamoCLI.exe was not found!"
           }
       - name: Cache Master Build
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ${{ github.workspace }}\master\bin\AnyCPU\Release
           key: ${{ github.run_id }}-${{ github.run_attempt }}-master
@@ -91,7 +91,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Restore Current Build
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
           path: |
@@ -99,7 +99,7 @@ jobs:
             ${{ github.workspace }}\Dynamo\.github\scripts
           key: ${{ github.run_id }}-${{ github.run_attempt }}-current
       - name: Restore Master Build
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
           path: ${{ github.workspace }}\master\bin\AnyCPU\Release

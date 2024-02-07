@@ -551,6 +551,27 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanOpenTemplateAsNewWorkspace()
+        {
+            // get empty workspace
+            var dynamoModel = ViewModel.Model;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+
+            // set description
+            dynamoModel.CurrentWorkspace.Description = "dummy description";
+
+            // save
+            var newPath = GetNewFileNameOnTempPath("dyn");
+            dynamoModel.CurrentWorkspace.Save(newPath);
+
+            // load as template
+            ViewModel.Model.OpenTemplateFromPath(newPath);
+            Assert.AreEqual(string.Empty, ViewModel.Model.CurrentWorkspace.FileName);
+            Assert.AreEqual("dummy description", ViewModel.Model.CurrentWorkspace.Description);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CanSaveAndReadWorkspaceName()
         {
             // get empty workspace
