@@ -1146,20 +1146,27 @@ namespace Dynamo.Configuration
         /// </summary>
         internal void InitializeNamespacesToExcludeFromLibrary()
         {
-            // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
-            if (!DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? true)
-            {
-                NamespacesToExcludeFromLibrary.Remove(
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
-                );
-                return;
-            }
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
                 NamespacesToExcludeFromLibrary.Add(
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
                 );
                 NamespacesToExcludeFromLibrarySpecified = true;
+            }
+        }
+
+        /// <summary>
+        /// Update namespaces to exclude from Library based on feature flags
+        /// </summary>
+        internal void UpdateNamespacesToExcludeFromLibrary()
+        {
+            // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
+            if (!DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false)
+            {
+                NamespacesToExcludeFromLibrary.Remove(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
+                );
+                return;
             }
         }
 
