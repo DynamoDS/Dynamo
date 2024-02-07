@@ -370,7 +370,7 @@ namespace Dynamo.UI.Views
             }
             catch (ObjectDisposedException ex)
             {
-                Debug.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message);
             }
         }
 

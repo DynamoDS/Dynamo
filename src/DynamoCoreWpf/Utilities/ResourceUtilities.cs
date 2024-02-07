@@ -579,7 +579,7 @@ namespace Dynamo.Utilities
         /// Loads HTML file from resource assembly and replace it's key values by base64 files
         /// </summary>
         /// <param name="htmlPage">Contains filename and resources to be loaded in page</param>
-        /// <param name="webBrowserComponent">WebView2 instance that will be initialized</param>
+        /// <param name="webBrowserComponent">DynamoWebView2 instance that will be initialized</param>
         /// <param name="resourcesPath">Path of the resources that will be loaded into the HTML page</param>
         /// <param name="fontStylePath">Path to the Font Style that will be used in some part of the HTML page</param>
         /// <param name="localAssembly">Local Assembly in which the resource will be loaded</param>
@@ -615,7 +615,7 @@ namespace Dynamo.Utilities
                 }
                 catch (ObjectDisposedException ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message);
                 }
             }
             catch (Exception ex)

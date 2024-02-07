@@ -123,7 +123,6 @@ namespace Dynamo.Notifications
             {
                 initState = AsyncMethodState.Started;
                 await notificationUIPopup.webView.Initialize(Log);
-                // Do continue to access members if this class has been disposed
                 initState = AsyncMethodState.Done;
             }
             catch(ObjectDisposedException ex)

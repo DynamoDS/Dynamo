@@ -21,7 +21,7 @@ namespace Dynamo.Wpf.Utilities
 
         Action<string> logger = System.Console.WriteLine;
         private Task initTask = null;
-        private bool diposeCalled;
+        private bool disposeCalled;
 
         public DynamoWebView2() : base()
         {
@@ -32,20 +32,21 @@ namespace Dynamo.Wpf.Utilities
         /// Wrapper over WebView2's EnsureCoreWebView2Async
         /// Use this method instead of EnsureCoreWebView2Async
         /// </summary>
+        /// <param name="logFn">Optional logging function. Will default to System.Console</param>
         /// <returns></returns>
         internal async Task Initialize(Action<string> logFn = null)
         {
-            logger ??= logFn;
+            logger = logFn ?? logger;
             initTask = EnsureCoreWebView2Async();
             await initTask;
 
-            ObjectDisposedException.ThrowIf(diposeCalled, this);
+            ObjectDisposedException.ThrowIf(disposeCalled, this);
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (diposeCalled) return;
-            diposeCalled = true;
+            if (disposeCalled) return;
+            disposeCalled = true;
 
             if (System.Environment.CurrentManagedThreadId != Dispatcher.Thread.ManagedThreadId)
             {
