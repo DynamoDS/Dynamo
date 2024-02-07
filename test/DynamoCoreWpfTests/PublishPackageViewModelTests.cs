@@ -236,5 +236,69 @@ namespace DynamoCoreWpfTests
         {
             throw new NotImplementedException();
         }
+
+        [Test]
+        public void AssertIsSubPathOfDeep_IsSuccessful()
+        {
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+
+            //arrange
+            Dictionary<string, bool> testDirs = new Dictionary<string, bool> {
+                { @"C:\Package\bin\Dir1|C:\Package\bin\Dir1\Dir2", true },
+                { @"C:\Package\bin\Dir1|C:\Package\bin\Dir1", false },
+                { @"C:\Package\bin\Dir1\Dir2\Dir3\Dir4\Dir5\Dir6\Dir7\Dir8\Dir8\Dir9\Dir10|C:\Package\bin\Dir1", false },
+                { @"C:\Package\bin\Dir1|C:\Package\bin\Dir1\Dir2\Dir3\Dir4\Dir5\Dir6\Dir7\Dir8\Dir8\Dir9\Dir10", true },
+                { @"bin\Dir1|bin\Dir1\Dir2", true },
+            };
+
+            //assert
+            foreach (var testDir in testDirs)
+            {
+                var paths = testDir.Key.Split('|');
+                Assert.AreEqual(testDir.Value, newPkgVm.IsSubPathOfDeep(new PackageItemRootViewModel(paths[0]), new PackageItemRootViewModel(paths[1])));
+            }
+        }
+        [Test]
+        public void AssertAddChildRecursively_IsSuccessful()
+        {
+            //arrange
+            List<string> testDirs = new List<string> {
+                { @"C:\Package\bin\Dir1\Dir3" },
+                { @"C:\Package\bin\Dir2\Dir3" },
+                { @"C:\Package\bin\Dir3\Dir4" },
+            };
+            var root = new PackageItemRootViewModel(@"C:\Package");
+
+            //assert
+            foreach (var testDir in testDirs)
+            {
+                root.AddChildRecursively(new PackageItemRootViewModel(testDir));
+            }
+
+            var bin = root.ChildItems.First();
+            var d1 = bin.ChildItems.ElementAt(0);
+            var d2 = bin.ChildItems.ElementAt(1);
+            var d3 = bin.ChildItems.ElementAt(2);
+
+
+            Assert.IsTrue(root.ChildItems.Count == 1);
+            Assert.IsTrue(root.ChildItems.Select(x => x.DirectoryName.EndsWith("bin")).Any());
+
+            Assert.IsTrue(bin.ChildItems.Count == 3);
+            Assert.IsTrue(bin.ChildItems.Select(x => x.DirectoryName.EndsWith("Dir1")).Any());
+            Assert.IsTrue(bin.ChildItems.Select(x => x.DirectoryName.EndsWith("Dir2")).Any());
+            Assert.IsTrue(bin.ChildItems.Select(x => x.DirectoryName.EndsWith("Dir3")).Any());
+
+            Assert.IsTrue(d1.ChildItems.Count == 1);
+            Assert.IsTrue(d2.ChildItems.Count == 1);
+            Assert.IsTrue(d3.ChildItems.Count == 1);
+            Assert.IsTrue(d1.ChildItems.Select(x => x.DirectoryName.EndsWith("Dir3")).Any());
+            Assert.IsTrue(d2.ChildItems.Select(x => x.DirectoryName.EndsWith("Dir3")).Any());
+            Assert.IsTrue(d3.ChildItems.Select(x => x.DirectoryName.EndsWith("Dir4")).Any());
+
+            Assert.IsTrue(d1.ChildItems.First().ChildItems.Count == 0);
+            Assert.IsTrue(d2.ChildItems.First().ChildItems.Count == 0);
+            Assert.IsTrue(d3.ChildItems.First().ChildItems.Count == 0);
+        }
     }
 }
