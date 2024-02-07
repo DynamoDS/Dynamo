@@ -338,10 +338,8 @@ namespace Dynamo.PythonServices
         internal static readonly string atLeastOneSpaceRegex = @"(\s+)";
         internal static readonly string dictRegex = "({.*})";
         internal static readonly string basicImportRegex = @"(import)";
-        internal static readonly string fromImportRegex = @"^(from)"; internal static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
-        internal static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        internal static readonly string fromImportRegex = @"^(from)";
         internal static string arrayRegex = "(\\[.*\\])";
-        internal static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
         internal static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
         internal static string intRegex = @"([-+]?\d+)[\s\n]*$";
         internal const string quotesStringRegex = "[\"']([^\"']*)[\"']";

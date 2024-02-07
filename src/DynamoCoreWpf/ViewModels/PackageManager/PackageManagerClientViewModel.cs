@@ -68,12 +68,6 @@ namespace Dynamo.ViewModels
             authenticationManager = touParams.AuthenticationManager;
         }
 
-        [Obsolete("Please use the other overridden method")]
-        public void Execute()
-        {
-            Execute(true); // Redirected to call the alternative method.
-        }
-
         internal void Execute(bool preventReentrant)
         {
             if (preventReentrant && Interlocked.Increment(ref lockCount) > 1)
@@ -202,9 +196,6 @@ namespace Dynamo.ViewModels
 
         private readonly string QUARANTINED = "quarantined";
 
-        [Obsolete("This property will be removed in Dynamo 3.0 - please use ViewModelOwner")]
-        public PackageManagerSearchView Owner { get; set; }
-
         /// <summary>
         /// The System.Windows.Window owner of the view model.
         /// Used to align messagebox dialogs created by this model
@@ -283,9 +274,9 @@ namespace Dynamo.ViewModels
                 };
             }
 
-            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn))
+            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn) && !dynamoViewModel.Model.NoNetworkMode)
             {
-                this.Uservotes = this.Model.UserVotes();
+                Uservotes = Model.UserVotes();
             }
         }
 
@@ -333,7 +324,7 @@ namespace Dynamo.ViewModels
                     };
 
                     var termsOfUseCheck = new TermsOfUseHelper(touParams);
-                    termsOfUseCheck.Execute();
+                    termsOfUseCheck.Execute(true);
                     return;
                 }
             }
@@ -360,7 +351,7 @@ namespace Dynamo.ViewModels
                 AcceptanceCallback = ShowNodePublishInfo
             });
 
-            termsOfUseCheck.Execute();
+            termsOfUseCheck.Execute(true);
         }
 
         public bool CanPublishNewPackage(object m)
@@ -386,7 +377,7 @@ namespace Dynamo.ViewModels
                     })
                 });
 
-                termsOfUseCheck.Execute();
+                termsOfUseCheck.Execute(true);
             }
         }
 
@@ -444,7 +435,7 @@ namespace Dynamo.ViewModels
                 AcceptanceCallback = () => ShowNodePublishInfo(defs)
             });
 
-            termsOfUseCheck.Execute();
+            termsOfUseCheck.Execute(true);
         }
 
         public bool CanPublishSelectedNodes(object m)
@@ -951,16 +942,6 @@ namespace Dynamo.ViewModels
             }
         }
        
-
-        /// <summary>
-        ///     Returns a newline delimited string representing the package name and version of the argument
-        /// </summary>
-        [Obsolete("No longer used. Remove in 3.0.")]
-        public static string FormatPackageVersionList(IEnumerable<Tuple<PackageHeader, PackageVersion>> packages)
-        {
-            return String.Join("\r\n", packages.Select(x => x.Item1.name + " " + x.Item2.version));
-        }
-
         /// <summary>
         /// This method downloads the package represented by the PackageDownloadHandle,
         /// 

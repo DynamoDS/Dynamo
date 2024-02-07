@@ -162,6 +162,10 @@ namespace Dynamo.Core
         /// <returns>new migrator instance after migration</returns>
         protected virtual DynamoMigratorBase MigrateFrom(DynamoMigratorBase sourceMigrator)
         {
+            //allows us to access some default pref values of current version before prefs are
+            //actually written to disk(firstRun).
+            var currentVersionTempPrefs = new PreferenceSettings();
+
             PreferenceSettings = sourceMigrator.PreferenceSettings;
             if (PreferenceSettings == null) return this;
 
@@ -171,6 +175,7 @@ namespace Dynamo.Core
             // Also exclude SelectedPackagePathForInstall or it may point to previous 
             // Dynamo version folders. When set to string.empty or null - will default to UserDataFolder.
             PreferenceSettings.SelectedPackagePathForInstall = string.Empty;
+            PreferenceSettings.IronPythonResolveTargetVersion = currentVersionTempPrefs.IronPythonResolveTargetVersion;
 
             return this;
         }
@@ -409,7 +414,7 @@ namespace Dynamo.Core
         public IEnumerable<string> GetDynamoUserDataLocations()
         {
             var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var dynamoFolder = Path.Combine(appDatafolder, "Dynamo");
+            var dynamoFolder = Path.Combine(appDatafolder, Configurations.DynamoAsString);
             if (!Directory.Exists(dynamoFolder)) return Enumerable.Empty<string>();
 
             var paths = new List<string>();

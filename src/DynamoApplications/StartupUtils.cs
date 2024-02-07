@@ -131,8 +131,6 @@ namespace Dynamo.Applications
             public bool NoConsole { get; set; }
             public string UserDataFolder { get; set; }
             public string CommonDataFolder { get; set; }
-            [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
-            public string HostName { get; set; }
             public bool DisableAnalytics { get; set; }
             public bool NoNetworkMode { get; set; }
             public HostAnalyticsInfo AnalyticsInfo { get; set; }

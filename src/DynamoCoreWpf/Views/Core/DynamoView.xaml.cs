@@ -42,6 +42,7 @@ using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
+using Dynamo.Wpf.Views.GuidedTour;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ICSharpCode.AvalonEdit;
@@ -1360,7 +1361,6 @@ namespace Dynamo.Controls
             BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
             background_grid.Children.Add(BackgroundPreview);
             BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
-            BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
             var vizBinding = new Binding
             {
                 Source = dynamoViewModel.BackgroundPreviewViewModel,
@@ -1492,6 +1492,10 @@ namespace Dynamo.Controls
                 packageManagerWindow.Show();
 
                 if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
+            }
+            if (_pkgVM != null)
+            {
+                _pkgVM.PublishPackageViewModel = model;
             }
 
             packageManagerWindow.Focus();
@@ -2038,6 +2042,7 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         private void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
+            Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
@@ -2161,7 +2166,7 @@ namespace Dynamo.Controls
                 string[] filePaths = Directory.GetFiles(samplesDirectory, "*.dyn");
 
                 // handle top-level files
-                if (filePaths.Any())
+                if (filePaths.Length != 0)
                 {
                     foreach (string path in filePaths)
                     {
@@ -2311,9 +2316,43 @@ namespace Dynamo.Controls
             cmd.Dispose();
         }
 
-        internal void EnableEnvironment(bool isEnabled)
+        /// <summary>
+        /// Adds/Removes an overlay so the user won't be able to interact with the background (this behavior was implemented for Dynamo and for Library)
+        /// </summary>
+        /// <param name="isEnabled">True if the overlay is enable otherwise will be false</param>
+        internal void EnableOverlayBlocker(bool isEnabled)
         {
-            this.mainGrid.IsEnabled = isEnabled;
+            object[] parametersInvokeScript = new object[] { "fullOverlayVisible", new object[] { isEnabled } };
+            ResourceUtilities.ExecuteJSFunction(this, parametersInvokeScript);
+            var backgroundName = "BackgroundBlocker";
+
+            if (isEnabled)
+            {
+                //By default the shortcutsBarGrid has a ZIndex = 1 then will be shown over the overlay that's why we need to change the ZIndex
+                Panel.SetZIndex(shortcutsBarGrid, 0);
+                var backgroundElement = new GuideBackground(this)
+                {
+                    Name = backgroundName,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Visibility = Visibility.Visible
+                };
+
+                //adds the overlay to the main Dynamo grid
+                mainGrid.Children.Add(backgroundElement);
+                Grid.SetColumnSpan(backgroundElement, mainGrid.ColumnDefinitions.Count);
+                Grid.SetRowSpan(backgroundElement, mainGrid.RowDefinitions.Count);
+            }
+            else
+            {
+                //Restoring the ZIndex value to the default one.
+                Panel.SetZIndex(shortcutsBarGrid, 1);
+                var backgroundElement = mainGrid.Children.OfType<GuideBackground>().Where(element => element.Name == backgroundName).FirstOrDefault();
+                if (backgroundElement != null)
+                {
+                    mainGrid.Children.Remove(backgroundElement);
+                }
+            }
         }
 
         /// <summary>
@@ -2784,6 +2823,7 @@ namespace Dynamo.Controls
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
             dynamoViewModel.IsMouseDown = true;
         }
 

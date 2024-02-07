@@ -1198,7 +1198,6 @@ namespace ProtoScript.Runners
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
         List<Guid> PreviewGraph(GraphSyncData syncData);
-        void UpdateCmdLineInterpreter(string code);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
 
         void UpdateGraph(AssociativeNode astNode);
@@ -1508,19 +1507,6 @@ namespace ProtoScript.Runners
                 throw new NotImplementedException();
             }
 
-        }
-
-        /// <summary>
-        /// This api needs to be called by a command line REPL for each DS command/expression entered to be executed
-        /// </summary>
-        /// <param name="code"></param>
-        [Obsolete("No longer used. Remove in 3.0")]
-        public void UpdateCmdLineInterpreter(string code)
-        {
-            lock (mutexObject)
-            {
-                SynchronizeInternal(code);
-            }
         }
 
         #region Internal Implementation

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Dynamo.Logging
@@ -445,6 +446,12 @@ namespace Dynamo.Logging
         Export
     }
 
+    public enum HeartBeatType
+    {
+        User,
+        Machine
+    }
+
     /// <summary>
     /// Implements analytics and logging functions. This interface is defined 
     /// for internal use only to implement analytics functions and mock the tests.
@@ -507,6 +514,13 @@ namespace Dynamo.Logging
         void TrackException(Exception ex, bool isFatal);
 
         /// <summary>
+        /// This API is used to track user/machine's activity status.
+        /// </summary>
+        /// <param name="activityType">Value must be: machine or user. If no value is provided the API will default to user activity type.</param>
+        /// <returns>0 if successful, otherwise returns an error code.</returns>
+        void TrackActivityStatus(string activityType);
+
+        /// <summary>
         /// Creates a new timed event with start state and tracks its start.
         /// Disposing the returnd event will record the event completion.
         /// </summary>
@@ -545,8 +559,9 @@ namespace Dynamo.Logging
         /// <param name="name">Command name</param>
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
+        /// <param name="parameters">A dictionary of (string, object) associated with the event</param>
         /// <returns>Event as IDisposable</returns>
-        Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value);
+        Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null);
 
         /// <summary>
         /// Waits for the given task to end so that it can dispose the event and
@@ -575,12 +590,5 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
         Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description);
-
-        /// <summary>
-        /// Logs usage data
-        /// </summary>
-        /// <param name="tag">Usage tag</param>
-        /// <param name="data">Usage data</param>
-        void LogPiiInfo(string tag, string data);
     }
 }

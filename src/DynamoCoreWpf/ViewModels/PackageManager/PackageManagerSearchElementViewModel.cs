@@ -15,8 +15,6 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand DownloadLatestCommand { get; set; }
         public ICommand UpvoteCommand { get; set; }
 
-        [Obsolete("This UI command will no longer decrease package votes and will be removed in Dynamo 3.0")]
-        public ICommand DownvoteCommand { get; set; }
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
@@ -96,9 +94,6 @@ namespace Dynamo.PackageManager.ViewModels
 
             this.UpvoteCommand = new DelegateCommand(SearchElementModel.Upvote, () => canLogin);
 
-            // TODO: Remove the initialization of the UI command in Dynamo 3.0
-            this.DownvoteCommand = new DelegateCommand(SearchElementModel.Downvote, () => canLogin);
-
             this.VisitSiteCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(SearchElementModel.SiteUrl)), () => !String.IsNullOrEmpty(SearchElementModel.SiteUrl));
             this.VisitRepositoryCommand =
@@ -112,6 +107,24 @@ namespace Dynamo.PackageManager.ViewModels
         /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : this(element, canLogin, true)
         {}
+
+        /// <summary>
+        /// A property showing if the currently logged-in user owns the package
+        /// </summary>
+        private bool isOwner = false;
+        public bool IsOnwer
+        {
+            get
+            {
+                return isOwner;
+            }
+
+            internal set
+            {   
+                isOwner = value;
+                RaisePropertyChanged(nameof(IsOnwer));
+            }
+        }
 
         private bool canInstall;
         /// <summary>

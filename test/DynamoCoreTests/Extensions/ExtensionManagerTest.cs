@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Dynamo.Extensions;
 using Moq;
@@ -26,8 +26,8 @@ namespace Dynamo.Tests.Extensions
             CurrentDynamoModel.ExtensionManager.Remove(mockExtension.Object);
 
             //Assert
-            //Checking that only the PackageManagerextension remains in the extensions list (no more IronPython).
-            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 1);
+            //Checking that only 2 extensions (PackageManagerextension and DynamoMLDataPipelineExtension) remain in the extensions list (no more IronPython).
+            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 2);
         }
 
         /// <summary>
@@ -46,9 +46,9 @@ namespace Dynamo.Tests.Extensions
             CurrentDynamoModel.ExtensionManager.Add(mockExtension.Object);
 
             //Assert
-            //Checking that now we have 2 extensions
-            //PackageManager (added by the base class) and the Mock extension
-            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 2);
+            //Checking that now we have 3 extensions
+            //PackageManager and DynamoMLDataPipelineExtension (added by the base class) and the Mock extension
+            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 3);
 
             //Act
             //This will execute the exception section from the Remove() method (but the extension is removed) since in this way was setup in the Mocked Extension
@@ -56,7 +56,7 @@ namespace Dynamo.Tests.Extensions
 
             //Assert
             //Checking that the extension was removed from the list even when an exception was raised
-            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 1);
+            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 2);
         }
     }
 }

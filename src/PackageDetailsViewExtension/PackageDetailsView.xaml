@@ -24,6 +24,9 @@
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
+            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+            <controls:CopyrightInfoTooltipConverter x:Key="CopyrightInfoTooltipConverter" />
+            <controls:PackageDetailsLinkCollapseOnEmpty x:Key="PackageDetailsLinkCollapseOnEmpty" />
             <SolidColorBrush x:Key="ForegroundGrayBrush" Color="#D8D8D8" />
             <SolidColorBrush x:Key="HoverBorderGrayBrush" Color="#6d6d6d" />
             <SolidColorBrush x:Key="PressedBorderGrayBrush" Color="#7e7e7e" />
@@ -298,7 +301,7 @@
 
                 <!--  Icons for Favourites, Downloads and Publish Date  -->
                 <StackPanel MinWidth="200"
-                            Margin="0,0,0,70"
+                            Margin="0,0,0,50"
                             Orientation="Horizontal">
 
                     <!--  Votes  -->
@@ -350,8 +353,93 @@
                            Style="{StaticResource BodyTextStyle}"
                            Text="{Binding PackageDescription}" />
 
-                <!--  License  -->
+                <!--  Group  -->
+                <StackPanel Orientation ="Vertical" Visibility="{Binding Group, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                    <TextBlock Name="GroupTitle"
+                               MinWidth="0"
+                               Style="{StaticResource LabelStyle}"
+                               Text="{x:Static p:Resources.PackageDetailsGroup}" />
+                    <TextBlock Name="GroupBody"
+                               Margin="0,0,0,20"
+                               FontSize="14px"
+                               Style="{StaticResource BodyTextStyle}"
+                               Text="{Binding Group}" />
+                </StackPanel>
+
+                <!--  Keywords  -->
+                <StackPanel Orientation ="Vertical" Visibility="{Binding Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                    <TextBlock Name="KeywordsTitle"
+                               MinWidth="0"
+                               Style="{StaticResource LabelStyle}"
+                               Text="{x:Static p:Resources.PackageDetailsKeywords}" />
+                    <TextBlock Name="KeywordsBody"
+                               Margin="0,0,0,20"
+                               FontSize="14px"
+                               Style="{StaticResource BodyTextStyle}"
+                               Text="{Binding Keywords}" />
+                </StackPanel>
+
+                <!--  Links  -->
                 <StackPanel Orientation ="Vertical">
+                    <StackPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource PackageDetailsLinkCollapseOnEmpty}">
+                            <Binding Path="PackageSiteURL" />
+                            <Binding Path="PackageRepositoryURL" />
+                        </MultiBinding>
+                    </StackPanel.Visibility>
+                    <TextBlock Name="LinksTitle"
+                           MinWidth="0"
+                           Style="{StaticResource LabelStyle}"
+                           Text="{x:Static p:Resources.PackageDetailsLinks}" />
+                    <StackPanel MinWidth="200"
+                            Margin="0,10,0,10"
+                            Orientation="Horizontal"
+                            Visibility="{Binding PackageSiteURL, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                        <Rectangle Name="PackageLinkIcon"
+                                Width="16px"
+                                Height="16px">
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <TextBlock Name="PackageWebsiteLinkText"
+                            Margin="8,0,0,0">
+                        <Hyperlink Name="PackageWebsiteLink"
+                                   NavigateUri="{Binding PackageSiteURL}" 
+                                   RequestNavigate="Hyperlink_RequestNavigate" 
+                                   TextDecorations="None" 
+                                   Style="{StaticResource BodyLinkStyle}">
+                            <TextBlock Text="{x:Static p:Resources.PackageWebsiteLabel}" />
+                        </Hyperlink>
+                    </TextBlock>
+
+                    </StackPanel>
+                    <StackPanel MinWidth="200"
+                            Margin="0,0,0,10"
+                            Orientation="Horizontal"
+                            Visibility="{Binding PackageRepositoryURL, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                        <Rectangle Name="RepositoryLinkIcon"
+                               Width="16px"
+                               Height="16px">
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <TextBlock Name="PackageRepositoryLinkText"
+                                Margin="8,0,0,0">
+                        <Hyperlink Name="PackageRepositoryLink" 
+                                   NavigateUri="{Binding PackageRepositoryURL}" 
+                                   RequestNavigate="Hyperlink_RequestNavigate" 
+                                   TextDecorations="None" 
+                                   Style="{StaticResource BodyLinkStyle}">
+                            <TextBlock Text="{x:Static p:Resources.PackageRepositoryLabel}" />
+                        </Hyperlink>
+                    </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <!--  License  -->
+                <StackPanel Orientation ="Vertical" Margin="0,10,0,0">
                     <TextBlock Name="LicenseTitle"
                                MinWidth="0"
                                Style="{StaticResource LabelStyle}"
@@ -395,9 +483,27 @@
                                             <ControlTemplate TargetType="{x:Type DataGridCell}">
                                                 <Grid Background="{StaticResource ExtensionBackgroundColor}" IsHitTestVisible="True">
                                                     <StackPanel Margin="12,8,10,5">
-                                                        <TextBlock HorizontalAlignment="Left"
-                                                                   Foreground="{StaticResource ForegroundGrayBrush}"
-                                                                   Text="{Binding PackageVersionNumber}" />
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock HorizontalAlignment="Left"
+                                                                       Foreground="{StaticResource ForegroundGrayBrush}"
+                                                                       Text="{Binding PackageVersionNumber}" />
+                                                            <Rectangle Margin="7,0,0,2" Width="12" Height="12">
+                                                                <Rectangle.Fill>
+                                                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Copyright.png" />
+                                                                </Rectangle.Fill>
+                                                                <Rectangle.ToolTip>
+                                                                    <ToolTip Style="{StaticResource GenericToolTipLight}">
+                                                                        <ToolTip.Content>
+                                                                            <MultiBinding Converter="{StaticResource CopyrightInfoTooltipConverter}">
+                                                                                <Binding Path="CopyRightHolder" />
+                                                                                <Binding Path="CopyRightYear" />
+                                                                            </MultiBinding>
+                                                                        </ToolTip.Content>
+                                                                    </ToolTip>
+                                                                </Rectangle.ToolTip>
+                                                            </Rectangle>
+                                                        </StackPanel>
+                                                        
                                                         <Button Name="installButton"
                                                                 Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.TryInstallPackageVersionCommand}"
                                                                 CommandParameter="{Binding PackageVersionNumber}"
@@ -527,20 +633,6 @@
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
 
-                        <!--  Copyright  Holder -->
-                        <DataGridTextColumn MinWidth="150"
-                                            Binding="{Binding CopyRightHolder}"
-                                            Header="{x:Static p:Resources.PackageDetailsCopyRightHolder}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True" />
-
-                        <!--  Copyright  Year -->
-                        <DataGridTextColumn MinWidth="150"
-                                            Binding="{Binding CopyRightYear}"
-                                            Header="{x:Static p:Resources.PackageDetailsCopyRightYear}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True" />
-
                         <!--  Package  -->
                         <DataGridTextColumn x:Name="PackageColumn"
                                             Width="*"
@@ -589,54 +681,15 @@
                                 </Style>
                             </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
+
+                        <!--  Size  -->
+                        <DataGridTextColumn MinWidth="110"
+                                            Binding="{Binding PythonVersion}"
+                                            Header="{x:Static p:Resources.PackageDetailsSize}"
+                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
+                                            IsReadOnly="True" />
                     </DataGrid.Columns>
                 </DataGrid>
-                <!--  Links  -->
-                <StackPanel MinWidth="200"
-                            Margin="0,10,0,10"
-                            Orientation="Horizontal"
-                            Visibility="{Binding PackageSiteURL, Converter={StaticResource EmptyStringToHiddenConverter}}">
-                    <Rectangle Name="PackageLinkIcon"
-                               Width="16px"
-                               Height="16px">
-                        <Rectangle.Fill>
-                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                    <TextBlock Name="PackageWebsiteLinkText"
-                               Margin="8,0,0,0">
-                        <Hyperlink Name="PackageWebsiteLink"
-                                   NavigateUri="{Binding PackageSiteURL}" 
-                                   RequestNavigate="Hyperlink_RequestNavigate" 
-                                   TextDecorations="None" 
-                                   Style="{StaticResource BodyLinkStyle}">
-                            <TextBlock Text="{x:Static p:Resources.PackageWebsiteLabel}" />
-                        </Hyperlink>
-                    </TextBlock>
-
-                </StackPanel>
-                <StackPanel MinWidth="200"
-                            Margin="0,0,0,10"
-                            Orientation="Horizontal"
-                            Visibility="{Binding PackageRepositoryURL, Converter={StaticResource EmptyStringToHiddenConverter}}">
-                    <Rectangle Name="RepositoryLinkIcon"
-                               Width="16px"
-                               Height="16px">
-                        <Rectangle.Fill>
-                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                    <TextBlock Name="PackageRepositoryLinkText"
-                               Margin="8,0,0,0">
-                        <Hyperlink Name="PackageRepositoryLink" 
-                                   NavigateUri="{Binding PackageRepositoryURL}" 
-                                   RequestNavigate="Hyperlink_RequestNavigate" 
-                                   TextDecorations="None" 
-                                   Style="{StaticResource BodyLinkStyle}">
-                            <TextBlock Text="{x:Static p:Resources.PackageRepositoryLabel}" />
-                        </Hyperlink>
-                    </TextBlock>                        
-                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

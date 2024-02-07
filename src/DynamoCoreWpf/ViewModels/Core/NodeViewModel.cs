@@ -119,13 +119,6 @@ namespace Dynamo.ViewModels
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
         [JsonIgnore]
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
-        public string ToolTipText
-        {
-            get { return nodeLogic.ToolTipText; }
-        }
-
-        [JsonIgnore]
         public ObservableCollection<PortViewModel> InPorts
         {
             get { return inPorts; }
@@ -1083,10 +1076,10 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         void EngineController_AstBuilt(object sender, CompiledEventArgs e)
         {
-            if (e.Node == nodeLogic.GUID)
+            if (e.NodeId == nodeLogic.GUID)
             {
                 var sb = new StringBuilder();
-                sb.AppendLine(string.Format("{0} AST:", e.Node));
+                sb.AppendLine(string.Format("{0} AST:", e.NodeId));
 
                 foreach (var assocNode in e.AstNodes)
                 {
@@ -1181,10 +1174,6 @@ namespace Dynamo.ViewModels
                     break;
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
-                    break;
-                case nameof(NodeModel.ToolTipText):
-                    UpdateBubbleContent();
-                    // TODO Update preview bubble visibility to false
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");

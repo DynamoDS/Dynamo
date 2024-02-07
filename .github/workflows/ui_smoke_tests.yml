@@ -3,7 +3,6 @@ name: UI Smoke Tests
 on:
   workflow_run:
     workflows:
-      - Build DynamoAll.sln net6.0
       - Build DynamoAll.sln net8.0
     types:
       - completed
@@ -34,16 +33,16 @@ jobs:
         shell: cmd
         run: .\TE.exe -SilentInstall
       - name: Download Build Artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v3
         with:
           name: DynamoSandbox
           workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
           run_id: ${{ env.WORKFLOW_RUN_ID }}
           path: ${{ github.workspace }}\build
       - name: Download Pull Request Artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v3
         with:
-          name: pr_number
+          name: pr_data
           workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
           run_id: ${{ env.WORKFLOW_RUN_ID }}
           path: ${{ github.workspace }}\pr
@@ -53,11 +52,11 @@ jobs:
           "CHECK_NAME=$("UI Smoke Tests", $($env:WORKFLOW_RUN_NAME -Split " ")[-1] -Join " - ")" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Run UI Smoke Tests
         shell: cmd
-        run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
+        run: .\utils\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests ${{ github.workspace }}\build
       - name: Publish Test Report
         id: test_report
         if: always()
-        uses: dorny/test-reporter@v1.7.0
+        uses: dorny/test-reporter@v1.8.0
         with:
           name: ${{ env.CHECK_NAME }}
           path: reports/report.xml
@@ -65,8 +64,8 @@ jobs:
       - name: Add Test Summary
         if: always()
         run: |
-          if (Test-Path -Path summary.md) {
-            Get-Content -Path summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          if (Test-Path -Path reports/summary.md) {
+            Get-Content -Path reports/summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
       - name: Add Run Summary
         if: always()
@@ -80,8 +79,9 @@ jobs:
           })
           "@
           $run_summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-      - name: Add Pull Request Comment
+      - name: Create Pull Request Comment
         if: always()
+        id: create_comment
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -92,6 +92,26 @@ jobs:
           Workflow Run: [${{ github.workflow }}](${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }})
           Check: [$env:CHECK_NAME](${{ steps.test_report.outputs.url_html }})
           "@
-          if ($env:PR_NUMBER) {
-            gh pr comment $env:PR_NUMBER --body $pr_comment --repo ${{ github.repository }}
-          }
+          $pr_comment | Out-File -FilePath pr_comment.md
+      - name: Find Comment
+        if: env.PR_NUMBER != ''
+        uses: peter-evans/find-comment@v3
+        id: find_comment
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          comment-author: github-actions[bot]
+          body-includes: UI Smoke Tests
+          direction: last
+      - name: Create comment
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          body-path: pr_comment.md
+      - name: Update comment
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          edit-mode: replace
+          body-path: pr_comment.md

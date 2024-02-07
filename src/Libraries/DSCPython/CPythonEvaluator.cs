@@ -617,9 +617,6 @@ sys.stdout = DynamoStdOut({0})
 
         #region Evaluation events
 
-
-
-
         /// <summary>
         ///     Emitted immediately before execution begins
         /// </summary>
@@ -642,7 +639,6 @@ sys.stdout = DynamoStdOut({0})
                                               string code,
                                               IList bindingValues)
         {
-
             if (EvaluationStarted != null)
             {
                 EvaluationStarted(code, bindingValues, (n, v) => { scope.Set(n, InputMarshaler.Marshal(v).ToPython()); });
@@ -665,7 +661,6 @@ sys.stdout = DynamoStdOut({0})
                                             string code,
                                             IList bindingValues)
         {
-          
             if (EvaluationFinished != null)
             {
                 EvaluationFinished(isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 

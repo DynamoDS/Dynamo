@@ -41,7 +41,7 @@ namespace Dynamo.UI.Prompts
 
             // Resolve and load ML Node Autocomplete Consent file
             var mlNodeAutocompleteFile = "MLNodeAutocompleteConsent.rtf";
-            if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
+            if (viewModel.Model.PathManager.ResolveDocumentPath(ref mlNodeAutocompleteFile))
                 MLNodeAutocompleteConsent.File = mlNodeAutocompleteFile;
             // Initialize the checkbox to the current value
             AgreeToMLAutocompleteTOUCheckbox.IsChecked = dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;

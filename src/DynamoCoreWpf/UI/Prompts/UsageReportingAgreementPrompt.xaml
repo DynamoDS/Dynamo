@@ -7,7 +7,7 @@
         WindowStyle="None"
         MinWidth="530"
         MaxWidth="650"
-        Height="485"
+        Height="500"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         AllowsTransparency="True"
@@ -97,8 +97,8 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="145"></RowDefinition>
-                    <RowDefinition Height="145"></RowDefinition>
+                    <RowDefinition Height="140"></RowDefinition>
+                    <RowDefinition Height="165"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -222,7 +222,7 @@
                             Grid.Row="4">
                     <CheckBox x:Name="AgreeToMLAutocompleteTOUCheckbox"/>
                     <TextBlock x:Name="AgreeToMLAutocompleteTOUTextbox"
-                               Margin="10,0,0,0"
+                               Margin="0,1,0,0"
                                Text="{x:Static p:Resources.AgreeToMLAutocompleteTOUText}"/>
                 </StackPanel>
                 <!--Configure ADP Consent-->
