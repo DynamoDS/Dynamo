@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Models;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.Wpf.UI.GuidedTour;
@@ -50,7 +51,12 @@ namespace Dynamo.UI.Views
         internal Action RequestShowBackupFilesInFolder;
         internal Action RequestShowTemplate;
 
-        private List<GuidedTourItem> guidedTourItems;
+        internal List<GuidedTourItem> GuidedTourItems;
+
+        /// <summary>
+        /// A helper tool to let us test flows without relying on side-effects
+        /// </summary>
+        internal static Action<string> TestHook { get; set; }
 
         public HomePage()
         {   
@@ -82,7 +88,7 @@ namespace Dynamo.UI.Views
 
         private void InitializeGuideTourItems()
         {
-            guidedTourItems = new List<GuidedTourItem>
+            GuidedTourItems = new List<GuidedTourItem>
             {
                 new GuidedTourItem(Wpf.Properties.Resources.GetStartedGuide.TrimStart('_'),
                     Wpf.Properties.Resources.GetStartedGuideDescription, GuidedTourType.UserInterface.ToString()),
@@ -92,7 +98,6 @@ namespace Dynamo.UI.Views
                     Wpf.Properties.Resources.PackagesGuideDescription, GuidedTourType.Packages.ToString())
             };
         }
-
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -111,7 +116,6 @@ namespace Dynamo.UI.Views
                 webView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
             }
         }
-
 
         /// <summary>
         /// This is used before DynamoModel initialization specifically to get user data dir
@@ -198,26 +202,28 @@ namespace Dynamo.UI.Views
             // Exposing commands to the React front-end
             webView.CoreWebView2.AddHostObjectToScript("scriptObject",
                new ScriptHomeObject(RequestOpenFile,
-               RequestNewWorkspace,
-               RequestOpenWorkspace,
-               RequestNewCustomNodeWorkspace,
-               RequestApplicationLoaded,
-               RequestShowGuidedTour,
-               RequestShowSampleFilesInFolder,
-               RequestShowBackupFilesInFolder,
-               RequestShowTemplate));
+                                    RequestNewWorkspace,
+                                    RequestOpenWorkspace,
+                                    RequestNewCustomNodeWorkspace,
+                                    RequestApplicationLoaded,
+                                    RequestShowGuidedTour,
+                                    RequestShowSampleFilesInFolder,
+                                    RequestShowBackupFilesInFolder,
+                                    RequestShowTemplate));
         }
 
         internal async void LoadingDone()   
         {
+            SendGuidesData();
+
             if (startPage == null) { return; }
+
+            SendSamplesData();
 
             var recentFiles = startPage.RecentFiles;
             if (recentFiles == null || !recentFiles.Any()) { return; }
 
             LoadGraphs(recentFiles);
-            SendSamplesData();
-            SendGuidesData();
 
             var testMessage = "I am being tested";
             var userLocale = "en";
@@ -229,6 +235,7 @@ namespace Dynamo.UI.Views
             }
         }
 
+        #region FrontEnd Initialization Calls
         /// <summary>
         /// Sends graph data to react app
         /// </summary>
@@ -264,15 +271,16 @@ namespace Dynamo.UI.Views
         /// </summary>
         private async void SendGuidesData()
         {
-            if (!this.guidedTourItems.Any()) return;
+            if (!this.GuidedTourItems.Any()) return;
 
-            string jsonData = JsonSerializer.Serialize(this.guidedTourItems);
+            string jsonData = JsonSerializer.Serialize(this.GuidedTourItems);
 
             if (webView?.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveInteractiveGuidesDataFromDotNet({jsonData})");
             }
         }
+        #endregion
 
         #region Interactive Guides Commands
         internal void ShowGuidedTour(string typeString)
@@ -350,13 +358,25 @@ namespace Dynamo.UI.Views
         internal void OpenFile(string path)
         {
             if (String.IsNullOrEmpty(path)) return;
-            if(this.startPage.DynamoViewModel.OpenCommand.CanExecute(path))
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(path);
+                return;
+            }
+
+            if (this.startPage.DynamoViewModel.OpenCommand.CanExecute(path))
                 this.startPage.DynamoViewModel.OpenCommand.Execute(path);
         }
 
         internal void StartGuidedTour(string path)
         {
             if (String.IsNullOrEmpty(path)) return;
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(path);
+                return;
+            }
+
             ShowGuidedTour(path);
         }
 
@@ -367,17 +387,35 @@ namespace Dynamo.UI.Views
 
         internal void OpenWorkspace()
         {
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(string.Empty);
+                return;
+            }
+
             this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultCommand.Execute(null);
         }
 
         internal void NewCustomNodeWorkspace()
         {
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(string.Empty);
+                return;
+            }
+
             this.startPage?.DynamoViewModel?.ShowNewFunctionDialogCommand.Execute(null);
         }
 
         internal void ShowSampleFilesInFolder()
         {
             if (this.startPage == null) return;
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(string.Empty);
+                return;
+            }
+
             Process.Start(new ProcessStartInfo("explorer.exe", "/select,"
                 + this.startPage.SampleFolderPath)
             { UseShellExecute = true });
@@ -386,12 +424,24 @@ namespace Dynamo.UI.Views
         internal void ShowBackupFilesInFolder()
         {
             if (this.startPage == null) return;
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(string.Empty);
+                return;
+            }
+
             Process.Start(new ProcessStartInfo("explorer.exe", this.startPage.DynamoViewModel.Model.PathManager.BackupDirectory)
             { UseShellExecute = true });
         }
 
         internal void ShowTemplate()
         {
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(string.Empty);
+                return;
+            }
+
             // Equivalent to CommandParameter="Template"
             this.startPage?.DynamoViewModel?.ShowOpenTemplateDialogCommand.Execute("Template"); 
         }
@@ -407,7 +457,7 @@ namespace Dynamo.UI.Views
         public void Dispose()
         {
             DataContextChanged -= OnDataContextChanged;
-            startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            if(startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
 
 
             if (File.Exists(fontFilePath))
