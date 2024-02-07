@@ -477,12 +477,8 @@ namespace Dynamo.ViewModels
         {
             CachedPackageList = new List<PackageManagerSearchElement>();
 
-            // Attempt to load user votes prior to using it
-            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn) && Uservotes == null)
-            {
-                Task.Run(() => this.Uservotes = this.Model.UserVotes());
-            }
-
+            // Calls to Model.UserVotes and Model.ListAll might take a long time to run (so do not use them syncronously in the UI thread)
+            Uservotes = this.Model.UserVotes();
             foreach (var header in Model.ListAll())
             {
                 var ele = new PackageManagerSearchElement(header);
