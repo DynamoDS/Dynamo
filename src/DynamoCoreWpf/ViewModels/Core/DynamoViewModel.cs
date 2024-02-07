@@ -691,8 +691,11 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
+            // CurrentDomain_UnhandledException - catches unhandled exceptions that are fatal to the current process. These exceptions cannot be handled and process termination is guaranteed
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            // Dispatcher.CurrentDispatcher.UnhandledException - catches unhandled exceptions from the UI thread. Can mark exceptions as handled (and close Dynamo) so that host apps can continue running normally even though Dynamo crashed
             Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
+            // TaskScheduler.UnobservedTaskException - catches unobserved Task exceptions from all threads. Does not crash Dynamo, we only log the exceptions and do not call CER or close Dynamo
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
             this.ShowLogin = startConfiguration.ShowLogin;
