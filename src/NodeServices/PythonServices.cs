@@ -116,14 +116,33 @@ namespace Dynamo.PythonServices
         /// </summary>
         public ReadOnlyCollection<PythonEngine> PythonEngines => new ReadOnlyCollection<PythonEngine>(AvailableEngines);
 
-        //TODO see DYN-6550 when hiding/replacing this obsolete field.
         /// <summary>
         /// An observable collection of all the loaded Python engines
         /// </summary>
-        [Obsolete("AvailableEngines field will be replaced in a future Dynamo release.")]
         internal ObservableCollection<PythonEngine> AvailableEngines;
 
         public delegate void PythonEngineChangedHandler(PythonEngine engine);
+
+        private Action<PythonEngine> customizeEngine;
+
+        /// <summary>
+        /// Use this function to customize how Python engines should execute.
+        /// This function will on all existing (PythonEngines) or future python engines (on PythonEngineAdded, right after is triggered).
+        /// </summary>
+        public Action<PythonEngine> CustomizeEngine
+        {
+            set
+            {
+                customizeEngine = value;
+                if (customizeEngine != null)
+                {
+                    foreach (var engine in AvailableEngines)
+                    {
+                        customizeEngine(engine);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Event that is triggered for every new engine that is added.
@@ -149,16 +168,11 @@ namespace Dynamo.PythonServices
 
         internal static string PythonEvaluatorSingletonInstance = "Instance";
 
-        internal static string IronPythonEvaluatorClass = "IronPythonEvaluator";
-        internal static string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
-
         internal static string CPythonEvaluatorClass = "CPythonEvaluator";
         internal static string CPythonEvaluationMethod = "EvaluatePythonScript";
 
-        internal static string IronPythonAssemblyName = "DSIronPython";
         internal static string CPythonAssemblyName = "DSCPython";
 
-        internal static string IronPythonTypeName = IronPythonAssemblyName + "." + IronPythonEvaluatorClass;
         internal static string CPythonTypeName = CPythonAssemblyName + "." + CPythonEvaluatorClass;
 
         internal static string PythonInputMarshalerProperty = "InputMarshaler";
@@ -188,13 +202,40 @@ namespace Dynamo.PythonServices
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
                 for (var ii=0; ii< e.NewItems.Count; ii++)
-                    PythonEngineAdded?.Invoke(e.NewItems[ii] as PythonEngine);
+                {
+                    try
+                    {
+                        PythonEngineAdded?.Invoke(e.NewItems[ii] as PythonEngine);
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine("PythonEngineAdded event failed with error : " + ex.Message + Environment.NewLine + ex.StackTrace);
+                    }
+
+                    try
+                    {
+                        customizeEngine.Invoke(e.NewItems[ii] as PythonEngine);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("CustomizeEngine failed with error : " + ex.Message + Environment.NewLine + ex.StackTrace);
+                    }
+                }
             }
 
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
                 for (var ii = 0; ii < e.OldItems.Count; ii++)
-                    PythonEngineRemoved?.Invoke(e.OldItems[ii] as PythonEngine);
+                {
+                    try
+                    {
+                        PythonEngineRemoved?.Invoke(e.OldItems[ii] as PythonEngine);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("PythonEngineRemoved event failed with error : " + ex.Message + Environment.NewLine + ex.StackTrace);
+                    }
+                }
             }
         }
 
@@ -212,7 +253,7 @@ namespace Dynamo.PythonServices
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load {CPythonAssemblyName} with error: {e.Message}");
+                Console.WriteLine($"Failed to load {CPythonAssemblyName} with error: {e.Message}");
             }
         }
 
@@ -221,16 +262,30 @@ namespace Dynamo.PythonServices
             return AvailableEngines.FirstOrDefault(x => x.Name == name);
         }
 
-        // This method can throw exceptions.
-        internal void LoadPythonEngine(IEnumerable<Assembly> assemblies)
+        /// <summary>
+        /// Load Python Engines from an array of assemblies
+        /// </summary>
+        /// <param name="assemblies"></param>
+        internal void LoadPythonEngine(Action<string> logger, IEnumerable<Assembly> assemblies)
         {
             foreach (var a in assemblies)
             {
-                LoadPythonEngine(a);
+                try
+                {
+                    LoadPythonEngine(a);
+                }
+                catch(Exception e)
+                {
+                    logger?.Invoke("Failed when looking for PythonEngines with error: " + e.Message + Environment.NewLine + e.StackTrace);
+                }
             }
         }
 
-        // This method can throw exceptions.
+        /// <summary>
+        /// Load Python Engines from an assembly
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <exception cref="Exception"></exception>
         private void LoadPythonEngine(Assembly assembly)
         {
             if (assembly == null)

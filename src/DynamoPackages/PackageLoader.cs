@@ -267,7 +267,7 @@ namespace Dynamo.PackageManager
 
 
                 PythonServices.PythonEngineManager.Instance.
-                    LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
+                    LoadPythonEngine(Log, package.LoadedAssemblies.Select(x => x.Assembly));
 
                 Log($"Loaded Package {package.Name} {package.VersionName} from {package.RootDirectory}");
                 PackgeLoaded?.Invoke(package);
