@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -155,7 +156,7 @@ namespace Dynamo.PackageManager.UI
         }
 
         // Select the text inside the TextBox when clicked
-        private async void inputField_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private async Task inputField_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var tb = sender as TextBox;
             if (mouseClickSelection)

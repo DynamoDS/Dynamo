@@ -583,7 +583,7 @@ namespace Dynamo.Utilities
         /// <param name="fontStylePath">Path to the Font Style that will be used in some part of the HTML page</param>
         /// <param name="localAssembly">Local Assembly in which the resource will be loaded</param>
         /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
-        internal static async void LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
+        internal static async Task LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
         {
             try
             {

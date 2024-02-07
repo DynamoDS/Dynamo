@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
@@ -127,7 +128,7 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
-        async void InitializeAsync()
+        async Task InitializeAsync()
         {
             VirtualFolderPath = string.Empty;
             try

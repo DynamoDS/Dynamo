@@ -532,7 +532,7 @@ namespace Dynamo.UI.Controls
 
         #region Private Class Methods - Transition Helpers
 
-        private async void BeginFadeInTransition()
+        private async Task BeginFadeInTransition()
         {
             if (!IsHidden)
             {

@@ -111,7 +111,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             }
         }
 
-        private async void InitWebView2Component()
+        private Task InitWebView2Component()
         {
             webBrowserComponent = new DynamoWebView2();
 
@@ -125,7 +125,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             contentGrid.Children.Add(webBrowserComponent);
             Grid.SetRow(webBrowserComponent, 1);
 
-            ResourceUtilities.LoadWebBrowser(hostControlInfo.HtmlPage, webBrowserComponent, resourcesPath, mainFontStylePath, GetType().Assembly, WebBrowserUserDataFolder);
+            return ResourceUtilities.LoadWebBrowser(hostControlInfo.HtmlPage, webBrowserComponent, resourcesPath, mainFontStylePath, GetType().Assembly, WebBrowserUserDataFolder);
         }
 
        
@@ -159,7 +159,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             GuideFlowEvents.OnGuidedTourPrev();
         }
 
-        private async void Popup_KeyDown(object sender, KeyEventArgs e)
+        private async Task Popup_KeyDown(object sender, KeyEventArgs e)
         {
             if (canMoveStep)
             {

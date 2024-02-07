@@ -737,7 +737,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
+        internal async Task ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
             string msg = String.IsNullOrEmpty(installPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :

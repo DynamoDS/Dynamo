@@ -20,6 +20,7 @@ using Microsoft.Web.WebView2.Wpf;
 using Dynamo.Utilities;
 using Dynamo.Configuration;
 using Dynamo.Models;
+using System.Threading.Tasks;
 
 namespace Dynamo.Notifications
 {
@@ -107,7 +108,7 @@ namespace Dynamo.Notifications
             }   
         }
 
-        private async void InitializeBrowserAsync(object sender, RoutedEventArgs e)
+        private async Task InitializeBrowserAsync(object sender, RoutedEventArgs e)
         {
             if (webBrowserUserDataFolder != null)
             {
@@ -292,7 +293,7 @@ namespace Dynamo.Notifications
             }
         }
 
-        private async void InvokeJS(string script)
+        private async Task InvokeJS(string script)
         {
             await notificationUIPopup.webView.CoreWebView2.ExecuteScriptAsync(script);
         }
