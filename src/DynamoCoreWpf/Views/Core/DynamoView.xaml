@@ -112,6 +112,9 @@
         <KeyBinding Key="O"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="T"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.ShowOpenTemplateDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="I"
                     Modifiers="Control+Shift"
                     Command="{Binding Path=DataContext.ShowInsertDialogAndInsertResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -306,9 +309,6 @@
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
-                            <MenuItem.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                            </MenuItem.ToolTip>
                         </MenuItem>
                             <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
@@ -337,9 +337,18 @@
                             </MenuItem>
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpen}"
-                                  Command="{Binding ShowOpenDialogAndOpenResultCommand}"
-                                  Name="openButton"
-                                  InputGestureText="Ctrl + O">
+                                  Name="openButton">
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpenFile}"
+                                      Name="openFileMenuItem"
+                                      Command="{Binding ShowOpenDialogAndOpenResultCommand}"
+                                      InputGestureText="Ctrl + O">
+                            </MenuItem>
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpenTemplate}"
+                                      Name="openTemplateMenuItem"
+                                      Command="{Binding ShowOpenTemplateDialogCommand}"
+                                      CommandParameter="Template"
+                                      InputGestureText="Ctrl + T">
+                            </MenuItem>
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuInsert}"
                                   Command="{Binding ShowInsertDialogAndInsertResultCommand}"
@@ -696,16 +705,6 @@
                                   Command="{Binding MutateTestDelegateCommand}"
                                   CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
                                   IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
-                        <MenuItem Name="CheckDailyBuilds"
-                                  Header="{x:Static p:Resources.DynamoViewDebugMenuCheckDailyBuild}"
-                                  DataContext="{Binding Path=Model.UpdateManager}"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding Path=CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
-                        <MenuItem Name="ForceUpdate"
-                                  Header="{x:Static p:Resources.DynamoViewDebugMenuForceUpdate}"
-                                  DataContext="{Binding Path=Model.UpdateManager}"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}" />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />

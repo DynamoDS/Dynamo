@@ -197,13 +197,14 @@ namespace Dynamo.ViewModels
 
                     if (UseHostScaleUnits && IsDynamoRevit) return;
 
-                    var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
+                    var enUnit = LocalizedUnitsMap.FirstOrDefault(x => x.Key == selectedUnits).Value;
+                    var result = Enum.TryParse(enUnit, out Configurations.Units currentUnit);
                     if (!result) return;
 
                     if (Configurations.SupportedUnits.TryGetValue(currentUnit, out double units))
                     {
                         // Update preferences setting and update the grapic helpers
-                        preferenceSettings.GraphicScaleUnit = value;
+                        preferenceSettings.GraphicScaleUnit = currentUnit.ToString();
                         preferenceSettings.GridScaleFactor = (float)units;
                         dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
 
@@ -1292,6 +1293,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// The dictionary that contains the localized resource strings for Units.
+        /// This is done to avoid a breaking change that is storing the selected unit in settings file in english language.
+        /// </summary>
+        private Dictionary<string, string> LocalizedUnitsMap;
+
+        /// <summary>
         /// Returns localized resource strings for Units
         /// </summary>
         private string GetLocalizedUnits(Enum value)
@@ -1391,6 +1398,12 @@ namespace Dynamo.ViewModels
             // Fill language list using supported locale dictionary keys in current thread locale
             LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
             SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
+
+            LocalizedUnitsMap = new Dictionary<string, string>();
+            foreach (var unit in Configurations.SupportedUnits)
+            {
+                LocalizedUnitsMap.Add(GetLocalizedUnits(unit.Key), unit.Key.ToString());
+            }
 
             // Chose the scaling unit, if option is allowed by user
             UnitList = Configurations.SupportedUnits.Keys.Select(x => GetLocalizedUnits(x)).ToObservableCollection();

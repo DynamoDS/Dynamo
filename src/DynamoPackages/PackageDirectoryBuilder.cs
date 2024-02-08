@@ -69,18 +69,17 @@ namespace Dynamo.PackageManager
             
             var rootPath = Path.Combine(packagesDirectory, package.Name);
             var rootDir = fileSystem.TryCreateDirectory(rootPath);
+            var sourcePackageDir = package.RootDirectory;
             package.RootDirectory = rootDir.FullName;
 
             var dyfFiles = new List<string>();
 
-            WritePackageHeader(package, rootDir);
-
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
-            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, rootDir, out dyfFiles);
+            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, sourcePackageDir, rootDir, out dyfFiles);
             RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
             
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
-
+            WritePackageHeader(package, rootDir);
 
             return rootDir;
         }
@@ -214,19 +213,12 @@ namespace Dynamo.PackageManager
             fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 
-        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles, IDirectoryInfo rootDir, out List<string> dyfFiles)
+        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles, string sourcePackageDir, IDirectoryInfo rootDir, out List<string> dyfFiles)
         {
             dyfFiles = new List<string>();
 
             foreach (var files in contentFiles)
             {
-                // We expect that files are bundled in root folders
-                // For single files, just get its folder
-                var commonPath = files.Count() > 1 ? GetLongestCommonPrefix(files.ToArray()) : Path.GetDirectoryName(files.First());
-                commonPath = commonPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                var commonRootPath = Path.GetDirectoryName(commonPath);
-                if (commonRootPath == null) commonRootPath = commonPath; // already at the root
-
                 foreach (var file in files.Where(x => x != null))
                 {
                     // If the file doesn't actually exist, don't copy it
@@ -235,18 +227,19 @@ namespace Dynamo.PackageManager
                         continue;
                     }
 
-                    var relativePath = file.Substring(commonRootPath.Length);
+                    var relativePath = file.Substring(sourcePackageDir.Length);
 
                     // Ensure the relative path starts with a directory separator.
                     if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
                     {
+                        relativePath = relativePath.TrimStart(new char[] { '/', '\\' });
                         relativePath = Path.DirectorySeparatorChar + relativePath;
                     }
 
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
-                    // We are already creating the pkg.json file ourselves, so skip it
-                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")))
+                    // We are already creating the pkg.json file ourselves, so skip it, also skip if we are copying the file to itself.
+                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
                     {
                         continue;
                     }
@@ -389,29 +382,6 @@ namespace Dynamo.PackageManager
                        .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                        .ToUpperInvariant();
         }
-
-
-        /// <summary>
-        /// Utility method to get the common file path 
-        /// </summary>
-        /// <param name="s">A collection of filepaths</param>
-        /// <returns></returns>
-        public static string GetLongestCommonPrefix(string[] s)
-        {
-            int k = s[0].Length;
-            for (int i = 1; i < s.Length; i++)
-            {
-                k = Math.Min(k, s[i].Length);
-                for (int j = 0; j < k; j++)
-                    if (s[i][j] != s[0][j])
-                    {
-                        k = j;
-                        break;
-                    }
-            }
-            return s[0].Substring(0, k);
-        }
-
         #endregion
 
     }

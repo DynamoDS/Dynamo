@@ -119,9 +119,16 @@ namespace Dynamo.Notifications
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
 
-            initState = AsyncMethodState.Started;
-            await notificationUIPopup.webView.EnsureCoreWebView2Async();
-            initState = AsyncMethodState.Done;
+            try
+            {
+                initState = AsyncMethodState.Started;
+                await notificationUIPopup.webView.Initialize(Log);
+                initState = AsyncMethodState.Done;
+            }
+            catch(ObjectDisposedException ex)
+            {
+                Log(ex.Message);
+            }
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -266,7 +273,7 @@ namespace Dynamo.Notifications
         private void DynamoView_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             string popupBellID = "FontAwesome5.FontAwesome";
-            if (!notificationUIPopup.IsOpen) return;
+            if (notificationUIPopup == null || !notificationUIPopup.IsOpen) return;
             if(e.OriginalSource.ToString() != popupBellID)
             {
                 notificationUIPopup.IsOpen = false;
@@ -349,10 +356,6 @@ namespace Dynamo.Notifications
         /// </summary>
         public void Dispose()
         {
-            if (initState == AsyncMethodState.Started)
-            {
-                Log("NotificationCenterController is being disposed but async initialization is still not done");
-            }
             Dispose(true);
             GC.SuppressFinalize(this);
         }

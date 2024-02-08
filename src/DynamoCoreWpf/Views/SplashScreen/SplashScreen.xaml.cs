@@ -1,10 +1,10 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Input;
 using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -13,6 +13,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Greg.AuthProviders;
 using Microsoft.Web.WebView2.Core;
@@ -27,12 +28,17 @@ namespace Dynamo.UI.Views
         private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.SplashScreen.build.index.bundle.js";
         private static readonly string backgroundImage = "Dynamo.Wpf.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
+
         /// <summary>
         /// True if the reason the splash screen was closed was because the user explicitly closed it,
         /// as opposed to the splash screen closing because dynamo was launched.
         /// This is useful for knowing if Dynamo is already started or not.
         /// </summary>
         public bool CloseWasExplicit { get; private set; }
+
+        // Indicates if the SplashScren close button was hit.
+        // Used to ensure that OnClosing is called only once.
+        private bool IsClosing = false;
 
         // Timer used for Splash Screen loading
         internal Stopwatch loadingTimer;
@@ -88,7 +94,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// The WebView2 Browser instance used to display splash screen
         /// </summary>
-        internal WebView2 webView;
+        internal DynamoWebView2 webView;
 
         /// <summary>
         /// This delegate is used in StaticSplashScreenReady events
@@ -142,8 +148,9 @@ namespace Dynamo.UI.Views
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
 
-            webView = new WebView2();
+            webView = new DynamoWebView2();
             ShadowGrid.Children.Add(webView);
+
             // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
@@ -154,6 +161,25 @@ namespace Dynamo.UI.Views
             RequestSignIn = SignIn;
             RequestSignOut = SignOut;
             this.enableSignInButton = enableSignInButton;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            // If we have multiple OnClosing events (ex Clicking the close button multiple times)
+            // we need to only process the first one. THe rest should be canceled so that we can avoid timing issues with the order of windows messages
+            // Ex  WM_CLOSE => webview2.Visibility.Set => waits for windows message =>  WM_DESTROY =>
+            // webview2.Dispose => webview2.Visible.Set receives windows message => crash because object got disposed. 
+            if (!IsClosing)
+            {
+                // First call to OnClosing
+                IsClosing = true;
+            }
+            else
+            {
+                // Cancel the Close action for all subsequent calls
+                e.Cancel = true;
+            }
+            base.OnClosing(e);
         }
 
         private void DynamoModel_LanguageDetected()
@@ -284,7 +310,7 @@ namespace Dynamo.UI.Views
             var version = AssemblyHelper.GetDynamoVersion();
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+            return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"),
                             String.Format("{0}.{1}", version.Major, version.Minor));
         }
 
@@ -306,39 +332,46 @@ namespace Dynamo.UI.Views
             };
 
             //ContentRendered ensures that the webview2 component is visible.
-            await webView.EnsureCoreWebView2Async();
-            // Context menu disabled
-            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            // Zoom control disabled
-            webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
-
-            var assembly = Assembly.GetExecutingAssembly();
-
-            using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
-            using (StreamReader reader = new StreamReader(stream))
+            try
             {
-                htmlString = reader.ReadToEnd();
-            }
+                await webView.Initialize();
+                // Context menu disabled
+                webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                // Zoom control disabled
+                webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
 
-            using (Stream stream = assembly.GetManifestResourceStream(jsEmbeddedFile))
-            using (StreamReader reader = new StreamReader(stream))
+                var assembly = Assembly.GetExecutingAssembly();
+
+                using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    htmlString = reader.ReadToEnd();
+                }
+
+                using (Stream stream = assembly.GetManifestResourceStream(jsEmbeddedFile))
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    var jsString = reader.ReadToEnd();
+                    jsonString = jsString;
+                }
+
+                using (Stream stream = assembly.GetManifestResourceStream(backgroundImage))
+                {
+                    var resourceBase64 = Utilities.ResourceUtilities.ConvertToBase64(stream);
+                    jsonString = jsonString.Replace("#base64BackgroundImage", $"data:image/{imageFileExtension};base64,{resourceBase64}");
+                }
+
+                jsonString = jsonString.Replace("Welcome to Dynamo!", "");
+                htmlString = htmlString.Replace("mainJs", jsonString);
+
+                webView.NavigateToString(htmlString);
+                webView.CoreWebView2.AddHostObjectToScript("scriptObject",
+                   new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
+            }
+            catch (ObjectDisposedException ex)
             {
-                var jsString = reader.ReadToEnd();
-                jsonString = jsString;
+                Console.WriteLine(ex.Message);
             }
-
-            using (Stream stream = assembly.GetManifestResourceStream(backgroundImage))
-            {
-                var resourceBase64 = Utilities.ResourceUtilities.ConvertToBase64(stream);
-                jsonString = jsonString.Replace("#base64BackgroundImage", $"data:image/{imageFileExtension};base64,{resourceBase64}");
-            }
-
-            jsonString = jsonString.Replace("Welcome to Dynamo!", "");
-            htmlString = htmlString.Replace("mainJs", jsonString);
-
-            webView.NavigateToString(htmlString);
-            webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
         }
 
         internal async void SetBarProperties(string version, string loadingDescription, float barSize)
@@ -513,9 +546,14 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// If the user wants to close the window, we shutdown the application and don't launch Dynamo
         /// </summary>
-        internal void CloseWindow()
+        /// <param name="isCheckboxChecked">If true, the user has chosen to not show splash screen on next run.</param>
+        internal void CloseWindow(bool isCheckboxChecked = false)
         {
             CloseWasExplicit = true;
+            if (viewModel != null && isCheckboxChecked)
+            {
+                viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            }
 
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
             {
@@ -549,8 +587,12 @@ namespace Dynamo.UI.Views
             {
                 authManager.LoginStateChanged -= OnLoginStateChanged;
             }
-            webView.Dispose();
-            webView = null;
+
+            if (webView != null)
+            {
+                webView.Dispose();
+                webView = null;
+            }
 
             GC.SuppressFinalize(this);
         }
@@ -563,6 +605,9 @@ namespace Dynamo.UI.Views
         success
     }
 
+    /// <summary>
+    /// This class is used to expose the methods that can be called from the webview2 component, SplashScreen.
+    /// </summary>
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
     public class ScriptObject
@@ -572,7 +617,12 @@ namespace Dynamo.UI.Views
         readonly Func<bool> RequestSignIn;
         readonly Func<bool> RequestSignOut;
         readonly Action RequestCloseWindow;
+        readonly Action<bool> RequestCloseWindowPreserve;
 
+        /// <summary>
+        /// [Obsolete] Constructor for ScriptObject
+        /// </summary>
+        [Obsolete]
         public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestCloseWindow)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
@@ -580,6 +630,17 @@ namespace Dynamo.UI.Views
             RequestSignIn = requestSignIn;
             RequestSignOut = requestSignOut;
             RequestCloseWindow = requestCloseWindow;
+        }
+        /// <summary>
+        /// Constructor for ScriptObject with an overload for close window method, to preserve "Don't show again" setting on splash screen on explicit close event.
+        /// </summary>
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func<bool> requestSignIn, Func<bool> requestSignOut, Action<bool> requestCloseWindow)
+        {
+            RequestLaunchDynamo = requestLaunchDynamo;
+            RequestImportSettings = requestImportSettings;
+            RequestSignIn = requestSignIn;
+            RequestSignOut = requestSignOut;
+            RequestCloseWindowPreserve = requestCloseWindow;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
@@ -603,6 +664,10 @@ namespace Dynamo.UI.Views
         public void CloseWindow()
         {
             RequestCloseWindow();
+        }
+        public void CloseWindowPreserve(bool isCheckboxChecked)
+        {
+            RequestCloseWindowPreserve(isCheckboxChecked);
         }
     }
 }

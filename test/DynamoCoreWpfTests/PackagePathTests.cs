@@ -233,17 +233,17 @@ namespace DynamoCoreWpfTests
             vm.packageLoader.PackagesLoaded += pkgsLoadedDelegate;
 
             vm.packageLoader.LoadAll(vm.loadPackageParams);
-            Assert.AreEqual(20, vm.packageLoader.LocalPackages.Count());
+            Assert.AreEqual(21, vm.packageLoader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
             var installedPackagesViewModel = new InstalledPackagesViewModel(ViewModel, vm.packageLoader);
-            Assert.AreEqual(20, installedPackagesViewModel.LocalPackages.Count);
+            Assert.AreEqual(21, installedPackagesViewModel.LocalPackages.Count);
 
             var installedPackagesView = new Dynamo.Wpf.Controls.InstalledPackagesControl();
             installedPackagesView.DataContext = installedPackagesViewModel;
             DispatcherUtil.DoEvents();
 
-            Assert.AreEqual(20, installedPackagesView.SearchResultsListBox.Items.Count);
+            Assert.AreEqual(21, installedPackagesView.SearchResultsListBox.Items.Count);
             Assert.AreEqual(2, installedPackagesView.Filters.Items.Count);
 
             vm.packageLoader.PackagesLoaded -= libraryLoader.LoadPackages;
@@ -267,7 +267,7 @@ namespace DynamoCoreWpfTests
             // Load packages in package path.
             vm.packageLoader.LoadAll(vm.loadPackageParams);
 
-            Assert.AreEqual(20, vm.packageLoader.LocalPackages.Count());
+            Assert.AreEqual(21, vm.packageLoader.LocalPackages.Count());
             // Remove package path.
             vm.DeletePathCommand.Execute(0);
 
@@ -323,7 +323,7 @@ namespace DynamoCoreWpfTests
             vm.SaveSettingCommand.Execute(null);
 
             // packages are expected to load from 'PackagesDirectory' above when toggle is turned off
-            Assert.AreEqual(20, vm.packageLoader.LocalPackages.Count());
+            Assert.AreEqual(21, vm.packageLoader.LocalPackages.Count());
 
             vm.packageLoader.PackagesLoaded -= libraryLoader.LoadPackages;
             vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;

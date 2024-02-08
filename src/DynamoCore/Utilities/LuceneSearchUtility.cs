@@ -73,6 +73,8 @@ namespace Dynamo.Utilities
         /// </summary>
         internal static readonly LuceneStartConfig DefaultPkgIndexStartConfig = new LuceneStartConfig(LuceneSearchUtility.LuceneStorage.FILE_SYSTEM, LuceneConfig.PackagesIndexingDirectory);
 
+        private bool hasEmptySpaces { get; set; }
+
         public enum LuceneStorage
         {
             //Lucene Storage will be located in RAM and all the info indexed will be lost when Dynamo app is closed
@@ -80,6 +82,18 @@ namespace Dynamo.Utilities
 
             //Lucene Storage will be located in the local File System and the files will remain in ...AppData\Roaming\Dynamo\Dynamo Core\2.19\Index folder
             FILE_SYSTEM
+        }
+
+        /// <summary>
+        /// This enum will be used to identify which can of search should be executed based in the user search criteria 
+        /// </summary>
+        public enum SearchType
+        {
+            //Normal search using just one word matching a specific node name
+            Normal,
+
+            //Search by category using the "." character for example "list.re"
+            ByCategory
         }
 
         // Used for creating the StandardAnalyzer
@@ -251,6 +265,18 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        /// Check if the term passed as parameter is found inside the FullCategoryName
+        /// </summary>
+        /// <param name="term">Splitted search term e.g. if the search term is "set parameter" the parameter will be "set" or "parameter"</param>
+        /// <param name="FullCategoryName">The complete category used for a specific node, like Core.File.FileSystem</param>
+        /// <returns></returns>
+        private bool IsMatchingCategory(string term, string FullCategoryName)
+        {
+            var categoryTerms = FullCategoryName.Split(".").Select(x => x.ToLower());
+            return categoryTerms.Contains(term);
+        }
+
+        /// <summary>
         /// Creates a search query with adjusted priority, fuzzy logic and wildcards.
         /// Complete Search term appearing in Name of the package will be given highest priority.
         /// Then, complete search term appearing in other metadata,
@@ -264,7 +290,14 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         internal string CreateSearchQuery(string[] fields, string SearchTerm)
         {
+            //By Default the search will be normal
+            SearchType searchType = SearchType.Normal;
             int fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMinEdits;
+            hasEmptySpaces = false;
+
+            //Max number of nodes allowed in the search when is a ByEmptySpace search
+            const int MaxNodeNamesRepeated = 20;
+
             // Use a larger max edit value - more tolerant with typo when search term is longer than threshold
             if (SearchTerm.Length > LuceneConfig.FuzzySearchMaxEditsThreshold)
             {
@@ -273,13 +306,23 @@ namespace Dynamo.Utilities
 
             var booleanQuery = new BooleanQuery();
             string searchTerm = QueryParser.Escape(SearchTerm);
-            var bCategoryBasedSearch = searchTerm.Contains('.') ? true : false;
+
+            if (searchTerm.Contains('.'))
+                searchType = SearchType.ByCategory;
+            else if (searchTerm.Contains(' '))
+                hasEmptySpaces = true;
+            else
+                searchType = SearchType.Normal;
+
+            var trimmedSearchTerm = hasEmptySpaces == true ? searchTerm.Replace(" ", "") : searchTerm;
 
             foreach (string f in fields)
             {
+                Occur occurQuery = Occur.SHOULD;
+
                 //Needs to be again due that now a query can contain different values per field (e.g. CategorySplitted:list, Name:tr)
                 searchTerm = QueryParser.Escape(SearchTerm);
-                if (bCategoryBasedSearch == true)
+                if (searchType == SearchType.ByCategory)
                 {
                     //This code section should be only executed if the search criteria is CategoryBased like "category.nodename"
                     if (f != nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) &&
@@ -297,40 +340,71 @@ namespace Dynamo.Utilities
                     }                   
                 }
 
-                FuzzyQuery fuzzyQuery;
-                if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
-                {
-                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicMaxEdits);
-                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-                }
-
                 //For normal search we don't consider the fields NameSplitted and CategorySplitted
                 if ((f == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ||
-                    f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted)) && bCategoryBasedSearch == false)
+                    f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted)) && searchType != SearchType.ByCategory)
                     continue;
 
                 //This case is for when the user type something like "list.", I mean, not specifying the node name or part of it
                 if (string.IsNullOrEmpty(searchTerm))
                     continue;
 
-                var fieldQuery = CalculateFieldWeight(f, searchTerm);
-                var wildcardQuery = CalculateFieldWeight(f, searchTerm, true);
+                bool firstTermIsCategory = false;
 
-                if (bCategoryBasedSearch && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                //This will only valid when the search term has empty spaces
+                if (hasEmptySpaces)
                 {
-                    booleanQuery.Add(fieldQuery, Occur.MUST);
-                    booleanQuery.Add(wildcardQuery, Occur.MUST);
+                    //Check if the first term of the search criteria match any category
+                    var possibleCategory = searchTerm.Split(' ')[0];
+                    if (string.IsNullOrEmpty(possibleCategory)) continue;
+
+                    var specificCategoryEntries = dynamoModel.SearchModel.Entries.Where(entry => IsMatchingCategory(possibleCategory, entry.FullCategoryName) == true);
+                    firstTermIsCategory = specificCategoryEntries.Any();
+
+                    //Get the node matching the Category provided in the search term
+                    var matchingCategory = specificCategoryEntries.FirstOrDefault();
+                    if (matchingCategory == null && firstTermIsCategory == true) continue;
+
+                    if (f == nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName) && firstTermIsCategory == true)
+                    {
+                        //Means that the first term is a category when we will be using the FullCategoryName for making a specific search based in the category
+                        trimmedSearchTerm = matchingCategory?.FullCategoryName;
+                        occurQuery = Occur.MUST;
+                    }
+                    else if (f == nameof(LuceneConfig.NodeFieldsEnum.Name) && firstTermIsCategory == true)
+                    {
+                        //If the field being iterated is Name and we are sure that the first term is a Category when we remove the term from the string so we can search for the specific node Name
+                        trimmedSearchTerm = trimmedSearchTerm?.Replace(possibleCategory, string.Empty);
+                        if (string.IsNullOrEmpty(trimmedSearchTerm)) continue;
+                    }
                 }
-                else
+
+                FuzzyQuery fuzzyQuery;
+                if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
                 {
-                    booleanQuery.Add(fieldQuery, Occur.SHOULD);
-                    booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                    fuzzyQuery = new FuzzyQuery(new Term(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm), fuzzyLogicMaxEdits);
+                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
                 }
+
+                var fieldQuery = CalculateFieldWeight(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm);
+                var wildcardQuery = CalculateFieldWeight(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm, true);
+
+                if (searchType == SearchType.ByCategory && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+                {
+                    occurQuery = Occur.MUST;
+                }
+               
+                booleanQuery.Add(fieldQuery, occurQuery);
+                booleanQuery.Add(wildcardQuery, occurQuery);
 
                 if (searchTerm.Contains(' '))
                 {
                     foreach (string s in searchTerm.Split(' ', '.'))
                     {
+                        //If is a ByEmptySpace search and the splitted words match with more than MaxNodeNamesRepeated nodes then the word is skipped
+                        int nodesFrequency = dynamoModel.SearchModel.Entries.Where(entry => entry.Name.ToLower().Contains(s) && !string.IsNullOrEmpty(s)).Count();
+                        if (nodesFrequency > MaxNodeNamesRepeated) continue;
+
                         if (string.IsNullOrEmpty(s)) continue;
 
                         if (s.Length > LuceneConfig.FuzzySearchMinimalTermLength)
