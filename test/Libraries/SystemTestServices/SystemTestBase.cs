@@ -61,7 +61,6 @@ namespace SystemTestServices
         public virtual void Setup()
         {
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
-            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
 
             var testConfig = GetTestSessionConfiguration();
 
@@ -140,8 +139,6 @@ namespace SystemTestServices
             {
                 Console.WriteLine(ex.StackTrace);
             }
-
-            TestUtilities.WebView2Tag = string.Empty;
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name} ");
         }
 

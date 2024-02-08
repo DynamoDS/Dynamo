@@ -1,10 +1,7 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Dynamo.Models;
 using Dynamo.Wpf.Properties;
-using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -15,18 +12,9 @@ namespace Dynamo.Wpf.Utilities
     /// </summary>
     public class DynamoWebView2 : WebView2
     {
-        #region API/Data used for debugging/testing
-        private string tag;
-        #endregion
-
         Action<string> logger = System.Console.WriteLine;
         private Task initTask = null;
         private bool disposeCalled;
-
-        public DynamoWebView2() : base()
-        {
-            tag = TestUtilities.WebView2Tag;
-        }
 
         /// <summary>
         /// Wrapper over WebView2's EnsureCoreWebView2Async
@@ -50,12 +38,12 @@ namespace Dynamo.Wpf.Utilities
 
             if (System.Environment.CurrentManagedThreadId != Dispatcher.Thread.ManagedThreadId)
             {
-                logger?.Invoke($"WebView2 instance with tag {tag} is being disposed of on non-UI thread");
+                logger?.Invoke("WebView2 instance is being disposed of on non-UI thread");
             }
 
             if (initTask != null && !initTask.IsCompleted)
             {
-                logger?.Invoke($"WebView2 instance with tag {tag} is being disposed but async initialization is still not done");
+                logger?.Invoke("WebView2 instance is being disposed but async initialization is still not done");
 
                 // Wait for EnsureCoreWebView2Async to finish before we continue with dispose.
                 // This way we avoid EnsureCoreWebView2Async resuming execution while webview2 is disposed.

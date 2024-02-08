@@ -12,7 +12,6 @@ using System.Windows.Controls.Primitives;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Notifications.View;
-using DynamoUtilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
@@ -52,7 +51,7 @@ namespace Dynamo.Notifications
 
     public class NotificationCenterController : IDisposable
     {
-        private readonly NotificationUI notificationUIPopup;
+        internal readonly NotificationUI notificationUIPopup;
         private readonly DynamoView dynamoView;
         private readonly DynamoViewModel dynamoViewModel;
         private readonly Button notificationsButton;
@@ -65,8 +64,6 @@ namespace Dynamo.Notifications
         private static readonly string jsEmbeddedFile = "Dynamo.Notifications.Packages.NotificationCenter.build.index.bundle.js";
         private static readonly string NotificationCenterButtonName = "notificationsButton";
         internal DirectoryInfo webBrowserUserDataFolder;
-
-        internal AsyncMethodState initState = AsyncMethodState.NotStarted;
 
         private readonly DynamoLogger logger;
         private string jsonStringFile;
@@ -121,9 +118,7 @@ namespace Dynamo.Notifications
 
             try
             {
-                initState = AsyncMethodState.Started;
                 await notificationUIPopup.webView.Initialize(Log);
-                initState = AsyncMethodState.Done;
             }
             catch(ObjectDisposedException ex)
             {

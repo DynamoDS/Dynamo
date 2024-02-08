@@ -69,7 +69,6 @@ namespace Dynamo
         {
             
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
-            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
 
             SetupDirectories();
 
@@ -104,7 +103,6 @@ namespace Dynamo
             {
                 AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             }
-            TestUtilities.WebView2Tag = string.Empty;
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
         }
 

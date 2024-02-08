@@ -8,8 +8,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Notifications;
-using Dynamo.DocumentationBrowser;
 using DynamoCoreWpfTests.Utility;
+using Microsoft.Web.WebView2.Core;
 
 namespace DynamoCoreWpfTests.ViewExtensions
 {
@@ -23,12 +23,19 @@ namespace DynamoCoreWpfTests.ViewExtensions
             notificationsButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
 
             var notificationExtension = this.View.viewExtensionManager.ViewExtensions.OfType<NotificationsViewExtension>().FirstOrDefault();
+
+
+            bool initialized = false;
+            var handler = new EventHandler<CoreWebView2InitializationCompletedEventArgs>((a, b) => { initialized = true; });
+
+            notificationExtension.notificationCenterController.notificationUIPopup.webView.CoreWebView2InitializationCompleted += handler;
+
             // Wait for the NotificationCenterController webview2 control to finish initialization
-            DispatcherUtil.DoEventsLoop(() =>
-            {
-                return notificationExtension.notificationCenterController.initState == DynamoUtilities.AsyncMethodState.Done;
-            });
-            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, notificationExtension.notificationCenterController.initState);
+            DispatcherUtil.DoEventsLoop(() => initialized);
+
+            notificationExtension.notificationCenterController.notificationUIPopup.webView.CoreWebView2InitializationCompleted -= handler;
+
+            Assert.IsTrue(initialized);
 
             NotificationUI notificationUI = PresentationSource.CurrentSources.OfType<System.Windows.Interop.HwndSource>()
                                         .Select(h => h.RootVisual)

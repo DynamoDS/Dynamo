@@ -18,6 +18,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using ICSharpCode.AvalonEdit.Document;
+using Microsoft.Web.WebView2.Core;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
@@ -57,13 +58,15 @@ namespace DynamoCoreWpfTests
         {
             var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
 
-            // Wait for the DocumentationBrowserView webview2 control to finish initialization
-            DispatcherUtil.DoEventsLoop(() =>
-            {
-                return docBrowserviewExtension.BrowserView.initState == DynamoUtilities.AsyncMethodState.Done;
-            });
+            bool initialized = false;
+            var handler = new EventHandler<CoreWebView2InitializationCompletedEventArgs>((a, b) => { initialized = true; });
 
-            Assert.IsTrue(docBrowserviewExtension.BrowserView.initState == DynamoUtilities.AsyncMethodState.Done);
+            docBrowserviewExtension.BrowserView.documentationBrowser.CoreWebView2InitializationCompleted += handler;
+            // Wait for the DocumentationBrowserView webview2 control to finish initialization
+            DispatcherUtil.DoEventsLoop(() => initialized);
+
+            docBrowserviewExtension.BrowserView.documentationBrowser.CoreWebView2InitializationCompleted -= handler;
+            Assert.IsTrue(initialized);
         }
 
         public override void Open(string path)

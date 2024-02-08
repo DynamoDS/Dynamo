@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -19,11 +18,22 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     public partial class DocumentationBrowserView : UserControl, IDisposable
     {
+
+        /// <summary>
+        /// Simple representation of the states of the initialize async method
+        /// </summary>
+        private enum WebView2InitState
+        {
+            NotStarted = 0,// Async method not called yet
+            Started,// Async method called but not finished execution (usually set before any awaits)
+            Done// Async method has finished execution (all awaits have finished)
+        }
+
         private const string ABOUT_BLANK_URI = "about:blank";
         private readonly DocumentationBrowserViewModel viewModel;
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
-        internal AsyncMethodState initState = AsyncMethodState.NotStarted;
+        private WebView2InitState initState = WebView2InitState.NotStarted;
         private ScriptingObject comScriptingObject;
         private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
@@ -158,9 +168,9 @@ namespace Dynamo.DocumentationBrowser
             }
 
             // Only initialize once 
-            if (initState == AsyncMethodState.NotStarted)
+            if (initState == WebView2InitState.NotStarted)
             {
-                initState = AsyncMethodState.Started;
+                initState = WebView2InitState.Started;
                 if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
                 {
                     //This indicates in which location will be created the WebView2 cache folder
@@ -183,7 +193,7 @@ namespace Dynamo.DocumentationBrowser
                     this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
                     this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
 
-                    initState = AsyncMethodState.Done;
+                    initState = WebView2InitState.Done;
                 }
                 catch(ObjectDisposedException ex)
                 {
@@ -193,7 +203,7 @@ namespace Dynamo.DocumentationBrowser
             }
             //if we make it this far, for example to do re-entry to to this method, while we're still
             //initializing, don't do anything, just bail.
-            if (initState == AsyncMethodState.Done)
+            if (initState == WebView2InitState.Done)
             {
                 if (Directory.Exists(VirtualFolderPath))
                 {

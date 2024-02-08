@@ -28,19 +28,6 @@ namespace DynamoCoreWpfTests
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         static extern uint RegisterWindowMessage(string lpString);
 
-
-        [SetUp]
-        public void SetUp()
-        {
-            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
-        }
-
-        [TearDown]
-        public void CleanUp()
-        {
-            TestUtilities.WebView2Tag = string.Empty;
-        }
-
         [Test]
         public void SplashScreen_CloseExplicitPropIsCorrect1()
         {
