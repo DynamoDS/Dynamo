@@ -36,6 +36,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using DynamoServices;
+using DynamoUtilities;
 using Greg;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -718,7 +719,7 @@ namespace Dynamo.Models
                     {
                         //this will kill the CLI process after cacheing the flags in Dynamo process.
                         using (FeatureFlags =
-                                new DynamoUtilities.DynamoFeatureFlagsManager(
+                                new DynamoFeatureFlagsManager(
                                 AnalyticsService.GetUserIDForSession(),
                                 mainThreadSyncContext,
                                 IsTestMode))
@@ -730,6 +731,7 @@ namespace Dynamo.Models
                     }
                     catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
                 });
+                DynamoFeatureFlagsManager.FlagsRetrieved += HandleFeatureFlags;
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
@@ -975,6 +977,15 @@ namespace Dynamo.Models
             }
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        /// <summary>
+        /// When feature flags received, handle them and make changes 
+        /// </summary>
+        private void HandleFeatureFlags()
+        {
+            PreferenceSettings.UpdateNamespacesToExcludeFromLibrary();
+            return;
         }
 
         private void HandleAnalytics()
@@ -1369,6 +1380,7 @@ namespace Dynamo.Models
             LibraryServices.LibraryLoaded -= LibraryLoaded;
 
             EngineController.VMLibrariesReset -= ReloadDummyNodes;
+            DynamoFeatureFlagsManager.FlagsRetrieved -= HandleFeatureFlags;
 
             Logger.Dispose();
 
