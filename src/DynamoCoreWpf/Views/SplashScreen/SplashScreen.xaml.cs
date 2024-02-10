@@ -330,10 +330,20 @@ namespace Dynamo.UI.Views
                             String.Format("{0}.{1}", version.Major, version.Minor));
         }
 
-        protected override async void OnContentRendered(EventArgs e)
+        protected override void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
 
+            InitializeWebview2().ContinueWith((t) => {
+                if (t.Exception != null)
+                {
+                    Console.WriteLine(t.Exception.Message);
+                }
+            });
+        }
+
+        private async Task InitializeWebview2()
+        {
             string htmlString = string.Empty;
             string jsonString = string.Empty;
 

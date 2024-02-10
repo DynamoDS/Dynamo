@@ -159,7 +159,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             GuideFlowEvents.OnGuidedTourPrev();
         }
 
-        private async Task Popup_KeyDown(object sender, KeyEventArgs e)
+        private void Popup_KeyDown(object sender, KeyEventArgs e)
         {
             if (canMoveStep)
             {
@@ -174,8 +174,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
                         GuideFlowEvents.OnGuidedTourNext();
                         break;
                 }
-                //Adds a delay of 500ms to avoid Dynamo crash with a quick switch with the keys
-                await Task.Delay(500);
 
                 canMoveStep = true;
             }

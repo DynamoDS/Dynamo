@@ -156,12 +156,12 @@ namespace Dynamo.PackageManager.UI
         }
 
         // Select the text inside the TextBox when clicked
-        private async Task inputField_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void inputField_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var tb = sender as TextBox;
             if (mouseClickSelection)
             {
-                await Application.Current.Dispatcher.InvokeAsync(tb.SelectAll);
+                Application.Current.Dispatcher.Invoke(tb.SelectAll);
 
                 //disable the boolean porperty to selection apply only first time 
                 mouseClickSelection = false;
