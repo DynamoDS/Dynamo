@@ -1,0 +1,40 @@
+# Build DynamoCore.sln with .NET 8.0 on linux
+name: Build DynamoCore.sln net8.0 linux
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v4
+        with:
+          path: Dynamo
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Disable problem matcher
+        run: echo "::remove-matcher owner=csc::"
+      - name: Install dependencies for linux runtime
+        run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -p:Platform=NET_Linux --runtime=linux-x64
+      - name: Build Dynamo with MSBuild for Linux
+        run: |
+          echo "***Continue with the build, Good luck developer!***"
+          dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -c Release /p:Platform=NET_Linux
+      - name: Look for DynamoCLI.exe
+        run: |
+          cd "${{ github.workspace }}/Dynamo/bin/NET_Linux/Release"
+          echo "***Locating DynamoCLI for Linux!***"
+          test "./DynamoCLI.exe" && echo "DynamoCLI exists!"
+      - name: Run smoke tests
+        run: |
+          cd "${{ github.workspace }}/Dynamo/bin/NET_Linux/Release"
+          echo "***Running Smoke tests on linux***"
+          #TODO unfortunately dotnet does not find any tests in this assembly.
+          #dotnet test DynamoCoreTests.dll --filter "TestCategory~UnitTest"

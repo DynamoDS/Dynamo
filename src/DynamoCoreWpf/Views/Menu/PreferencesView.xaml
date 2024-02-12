@@ -1024,7 +1024,10 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,12,0,0"
+                                                Grid.Row="0"
+                                                Visibility="{Binding IsTSplineNodesExperimentToggleVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <ToggleButton Name="EnableTSplineToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"

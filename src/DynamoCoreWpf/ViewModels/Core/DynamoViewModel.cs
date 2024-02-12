@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -44,6 +45,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using DynamoMLDataPipeline;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
@@ -85,6 +87,8 @@ namespace Dynamo.ViewModels
         ///  Node window's state, either DockRight or FloatingWindow.
         /// </summary>
         internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
+
+        internal DynamoMLDataPipelineExtension MLDataPipelineExtension { get; set; }
 
         /// <summary>
         /// Collection of Right SideBar tab items: view extensions and docked windows.
@@ -190,6 +194,17 @@ namespace Dynamo.ViewModels
         public WorkspaceModel CurrentSpace
         {
             get { return model.CurrentWorkspace; }
+        }
+
+        /// <summary>
+        /// Controls if the the ML data ingestion pipeline is beta from feature flag
+        /// </summary>
+        internal bool IsMLDataIngestionPipelineinBeta
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsMLDataIngestionPipelineinBeta", false) ?? false;
+            }
         }
 
         /// <summary>
@@ -676,7 +691,12 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
+            // CurrentDomain_UnhandledException - catches unhandled exceptions that are fatal to the current process. These exceptions cannot be handled and process termination is guaranteed
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            // Dispatcher.CurrentDispatcher.UnhandledException - catches unhandled exceptions from the UI thread. Can mark exceptions as handled (and close Dynamo) so that host apps can continue running normally even though Dynamo crashed
             Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
+            // TaskScheduler.UnobservedTaskException - catches unobserved Task exceptions from all threads. Does not crash Dynamo, we only log the exceptions and do not call CER or close Dynamo
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
             this.ShowLogin = startConfiguration.ShowLogin;
 
@@ -684,6 +704,7 @@ namespace Dynamo.ViewModels
             this.model = startConfiguration.DynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
+            this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;
 
             this.HideReportOptions = startConfiguration.HideReportOptions;
             UsageReportingManager.Instance.InitializeCore(this);
@@ -755,30 +776,87 @@ namespace Dynamo.ViewModels
             }
 
             FileTrustViewModel = new FileTrustWarningViewModel();
+            MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            try
+            {
+                var crashData = new CrashErrorReportArgs(e.Exception);
+                Model?.Logger?.LogError($"Unobserved task exception: {crashData.Details}");
+                Analytics.TrackException(e.Exception, true);
+            }
+            catch
+            { }
         }
 
         private void CurrentDispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            if (e.Handled)
+            if (e.Handled || DynamoModel.IsCrashing)
             {
                 return;
             }
 
+            // Try to handle the exception so that the host app can continue (in most cases).
+            // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases
+            // we might see 2 CER windows (the extra one from the host app) - CER tool might handle this in the future.
             e.Handled = true;
+
             CrashGracefully(e.Exception);
         }
 
-        private void CrashGracefully(Exception ex)
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (!DynamoModel.IsCrashing)//Avoid duplicate CER reports
+            {
+                CrashGracefully(e.ExceptionObject as Exception, fatal: true);
+            }
+        }
+
+        private void CrashGracefully(Exception ex, bool fatal = false)
         {
             try
             {
-                Model?.Logger?.LogError($"Unhandled exception {ex.Message}");
-
                 DynamoModel.IsCrashing = true;
+                var crashData = new CrashErrorReportArgs(ex);
+                Model?.Logger?.LogError($"Unhandled exception: {crashData.Details} ");
                 Analytics.TrackException(ex, true);
-                Model?.OnRequestsCrashPrompt(new CrashErrorReportArgs(ex));
+                Model?.OnRequestsCrashPrompt(crashData);
 
-                Exit(false); // don't allow cancellation
+                if (fatal)
+                {
+                    // Fatal exception. Close Dynamo but do not terminate the process.
+
+                    // Run the Dynamo exit code in the UI thread since CrashGracefully could be called in other threads too.
+                    TryDispatcherInvoke(() => {
+                        try
+                        {
+                            Exit(false);
+                        }
+                        catch { }
+                    });
+
+                    // Do not terminate the process in the plugin, because other AppDomain.UnhandledException events will not get a chance to get called
+                    // ex. A host app (like Revit) could have an AppDomain.UnhandledException too.
+                    // If we terminate the process here, the host app will not get a chance to gracefully shut down.
+                    // Environment.Exit(1);
+                }
+                else
+                {
+                    // Non fatal exception.
+
+                    // We run the Dynamo exit call asyncronously in the dispatcher to ensure that any continuation of code
+                    // manages to run to completion before we start shutting down Dynamo.
+                    TryDispatcherBeginInvoke(() => {
+                        try
+                        {
+                            Exit(false);
+                        }
+                        catch
+                        { }
+                    });
+                }
             }
             catch
             { }
@@ -1663,7 +1741,7 @@ namespace Dynamo.ViewModels
                     {
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, "Json file content");
                     }
-                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    model.Logger.LogNotification(Configurations.DynamoAsString, commandString, errorMsgString, e.ToString());
                     MessageBoxService.Show(
                         Owner,
                         errorMsgString, 
@@ -1757,7 +1835,7 @@ namespace Dynamo.ViewModels
                     {
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
-                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    model.Logger.LogNotification(Configurations.DynamoAsString, commandString, errorMsgString, e.ToString());
                     MessageBoxService.Show(
                         Owner,
                         errorMsgString,
@@ -1846,7 +1924,7 @@ namespace Dynamo.ViewModels
                     {
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
-                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    model.Logger.LogNotification(Configurations.DynamoAsString, commandString, errorMsgString, e.ToString());
                     MessageBoxService.Show(errorMsgString, commandString, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
@@ -2161,14 +2239,15 @@ namespace Dynamo.ViewModels
                 {
                     AddToRecentFiles(path);
 
-                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty) 
+                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX && IsMLDataIngestionPipelineinBeta && currentWorkspaceViewModel.Checksum != string.Empty)
                     {
                         Model.Logger.Log("The Workspace is valid for FDX");
                         Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
                         Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
                         Model.Logger.Log("The Workspace has Substantial checksum, so is ready to send to FDX : " + HasSubstantialCheckSum().ToString());
+                        MLDataPipelineExtension.DynamoMLDataPipeline.DataExchange(path);
                     }
-                }                                    
+                }                           
             }
             catch (Exception ex)
             {
@@ -3474,8 +3553,6 @@ namespace Dynamo.ViewModels
         /// 
         public bool PerformShutdownSequence(ShutdownParams shutdownParams)
         {
-            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
-
             if (shutdownSequenceInitiated)
             {
                 // There was a prior call to shutdown. This could happen for example
@@ -3495,13 +3572,17 @@ namespace Dynamo.ViewModels
             // that the shutdown may not be stopped.
             shutdownSequenceInitiated = true;
 
+            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+            Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
+            TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
+            this.Model.RequestsCrashPrompt -= CrashReportTool.ShowCrashWindow;
+
             // Request the View layer to close its window (see 
             // ShutdownParams.CloseDynamoView member for details).
             if (shutdownParams.CloseDynamoView)
             {
                 OnRequestClose(this, EventArgs.Empty);
             }
-
 
             BackgroundPreviewViewModel.Dispose();
             foreach (var wsvm in workspaces)
@@ -3512,6 +3593,7 @@ namespace Dynamo.ViewModels
 
             model.ShutDown(shutdownParams.ShutdownHost);
             UsageReportingManager.DestroyInstance();
+
             this.model.CommandStarting -= OnModelCommandStarting;
             this.model.CommandCompleted -= OnModelCommandCompleted;
             BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;

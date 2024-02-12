@@ -1,0 +1,63 @@
+# Build DynamoAll.sln with .NET 8.0
+name: Build DynamoAll.sln net8.0
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v4
+        with:
+          path: Dynamo
+          repository: DynamoDS/Dynamo
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Disable problem matcher
+        run: Write-Output "::remove-matcher owner=csc::"
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v1.3
+      - name: Install dependencies for windows runtime
+        run: |
+          dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64
+      - name: Build Dynamo with MSBuild for Windows
+        run: |
+          Write-Output "***Continue with the build, Good luck developer!***"
+          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release
+      - name: Look for DynamoCLI.exe
+        run: |
+          Write-Output "***Locating DynamoCLI.exe!***"
+          if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\AnyCPU\Release\DynamoCLI.exe") {
+            Write-Output "DynamoCLI.exe exists!"
+          } else {
+            Write-Error "DynamoCLI.exe was not found!"
+          }
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DynamoSandbox
+          path: ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
+          if-no-files-found: warn
+          retention-days: 3
+  save_pr_data:
+    name: Save PR Data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save PR Data
+        run: |
+          mkdir -p ${{ github.workspace }}/pr
+          echo ${{ github.event.number }} > ${{ github.workspace }}/pr/pr_number.txt
+      - name: Upload PR Data
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr_data
+          path: ${{ github.workspace }}/pr
+          if-no-files-found: warn
+          retention-days: 3

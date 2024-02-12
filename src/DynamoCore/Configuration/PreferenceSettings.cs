@@ -1141,6 +1141,9 @@ namespace Dynamo.Configuration
             return defaultPythonEngine;
         }
 
+        /// <summary>
+        /// Initialize namespaces to exclude from Library based on conditions
+        /// </summary>
         internal void InitializeNamespacesToExcludeFromLibrary()
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
@@ -1151,6 +1154,21 @@ namespace Dynamo.Configuration
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel"
                 };  
                 NamespacesToExcludeFromLibrarySpecified = true;
+            }
+        }
+
+        /// <summary>
+        /// Update namespaces to exclude from Library based on feature flags
+        /// </summary>
+        internal void UpdateNamespacesToExcludeFromLibrary()
+        {
+            // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
+            if (!DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false)
+            {
+                NamespacesToExcludeFromLibrary.Remove(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
+                );
+                return;
             }
         }
 
@@ -1240,13 +1258,11 @@ namespace Dynamo.Configuration
         internal void AddDefaultTrustedLocations()
         {
             if (!IsFirstRun) return;
-
-            const string Autodesk = "Autodesk";
             string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramData, Configurations.AutodeskAsString));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            AddTrustedLocation(Path.Combine(ProgramFiles, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramFiles, Configurations.AutodeskAsString));
         }
 
         /// <summary>
