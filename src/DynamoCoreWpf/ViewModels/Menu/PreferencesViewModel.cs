@@ -771,6 +771,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Indicates if node details should be displayed when Zoomed Out
+        /// </summary>
+        public bool ShowNodeDetailsWhenZoomedOut
+        {
+            get
+            {
+                return preferenceSettings.ShowNodeDetailsWhenZoomedOut;
+            }
+            set
+            {
+                preferenceSettings.ShowNodeDetailsWhenZoomedOut = value;
+                RaisePropertyChanged(nameof(ShowNodeDetailsWhenZoomedOut));
+            }
+        }
+
+        /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
         /// Also toggles between Host and Dynamo units 
         /// </summary>

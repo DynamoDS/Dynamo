@@ -3915,4 +3915,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PublishPackageRetainFolderStructureToggleButtonText" xml:space="preserve">
     <value>Retain folder structure</value>
   </data>
+  <data name="PreferencesShowNodeDetailsWhenZoomedOut" xml:space="preserve">
+    <value>Show Node Details When Zoomed Out</value>
+  </data>
 </root>
