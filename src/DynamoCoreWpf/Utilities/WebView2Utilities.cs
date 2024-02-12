@@ -1,4 +1,8 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using Dynamo.Models;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
@@ -15,31 +19,54 @@ namespace Dynamo.Wpf.Utilities
         private string tag;
         #endregion
 
+        Action<string> logger = System.Console.WriteLine;
+        private Task initTask = null;
+        private bool disposeCalled;
+
         public DynamoWebView2() : base()
         {
             tag = TestUtilities.WebView2Tag;
         }
 
+        /// <summary>
+        /// Wrapper over WebView2's EnsureCoreWebView2Async
+        /// Use this method instead of EnsureCoreWebView2Async
+        /// </summary>
+        /// <param name="logFn">Optional logging function. Will default to System.Console</param>
+        /// <returns></returns>
+        internal async Task Initialize(Action<string> logFn = null)
+        {
+            logger = logFn ?? logger;
+            initTask = EnsureCoreWebView2Async();
+            await initTask;
+
+            ObjectDisposedException.ThrowIf(disposeCalled, this);
+        }
+
         protected override void Dispose(bool disposing)
         {
+            if (disposeCalled) return;
+            disposeCalled = true;
+
             if (System.Environment.CurrentManagedThreadId != Dispatcher.Thread.ManagedThreadId)
             {
-                System.Console.WriteLine($"WebView2 instance with stamp {tag} is being disposed of on non-UI thread");
+                logger?.Invoke($"WebView2 instance with tag {tag} is being disposed of on non-UI thread");
             }
-            // We should dispose of webview2 only in the UI thread.
-            // Dispose can be called from the Finalizer (which can run on a non UI thread)
-            if (Dispatcher != null)
+
+            if (initTask != null && !initTask.IsCompleted)
             {
-                Dispatcher.Invoke(() =>
-                {
-                    base.Dispose(disposing);
+                logger?.Invoke($"WebView2 instance with tag {tag} is being disposed but async initialization is still not done");
+
+                // Wait for EnsureCoreWebView2Async to finish before we continue with dispose.
+                // This way we avoid EnsureCoreWebView2Async resuming execution while webview2 is disposed.
+                initTask.ContinueWith((t) => {
+                    // This continuation runs even if initTask has been cancelled
+                    Dispatcher.Invoke(() => base.Dispose(disposing));
                 });
             }
             else
             {
-                System.Console.WriteLine($"WebView2 instance with stamp {tag} is being disposed of but has no valid Dispatcher");
-                // Should we still try to dispose ? (might crash if not on UI thread)
-                base.Dispose(disposing);
+                Dispatcher.Invoke(() => base.Dispose(disposing));
             }
         }
     }
