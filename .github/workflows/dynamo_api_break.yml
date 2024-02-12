@@ -13,6 +13,9 @@ jobs:
     steps:
       - name: Checkout Dynamo Repo
         uses: actions/checkout@v4
+        with:
+          path: Dynamo
+          repository: DynamoDS/Dynamo
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
