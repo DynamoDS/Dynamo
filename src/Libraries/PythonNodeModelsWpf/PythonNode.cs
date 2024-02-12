@@ -100,10 +100,6 @@ namespace PythonNodeModelsWpf
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
             nodeView.MainContextMenu.Items.Add(learnMoreItem);
-            nodeView.Dispatcher.BeginInvoke(new Action( () =>
-            {
-                nodeView.UpdateLayout();
-            }), DispatcherPriority.Background);
             
 
             nodeView.MouseDown += View_MouseDown;
