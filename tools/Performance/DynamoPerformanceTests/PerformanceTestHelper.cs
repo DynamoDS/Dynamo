@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Validators;
 
@@ -75,7 +76,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Base config class for regular benchmark job
         /// </summary>
-        public class DynamoBenchmarkConfig : ManualConfig
+        public class DynamoBenchmarkConfigBase : ManualConfig
         {
             /// <summary>
             /// Minimum count of warmup iterations that should be performed
@@ -102,7 +103,14 @@ namespace DynamoPerformanceTests
             /// </summary>
             protected int DynamoMaxIterationCount = 9;
 
-            public DynamoBenchmarkConfig()
+            /// <summary>
+            /// Default Job Definition.
+            /// </summary>
+            protected Job JobDefault = Job.Default
+                .WithPlatform(BenchmarkDotNet.Environments.Platform.X64)
+                .WithRuntime(CoreRuntime.CreateForNewVersion("net8.0-windows7.0", "NET 8.0"));
+
+            public DynamoBenchmarkConfigBase()
             {
                 AddLogger(DefaultConfig.Instance.GetLoggers().ToArray());
                 AddExporter(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
@@ -115,14 +123,26 @@ namespace DynamoPerformanceTests
         }
 
         /// <summary>
+        /// config class for regular benchmark job
+        /// </summary>
+        public class DynamoBenchmarkConfig : DynamoBenchmarkConfigBase
+        {
+            public DynamoBenchmarkConfig() : base()
+            {
+                AddJob(JobDefault);
+            }
+        }
+
+        /// <summary>
         /// Config class that when initialized and used to run the benchmarks
         /// allows for testing of debug versions of DynamoCore targets.
         /// </summary>
-        public class BenchmarkDebugConfig : DynamoBenchmarkConfig
+        public class BenchmarkDebugConfig : DynamoBenchmarkConfigBase
         {
             public BenchmarkDebugConfig() : base()
             {
                 AddValidator(JitOptimizationsValidator.DontFailOnError);
+                AddJob(JobDefault);
             }
         }
 
@@ -130,11 +150,11 @@ namespace DynamoPerformanceTests
         /// A faster version of Config class than default used to pass command line arguments from the 
         /// benchmark runner to all benchmarks defined in the test framework class.
         /// </summary>
-        public class FastBenchmarkReleaseConfig : DynamoBenchmarkConfig
+        public class FastBenchmarkReleaseConfig : DynamoBenchmarkConfigBase
         {
             public FastBenchmarkReleaseConfig() : base()
             {
-                AddJob(Job.Default
+                AddJob(JobDefault
                     .WithMinWarmupCount(DynamoMinWarmupCount)
                     .WithMaxWarmupCount(DynamoMaxWarmuoCount)
                     .WithLaunchCount(DynamoLaunchCount)
