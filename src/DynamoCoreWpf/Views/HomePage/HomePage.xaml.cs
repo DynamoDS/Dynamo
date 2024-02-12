@@ -225,12 +225,10 @@ namespace Dynamo.UI.Views
 
             LoadGraphs(recentFiles);
 
-            var testMessage = "I am being tested";
             var userLocale = "en";
 
             if (webView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLoadingDone('{testMessage}')");
                 await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");
             }
         }
@@ -318,7 +316,6 @@ namespace Dynamo.UI.Views
             catch (Exception)
             {
                 return;
-                //sidebarGrid.Visibility = Visibility.Visible;
             }
         }
 
@@ -348,7 +345,6 @@ namespace Dynamo.UI.Views
             catch (Exception)
             {
                 return;
-                //sidebarGrid.Visibility = Visibility.Visible;
             }
         }
 
