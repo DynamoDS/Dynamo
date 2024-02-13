@@ -32,6 +32,24 @@ namespace TestServices
         /// </summary>
         public Version RequestedLibraryVersion2 { get; private set; }
 
+        private static string TryGetFullPath(string dynamoCoreDirectory)
+        {
+            string output = dynamoCoreDirectory;
+            if (!string.IsNullOrEmpty(dynamoCoreDirectory))
+            {
+                try
+                {
+                    if (!Path.IsPathFullyQualified(dynamoCoreDirectory))
+                    {// Try to get the full path
+                        output = Path.GetFullPath(dynamoCoreDirectory);
+                    }
+                }
+                catch
+                {}
+            }
+            return output;
+        }
+
         /// <summary>
         /// This constructor does not read configuration from a config file, the configuration properties are
         /// set directly by the parameters passed to this constructor. 
@@ -41,7 +59,7 @@ namespace TestServices
         /// <param name="requestedVersion"></param>
         public TestSessionConfiguration(string dynamoCoreDirectory, Version requestedVersion)
         {
-            DynamoCorePath = dynamoCoreDirectory;
+            DynamoCorePath = TryGetFullPath(dynamoCoreDirectory);
             RequestedLibraryVersion2 = requestedVersion;
         }
 
@@ -68,6 +86,8 @@ namespace TestServices
                 configPath = Path.Combine(configFileDirectory, CONFIG_FILE_NAME);
             }
 
+            dynamoCoreDirectory = TryGetFullPath(dynamoCoreDirectory);
+
             // If a config file cannot be found, fall back to 
             // using the executing assembly's directory for core
             // and version 219 for the shape manager.
@@ -86,7 +106,9 @@ namespace TestServices
             var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
 
             var dir = GetAppSetting(config, "DynamoBasePath");
-            DynamoCorePath = string.IsNullOrEmpty(dir) ? dynamoCoreDirectory : dir;
+
+
+            DynamoCorePath = string.IsNullOrEmpty(dir) ? dynamoCoreDirectory : TryGetFullPath(dir);
 
             // if an old client supplies an older format test config we should still load it.
             var versionStrOld = GetAppSetting(config, "RequestedLibraryVersion");
