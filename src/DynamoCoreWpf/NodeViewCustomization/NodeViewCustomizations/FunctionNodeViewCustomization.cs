@@ -61,7 +61,6 @@ namespace Dynamo.Wpf
 
             publishCustomNodeItem.Command = nodeView.ViewModel.DynamoViewModel.PublishSelectedNodesCommand;
             publishCustomNodeItem.CommandParameter = functionNodeModel;
-            nodeView.UpdateLayout();
         }
 
         private void EditCustomNodeProperties()
