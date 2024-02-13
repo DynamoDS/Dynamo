@@ -138,6 +138,11 @@ namespace Dynamo.Logging
         /// Events Category related to the splash screen
         /// </summary>
         SplashScreenOperations,
+
+        /// <summary>
+        /// Events Category related to DynamoMLDataPipeline
+        /// </summary>
+        DynamoMLDataPipelineOperations
     }
 
     /// <summary>
@@ -443,7 +448,12 @@ namespace Dynamo.Logging
         /// <summary>
         /// Export event, e.g. tracks the ExportSettings event
         /// </summary>
-        Export
+        Export,
+
+        /// <summary>
+        /// Dynamo ML data pipeline.
+        /// </summary>
+        DynamoMLDataPipieline
     }
 
     public enum HeartBeatType

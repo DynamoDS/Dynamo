@@ -78,6 +78,8 @@ namespace DynamoMLDataPipeline
             parameterComponent.AddParameterFromSchema("<Add dynamo host>", hostSchema);
             parameterComponent.AddParameterFromSchema("<Add dynamo version>", dynamoVersionSchema);
 
+            Analytics.TrackEvent(Actions.DynamoMLDataPipieline, Categories.DynamoMLDataPipelineOperations, "Host", Convert.ToInt32(hostSchema));
+
             // Construct the base component
             var baseComponent = new BaseComponent("DynamoGraphLog");
             // Construct the binary reference component
@@ -161,7 +163,7 @@ namespace DynamoMLDataPipeline
             byte[] compressedBuffer = DataUtilities.Compress(stringBuffer);
 
             string base64CompressedBuffer = Convert.ToBase64String(compressedBuffer);
-            LogMessage.Info($"BASE64 string buffer has {base64CompressedBuffer.Length} bytes");
+            LogMessage.Info($"BASE64 string buffer has {base64CompressedBuffer.Length} bytes"); 
 
             // Write to file for testing purposes
             File.WriteAllText(savePath, base64CompressedBuffer);
@@ -183,6 +185,8 @@ namespace DynamoMLDataPipeline
             // We extract the exchange container id, the collection id and the schemaNamespace id 
             // from the response - these will be consumed by the following API calls.
             ExchangeContainerId = exchangeRequestResponseBody["id"].Value;
+
+            Analytics.TrackEvent(Actions.DynamoMLDataPipieline, Categories.DynamoMLDataPipelineOperations, "ExchangeContainerID", Convert.ToInt32(ExchangeContainerId));
 
             var schemaNamespaceId = exchangeRequestResponseBody["components"]["data"]["insert"]["autodesk.data:exchange.source.default-1.0.0"]["source"]["String"]["id"].Value;
 
@@ -224,6 +228,8 @@ namespace DynamoMLDataPipeline
                 LogMessage.Info("Binary upload failed!");
             }
             LogMessage.Info("Binary upload started!");
+
+            Analytics.TrackEvent(Actions.DynamoMLDataPipieline, Categories.DynamoMLDataPipelineOperations, "BinarySize", base64CompressedBuffer.Length);
 
             // STEP 4b: FINISH BINARY UPLOAD -------------------
             // Finish uploading binary assets: Let the system know that the binary assets have been uploaded and are ready for processing. 
@@ -310,6 +316,7 @@ namespace DynamoMLDataPipeline
             // Stage collectionId created for Dynamo
             CollectionId = ProductionCollectionID;
 
+            Analytics.TrackEvent(Actions.DynamoMLDataPipieline, Categories.DynamoMLDataPipelineOperations, "CollectionID", Convert.ToInt32(CollectionId));
             //ExchangeContainerId = "";
 
             var forgeClient = new RestClient(ProductionClientUrl);
