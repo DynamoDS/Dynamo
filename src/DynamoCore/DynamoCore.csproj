@@ -109,15 +109,15 @@
 
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>
+      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-        <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
-        <LibGProtoGeometryDLL Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
-        <LibGProtoGeometryXML Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
+        <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
+        <LibGProtoGeometryDLL Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
+        <LibGProtoGeometryXML Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
         <LibG229Deps Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
         <LibG230Deps Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
-        <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
+        <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
         <LibG230 Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_230_0_0\*" />
         <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_229_0_0\*" />
         <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
