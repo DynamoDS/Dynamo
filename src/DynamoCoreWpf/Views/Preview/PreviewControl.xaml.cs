@@ -532,7 +532,7 @@ namespace Dynamo.UI.Controls
 
         #region Private Class Methods - Transition Helpers
 
-        private async Task BeginFadeInTransition()
+        private void BeginFadeInTransition()
         {
             if (!IsHidden)
             {
@@ -562,7 +562,7 @@ namespace Dynamo.UI.Controls
                 delayTimer.Stop();
             };
 
-            await Task.Run(() => delayTimer.Start());
+            delayTimer.Start();
         }
 
         private void ProcessFadeIn()
