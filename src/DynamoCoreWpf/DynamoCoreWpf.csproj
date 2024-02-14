@@ -27,7 +27,7 @@
       <Exec Command="npm pack @dynamods/splash-screen@latest" />
   </Target>
 
-    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">        
+    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">      
         <!--Locates the .tgz files-->
         <ItemGroup>
             <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
@@ -71,6 +71,7 @@
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
+    <None Remove="Views\Core\UpdateIconWindow.xaml" />
     <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
     <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
     <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
@@ -408,6 +409,9 @@
       <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\CustomColorPicker.xaml.cs" />
+    <Compile Include="Views\Debug\UpdateNodeIconsWindow.xaml.cs">
+      <DependentUpon>UpdateNodeIconsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
@@ -589,6 +593,10 @@
     <Page Include="UI\Prompts\PortPropertiesEditPrompt.xaml"></Page>
     <Page Include="Views\Core\CustomColorPicker.xaml">
       <CopyToOutputDirectory></CopyToOutputDirectory>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Debug\UpdateNodeIconsWindow.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Core\GeometryScalingPopup.xaml">

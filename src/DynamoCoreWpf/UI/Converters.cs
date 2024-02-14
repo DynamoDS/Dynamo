@@ -10,6 +10,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -3369,6 +3371,53 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public class Base64ToImageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return null;
+
+            string s = string.Empty;
+            if (value is string)
+            {
+                s = value as string;
+            }
+
+            if (string.IsNullOrEmpty(s)) return null;
+
+            BitmapImage bi = new BitmapImage();
+
+            bi.BeginInit();
+            bi.StreamSource = new MemoryStream(System.Convert.FromBase64String(s));
+            bi.EndInit();
+
+            return bi;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class UpdateIconDebugModeToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (DebugModes.IsEnabled("UpdateNodeIcons"))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
     /// <summary>
     /// Converter is used in WatchTree.xaml 

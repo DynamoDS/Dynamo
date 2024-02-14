@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -55,6 +55,7 @@ namespace Dynamo.Utilities
             // Register app wide new debug modes here.
             AddDebugMode("DumpByteCode", "Dumps bytecode to a log file in a folder called ByteCodeLogs located in the current working dirrectory.", false);
             AddDebugMode("CrashOnNewNodeModel", "Crash when creating a new NodeModel. Works only on Debug builds", false);
+            AddDebugMode("UpdateNodeIcons", "This debug mode enables an automation that can be used to update node icons.", true);
         }
 
         internal static void LoadDebugModesStatusFromConfig(string configPath)
