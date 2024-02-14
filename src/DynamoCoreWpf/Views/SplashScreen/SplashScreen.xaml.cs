@@ -28,6 +28,7 @@ namespace Dynamo.UI.Views
         private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.SplashScreen.build.index.bundle.js";
         private static readonly string backgroundImage = "Dynamo.Wpf.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
+
         /// <summary>
         /// True if the reason the splash screen was closed was because the user explicitly closed it,
         /// as opposed to the splash screen closing because dynamo was launched.
@@ -187,15 +188,30 @@ namespace Dynamo.UI.Views
         }
 
         private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        {            
-            if (webView != null)
+        {
+            try
             {
-                webView.NavigationCompleted -= WebView_NavigationCompleted;
-                webView.Focus();
-                System.Windows.Forms.SendKeys.SendWait("{TAB}");
+                // Exceptions thrown in WebView_NavigationCompleted seem to be silenced somewhere in the webview2 callstack.
+                // If we catch an exceptions here, we log it and close the spash screen.
+                //
+                if (webView != null)
+                {
+                    webView.NavigationCompleted -= WebView_NavigationCompleted;
+                    webView.Focus();
+                    System.Windows.Forms.SendKeys.SendWait("{TAB}");
+                }
+                OnRequestDynamicSplashScreen();
             }
-            OnRequestDynamicSplashScreen();
+            catch (Exception ex)
+            {
+                if (!DynamoModel.IsCrashing && !IsClosing)
+                {
+                    CrashReportTool.ShowCrashWindow(viewModel, new CrashErrorReportArgs(ex));
+                    Close();// Close the SpashScreen
+                }
+            }
         }
+
         /// <summary>
         /// Request to close SplashScreen.
         /// </summary>
@@ -331,39 +347,46 @@ namespace Dynamo.UI.Views
             };
 
             //ContentRendered ensures that the webview2 component is visible.
-            await webView.EnsureCoreWebView2Async();
-            // Context menu disabled
-            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            // Zoom control disabled
-            webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
-
-            var assembly = Assembly.GetExecutingAssembly();
-
-            using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
-            using (StreamReader reader = new StreamReader(stream))
+            try
             {
-                htmlString = reader.ReadToEnd();
-            }
+                await webView.Initialize();
+                // Context menu disabled
+                webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                // Zoom control disabled
+                webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
 
-            using (Stream stream = assembly.GetManifestResourceStream(jsEmbeddedFile))
-            using (StreamReader reader = new StreamReader(stream))
+                var assembly = Assembly.GetExecutingAssembly();
+
+                using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    htmlString = reader.ReadToEnd();
+                }
+
+                using (Stream stream = assembly.GetManifestResourceStream(jsEmbeddedFile))
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    var jsString = reader.ReadToEnd();
+                    jsonString = jsString;
+                }
+
+                using (Stream stream = assembly.GetManifestResourceStream(backgroundImage))
+                {
+                    var resourceBase64 = Utilities.ResourceUtilities.ConvertToBase64(stream);
+                    jsonString = jsonString.Replace("#base64BackgroundImage", $"data:image/{imageFileExtension};base64,{resourceBase64}");
+                }
+
+                jsonString = jsonString.Replace("Welcome to Dynamo!", "");
+                htmlString = htmlString.Replace("mainJs", jsonString);
+
+                webView.NavigateToString(htmlString);
+                webView.CoreWebView2.AddHostObjectToScript("scriptObject",
+                   new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
+            }
+            catch (ObjectDisposedException ex)
             {
-                var jsString = reader.ReadToEnd();
-                jsonString = jsString;
+                Console.WriteLine(ex.Message);
             }
-
-            using (Stream stream = assembly.GetManifestResourceStream(backgroundImage))
-            {
-                var resourceBase64 = Utilities.ResourceUtilities.ConvertToBase64(stream);
-                jsonString = jsonString.Replace("#base64BackgroundImage", $"data:image/{imageFileExtension};base64,{resourceBase64}");
-            }
-
-            jsonString = jsonString.Replace("Welcome to Dynamo!", "");
-            htmlString = htmlString.Replace("mainJs", jsonString);
-
-            webView.NavigateToString(htmlString);
-            webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
         }
 
         internal async void SetBarProperties(string version, string loadingDescription, float barSize)

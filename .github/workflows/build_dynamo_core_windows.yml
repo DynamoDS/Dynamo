@@ -19,7 +19,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: '8.0.x'
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
@@ -40,15 +40,15 @@ jobs:
             Write-Error "DynamoCLI.exe was not found!"
           }
       - name: Install dependencies for linux runtime
-        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -p:Platform=NET60_Linux --runtime=linux-x64
+        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -p:Platform=NET_Linux --runtime=linux-x64
       - name: Build Dynamo with MSBuild for Linux
         run: |
           Write-Output "***Continue with the build, Good luck developer!***"
-          msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release /p:Platform=NET60_Linux
+          msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release /p:Platform=NET_Linux
       - name: Look for DynamoCLI
         run: |
           Write-Output "***Locating DynamoCLI for Linux!***"
-          if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\NET60_Linux\Release\DynamoCLI") {
+          if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\NET_Linux\Release\DynamoCLI") {
             Write-Output "DynamoCLI exists!"
           } else {
             Write-Error "DynamoCLI was not found!"

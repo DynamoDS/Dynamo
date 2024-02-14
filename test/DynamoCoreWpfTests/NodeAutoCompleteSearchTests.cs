@@ -166,7 +166,7 @@ namespace DynamoCoreWpfTests
 
             // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(44, searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(58, searchViewModel.FilteredResults.Count());
         }
         [Test]
         public void NodeSuggestions_CanAutoCompleteOnCustomNodesOutPort_WithWhiteSpaceStartingPortName()
@@ -186,7 +186,7 @@ namespace DynamoCoreWpfTests
 
             // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(44, searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(58, searchViewModel.FilteredResults.Count());
         }
 
         [Test]
@@ -316,7 +316,7 @@ namespace DynamoCoreWpfTests
 
             // Get the output port type for the node. 
             var outPorts = nodeView.ViewModel.OutPorts;
-            Assert.AreEqual(1, outPorts.Count());
+            Assert.AreEqual(1, outPorts.Count);
 
             var port = outPorts[0].PortModel;
             var type = port.GetOutPortType();
@@ -326,7 +326,7 @@ namespace DynamoCoreWpfTests
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = outPorts[0];
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(44, suggestions.Count());
+            Assert.AreEqual(58, suggestions.Count());
         }
 
         [Test]
