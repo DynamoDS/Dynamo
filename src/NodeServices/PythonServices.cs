@@ -149,12 +149,12 @@ namespace Dynamo.PythonServices
         /// <summary>
         /// Event that is triggered for every new engine that is added.
         /// </summary>
-        public static PythonEngineChangedHandler PythonEngineAdded;
+        public event PythonEngineChangedHandler PythonEngineAdded;
 
         /// <summary>
         /// Event that is triggered for every engine that is removed.
         /// </summary>
-        public static PythonEngineChangedHandler PythonEngineRemoved;
+        public event PythonEngineChangedHandler PythonEngineRemoved;
 
         #region Constant strings
         
