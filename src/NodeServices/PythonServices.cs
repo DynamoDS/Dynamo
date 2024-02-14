@@ -126,8 +126,8 @@ namespace Dynamo.PythonServices
         private Action<PythonEngine> customizeEngine;
 
         /// <summary>
-        /// Use this function to customize how Python engines should execute.
-        /// This function will on all existing (PythonEngines) or future python engines (on PythonEngineAdded, right after is triggered).
+        /// Use this function to customize Python engine initialization.
+        /// This function will be called only once on all existing or future python engines (on PythonEngineAdded).
         /// </summary>
         public Action<PythonEngine> CustomizeEngine
         {
@@ -286,6 +286,8 @@ namespace Dynamo.PythonServices
         /// </summary>
         /// <param name="assembly"></param>
         /// <exception cref="Exception"></exception>
+        /// Make this public to support custom loading of Python Engines (ex load in isolated alc on the python assembly side)
+        /// How to transition to Dynamo loading in isolated ALC ? 
         private void LoadPythonEngine(Assembly assembly)
         {
             if (assembly == null)
