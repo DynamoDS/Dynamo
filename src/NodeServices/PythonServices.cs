@@ -136,10 +136,14 @@ namespace Dynamo.PythonServices
                 customizeEngine = value;
                 if (customizeEngine != null)
                 {
-                    foreach (var engine in AvailableEngines)
+                    try
                     {
-                        customizeEngine(engine);
+                        foreach (var engine in AvailableEngines)
+                        {
+                            customizeEngine(engine);
+                        }
                     }
+                    catch { }
                 }
             }
         }
