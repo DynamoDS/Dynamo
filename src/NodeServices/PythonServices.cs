@@ -126,24 +126,22 @@ namespace Dynamo.PythonServices
         private Action<PythonEngine> customizeEngine;
 
         /// <summary>
-        /// Use this function to customize Python engine initialization.
-        /// This function will be called only once on all existing or future python engines (on PythonEngineAdded).
+        /// Provides an easy way to run initialization code on PythonEngine instances
         /// </summary>
-        public Action<PythonEngine> CustomizeEngine
+        /// <param name="initAction">Action to be called on PythonEngines.</param>
+        /// <param name="callOnExistingEngines">If true, the action will be called on existing PythonEngines. If false the action will be called when new Python engines are added.</param>
+        public void ApplyInitializationAction(Action<PythonEngine> initAction, bool callOnExistingEngines = true)
         {
-            set
+            if (initAction != null)
             {
-                customizeEngine = value;
-                if (customizeEngine != null)
+                customizeEngine = initAction;
+
+                if (callOnExistingEngines)
                 {
-                    try
+                    foreach (var engine in AvailableEngines)
                     {
-                        foreach (var engine in AvailableEngines)
-                        {
-                            customizeEngine(engine);
-                        }
+                        initAction(engine);
                     }
-                    catch { }
                 }
             }
         }
