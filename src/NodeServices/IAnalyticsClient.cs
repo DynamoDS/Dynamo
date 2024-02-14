@@ -451,9 +451,9 @@ namespace Dynamo.Logging
         Export,
 
         /// <summary>
-        /// Dynamo ML data pipeline.
+        /// Sends workspace info to Dynamo ML.
         /// </summary>
-        DynamoMLDataPipieline
+        SendWorkspaceToDynamoML
     }
 
     public enum HeartBeatType
