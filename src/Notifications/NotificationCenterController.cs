@@ -108,7 +108,7 @@ namespace Dynamo.Notifications
             }   
         }
 
-        private async Task InitializeBrowserAsync(object sender, RoutedEventArgs e)
+        private void InitializeBrowserAsync(object sender, RoutedEventArgs e)
         {
             if (webBrowserUserDataFolder != null)
             {
@@ -120,16 +120,15 @@ namespace Dynamo.Notifications
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
 
-            try
+            initState = AsyncMethodState.Started;
+            notificationUIPopup.webView.Initialize(Log).ContinueWith((t) =>
             {
-                initState = AsyncMethodState.Started;
-                await notificationUIPopup.webView.Initialize(Log);
+                if (t.Exception != null)
+                {
+                    Log(t.Exception.Message);
+                }
                 initState = AsyncMethodState.Done;
-            }
-            catch(ObjectDisposedException ex)
-            {
-                Log(ex.Message);
-            }
+            });
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
