@@ -1744,7 +1744,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= Configurations.ZoomThreshold)
+            if (number <= Configurations.ZoomThreshold && !PreferenceSettings.Instance.ShowNodeDetailsWhenZoomedOut)
                 return false;
 
             return true;
@@ -1762,7 +1762,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= Configurations.ZoomThreshold)
+            if (number <= Configurations.ZoomThreshold && !PreferenceSettings.Instance.ShowNodeDetailsWhenZoomedOut)
                 return 0.0;
 
             return 0.5;
@@ -1783,7 +1783,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number > Configurations.ZoomThreshold)
+            if (number > Configurations.ZoomThreshold && !PreferenceSettings.Instance.ShowNodeDetailsWhenZoomedOut)
                 return Visibility.Collapsed;
 
             return Visibility.Visible;    

@@ -181,6 +181,11 @@ namespace Dynamo.Configuration
         public bool ShowPreviewBubbles { get; set; }
 
         /// <summary>
+        /// Indicates if node details should be displayed when Zoomed Out
+        /// </summary>
+        public bool ShowNodeDetailsWhenZoomedOut { get; set; }
+
+        /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
         /// </summary>
         public bool UseHostScaleUnits { get; set; }

@@ -7373,6 +7373,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Node Details When Zoomed Out.
+        /// </summary>
+        public static string PreferencesShowNodeDetailsWhenZoomedOut {
+            get {
+                return ResourceManager.GetString("PreferencesShowNodeDetailsWhenZoomedOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Revit to scale background graphic helpers.
         /// </summary>
         public static string PreferencesUseHostScaleUnits {

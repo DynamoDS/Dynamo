@@ -334,12 +334,11 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel, false, true)
             {
                 DataContext = ViewModel,
-                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle
+                Title = Wpf.Properties.Resources.EditNodeWindowTitle,
+                Owner = Window.GetWindow(this)
             };
 
-            editWindow.Owner = Window.GetWindow(this);
-
-            editWindow.BindToProperty(null, new Binding("Name")
+            editWindow.BindToProperty(null, new Binding( nameof(ViewModel.Name))
             {
                 Mode = BindingMode.TwoWay,
                 NotifyOnValidationError = false,
