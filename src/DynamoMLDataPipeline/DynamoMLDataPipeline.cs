@@ -78,7 +78,7 @@ namespace DynamoMLDataPipeline
             parameterComponent.AddParameterFromSchema("<Add dynamo host>", hostSchema);
             parameterComponent.AddParameterFromSchema("<Add dynamo version>", dynamoVersionSchema);
 
-            Analytics.TrackEvent(Actions.SendWorkspaceToDynamoML, Categories.DynamoMLDataPipelineOperations, "Host", Convert.ToInt32(hostSchema));
+            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, "Host", Convert.ToInt32(hostSchema));
 
             // Construct the base component
             var baseComponent = new BaseComponent("DynamoGraphLog");
@@ -186,7 +186,7 @@ namespace DynamoMLDataPipeline
             // from the response - these will be consumed by the following API calls.
             ExchangeContainerId = exchangeRequestResponseBody["id"].Value;
 
-            Analytics.TrackEvent(Actions.SendWorkspaceToDynamoML, Categories.DynamoMLDataPipelineOperations, "ExchangeContainerID", Convert.ToInt32(ExchangeContainerId));
+            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, "ExchangeContainerID", Convert.ToInt32(ExchangeContainerId));
 
             var schemaNamespaceId = exchangeRequestResponseBody["components"]["data"]["insert"]["autodesk.data:exchange.source.default-1.0.0"]["source"]["String"]["id"].Value;
 
@@ -229,7 +229,7 @@ namespace DynamoMLDataPipeline
             }
             LogMessage.Info("Binary upload started!");
 
-            Analytics.TrackEvent(Actions.SendWorkspaceToDynamoML, Categories.DynamoMLDataPipelineOperations, "BinarySize", base64CompressedBuffer.Length);
+            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, "BinarySize", base64CompressedBuffer.Length);
 
             // STEP 4b: FINISH BINARY UPLOAD -------------------
             // Finish uploading binary assets: Let the system know that the binary assets have been uploaded and are ready for processing. 
@@ -316,7 +316,7 @@ namespace DynamoMLDataPipeline
             // Stage collectionId created for Dynamo
             CollectionId = ProductionCollectionID;
 
-            Analytics.TrackEvent(Actions.SendWorkspaceToDynamoML, Categories.DynamoMLDataPipelineOperations, "CollectionID", Convert.ToInt32(CollectionId));
+            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, "CollectionID", Convert.ToInt32(CollectionId));
             //ExchangeContainerId = "";
 
             var forgeClient = new RestClient(ProductionClientUrl);

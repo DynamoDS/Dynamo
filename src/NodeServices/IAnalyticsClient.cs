@@ -449,11 +449,6 @@ namespace Dynamo.Logging
         /// Export event, e.g. tracks the ExportSettings event
         /// </summary>
         Export,
-
-        /// <summary>
-        /// Sends workspace info to Dynamo ML.
-        /// </summary>
-        SendWorkspaceToDynamoML
     }
 
     public enum HeartBeatType
