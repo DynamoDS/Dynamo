@@ -219,6 +219,14 @@ namespace Dynamo.PythonServices
 
                     instanceProp = eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static);
                     if (instanceProp == null) return;
+
+                    //at this point we have found an assembly that contains a python engine
+                    //and is correctly formed, let's see if we can load its dependencies now
+                    //this will help test that it will not fail to load later outside of a try / catch for example.
+                    foreach (var asm in assembly.GetReferencedAssemblies())
+                    {
+                        Assembly.Load(asm);
+                    }
                 }
                 catch {
                     // Ignore exceptions from iterating assembly types.
