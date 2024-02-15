@@ -234,6 +234,8 @@ namespace Dynamo.Utilities
         internal void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
         {
             string[] indexedFields = null;
+            const string tsplinesNodesCategory = "tspline";
+
             if (startConfig.Directory.Equals(LuceneConfig.NodesIndexingDirectory))
             {
                 indexedFields = LuceneConfig.NodeIndexFields;
@@ -247,6 +249,10 @@ namespace Dynamo.Utilities
             if (isTextField && !field.Equals("DocName"))
             {
                 ((TextField)doc.GetField(field)).SetStringValue(value);
+
+                //Index-time boost, incremeting the weight for TSpline nodes
+                if (!string.IsNullOrEmpty(value) && value.ToLower().Contains(tsplinesNodesCategory))
+                    ((TextField)doc.GetField(field)).Boost += 1;
             }
             else
             {
