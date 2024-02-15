@@ -192,9 +192,9 @@ namespace DynamoCoreWpfTests
 
             OpenAndRun(@"pkgs\Dynamo Samples\extra\GraphNodeManagerTestGraph_NullsEmptyLists.dyn");
 
-            var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
-
             Utility.DispatcherUtil.DoEvents();
+
+            var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
 
             int nullNodesImageCount = GetImageCount(images, "Null");
             int emptyListNodesImageCount = GetImageCount(images, "EmptyList"); 
