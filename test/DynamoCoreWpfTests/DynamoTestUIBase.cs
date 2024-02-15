@@ -163,6 +163,12 @@ namespace DynamoCoreWpfTests
         {
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
             ViewModel.OpenCommand.Execute(openPath);
+
+            var xx = ViewModel.Model.EngineController.GetRuntimeWarnings();
+            if (xx.Count > 0)
+            {
+                throw new Exception($"Found runtime warnings while opening the graph {pathInTestsDir} during test {TestContext.CurrentContext.Test.Name} ");
+            }
         }
 
         public void OpenAndRun(string pathInTestsDir)
@@ -188,6 +194,11 @@ namespace DynamoCoreWpfTests
                 Thread.Sleep(1);
             }
 
+            var xx = ViewModel.Model.EngineController.GetRuntimeWarnings();
+            if (xx.Count > 0)
+            {
+                throw new Exception($"Runtime warnings while running the graph {ViewModel.HomeSpace.FileName} during test {TestContext.CurrentContext.Test.Name} ");
+            }
             ViewModel.Model.EvaluationCompleted -= markDone;
         }
 
