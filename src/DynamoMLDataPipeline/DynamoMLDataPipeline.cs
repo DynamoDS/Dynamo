@@ -78,8 +78,6 @@ namespace DynamoMLDataPipeline
             parameterComponent.AddParameterFromSchema("<Add dynamo host>", hostSchema);
             parameterComponent.AddParameterFromSchema("<Add dynamo version>", dynamoVersionSchema);
 
-            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, "Host", Convert.ToInt32(hostSchema));
-
             // Construct the base component
             var baseComponent = new BaseComponent("DynamoGraphLog");
             // Construct the binary reference component
