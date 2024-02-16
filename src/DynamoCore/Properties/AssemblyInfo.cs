@@ -55,6 +55,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("ExportSampleImagesViewExtension")]
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
 [assembly: InternalsVisibleTo("Notifications")]
+[assembly:InternalsVisibleTo("DisplayTests")]
 
 
 [assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]

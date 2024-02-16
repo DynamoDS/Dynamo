@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
@@ -9,7 +9,7 @@ namespace Dynamo.Visualization
     /// Example implementation of IRenderPackageFactory.
     /// DefaultRenderPackageFactory produces DefaultRenderPackages.
     /// </summary>
-    public class DefaultRenderPackageFactory : IRenderPackageFactory
+    internal class DefaultRenderPackageFactory : IRenderPackageFactory
     {
         /// <summary>
         /// Sets or Returns Tessellation parameters.
