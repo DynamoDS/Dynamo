@@ -91,51 +91,6 @@ namespace DynamoShapeManager
             "ASMWELD230A.DLL",
             "MMSDK.DLL",
         };
-        private static readonly ISet<string> ASM229DllNames = new HashSet<string>()
-        {
-            "TBB.DLL",
-            "TBBMALLOC.DLL",
-            "TSPLINES11.DLL",
-            "ASMAHL229A.DLL",
-            "ASMBASE229A.DLL",
-            "ASMBLND229A.DLL",
-            "ASMBOOL229A.DLL",
-            "ASMCOVR229A.DLL",
-            "ASMCSTR229A.DLL",
-            "ASMCT229A.DLL",
-            "ASMDATAX229A.DLL",
-            "ASMDEFM229A.DLL",
-            "ASMEULR229A.DLL",
-            "ASMFCT229A.DLL",
-            "ASMFREC229A.DLL",
-            "ASMGA229A.DLL",
-            "ASMHEAL229A.DLL",
-            "ASMIMPORT229A.DLL",
-            "ASMINTR229A.DLL",
-            "ASMKERN229A.DLL",
-            "ASMLAW229A.DLL",
-            "ASMLOP229A.DLL",
-            "ASMLOPT229A.DLL",
-            "ASMNPCH229A.DLL",
-            "ASMOFST229A.DLL",
-            "ASMOPER229A.DLL",
-            "ASMPID229A.DLL",
-            "ASMRBASE229A.DLL",
-            "ASMRBI229A.DLL",
-            "ASMREM229A.DLL",
-            "ASMSASM229A.DLL",
-            "ASMSBAP229A.DLL",
-            "ASMSBOOL229A.DLL",
-            "ASMSHL229A.DLL",
-            "ASMSKIN229A.DLL",
-            "ASMSWP229A.DLL",
-            "ASMTOPT229A.DLL",
-            "ASMTWK229A.DLL",
-            "ASMUFLD229A.DLL",
-            "ASMWELD229A.DLL",
-            "MMSDK.DLL"
-        };
-
         #endregion
 
         #region public properties
@@ -497,8 +452,6 @@ namespace DynamoShapeManager
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
             switch (majorVersion)
             {
-                case 229:
-                    return !ASM229DllNames.Except(fileNames).Any();
                 case 230:
                     return !ASM230DllNames.Except(fileNames).Any();
                 default:
