@@ -20,8 +20,7 @@ namespace Dynamo.Tests.Loggings
         {
             var versions = new List<Version>(){
 
-                    new Version(229, 0,0),
-                    new Version(228, 6, 0)
+                    new Version(230, 0,0),
             };
 
             var directory = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
