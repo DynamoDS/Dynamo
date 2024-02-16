@@ -28,9 +28,7 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
     <PackageReference Include="Greg" Version="3.0.0.3175" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.3331" GeneratePathProperty="true" />
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3421" GeneratePathProperty="true" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.4074" GeneratePathProperty="true" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
     <PackageReference Include="RestSharp" Version="108.0.1" CopyXML="true" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
@@ -110,18 +108,14 @@
 
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>
+      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-        <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
-        <LibGProtoGeometryDLL Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
-        <LibGProtoGeometryXML Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
-        <LibG229Deps Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
         <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
         <LibGProtoGeometryDLL Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
         <LibGProtoGeometryXML Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
         <LibG230Deps Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
-        <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
+        <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
         <LibG230 Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_230_0_0\*" />
         <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
         <NodeHelpMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.md" />
