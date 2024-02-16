@@ -1469,6 +1469,9 @@
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Mesh"
+                },
+                {
+                  "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Panel"
                 }
               ],
               "childElements": []
