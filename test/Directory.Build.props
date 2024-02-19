@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
     <TestProject>true</TestProject>
+    <SolutionDir>$(MSBuildThisFileDirectory)..\src\</SolutionDir>
   </PropertyGroup>
 </Project>
