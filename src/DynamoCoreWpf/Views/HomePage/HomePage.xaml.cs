@@ -13,6 +13,7 @@ using Dynamo.Models;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
@@ -25,9 +26,8 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class HomePage : UserControl, IDisposable
     {
-        // These are hardcoded string and should only change when npm package structure changed or image path changed
-        private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.HomePage.build.bundle.js";
+        private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.Packages.DynamoHome.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.DynamoHome.build.index.bundle.js";
         private static readonly string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderName = "embeddedFonts";
         private static readonly string virtualFolderPath = Path.Combine(Path.GetTempPath(), virtualFolderName);
@@ -39,7 +39,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// The WebView2 Browser instance used to display splash screen
         /// </summary>
-        internal WebView2 webView;
+        internal DynamoWebView2 dynWebView;
 
         internal Action<string> RequestOpenFile;
         internal Action<string> RequestShowGuidedTour;
@@ -63,12 +63,12 @@ namespace Dynamo.UI.Views
             InitializeComponent();
             InitializeGuideTourItems();
 
-            webView = new WebView2();
+            dynWebView = new DynamoWebView2();
 
-            webView.Margin = new System.Windows.Thickness(0);  // Set margin to zero
-            webView.ZoomFactor = 1.0;  // Set zoom factor (optional)
+            dynWebView.Margin = new System.Windows.Thickness(0);  // Set margin to zero
+            dynWebView.ZoomFactor = 1.0;  // Set zoom factor (optional)
                 
-            HostGrid.Children.Add(webView);
+            HostGrid.Children.Add(dynWebView);
 
             // Bind event handlers
             RequestOpenFile = OpenFile;
@@ -111,9 +111,9 @@ namespace Dynamo.UI.Views
 
         private void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(webView?.CoreWebView2 != null && e.PropertyName.Equals(nameof(startPage.DynamoViewModel.ShowStartPage)))
+            if(dynWebView?.CoreWebView2 != null && e.PropertyName.Equals(nameof(startPage.DynamoViewModel.ShowStartPage)))
             {
-                webView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
+                dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
             }
         }
 
@@ -140,18 +140,18 @@ namespace Dynamo.UI.Views
             PathHelper.CreateFolderIfNotExist(userDataDir.ToString());
             var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
-            webView.CreationProperties = new CoreWebView2CreationProperties
+            dynWebView.CreationProperties = new CoreWebView2CreationProperties
             {
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
 
             //ContentRendered ensures that the webview2 component is visible.
-            await webView.EnsureCoreWebView2Async();
+            await dynWebView.Initialize();
             // Context menu disabled
-            this.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            this.dynWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             // Zoom control disabled
-            this.webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
-            this.webView.CoreWebView2.Settings.AreDevToolsEnabled = true;
+            this.dynWebView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+            this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
 
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -186,13 +186,13 @@ namespace Dynamo.UI.Views
             }
 
             // Set up virtual host name to folder mapping
-            webView.CoreWebView2.SetVirtualHostNameToFolderMapping(virtualFolderName, virtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
+            dynWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(virtualFolderName, virtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
 
             htmlString = htmlString.Replace("mainJs", jsonString);
 
             try
             {
-                webView.NavigateToString(htmlString);
+                dynWebView.NavigateToString(htmlString);
             }
             catch (Exception ex)
             {
@@ -200,7 +200,7 @@ namespace Dynamo.UI.Views
             }
 
             // Exposing commands to the React front-end
-            webView.CoreWebView2.AddHostObjectToScript("scriptObject",
+            dynWebView.CoreWebView2.AddHostObjectToScript("scriptObject",
                new ScriptHomeObject(RequestOpenFile,
                                     RequestNewWorkspace,
                                     RequestOpenWorkspace,
@@ -227,9 +227,9 @@ namespace Dynamo.UI.Views
 
             var userLocale = "en";
 
-            if (webView?.CoreWebView2 != null)
+            if (dynWebView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");
+                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");
             }
         }
 
@@ -242,9 +242,9 @@ namespace Dynamo.UI.Views
         {
             string jsonData = JsonSerializer.Serialize(data);
 
-            if (webView?.CoreWebView2 != null)
+            if (dynWebView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveGraphDataFromDotNet({jsonData})");
+                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveGraphDataFromDotNet({jsonData})");
             }
         }
 
@@ -257,9 +257,9 @@ namespace Dynamo.UI.Views
 
             string jsonData = JsonSerializer.Serialize(this.startPage.SampleFiles);
 
-            if (webView?.CoreWebView2 != null)
+            if (dynWebView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveSamplesDataFromDotNet({jsonData})");
+                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveSamplesDataFromDotNet({jsonData})");
             }
         }
 
@@ -273,9 +273,9 @@ namespace Dynamo.UI.Views
 
             string jsonData = JsonSerializer.Serialize(this.GuidedTourItems);
 
-            if (webView?.CoreWebView2 != null)
+            if (dynWebView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveInteractiveGuidesDataFromDotNet({jsonData})");
+                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveInteractiveGuidesDataFromDotNet({jsonData})");
             }
         }
         #endregion

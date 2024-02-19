@@ -139,7 +139,7 @@ namespace DynamoCoreWpfTests
             startPage.RecentFiles.Add(new StartPageListItem(filePath) { ContextData = filePath });
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
@@ -184,7 +184,7 @@ namespace DynamoCoreWpfTests
             startPage.SampleFiles.Add(rootEntity);
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
@@ -218,7 +218,7 @@ namespace DynamoCoreWpfTests
 
             var homePage = View.homePage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
@@ -249,7 +249,7 @@ namespace DynamoCoreWpfTests
             startPage.RecentFiles.Add(new StartPageListItem(filePath) { ContextData=filePath });
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForIntInteractionToComplete(homePage, script, -1);
@@ -285,7 +285,7 @@ namespace DynamoCoreWpfTests
             startPage.SampleFiles.Add(rootEntity);
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForIntInteractionToComplete(homePage, script, -1);
@@ -305,7 +305,7 @@ namespace DynamoCoreWpfTests
             var script = CONTAINER_SCRIPT("guidesContainer");
             var homePage = View.homePage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForIntInteractionToComplete(homePage, script, -1);
@@ -325,7 +325,7 @@ namespace DynamoCoreWpfTests
             var script = CONTAINER_SCRIPT("videoCarousel");
             var homePage = View.homePage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForIntInteractionToComplete(homePage, script, -1);
@@ -361,7 +361,7 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
@@ -393,7 +393,7 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
@@ -425,7 +425,7 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
@@ -457,7 +457,7 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
@@ -490,7 +490,7 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
@@ -520,7 +520,7 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.webView);
+            InitializeWebView2(homePage.dynWebView);
 
             // Act
             var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
@@ -556,7 +556,7 @@ namespace DynamoCoreWpfTests
 
             web.NavigationCompleted += WebView_NavigationCompleted;
 
-            // Wait until we have initialized webView or until the timeout is reached
+            // Wait until we have initialized dynWebView or until the timeout is reached
             while (!navigationCompletedEvent.WaitOne(100))
             {
                 if (DateTime.Now - startTime > timeout)
@@ -601,7 +601,7 @@ namespace DynamoCoreWpfTests
             var interactCompleted = initialValue;
             homePage.Dispatcher.Invoke(async () =>
             {
-                interactCompleted = await Interact<bool>(homePage.webView, script);
+                interactCompleted = await Interact<bool>(homePage.dynWebView, script);
             });
 
             // Wait for the interaction to complete
@@ -627,7 +627,7 @@ namespace DynamoCoreWpfTests
             var interactCompleted = initialValue;
             homePage.Dispatcher.Invoke(async () =>
             {
-                interactCompleted = await Interact<int>(homePage.webView, script);
+                interactCompleted = await Interact<int>(homePage.dynWebView, script);
             });
 
             // Wait for the interaction to complete
