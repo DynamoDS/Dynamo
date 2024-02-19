@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UILib>true</UILib>
   </PropertyGroup>
@@ -60,19 +60,19 @@
         <Exec Command="npm pack @dynamods/dynamo-home@latest" />
     </Target>
 
-    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
+    <Target Name="ExtractTGZFileDynamoHome" DependsOnTargets="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <!--Locate the .tgz files for the Dynamo Home package-->
         <ItemGroup>
-            <TGZFiles Include="./dynamods-dynamo-home-*.tgz" />
+            <TGZFilesDynamoHome Include="./dynamods-dynamo-home-*.tgz" />
         </ItemGroup>
 
         <!--Reverse the order of the files to get the higher version-->
         <ItemGroup>
-            <ReversedDynamoHome Include="@(TGZFiles-&gt;Reverse())" />
+            <ReversedDynamoHome Include="@(TGZFilesDynamoHome-&gt;Reverse())" />
         </ItemGroup>
 
         <PropertyGroup>
-            <Last>%(TGZFiles.Filename)</Last>
+            <Last>%(TGZFilesDynamoHome.Filename)</Last>
         </PropertyGroup>
 
         <!--Create the folder for the Dynamo Home package-->
@@ -121,11 +121,11 @@
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Packages\DynamoHome\build\index.bundle.js" />
-    <EmbeddedResource Include="Packages\DynamoHome\build\index.html" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
+    <EmbeddedResource Include="Packages\DynamoHome\build\index.bundle.js" />
+    <EmbeddedResource Include="Packages\DynamoHome\build\index.html" />
   </ItemGroup>
 
   <ItemGroup>
