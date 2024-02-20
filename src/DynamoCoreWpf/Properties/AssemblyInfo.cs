@@ -63,8 +63,8 @@ using System.Windows;
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSpecification))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSection))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutElement))]
-#pragma warning restore RS0016
-
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutElementType))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutIncludeInfo))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.ILibraryViewCustomization))]
+#pragma warning restore RS0016
+
