@@ -1,5 +1,8 @@
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.GraphNodeManager.ViewModels;
 
@@ -25,6 +28,8 @@ namespace Dynamo.GraphNodeManager
         /// </summary>
         private bool mouseHandled = false;
 
+        private GraphNodeManagerViewModel viewModel;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -33,7 +38,38 @@ namespace Dynamo.GraphNodeManager
         {
             InitializeComponent();
 
+            this.viewModel = viewModel;
             this.DataContext = viewModel;
+
+            viewModel.PropertyChanged += ViewModel_OnPropertyChanged;
+            viewModel.RequestExportGraph += ViewModel_RequestExportGraph;
+        }
+
+        private void ViewModel_RequestExportGraph(object parameter)
+        {
+            if (parameter == null) return;
+            var type = parameter.ToString();
+            var promptName = System.IO.Path.GetFileNameWithoutExtension(viewModel.CurrentWorkspace.FileName);
+
+            var filteredNodes = NodesInfoDataGrid.ItemsSource.Cast<GridNodeViewModel>().ToArray();
+
+            switch (type)
+            {
+                case "CSV":
+                    Utilities.Utilities.ExportToCSV(filteredNodes, promptName);
+                    break;
+                case "JSON":
+                    Utilities.Utilities.ExportToJson(filteredNodes, promptName);
+                    break;
+            }
+        }
+
+        private void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(GraphNodeManagerViewModel.IsAnyFilterOn))
+            {
+                CollectionViewSource.GetDefaultView(NodesInfoDataGrid.ItemsSource).Refresh();
+            }
         }
 
         /// <summary>

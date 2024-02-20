@@ -14,6 +14,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 using ProtoCore.Mirror;
@@ -142,7 +143,7 @@ namespace DynamoCoreWpfTests
             // Arrange
             LoadExtension(viewExt);
 
-            OpenAndRun(@"pkgs\Dynamo Samples\extra\ZoomNodeColorStates.dyn");
+            Open(@"pkgs\Dynamo Samples\extra\ZoomNodeColorStates.dyn");
 
             // Get number of frozen Nodes in the graph
             var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
@@ -186,18 +187,18 @@ namespace DynamoCoreWpfTests
 
             LoadExtension(viewExt);
 
-            var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
-
-            var view = viewExt.ManagerView;
-
             OpenAndRun(@"pkgs\Dynamo Samples\extra\GraphNodeManagerTestGraph_NullsEmptyLists.dyn");
 
             Utility.DispatcherUtil.DoEvents();
 
+            var view = viewExt.ManagerView;
+
             var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
 
             int nullNodesImageCount = GetImageCount(images, "Null");
-            int emptyListNodesImageCount = GetImageCount(images, "EmptyList"); 
+            int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
+
+            var hwm = this.ViewModel.CurrentSpace;
 
             int nullNodesCount = hwm.Nodes.Count(ContainsAnyNulls);
             int emptyListNodesCount = hwm.Nodes.Count(ContainsAnyEmptyLists);
@@ -214,30 +215,34 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ViewExtensionOpensWithDynamoWhenRememberedTest()
         {
-            ViewModel.PreferenceSettings.EnablePersistExtensions = true;
+            bool old = ViewModel.PreferenceSettings.EnablePersistExtensions;
+            using (Disposable.Create(() => {  ViewModel.PreferenceSettings.EnablePersistExtensions = true; }, () => { ViewModel.PreferenceSettings.EnablePersistExtensions = old; }))
+            {
+                ViewModel.PreferenceSettings.EnablePersistExtensions = true;
 
-            //assert that option is enabled
-            Assert.IsTrue(ViewModel.PreferenceSettings.EnablePersistExtensions);
+                //assert that option is enabled
+                Assert.IsTrue(ViewModel.PreferenceSettings.EnablePersistExtensions);
 
-            //open extension
-            var extensionManager = View.viewExtensionManager;
-            var viewExtension = extensionManager.ViewExtensions
-                    .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
-                as GraphNodeManagerViewExtension;
-            LoadExtension(viewExtension);
+                //open extension
+                var extensionManager = View.viewExtensionManager;
+                var viewExtension = extensionManager.ViewExtensions
+                        .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
+                    as GraphNodeManagerViewExtension;
+                LoadExtension(viewExtension);
 
-            //confirm that extension was opened
-            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
+                //confirm that extension was opened
+                Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
-            //Restart Dynamo
-            Exit();
-            Start();
+                //Restart Dynamo
+                Exit();
+                Start();
 
-            Utility.DispatcherUtil.DoEvents();
+                Utility.DispatcherUtil.DoEvents();
 
-            //confirm that extension is reopened after restart
-            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
-            Assert.IsNotNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+                //confirm that extension is reopened after restart
+                Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
+                Assert.IsNotNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+            }
         }
 
         /// <summary>
@@ -246,34 +251,36 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ViewExtensionDoesNotOpensWithDynamoWhenClosedTest()
         {
-            ViewModel.PreferenceSettings.EnablePersistExtensions = true;
+            bool old = ViewModel.PreferenceSettings.EnablePersistExtensions;
+            using (Disposable.Create(() => { ViewModel.PreferenceSettings.EnablePersistExtensions = true; }, () => { ViewModel.PreferenceSettings.EnablePersistExtensions = old; }))
+            {
+                //assert that option is enabled
+                Assert.IsTrue(ViewModel.PreferenceSettings.EnablePersistExtensions);
 
-            //assert that option is enabled
-            Assert.IsTrue(ViewModel.PreferenceSettings.EnablePersistExtensions);
+                //open extension
+                var extensionManager = View.viewExtensionManager;
+                var viewExtension = extensionManager.ViewExtensions
+                        .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
+                    as GraphNodeManagerViewExtension;
+                LoadExtension(viewExtension);
 
-            //open extension
-            var extensionManager = View.viewExtensionManager;
-            var viewExtension = extensionManager.ViewExtensions
-                    .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
-                as GraphNodeManagerViewExtension;
-            LoadExtension(viewExtension);
+                //close extension
+                var loadedParams = new ViewLoadedParams(View, ViewModel);
+                loadedParams.CloseExtensioninInSideBar(viewExtension);
 
-            //close extension
-            var loadedParams = new ViewLoadedParams(View, ViewModel);
-            loadedParams.CloseExtensioninInSideBar(viewExtension);
+                //confirm that extension was closed
+                Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
 
-            //confirm that extension was closed
-            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
+                //Restart Dynamo
+                Exit();
+                Start();
 
-            //Restart Dynamo
-            Exit();
-            Start();
+                Utility.DispatcherUtil.DoEvents();
 
-            Utility.DispatcherUtil.DoEvents();
-
-            //confirm that extension is still closed after restart
-            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
-            Assert.IsNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+                //confirm that extension is still closed after restart
+                Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
+                Assert.IsNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+            }
         }
 
         /// <summary>
@@ -282,30 +289,33 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ViewExtensionDoesNotOpenWhenNotRememberedTest()
         {
-            ViewModel.PreferenceSettings.EnablePersistExtensions = false;
+            bool old = ViewModel.PreferenceSettings.EnablePersistExtensions;
+            using (Disposable.Create(() => { ViewModel.PreferenceSettings.EnablePersistExtensions = false; }, () => { ViewModel.PreferenceSettings.EnablePersistExtensions = old; }))
+            {
 
-            //assert that option is disabled
-            Assert.IsFalse(ViewModel.PreferenceSettings.EnablePersistExtensions);
+                //assert that option is disabled
+                Assert.IsFalse(ViewModel.PreferenceSettings.EnablePersistExtensions);
 
-            //open extension
-            var extensionManager = View.viewExtensionManager;
-            var viewExtension = extensionManager.ViewExtensions
-                    .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
-                as GraphNodeManagerViewExtension;
-            LoadExtension(viewExtension);
+                //open extension
+                var extensionManager = View.viewExtensionManager;
+                var viewExtension = extensionManager.ViewExtensions
+                        .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
+                    as GraphNodeManagerViewExtension;
+                LoadExtension(viewExtension);
 
-            //confirm that extension was opened
-            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
+                //confirm that extension was opened
+                Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
-            //Restart Dynamo
-            Exit();
-            Start();
+                //Restart Dynamo
+                Exit();
+                Start();
 
-            Utility.DispatcherUtil.DoEvents();
+                Utility.DispatcherUtil.DoEvents();
 
-            //confirm that extension is still closed after restart
-            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
-            Assert.IsNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+                //confirm that extension is still closed after restart
+                Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
+                Assert.IsNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+            }
         }
         #endregion
 
