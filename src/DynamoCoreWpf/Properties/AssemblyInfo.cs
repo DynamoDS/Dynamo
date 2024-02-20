@@ -61,10 +61,10 @@ using System.Windows;
 // Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
 #pragma warning disable RS0016 
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSpecification))]
-#pragma warning restore RS0016
-
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSection))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutElement))]
+#pragma warning restore RS0016
+
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutElementType))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutIncludeInfo))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.ILibraryViewCustomization))]
