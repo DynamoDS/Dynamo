@@ -4,6 +4,8 @@ using CoreNodeModelsWpf.Controls;
 using System.Windows.Controls;
 using System.Windows;
 using Dynamo.Wpf;
+using CoreNodeModels;
+using System.Windows.Data;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -36,6 +38,27 @@ namespace CoreNodeModelsWpf.Nodes
             // Add margin to the dropdown to show the expander.
             dropdown.Margin = new Thickness(leftMargin, 0, 0, 0);
             dropdown.VerticalAlignment = VerticalAlignment.Top;
+            dropdown.ApplyTemplate();
+
+            var dropDownTextBlock = dropdown.Template.FindName("PART_ReadOnlyTextBlock", dropdown) as TextBlock;
+            if (dropDownTextBlock != null)
+            {
+                dropDownTextBlock.Visibility = Visibility.Visible;
+            }
+
+            var dropDownContent = dropdown.Template.FindName("ContentSite", dropdown) as ContentPresenter;
+            if (dropDownContent != null)
+            {
+                dropDownContent.Visibility = Visibility.Collapsed;
+            }
+
+            // Bind the TextBlock to the selected item hash.
+            var bindingVal = new Binding(nameof(DSDropDownBase.SelectedString))
+            {
+                Mode = BindingMode.TwoWay,
+                Source = model
+            };
+            dropDownTextBlock.SetBinding(TextBlock.TextProperty, bindingVal);
         }
 
         private void BaseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
