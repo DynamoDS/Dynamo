@@ -44,7 +44,7 @@ namespace Dynamo.GraphNodeManager
         private bool isAnyFilterOn = false;
         private Action<Logging.ILogMessage> logMessage;
 
-        private HomeWorkspaceModel CurrentWorkspace
+        internal HomeWorkspaceModel CurrentWorkspace
         {
             get
             {
@@ -111,8 +111,6 @@ namespace Dynamo.GraphNodeManager
                 RaisePropertyChanged(nameof(SearchText));
             }
         }
-
-        public GraphNodeManagerView GraphNodeManagerView;
 
         public string searchBoxPrompt = "Search..";
         /// <summary>
@@ -318,34 +316,16 @@ namespace Dynamo.GraphNodeManager
         /// Export the current graph to CSV or JSON
         /// </summary>
         /// <param name="parameter"></param>
-        /// <exception cref="NotImplementedException"></exception>
         internal void ExportGraph(object parameter)
         {
-            if (parameter == null) return;
-            var type = parameter.ToString();
-            var promptName =  System.IO.Path.GetFileNameWithoutExtension(currentWorkspace.FileName);
-
-            var filteredNodes = FilteredNodesArray();
-
-            switch (type)
-            {
-                case "CSV":
-                    Utilities.Utilities.ExportToCSV(filteredNodes, promptName);
-                    break;
-                case "JSON":
-                    Utilities.Utilities.ExportToJson(filteredNodes, promptName);
-                    break;
-            }
+            RequestExportGraph?.Invoke(parameter);
         }
 
         /// <summary>
-        /// Helper method to return an Array of the currently active Nodes
+        /// This action is called on the export graph command.
         /// </summary>
-        /// <returns></returns>
-        private GridNodeViewModel [] FilteredNodesArray()
-        {
-            return GraphNodeManagerView.NodesInfoDataGrid.ItemsSource.Cast<GridNodeViewModel>().ToArray();
-        }
+        /// <param name="parameter"></param>
+        internal event Action<object> RequestExportGraph;
 
         /// <summary>
         /// On changing a condition that affects the filter
@@ -354,7 +334,6 @@ namespace Dynamo.GraphNodeManager
         {
             // Refresh the view to apply filters.
             RaisePropertyChanged(nameof(IsAnyFilterOn));
-            CollectionViewSource.GetDefaultView(GraphNodeManagerView.NodesInfoDataGrid.ItemsSource).Refresh();
         }
 
         /// <summary>
@@ -572,7 +551,6 @@ namespace Dynamo.GraphNodeManager
             viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
             viewLoadedParams.CurrentWorkspaceCleared -= OnCurrentWorkspaceCleared;
             NodesCollection.Filter -= NodesCollectionViewSource_Filter;
-            GraphNodeManagerView = null;
         }
 
         /// <summary>
