@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -11,7 +12,7 @@ namespace Dynamo.GraphNodeManager
     /// <summary>
     /// Interaction logic for GraphNodeManagerView.xaml
     /// </summary>
-    public partial class GraphNodeManagerView : UserControl
+    public partial class GraphNodeManagerView : UserControl, IDisposable
     {
         /// <summary>
         /// A persistent handle of the currently selected row
@@ -29,6 +30,7 @@ namespace Dynamo.GraphNodeManager
         private bool mouseHandled = false;
 
         private GraphNodeManagerViewModel viewModel;
+        private bool disposedValue;
 
         /// <summary>
         /// Constructor
@@ -154,5 +156,22 @@ namespace Dynamo.GraphNodeManager
             e.Handled = true;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                viewModel.PropertyChanged -= ViewModel_OnPropertyChanged;
+                viewModel.RequestExportGraph -= ViewModel_RequestExportGraph;
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
