@@ -19,7 +19,6 @@ namespace TestServices
         private  List<Version> supportedLibGVersions = new List<Version>
                 {
                     new Version(230,0,0),
-                    new Version(229,0,0),
                 };
 
         public string DynamoCorePath { get; private set; }
