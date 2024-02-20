@@ -69,6 +69,7 @@ namespace DynamoCoreWpfTests
         public void Setup()
         {
             oldEnablePersistance = ViewModel.PreferenceSettings.EnablePersistExtensions;
+            ViewModel.PreferenceSettings.EnablePersistExtensions = false;
         }
 
         [TearDown]
