@@ -19,6 +19,7 @@ namespace Dynamo.Wpf.Views.Debug
     public partial class UpdateNodeIconsWindow : Window, INotifyPropertyChanged
     {
         #region properties
+        //The path that will be used to store log files related to this process
         public static readonly string logPath = Path.Combine(Directory.GetCurrentDirectory(), @"NodeIconUpdateLog");
         public string errorFile = Path.Combine(logPath, @"error_icons.csv");
         public string logFile = Path.Combine(logPath, @"success_icons.csv");
@@ -33,6 +34,9 @@ namespace Dynamo.Wpf.Views.Debug
         }
 
         private string newIconPaths;
+        /// <summary>
+        /// Folder(s) containing new icons
+        /// </summary>
         public string NewIconPaths
         {
             get { return newIconPaths; }
@@ -46,6 +50,9 @@ namespace Dynamo.Wpf.Views.Debug
             }
         }
         private string output;
+        /// <summary>
+        /// The Output log from the process
+        /// </summary>
         public string Output
         {
             get { return output; }
@@ -59,6 +66,9 @@ namespace Dynamo.Wpf.Views.Debug
             }
         }
         private bool isUpdateEnabled;
+        /// <summary>
+        /// Used to Enable/Disable the Update button
+        /// </summary>
         public bool IsUpdateEnabled
         {
             get { return isUpdateEnabled; }
@@ -73,6 +83,9 @@ namespace Dynamo.Wpf.Views.Debug
         }
 
         private ObservableCollection<NodeIconMetadata> updatedIconList;
+        /// <summary>
+        /// Contains all the icons that will be updated, with all information required to update them.
+        /// </summary>
         public ObservableCollection<NodeIconMetadata> UpdatedIconList
         {
             get { return updatedIconList; }
@@ -88,13 +101,37 @@ namespace Dynamo.Wpf.Views.Debug
 
         public class NodeIconMetadata
         {
+            /// <summary>
+            /// New Path of the current icon
+            /// </summary>
             public string NewIconPath { get; set; }
+            /// <summary>
+            /// Node name related to the current icon
+            /// </summary>
             public string NodeName { get; set; }
+            /// <summary>
+            /// Icon name related to the current icon
+            /// </summary>
             public string IconName { get; set; }
+            /// <summary>
+            /// Icon suffix (Small/Large)
+            /// </summary>
             public string IconSuffix { get; set; }
+            /// <summary>
+            /// Base64 string of the current icon
+            /// </summary>
             public string Icon_Base64String { get; set; }
+            /// <summary>
+            /// Resx file containing the current icon
+            /// </summary>
             public string IconResxFile { get; set; }
+            /// <summary>
+            /// Flag to indicate if the icon is updated or added
+            /// </summary>
             public bool IsUpdated { get; set; }
+            /// <summary>
+            /// Old data(Base64) of the current icon, used to display the old image for comparison.
+            /// </summary>
             public string OldData { get; set; }
             public NodeIconMetadata(string nodeName, string newIconPath, string iconName, string iconSuffix, string oldData, string resxFile, bool isUpdated = false)
             {
@@ -299,6 +336,7 @@ namespace Dynamo.Wpf.Views.Debug
                         {
                             var f = Path.GetFileNameWithoutExtension(file);
                             f = f.Replace("Images", "");
+                            //UnitsUI resx file has a different name in the assembly
                             if (f.Equals("UnitsUI"))
                             {
                                 f = "UnitsNodeModels";
