@@ -218,8 +218,6 @@ namespace DynamoCoreWpfTests
             bool old = ViewModel.PreferenceSettings.EnablePersistExtensions;
             using (Disposable.Create(() => {  ViewModel.PreferenceSettings.EnablePersistExtensions = true; }, () => { ViewModel.PreferenceSettings.EnablePersistExtensions = old; }))
             {
-                ViewModel.PreferenceSettings.EnablePersistExtensions = true;
-
                 //assert that option is enabled
                 Assert.IsTrue(ViewModel.PreferenceSettings.EnablePersistExtensions);
 
