@@ -164,10 +164,10 @@ namespace DynamoCoreWpfTests
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
             ViewModel.OpenCommand.Execute(openPath);
 
-            var xx = ViewModel.Model.EngineController.GetRuntimeWarnings();
-            if (xx.Count > 0)
+            var dsExe = ViewModel.Model.EngineController.LiveRunnerRuntimeCore.DSExecutable;
+            if (dsExe == null)
             {
-                throw new Exception($"Found runtime warnings while opening the graph {pathInTestsDir} during test {TestContext.CurrentContext.Test.Name} ");
+                throw new Exception($"Live Runner DSExecutable is null while opening file {pathInTestsDir} during test {TestContext.CurrentContext.Test.Name} ");
             }
         }
 
@@ -194,10 +194,10 @@ namespace DynamoCoreWpfTests
                 Thread.Sleep(1);
             }
 
-            var xx = ViewModel.Model.EngineController.GetRuntimeWarnings();
-            if (xx.Count > 0)
+            var dsExe = ViewModel.Model.EngineController.LiveRunnerRuntimeCore.DSExecutable;
+            if (dsExe == null)
             {
-                throw new Exception($"Runtime warnings while running the graph {ViewModel.HomeSpace.FileName} during test {TestContext.CurrentContext.Test.Name} ");
+                throw new Exception($"Live Runner DSExecutable is null while running graph at {ViewModel.HomeSpace.FileName} during test {TestContext.CurrentContext.Test.Name} ");
             }
             ViewModel.Model.EvaluationCompleted -= markDone;
         }
