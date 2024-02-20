@@ -43,6 +43,10 @@
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.4074" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\windows\LibG_230_0_0\Autodesk.GeometryPrimitives.Dynamo.dll">
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

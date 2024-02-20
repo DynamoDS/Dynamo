@@ -1,11 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
-using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
+//using Autodesk.DesignScript.Geometry;
+//using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
+
+using Point = Autodesk.GeometryPrimitives.Dynamo.Geometry.Point;
+using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
+using Plane = Autodesk.GeometryPrimitives.Dynamo.Geometry.Plane;
+using Matrix = Autodesk.GeometryPrimitives.Dynamo.Math.Matrix3d;
+using Line = Autodesk.GeometryPrimitives.Dynamo.Geometry.Line;
 
 namespace Dynamo.Manipulation
 {
@@ -78,7 +84,7 @@ namespace Dynamo.Manipulation
         public TranslationGizmo(NodeManipulator manipulator, Vector axis1, double size)
             : base(manipulator) 
         {
-            ReferenceCoordinateSystem = CoordinateSystem.Identity();
+            ReferenceCoordinateSystem = Matrix.Identity;
             UpdateGeometry(axis1, null, null, size);
         }
 
@@ -92,7 +98,7 @@ namespace Dynamo.Manipulation
         public TranslationGizmo(NodeManipulator manipulator, Vector axis1, Vector axis2, double size)
             : base(manipulator)
         {
-            ReferenceCoordinateSystem = CoordinateSystem.Identity();
+            ReferenceCoordinateSystem = Matrix.Identity;
             UpdateGeometry(axis1, axis2, null, size);
         }
 
@@ -107,7 +113,7 @@ namespace Dynamo.Manipulation
         public TranslationGizmo(NodeManipulator manipulator, Vector axis1, Vector axis2, Vector axis3, double size)
             : base(manipulator)
         {
-            ReferenceCoordinateSystem = CoordinateSystem.Identity();
+            ReferenceCoordinateSystem = Matrix.Identity;
             UpdateGeometry(axis1, axis2, axis3, size);
         }
 
@@ -133,16 +139,16 @@ namespace Dynamo.Manipulation
             if (axis2 != null)
             {
                 axes.Add(axis2);
-                planes.Add(Plane.ByOriginXAxisYAxis(Origin, axis1, axis2));
+                planes.Add(new Plane(Origin.Position, axis1 * axis2, axis1));
             }
             if (axis3 != null)
             {
                 axes.Add(axis3);
                 if (axis2 != null)
                 {
-                    planes.Add(Plane.ByOriginXAxisYAxis(Origin, axis2, axis3));
+                    planes.Add(new Plane(Origin.Position, axis2 * axis3, axis2));
                 }
-                planes.Add(Plane.ByOriginXAxisYAxis(Origin, axis3, axis1));
+                planes.Add(new Plane(Origin.Position, axis3 * axis1, axis3));
             }
 
             if (axes.Count == 1 && hitAxis != null)
@@ -190,15 +196,54 @@ namespace Dynamo.Manipulation
         /// <returns>Axis</returns>
         private Axes GetAlignedAxis(Vector axis)
         {
-            if (axis.IsParallel(ReferenceCoordinateSystem.XAxis))
+            var tol = 0.0001;
+            var xAxis = new Vector(ReferenceCoordinateSystem[0, 0], ReferenceCoordinateSystem[0, 1], ReferenceCoordinateSystem[0, 2]);
+            if (Math.Abs(axis.Unit % xAxis.Unit - 1) <= tol)
                 return Axes.xAxis;
-            if (axis.IsParallel(ReferenceCoordinateSystem.YAxis))
+
+            var yAxis = new Vector(ReferenceCoordinateSystem[1, 0], ReferenceCoordinateSystem[1, 1], ReferenceCoordinateSystem[1, 2]);
+            if (Math.Abs(axis.Unit % yAxis.Unit - 1) <= tol)
                 return Axes.yAxis;
-            if (axis.IsParallel(ReferenceCoordinateSystem.ZAxis))
+
+            var zAxis = new Vector(ReferenceCoordinateSystem[2, 0], ReferenceCoordinateSystem[2, 1], ReferenceCoordinateSystem[2, 2]);
+            if (Math.Abs(axis.Unit % zAxis.Unit - 1) <= tol)
                 return Axes.zAxis;
 
             return Axes.randomAxis;
         }
+
+        private static double DistanceTo(Line line, Point pt)
+        {
+            var p = pt.Position;
+            var sp = line.Position;
+            var dir = line.Direction;
+
+            // closest_dist = |Vector(p - sp) x dir| / |dir|
+            var num = ((p - sp) * dir).Magnitude;
+            var den = dir.Magnitude;
+            return num/den;
+        }
+
+        // TODO: Implement this method
+        private static double DistanceTo(Line line, Line ray)
+        {
+            var p = ray.Position;
+            var sp = line.Position;
+            var dir = line.Direction;
+
+            // closest_dist = |Vector(p - sp) x dir| / |dir|
+            var num = ((p - sp) * dir).Magnitude;
+            var den = dir.Magnitude;
+            return num / den;
+        }
+
+        // TODO: Implement this method
+        private static Point Intersect(Line line, Plane plane)
+        {
+            
+            return new Point();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -208,47 +253,49 @@ namespace Dynamo.Manipulation
         private object HitTest(Point source, Vector direction)
         {
             double tolerance = 0.15; //Hit tolerance
-            
-            using (var ray = GetRayGeometry(source, direction))
+
+            var ray = GetRayGeometry(source, direction);
+            //First hit test for position
+            if (DistanceTo(ray, Origin) < tolerance)
             {
-                //First hit test for position
-                if (ray.DistanceTo(Origin) < tolerance)
+                if (planes.Any())
                 {
-                    if (planes.Any())
-                    {
-                        return planes.First(); //Xy or first available plane is hit
-                    }
-                    return axes.First(); //xAxis or first axis is hit
+                    return planes.First(); //Xy or first available plane is hit
                 }
+                return axes.First(); //xAxis or first axis is hit
+            }
 
-                foreach (var plane in planes)
+            foreach (var plane in planes)
+            {
+                // plane needs to be up-to-date at this time with the current value of Origin
+                // TODO
+                var pt = Intersect(ray, plane);
                 {
-                    // plane needs to be up-to-date at this time with the current value of Origin
-                    using (var pt = plane.Intersect(ray).FirstOrDefault() as Point)
-                    {
-                        if (pt == null) continue;
+                    if (pt == null) continue;
 
-                        using (var vec = Vector.ByTwoPoints(Origin, pt))
-                        {
-                            var dot1 = plane.XAxis.Dot(vec);
-                            var dot2 = plane.YAxis.Dot(vec);
-                            if (dot1 > 0 && dot2 > 0 && dot1 < scale/2 && dot2 < scale/2)
-                            {
-                                return plane; //specific plane is hit
-                            }
-                        }
+                    var vec = new Vector(pt.Position.X - Origin.Position.X, pt.Position.Y - Origin.Position.Y,
+                        pt.Position.Z - Origin.Position.Z);
+                    var dot1 = plane.UAxis % vec;
+
+                    var planeYAxis = plane.Normal * plane.UAxis;
+                    var dot2 = planeYAxis % vec;
+                    if (dot1 > 0 && dot2 > 0 && dot1 < scale / 2 && dot2 < scale / 2)
+                    {
+                        return plane; //specific plane is hit
                     }
                 }
+            }
 
-                foreach (var axis in axes)
+            foreach (var axis in axes)
+            {
+                var vec = axis.Unit;
+                vec.Scale(scale);
+                var line = new Line(Origin.Position, vec);
+
+                // TODO
+                if (DistanceTo(line, ray) < tolerance)
                 {
-                    using (var line = Line.ByStartPointDirectionLength(Origin, axis, scale))
-                    {
-                        if (line.DistanceTo(ray) < tolerance)
-                        {
-                            return axis; //specific axis is hit.
-                        }
-                    }
+                    return axis; //specific axis is hit.
                 }
             }
             return null;
@@ -262,8 +309,10 @@ namespace Dynamo.Manipulation
         /// <returns></returns>
         private Line GetRayGeometry(Point source, Vector direction)
         {
-            double size = ManipulatorOrigin.DistanceTo(source) * 100;
-            return Line.ByStartPointDirectionLength(source, direction, size);
+            double size = (ManipulatorOrigin.Position - source.Position).Magnitude * 100;
+            var vec = direction.Unit;
+            vec.Scale(size);
+            return new Line(source.Position, vec);
         }
 
         #endregion
@@ -273,7 +322,7 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Reference coordinate system for the Gizmo
         /// </summary>
-        public CoordinateSystem ReferenceCoordinateSystem { get; set; }
+        public Matrix ReferenceCoordinateSystem { get; set; }
 
         /// <summary>
         /// Performs hit test on Gizmo to find out hit object. The returned 
@@ -306,29 +355,23 @@ namespace Dynamo.Manipulation
         public override Vector GetOffset(Point newPosition, Vector viewDirection)
         {
             Point hitPoint = Origin;
-            using (var ray = GetRayGeometry(newPosition, viewDirection))
+            var ray = GetRayGeometry(newPosition, viewDirection);
+            if (hitPlane != null)
             {
-                if (hitPlane != null)
-                {
-                    using (var testPlane = Plane.ByOriginXAxisYAxis(ManipulatorOrigin, hitPlane.XAxis, hitPlane.YAxis))
-                    {
-                        hitPoint = testPlane.Intersect(ray).FirstOrDefault() as Point;
-                    }
-                }
-                else if (hitAxis != null)
-                {
-                    using (var axisLine = RayExtensions.ToOriginCenteredLine(ManipulatorOrigin, hitAxis))
-                    {
-                        hitPoint = axisLine.ClosestPointTo(ray);
-                    }
-                }
+                var testPlane = new Plane(ManipulatorOrigin.Position, hitPlane.Normal, hitPlane.UAxis);
+                hitPoint = testPlane.Intersect(ray);
+            }
+            else if (hitAxis != null)
+            {
+                var axisLine = RayExtensions.ToOriginCenteredLine(ManipulatorOrigin, hitAxis);
+                hitPoint = axisLine.ClosestPointTo(ray);
             }
             if (hitPoint == null)
             {
-                return Vector.ByCoordinates(0, 0, 0);
+                return new Vector(0, 0, 0);
             }
 
-            return Vector.ByTwoPoints(ManipulatorOrigin, hitPoint);
+            return new Vector(hitPoint.Position.X - ManipulatorOrigin.Position.X, hitPoint.Position.Y - ManipulatorOrigin.Position.Y, hitPoint.Position.Z - ManipulatorOrigin.Position.Z);
         }
 
         /// <summary>

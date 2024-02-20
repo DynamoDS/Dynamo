@@ -1,11 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Autodesk.DesignScript.Geometry;
+//using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Point = Autodesk.DesignScript.Geometry.Point;
+//using Point = Autodesk.DesignScript.Geometry.Point;
+using Point = Autodesk.GeometryPrimitives.Dynamo.Geometry.Point;
+using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
+using Plane = Autodesk.GeometryPrimitives.Dynamo.Geometry.Plane;
 
 namespace Dynamo.Manipulation
 {
@@ -38,7 +41,7 @@ namespace Dynamo.Manipulation
         protected override void AssignInputNodes()
         {
             //Default axes
-            var axes = new Vector[] { Vector.XAxis(), Vector.YAxis(), Vector.ZAxis() };
+            var axes = new Vector[] { Vector.XAxis, Vector.YAxis, Vector.ZAxis };
 
             indexedAxisNodePairs.Clear();
 
@@ -69,7 +72,7 @@ namespace Dynamo.Manipulation
                     {
                         //Combine old axis with this axis
                         axis = item.Value.Item1;
-                        axis = axis.Add(axes[i]);
+                        axis = axis + axes[i];
                         idx = item.Key;
                         break;
                     }
@@ -90,7 +93,7 @@ namespace Dynamo.Manipulation
                 Tuple<Vector, NodeModel> pair;
                 if (indexedAxisNodePairs.TryGetValue(i, out pair))
                 {
-                    indexedAxisNodePairs[i] = Tuple.Create(pair.Item1.Normalized(), pair.Item2);
+                    indexedAxisNodePairs[i] = Tuple.Create(pair.Item1.Unit, pair.Item2);
                 }
             }
         }
@@ -137,8 +140,8 @@ namespace Dynamo.Manipulation
                 var plane = hitObject as Plane;
                 if(plane != null)
                 {
-                    axis1 = plane.XAxis;
-                    axis2 = plane.YAxis;
+                    axis1 = plane.UAxis;
+                    axis2 = plane.Normal * plane.UAxis;
                 }
             }
 
@@ -178,9 +181,8 @@ namespace Dynamo.Manipulation
         /// <param name="offset">Offset by which the gizmo has moved.</param>
         protected override void OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
-            var offsetPos = origin.Add(offset);
-            origin.Dispose();
-            origin = offsetPos;
+            var offsetPos = origin.Position + offset;
+            origin = new Point(offsetPos);
         }
 
         protected override List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
@@ -192,15 +194,13 @@ namespace Dynamo.Manipulation
 
                 // When more than one input is connected to the same slider, this
                 // method will decompose the axis corresponding to each input.
-                using (var v = GetFirstAxisComponent(item.Value.Item1))
-                {
-                    var amount = offset.Dot(v);
+                var v = GetFirstAxisComponent(item.Value.Item1);
+                var amount = offset % v;
 
-                    if (Math.Abs(amount) > MIN_OFFSET_VAL)
-                    {
-                        dynamic uiNode = item.Value.Item2;
-                        inputNodes.Add((uiNode, uiNode.Value + amount));
-                    }
+                if (Math.Abs(amount) > MIN_OFFSET_VAL)
+                {
+                    dynamic uiNode = item.Value.Item2;
+                    inputNodes.Add((uiNode, uiNode.Value + amount));
                 }
             }
             return inputNodes;
@@ -215,7 +215,7 @@ namespace Dynamo.Manipulation
 
             if (origin == null)
             {
-                origin = Point.Origin(); //First time initialization
+                origin = new Point(0, 0, 0); //First time initialization
             }
 
             //Node output could be a collection, consider the first item as origin.
@@ -224,7 +224,7 @@ namespace Dynamo.Manipulation
 
             //Don't cache pt directly here, we need to create a copy, because 
             //pt may be GC'ed by VM.
-            origin = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
+            origin = new Point(pt.Position.X, pt.Position.Y, pt.Position.Z);
             
             return true;
         }
