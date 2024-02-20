@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UILib>true</UILib>
   </PropertyGroup>
@@ -139,7 +139,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3421" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.4074" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.0.3175" />
@@ -162,7 +162,10 @@
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\net6.0-windows\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference> 
-  
+      <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>

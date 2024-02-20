@@ -1341,7 +1341,6 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestSave3DImage += DynamoViewModelRequestSave3DImage;
             dynamoViewModel.SidebarClosed += DynamoViewModelSidebarClosed;
 
-            dynamoViewModel.Model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
             dynamoViewModel.Model.RequestTaskDialog += Controller_RequestTaskDialog;
 
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
@@ -1610,19 +1609,6 @@ namespace Dynamo.Controls
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
             dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
-        }
-
-        private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
-        {
-            if (CrashReportTool.ShowCrashErrorReportWindow(dynamoViewModel,
-                (args is CrashErrorReportArgs cerArgs) ? cerArgs : 
-                new CrashErrorReportArgs(args.Details)))
-            {
-                return;
-            }
-            // Backup crash reporting dialog (in case ADSK CER is not found)
-            var prompt = new CrashPrompt(args, dynamoViewModel);
-            prompt.ShowDialog();
         }
 
         private void Controller_RequestTaskDialog(object sender, TaskDialogEventArgs e)
@@ -1988,7 +1974,6 @@ namespace Dynamo.Controls
 
             if (dynamoViewModel.Model != null)
             {
-                dynamoViewModel.Model.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
                 dynamoViewModel.Model.RequestTaskDialog -= Controller_RequestTaskDialog;
                 dynamoViewModel.Model.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
             }
