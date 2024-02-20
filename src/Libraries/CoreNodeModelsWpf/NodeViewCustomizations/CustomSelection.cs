@@ -19,6 +19,7 @@ namespace CoreNodeModelsWpf.Nodes
         /// <param name="nodeView"></param>
         public void CustomizeView(CustomSelection model, NodeView nodeView)
         {
+            const double leftMargin = 40;
             var formControl = new CustomSelectionControl(new CustomSelectionViewModel(model));
 
             nodeView.inputGrid.Children.Add(formControl);
@@ -27,12 +28,23 @@ namespace CoreNodeModelsWpf.Nodes
             base.CustomizeView(model, nodeView);
 
             var dropdown = (ComboBox)nodeView.inputGrid.Children[1];
+            dropdown.MaxWidth = formControl.Width - leftMargin;
 
             formControl.BaseComboBox = dropdown;
+            formControl.BaseComboBox.SelectionChanged += BaseComboBox_SelectionChanged;
 
             // Add margin to the dropdown to show the expander.
-            dropdown.Margin = new Thickness(40, 0, 0, 0);
+            dropdown.Margin = new Thickness(leftMargin, 0, 0, 0);
             dropdown.VerticalAlignment = VerticalAlignment.Top;
+        }
+
+        private void BaseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var comboSender = sender as ComboBox;
+            if (comboSender != null)
+            {
+                comboSender.ToolTip = comboSender.SelectedItem?.ToString();
+            }           
         }
     }
 }
