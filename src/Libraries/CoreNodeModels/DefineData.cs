@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Runtime.Serialization;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
@@ -13,43 +15,68 @@ namespace CoreNodeModels
     [NodeName("DefineData")]
     [NodeDescription(nameof(Properties.Resources.RememberDescription), typeof(Properties.Resources))]
     [NodeCategory("Core.Data")]
-    [InPortNames("InputValue", "TypeID", "Context")]
-    [InPortTypes("var[]..[]", "string", "boolean")]
+    [InPortNames(">")]
+    [InPortTypes("var[]..[]")]
     [InPortDescriptions(typeof(Properties.Resources),
-        nameof(Properties.Resources.RememberInputToolTip),
-        nameof(Properties.Resources.RememberInputToolTip),
         nameof(Properties.Resources.RememberInputToolTip))]
-    [OutPortNames("OutputValue")]
+    [OutPortNames(">")]
     [OutPortTypes("var[]..[]")]
     [OutPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.RememberOuputToolTip))]
     [IsDesignScriptCompatible]
-    internal class DefineData : NodeModel
+    public class DefineData : DSDropDownBase
     {
-        private string cache = "";
+        private bool context;
+        private List<DynamoDropDownItem> serializedItems;
 
-        public string Cache
+
+        public bool Context
         {
-            get { return cache; }
+            get => context;
+            set => context = value;
+        }
+
+        /// <summary>
+        /// Copy of <see cref="DSDropDownBase.Items"/> to be serialized./>
+        /// </summary>
+        [JsonProperty]
+        protected List<DynamoDropDownItem> SerializedItems
+        {
+            get => serializedItems;
             set
             {
-                var valueToSet = value == null ? "" : value;
-                if (valueToSet != cache)
+                serializedItems = value;
+
+                Items.Clear();
+
+                foreach (DynamoDropDownItem item in serializedItems)
                 {
-                    cache = valueToSet;
-                    MarkNodeAsModified();
+                    Items.Add(item);
                 }
             }
         }
 
-        [JsonConstructor]
-        private DefineData(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
-        {
-            PropertyChanged += OnPropertyChanged;
-        }
-
-        public DefineData()
+        /// <summary>
+        /// Construct a new Custom Dropdown Menu node
+        /// </summary>
+        public DefineData() : base(">")
         {
             RegisterAllPorts();
+            PropertyChanged += OnPropertyChanged;
+
+            foreach (var dataType in Enum.GetValues(typeof(DSCore.Data.DataType)))
+            {
+                string displayName = dataType.ToString();
+                string value = displayName;
+
+                Items.Add(new DynamoDropDownItem(displayName, value));
+            }
+
+            SelectedIndex = 0;
+        }
+
+        [JsonConstructor]
+        private DefineData(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(">", inPorts, outPorts)
+        {
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -75,21 +102,30 @@ namespace CoreNodeModels
         {
             var resultAst = new List<AssociativeNode>();
 
-            // Function call inputs - reference to the function, and the function arguments coming from the inputs
+            // function call inputs - reference to the function, and the function arguments coming from the inputs
+            // the object to be (type) evaluated
+            // the expected datatype
+            // if the input is an ArrayList or not
             var function = new Func<object, string, bool, bool>(DSCore.Data.IsSupportedDataType);
-            var funtionInputs = new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] };
+            var funtionInputs = new List<AssociativeNode> {
+                inputAstNodes[0],
+                AstFactory.BuildStringNode(Items[0].Item.ToString()),
+                AstFactory.BuildBooleanNode(Context) };
 
-            //First build the function call
+
             var functionCall = AstFactory.BuildFunctionCall(function, funtionInputs);
+            var functionCallIdentifier = AstFactory.BuildIdentifier(GUID + "_func");
 
+            // build the function call
+            resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier, functionCall));
+
+            // build the output call
             resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall));
 
-            // Now build the cal for the DataBridge ??
-            var functionCallIndentifier = AstFactory.BuildIdentifier(GUID + "_func");
-
-            resultAst.Add(AstFactory.BuildAssignment(
-                    functionCallIndentifier,
-                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes))));
+            // build the call for the DataBridge 
+            resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier,
+                DataBridge.GenerateBridgeDataAst(GUID.ToString(),
+                AstFactory.BuildExprList(inputAstNodes))));
 
 
             return resultAst;
@@ -105,14 +141,24 @@ namespace CoreNodeModels
             var inputs = data as ArrayList;
 
             var inputObject = inputs[0];
-            var dataType = inputs[1] as string;
-            var context = (bool)inputs[2];
 
-            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected && !InPorts[2].IsConnected)
+            if (!InPorts[0].IsConnected)
             {
                 return;
             }
 
+        }
+
+
+        protected override SelectionState PopulateItemsCore(string currentSelection)
+        {
+            return SelectionState.Restore;
+        }
+
+        [OnSerializing]
+        private void OnSerializing(StreamingContext context)
+        {
+            serializedItems = Items.ToList();
         }
     }
 }

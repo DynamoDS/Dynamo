@@ -576,21 +576,55 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void IsSupportedDataTypeFalseOnInitialNullInputs()
         {
-            object unsupportedInput = null;
-            object supportedInput = "inputValue";
-            var validString = "type";
-            var validate = DSCore.Data.IsSupportedDataType(unsupportedInput, validString, false);
+            object nullInput = null;
+            var validType = DSCore.Data.DataType.String;
+            var invalidType = (DSCore.Data.DataType)999;
 
-            Assert.AreEqual(false, validate);
+            var validString = "input string";
+            var validInt = 5;
+            var validDouble = 3.14;
 
-            validate = DSCore.Data.IsSupportedDataType(supportedInput, null, false);
-            Assert.AreEqual(false, validate);
+            var invalidStringList = new ArrayList() { validString, validInt, validDouble };
+            var validStringList = new ArrayList() { validString };
+            var validIntList = new ArrayList() { validInt };
+            var validDoubleList = new ArrayList() { validDouble };
 
-            validate = DSCore.Data.IsSupportedDataType(supportedInput, string.Empty, false);
-            Assert.AreEqual(false, validate);
+            // Assert - check for nulls - fail
+            var validate = DSCore.Data.IsSupportedDataType(nullInput, validType, false);
+            Assert.AreEqual(false, validate, "Null input should not be supported.");
 
-            validate = DSCore.Data.IsSupportedDataType(supportedInput, validString, false);
-            Assert.AreEqual(true, validate);
+            validate = DSCore.Data.IsSupportedDataType(validString, invalidType, false);
+            Assert.AreEqual(false, validate, "Unexisting enum type should not be supported.");
+
+            // Assert - check signle values - succeed
+            validate = DSCore.Data.IsSupportedDataType(validString, validType, false);
+            Assert.AreEqual(true, validate, "Couldn't validate string input.");
+
+            validate = DSCore.Data.IsSupportedDataType(validInt, DSCore.Data.DataType.Integer, false);
+            Assert.AreEqual(true, validate, "Couldn't validate integer input.");
+
+            validate = DSCore.Data.IsSupportedDataType(validDouble, DSCore.Data.DataType.Double, false);
+            Assert.AreEqual(true, validate, "Couldn't validate double input.");
+
+            // Assert - check list - fail
+            validate = DSCore.Data.IsSupportedDataType(validStringList, DSCore.Data.DataType.String, false);
+            Assert.AreEqual(false, validate, "Shouldn't validate list values with list flag off.");
+
+            validate = DSCore.Data.IsSupportedDataType(validString, DSCore.Data.DataType.String, true);
+            Assert.AreEqual(false, validate, "Shouldn't validate single values with list flag on.");
+
+            validate = DSCore.Data.IsSupportedDataType(invalidStringList, DSCore.Data.DataType.String, true);
+            Assert.AreEqual(false, validate, "Shouldn't validate heterogenous list input.");
+
+            // Assert - check homogenous list values - succeed
+            validate = DSCore.Data.IsSupportedDataType(validStringList, DSCore.Data.DataType.String, true);
+            Assert.AreEqual(true, validate, "Couldn't validate string list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(validIntList, DSCore.Data.DataType.Integer, true);
+            Assert.AreEqual(true, validate, "Couldn't validate integer list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(validDoubleList, DSCore.Data.DataType.Double, true);
+            Assert.AreEqual(true, validate, "Couldn't validate double list input.");
         }
     }
 }

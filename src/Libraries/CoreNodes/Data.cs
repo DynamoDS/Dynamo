@@ -529,34 +529,80 @@ namespace DSCore
 
         internal static DynamoLogger dynamoLogger = ExecutionEvents.ActiveSession?.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
 
+
+        public enum DataType
+        {
+            Boolean,
+            BoundingBox,
+            CoordinateSystem,
+            Curve,
+            Arc,
+            Circle,
+            Ellipse,
+            EllipseArc,
+            Helix,
+            Line,
+            NurbsCurve,
+            String,
+            Integer,
+            Double
+        }
+
         /// <summary>
         /// Function to validate input type against supported Dynamo input types
         /// </summary>
         /// <param name="inputValue">The incoming data to validate</param>
         /// <param name="typeID">The input type provided by the user. It has to match the inputValue type</param>
-        /// <param name="context">The value of this boolean decides if the input is a single object or a list</param>
+        /// <param name="isList">The value of this boolean decides if the input is a single object or a list</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static bool IsSupportedDataType([ArbitraryDimensionArrayImport] object inputValue, string typeID, bool context)
+        public static bool IsSupportedDataType([ArbitraryDimensionArrayImport] object inputValue, string type, bool isList)
         {
-            // Make sure the initial inputs are not nulls
-            if (inputValue == null || string.IsNullOrEmpty(typeID))
+            Enum.TryParse(type, out DataType typeID);
+
+            if (inputValue == null || !Enum.IsDefined(typeof(DataType), typeID))
             {
                 return false;
             }
 
-            string newCachedJson;
-            try
+            if (!isList)
             {
-                newCachedJson = StringifyJSON(inputValue);
-            }
-            catch (Exception ex)
-            {
-                dynamoLogger?.Log("Remember failed to serialize with this exception: " + ex.Message);
-                throw new NotSupportedException(string.Format(Properties.Resources.Exception_Serialize_Unsupported_Type, inputValue.GetType().FullName));
-            }
+                if (inputValue is ArrayList) return false;
 
-            return true;
+                return IsItemOfType(inputValue, typeID);
+            }
+            else
+            {
+                if (!(inputValue is ArrayList arrayList)) return false;
+
+                foreach (var item in arrayList)
+                {
+                    if (!IsItemOfType(item, typeID))
+                    {
+                        return false; 
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        private static bool IsItemOfType(object item, DataType typeID)
+        {
+            switch (typeID)
+            {
+                case DataType.Boolean:
+                    return item is bool;
+                case DataType.Integer:
+                    return item is int;
+                case DataType.Double:
+                    return item is double;
+                case DataType.String:
+                    return item is string;
+                // Add more cases 
+                default:
+                    return false; // Item does not match any supported type
+            }
         }
 
         #endregion
