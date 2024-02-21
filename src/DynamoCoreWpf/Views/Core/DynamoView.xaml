@@ -719,8 +719,7 @@
                         <MenuItem Name="UpdateNodeIcons"
                                   Header="{x:Static p:Resources.UpdateNodeIconsDebugMenu}"
                                   Click="UpdateNodeIcons_Click"
-                                  IsCheckable="False"
-                                  Visibility="{Binding Converter={StaticResource UpdateIconDebugModeToVisibilityCollapsedConverter}}"/>
+                                  IsCheckable="False" />
                     </MenuItem>
                 </Menu>
 
