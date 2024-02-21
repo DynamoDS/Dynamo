@@ -1122,6 +1122,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the TSpline nodes experiment toggle is visible from feature flag
+        /// </summary>
+        public bool IsTSplineNodesExperimentToggleVisible
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false;
+            }
+        }
+
+        /// <summary>
         /// Contains the numbers of result of the ML recommendation
         /// </summary>
         public int MLRecommendationNumberOfResults
@@ -1208,6 +1219,23 @@ namespace Dynamo.ViewModels
             {
                 HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
                 RaisePropertyChanged(nameof(EnableTSplineIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Enable Paneling nodes" toogle button
+        /// </summary>
+        public bool EnablePanelingIsChecked
+        {
+            get
+            {
+                return !preferenceSettings.NamespacesToExcludeFromLibrary.Contains(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel");
+            }
+            set
+            {
+                HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.Panel");
+                RaisePropertyChanged(nameof(EnablePanelingIsChecked));
             }
         }
 
@@ -1758,6 +1786,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableTSplineNodes), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(EnablePanelingIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnablePanelingNodes), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowPreviewBubbles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);

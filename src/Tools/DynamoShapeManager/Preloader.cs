@@ -59,7 +59,6 @@ namespace DynamoShapeManager
             : this(rootFolder, new[]
             {
                 new Version(230,0,0),
-                new Version(229,0,0),
             })
         {
         }

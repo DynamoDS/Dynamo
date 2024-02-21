@@ -117,7 +117,7 @@ namespace Dynamo.ViewModels
             var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
             var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
             var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
-            
+
             var termsOfUseView = new TermsOfUseView(touFilePath);
             termsOfUseView.Closed += TermsOfUseView_Closed;
             isTermsOfUseCreated = true;
@@ -251,12 +251,12 @@ namespace Dynamo.ViewModels
         public ICommand ToggleLoginStateCommand { get; private set; }
 
         /// <summary>
-        /// Contains all votes the user has been submitted.
+        /// Contains all votes the user has submitted.
         /// Will allow the user to vote for a package they have not upvoted before
         /// </summary>
         private List<string> Uservotes { get; set; }
 
-        internal PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
+        internal PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model)
         {
             this.DynamoViewModel = dynamoViewModel;
             this.AuthenticationManager = dynamoViewModel.Model.AuthenticationManager;
@@ -272,11 +272,6 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("LoginState");
                     RaisePropertyChanged("Username");
                 };
-            }
-
-            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn) && !dynamoViewModel.Model.NoNetworkMode)
-            {
-                Uservotes = Model.UserVotes();
             }
         }
 
@@ -328,7 +323,7 @@ namespace Dynamo.ViewModels
                     return;
                 }
             }
-            
+
             MessageBoxService.Show(
                 ViewModelOwner,
                 Resources.MessageSelectSymbolNotFound,
@@ -422,8 +417,8 @@ namespace Dynamo.ViewModels
                 }
                 MessageBoxService.Show(
                     ViewModelOwner,
-                    Resources.MessageGettingNodeError, 
-                    Resources.SelectionErrorMessageBoxTitle, 
+                    Resources.MessageGettingNodeError,
+                    Resources.SelectionErrorMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Question);
             }
 
@@ -458,7 +453,7 @@ namespace Dynamo.ViewModels
 
                 if (pkg != null)
                 {
-                    var m = Dynamo.Wpf.Utilities.MessageBoxService.Show(ViewModelOwner, 
+                    var m = Dynamo.Wpf.Utilities.MessageBoxService.Show(ViewModelOwner,
                         String.Format(Resources.MessageSubmitSameNamePackage,
                         DynamoViewModel.BrandingResourceProvider.ProductName, pkg.Name),
                         Resources.PackageWarningMessageBoxTitle,
@@ -482,6 +477,8 @@ namespace Dynamo.ViewModels
         {
             CachedPackageList = new List<PackageManagerSearchElement>();
 
+            // Calls to Model.UserVotes and Model.ListAll might take a long time to run (so do not use them syncronously in the UI thread)
+            Uservotes = this.Model.UserVotes();
             foreach (var header in Model.ListAll())
             {
                 var ele = new PackageManagerSearchElement(header);
@@ -492,7 +489,7 @@ namespace Dynamo.ViewModels
                     ele.HasUpvote = Uservotes.Contains(header._id);
                 }
 
-                CachedPackageList.Add( ele );
+                CachedPackageList.Add(ele);
             }
 
             return CachedPackageList;
@@ -556,7 +553,7 @@ namespace Dynamo.ViewModels
                     MessageBoxImage.Error);
                 return;
             }
-            
+
             ExecutePackageDownload(packageInfo.Name, version, downloadPath);
         }
 
@@ -572,8 +569,8 @@ namespace Dynamo.ViewModels
         /// <param name="duplicatePackage">local package found to be duplicate of one being downloaded</param>
         /// <param name="dependencyConflicts">List of packages that are in conflict with the dependencies of the package version to be downloaded (does not include the main package)</param>
         /// <returns>True if the User opted to continue with the download operation. False otherwise</returns>
-        private bool WarnAboutDuplicatePackageConflicts(PackageVersion package, 
-                                                        Package duplicatePackage, 
+        private bool WarnAboutDuplicatePackageConflicts(PackageVersion package,
+                                                        Package duplicatePackage,
                                                         List<Package> dependencyConflicts)
         {
             var packageToDownload = $"{package.name} {package.version}";
@@ -631,9 +628,9 @@ namespace Dynamo.ViewModels
                     {
                         dialogResult = MessageBoxService.Show(
                             String.Format(Resources.MessageAlreadyInstallDynamo,
-                            DynamoViewModel.BrandingResourceProvider.ProductName, dupPkg, packageToDownload), 
+                            DynamoViewModel.BrandingResourceProvider.ProductName, dupPkg, packageToDownload),
                             Resources.PackagesInUseConflictMessageBoxTitle,
-                            MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel }, 
+                            MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel },
                             MessageBoxImage.Exclamation);
 
                         if (dialogResult != MessageBoxResult.OK)
@@ -673,7 +670,7 @@ namespace Dynamo.ViewModels
 
                 immediateUninstalls.Add(pkg);
             }
-                
+
             if (builtinPackages.Any())
             {
                 // Conflicts with builtin packages
@@ -684,7 +681,7 @@ namespace Dynamo.ViewModels
                     Resources.BuiltInPackageConflictMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
-                if(dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return false;
+                if (dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return false;
             }
 
             if (uninstallRequiringUserModifications.Any())
@@ -692,12 +689,12 @@ namespace Dynamo.ViewModels
                 var conflictingPkgs = JoinPackageNames(uninstallRequiringUserModifications);
                 var message = string.Format(Resources.MessageForceInstallOrUninstallToContinue, packageToDownload, conflictingPkgs,
                     DynamoViewModel.BrandingResourceProvider.ProductName);
-                
+
                 var dialogResult = MessageBoxService.Show(ViewModelOwner, message,
                     Resources.PackagesInUseConflictMessageBoxTitle,
                     MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
-                if(dialogResult == MessageBoxResult.No || dialogResult == MessageBoxResult.None) return false;
+                if (dialogResult == MessageBoxResult.No || dialogResult == MessageBoxResult.None) return false;
             }
 
             var settings = DynamoViewModel.Model.PreferenceSettings;
@@ -941,7 +938,7 @@ namespace Dynamo.ViewModels
                 }
             }
         }
-       
+
         /// <summary>
         /// This method downloads the package represented by the PackageDownloadHandle,
         /// 
@@ -957,7 +954,7 @@ namespace Dynamo.ViewModels
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
-       
+
             return Task.Factory.StartNew(() =>
             {
                 // Attempt to download package

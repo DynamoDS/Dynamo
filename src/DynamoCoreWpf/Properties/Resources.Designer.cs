@@ -7485,6 +7485,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Paneling nodes.
+        /// </summary>
+        public static string PreferencesViewEnablePanelingNodes {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnablePanelingNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to On launch, remember open extensions panels from last session.
         /// </summary>
         public static string PreferencesViewEnablePersistExtensions {
