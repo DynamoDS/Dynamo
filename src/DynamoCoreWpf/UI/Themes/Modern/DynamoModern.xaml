@@ -1982,13 +1982,10 @@
                                  IsReadOnly="{TemplateBinding IsReadOnly}"
                                  Visibility="Hidden" />
                         <TextBlock x:Name="PART_ReadOnlyTextBlock"
-                                 Margin="0,0,25,4"
+                                 Margin="10,0,20,0"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center"
                                  Focusable="True"
-                                 FontFamily="{StaticResource ArtifaktElementRegular}"
-                                 FontSize="18px"
-                                 Foreground="#F5F5F5"
                                  TextWrapping="Wrap"
                                  TextTrimming="CharacterEllipsis"
                                  Visibility="Collapsed" /> 
