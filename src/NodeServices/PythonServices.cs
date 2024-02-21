@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
@@ -205,7 +207,7 @@ namespace Dynamo.PythonServices
             {
                 return;
             }
-
+            MetadataLoadContext mlc = null;
             // Currently we are using try-catch to validate loaded assembly and Singleton Instance method exist
             // but we can optimize by checking all loaded types against evaluators interface later
             try
@@ -218,15 +220,7 @@ namespace Dynamo.PythonServices
                     if (eType == null) return;
 
                     instanceProp = eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static);
-                    if (instanceProp == null) return;
-
-                    //at this point we have found an assembly that contains a python engine
-                    //and is correctly formed, let's see if we can load its dependencies now
-                    //this will help test that it will not fail to load later outside of a try / catch for example.
-                    foreach (var asm in assembly.GetReferencedAssemblies())
-                    {
-                        Assembly.Load(asm);
-                    }
+                    if (instanceProp == null) return;  
                 }
                 catch {
                     // Ignore exceptions from iterating assembly types.
@@ -239,6 +233,24 @@ namespace Dynamo.PythonServices
                     throw new Exception($"Could not get a valid PythonEngine instance by calling the {eType.Name}.{PythonEvaluatorSingletonInstance} method");
                 }
 
+                // Retrieve the location of the assembly, net runtime assemblies, dynamo assemblies, and assemblies in the same directory tree as the python assembly.
+                var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+                var dynCoreAssemblies = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll",SearchOption.AllDirectories).Select(x=>x.FullName);
+                var localAssemblies = new FileInfo(assembly.Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
+
+                // Create PathAssemblyResolver that can resolve assemblies using the created list.
+                var resolver = new PathAssemblyResolver(runtimeAssemblies.Concat(dynCoreAssemblies).Concat(localAssemblies));
+                mlc = new MetadataLoadContext(resolver);
+               
+
+                //at this point we have found an assembly that contains a python engine
+                //and is correctly formed, let's see if we can load its dependencies in the mlc
+                //this will help test that it will not fail to load later outside of a try / catch for example.
+                foreach (var asm in assembly.GetReferencedAssemblies())
+                {
+                  var mlcasm = mlc.LoadFromAssemblyName(asm);
+                }
+
                 if (GetEngine(engine.Name) == null)
                 {
                     AvailableEngines.Add(engine);
@@ -247,6 +259,10 @@ namespace Dynamo.PythonServices
             catch(Exception ex)
             {
                 throw new Exception($"Failed to add a Python engine from assembly {assembly.GetName().Name}.dll with error: {ex.Message}");
+            }
+            finally
+            {
+                mlc?.Dispose();
             }
         }
     }
