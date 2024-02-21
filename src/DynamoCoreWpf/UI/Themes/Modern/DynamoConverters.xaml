@@ -131,7 +131,6 @@
     <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
     <controls:ConfidenceScoreFormattingConverter x:Key="ConfidenceScoreFormattingConverter" />
     <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
-    <controls:UpdateIconDebugModeToVisibilityCollapsedConverter x:Key="UpdateIconDebugModeToVisibilityCollapsedConverter" />
     <controls:NodeTypeToColorConverter
         x:Key="NodeTypeToColorConverter"
         FalseBrush="#777777"

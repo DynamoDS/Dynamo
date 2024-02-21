@@ -3400,24 +3400,6 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-    public class UpdateIconDebugModeToVisibilityCollapsedConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (DebugModes.IsEnabled("UpdateNodeIcons"))
-            {
-                return Visibility.Visible;
-            }
-
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
 
     /// <summary>
     /// Converter is used in WatchTree.xaml 
