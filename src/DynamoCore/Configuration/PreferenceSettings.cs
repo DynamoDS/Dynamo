@@ -856,7 +856,7 @@ namespace Dynamo.Configuration
         /// This property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
-        internal Version ironPythonResolveTargetVersion = new Version(3, 0, 0);
+        internal Version ironPythonResolveTargetVersion = new Version(3, 2, 0);
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
@@ -1148,9 +1148,11 @@ namespace Dynamo.Configuration
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                NamespacesToExcludeFromLibrary.Add(
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
-                );
+                NamespacesToExcludeFromLibrary = new List<string>()
+                {
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel"
+                };  
                 NamespacesToExcludeFromLibrarySpecified = true;
             }
         }

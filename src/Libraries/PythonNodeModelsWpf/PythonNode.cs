@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -99,8 +100,7 @@ namespace PythonNodeModelsWpf
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
             nodeView.MainContextMenu.Items.Add(learnMoreItem);
-
-            nodeView.UpdateLayout();
+            
 
             nodeView.MouseDown += View_MouseDown;
             nodeModel.DeletionStarted += NodeModel_DeletionStarted;
