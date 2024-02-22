@@ -231,7 +231,7 @@ namespace Dynamo.Utilities
         /// <param name="value">Field value</param>
         /// <param name="isTextField">This is used when the value need to be tokenized(broken down into pieces), whereas StringTextFields are tokenized.</param>
         /// <param name="isLast">This is used for the last value set in the document. It will fetch all the fields not set in the document and add them with an empty string.</param>
-        internal void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
+        internal void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false, bool isTSpline = false)
         {
             string[] indexedFields = null;
             if (startConfig.Directory.Equals(LuceneConfig.NodesIndexingDirectory))
@@ -247,6 +247,10 @@ namespace Dynamo.Utilities
             if (isTextField && !field.Equals("DocName"))
             {
                 ((TextField)doc.GetField(field)).SetStringValue(value);
+
+                //Index-time boost, setting the weight to 0 for TSpline nodes and 1 for the other nodes, this only apply for Description and SearchKeywords fields
+                ((TextField)doc.GetField(field)).SetStringValue(value);
+                ((TextField)doc.GetField(field)).Boost = isTSpline == true ? 0 : 1;
             }
             else
             {
@@ -559,6 +563,8 @@ namespace Dynamo.Utilities
             // If the index writer is still null, skip the indexing
             if (writer == null) return;
 
+            bool isTSplineNode = node.FullCategoryName.ToLower().Contains("tspline")? true: false;
+
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
 
             var categoryParts = node.FullCategoryName.Split('.');
@@ -572,10 +578,10 @@ namespace Dynamo.Utilities
             string nameParsed = nameParts.Length > 1 ? nameParts[nameParts.Length - 1] : node.Name;
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.NameSplitted), nameParsed);
 
-            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description, true, false, isTSplineNode);
             if (node.SearchKeywords.Count > 0)
             {
-                SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+                SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true, isTSplineNode);
             }
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
