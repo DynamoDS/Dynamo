@@ -716,6 +716,10 @@
                                   Header="{x:Static p:Resources.DynamoShowFileTrustWarning}"
                                   Click="FileTrustWarning_Click"
                                   IsCheckable="False" />
+                        <MenuItem Name="UpdateNodeIcons"
+                                  Header="{x:Static p:Resources.UpdateNodeIconsDebugMenu}"
+                                  Click="UpdateNodeIcons_Click"
+                                  IsCheckable="False" />
                     </MenuItem>
                 </Menu>
 

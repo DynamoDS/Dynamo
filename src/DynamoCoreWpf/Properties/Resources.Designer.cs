@@ -10052,6 +10052,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update Node Icons.
+        /// </summary>
+        public static string UpdateNodeIconsDebugMenu {
+            get {
+                return ResourceManager.GetString("UpdateNodeIconsDebugMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Agreements for Data Collection.
         /// </summary>
         public static string UsageReportPromptDialogTitle {
