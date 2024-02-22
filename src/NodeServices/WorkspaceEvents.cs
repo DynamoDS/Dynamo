@@ -87,7 +87,13 @@ namespace Dynamo.Events
             var handler = WorkspaceEnableLegacyPolyCurveSettingChanged;
             if (handler != null)
             {
-                handler(new WorkspacesSettingsChangedEventArgs(enableLegacyPolyCurveBehavior));
+                try
+                {
+                    handler(new WorkspacesSettingsChangedEventArgs(enableLegacyPolyCurveBehavior));
+                }
+                catch (NullReferenceException)
+                {
+                }
             }
         }
     }
