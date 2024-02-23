@@ -2379,6 +2379,7 @@ Dynamo.ViewModels.NodeViewModel.ShowDebugASTs.set -> void
 Dynamo.ViewModels.NodeViewModel.ShowExecutionPreview.get -> bool
 Dynamo.ViewModels.NodeViewModel.ShowExecutionPreview.set -> void
 Dynamo.ViewModels.NodeViewModel.ShowHelpCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.NodeViewModel.ShowNodeIcons.get -> string
 Dynamo.ViewModels.NodeViewModel.ShowsVisibilityToggles.get -> bool
 Dynamo.ViewModels.NodeViewModel.SnapInputEvent -> Dynamo.ViewModels.NodeViewModel.SnapInputEventHandler
 Dynamo.ViewModels.NodeViewModel.SnapInputEventHandler
@@ -2707,6 +2708,8 @@ Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.set -> void
+Dynamo.ViewModels.PreferencesViewModel.ShowNodeIcons.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.ShowNodeIcons.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPreviewBubbles.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowPreviewBubbles.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowWhitespaceIsChecked.get -> bool

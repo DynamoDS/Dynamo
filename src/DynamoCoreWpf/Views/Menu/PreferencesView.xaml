@@ -1281,6 +1281,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Orientation="Horizontal" 
@@ -1452,10 +1453,44 @@
                                             </Image>
                                         </Label>
                                     </StackPanel>
-                                    
+
+                                    <StackPanel Orientation="Horizontal" 
+                                        Margin="0,12,0,0" 
+                                        Grid.Row="5">
+                                        <ToggleButton Name="ShowNodeIconsToggle"
+                                              Width="{StaticResource ToggleButtonWidth}"
+                                              Height="{StaticResource ToggleButtonHeight}"
+                                              VerticalAlignment="Center"
+                                              IsChecked="{Binding Path=ShowNodeIcons}"
+                                              Style="{StaticResource EllipseToggleButton1}"/>
+                                                <Label Content="{x:Static p:Resources.PreferencesViewShowNodeIcons}" 
+                                           VerticalAlignment="Center"
+                                           Margin="10,0,0,0"
+                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                            Name="ShowNodeIconsInfoLabel"
+                                            VerticalAlignment="Center" 
+                                            Height="26" 
+                                            Width="53"
+                                            Margin="0 3 0 0">
+                                            <Image
+                                                Margin="5,3,0,0"
+                                                Width="14"
+                                                Height="14"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource QuestionIcon}"
+                                                ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                            <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowNodeIconsTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
+                                    </StackPanel>
+
                                     <Grid x:Name="GraphicHelpersScale"
                                           Margin="0 12 0 5"
-                                          Grid.Row="5">
+                                          Grid.Row="6">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>

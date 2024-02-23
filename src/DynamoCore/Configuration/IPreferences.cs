@@ -152,6 +152,11 @@ namespace Dynamo.Interfaces
         /// Return a list of GraphChecksumItems
         /// </summary>
         List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
+
+        /// <summary>
+        /// Indicates if node icons should be displayed on nodes.
+        /// </summary>
+        bool ShowNodeIcons { get; set; }
     }
 
     /// <summary>

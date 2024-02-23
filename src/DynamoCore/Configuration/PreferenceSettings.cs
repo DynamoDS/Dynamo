@@ -179,6 +179,10 @@ namespace Dynamo.Configuration
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
         public bool ShowPreviewBubbles { get; set; }
+        /// <summary>
+        /// Indicates if node icons should be displayed on nodes.
+        /// </summary>
+        public bool ShowNodeIcons { get; set; }
 
         /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
@@ -906,6 +910,7 @@ namespace Dynamo.Configuration
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;
+            ShowNodeIcons = true;
             ShowCodeBlockLineNumber = true;
             ShowConnector = true;
             ShowConnectorToolTip = true;
