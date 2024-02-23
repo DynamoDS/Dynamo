@@ -6,6 +6,7 @@ using System.Windows;
 using Dynamo.Wpf;
 using CoreNodeModels;
 using System.Windows.Data;
+using System.Runtime.InteropServices;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -43,7 +44,7 @@ namespace CoreNodeModelsWpf.Nodes
             var dropDownTextBlock = dropdown.Template.FindName("PART_ReadOnlyTextBlock", dropdown) as TextBlock;
             if (dropDownTextBlock != null)
             {
-                dropDownTextBlock.Visibility = Visibility.Visible;
+                model.IsVisibleDropDownTextBlock = true;
             }
 
             var dropDownContent = dropdown.Template.FindName("ContentSite", dropdown) as ContentPresenter;

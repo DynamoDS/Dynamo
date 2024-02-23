@@ -1988,7 +1988,7 @@
                                  Focusable="True"
                                  TextWrapping="Wrap"
                                  TextTrimming="CharacterEllipsis"
-                                 Visibility="Collapsed" /> 
+                                 Visibility="{Binding IsVisibleDropDownTextBlock, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" /> 
                         <Popup Name="Popup"
                                AllowsTransparency="True"
                                Focusable="False"
