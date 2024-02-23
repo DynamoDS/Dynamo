@@ -231,6 +231,7 @@ namespace Dynamo.Utilities
         /// <param name="value">Field value</param>
         /// <param name="isTextField">This is used when the value need to be tokenized(broken down into pieces), whereas StringTextFields are tokenized.</param>
         /// <param name="isLast">This is used for the last value set in the document. It will fetch all the fields not set in the document and add them with an empty string.</param>
+        /// <param name="isTSpline">Indicate if the field being indexed belongs to a T-Spline node or not</param>
         internal void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false, bool isTSpline = false)
         {
             string[] indexedFields = null;
