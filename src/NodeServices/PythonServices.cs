@@ -39,7 +39,9 @@ namespace Dynamo.PythonServices
     public enum EvaluationState { Success, Failed }
 
     /// <summary>
-    /// This abstract class is intended to act as a base class for different python engines
+    /// This abstract class is intended to act as a base class for different python engines.
+    /// When you derive from this class to implement a new python engine, ensure all referenced assemblies from the
+    /// assembly that contains your python engine type are loadable at runtime or Dynamo will not load your python engine type.
     /// </summary>
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
