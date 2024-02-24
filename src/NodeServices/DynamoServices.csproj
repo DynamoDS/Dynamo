@@ -16,7 +16,4 @@
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Reflection.MetadataLoadContext" Version="8.0.0" />
-  </ItemGroup>
 </Project>
