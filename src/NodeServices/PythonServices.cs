@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
@@ -37,7 +39,9 @@ namespace Dynamo.PythonServices
     public enum EvaluationState { Success, Failed }
 
     /// <summary>
-    /// This abstract class is intended to act as a base class for different python engines
+    /// This abstract class is intended to act as a base class for different python engines.
+    /// When you derive from this class to implement a new python engine, ensure all referenced assemblies from the
+    /// assembly that contains your python engine type are loadable at runtime or Dynamo will not load your python engine type.
     /// </summary>
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
@@ -104,6 +108,9 @@ namespace Dynamo.PythonServices
             new Lazy<PythonEngineManager>
             (() => new PythonEngineManager());
 
+        private readonly string[] dotNetRuntimePaths;
+        private readonly IEnumerable<string> dynCorePaths;
+
         #region Public members
         /// <summary>
         /// The actual instance stored in the Singleton class
@@ -129,7 +136,6 @@ namespace Dynamo.PythonServices
         /// IronPython2 Engine name
         /// </summary>
         internal static readonly string IronPython2EngineName = "IronPython2";
-
         internal static string PythonEvaluatorSingletonInstance = "Instance";
 
         internal static string IronPythonEvaluatorClass = "IronPythonEvaluator";
@@ -164,6 +170,8 @@ namespace Dynamo.PythonServices
                FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
 
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
+            dotNetRuntimePaths = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+            dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
         }
 
         private void LoadDefaultPythonEngine(Assembly a)
@@ -205,7 +213,6 @@ namespace Dynamo.PythonServices
             {
                 return;
             }
-
             // Currently we are using try-catch to validate loaded assembly and Singleton Instance method exist
             // but we can optimize by checking all loaded types against evaluators interface later
             try
@@ -220,25 +227,60 @@ namespace Dynamo.PythonServices
                     instanceProp = eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static);
                     if (instanceProp == null) return;
                 }
-                catch {
+                catch
+                {
                     // Ignore exceptions from iterating assembly types.
                     return;
                 }
 
                 PythonEngine engine = (PythonEngine)instanceProp.GetValue(null);
-                if (engine == null) 
+                if (engine == null)
                 {
                     throw new Exception($"Could not get a valid PythonEngine instance by calling the {eType.Name}.{PythonEvaluatorSingletonInstance} method");
                 }
+
+                VerifyEngineReferences(assembly,dotNetRuntimePaths.Concat(dynCorePaths));
 
                 if (GetEngine(engine.Name) == null)
                 {
                     AvailableEngines.Add(engine);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception($"Failed to add a Python engine from assembly {assembly.GetName().Name}.dll with error: {ex.Message}");
+            }
+        }
+        /// <summary>
+        /// Attempts to verify that the dependencies of the given assembly can be found and loaded into an MetadataLoadContext.
+        /// Will throw exceptions if assemblies cannot be loaded.
+        /// Used to avoid loading python engines that can only be partially loaded and will fail later at a worse time.
+        /// </summary>
+        /// <param name="assembly">assembly to check references</param>
+        /// <param name="standardPaths">standard set of assembly paths that will be used to resolve the assemblt references</param>
+        private static void VerifyEngineReferences(Assembly assembly, IEnumerable<string> standardPaths)
+        {
+            MetadataLoadContext mlc = null;
+            //get assembly paths in the same directory tree as the assembly we're verifying.
+            var localAssemPaths = new FileInfo(assembly.Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
+
+            // Create PathAssemblyResolver that can resolve assemblies using the list of paths.
+            var resolver = new PathAssemblyResolver(standardPaths.Concat(localAssemPaths));
+            mlc = new MetadataLoadContext(resolver);
+
+            //at this point we have found an assembly that contains a python engine
+            //and is correctly formed, let's see if we can load its dependencies in the mlc
+            //this will help test that it will not fail to load later outside of a try / catch for example.
+            try
+            {
+                foreach (var asm in assembly.GetReferencedAssemblies())
+                {
+                    var mlcasm = mlc.LoadFromAssemblyName(asm);
+                }
+            }
+            finally
+            {
+                mlc?.Dispose();
             }
         }
     }
