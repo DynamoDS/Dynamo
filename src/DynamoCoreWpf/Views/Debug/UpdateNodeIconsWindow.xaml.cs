@@ -20,15 +20,15 @@ namespace Dynamo.Wpf.Views.Debug
     {
         #region properties
         //The path that will be used to store log files related to this process
-        public static readonly string logPath = Path.Combine(Directory.GetCurrentDirectory(), @"NodeIconUpdateLog");
-        public string errorFile = Path.Combine(logPath, @"error_icons.csv");
-        public string logFile = Path.Combine(logPath, @"success_icons.csv");
+        private static readonly string logPath = Path.Combine(Directory.GetCurrentDirectory(), @"NodeIconUpdateLog");
+        private string errorFile = Path.Combine(logPath, @"error_icons.csv");
+        private string logFile = Path.Combine(logPath, @"success_icons.csv");
 
 
         IEnumerable<NodeSearchElement> entries;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+        internal void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

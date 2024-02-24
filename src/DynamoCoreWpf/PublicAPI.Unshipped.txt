@@ -1,4 +1,4 @@
-﻿abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
+abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
 abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.set -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Dispose() -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Name.get -> string
@@ -37,6 +37,9 @@ Dynamo.Controls.AutoLacingToVisibilityConverter
 Dynamo.Controls.AutoLacingToVisibilityConverter.AutoLacingToVisibilityConverter() -> void
 Dynamo.Controls.AutoLacingToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.AutoLacingToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.Base64ToImageConverter
+Dynamo.Controls.Base64ToImageConverter.Base64ToImageConverter() -> void
+Dynamo.Controls.Base64ToImageConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BinaryRadioButtonCheckedConverter
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.BinaryRadioButtonCheckedConverter() -> void
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
