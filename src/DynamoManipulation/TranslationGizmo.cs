@@ -544,8 +544,9 @@ namespace Dynamo.Manipulation
             axis1.Scale(axisOriginOffset);
             var axisStart = Origin.Position + axis1;
 
-            axis.Scale(scale);
-            var axisEnd = Origin.Position + axis;
+            var axis2 = new Vector(axis.X, axis.Y, axis.Z);
+            axis2.Scale(scale);
+            var axisEnd = Origin.Position + axis2;
             var color = GetAxisColor(axisType);
             package.AddLineStripVertexCount(2);
             package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
