@@ -501,16 +501,28 @@ namespace DynamoUtilities
         }
 
         /// <summary>
-        /// This function will load embedded resources such as HTML and JS files and return the content as a string
+        /// Loads embedded resources such as HTML and JS files and returns the content as a string.
         /// </summary>
-        /// <param name="resourcePath">The resource path to rreturn</param>
-        /// <returns>The embeded resource as string</returns>
+        /// <param name="resourcePath">The resource path to return.</param>
+        /// <param name="assembly">The assembly containing the resource.</param>
+        /// <returns>The embedded resource as a string.</returns>
         public static string LoadEmbeddedResourceAsString(string resourcePath, Assembly assembly)
         {
+            if (string.IsNullOrEmpty(resourcePath))
+                throw new ArgumentNullException(nameof(resourcePath), "The resource path cannot be null or empty.");
+
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly), "The assembly cannot be null.");
+
             using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
-            using (StreamReader reader = new StreamReader(stream))
             {
-                return reader.ReadToEnd();
+                if (stream == null)
+                    throw new FileNotFoundException("The specified resource was not found in the assembly.", resourcePath);
+
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
             }
         }
 
@@ -520,8 +532,15 @@ namespace DynamoUtilities
         /// <param name="resourcePath">The location of the font resource</param>
         /// <param name="outputPath">The temporary path to save the resource to</param>
         /// <param name="outputFileName">The name of the temporary resource file</param>
+        /// <param name="assembly">The assembly containing the resource</param>
         public static void ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, Assembly assembly)
         {
+            if (string.IsNullOrEmpty(resourcePath) || string.IsNullOrEmpty(outputPath) || string.IsNullOrEmpty(outputFileName))
+                throw new ArgumentNullException($"One of the input arguments is null or empty.");
+
+            if (assembly == null)
+                throw new ArgumentNullException($"The assembly cannot be null.");
+
             using (var stream = assembly.GetManifestResourceStream(resourcePath))
             {
                 if (stream != null)
