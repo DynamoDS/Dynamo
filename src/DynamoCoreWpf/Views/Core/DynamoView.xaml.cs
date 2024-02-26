@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -16,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Configuration;
-using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
@@ -25,7 +23,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search.SearchElements;
@@ -76,7 +73,6 @@ namespace Dynamo.Controls
         private readonly Stopwatch _timer;
 
         #region Open Workspace performance tools
-        private static int idleCounter;
         private Stopwatch WorkspaceRenderedTimer;
         #endregion
 
@@ -378,22 +374,10 @@ namespace Dynamo.Controls
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
             }
 
-            void Hooks_DispatcherInactive(object sender, EventArgs e)
-            {
-                if (idleCounter < 10)
-                {
-                    Interlocked.Increment(ref idleCounter);
-                    return;
-                }
-
-                Interlocked.Exchange(ref idleCounter, 0);
+            Dispatcher.BeginInvoke(new Action(() => {
                 dynamoViewModel.Model.Logger.Log($"Opened workspace found at {workspace.FileName} in {WorkspaceRenderedTimer.Elapsed}");
                 WorkspaceRenderedTimer.Reset();
-
-                Dispatcher.Hooks.DispatcherInactive -= Hooks_DispatcherInactive;
-            }
-
-            Dispatcher.Hooks.DispatcherInactive += Hooks_DispatcherInactive;
+            }), DispatcherPriority.Background);
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
