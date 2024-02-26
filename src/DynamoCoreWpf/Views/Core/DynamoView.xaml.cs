@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -73,6 +74,12 @@ namespace Dynamo.Controls
         private double restoreWidth = 0;
         private DynamoViewModel dynamoViewModel;
         private readonly Stopwatch _timer;
+
+        #region Open Workspace performance tools
+        private static int idleCounter;
+        private Stopwatch WorkspaceRenderedTimer;
+        #endregion
+
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private readonly LoginService loginService;
@@ -245,6 +252,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestCloseHomeWorkSpace += OnRequestCloseHomeWorkSpace;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
+            this.dynamoViewModel.Model.WorkspaceOpening += OnWorkspaceOpening;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             this.dynamoViewModel.Model.WorkspaceAdded += OnWorkspaceAdded;
             this.dynamoViewModel.Model.WorkspaceHidden += OnWorkspaceHidden;
@@ -264,6 +272,12 @@ namespace Dynamo.Controls
 
             DefaultMinWidth = MinWidth;
     }
+
+        private void OnWorkspaceOpening(object obj)
+        {
+            WorkspaceRenderedTimer ??= Stopwatch.StartNew();
+            WorkspaceRenderedTimer.Start();
+        }
 
         private void OnRequestCloseHomeWorkSpace()
         {
@@ -362,7 +376,24 @@ namespace Dynamo.Controls
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
-            }            
+            }
+
+            void Hooks_DispatcherInactive(object sender, EventArgs e)
+            {
+                if (idleCounter < 10)
+                {
+                    Interlocked.Increment(ref idleCounter);
+                    return;
+                }
+
+                Interlocked.Exchange(ref idleCounter, 0);
+                dynamoViewModel.Model.Logger.Log($"Opened workspace found at {workspace.FileName} in {WorkspaceRenderedTimer.Elapsed}");
+                WorkspaceRenderedTimer.Reset();
+
+                Dispatcher.Hooks.DispatcherInactive -= Hooks_DispatcherInactive;
+            }
+
+            Dispatcher.Hooks.DispatcherInactive += Hooks_DispatcherInactive;
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
@@ -2015,6 +2046,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestCloseHomeWorkSpace -= OnRequestCloseHomeWorkSpace;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
+            this.dynamoViewModel.Model.WorkspaceOpening -= OnWorkspaceOpening;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
             this.dynamoViewModel.Model.WorkspaceAdded -= OnWorkspaceAdded;
             this.dynamoViewModel.Model.WorkspaceHidden -= OnWorkspaceHidden;
