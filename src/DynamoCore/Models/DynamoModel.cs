@@ -704,7 +704,6 @@ namespace Dynamo.Models
             }
             //align disable analytics with nonetwork mode, this is done in other entry points(CLI,Sandbox etc) - but
             //not all integrators will use those entry points, some may just create a DynamoModel directly.
-            //TODO write test that checks these are equal.
             Analytics.DisableAnalytics = NoNetworkMode;
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
