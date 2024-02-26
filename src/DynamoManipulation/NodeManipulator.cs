@@ -53,25 +53,13 @@ namespace Dynamo.Manipulation
 
         #region properties
 
-        protected IWorkspaceModel WorkspaceModel
-        {
-            get { return manipulatorContext.WorkspaceModel; }
-        }
+        protected IWorkspaceModel WorkspaceModel => manipulatorContext.WorkspaceModel;
 
-        protected ICommandExecutive CommandExecutive
-        {
-            get { return manipulatorContext.CommandExecutive; }
-        }
+        protected ICommandExecutive CommandExecutive => manipulatorContext.CommandExecutive;
 
-        protected string UniqueId
-        {
-            get { return manipulatorContext.UniqueId; }
-        }
+        protected string UniqueId => manipulatorContext.UniqueId;
 
-        protected string ExtensionName
-        {
-            get { return manipulatorContext.Name; }
-        }
+        protected string ExtensionName => manipulatorContext.Name;
 
         protected IGizmo GizmoInAction { get; private set; }
 
@@ -83,15 +71,9 @@ namespace Dynamo.Manipulation
         /// </summary>
         internal abstract Point Origin { get; }
 
-        internal IWatch3DViewModel BackgroundPreviewViewModel
-        {
-            get { return manipulatorContext.BackgroundPreviewViewModel; }
-        }
+        internal IWatch3DViewModel BackgroundPreviewViewModel => manipulatorContext.BackgroundPreviewViewModel;
 
-        internal IRenderPackageFactory RenderPackageFactory
-        {
-            get { return manipulatorContext.RenderPackageFactory; }
-        }
+        internal IRenderPackageFactory RenderPackageFactory => manipulatorContext.RenderPackageFactory;
 
         internal Point3D? CameraPosition { get; private set; }
         
@@ -175,7 +157,6 @@ namespace Dynamo.Manipulation
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            //if (Origin != null) Origin.Dispose();
         }
 
         /// <summary>
@@ -211,7 +192,7 @@ namespace Dynamo.Manipulation
                     GizmoInAction = item;
 
                     var nodes = OnGizmoClick(item, hitObject).ToList();
-                    if (nodes.Any())
+                    if (nodes.Count != 0)
                     {
                         WorkspaceModel.RecordModelsForModification(nodes);
                     }
@@ -276,7 +257,6 @@ namespace Dynamo.Manipulation
             if (originAfterMove != null)
             {
                 var offsetPos = new Point(originAfterMove.Position + offset);
-                //originAfterMove.Dispose();
                 originAfterMove = offsetPos;
             }
 
@@ -354,8 +334,7 @@ namespace Dynamo.Manipulation
         {
             bool manipulate = false;
             inputNode = null;
-            Tuple<int, NodeModel> val;
-            if (Node.InputNodes.TryGetValue(inputPortIndex, out val))
+            if (Node.InputNodes.TryGetValue(inputPortIndex, out var val))
             {
                 if (val != null)
                 {
@@ -408,8 +387,10 @@ namespace Dynamo.Manipulation
             if (inputNode != null)
             {
                 // Assign the input slider to the default value of the node's input port
-                var doubleNode = Node.InPorts[inputPortIndex].DefaultValue as DoubleNode;
-                if (doubleNode != null) inputNode.Value = doubleNode.Value;
+                if (Node.InPorts[inputPortIndex].DefaultValue is DoubleNode doubleNode)
+                {
+                    inputNode.Value = doubleNode.Value;
+                }
             }
             return inputNode;
         }
@@ -590,12 +571,6 @@ namespace Dynamo.Manipulation
             {
                 Node.ClearTransientWarning(warning);
             }
-
-            //if (originBeforeMove != null)
-            //    originBeforeMove.Dispose();
-     
-            //if (originAfterMove != null)
-            //    originAfterMove.Dispose();
 
             DeleteGizmos();
             DetachHandlers();
