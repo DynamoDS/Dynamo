@@ -375,7 +375,7 @@ namespace Dynamo.Controls
             }
 
             Dispatcher.BeginInvoke(new Action(() => {
-                dynamoViewModel.Model.Logger.Log($"Opened workspace found at {workspace.Name} in {WorkspaceRenderedTimer.Elapsed}");
+                dynamoViewModel.Model.Logger.Log($"Opened workspace named {workspace.Name} in {WorkspaceRenderedTimer.Elapsed}");
                 WorkspaceRenderedTimer.Reset();
             }), DispatcherPriority.Background);
         }
