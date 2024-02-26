@@ -10,7 +10,9 @@ namespace Dynamo.Tests
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("ProtoGeometry.dll");
         }
 
         [SetUp]
@@ -213,6 +215,45 @@ namespace Dynamo.Tests
                 //Check that the result match the expected position
                 Assert.AreEqual(nodesNamesList.ElementAt(i), expectedSearchResults2.ElementAt(i));
             }
+        }
+
+        //This test will validate that resulting nodes have a specific order when having T-Spline nodes in the nodes list.
+        [Test]
+        [Category("UnitTests")]
+        public void LuceneSearchTSplineNodesOrderingValidation()
+        {
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
+            string[] searchTerms = { "sphere", "cone" };
+
+            // Search for "sphere" and check that the results are correct based in the node name provided for the searchTerms
+            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerms[0]);
+
+            Assert.IsNotNull(nodesResult);
+            Assert.That(nodesResult.Count(), Is.GreaterThan(0));
+            var firstTSpline = nodesResult.Take(5).ToList().FindIndex(x => x.Class.ToLower().Contains("tspline"));
+
+            //Take the first 5 elements, get the ones that belong to the expected category and finally get the index in the list
+            var firstCatExpectedNode = nodesResult.Take(5).ToList().FindIndex(x => x.Class.ToLower().Contains(searchTerms[0]));
+
+            //Validate that the normal node (category Sphere) will be at index 0 (first place) and the TSpline node at index 3 (3 > 0)
+            Assert.That(firstTSpline > firstCatExpectedNode);
+
+            // Search for "cone "and check that the results are correct based in the node name provided for the searchTerms
+            nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerms[1]);
+
+            Assert.IsNotNull(nodesResult);
+            Assert.That(nodesResult.Count(), Is.GreaterThan(0));
+            firstTSpline = nodesResult.Take(5).ToList().FindIndex(x => x.Class.ToLower().Contains("tspline"));
+
+            //Take the first 5 elements, get the ones that belong to the expected category and finally get the index in the list
+            firstCatExpectedNode = nodesResult.Take(5).ToList().FindIndex(x => x.Class.ToLower().Contains(searchTerms[1]));
+
+            //Validate that T-Spline nodes are not found in the results
+            Assert.That(firstTSpline == -1);
+
+            //Validate that the normal node (category Cone) will be at index 0 (first place)
+            Assert.That(firstCatExpectedNode == 0);
+
         }
     }
 }
