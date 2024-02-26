@@ -3924,6 +3924,9 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PublishPackageRetainFolderStructureToggleButtonText" xml:space="preserve">
     <value>Retain folder structure</value>
   </data>
+  <data name="UpdateNodeIconsDebugMenu" xml:space="preserve">
+    <value>Update Node Icons</value>
+  </data>
   <data name="PreferencesViewEnablePanelingNodes" xml:space="preserve">
     <value>Enable Paneling nodes</value>
     <comment>Preferences | Features | Experimental | Enable Paneling nodes</comment>

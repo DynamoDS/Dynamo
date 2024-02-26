@@ -2620,6 +2620,8 @@ Dynamo.ViewModels.PreferencesViewModel.DisableTrustWarnings.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.EnableConfidenceLevelSlider.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.EnableHideNodesToggle.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.EnableManualScaleOverrides.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.EnablePanelingIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.EnablePanelingIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.EnableTSplineIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.EnableTSplineIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.Filters.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PackageFilter>
@@ -5063,6 +5065,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewEmptyStyleWarning.get -> s
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoComplete.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteTooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNotificationCenter.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewEnablePanelingNodes.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnablePersistExtensions.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableTSplineNodes.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewExperimentalLabel.get -> string

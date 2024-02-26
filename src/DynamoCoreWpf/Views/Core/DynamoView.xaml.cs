@@ -539,7 +539,13 @@ namespace Dynamo.Controls
 
             return tab;
         }
-
+        private void UpdateNodeIcons_Click(object sender, RoutedEventArgs e)
+        {
+            var updateNodeIconsWindow = new UpdateNodeIconsWindow(dynamoViewModel.Model.SearchModel.Entries);
+            updateNodeIconsWindow.Owner = this;
+            updateNodeIconsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            updateNodeIconsWindow.ShowDialog();
+        }
         /// <summary>
         /// Dock the window to right side bar panel.
         /// </summary>
