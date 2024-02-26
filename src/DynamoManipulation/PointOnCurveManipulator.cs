@@ -170,8 +170,6 @@ namespace Dynamo.Manipulation
 
         protected override void Dispose(bool disposing)
         {
-            //if(tangent != null) tangent.Dispose();
-
             base.Dispose(disposing);
         }
 

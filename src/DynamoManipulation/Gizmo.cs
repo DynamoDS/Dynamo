@@ -3,8 +3,6 @@ using System.Windows;
 using System.Windows.Media.Media3D;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
-//using Point = Autodesk.DesignScript.Geometry.Point;
-//using Vector = Autodesk.DesignScript.Geometry.Vector;
 using Point = Autodesk.GeometryPrimitives.Dynamo.Geometry.Point;
 using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
 
@@ -116,8 +114,6 @@ namespace Dynamo.Manipulation
         {
             get
             {
-                //if(origin != null) origin.Dispose();
-
                 var cameraPos = cameraPosition != null
                     ? new Point(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z)
                     : null;
@@ -134,7 +130,6 @@ namespace Dynamo.Manipulation
                         ManipulatorOrigin.Position.Z);
                 }
 
-                //var vec = Vector.ByTwoPoints(cameraPos, ManipulatorOrigin).Normalized();
                 var vec = (ManipulatorOrigin.Position - cameraPos.Position).Unit;
                 vec.Scale(zDepth);
                 origin = new Point(cameraPos.Position + vec);
@@ -210,8 +205,6 @@ namespace Dynamo.Manipulation
         public void Dispose()
         {
             Dispose(true);
-
-            //if(origin != null) origin.Dispose();
 
             BackgroundPreviewViewModel.ViewCameraChanged -= OnViewCameraChanged;
         }

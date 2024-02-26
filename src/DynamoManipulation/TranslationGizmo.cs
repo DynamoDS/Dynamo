@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using Autodesk.DesignScript.Interfaces;
-//using Autodesk.DesignScript.Geometry;
-//using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
@@ -200,15 +198,15 @@ namespace Dynamo.Manipulation
         {
             var tol = 0.0001;
             var xAxis = new Vector(ReferenceCoordinateSystem[0, 0], ReferenceCoordinateSystem[0, 1], ReferenceCoordinateSystem[0, 2]);
-            if (Math.Abs(axis.Unit % xAxis.Unit - 1) <= tol)
+            if ((axis * xAxis).IsNull(tol))
                 return Axes.xAxis;
 
             var yAxis = new Vector(ReferenceCoordinateSystem[1, 0], ReferenceCoordinateSystem[1, 1], ReferenceCoordinateSystem[1, 2]);
-            if (Math.Abs(axis.Unit % yAxis.Unit - 1) <= tol)
+            if ((axis * yAxis).IsNull(tol))
                 return Axes.yAxis;
 
             var zAxis = new Vector(ReferenceCoordinateSystem[2, 0], ReferenceCoordinateSystem[2, 1], ReferenceCoordinateSystem[2, 2]);
-            if (Math.Abs(axis.Unit % zAxis.Unit - 1) <= tol)
+            if ((axis * zAxis).IsNull(tol))
                 return Axes.zAxis;
 
             return Axes.randomAxis;
@@ -247,7 +245,9 @@ namespace Dynamo.Manipulation
             // intersection point (ip) = sp + t * d
             // equation of plane: n % (ip - p) = 0
             // substituting the intersection point into the plane equation:
-            var t = n % (p - sp) / (n % d);
+            if(n% d == 0) return null; // line is parallel to the plane
+
+            var t = (n % (p - sp)) / (n % d);
             var ip = sp + d * t;
 
             return new Point(ip);
@@ -301,19 +301,17 @@ namespace Dynamo.Manipulation
             {
                 // plane needs to be up-to-date at this time with the current value of Origin
                 var pt = Intersect(ray, plane);
+                if (pt == null) continue;
+
+                var vec = new Vector(pt.Position.X - Origin.Position.X, pt.Position.Y - Origin.Position.Y,
+                    pt.Position.Z - Origin.Position.Z);
+                var dot1 = plane.UAxis % vec;
+
+                var planeYAxis = plane.Normal * plane.UAxis;
+                var dot2 = planeYAxis % vec;
+                if (dot1 > 0 && dot2 > 0 && dot1 < scale / 2 && dot2 < scale / 2)
                 {
-                    if (pt == null) continue;
-
-                    var vec = new Vector(pt.Position.X - Origin.Position.X, pt.Position.Y - Origin.Position.Y,
-                        pt.Position.Z - Origin.Position.Z);
-                    var dot1 = plane.UAxis % vec;
-
-                    var planeYAxis = plane.Normal * plane.UAxis;
-                    var dot2 = planeYAxis % vec;
-                    if (dot1 > 0 && dot2 > 0 && dot1 < scale / 2 && dot2 < scale / 2)
-                    {
-                        return plane; //specific plane is hit
-                    }
+                    return plane; //specific plane is hit
                 }
             }
 
