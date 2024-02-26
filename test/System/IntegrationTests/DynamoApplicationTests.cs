@@ -74,6 +74,15 @@ namespace IntegrationTests
             Assert.AreEqual(true, Analytics.DisableAnalytics);
             model.ShutDown(false);
         }
+        [Test]
+        public void DynamoModelStartedWithNoNetworkModeFalse_DisablesAnalyticsCanBeTrue()
+        {
+            var startConfig = new DefaultStartConfiguration() { NoNetworkMode = false };
+            Analytics.DisableAnalytics = true;
+            var model = DynamoModel.Start(startConfig);
+            Assert.AreEqual(true, Analytics.DisableAnalytics);
+            model.ShutDown(false);
+        }
 
         [Test]
         public void IfASMPathInvalidExceptionNotThrown()
