@@ -375,9 +375,6 @@ namespace Dynamo.UI.Controls
         {
             files.Clear();
 
-
-            Stopwatch stopwatch = new Stopwatch();
-
             foreach (var filePath in filePaths.Where(x => x != null))
             {
                 try
@@ -418,10 +415,6 @@ namespace Dynamo.UI.Controls
                     DynamoViewModel.Model.Logger.Log("File path is not valid: " + ex.StackTrace);
                 }
             }
-
-            stopwatch.Stop(); // Stop the stopwatch
-
-            Debug.WriteLine($"Time taken to load {filePaths.Count()} files: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         /// <summary>

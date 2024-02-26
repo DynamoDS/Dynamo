@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Configuration;
-using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
@@ -24,7 +23,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search.SearchElements;
@@ -2640,9 +2638,7 @@ namespace Dynamo.Controls
         {
             get
             {
-                return true;
-                // TODO: replace with a similar flag to the below when deploying the feature
-                //return DynamoModel.FeatureFlags?.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false) ?? false;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNewAppHomeEnabled", false) ?? false;
             }
         }
 

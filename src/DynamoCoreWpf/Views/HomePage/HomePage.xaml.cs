@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -30,6 +31,7 @@ namespace Dynamo.UI.Views
         private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.DynamoHome.build.index.bundle.js";
         private static readonly string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderName = "embeddedFonts";
+        private static readonly string fontUrl = $"http://{virtualFolderName}/ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderPath = Path.Combine(Path.GetTempPath(), virtualFolderName);
 
         private string fontFilePath;
@@ -146,70 +148,55 @@ namespace Dynamo.UI.Views
             };
 
             //ContentRendered ensures that the webview2 component is visible.
-            await dynWebView.Initialize();
-            // Context menu disabled
-            this.dynWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            // Zoom control disabled
-            this.dynWebView.CoreWebView2.Settings.IsZoomControlEnabled = false;
-            this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
-
-            var assembly = Assembly.GetExecutingAssembly();
-
-            using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                htmlString = reader.ReadToEnd();
-            }
-
-            using (Stream stream = assembly.GetManifestResourceStream(jsEmbeddedFile))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                var jsString = reader.ReadToEnd();  
-                jsonString = jsString;
-            }
-
-            // Copy the embedded resource to a temporary folder
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(fontStylePath))
-            {
-                if (stream != null)
-                {
-                    var fontData = new byte[stream.Length];
-                    stream.Read(fontData, 0, fontData.Length);
-
-                    // Create the temporary folder if it doesn't exist
-                    Directory.CreateDirectory(virtualFolderPath);
-
-                    // Write the font file to the temporary folder
-                    fontFilePath = Path.Combine(virtualFolderPath, "ArtifaktElement-Regular.woff");
-                    File.WriteAllBytes(fontFilePath, fontData);
-                }
-            }
-
-            // Set up virtual host name to folder mapping
-            dynWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(virtualFolderName, virtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
-
-            htmlString = htmlString.Replace("mainJs", jsonString);
-
             try
             {
-                dynWebView.NavigateToString(htmlString);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+                await dynWebView.Initialize();
 
-            // Exposing commands to the React front-end
-            dynWebView.CoreWebView2.AddHostObjectToScript("scriptObject",
-               new ScriptHomeObject(RequestOpenFile,
-                                    RequestNewWorkspace,
-                                    RequestOpenWorkspace,
-                                    RequestNewCustomNodeWorkspace,
-                                    RequestApplicationLoaded,
-                                    RequestShowGuidedTour,
-                                    RequestShowSampleFilesInFolder,
-                                    RequestShowBackupFilesInFolder,
-                                    RequestShowTemplate));
+                // Set WebView2 settings
+                this.dynWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                this.dynWebView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
+
+                // Load the embeded resources
+                var assembly = Assembly.GetExecutingAssembly();
+
+                htmlString = PathHelper.LoadEmbeddedResourceAsString(htmlEmbeddedFile, assembly);
+                jsonString = PathHelper.LoadEmbeddedResourceAsString(jsEmbeddedFile, assembly);
+
+                // Embed the font
+                PathHelper.ExtractAndSaveEmbeddedFont(fontStylePath, virtualFolderPath, "ArtifaktElement-Regular.woff", assembly);
+
+                // Set up virtual host name to folder mapping
+                dynWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(virtualFolderName, virtualFolderPath, CoreWebView2HostResourceAccessKind.Allow);
+
+                htmlString = htmlString.Replace("mainJs", jsonString);
+                htmlString = htmlString.Replace("#fontStyle", fontUrl);
+
+                try
+                {
+                    dynWebView.NavigateToString(htmlString);
+                }
+                catch (Exception ex)
+                {
+                    this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                }
+
+                // Exposing commands to the React front-end
+                dynWebView.CoreWebView2.AddHostObjectToScript("scriptObject",
+                   new ScriptHomeObject(RequestOpenFile,
+                                        RequestNewWorkspace,
+                                        RequestOpenWorkspace,
+                                        RequestNewCustomNodeWorkspace,
+                                        RequestApplicationLoaded,
+                                        RequestShowGuidedTour,
+                                        RequestShowSampleFilesInFolder,
+                                        RequestShowBackupFilesInFolder,
+                                        RequestShowTemplate));
+            }
+            catch (ObjectDisposedException ex)
+            {
+                this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+            }
         }
 
         internal async void LoadingDone()   
@@ -224,9 +211,9 @@ namespace Dynamo.UI.Views
             if (recentFiles == null || !recentFiles.Any()) { return; }
 
             LoadGraphs(recentFiles);
-
-            var userLocale = "en";
-
+                
+            var userLocale = CultureInfo.CurrentCulture.Name;
+                
             if (dynWebView?.CoreWebView2 != null)
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");

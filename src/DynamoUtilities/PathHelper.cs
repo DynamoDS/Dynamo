@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -497,6 +498,45 @@ namespace DynamoUtilities
                 }
             }
             return val;
+        }
+
+        /// <summary>
+        /// This function will load embedded resources such as HTML and JS files and return the content as a string
+        /// </summary>
+        /// <param name="resourcePath">The resource path to rreturn</param>
+        /// <returns>The embeded resource as string</returns>
+        public static string LoadEmbeddedResourceAsString(string resourcePath, Assembly assembly)
+        {
+            using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        /// <summary>
+        /// This function will extract the embedded font file and save it to a specified directory
+        /// </summary>
+        /// <param name="resourcePath">The location of the font resource</param>
+        /// <param name="outputPath">The temporary path to save the resource to</param>
+        /// <param name="outputFileName">The name of the temporary resource file</param>
+        public static void ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, Assembly assembly)
+        {
+            using (var stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream != null)
+                {
+                    var fontData = new byte[stream.Length];
+                    stream.Read(fontData, 0, fontData.Length);
+
+                    // Create the output directory if it doesn't exist
+                    Directory.CreateDirectory(outputPath);
+
+                    // Write the font file to the output directory
+                    var fontFilePath = Path.Combine(outputPath, outputFileName);
+                    File.WriteAllBytes(fontFilePath, fontData);
+                }
+            }
         }
     }
 }
