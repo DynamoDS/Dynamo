@@ -699,10 +699,14 @@ namespace Dynamo.Models
                     // Do nothing for now
                 }
             }
+            //If network traffic is disabled, analytics should also be disabled - this is already done in
+            //our other entry points(CLI,Sandbox etc) - but
+            //not all integrators will use those entry points, some may just create a DynamoModel directly.
+            Analytics.DisableAnalytics = NoNetworkMode || Analytics.DisableAnalytics;
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client for web traffic reason.
-            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Analytics.DisableAnalytics)
+            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Analytics.DisableAnalytics && !NoNetworkMode)
             {
                 HandleAnalytics();
 
