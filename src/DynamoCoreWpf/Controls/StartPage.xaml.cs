@@ -377,7 +377,7 @@ namespace Dynamo.UI.Controls
                 try
                 {
                     // Skip files which were moved or deleted (consistent with Revit behavior)
-                    if (!File.Exists(filePath)) continue;
+                    if (!DynamoUtilities.PathHelper.IsValidPath(filePath)) continue;
 
                     var extension = Path.GetExtension(filePath).ToUpper();
                     // If not extension specified and code reach here, this means this is still a valid file
@@ -391,7 +391,7 @@ namespace Dynamo.UI.Controls
                     var thumbnail = jsonObject != null ? GetGraphThumbnail(jsonObject) : string.Empty;
                     var author = jsonObject != null ? GetGraphAuthor(jsonObject) : Resources.DynamoXmlFileFormat;
 
-                    var date = GetDateModified(filePath);
+                    var date = DynamoUtilities.PathHelper.GetDateModified(filePath);
 
                     files.Add(new StartPageListItem(caption)
                     {
@@ -414,26 +414,6 @@ namespace Dynamo.UI.Controls
                 {
                     DynamoViewModel.Model.Logger.Log("Error loading the file: " + ex.StackTrace);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Utility method to get the last time a file has been modified
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        private string GetDateModified(string filePath)
-        {
-            FileInfo fileInfo = new FileInfo(filePath);
-
-            if (fileInfo.Exists)
-            {
-                DateTime lastModified = fileInfo.LastWriteTime;
-                return lastModified.ToString();
-            }
-            else
-            {
-                return string.Empty;
             }
         }
 

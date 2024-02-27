@@ -1762,7 +1762,7 @@
 
         <!--Start Page-->
         <Grid x:Name="oldHomePageContainer"
-              Visibility="{Binding UseNewDynamoHomePage,
+              Visibility="{Binding IsNewAppHomeEnabled,
                                     Converter={StaticResource InverseBoolToVisibilityConverter},
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
               Grid.Row="2"
@@ -1792,7 +1792,7 @@
             </ItemsControl>
             </Grid>
         <Grid x:Name="newHomePageContainer"
-              Visibility="{Binding UseNewDynamoHomePage, 
+              Visibility="{Binding IsNewAppHomeEnabled, 
                                     Converter={StaticResource BooleanToVisibilityConverter}, 
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
               Grid.Row="2"

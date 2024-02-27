@@ -67,6 +67,26 @@ namespace DynamoUtilities
         }
 
         /// <summary>
+        /// Utility method to get the last time a file has been modified
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static string GetDateModified(string filePath)
+        {
+            FileInfo fileInfo = new(filePath);
+
+            if (fileInfo.Exists)
+            {
+                DateTime lastModified = fileInfo.LastWriteTime;
+                return lastModified.ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
         /// Check if user has readonly privilege to the folder path.
         /// </summary>
         /// <param name="filePath">File path</param>

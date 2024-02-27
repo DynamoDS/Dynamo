@@ -1,4 +1,4 @@
-﻿abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
+abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
 abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.set -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Dispose() -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Name.get -> string
@@ -197,7 +197,7 @@ Dynamo.Controls.DynamoView.ExtensionsCollapsed.get -> bool
 Dynamo.Controls.DynamoView.InitializeComponent() -> void
 Dynamo.Controls.DynamoView.LibraryCollapsed.get -> bool
 Dynamo.Controls.DynamoView.PlacePopup(System.Windows.Size popupSize, System.Windows.Size targetSize, System.Windows.Point offset) -> System.Windows.Controls.Primitives.CustomPopupPlacement[]
-Dynamo.Controls.DynamoView.UseNewDynamoHomePage.get -> bool
+Dynamo.Controls.DynamoView.IsNewAppHomeEnabled.get -> bool
 Dynamo.Controls.ElementGroupToColorConverter
 Dynamo.Controls.ElementGroupToColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ElementGroupToColorConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object

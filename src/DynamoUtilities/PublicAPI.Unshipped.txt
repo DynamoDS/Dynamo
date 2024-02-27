@@ -216,6 +216,7 @@ static DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(
 static DynamoUtilities.PathHelper.CreateFolderIfNotExist(string folderPath) -> System.Exception
 static DynamoUtilities.PathHelper.ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, System.Reflection.Assembly assembly) -> void
 static DynamoUtilities.PathHelper.FileInfoAtPath(string path, out bool fileExists, out string size) -> void
+static DynamoUtilities.PathHelper.GetDateModified(string filePath) -> string
 static DynamoUtilities.PathHelper.GetFileSize(string path) -> string
 static DynamoUtilities.PathHelper.GetScreenCaptureNameFromPath(string filePath, bool isTimeStampIncluded) -> string
 static DynamoUtilities.PathHelper.GetServiceBackendAddress(object o, string serviceKey) -> string

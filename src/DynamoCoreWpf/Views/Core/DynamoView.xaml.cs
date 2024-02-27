@@ -1208,7 +1208,6 @@ namespace Dynamo.Controls
 
                 startPage = new StartPageViewModel(dynamoViewModel, isFirstRun);
                 startPageItemsControl.Items.Add(startPage);
-
                 homePage.DataContext = startPage;
             }
         }
@@ -2634,7 +2633,7 @@ namespace Dynamo.Controls
         /// <summary>
         /// A feature flag controlling the appearance of the Dynamo home navigation page
         /// </summary>
-        public bool UseNewDynamoHomePage
+        public bool IsNewAppHomeEnabled
         {
             get
             {
