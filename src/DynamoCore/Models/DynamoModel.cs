@@ -1756,6 +1756,17 @@ namespace Dynamo.Models
         internal bool UpdatePreferenceItemLocation(PreferenceItem item, string newLocation)
         {
             if (string.IsNullOrEmpty(newLocation)) return false;
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    PreferenceSettings.BackupLocation = newLocation;
+                    break;
+                case PreferenceItem.Templates:
+                    PreferenceSettings.TemplateFilePath = newLocation;
+                    break;
+                default:
+                    break;
+            }
             return pathManager.UpdatePreferenceItemPath(item, newLocation);
         }
         internal bool IsDefaultPreferenceItemLocation(PreferenceItem item)

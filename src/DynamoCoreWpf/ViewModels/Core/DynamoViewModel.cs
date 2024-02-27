@@ -133,8 +133,11 @@ namespace Dynamo.ViewModels
                 return preferencesViewModel;
             }
         }
+        /// <summary>
+        /// Denotes the last location used to open or close a workspace.
+        /// </summary>
+        internal string LastSavedLocation { get; set; }
 
-       
 
         /// <summary>
         /// Guided Tour Manager
@@ -2057,15 +2060,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    //check if the last accessed path was the templates directory, if yes, change it to default
-                    var lastPath = _fileDialog.GetLastAccessedPath();
-                    if (!string.IsNullOrEmpty(lastPath))
-                    {
-                        if (Path.GetFullPath(lastPath).Equals(Path.GetFullPath(Model.PathManager.TemplatesDirectory), StringComparison.OrdinalIgnoreCase))
-                        {
-                            _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                        }
-                    }
+                    SetDefaultInitialDirectory(_fileDialog);
                 }
             }
                 
@@ -2081,7 +2076,28 @@ namespace Dynamo.ViewModels
                     else
                     {
                         Open(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
-                        Model.CurrentWorkspace.LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
+                        LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
+                    }
+                }
+            }
+        }
+
+        private void SetDefaultInitialDirectory(DynamoOpenFileDialog _fileDialog)
+        {
+            //check if the last accessed path was the templates directory, if yes, change it to default
+            var lastPath = _fileDialog.GetLastAccessedPath();
+            if (!string.IsNullOrEmpty(lastPath))
+            {
+                if (Path.GetFullPath(lastPath).Equals(Path.GetFullPath(Model.PathManager.TemplatesDirectory), StringComparison.OrdinalIgnoreCase))
+                {
+                    //use the last saved location
+                    if (!string.IsNullOrEmpty(LastSavedLocation) && !Path.GetFullPath(LastSavedLocation).Equals(Path.GetFullPath(Model.PathManager.TemplatesDirectory), StringComparison.OrdinalIgnoreCase))
+                    {
+                        _fileDialog.InitialDirectory = LastSavedLocation;
+                    }
+                    else
+                    {
+                        _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                     }
                 }
             }
@@ -2620,9 +2636,9 @@ namespace Dynamo.ViewModels
                 // If the current workspace is a template use the last saved location.
                 if (vm.Model.CurrentWorkspace.IsTemplate)
                 {
-                    var loc = string.IsNullOrEmpty(vm.Model.CurrentWorkspace.LastSavedLocation) ?
+                    var loc = string.IsNullOrEmpty(LastSavedLocation) ?
                         Environment.GetFolderPath(Environment.SpecialFolder.Desktop) :
-                        vm.Model.CurrentWorkspace.LastSavedLocation;
+                        LastSavedLocation;
                     var fi = new DirectoryInfo(loc);
                     _fileDialog.InitialDirectory = fi.FullName;
                 }
@@ -2643,7 +2659,9 @@ namespace Dynamo.ViewModels
                 if (_fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     SaveAs(_fileDialog.FileName);
-                    vm.Model.CurrentWorkspace.LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
+                    LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
+                    //set the IsTemplate to false, after saving it as a file
+                    vm.Model.CurrentWorkspace.IsTemplate = false;
                 }
             }
             catch (PathTooLongException)

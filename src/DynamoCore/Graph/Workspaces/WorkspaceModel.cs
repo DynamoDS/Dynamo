@@ -241,10 +241,6 @@ namespace Dynamo.Graph.Workspaces
         /// Denotes if the current workspace was created from a template.
         /// </summary>
         internal bool IsTemplate { get; set; }
-        /// <summary>
-        /// Denotes the last location used to open or close a workspace.
-        /// </summary>
-        internal string LastSavedLocation { get; set; }
 
         internal bool ScaleFactorChanged = false;
 
