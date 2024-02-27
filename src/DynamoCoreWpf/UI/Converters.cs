@@ -3386,13 +3386,18 @@ namespace Dynamo.Controls
 
             if (string.IsNullOrEmpty(s)) return null;
 
-            BitmapImage bi = new BitmapImage();
+            BitmapImage loadedBitM = null;
+            using (MemoryStream ms = new MemoryStream(System.Convert.FromBase64String(s)))
+            {
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.StreamSource = ms;
+                bi.CacheOption = BitmapCacheOption.OnLoad;
+                bi.EndInit();
+                loadedBitM = bi;
+            }
 
-            bi.BeginInit();
-            bi.StreamSource = new MemoryStream(System.Convert.FromBase64String(s));
-            bi.EndInit();
-
-            return bi;
+            return loadedBitM;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
