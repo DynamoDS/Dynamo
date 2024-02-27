@@ -14,7 +14,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Wpf.Views.Debug
 {
     /// <summary>
-    /// Interaction logic for DebugModesWindow.xaml
+    /// Interaction logic for UpdateNodeIconsWindow.xaml
     /// </summary>
     public partial class UpdateNodeIconsWindow : Window, INotifyPropertyChanged
     {
