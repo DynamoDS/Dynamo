@@ -43,7 +43,7 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Hit tolerance
         /// </summary>
-        double tolerance = 0.15;
+        private const double tolerance = 0.15;
 
 
         /// <summary>
@@ -253,7 +253,6 @@ namespace Dynamo.Manipulation
             return new Point(ip);
         }
 
-        // TODO: Implement this method
         private Point ClosestPointTo(Line line, Line ray)
         {
             var p1 = line.Position;

@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Point = Autodesk.GeometryPrimitives.Dynamo.Geometry.Point;
+using Autodesk.GeometryPrimitives.Dynamo.Geometry;
 using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
-using Plane = Autodesk.GeometryPrimitives.Dynamo.Geometry.Plane;
 
 namespace Dynamo.Manipulation
 {

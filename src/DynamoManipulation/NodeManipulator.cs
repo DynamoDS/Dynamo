@@ -14,9 +14,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
-using Point = Autodesk.GeometryPrimitives.Dynamo.Geometry.Point;
+using Autodesk.GeometryPrimitives.Dynamo.Geometry;
 using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
-using Line = Autodesk.GeometryPrimitives.Dynamo.Geometry.Line;
 
 namespace Dynamo.Manipulation
 {

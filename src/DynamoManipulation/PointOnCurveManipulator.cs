@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Autodesk.GeometryPrimitives.Dynamo.Math;
-using Point = Autodesk.GeometryPrimitives.Dynamo.Geometry.Point;
+using Autodesk.GeometryPrimitives.Dynamo.Geometry;
 using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
 
 namespace Dynamo.Manipulation
@@ -22,7 +20,7 @@ namespace Dynamo.Manipulation
     {
         private Point pointOnCurve;
 
-        private Curve curve;
+        private Autodesk.DesignScript.Geometry.Curve curve;
 
         private Vector tangent;
 
@@ -79,7 +77,7 @@ namespace Dynamo.Manipulation
 
             try
             {
-                curve = GetFirstValueFromNode(curveNode) as Curve;
+                curve = GetFirstValueFromNode(curveNode) as Autodesk.DesignScript.Geometry.Curve;
                 if (null == curve)
                     return;
             }
@@ -89,14 +87,14 @@ namespace Dynamo.Manipulation
         }
 
         // TODO: Implement this method 
-        private static Point PointAtParameter(Curve curve, double param)
+        private static Point PointAtParameter(Autodesk.DesignScript.Geometry.Curve curve, double param)
         {
             var pt = curve.PointAtParameter(param);
             return new Point(pt.X, pt.Y, pt.Z);
         }
 
         // TODO: Implement this method
-        private static double ParameterAtPoint(Curve curve, Point pt)
+        private static double ParameterAtPoint(Autodesk.DesignScript.Geometry.Curve curve, Point pt)
         {
             var point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(
                 pt.Position.X, pt.Position.Y, pt.Position.Z);
@@ -104,14 +102,14 @@ namespace Dynamo.Manipulation
         }
 
         // TODO: Implement this method
-        private static Vector TangentAtParameter(Curve curve, double param)
+        private static Vector TangentAtParameter(Autodesk.DesignScript.Geometry.Curve curve, double param)
         {
             var tangent = curve.TangentAtParameter(param);
             return new Vector(tangent.X, tangent.Y, tangent.Z);
         }
 
         // TODO: Implement this method
-        private static Point ClosestPointTo(Curve curve, Point3d pt)
+        private static Point ClosestPointTo(Autodesk.DesignScript.Geometry.Curve curve, Point3d pt)
         {
             var point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(
                 pt.X, pt.Y, pt.Z);
