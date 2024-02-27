@@ -1,4 +1,4 @@
-﻿abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
+abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
 abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.set -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Dispose() -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Name.get -> string
@@ -37,6 +37,10 @@ Dynamo.Controls.AutoLacingToVisibilityConverter
 Dynamo.Controls.AutoLacingToVisibilityConverter.AutoLacingToVisibilityConverter() -> void
 Dynamo.Controls.AutoLacingToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.AutoLacingToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.Base64ToImageConverter
+Dynamo.Controls.Base64ToImageConverter.Base64ToImageConverter() -> void
+Dynamo.Controls.Base64ToImageConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.Base64ToImageConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BinaryRadioButtonCheckedConverter
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.BinaryRadioButtonCheckedConverter() -> void
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -3970,6 +3974,36 @@ Dynamo.Wpf.Views.CodeHighlightingRuleFactory
 Dynamo.Wpf.Views.Debug.DebugModesWindow
 Dynamo.Wpf.Views.Debug.DebugModesWindow.DebugModesWindow() -> void
 Dynamo.Wpf.Views.Debug.DebugModesWindow.InitializeComponent() -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.InitializeComponent() -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.IsUpdateEnabled.get -> bool
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.IsUpdateEnabled.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NewIconPaths.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NewIconPaths.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconName.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconName.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconResxFile.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconResxFile.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconSuffix.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconSuffix.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.Icon_Base64String.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.Icon_Base64String.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IsUpdated.get -> bool
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IsUpdated.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NewIconPath.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NewIconPath.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeIconMetadata(string nodeName, string newIconPath, string iconName, string iconSuffix, string oldData, string resxFile, bool isUpdated = false) -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeName.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeName.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.OldData.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.OldData.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.Output.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.Output.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.PropertyChanged -> System.ComponentModel.PropertyChangedEventHandler
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.UpdatedIconList.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata>
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.UpdatedIconList.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.UpdateNodeIconsWindow(System.Collections.Generic.IEnumerable<Dynamo.Search.SearchElements.NodeSearchElement> entries) -> void
 Dynamo.Wpf.Views.FileTrust.FileTrustWarning
 Dynamo.Wpf.Views.FileTrust.FileTrustWarning.FileTrustWarning(Dynamo.Controls.DynamoView dynamoViewWindow) -> void
 Dynamo.Wpf.Views.FileTrust.FileTrustWarning.InitializeComponent() -> void
@@ -5350,6 +5384,7 @@ static Dynamo.Wpf.Properties.Resources.UnloadFailureMessageBoxTitle.get -> strin
 static Dynamo.Wpf.Properties.Resources.UnpinNodeTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateNodeIconsDebugMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.UsageReportPromptDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UseLevelKeepListStructureHint.get -> string
 static Dynamo.Wpf.Properties.Resources.UseLevelKeepListStructurePopupMenuItem.get -> string
