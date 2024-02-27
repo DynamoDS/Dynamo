@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Dynamo.Applications;
+using Dynamo.Logging;
 using Dynamo.Models;
 using NUnit.Framework;
+using static Dynamo.Models.DynamoModel;
 
 namespace IntegrationTests
 {
@@ -63,6 +65,23 @@ namespace IntegrationTests
         {
             var model = Dynamo.Applications.StartupUtils.MakeModel(false, string.Empty, "DynamoFormIt");
             Assert.AreEqual(DynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
+        }
+        [Test]
+        public void DynamoModelStartedWithNoNetworkMode_AlsoDisablesAnalytics()
+        {
+            var startConfig = new DefaultStartConfiguration() { NoNetworkMode = true };
+            var model = DynamoModel.Start(startConfig);
+            Assert.AreEqual(true, Analytics.DisableAnalytics);
+            model.ShutDown(false);
+        }
+        [Test]
+        public void DynamoModelStartedWithNoNetworkModeFalse_DisablesAnalyticsCanBeTrue()
+        {
+            var startConfig = new DefaultStartConfiguration() { NoNetworkMode = false };
+            Analytics.DisableAnalytics = true;
+            var model = DynamoModel.Start(startConfig);
+            Assert.AreEqual(true, Analytics.DisableAnalytics);
+            model.ShutDown(false);
         }
 
         [Test]

@@ -32,6 +32,6 @@ jobs:
       - name: Build and analyze
         run: |
           Write-Output "***Continue with the build, Good luck developer!***"
-          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016 /p:PublicApiAnalyzers=true
+          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016;RS0017 /p:PublicApiAnalyzers=true
 
       
