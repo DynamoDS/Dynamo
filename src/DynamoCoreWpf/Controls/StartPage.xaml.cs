@@ -91,8 +91,6 @@ namespace Dynamo.UI.Controls
             get { return ((icon == null) ? Visibility.Collapsed : Visibility.Visible); }
         }
 
-
-
         #endregion
 
         #region Private Class Helper Methods
@@ -374,21 +372,19 @@ namespace Dynamo.UI.Controls
             IEnumerable<string> filePaths)
         {
             files.Clear();
-
             foreach (var filePath in filePaths.Where(x => x != null))
             {
                 try
                 {
                     // Skip files which were moved or deleted (consistent with Revit behavior)
-                    if (!System.IO.File.Exists(filePath)) continue;
+                    if (!File.Exists(filePath)) continue;
 
                     var extension = Path.GetExtension(filePath).ToUpper();
                     // If not extension specified and code reach here, this means this is still a valid file
                     // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-                    var subScript = extension.IndexOf(".") == 0 ? extension.Substring(1) : "";
+                    var subScript = extension.StartsWith(".") ? extension.Substring(1) : "";
                     var caption = Path.GetFileNameWithoutExtension(filePath);
 
-                    // Measure the performance for this region
                     // deserializes the file only once
                     var jsonObject = DeserializeJsonFile(filePath); 
                     var description = jsonObject != null ? GetGraphDescription(jsonObject) : string.Empty;
@@ -443,19 +439,20 @@ namespace Dynamo.UI.Controls
 
         private Dictionary<string, object> DeserializeJsonFile(string filePath)
         {
-            try
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string jsonString, out Exception ex))
             {
-                var jsonString = File.ReadAllText(filePath);
                 return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
             }
-            catch (JsonReaderException)
+            else
             {
-                DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
-                return null;
-            }
-            catch (Exception ex)
-            {
-                DynamoViewModel.Model.Logger.Log("File is not valid: " + ex.StackTrace);
+                if(ex is JsonReaderException)
+                {
+                    DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
+                }
+                else
+                {
+                    DynamoViewModel.Model.Logger.Log("File is not valid: " + ex.StackTrace);
+                }
                 return null;
             }
         }
