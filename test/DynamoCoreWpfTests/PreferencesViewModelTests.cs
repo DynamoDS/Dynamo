@@ -162,7 +162,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Path.GetFullPath(singletonPathManager.UserDataDirectory), Path.GetFullPath(dynamoRevitUserDataDirectory));
             Assert.AreEqual(Path.GetFullPath(singletonPathManager.CommonDataDirectory), Path.GetFullPath(dynamoRevitCommonDataDirectory));
             Assert.AreEqual(Path.GetFullPath(singletonPathManager.SamplesDirectory), Path.GetFullPath(dynamoRevitSamplesPath));
-            Assert.AreEqual(Path.GetFullPath(singletonPathManager.TemplatesDirectory), Path.GetFullPath(dynamoRevitTemplatesPath));
+            Assert.AreEqual(Path.GetFullPath(singletonPathManager.DefaultTemplatesDirectory), Path.GetFullPath(dynamoRevitTemplatesPath));
         }
 
         [Test]

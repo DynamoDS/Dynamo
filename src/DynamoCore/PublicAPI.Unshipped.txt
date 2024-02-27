@@ -250,6 +250,8 @@ Dynamo.Configuration.PreferenceSettings.ShowRunPreview.set -> void
 Dynamo.Configuration.PreferenceSettings.ShowTabsAndSpacesInScriptEditor.get -> bool
 Dynamo.Configuration.PreferenceSettings.ShowTabsAndSpacesInScriptEditor.set -> void
 Dynamo.Configuration.PreferenceSettings.StaticFields() -> System.Collections.Generic.List<string>
+Dynamo.Configuration.PreferenceSettings.TemplateFilePath.get -> string
+Dynamo.Configuration.PreferenceSettings.TemplateFilePath.set -> void
 Dynamo.Configuration.PreferenceSettings.TrustedLocations.get -> System.Collections.Generic.List<string>
 Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.get -> bool
 Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.set -> void
@@ -1582,6 +1584,8 @@ Dynamo.Interfaces.IPreferences.ShowEdges.get -> bool
 Dynamo.Interfaces.IPreferences.ShowEdges.set -> void
 Dynamo.Interfaces.IPreferences.ShowPreviewBubbles.get -> bool
 Dynamo.Interfaces.IPreferences.ShowPreviewBubbles.set -> void
+Dynamo.Interfaces.IPreferences.TemplateFilePath.get -> string
+Dynamo.Interfaces.IPreferences.TemplateFilePath.set -> void
 Dynamo.Interfaces.IPreferences.WindowH.get -> double
 Dynamo.Interfaces.IPreferences.WindowH.set -> void
 Dynamo.Interfaces.IPreferences.WindowW.get -> double
