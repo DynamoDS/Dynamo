@@ -2666,7 +2666,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo 1.0 file format.
+        ///   Looks up a localized string similar to Dynamo 1.x file format.
         /// </summary>
         public static string DynamoXmlFileFormat {
             get {

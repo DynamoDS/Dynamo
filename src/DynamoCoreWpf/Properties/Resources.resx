@@ -3919,6 +3919,6 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <comment>Preferences | Features | Experimental | Enable Paneling nodes</comment>
   </data>
   <data name="DynamoXmlFileFormat" xml:space="preserve">
-    <value>Dynamo 1.0 file format</value>
+    <value>Dynamo 1.x file format</value>
   </data>
 </root>
