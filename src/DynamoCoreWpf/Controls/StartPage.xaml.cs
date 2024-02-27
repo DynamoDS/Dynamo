@@ -391,9 +391,9 @@ namespace Dynamo.UI.Controls
                     // Measure the performance for this region
                     // deserializes the file only once
                     var jsonObject = DeserializeJsonFile(filePath); 
-                    var description = GetGraphDescription(jsonObject);
-                    var thumbnail = GetGraphThumbnail(jsonObject);
-                    var author = GetGraphAuthor(jsonObject);
+                    var description = jsonObject != null ? GetGraphDescription(jsonObject) : string.Empty;
+                    var thumbnail = jsonObject != null ? GetGraphThumbnail(jsonObject) : string.Empty;
+                    var author = jsonObject != null ? GetGraphAuthor(jsonObject) : Resources.DynamoXmlFileFormat;
 
                     var date = GetDateModified(filePath);
 
@@ -408,11 +408,15 @@ namespace Dynamo.UI.Controls
                         DateModified = date,
                         ClickAction = StartPageListItem.Action.FilePath,
 
-                    }); ;
+                    }); 
                 }
                 catch (ArgumentException ex)
                 {
                     DynamoViewModel.Model.Logger.Log("File path is not valid: " + ex.StackTrace);
+                }
+                catch (Exception ex)
+                {
+                    DynamoViewModel.Model.Logger.Log("Error loading the file: " + ex.StackTrace);
                 }
             }
         }
@@ -439,8 +443,21 @@ namespace Dynamo.UI.Controls
 
         private Dictionary<string, object> DeserializeJsonFile(string filePath)
         {
-            var jsonString = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+            try
+            {
+                var jsonString = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+            }
+            catch (JsonReaderException)
+            {
+                DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                DynamoViewModel.Model.Logger.Log("File is not valid: " + ex.StackTrace);
+                return null;
+            }
         }
 
         private const string BASE64PREFIX = "data:image/png;base64,";

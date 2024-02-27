@@ -2666,6 +2666,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo 1.0 file format.
+        /// </summary>
+        public static string DynamoXmlFileFormat {
+            get {
+                return ResourceManager.GetString("DynamoXmlFileFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Group Title.
         /// </summary>
         public static string EditAnnotationTitle {
