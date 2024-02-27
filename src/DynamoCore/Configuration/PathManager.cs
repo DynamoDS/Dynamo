@@ -260,6 +260,9 @@ namespace Dynamo.Core
         {
             get { return templatesDirectory; }
         }
+        /// <summary>
+        /// Default templates directory, it is used when the user resets the custom template path
+        /// </summary>
         public string DefaultTemplatesDirectory
         {
             get { return defaultTemplatesDirectory; }

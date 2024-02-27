@@ -102,29 +102,44 @@ namespace Dynamo.UI
 
             return DialogResult.OK;
         }
+        /// <summary>
+        /// The method is used to get the last accessed path by the user
+        /// </summary>
+        /// <returns>The last accessed path by the user, can be null</returns>
         internal string GetLastAccessedPath()
         {
             return ApplicationGetLastOpenSavePath(Path.GetFileName(Environment.ProcessPath));
         }
+        /// <summary>
+        /// Fetches last accessed location from Windows registry
+        /// Solution taken from : https://stackoverflow.com/a/61583119
+        /// </summary>
         private string ApplicationGetLastOpenSavePath(string executableName)
         {
             if (string.IsNullOrEmpty(executableName)) return null;
             string lastVisitedPath = string.Empty;
-            var lastVisitedKey = Registry.CurrentUser.OpenSubKey(
-                @"Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU", false);
-
-            string[] values = lastVisitedKey.GetValueNames();
-            foreach (string value in values)
+            try
             {
-                if (value == "MRUListEx") continue;
-                var keyValue = (byte[])lastVisitedKey.GetValue(value);
+                var lastVisitedKey = Registry.CurrentUser.OpenSubKey(
+                    @"Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU", false);
 
-                string appName = Encoding.Unicode.GetString(keyValue, 0, executableName.Length * 2);
-                if (!appName.Equals(executableName)) continue;
+                string[] values = lastVisitedKey.GetValueNames();
+                foreach (string value in values)
+                {
+                    if (value == "MRUListEx") continue;
+                    var keyValue = (byte[])lastVisitedKey.GetValue(value);
 
-                int offset = executableName.Length * 2 + "\0\0".Length;  // clearly null terminated :)
-                lastVisitedPath = GetPathFromIDList(keyValue, offset);
-                break;
+                    string appName = Encoding.Unicode.GetString(keyValue, 0, executableName.Length * 2);
+                    if (!appName.Equals(executableName)) continue;
+
+                    int offset = executableName.Length * 2 + "\0\0".Length;  // clearly null terminated :)
+                    lastVisitedPath = GetPathFromIDList(keyValue, offset);
+                    break;
+                }
+            }
+            catch (Exception)
+            {
+                //let the method return empty string in case of exception
             }
             return lastVisitedPath;
         }
@@ -137,16 +152,23 @@ namespace Dynamo.UI
 
         private string GetPathFromIDList(byte[] idList, int offset)
         {
-            int buffer = 520;  // 520 = MAXPATH * 2
-            var sb = new StringBuilder(buffer);
+            try
+            {
+                int buffer = 520;  // 520 = MAXPATH * 2
+                var sb = new StringBuilder(buffer);
 
-            IntPtr ptr = Marshal.AllocHGlobal(idList.Length);
-            Marshal.Copy(idList, offset, ptr, idList.Length - offset);
+                IntPtr ptr = Marshal.AllocHGlobal(idList.Length);
+                Marshal.Copy(idList, offset, ptr, idList.Length - offset);
 
-            // or -> bool result = SHGetPathFromIDListW(ptr, sb);
-            bool result = SHGetPathFromIDListEx(ptr, sb, buffer, GPFIDL_FLAGS.GPFIDL_UNCPRINTER);
-            Marshal.FreeHGlobal(ptr);
-            return result ? sb.ToString() : string.Empty;
+                // or -> bool result = SHGetPathFromIDListW(ptr, sb);
+                bool result = SHGetPathFromIDListEx(ptr, sb, buffer, GPFIDL_FLAGS.GPFIDL_UNCPRINTER);
+                Marshal.FreeHGlobal(ptr);
+                return result ? sb.ToString() : string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         [DllImport("shell32.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
