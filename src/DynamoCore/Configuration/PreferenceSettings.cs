@@ -78,6 +78,7 @@ namespace Dynamo.Configuration
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
+        private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
 
         #region Constants
@@ -440,6 +441,19 @@ namespace Dynamo.Configuration
             {
                 backupLocation = value;
                 RaisePropertyChanged(nameof(BackupLocation));
+            }
+        }
+
+        /// <summary>
+        /// Template path
+        /// </summary>
+        public string TemplateFilePath
+        {
+            get { return templateFilePath; }
+            set
+            {
+                templateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateFilePath));
             }
         }
 
@@ -932,12 +946,15 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
             BackupLocation = string.Empty;
 
+            TemplateFilePath = string.Empty;
+
             LibraryZoomScale = 100;
             PythonScriptZoomScale = 100;
 
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
+            PythonTemplateFilePath = PathManager.TemplateDirectoryName;
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
@@ -1260,6 +1277,7 @@ namespace Dynamo.Configuration
             if (!IsFirstRun) return;
             string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
             AddTrustedLocation(Path.Combine(ProgramData, Configurations.AutodeskAsString));
+            AddTrustedLocation(Path.Combine(ProgramData, Configurations.DynamoAsString));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             AddTrustedLocation(Path.Combine(ProgramFiles, Configurations.AutodeskAsString));

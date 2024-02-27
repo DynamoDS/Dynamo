@@ -84,6 +84,7 @@ namespace Dynamo.Core
         private string logDirectory;
         private string samplesDirectory;
         private string templatesDirectory;
+        private string defaultTemplatesDirectory;
         private string backupDirectory;
         private string defaultBackupDirectory;
         private string preferenceFilePath;
@@ -206,6 +207,16 @@ namespace Dynamo.Core
         }
 
         /// <summary>
+        /// The enum will contain the possible values for Preference Item 
+        /// </summary>
+        public enum PreferenceItem
+        {
+            Backup,
+            Templates,
+            Samples
+        }
+
+        /// <summary>
         /// Default directory where new packages are downloaded to.
         /// This directory path is user configurable and if set to something other than the default,
         /// the currently selected path can be obtained from preference settings.
@@ -248,6 +259,10 @@ namespace Dynamo.Core
         public string TemplatesDirectory
         {
             get { return templatesDirectory; }
+        }
+        public string DefaultTemplatesDirectory
+        {
+            get { return defaultTemplatesDirectory; }
         }
 
         public string BackupDirectory
@@ -473,13 +488,21 @@ namespace Dynamo.Core
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }
 
-        internal bool UpdateBackupLocation(string newBackupLocation)
+        internal bool UpdatePreferenceItemPath(PreferenceItem item, string newLocation)
         {
-            bool isValidFolder = PathHelper.CreateFolderIfNotExist(newBackupLocation) == null;
+            bool isValidFolder = PathHelper.CreateFolderIfNotExist(newLocation) == null;
             if (!isValidFolder)
                 return false;
 
-            backupDirectory = newBackupLocation;
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    backupDirectory = newLocation;
+                    break;
+                case PreferenceItem.Templates:
+                    templatesDirectory = newLocation;
+                    break;
+            }
             return true;
         }
 
@@ -582,7 +605,7 @@ namespace Dynamo.Core
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
-            templatesDirectory = GetTemplateFolder(commonDataDir);
+            defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
 
             rootDirectories = new List<string> { userDataDir };
 

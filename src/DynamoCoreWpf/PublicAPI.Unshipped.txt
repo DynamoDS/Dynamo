@@ -1,4 +1,4 @@
-﻿abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
+abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
 abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.set -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Dispose() -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Name.get -> string
@@ -37,6 +37,10 @@ Dynamo.Controls.AutoLacingToVisibilityConverter
 Dynamo.Controls.AutoLacingToVisibilityConverter.AutoLacingToVisibilityConverter() -> void
 Dynamo.Controls.AutoLacingToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.AutoLacingToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.Base64ToImageConverter
+Dynamo.Controls.Base64ToImageConverter.Base64ToImageConverter() -> void
+Dynamo.Controls.Base64ToImageConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.Base64ToImageConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BinaryRadioButtonCheckedConverter
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.BinaryRadioButtonCheckedConverter() -> void
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -2604,7 +2608,7 @@ Dynamo.ViewModels.PreferencesViewModel.BackupIntervalInMinutes.set -> void
 Dynamo.ViewModels.PreferencesViewModel.BackupLocation.get -> string
 Dynamo.ViewModels.PreferencesViewModel.BackupLocation.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CanResetBackupLocation.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.CanResetBackupLocation.set -> void
+Dynamo.ViewModels.PreferencesViewModel.CanResetTemplateLocation.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CurrentWarningMessage.get -> string
@@ -2681,7 +2685,6 @@ Dynamo.ViewModels.PreferencesViewModel.PythonEnginesList.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PythonTemplateFilePath.get -> string
 Dynamo.ViewModels.PreferencesViewModel.PythonTemplateFilePath.set -> void
 Dynamo.ViewModels.PreferencesViewModel.RequestShowFileDialog -> System.EventHandler<Dynamo.ViewModels.PythonTemplatePathEventArgs>
-Dynamo.ViewModels.PreferencesViewModel.ResetBackupLocation() -> void
 Dynamo.ViewModels.PreferencesViewModel.RunPreviewEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.RunPreviewIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.RunPreviewIsChecked.set -> void
@@ -2715,13 +2718,14 @@ Dynamo.ViewModels.PreferencesViewModel.StaticSplashScreenEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.StaticSplashScreenEnabled.set -> void
 Dynamo.ViewModels.PreferencesViewModel.StyleItemsList.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Configuration.GroupStyleItem>
 Dynamo.ViewModels.PreferencesViewModel.StyleItemsList.set -> void
+Dynamo.ViewModels.PreferencesViewModel.TemplateLocation.get -> string
+Dynamo.ViewModels.PreferencesViewModel.TemplateLocation.set -> void
 Dynamo.ViewModels.PreferencesViewModel.TessellationDivisions.get -> int
 Dynamo.ViewModels.PreferencesViewModel.TessellationDivisions.set -> void
 Dynamo.ViewModels.PreferencesViewModel.TrustedPathsViewModel.get -> Dynamo.ViewModels.TrustedPathViewModel
 Dynamo.ViewModels.PreferencesViewModel.TrustedPathsViewModel.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UnitList.get -> System.Collections.ObjectModel.ObservableCollection<string>
 Dynamo.ViewModels.PreferencesViewModel.UnitList.set -> void
-Dynamo.ViewModels.PreferencesViewModel.UpdateBackupLocation(string newBackupLocation) -> bool
 Dynamo.ViewModels.PreferencesViewModel.UpdatePythonPathCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PreferencesViewModel.UseHardwareAcceleration.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.UseHardwareAcceleration.set -> void
@@ -3970,6 +3974,39 @@ Dynamo.Wpf.Views.CodeHighlightingRuleFactory
 Dynamo.Wpf.Views.Debug.DebugModesWindow
 Dynamo.Wpf.Views.Debug.DebugModesWindow.DebugModesWindow() -> void
 Dynamo.Wpf.Views.Debug.DebugModesWindow.InitializeComponent() -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.errorFile -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.InitializeComponent() -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.IsUpdateEnabled.get -> bool
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.IsUpdateEnabled.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.logFile -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NewIconPaths.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NewIconPaths.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconName.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconName.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconResxFile.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconResxFile.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconSuffix.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconSuffix.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.Icon_Base64String.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.Icon_Base64String.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IsUpdated.get -> bool
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IsUpdated.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NewIconPath.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NewIconPath.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeIconMetadata(string nodeName, string newIconPath, string iconName, string iconSuffix, string oldData, string resxFile, bool isUpdated = false) -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeName.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeName.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.OldData.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.OldData.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.OnPropertyChanged(string propertyName) -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.Output.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.Output.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.PropertyChanged -> System.ComponentModel.PropertyChangedEventHandler
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.UpdatedIconList.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata>
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.UpdatedIconList.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.UpdateNodeIconsWindow(System.Collections.Generic.IEnumerable<Dynamo.Search.SearchElements.NodeSearchElement> entries) -> void
 Dynamo.Wpf.Views.FileTrust.FileTrustWarning
 Dynamo.Wpf.Views.FileTrust.FileTrustWarning.FileTrustWarning(Dynamo.Controls.DynamoView dynamoViewWindow) -> void
 Dynamo.Wpf.Views.FileTrust.FileTrustWarning.InitializeComponent() -> void
@@ -5046,13 +5083,19 @@ static Dynamo.Wpf.Properties.Resources.PreferencesSecuritySettingsTab.get -> str
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingBackupInterval.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingCustomPythomTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingDefaultBackupLocation.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingDefaultTemplateLocationLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingHardwareAcceleration.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingMaxRecentFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingResetBackupLocationTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingResetTemplateLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupFailedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupFailedTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupLocationDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateLocationDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateBackupLocationTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateTemplateLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnits.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnitsToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewAlreadyExistingStyleWarning.get -> string
@@ -5075,6 +5118,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewFontSizeLabel.get -> strin
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsBackup.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsGeoScaling.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsRun.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
@@ -5350,6 +5394,7 @@ static Dynamo.Wpf.Properties.Resources.UnloadFailureMessageBoxTitle.get -> strin
 static Dynamo.Wpf.Properties.Resources.UnpinNodeTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateNodeIconsDebugMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.UsageReportPromptDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UseLevelKeepListStructureHint.get -> string
 static Dynamo.Wpf.Properties.Resources.UseLevelKeepListStructurePopupMenuItem.get -> string
@@ -5469,6 +5514,7 @@ static readonly Dynamo.Wpf.ViewModels.Watch3D.AttachedProperties.IsolationModePr
 static readonly Dynamo.Wpf.ViewModels.Watch3D.AttachedProperties.IsSpecialRenderPackageProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.Wpf.ViewModels.Watch3D.AttachedProperties.ShowSelectedProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.Wpf.ViewModels.Watch3D.DynamoGeometryModel3D.RequiresPerVertexColorationProperty -> System.Windows.DependencyProperty
+static readonly Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.logPath -> string
 static readonly Dynamo.Wpf.Views.GuidedTour.RatingControl.ValueProperty -> System.Windows.DependencyProperty
 UI.Prompts.PortPropertiesEditPrompt
 UI.Prompts.PortPropertiesEditPrompt.Description.get -> string

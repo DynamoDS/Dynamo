@@ -74,6 +74,7 @@ namespace Dynamo.ViewModels
         private GeometryScalingOptions optionsGeometryScale = null;
         private GeometryScaleSize defaultGeometryScaling = GeometryScaleSize.Medium;
         private bool canResetBackupLocation = false;
+        private bool canResetTemplateLocation = false;
 
         #endregion Private Properties
 
@@ -283,6 +284,7 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.BackupLocation = value;
                 RaisePropertyChanged(nameof(BackupLocation));
+                RaisePropertyChanged(nameof(CanResetBackupLocation));
             }
         }
 
@@ -293,12 +295,35 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return canResetBackupLocation;
+                return !dynamoViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Backup);
+            }
+        }
+
+        /// <summary>
+        /// Backup files path
+        /// </summary>
+        public string TemplateLocation
+        {
+            get
+            {
+                return preferenceSettings.TemplateFilePath;
             }
             set
             {
-                canResetBackupLocation = value;
-                RaisePropertyChanged(nameof(CanResetBackupLocation));
+                preferenceSettings.TemplateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateLocation));
+                RaisePropertyChanged(nameof(CanResetTemplateLocation));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the user can reset the Backup Location to the default value
+        /// </summary>
+        public bool CanResetTemplateLocation
+        {
+            get
+            {
+                return !dynamoViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Templates);
             }
         }
 
@@ -1535,28 +1560,6 @@ namespace Dynamo.ViewModels
             DeletePythonPathCommand = new DelegateCommand(p => RemovePath(), p => CanDelete());
             UpdatePythonPathCommand = new DelegateCommand(p => UpdatePathAt());
             CopyToClipboardCommand = new DelegateCommand(p => CopyToClipboard(p));
-        }
-
-        public bool UpdateBackupLocation(string newBackupLocation)
-        {
-
-            bool isSafelyLocation = dynamoViewModel.Model.UpdateBackupLocation(newBackupLocation);
-            if (isSafelyLocation)
-            {
-                BackupLocation = newBackupLocation;
-                CanResetBackupLocation = !dynamoViewModel.Model.IsDefaultBackupLocation();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void ResetBackupLocation()
-        {
-            BackupLocation = dynamoViewModel.Model.DefaultBackupLocation();
-            UpdateBackupLocation(BackupLocation);
         }
 
         // Add python template path
