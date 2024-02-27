@@ -162,6 +162,9 @@ namespace Dynamo.PythonServices
         /// </summary>
         private PythonEngineManager()
         {
+            dotNetRuntimePaths = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+            dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
+
             AvailableEngines = new ObservableCollection<PythonEngine>();
 
             // We check only for the default python engine because it is the only one loaded by static references.
@@ -170,8 +173,6 @@ namespace Dynamo.PythonServices
                FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
 
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
-            dotNetRuntimePaths = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
-            dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
         }
 
         private void LoadDefaultPythonEngine(Assembly a)
