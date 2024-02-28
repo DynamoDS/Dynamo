@@ -28,7 +28,7 @@ namespace CoreNodeModels
         private bool context;
         private List<DynamoDropDownItem> serializedItems;
 
-
+        [JsonProperty]
         public bool Context
         {
             get => context;
@@ -109,7 +109,7 @@ namespace CoreNodeModels
             var function = new Func<object, string, bool, bool>(DSCore.Data.IsSupportedDataType);
             var funtionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
-                AstFactory.BuildStringNode(Items[0].Item.ToString()),
+                AstFactory.BuildStringNode(Items[SelectedIndex].Item.ToString()),
                 AstFactory.BuildBooleanNode(Context) };
 
 
