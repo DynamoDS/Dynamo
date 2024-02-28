@@ -1450,15 +1450,21 @@ Dynamo.UI.Controls.StartPageListItem.Action
 Dynamo.UI.Controls.StartPageListItem.Action.ExternalUrl = 2 -> Dynamo.UI.Controls.StartPageListItem.Action
 Dynamo.UI.Controls.StartPageListItem.Action.FilePath = 1 -> Dynamo.UI.Controls.StartPageListItem.Action
 Dynamo.UI.Controls.StartPageListItem.Action.RegularCommand = 0 -> Dynamo.UI.Controls.StartPageListItem.Action
+Dynamo.UI.Controls.StartPageListItem.Author.get -> string
 Dynamo.UI.Controls.StartPageListItem.Caption.get -> string
 Dynamo.UI.Controls.StartPageListItem.ClickAction.get -> Dynamo.UI.Controls.StartPageListItem.Action
 Dynamo.UI.Controls.StartPageListItem.ClickAction.set -> void
 Dynamo.UI.Controls.StartPageListItem.ContextData.get -> string
 Dynamo.UI.Controls.StartPageListItem.ContextData.set -> void
+Dynamo.UI.Controls.StartPageListItem.DateModified.get -> string
+Dynamo.UI.Controls.StartPageListItem.DateModified.set -> void
+Dynamo.UI.Controls.StartPageListItem.Description.get -> string
 Dynamo.UI.Controls.StartPageListItem.Icon.get -> System.Windows.Media.ImageSource
 Dynamo.UI.Controls.StartPageListItem.IconVisibility.get -> System.Windows.Visibility
 Dynamo.UI.Controls.StartPageListItem.SubScript.get -> string
 Dynamo.UI.Controls.StartPageListItem.SubScript.set -> void
+Dynamo.UI.Controls.StartPageListItem.Thumbnail.get -> string
+Dynamo.UI.Controls.StartPageListItem.Thumbnail.set -> void
 Dynamo.UI.Controls.StartPageListItem.ToolTip.get -> string
 Dynamo.UI.Controls.StartPageListItem.ToolTip.set -> void
 Dynamo.UI.Controls.StartPageView
@@ -1541,11 +1547,37 @@ Dynamo.UI.Views.AboutWindow
 Dynamo.UI.Views.AboutWindow.AboutWindow(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
 Dynamo.UI.Views.AboutWindow.InitializeComponent() -> void
 Dynamo.UI.Views.AboutWindow.InstallNewUpdate.get -> bool
+Dynamo.UI.Views.GuidedTourItem
+Dynamo.UI.Views.GuidedTourItem.Description.get -> string
+Dynamo.UI.Views.GuidedTourItem.Description.set -> void
+Dynamo.UI.Views.GuidedTourItem.GuidedTourItem(string name, string description, string type) -> void
+Dynamo.UI.Views.GuidedTourItem.Name.get -> string
+Dynamo.UI.Views.GuidedTourItem.Name.set -> void
+Dynamo.UI.Views.GuidedTourItem.Type.get -> string
+Dynamo.UI.Views.GuidedTourItem.Type.set -> void
+Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.GuidedTourType.GetStarted = 1 -> Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.GuidedTourType.Packages = 2 -> Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.GuidedTourType.UserInterface = 0 -> Dynamo.UI.Views.GuidedTourType
 Dynamo.UI.Views.HandlingEventTrigger
 Dynamo.UI.Views.HandlingEventTrigger.HandlingEventTrigger() -> void
+Dynamo.UI.Views.HomePage
+Dynamo.UI.Views.HomePage.Dispose() -> void
+Dynamo.UI.Views.HomePage.HomePage() -> void
 Dynamo.UI.Views.LibraryView
 Dynamo.UI.Views.LibraryView.InitializeComponent() -> void
 Dynamo.UI.Views.LibraryView.LibraryView() -> void
+Dynamo.UI.Views.ScriptHomeObject
+Dynamo.UI.Views.ScriptHomeObject.ApplicationLoaded() -> void
+Dynamo.UI.Views.ScriptHomeObject.NewCustomNodeWorkspace() -> void
+Dynamo.UI.Views.ScriptHomeObject.NewWorkspace() -> void
+Dynamo.UI.Views.ScriptHomeObject.OpenFile(string path) -> void
+Dynamo.UI.Views.ScriptHomeObject.OpenWorkspace() -> void
+Dynamo.UI.Views.ScriptHomeObject.ScriptHomeObject(System.Action<string> requestOpenFile, System.Action requestNewWorkspace, System.Action requestOpenWorkspace, System.Action requestNewCustomNodeWorkspace, System.Action requestApplicationLoaded, System.Action<string> requestShowGuidedTour, System.Action requestShowSampleFilesInFolder, System.Action requestShowBackupFilesInFolder, System.Action requestShowTemplate) -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowBackupFilesInFolder() -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowSampleFilesInFolder() -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowTemplate() -> void
+Dynamo.UI.Views.ScriptHomeObject.StartGuidedTour(string path) -> void
 Dynamo.UI.Views.ScriptObject
 Dynamo.UI.Views.ScriptObject.CloseWindow() -> void
 Dynamo.UI.Views.ScriptObject.CloseWindowPreserve(bool isCheckboxChecked) -> void
@@ -4572,6 +4604,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewViewMenuShowGrid.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewViewMenuZoom.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewViewMenuZoomIn.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewViewMenuZoomOut.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoXmlFileFormat.get -> string
 static Dynamo.Wpf.Properties.Resources.EditAnnotationTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.EditNoteWindowTitle.get -> string
@@ -4636,6 +4669,7 @@ static Dynamo.Wpf.Properties.Resources.GESUnitMeters.get -> string
 static Dynamo.Wpf.Properties.Resources.GESUnitMiles.get -> string
 static Dynamo.Wpf.Properties.Resources.GESUnitMillimeters.get -> string
 static Dynamo.Wpf.Properties.Resources.GetStartedGuide.get -> string
+static Dynamo.Wpf.Properties.Resources.GetStartedGuideDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.GetStartedGuideLibraryText.get -> string
 static Dynamo.Wpf.Properties.Resources.GetStartedGuideLibraryTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.GetStartedGuidePreferencesText.get -> string
@@ -4849,6 +4883,7 @@ static Dynamo.Wpf.Properties.Resources.OKButton.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuide.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideConnectNodesText.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideConnectNodesTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.OnboardingGuideDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideRunGraphText.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideRunGraphTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideSurveyText.get -> string
@@ -5010,6 +5045,7 @@ static Dynamo.Wpf.Properties.Resources.PackagesGuide.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideContinueButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideDependenciesText.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideDependenciesTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PackagesGuideDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideExitAcceptTerms.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideExitButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideExitTitle.get -> string

@@ -524,7 +524,7 @@ namespace Dynamo.UI.Views
         }
 
 
-        public void ShowTempalte()
+        public void ShowTemplate()
         {
             RequestShowTemplate();
         }
