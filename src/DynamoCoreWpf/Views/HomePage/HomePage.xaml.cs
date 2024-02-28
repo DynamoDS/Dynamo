@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
@@ -487,48 +488,48 @@ namespace Dynamo.UI.Views
             RequestShowTemplate = requestShowTemplate;
 
         }
-
+        [DynamoJSInvokable]
         public void OpenFile(string path)
         {
             RequestOpenFile(path);
         }
-
+        [DynamoJSInvokable]
         public void StartGuidedTour(string path)
         {
             RequestShowGuidedTour(path);
         }
-
+        [DynamoJSInvokable]
         public void NewWorkspace()
         {
             RequestNewWorkspace();
         }
-
+        [DynamoJSInvokable]
         public void OpenWorkspace()
         {
             RequestOpenWorkspace();
         }
-
+        [DynamoJSInvokable]
         public void NewCustomNodeWorkspace()
         {
             RequestNewCustomNodeWorkspace();
         }
-
+        [DynamoJSInvokable]
         public void ShowSampleFilesInFolder()
         {
             RequestShowSampleFilesInFolder();
         }
-
+        [DynamoJSInvokable]
         public void ShowBackupFilesInFolder()
         {
             RequestShowBackupFilesInFolder();
         }
 
-
-        public void ShowTemplate()
+        [DynamoJSInvokable]
+        public void ShowTempalte()
         {
             RequestShowTemplate();
         }
-
+        [DynamoJSInvokable]
         public void ApplicationLoaded()
         {
             RequestApplicationLoaded();
