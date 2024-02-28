@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -374,9 +375,18 @@ namespace Dynamo.Controls
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
             }
 
-            Dispatcher.BeginInvoke(new Action(() => {
-                dynamoViewModel.Model.Logger.Log($"Opened workspace named {workspace.Name} in {WorkspaceRenderedTimer.Elapsed}");
+            void idleDispatcher(object sender, EventArgs e)
+            {
+                Dispatcher.Hooks.DispatcherInactive -= idleDispatcher;
+                dynamoViewModel.Model.Logger.Log($"Inside Opened workspace named {workspace.Name} in {WorkspaceRenderedTimer.Elapsed}");
                 WorkspaceRenderedTimer.Reset();
+            };
+
+            Dispatcher.BeginInvoke(new Action(() => {
+                Task.Delay(500).ContinueWith((t) =>
+                {
+                    Dispatcher.Hooks.DispatcherInactive += idleDispatcher;
+                });
             }), DispatcherPriority.Background);
         }
 
