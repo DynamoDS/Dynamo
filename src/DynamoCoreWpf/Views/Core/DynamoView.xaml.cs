@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Configuration;
-using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
@@ -24,7 +23,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search.SearchElements;
@@ -1210,6 +1208,7 @@ namespace Dynamo.Controls
 
                 startPage = new StartPageViewModel(dynamoViewModel, isFirstRun);
                 startPageItemsControl.Items.Add(startPage);
+                homePage.DataContext = startPage;
             }
         }
 
@@ -2022,6 +2021,8 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
 
+            this.homePage.Dispose();
+
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
             this._pkgSearchVM?.Dispose();
@@ -2626,6 +2627,17 @@ namespace Dynamo.Controls
                 }
 
                 return extensionsCollapsed;
+            }
+        }
+
+        /// <summary>
+        /// A feature flag controlling the appearance of the Dynamo home navigation page
+        /// </summary>
+        public bool IsNewAppHomeEnabled
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNewAppHomeEnabled", false) ?? false;
             }
         }
 
