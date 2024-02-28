@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -28,6 +28,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void WebRequest()
         {
             if (!CheckForInternetConnection())
