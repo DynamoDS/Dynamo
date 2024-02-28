@@ -7,6 +7,7 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using DynamoUnits;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -584,11 +585,17 @@ namespace Dynamo.Tests
             var vString = "input string";
             var vInt = 5;
             var vDouble = 3.14;
+            var vDateTime = DSCore.DateTime.ByDate(2001, 1, 1);
+            var vLocation = Location.ByLatitudeAndLongitude(50, 50);
+            var vTimeSpan = DSCore.TimeSpan.ByDateDifference(vDateTime, DSCore.DateTime.ByDate(2000, 1, 1));
 
             var invStringList = new ArrayList() { vString, vInt, vDouble };
             var vStringList = new ArrayList() { vString };
             var vIntList = new ArrayList() { vInt };
             var vDoubleList = new ArrayList() { vDouble };
+            var vDateTimeList = new ArrayList() { vDateTime };
+            var vLocationList = new ArrayList() { vLocation };
+            var vTimeSpanList = new ArrayList() { vTimeSpan };
 
             // Assert - check for nulls - fail
             var validate = DSCore.Data.IsSupportedDataType(nullInput, vType, false);
@@ -606,6 +613,15 @@ namespace Dynamo.Tests
 
             validate = DSCore.Data.IsSupportedDataType(vDouble, DSCore.Data.DataType.Number.ToString(), false);
             Assert.AreEqual(true, validate, "Couldn't validate double input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vDateTime, DSCore.Data.DataType.DateTime.ToString(), false);
+            Assert.AreEqual(true, validate, "Couldn't validate DateTime input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vLocation, DSCore.Data.DataType.Location.ToString(), false);
+            Assert.AreEqual(true, validate, "Couldn't validate Location input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vTimeSpan, DSCore.Data.DataType.TimeSpan.ToString(), false);
+            Assert.AreEqual(true, validate, "Couldn't validate TimeSpan input.");
 
             // Assert - check list - fail
             validate = DSCore.Data.IsSupportedDataType(vStringList, DSCore.Data.DataType.String.ToString(), false);
@@ -625,6 +641,15 @@ namespace Dynamo.Tests
             Assert.AreEqual(true, validate, "Couldn't validate integer list input.");
 
             validate = DSCore.Data.IsSupportedDataType(vDoubleList, DSCore.Data.DataType.Number.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate double list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vDateTimeList, DSCore.Data.DataType.DateTime.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate double list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vLocationList, DSCore.Data.DataType.Location.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate double list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vTimeSpanList, DSCore.Data.DataType.TimeSpan.ToString(), true);
             Assert.AreEqual(true, validate, "Couldn't validate double list input.");
         }
 
@@ -784,7 +809,77 @@ namespace Dynamo.Tests
             validate = DSCore.Data.IsSupportedDataType(vCoordinateSystemgList, DSCore.Data.DataType.CoordinateSystem.ToString(), true);
             Assert.AreEqual(true, validate, "Couldn't validate integer list input.");
 
-            // Assert - check hierarchical lsit values - succeed
+            validate = DSCore.Data.IsSupportedDataType(vPointList, DSCore.Data.DataType.Point.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Point list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vVectorList, DSCore.Data.DataType.Vector.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Vector list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vPlaneList, DSCore.Data.DataType.Plane.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Plane list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vSurfaceList, DSCore.Data.DataType.Surface.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Surface list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vUVList, DSCore.Data.DataType.UV.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate UV list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vCurveList, DSCore.Data.DataType.Curve.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Curve list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vArcList, DSCore.Data.DataType.Arc.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Arc list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vCircleList, DSCore.Data.DataType.Circle.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Circle list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vEllipseList, DSCore.Data.DataType.Ellipse.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Ellipse list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vEllipseArcList, DSCore.Data.DataType.EllipseArc.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate EllipseArc list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vHelixList, DSCore.Data.DataType.Helix.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Helix list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vLineList, DSCore.Data.DataType.Line.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Line list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vNurbsCurveList, DSCore.Data.DataType.NurbsCurve.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate NurbsCurve list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vPolyCurveList, DSCore.Data.DataType.PolyCurve.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate PolyCurve list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vPolygonList, DSCore.Data.DataType.Polygon.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Polygon list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vRectangleList, DSCore.Data.DataType.Rectangle.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Rectangle list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vMeshList, DSCore.Data.DataType.Mesh.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Mesh list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vSolidList, DSCore.Data.DataType.Solid.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Solid list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vConeList, DSCore.Data.DataType.Cone.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Cone list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vCylinderList, DSCore.Data.DataType.Cylinder.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Cylinder list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vCuboidList, DSCore.Data.DataType.Cuboid.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Cuboid list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vSphereList, DSCore.Data.DataType.Sphere.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate Sphere list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vNurbsSurfaceList, DSCore.Data.DataType.NurbsSurface.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate NurbsSurface list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vPolySurfaceList, DSCore.Data.DataType.PolySurface.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate PolySurface list input.");
         }
     }
 }

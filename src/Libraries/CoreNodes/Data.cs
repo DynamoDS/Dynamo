@@ -627,7 +627,7 @@ namespace DSCore
             typeDictionary[polygon] = typeof(Polygon);
             typeDictionary[rectangle] = typeof(Autodesk.DesignScript.Geometry.Rectangle);
 
-            typeDictionary[new DynamoType(DataType.DateTime)] = typeof(DateTime);
+            typeDictionary[new DynamoType(DataType.DateTime)] = typeof(System.DateTime);
             typeDictionary[new DynamoType(DataType.Number)] = typeof(double);
             typeDictionary[new DynamoType(DataType.Integer)] = typeof(int);
             typeDictionary[new DynamoType(DataType.Location)] = typeof(Location);
@@ -657,7 +657,7 @@ namespace DSCore
             typeDictionary[nurbsSrf] = typeof(NurbsSurface);
             typeDictionary[polySrf] = typeof(PolySurface);
 
-            typeDictionary[new DynamoType(DataType.TimeSpan)] = typeof(TimeSpan);
+            typeDictionary[new DynamoType(DataType.TimeSpan)] = typeof(System.TimeSpan);
             typeDictionary[new DynamoType(DataType.UV)] = typeof(UV);
             typeDictionary[new DynamoType(DataType.Vector)] = typeof(Vector);
 
