@@ -41,8 +41,6 @@ namespace Dynamo.PackageManager.UI
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
                 Categories.PackageManager);
-
-            this.dynamoView = dynamoView;
         }
 
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
