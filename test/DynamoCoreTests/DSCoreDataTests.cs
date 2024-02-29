@@ -574,11 +574,29 @@ namespace Dynamo.Tests
             Assert.That(() => DSCore.Data.Remember(unsupportedInput, vCachedJson), Throws.Exception);
         }
 
+
         [Test]
         [Category("UnitTests")]
-        public void IsSupportedDataTypeFalseOnInitialNullInputs()
+        public void IsNotSupportedNullInput()
         {
             object nullInput = null;
+            var vType = DSCore.Data.DataType.String.ToString();
+            var invType = "inv";
+
+            var vString = "input string";
+
+            // Assert - check for nulls - fail
+            var validate = DSCore.Data.IsSupportedDataType(nullInput, vType, false);
+            Assert.AreEqual(false, validate, "Null input should not be supported.");
+
+            validate = DSCore.Data.IsSupportedDataType(vString, invType, false);
+            Assert.AreEqual(false, validate, "Unexisting enum type should not be supported.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void IsSupportedPrimitiveDataType()
+        {
             var vType = DSCore.Data.DataType.String.ToString();
             var invType = "inv";
 
@@ -597,15 +615,9 @@ namespace Dynamo.Tests
             var vLocationList = new ArrayList() { vLocation };
             var vTimeSpanList = new ArrayList() { vTimeSpan };
 
-            // Assert - check for nulls - fail
-            var validate = DSCore.Data.IsSupportedDataType(nullInput, vType, false);
-            Assert.AreEqual(false, validate, "Null input should not be supported.");
-
-            validate = DSCore.Data.IsSupportedDataType(vString, invType, false);
-            Assert.AreEqual(false, validate, "Unexisting enum type should not be supported.");
 
             // Assert - check signle values - succeed
-            validate = DSCore.Data.IsSupportedDataType(vString, vType, false);
+            var validate = DSCore.Data.IsSupportedDataType(vString, vType, false);
             Assert.AreEqual(true, validate, "Couldn't validate string input.");
 
             validate = DSCore.Data.IsSupportedDataType(vInt, DSCore.Data.DataType.Integer.ToString(), false);
@@ -880,6 +892,98 @@ namespace Dynamo.Tests
 
             validate = DSCore.Data.IsSupportedDataType(vPolySurfaceList, DSCore.Data.DataType.PolySurface.ToString(), true);
             Assert.AreEqual(true, validate, "Couldn't validate PolySurface list input.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void IsSupprtedInheritanceDataType()
+        {
+            // Primitives
+            var point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1);
+            var point2 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(2, 2, 1);
+            var point3 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(3, 3, 3);
+            var vector = Vector.ByCoordinates(0, 0, 1);
+            var plane = Plane.ByBestFitThroughPoints([point, point2, point3]);
+            var vCoordinateSystem = CoordinateSystem.ByOrigin(0, 0);
+            var vSurface = Surface.ByPerimeterPoints([point, point2, point3]);
+
+            // Curve
+            var vUV = UV.ByCoordinates(0, 0);
+            var vCurve = Curve.ByParameterLineOnSurface(vSurface, vUV, vUV);
+            var vArc = Arc.ByThreePoints(point, point2, point3);
+            var vCircle = Circle.ByBestFitThroughPoints([point, point2, point3]);
+            var vEllipse = Ellipse.ByOriginRadii(point, 5, 5);
+            var vEllipseArc = EllipseArc.ByPlaneRadiiAngles(plane, 2, 2, 0, 180);
+            var vHelix = Helix.ByAxis(point, vector, point3, 1, 360);
+            var vLine = Line.ByBestFitThroughPoints([point, point2, point3]);
+            var vNurbsCurve = NurbsCurve.ByControlPoints([point, point2, point3, point]);
+            var vPolyCurve = PolyCurve.ByJoinedCurves([vCurve, vCurve], 0.001);
+            var vPolygon = Polygon.ByPoints([point, point2, point3, point]);
+            var vRectangle = Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(5, 10);
+
+
+            var indexGroup = IndexGroup.ByIndices(0, 1, 2);
+            var vMesh = Mesh.ByPointsFaceIndices([point, point2, point3], [indexGroup, indexGroup, indexGroup]);
+
+            // Solid
+            var vSolid = Solid.ByJoinedSurfaces([vSurface, vSurface, vSurface, vSurface, vSurface, vSurface]);
+            var vCone = Cone.ByCoordinateSystemHeightRadii(vCoordinateSystem, 1, 1, 1);
+            var vCylinder = Cylinder.ByPointsRadius(point, point3, 1);
+            var vCuboid = Cuboid.ByCorners(point, point3);
+            var vSphere = Sphere.ByCenterPointRadius(point, 1);
+
+            // Surface
+            var vNurbsSurface = NurbsSurface.ByControlPoints([[point, point2, point3, point],
+                [point, point3, point2, point],
+                [point2, point3, point, point2]], 2, 2);
+            var vPolySurface = PolySurface.ByJoinedSurfaces([vSurface, vSurface]);
+
+            // Heterogeneous lists
+            var vCurveInheritanceList = new ArrayList() { vRectangle, vPolygon, vNurbsCurve, vEllipse };
+            var vPolyCurveInheritanceList = new ArrayList() { vRectangle, vPolygon, vPolyCurve };
+            var vSolidInheritanceList = new ArrayList() { vSolid, vCone, vCylinder, vCuboid, vSphere };
+            var vSurfaceInheritanceList = new ArrayList() { vNurbsSurface, vPolySurface };
+
+            var ivCurveInheritanceList = new ArrayList() { vRectangle, vPolygon, vNurbsCurve, vEllipse, vSphere };
+            var ivPolyCurveInheritanceList = new ArrayList() { vRectangle, vPolygon, vPolyCurve, vCurve };
+            var ivSolidInheritanceList = new ArrayList() { vPolygon, vCone, vCylinder, vCuboid, vSphere };
+            var ivSurfaceInheritanceList = new ArrayList() { vNurbsSurface, vPolySurface, vCylinder, vCuboid, vSphere };
+
+            // Assert - check single upward inheritence - succeed
+            var validate = DSCore.Data.IsSupportedDataType(vRectangle, DSCore.Data.DataType.Curve.ToString(), false);
+            Assert.AreEqual(true, validate, "Couldn't vaidate Rectangle inheritance from Curve.");
+
+            // Assert - check single downward inheritance - fail 
+            validate = DSCore.Data.IsSupportedDataType(vCurve, DSCore.Data.DataType.Rectangle.ToString(), false);
+            Assert.AreEqual(false, validate, "Shouldn't vaidate Curve inheritance from Rectangle.");
+
+
+            // Assert - check heterogeneous list values - succeed
+            validate = DSCore.Data.IsSupportedDataType(vCurveInheritanceList, DSCore.Data.DataType.Curve.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from Curve in a heterogeneous list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vPolyCurveInheritanceList, DSCore.Data.DataType.PolyCurve.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from PolyCurve in a heterogeneous list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vSolidInheritanceList, DSCore.Data.DataType.Solid.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from Solid in a heterogeneous list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(vSurfaceInheritanceList, DSCore.Data.DataType.Surface.ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from Surface in a heterogeneous list input.");
+
+
+            // Assert - check invalid heterogeneous list values - fail
+            validate = DSCore.Data.IsSupportedDataType(ivCurveInheritanceList, DSCore.Data.DataType.Curve.ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Curve if there is a Sphere in the list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(ivPolyCurveInheritanceList, DSCore.Data.DataType.PolyCurve.ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate DataTypes - Curve does not inherit from PolyCurve.");
+
+            validate = DSCore.Data.IsSupportedDataType(ivSolidInheritanceList, DSCore.Data.DataType.Solid.ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Solid if there is a Polygone in the list input.");
+
+            validate = DSCore.Data.IsSupportedDataType(ivSurfaceInheritanceList, DSCore.Data.DataType.Surface.ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Surface with Cylindar, Cuboid and Sphere in the list.");
         }
     }
 }

@@ -573,13 +573,13 @@ namespace DSCore
             Vector
         }
 
-        internal interface IDynamoType
+        private interface IDynamoType
         {
             DataType Type { get; }
             IDynamoType Parent {  get; }
         }
 
-        internal class DynamoType : IDynamoType
+        private class DynamoType : IDynamoType
         {
             public DataType Type { get; private set; }
             public IDynamoType Parent { get; private set; }
@@ -733,10 +733,6 @@ namespace DSCore
             if (dict.TryGetValue(dataType, out Type targetType))
             {
                 if (targetType.IsInstanceOfType(item)) return true;
-            }
-            if (targetType != null && dataType.Parent != null)
-            {
-                return IsItemOfType(item, dataType.Parent, dict);
             }
 
             return false;
