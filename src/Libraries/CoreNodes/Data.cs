@@ -607,10 +607,10 @@ namespace DSCore
             typeDictionary[new DynamoType(DataType.BoundingBox)] = typeof(BoundingBox);
             typeDictionary[new DynamoType(DataType.CoordinateSystem)] = typeof(CoordinateSystem);
 
-            var crv = new DynamoType(DataType.Curve);
-            typeDictionary[crv] = typeof(Curve); 
-
             // Subtypes of Curve
+            var crv = new DynamoType(DataType.Curve);
+
+            typeDictionary[crv] = typeof(Curve); 
             typeDictionary[new DynamoType(DataType.Arc, crv)] = typeof(Arc);
             typeDictionary[new DynamoType(DataType.Circle, crv)] = typeof(Circle);
             typeDictionary[new DynamoType(DataType.Ellipse, crv)] = typeof(Ellipse);
@@ -635,6 +635,7 @@ namespace DSCore
             typeDictionary[new DynamoType(DataType.Plane)] = typeof(Plane);
             typeDictionary[new DynamoType(DataType.Point)] = typeof(Autodesk.DesignScript.Geometry.Point);
 
+            // Subtypes of Solid
             var solid = new DynamoType(DataType.Solid);
             var cone = new DynamoType(DataType.Cone, solid);    // cone is subtype of solid
             var cylinder = new DynamoType(DataType.Cylinder, cone); // cylinder is subtype of cone 
@@ -649,6 +650,7 @@ namespace DSCore
 
             typeDictionary[new DynamoType(DataType.String)] = typeof(string);
 
+            // Subtypes of Surface
             var surface = new DynamoType(DataType.Surface);
             var nurbsSrf = new DynamoType(DataType.NurbsSurface, surface);    // nurbsSrf is subtype of surface
             var polySrf = new DynamoType(DataType.PolySurface, surface); // polySrf is subtype of surface
@@ -672,7 +674,6 @@ namespace DSCore
         /// <returns></returns>
         private static IDynamoType TryGetDynamoType(string type, Dictionary<IDynamoType, Type> dict)
         {
-            Type targetType = null;
             foreach (var kvp in dict)
             {
                 if (kvp.Key.Type.ToString() == type)
@@ -728,6 +729,14 @@ namespace DSCore
             }
         }
 
+        /// <summary>
+        /// This method checks if an item is of a required Dynamo DataType
+        /// 'IsInstanceOfType' recursivelly checks for upward inheritance
+        /// </summary>
+        /// <param name="item">The item to chek the data type for</param>
+        /// <param name="dataType">The DataType to check against</param>
+        /// <param name="dict">A dictionary containing all hierarchical DataType relationships</param>
+        /// <returns>A true or false result based on the check validation</returns>
         private static bool IsItemOfType(object item, IDynamoType dataType, Dictionary<IDynamoType, Type> dict)
         {
             if (dict.TryGetValue(dataType, out Type targetType))

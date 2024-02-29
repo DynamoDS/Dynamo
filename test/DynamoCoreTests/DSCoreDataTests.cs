@@ -957,6 +957,8 @@ namespace Dynamo.Tests
             validate = DSCore.Data.IsSupportedDataType(vCurve, DSCore.Data.DataType.Rectangle.ToString(), false);
             Assert.AreEqual(false, validate, "Shouldn't vaidate Curve inheritance from Rectangle.");
 
+            validate = DSCore.Data.IsSupportedDataType(vCone, DSCore.Data.DataType.Curve.ToString(), false);
+            Assert.AreEqual(false, validate, "Shouldn't vaidate Cone inheritance from Curve.");
 
             // Assert - check heterogeneous list values - succeed
             validate = DSCore.Data.IsSupportedDataType(vCurveInheritanceList, DSCore.Data.DataType.Curve.ToString(), true);
