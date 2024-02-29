@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
@@ -837,5 +838,58 @@ namespace Dynamo.Tests
             var snapshotNameWithoutTimestamp = PathHelper.GetScreenCaptureNameFromPath(examplePath, false);
             Assert.AreEqual(snapshotNameWithoutTimestamp, "Add");
         }
+
+        [Test]
+        public void LoadEmbeddedResourceAsString_ReturnsCorrectContent()
+        {
+            // Arrange
+            var expectedContent = "Dynamo resource.";
+            var resourceName = "Dynamo.Tests.Resources.TestResource.txt"; 
+
+            // Act
+            var assembly = Assembly.GetExecutingAssembly();
+            var actualContent = PathHelper.LoadEmbeddedResourceAsString(resourceName, assembly);
+
+            // Assert
+            Assert.AreEqual(expectedContent, actualContent, "The content loaded from the embedded resource does not match the expected content.");
+        }
+
+        [Test]
+        public void ExtractAndSaveEmbeddedFont_CreatesFileWithCorrectContent()
+        {
+            // Arrange
+            var tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            var outputFileName = "testResourceFile.ttf"; 
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourcePath = "Dynamo.Tests.Resources.TestResource.txt";
+
+            // Act
+            PathHelper.ExtractAndSaveEmbeddedFont(resourcePath, tempDirectory, outputFileName, assembly);
+
+            var outputFileFullPath = Path.Combine(tempDirectory, outputFileName);
+
+            // Assert
+            Assert.IsTrue(File.Exists(outputFileFullPath), "The output file was not created.");
+
+            var originalContent = GetEmbeddedResourceContent(resourcePath, assembly);
+            var extractedContent = File.ReadAllBytes(outputFileFullPath);
+            Assert.AreEqual(originalContent, extractedContent, "The contents of the extracted file do not match the original.");
+
+            // Clean up
+            Directory.Delete(tempDirectory, true);
+        }
+
+        private byte[] GetEmbeddedResourceContent(string resourcePath, Assembly assembly)
+        {
+            using (var stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream == null) throw new InvalidOperationException("Resource not found.");
+
+                var content = new byte[stream.Length];
+                stream.Read(content, 0, content.Length);
+                return content;
+            }
+        }
+
     }
 }

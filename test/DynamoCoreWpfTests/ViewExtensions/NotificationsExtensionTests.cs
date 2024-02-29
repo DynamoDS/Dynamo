@@ -38,7 +38,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
                                         .FirstOrDefault(p => p.IsOpen);
 
             Assert.NotNull(notificationUI);
-            var webView = notificationUI.FindName("webView");
+            var webView = notificationUI.FindName("dynWebView");
             Assert.NotNull(webView);
         }
 

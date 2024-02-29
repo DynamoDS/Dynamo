@@ -62,7 +62,7 @@ namespace Dynamo.PythonMigration
         {
             LoadedParams = p;
 
-            var ironPythonVersion = new Version(3, 0, 0);
+            var ironPythonVersion = new Version(3, 2, 0);
             if(LoadedParams.StartupParams.Preferences is PreferenceSettings prefs)
             {
                  Version.TryParse(prefs.IronPythonResolveTargetVersion,out ironPythonVersion);

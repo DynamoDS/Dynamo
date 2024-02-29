@@ -1021,9 +1021,13 @@
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,12,0,0"
+                                                Grid.Row="0"
+                                                Visibility="{Binding IsTSplineNodesExperimentToggleVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <ToggleButton Name="EnableTSplineToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -1032,6 +1036,25 @@
                                                       Style="{StaticResource EllipseToggleButton1}"/>
                                         <StackPanel VerticalAlignment="Center">
                                             <Label Content="{x:Static p:Resources.PreferencesViewEnableTSplineNodes}"
+                                                   Padding="5,5,5,0"
+                                                   Margin="10,0,0,0"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            <Label Content="{x:Static p:Resources.PreferencesViewRequiresRelaunchOfDynamo}" 
+                                                   FontSize="10"
+                                                   Margin="10,0,0,0"
+                                                   Padding="5,0,5,5"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                        <ToggleButton Name="EnablePanelToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=EnablePanelingIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <Label Content="{x:Static p:Resources.PreferencesViewEnablePanelingNodes}"
                                                    Padding="5,5,5,0"
                                                    Margin="10,0,0,0"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>

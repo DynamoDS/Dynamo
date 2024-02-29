@@ -29,6 +29,23 @@ namespace CoreNodeModels.Input
     public class CustomSelection : DSDropDownBase
     {
         private List<DynamoDropDownItem> serializedItems;
+        private bool isVisibleDropDownTextBlock = false;
+
+        /// <summary>
+        /// This property will Collapse or make Visible the TextBlock for the ComboBox template "RefreshComboBox" (by default will be Collapsed)
+        /// </summary>
+        public bool IsVisibleDropDownTextBlock
+        {
+            get
+            {
+                return isVisibleDropDownTextBlock;
+            }
+            set
+            {
+                isVisibleDropDownTextBlock = value;
+                RaisePropertyChanged(nameof(IsVisibleDropDownTextBlock));
+            }
+        }
 
         /// <summary>
         /// Copy of <see cref="DSDropDownBase.Items"/> to be serialized./>

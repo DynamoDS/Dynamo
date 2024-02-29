@@ -27,7 +27,7 @@
       <Exec Command="npm pack @dynamods/splash-screen@latest" />
   </Target>
 
-    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">        
+    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">      
         <!--Locates the .tgz files-->
         <ItemGroup>
             <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
@@ -50,11 +50,46 @@
 
         <!--Deletes the tgz file-->
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
-    </Target> 
-   
-  <ItemGroup>
+    </Target>
+
+
+    <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
+        <!--This command updates the npm registry configuration if necessary-->
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
+        <!--Download the latest build of the Dynamo Home package-->
+        <Exec Command="npm pack @dynamods/dynamo-home@latest" />
+    </Target>
+
+    <Target Name="ExtractTGZFileDynamoHome" DependsOnTargets="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
+        <!--Locate the .tgz files for the Dynamo Home package-->
+        <ItemGroup>
+            <TGZFilesDynamoHome Include="./dynamods-dynamo-home-*.tgz" />
+        </ItemGroup>
+
+        <!--Reverse the order of the files to get the higher version-->
+        <ItemGroup>
+            <ReversedDynamoHome Include="@(TGZFilesDynamoHome-&gt;Reverse())" />
+        </ItemGroup>
+
+        <PropertyGroup>
+            <Last>%(TGZFilesDynamoHome.Filename)</Last>
+        </PropertyGroup>
+
+        <!--Create the folder for the Dynamo Home package-->
+        <MakeDir Directories="Packages/DynamoHome" />
+
+        <!--Extract the file to the specified directory-->
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/DynamoHome"></Exec>
+
+        <!--Delete the tgz file-->
+        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
+    </Target>
+
+    <ItemGroup>
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
+    <None Remove="Packages\DynamoHome\build\index.bundle.js" />
+    <None Remove="Packages\DynamoHome\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <None Remove="UI\Images\checkmark_16px.png" />
     <None Remove="UI\Images\close_16px.png" />
@@ -71,6 +106,7 @@
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
+    <None Remove="Views\Core\UpdateIconWindow.xaml" />
     <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
     <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
     <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
@@ -89,6 +125,8 @@
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
+    <EmbeddedResource Include="Packages\DynamoHome\build\index.bundle.js" />
+    <EmbeddedResource Include="Packages\DynamoHome\build\index.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -138,7 +176,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3421" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.4074" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.0.3175" />
@@ -157,11 +195,14 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="6.0.0" />
+	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="8.0.0" />
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\net6.0-windows\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference> 
-  
+      <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
@@ -408,6 +449,9 @@
       <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\CustomColorPicker.xaml.cs" />
+    <Compile Include="Views\Debug\UpdateNodeIconsWindow.xaml.cs">
+      <DependentUpon>UpdateNodeIconsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
@@ -440,6 +484,7 @@
     <Compile Include="Views\GuidedTour\SurveyPopupWindow.xaml.cs">
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\HomePage\HomePage.xaml.cs" />
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
@@ -495,6 +540,9 @@
     </Compile>
     <Compile Include="Views\SplashScreen\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HomePage\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
@@ -589,6 +637,10 @@
     <Page Include="UI\Prompts\PortPropertiesEditPrompt.xaml"></Page>
     <Page Include="Views\Core\CustomColorPicker.xaml">
       <CopyToOutputDirectory></CopyToOutputDirectory>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Debug\UpdateNodeIconsWindow.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Core\GeometryScalingPopup.xaml">
@@ -1548,6 +1600,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\HomePage\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -1759,6 +1817,9 @@
     <Resource Include="UI\Images\not-authenticated.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Views\HomePage\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Views\PackageManager\Controls\CustomBrowserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

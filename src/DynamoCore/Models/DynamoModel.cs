@@ -36,6 +36,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using DynamoServices;
+using DynamoUtilities;
 using Greg;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -614,6 +615,8 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
+            DynamoModel.IsCrashing = false;
+
             if (config is DefaultStartConfiguration defaultStartConfig)
             {
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
@@ -699,10 +702,14 @@ namespace Dynamo.Models
                     // Do nothing for now
                 }
             }
+            //If network traffic is disabled, analytics should also be disabled - this is already done in
+            //our other entry points(CLI,Sandbox etc) - but
+            //not all integrators will use those entry points, some may just create a DynamoModel directly.
+            Analytics.DisableAnalytics = NoNetworkMode || Analytics.DisableAnalytics;
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client for web traffic reason.
-            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Analytics.DisableAnalytics)
+            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Analytics.DisableAnalytics && !NoNetworkMode)
             {
                 HandleAnalytics();
 
@@ -716,7 +723,7 @@ namespace Dynamo.Models
                     {
                         //this will kill the CLI process after cacheing the flags in Dynamo process.
                         using (FeatureFlags =
-                                new DynamoUtilities.DynamoFeatureFlagsManager(
+                                new DynamoFeatureFlagsManager(
                                 AnalyticsService.GetUserIDForSession(),
                                 mainThreadSyncContext,
                                 IsTestMode))
@@ -728,6 +735,7 @@ namespace Dynamo.Models
                     }
                     catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
                 });
+                DynamoFeatureFlagsManager.FlagsRetrieved += HandleFeatureFlags;
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
@@ -973,6 +981,15 @@ namespace Dynamo.Models
             }
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        /// <summary>
+        /// When feature flags received, handle them and make changes 
+        /// </summary>
+        private void HandleFeatureFlags()
+        {
+            PreferenceSettings.UpdateNamespacesToExcludeFromLibrary();
+            return;
         }
 
         private void HandleAnalytics()
@@ -1367,6 +1384,7 @@ namespace Dynamo.Models
             LibraryServices.LibraryLoaded -= LibraryLoaded;
 
             EngineController.VMLibrariesReset -= ReloadDummyNodes;
+            DynamoFeatureFlagsManager.FlagsRetrieved -= HandleFeatureFlags;
 
             Logger.Dispose();
 

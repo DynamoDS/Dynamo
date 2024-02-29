@@ -856,7 +856,7 @@ namespace Dynamo.Configuration
         /// This property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
-        internal Version ironPythonResolveTargetVersion = new Version(3, 0, 0);
+        internal Version ironPythonResolveTargetVersion = new Version(3, 2, 0);
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
@@ -1141,14 +1141,34 @@ namespace Dynamo.Configuration
             return defaultPythonEngine;
         }
 
+        /// <summary>
+        /// Initialize namespaces to exclude from Library based on conditions
+        /// </summary>
         internal void InitializeNamespacesToExcludeFromLibrary()
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                NamespacesToExcludeFromLibrary.Add(
+                NamespacesToExcludeFromLibrary = new List<string>()
+                {
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel"
+                };  
+                NamespacesToExcludeFromLibrarySpecified = true;
+            }
+        }
+
+        /// <summary>
+        /// Update namespaces to exclude from Library based on feature flags
+        /// </summary>
+        internal void UpdateNamespacesToExcludeFromLibrary()
+        {
+            // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
+            if (!DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false)
+            {
+                NamespacesToExcludeFromLibrary.Remove(
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
                 );
-                NamespacesToExcludeFromLibrarySpecified = true;
+                return;
             }
         }
 

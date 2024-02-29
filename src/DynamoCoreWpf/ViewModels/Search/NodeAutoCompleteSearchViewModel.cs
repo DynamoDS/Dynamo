@@ -452,8 +452,12 @@ namespace Dynamo.ViewModels
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     var client = new RestClient(uri);
                     var request = new RestRequest(string.Empty,Method.Post);
-
-                    request.AddHeader("Authorization",$"Bearer {tokenprovider?.GetAccessToken()}");
+                    var tkn = tokenprovider?.GetAccessToken();
+                    if (string.IsNullOrEmpty(tkn))
+                    {
+                        throw new Exception("Authentication required.");
+                    }
+                    request.AddHeader("Authorization",$"Bearer {tkn}");
                     request = request.AddJsonBody(requestJSON);
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request);
