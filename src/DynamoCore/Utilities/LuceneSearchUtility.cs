@@ -60,6 +60,8 @@ namespace Dynamo.Utilities
         /// </summary>
         internal void InitializeLuceneConfig(string dirName, LuceneStorage storageType = LuceneStorage.FILE_SYSTEM)
         {
+            if (DynamoModel.IsHeadless) return;
+
             addedFields = new List<string>();
 
             DirectoryInfo luceneUserDataFolder;

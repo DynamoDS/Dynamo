@@ -382,11 +382,11 @@
                                   Tag="NoDownArrow"
                                   IsEnabled="False">
                             <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExportAsImage}"
-                                      Command="{Binding ValidateSaveImageResultCommand}"
+                                      Command="{Binding ValidateWorkSpaceBeforeToExportAsImageCommand }"
                                       Name="saveImage">
                             </MenuItem>
                             <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExport3DAsImage}"
-                                      Command="{Binding ValidateSaveImageResultCommand}"
+                                      Command="{Binding ValidateWorkSpaceBeforeToExportAsImageCommand }"
                                       CommandParameter="{x:Static p:Resources.ScreenShotFrom3DParameter}"
                                       Name="save3DImage">
                             </MenuItem>

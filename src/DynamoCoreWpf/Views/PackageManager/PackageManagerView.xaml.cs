@@ -41,8 +41,6 @@ namespace Dynamo.PackageManager.UI
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
                 Categories.PackageManager);
-
-            dynamoView.EnableEnvironment(false);
         }
 
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -105,7 +103,6 @@ namespace Dynamo.PackageManager.UI
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Analytics.TrackEvent(Actions.Close, Categories.PackageManager);
-            (this.Owner as DynamoView).EnableEnvironment(true);
 
             Close();
         }

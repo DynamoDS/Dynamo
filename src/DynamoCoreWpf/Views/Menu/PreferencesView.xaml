@@ -956,7 +956,7 @@
                                                         IsChecked="{Binding Path=HideNodesBelowSpecificConfidenceLevelIsChecked}"
                                                         Style="{StaticResource EllipseToggleButton1}"
                                                         IsEnabled="{Binding Path=EnableHideNodesToggle}"/>
-                                                    <Label Content="{x:Static p:Resources.HideNodesBelowSpecificConfidenceLevel}" 
+                                                    <Label Content="{x:Static p:Resources.PreferredConfidenceLevel}" 
                                                         Margin="10,0,0,0"
                                                         VerticalAlignment="Center"
                                                         Foreground="{StaticResource PreferencesWindowFontColor}"
@@ -970,7 +970,7 @@
                                                         Style="{StaticResource QuestionIcon}"
                                                         ToolTipService.ShowDuration="30000">
                                                         <Image.ToolTip>
-                                                            <ToolTip Content="{x:Static p:Resources.HideNodesBelowSpecificConfidenceLevelInfo}" Style="{StaticResource GenericToolTipLight}"/>
+                                                            <ToolTip Content="{x:Static p:Resources.PreferredConfidenceLevelInfo}" Style="{StaticResource GenericToolTipLight}"/>
                                                         </Image.ToolTip>
                                                     </Image>
                                                 </StackPanel>
