@@ -1410,7 +1410,7 @@ namespace Dynamo.Controls
 
                 BindingOperations.SetBinding(homePage, UIElement.VisibilityProperty, visibilityBinding);
 
-                this.newHomePageContainer.Children.Add(new Dynamo.UI.Views.HomePage());
+                this.newHomePageContainer.Children.Add(homePage);
             }
         }
 
