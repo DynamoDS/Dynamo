@@ -290,7 +290,7 @@ namespace Dynamo.Nodes
             // dont convert it to bullet
             bool lineContainsBullet = BULLETS_CHARS.Where(b => line.Contains(b)).Any();
             var textBeforeCaret = line.Substring(0, caretAtLine);
-            if (!StringUtils.IsStringSpacesWithTabs(textBeforeCaret)|| lineContainsBullet)
+            if (!StringUtils.IsStringSpacesWithTabs(textBeforeCaret) || lineContainsBullet)
             {
                 line = line.Insert(caretAtLine, "-");
                 return StringUtils.ReplaceLineOfText(text, lineNumber, line);
