@@ -1579,28 +1579,6 @@ namespace Dynamo.Models
 
             SearchModel?.Add(outputSearchElement);
             LuceneUtility.AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
-
-            //Adding this nodes are breaking the tests (due that we have two input and two output nodes):
-            //WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch
-            //WhenStartingDynamoInputAndOutputNodesAreNolongerMissingFromSearch
-            // New index process from Lucene, adding missing nodes: Code Block, Input and Output
-            var ele = AddNodeTypeToSearch(outputData);      
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
-
-            ele = AddNodeTypeToSearch(symbolData);
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
-
-            ele = AddNodeTypeToSearch(cbnData);
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
         }
 
         internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
