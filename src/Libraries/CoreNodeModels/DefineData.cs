@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using DSCore;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
@@ -63,9 +64,9 @@ namespace CoreNodeModels
             RegisterAllPorts();
             PropertyChanged += OnPropertyChanged;
 
-            foreach (var dataType in Enum.GetValues(typeof(DSCore.Data.DataType)))
+            foreach (var dataType in Data.DynamoTypesList())
             {
-                string displayName = dataType.ToString();
+                string displayName = dataType.Name;
                 string value = displayName;
 
                 Items.Add(new DynamoDropDownItem(displayName, value));
@@ -106,7 +107,7 @@ namespace CoreNodeModels
             // the object to be (type) evaluated
             // the expected datatype
             // if the input is an ArrayList or not
-            var function = new Func<object, string, bool, bool>(DSCore.Data.IsSupportedDataType);
+            var function = new Func<object, Type, bool, bool>(DSCore.Data.IsSupportedDataType);
             var funtionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
                 AstFactory.BuildStringNode(Items[SelectedIndex].Item.ToString()),
