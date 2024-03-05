@@ -161,8 +161,8 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Flag to indicate that there is no UI on this process, and things
-        /// like the update manager and the analytics collection should be
-        /// disabled.
+        /// like the node index process, update manager and the analytics collection 
+        /// should be disabled.
         /// </summary>
         public static bool IsHeadless { get; set; }
 
