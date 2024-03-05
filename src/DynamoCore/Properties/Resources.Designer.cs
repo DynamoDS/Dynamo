@@ -1952,6 +1952,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file or directory cannot be found.
+        /// </summary>
+        public static string StreamWriterNotFoundException {
+            get {
+                return ResourceManager.GetString("StreamWriterNotFoundException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a string..
         /// </summary>
         public static string StringNodeDescription {
