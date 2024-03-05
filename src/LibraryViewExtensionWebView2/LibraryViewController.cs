@@ -238,7 +238,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
         internal void OnCopyToClipboard(string text)
         {
             dynamoViewModel.Model.ClipBoard.Clear();
-            Clipboard.Clear();
             Clipboard.SetText(text);
         }
 
