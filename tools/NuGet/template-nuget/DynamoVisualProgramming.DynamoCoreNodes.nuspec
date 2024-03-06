@@ -30,6 +30,7 @@
         <file src="DSCoreNodes.xml" target="lib\$TargetFramework$" />
         <file src="nodes\CoreNodeModels.dll" target="lib\$TargetFramework$" />
         <file src="nodes\CoreNodeModels.xml" target="lib\$TargetFramework$" />
+        <file src="nodes\PythonNodeModels.dll" target="lib\$TargetFramework$" />
         <file src="nodes\Watch3DNodeModels.dll" target="lib\$TargetFramework$" />
         <file src="nodes\Watch3DNodeModels.xml" target="lib\$TargetFramework$" />
         <file src="nodes\UnitsNodeModels.dll" target="lib\$TargetFramework$" />
