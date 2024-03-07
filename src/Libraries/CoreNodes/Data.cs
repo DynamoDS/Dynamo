@@ -554,9 +554,9 @@ namespace DSCore
 
 
         /// <summary>
-        /// A static dictionary for all Dynamo supported data types
+        /// A static list for all Dynamo supported data types
         /// </summary>
-        /// <returns>The dictionary containing the supported data types</returns>
+        /// <returns>The list containing the supported data types</returns>
         public static List<DataNodeDynamoType> GetDataNodeDynamoTypeList()
         {
             var typeList = new List<DataNodeDynamoType>();
@@ -619,32 +619,52 @@ namespace DSCore
             return typeList;
         }
 
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue, string typeString, bool isList)
+        {
+            var type = GetDataNodeDynamoTypeList().First(x => x.Type.ToString().Equals(typeString)).Type;
+
+            if (type == null)
+            {
+                return new Dictionary<string, object>
+                {
+                    { ">", inputValue },
+                    { "Validation", false }
+                };
+            }
+
+            return new Dictionary<string, object>
+            {
+                { ">", inputValue },
+                { "Validation", IsSupportedDataNodeDynamoType(inputValue, type, isList) }
+            };
+        }
+
         /// <summary>
         /// Function to validate input type against supported Dynamo input types
         /// </summary>
         /// <param name="inputValue">The incoming data to validate</param>
-        /// <param name="typeString">The input type provided by the user. It has to match the inputValue type</param>
+        /// <param name="type">The input type provided by the user. It has to match the inputValue type</param>
         /// <param name="isList">The value of this boolean decides if the input is a single object or a list</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static bool IsSupportedDataNodeDynamoType([ArbitraryDimensionArrayImport] object inputValue, string typeString, bool isList)
+        public static bool IsSupportedDataNodeDynamoType([ArbitraryDimensionArrayImport] object inputValue, Type type, bool isList)
         {
-            var type = GetDataNodeDynamoTypeList().FirstOrDefault(x => x.Type.ToString().Equals(typeString)).Type;
-            if (type == null) { return false; } // Add exception
             if (inputValue == null || type == null)
             {
-                return false;   // Add exception
+                return false;
             }
 
             if (!isList)
             {
-                if (inputValue is ArrayList) return false;  // Add exception ?
+                if (inputValue is ArrayList) return false;
 
                 return IsItemOfType(inputValue, type);
             }
             else
             {
-                if (!(inputValue is ArrayList arrayList)) return false; // Add exception ?
+                if (!(inputValue is ArrayList arrayList)) return false;
 
                 foreach (var item in arrayList)
                 {
@@ -660,9 +680,9 @@ namespace DSCore
 
         /// <summary>
         /// This method checks if an item is of a required Dynamo DataType
-        /// 'IsInstanceOfType' recursivelly checks for upward inheritance
+        /// 'IsInstanceOfType' recursively checks for upward inheritance
         /// </summary>
-        /// <param name="item">The item to chek the data type for</param>
+        /// <param name="item">The item to check the data type for</param>
         /// <param name="dataType">The DataType to check against</param>
         /// <returns>A true or false result based on the check validation</returns>
         private static bool IsItemOfType(object item, Type dataType)

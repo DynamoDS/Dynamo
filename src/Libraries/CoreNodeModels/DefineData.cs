@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,10 +15,6 @@ namespace CoreNodeModels
     [NodeName("DefineData")]
     [NodeDescription(nameof(Properties.Resources.RememberDescription), typeof(Properties.Resources))]
     [NodeCategory("Core.Data")]
-    [InPortNames(">")]
-    [InPortTypes("var[]..[]")]
-    [InPortDescriptions(typeof(Properties.Resources),
-        nameof(Properties.Resources.RememberInputToolTip))]
     [OutPortNames(">")]
     [OutPortTypes("var[]..[]")]
     [OutPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.RememberOuputToolTip))]
@@ -31,6 +26,9 @@ namespace CoreNodeModels
 
         [JsonProperty]
         public bool IsList { get; set; }
+
+        [JsonProperty]
+        public bool AutoMode { get; set; }
 
         /// <summary>
         /// Copy of <see cref="DSDropDownBase.Items"/> to be serialized./>
@@ -57,8 +55,14 @@ namespace CoreNodeModels
         /// </summary>
         public DefineData() : base(">")
         {
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Properties.Resources.WatchPortDataInputToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.WatchPortDataResultToolTip)));
+
             RegisterAllPorts();
+
             PropertyChanged += OnPropertyChanged;
+
+            //Items.Add(new DynamoDropDownItem("Select a type", null));
 
             foreach (var dataType in Data.GetDataNodeDynamoTypeList())
             {
@@ -95,6 +99,9 @@ namespace CoreNodeModels
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
+        private static readonly string BuiltinDictionaryTypeName = typeof(DesignScript.Builtin.Dictionary).FullName;
+        private static readonly string BuiltinDictionaryGet = nameof(DesignScript.Builtin.Dictionary.ValueAtKey);
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var resultAst = new List<AssociativeNode>();
@@ -103,7 +110,7 @@ namespace CoreNodeModels
             // the object to be (type) evaluated
             // the expected datatype
             // if the input is an ArrayList or not
-            var function = new Func<object, string, bool, bool>(DSCore.Data.IsSupportedDataNodeDynamoType);
+            var function = new Func<object, string, bool, Dictionary<string, object>>(DSCore.Data.IsSupportedDataNodeType);
             var funtionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
                 AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
@@ -113,17 +120,21 @@ namespace CoreNodeModels
             var functionCall = AstFactory.BuildFunctionCall(function, funtionInputs);
             var functionCallIdentifier = AstFactory.BuildIdentifier(GUID + "_func");
 
-            // build the function call
             resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier, functionCall));
 
-            // build the output call
-            resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall));
+            //Next add the first key value pair to the output port
+            var getFirstKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
+                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode(">") });
 
-            // build the call for the DataBridge 
-            resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier,
-                DataBridge.GenerateBridgeDataAst(GUID.ToString(),
-                AstFactory.BuildExprList(inputAstNodes))));
+            resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), getFirstKey));
 
+            //Second get the key value pair to pass to the databridge callback
+            var getSecondKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
+                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode("Validation") });
+
+            resultAst.Add(AstFactory.BuildAssignment(
+                    AstFactory.BuildIdentifier(GUID + "_db"),
+                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), getSecondKey)));
 
             return resultAst;
         }
@@ -135,15 +146,17 @@ namespace CoreNodeModels
         /// <param name="data"></param>
         private void DataBridgeCallback(object data)
         {
-            var inputs = data as ArrayList;
+            var validationResult = (bool) data; // the result of the validation function - true/false
 
-            var inputObject = inputs[0];
-
-            if (!InPorts[0].IsConnected)
+            // do things with the dropdown or throw error
+            if (!validationResult && !AutoMode)
             {
-                return;
+                SelectedIndex = 0;
             }
-
+            if(!validationResult && AutoMode)
+            {
+                // set the type to the dropdown
+            }
         }
 
 
