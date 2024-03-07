@@ -49,7 +49,7 @@ namespace Dynamo.Tests
             // Get test node data
             var rawVal = testNode.GetValue(0, engine).Data;
 
-            // Verify the test node is returning a v dictionary
+            // Verify the test node is returning a valid dictionary
             Assert.AreEqual(typeof(DesignScript.Builtin.Dictionary).FullName, rawVal.GetType().FullName);
 
             // Compare the keys and values of the node result against the test loaded result
@@ -586,10 +586,10 @@ namespace Dynamo.Tests
             var vString = "input string";
 
             // Assert - check for nulls - fail
-            var validate = DSCore.Data.IsSupportedDataType(nullInput, vType, false);
+            var validate = DSCore.Data.IsSupportedDataNodeDynamoType(nullInput, vType.ToString(), false);
             Assert.AreEqual(false, validate, "Null input should not be supported.");
 
-            validate = DSCore.Data.IsSupportedDataType(vString, invType, false);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vString, invType.ToString(), false);
             Assert.AreEqual(false, validate, "Unexisting enum type should not be supported.");
         }
 
@@ -625,18 +625,18 @@ namespace Dynamo.Tests
             {
                 Assert.AreEqual(
                     true,
-                    DSCore.Data.IsSupportedDataType(kv.Value, kv.Key, false),
+                    DSCore.Data.IsSupportedDataNodeDynamoType(kv.Value, kv.Key.ToString(), false),
                     String.Format($"Couldn't validate {kv.Key} input."));
             }
 
             // Assert - check list - fail
-            var validate = DSCore.Data.IsSupportedDataType(vStringList, typeof(string), false);
+            var validate = DSCore.Data.IsSupportedDataNodeDynamoType(vStringList, typeof(string).ToString(), false);
             Assert.AreEqual(false, validate, "Shouldn't validate list values with list flag off.");
 
-            validate = DSCore.Data.IsSupportedDataType(vString, typeof(string), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vString, typeof(string).ToString(), true);
             Assert.AreEqual(false, validate, "Shouldn't validate single values with list flag on.");
 
-            validate = DSCore.Data.IsSupportedDataType(invStringList, typeof(string), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(invStringList, typeof(string).ToString(), true);
             Assert.AreEqual(false, validate, "Shouldn't validate heterogenous list input.");
 
             // Assert - check homogenous list values - succeed
@@ -652,7 +652,7 @@ namespace Dynamo.Tests
             {
                 Assert.AreEqual(
                     true,
-                    DSCore.Data.IsSupportedDataType(kv.Value, kv.Key, true),
+                    DSCore.Data.IsSupportedDataNodeDynamoType(kv.Value, kv.Key.ToString(), true),
                     String.Format($"Couldn't validate {kv.Key} list input."));
             }
         }
@@ -757,12 +757,12 @@ namespace Dynamo.Tests
             {
                 Assert.AreEqual(
                     true,
-                    DSCore.Data.IsSupportedDataType(kv.Value, kv.Key, false),
+                    DSCore.Data.IsSupportedDataNodeDynamoType(kv.Value, kv.Key.ToString(), false),
                     String.Format($"Couldn't validate {kv.Key} input."));
             }
 
             // Assert - check list - fail
-            var validate = DSCore.Data.IsSupportedDataType(invBoundingBoxList, typeof(BoundingBox), true);
+            var validate = DSCore.Data.IsSupportedDataNodeDynamoType(invBoundingBoxList, typeof(BoundingBox).ToString(), true);
             Assert.AreEqual(false, validate, "Shouldn't validate heterogenous list input.");
 
             // Assert - check homogenous list values - succeed
@@ -798,7 +798,7 @@ namespace Dynamo.Tests
             {
                 Assert.AreEqual(
                     true,
-                    DSCore.Data.IsSupportedDataType(kv.Value, kv.Key, true),
+                    DSCore.Data.IsSupportedDataNodeDynamoType(kv.Value, kv.Key.ToString(), true),
                     String.Format($"Couldn't validate {kv.Key} list input."));
             }
         }
@@ -859,41 +859,41 @@ namespace Dynamo.Tests
             var ivSurfaceInheritanceList = new ArrayList() { vNurbsSurface, vPolySurface, vCylinder, vCuboid, vSphere };
 
             // Assert - check single upward inheritence - succeed
-            var validate = DSCore.Data.IsSupportedDataType(vRectangle, typeof(Curve), false);
+            var validate = DSCore.Data.IsSupportedDataNodeDynamoType(vRectangle, typeof(Curve).ToString(), false);
             Assert.AreEqual(true, validate, "Couldn't vaidate Rectangle inheritance from Curve.");
 
             // Assert - check single downward inheritance - fail 
-            validate = DSCore.Data.IsSupportedDataType(vCurve, typeof(Autodesk.DesignScript.Geometry.Rectangle), false);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vCurve, typeof(Autodesk.DesignScript.Geometry.Rectangle).ToString(), false);
             Assert.AreEqual(false, validate, "Shouldn't vaidate Curve inheritance from Rectangle.");
 
-            validate = DSCore.Data.IsSupportedDataType(vCone, typeof(Curve), false);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vCone, typeof(Curve).ToString(), false);
             Assert.AreEqual(false, validate, "Shouldn't vaidate Cone inheritance from Curve.");
 
             // Assert - check heterogeneous list values - succeed
-            validate = DSCore.Data.IsSupportedDataType(vCurveInheritanceList, typeof(Curve), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vCurveInheritanceList, typeof(Curve).ToString(), true);
             Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from Curve in a heterogeneous list input.");
 
-            validate = DSCore.Data.IsSupportedDataType(vPolyCurveInheritanceList, typeof(PolyCurve), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vPolyCurveInheritanceList, typeof(PolyCurve).ToString(), true);
             Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from PolyCurve in a heterogeneous list input.");
 
-            validate = DSCore.Data.IsSupportedDataType(vSolidInheritanceList, typeof(Solid), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vSolidInheritanceList, typeof(Solid).ToString(), true);
             Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from Solid in a heterogeneous list input.");
 
-            validate = DSCore.Data.IsSupportedDataType(vSurfaceInheritanceList, typeof(Surface), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vSurfaceInheritanceList, typeof(Surface).ToString(), true);
             Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from Surface in a heterogeneous list input.");
 
 
             // Assert - check invalid heterogeneous list values - fail
-            validate = DSCore.Data.IsSupportedDataType(ivCurveInheritanceList, typeof(Curve), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(ivCurveInheritanceList, typeof(Curve).ToString(), true);
             Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Curve if there is a Sphere in the list input.");
 
-            validate = DSCore.Data.IsSupportedDataType(ivPolyCurveInheritanceList, typeof(PolyCurve), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(ivPolyCurveInheritanceList, typeof(PolyCurve).ToString(), true);
             Assert.AreEqual(false, validate, "Shouldn't validate DataTypes - Curve does not inherit from PolyCurve.");
 
-            validate = DSCore.Data.IsSupportedDataType(ivSolidInheritanceList, typeof(Solid), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(ivSolidInheritanceList, typeof(Solid).ToString(), true);
             Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Solid if there is a Polygone in the list input.");
 
-            validate = DSCore.Data.IsSupportedDataType(ivSurfaceInheritanceList, typeof(Surface), true);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(ivSurfaceInheritanceList, typeof(Surface).ToString(), true);
             Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Surface with Cylindar, Cuboid and Sphere in the list.");
         }
     }

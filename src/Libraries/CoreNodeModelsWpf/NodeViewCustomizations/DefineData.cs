@@ -8,12 +8,12 @@ using Dynamo.Wpf;
 namespace CoreNodeModelsWpf.Nodes
 {
     /// <summary>
-    /// View customizer for Custom Selection node model.
+    /// View customizer for DefineData node model.
     /// </summary>
     public class DefineDataNodeViewCustomization : DropDownNodeViewCustomization, INodeViewCustomization<DefineData>
     {
         /// <summary>
-        /// Customize the visual appearance of the custom dropdown node.
+        /// Customize the visual appearance of the DefineData node.
         /// </summary>
         /// <param name="model"></param>
         /// <param name="nodeView"></param>

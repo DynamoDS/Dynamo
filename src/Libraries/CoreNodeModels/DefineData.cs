@@ -30,11 +30,7 @@ namespace CoreNodeModels
         private List<DynamoDropDownItem> serializedItems;
 
         [JsonProperty]
-        public bool Context
-        {
-            get => context;
-            set => context = value;
-        }
+        public bool IsList { get; set; }
 
         /// <summary>
         /// Copy of <see cref="DSDropDownBase.Items"/> to be serialized./>
@@ -57,17 +53,17 @@ namespace CoreNodeModels
         }
 
         /// <summary>
-        /// Construct a new Custom Dropdown Menu node
+        /// Construct a new DefineData Dropdown Menu node
         /// </summary>
         public DefineData() : base(">")
         {
             RegisterAllPorts();
             PropertyChanged += OnPropertyChanged;
 
-            foreach (var dataType in Data.DynamoTypesList())
+            foreach (var dataType in Data.GetDataNodeDynamoTypeList())
             {
-                string displayName = dataType.Name;
-                string value = displayName;
+                var displayName = dataType.Name;
+                var value = dataType;
 
                 Items.Add(new DynamoDropDownItem(displayName, value));
             }
@@ -107,11 +103,11 @@ namespace CoreNodeModels
             // the object to be (type) evaluated
             // the expected datatype
             // if the input is an ArrayList or not
-            var function = new Func<object, Type, bool, bool>(DSCore.Data.IsSupportedDataType);
+            var function = new Func<object, string, bool, bool>(DSCore.Data.IsSupportedDataNodeDynamoType);
             var funtionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
-                AstFactory.BuildStringNode(Items[SelectedIndex].Item.ToString()),
-                AstFactory.BuildBooleanNode(Context) };
+                AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
+                AstFactory.BuildBooleanNode(IsList) };
 
 
             var functionCall = AstFactory.BuildFunctionCall(function, funtionInputs);

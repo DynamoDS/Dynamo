@@ -533,138 +533,118 @@ namespace DSCore
 
         #region Input Output Node
 
-        public interface IDynamoType
-        {
-            Type Type { get; }
-            IDynamoType Parent {  get; }
-        }
-
-        public class DynamoType : IDynamoType
+        public class DataNodeDynamoType
         {
             public Type Type { get; private set; }
             public string Name { get; private set; }
-            public IDynamoType Parent { get; private set; }
+            public DataNodeDynamoType Parent { get; private set; }
 
-            public DynamoType(Type type, string name = null)
+            public DataNodeDynamoType(Type type, string name = null)
             {
                 Type = type;
                 Name = name ?? type.Name;
             }
 
-            public DynamoType(Type type, IDynamoType parent, string name = null)
+            public DataNodeDynamoType(Type type, DataNodeDynamoType parent, string name = null)
             : this(type, name)
             {
                 Parent = parent;
             }
         }
 
-        public static List<DynamoType> DynamoTypesList()
-        {
-            var list = new List<DynamoType>();
-
-            list.Add(new DynamoType(typeof(bool)));
-            list.Add(new DynamoType(typeof(BoundingBox)));
-
-            return list;
-        }
 
         /// <summary>
         /// A static dictionary for all Dynamo supported data types
         /// </summary>
         /// <returns>The dictionary containing the supported data types</returns>
-        private static Dictionary<IDynamoType, Type> CreateDynamoTypes()
+        public static List<DataNodeDynamoType> GetDataNodeDynamoTypeList()
         {
-            var typeDictionary = new Dictionary<IDynamoType, Type>();
-
-            typeDictionary[new DynamoType(typeof(bool))] = typeof(bool);
-            typeDictionary[new DynamoType(typeof(BoundingBox))] = typeof(BoundingBox);
-            typeDictionary[new DynamoType(typeof(CoordinateSystem))] = typeof(CoordinateSystem);
+            var typeList = new List<DataNodeDynamoType>();
+            typeList.Add(new DataNodeDynamoType(typeof(bool)));
+            typeList.Add(new DataNodeDynamoType(typeof(BoundingBox)));
+            typeList.Add(new DataNodeDynamoType(typeof(CoordinateSystem)));
 
             // Subtypes of Curve
-            var crv = new DynamoType(typeof(Curve));
+            var crv = new DataNodeDynamoType(typeof(Curve));
+            typeList.Add(crv);
+            typeList.Add(new DataNodeDynamoType(typeof(Arc), crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Circle), crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Ellipse), crv));
+            typeList.Add(new DataNodeDynamoType(typeof(EllipseArc), crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Helix), crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Line), crv));
+            typeList.Add(new DataNodeDynamoType(typeof(NurbsCurve), crv));
 
-            typeDictionary[crv] = typeof(Curve); 
-            typeDictionary[new DynamoType(typeof(Arc), crv)] = typeof(Arc);
-            typeDictionary[new DynamoType(typeof(Circle), crv)] = typeof(Circle);
-            typeDictionary[new DynamoType(typeof(Ellipse), crv)] = typeof(Ellipse);
-            typeDictionary[new DynamoType(typeof(EllipseArc), crv)] = typeof(EllipseArc);
-            typeDictionary[new DynamoType(typeof(Helix), crv)] = typeof(Helix);
-            typeDictionary[new DynamoType(typeof(Line), crv)] = typeof(Line);
-            typeDictionary[new DynamoType(typeof(NurbsCurve), crv)] = typeof(NurbsCurve);
+            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), crv);
+            var polygon = new DataNodeDynamoType(typeof(Polygon), polyCurve);  // polygon is subtype of polyCurve
+            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), polygon);    // rectangle is subtype of polygon
 
-            var polyCurve = new DynamoType(typeof(PolyCurve), crv);
-            var polygon = new DynamoType(typeof(Polygon), polyCurve);  // polygon is subtype of polyCurve
-            var rectangle = new DynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), polygon);    // rectangle is subtype of polygon
-
-            typeDictionary[polyCurve] = typeof(PolyCurve);
-            typeDictionary[polygon] = typeof(Polygon);
-            typeDictionary[rectangle] = typeof(Autodesk.DesignScript.Geometry.Rectangle);
-
-            typeDictionary[new DynamoType(typeof(DateTime))] = typeof(System.DateTime);
-            typeDictionary[new DynamoType(typeof(double), "Number")] = typeof(double);
-            typeDictionary[new DynamoType(typeof(int), "Integer")] = typeof(int);
-            typeDictionary[new DynamoType(typeof(Location))] = typeof(Location);
-            typeDictionary[new DynamoType(typeof(Mesh))] = typeof(Mesh);
-            typeDictionary[new DynamoType(typeof(Plane))] = typeof(Plane);
-            typeDictionary[new DynamoType(typeof(Autodesk.DesignScript.Geometry.Point))] = typeof(Autodesk.DesignScript.Geometry.Point);
+            typeList.Add(polyCurve);
+            typeList.Add(polygon);
+            typeList.Add(rectangle);
+            typeList.Add(new DataNodeDynamoType(typeof(System.DateTime)));
+            typeList.Add(new DataNodeDynamoType(typeof(double), "Number"));
+            typeList.Add(new DataNodeDynamoType(typeof(long), "Integer"));
+            typeList.Add(new DataNodeDynamoType(typeof(Location)));
+            typeList.Add(new DataNodeDynamoType(typeof(Mesh)));
+            typeList.Add(new DataNodeDynamoType(typeof(Plane)));
+            typeList.Add(new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Point)));
 
             // Subtypes of Solid
-            var solid = new DynamoType(typeof(Solid));
-            var cone = new DynamoType(typeof(Cone), solid);    // cone is subtype of solid
-            var cylinder = new DynamoType(typeof(Cylinder), cone); // cylinder is subtype of cone 
-            var cuboid = new DynamoType(typeof(Cuboid), solid);    // cuboid is subtype of solid
-            var sphere = new DynamoType(typeof(Sphere), solid);    // sphere is subtype of solid
+            var solid = new DataNodeDynamoType(typeof(Solid));
+            var cone = new DataNodeDynamoType(typeof(Cone), solid);    // cone is subtype of solid
+            var cylinder = new DataNodeDynamoType(typeof(Cylinder), cone); // cylinder is subtype of cone 
+            var cuboid = new DataNodeDynamoType(typeof(Cuboid), solid);    // cuboid is subtype of solid
+            var sphere = new DataNodeDynamoType(typeof(Sphere), solid);    // sphere is subtype of solid
 
-            typeDictionary[solid] = typeof(Solid);
-            typeDictionary[cone] = typeof(Cone);
-            typeDictionary[cylinder] = typeof(Cylinder);
-            typeDictionary[cuboid] = typeof(Cuboid);
-            typeDictionary[sphere] = typeof(Sphere);
-
-            typeDictionary[new DynamoType(typeof(String))] = typeof(string);
+            typeList.Add(solid);
+            typeList.Add(cone);
+            typeList.Add(cylinder);
+            typeList.Add(cuboid);
+            typeList.Add(sphere);
+            typeList.Add(new DataNodeDynamoType(typeof(string)));
 
             // Subtypes of Surface
-            var surface = new DynamoType(typeof(Surface));
-            var nurbsSrf = new DynamoType(typeof(NurbsSurface), surface);    // nurbsSrf is subtype of surface
-            var polySrf = new DynamoType(typeof(PolySurface), surface); // polySrf is subtype of surface
+            var surface = new DataNodeDynamoType(typeof(Surface));
+            var nurbsSrf = new DataNodeDynamoType(typeof(NurbsSurface), surface);    // nurbsSrf is subtype of surface
+            var polySrf = new DataNodeDynamoType(typeof(PolySurface), surface); // polySrf is subtype of surface
 
-            typeDictionary[surface] = typeof(Surface);
-            typeDictionary[nurbsSrf] = typeof(NurbsSurface);
-            typeDictionary[polySrf] = typeof(PolySurface);
+            typeList.Add(surface);
+            typeList.Add(nurbsSrf);
+            typeList.Add(polySrf);
+            typeList.Add(new DataNodeDynamoType(typeof(System.TimeSpan)));
+            typeList.Add(new DataNodeDynamoType(typeof(UV)));
+            typeList.Add(new DataNodeDynamoType(typeof(Vector)));
 
-            typeDictionary[new DynamoType(typeof(TimeSpan))] = typeof(System.TimeSpan);
-            typeDictionary[new DynamoType(typeof(UV))] = typeof(UV);
-            typeDictionary[new DynamoType(typeof(Vector))] = typeof(Vector);
-
-            return typeDictionary;
+            return typeList;
         }
 
         /// <summary>
         /// Function to validate input type against supported Dynamo input types
         /// </summary>
         /// <param name="inputValue">The incoming data to validate</param>
-        /// <param name="type">The input type provided by the user. It has to match the inputValue type</param>
+        /// <param name="typeString">The input type provided by the user. It has to match the inputValue type</param>
         /// <param name="isList">The value of this boolean decides if the input is a single object or a list</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static bool IsSupportedDataType([ArbitraryDimensionArrayImport] object inputValue, Type type, bool isList)
+        public static bool IsSupportedDataNodeDynamoType([ArbitraryDimensionArrayImport] object inputValue, string typeString, bool isList)
         {
+            var type = GetDataNodeDynamoTypeList().FirstOrDefault(x => x.Type.ToString().Equals(typeString)).Type;
+            if (type == null) { return false; } // Add exception
             if (inputValue == null || type == null)
             {
-                return false;
+                return false;   // Add exception
             }
-
-            var typeDictionary = CreateDynamoTypes();
 
             if (!isList)
             {
-                if (inputValue is ArrayList) return false;
+                if (inputValue is ArrayList) return false;  // Add exception ?
 
                 return IsItemOfType(inputValue, type);
             }
             else
             {
-                if (!(inputValue is ArrayList arrayList)) return false;
+                if (!(inputValue is ArrayList arrayList)) return false; // Add exception ?
 
                 foreach (var item in arrayList)
                 {
