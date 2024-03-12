@@ -472,6 +472,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Return a list of GraphChecksumItems
         /// </summary>
+        [Obsolete("This property is not needed anymore in the preference settings and can be removed in a future version of Dynamo.")]
         public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
 
         // This function is used to deserialize the trusted locations manually

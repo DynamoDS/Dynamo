@@ -4,9 +4,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -363,8 +364,11 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         internal JObject JsonRepresentation { get; set; }
 
+        [JsonIgnore]
+        internal string CurrentCheckSum { get; set; }
+
         /// <summary>
-        /// Returns the stringified representation of the connected nodes
+        /// Returns the stringified representation of the node connections in the workspace.
         /// </summary>
         [JsonIgnore]
         public string Checksum
@@ -372,49 +376,46 @@ namespace Dynamo.ViewModels
             get
             {
                 List<string> nodeInfoConnections = new List<string>();
-                JObject jsonWorkspace = JsonRepresentation;
-                var nodes = jsonWorkspace["Nodes"];                
+                var connectors = Connectors;
 
-                List<string> nodeIds = new List<string>();
-                foreach (JObject node in nodes)
+                foreach (var connector in Connectors)
                 {
-                    var nodeProperties = node.Children<JProperty>();
-                    JProperty id = nodeProperties.FirstOrDefault(x => x.Name == "Id");
-                    nodeIds.Add(id.Value.ToString());
+                    var connectorModel = connector.ConnectorModel;
+
+                    var startingPort= connectorModel.Start;
+                    var endingPort = connectorModel.End;
+
+                    // node info connections has a unique id in the format: startnodeid[outputindex]endnodeid[outputindex].
+                    nodeInfoConnections.Add(startingPort.Owner.AstIdentifierGuid + "[" + startingPort.Index.ToString() + "]" + endingPort.Owner.AstIdentifierGuid + "[" + endingPort.Index.ToString() + "]");
                 }
 
-                nodeIds.Sort();
-
-                foreach (string nodeId in nodeIds)
+                if (nodeInfoConnections.Count > 0)
                 {
-                    List<string> outputIds = new List<string>();
-                    var node = jsonWorkspace["Nodes"].Where(t => t.Value<string>("Id") == nodeId).Select(t => t).FirstOrDefault();
-                    var outputsProperty = node.Children<JProperty>().FirstOrDefault(x => x.Name == "Outputs");
-                    var outputs = (JArray)outputsProperty.Value;
-                    int outputIndex = 1;
-
-                    foreach (JObject output in outputs)
-                    {
-                        var outputProperties = output.Children<JProperty>();
-                        JProperty outputId = outputProperties.FirstOrDefault(x => x.Name == "Id");
-                        outputIds.Add(outputId.Value.ToString());
-
-                        var connectorsProperty = jsonWorkspace["Connectors"].Where(t => t.Value<string>("Start") == outputId.Value.ToString());
-
-                        foreach (var connector in connectorsProperty)
-                        {
-                            var connectorProperties = connector.Children<JProperty>();
-                            JProperty endProperty = connectorProperties.FirstOrDefault(x => x.Name == "End");
-                            string inputId = (String)endProperty.Value;
-
-                            var outputConnectedNode = GetNodeByInputId(inputId, jsonWorkspace);
-                            nodeInfoConnections.Add(nodeId + "|[" + outputIndex.ToString() + "|" + outputConnectedNode.Item1 + "|" + outputConnectedNode.Item2.ToString() + "]");
-                        }
-                        outputIndex++;
-                    }
+                    var checksumhash = ConvertToSha256(String.Join(",", nodeInfoConnections));
+                    CurrentCheckSum = checksumhash;
+                    return checksumhash;
                 }
-                return nodeInfoConnections.Count > 0 ? string.Join(",", nodeInfoConnections) : string.Empty;
+                else
+                {
+                    CurrentCheckSum = string.Empty;
+                    return string.Empty;
+                }
             }            
+        }
+
+        // converts the checksum string into a sha 256 hash.
+        private string ConvertToSha256(string s)
+        {
+            using var mySHA256 = SHA256.Create();
+
+            byte[] bytes = mySHA256.ComputeHash(Encoding.UTF8.GetBytes(s));
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                sb.Append(bytes[i].ToString("x2"));
+            }
+            return sb.ToString();
         }
 
         Tuple<string,int> GetNodeByInputId(string inputId, JObject jsonWorkspace)
