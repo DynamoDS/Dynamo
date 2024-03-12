@@ -1,9 +1,8 @@
 # Dynamo
 
-[![Build DynamoAll.sln net6.0](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all_net6.0.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all_net6.0.yml)
-[![Build DynamoAll.sln net8.0](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all_net8.0.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all_net8.0.yml)
-[![Build DynamoCore.sln net6.0 windows](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_net6.0_windows.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_net6.0_windows.yml)
-[![Build DynamoCore.sln net6.0 linux](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_net6.0_linux.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_net6.0_linux.yml)
+[![Build DynamoAll.sln net8.0](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all.yml)
+[![Build DynamoCore.sln core windows](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_windows.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_windows.yml)
+[![Build DynamoCore.sln linux](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_linux.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core_linux.yml)
 
 [![DynamoCoreRuntime](https://img.shields.io/github/v/release/DynamoDS/Dynamo?logo=github&label=DynamoCoreRuntime)](https://github.com/DynamoDS/Dynamo/releases/latest)
 [![Nuget](https://img.shields.io/nuget/v/DynamoVisualProgramming.Core?logo=nuget)](https://www.nuget.org/packages/DynamoVisualProgramming.Core)

@@ -10,6 +10,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -3364,6 +3366,40 @@ namespace Dynamo.Controls
             }
             return "#DCDCDC";
         }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Base64ToImageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return null;
+
+            string s = string.Empty;
+            if (value is string)
+            {
+                s = value as string;
+            }
+
+            if (string.IsNullOrEmpty(s)) return null;
+
+            BitmapImage loadedBitM = null;
+            using (MemoryStream ms = new MemoryStream(System.Convert.FromBase64String(s)))
+            {
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.StreamSource = ms;
+                bi.CacheOption = BitmapCacheOption.OnLoad;
+                bi.EndInit();
+                loadedBitM = bi;
+            }
+
+            return loadedBitM;
+        }
+
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();

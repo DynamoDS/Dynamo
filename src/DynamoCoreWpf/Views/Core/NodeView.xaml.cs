@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -551,6 +551,9 @@ namespace Dynamo.Controls
         {
             ViewModel.ZIndex = oldZIndex;
 
+            //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
+            if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
+
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
             if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || IsMouseInsidePreview(e) ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
@@ -730,6 +733,9 @@ namespace Dynamo.Controls
         internal void TogglePreviewControlAllowance()
         {
             previewEnabled = !previewEnabled;
+
+            //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
+            if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 
             if (previewEnabled == false && !PreviewControl.StaysOpen)
             {

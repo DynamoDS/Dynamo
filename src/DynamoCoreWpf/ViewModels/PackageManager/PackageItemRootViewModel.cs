@@ -131,8 +131,14 @@ namespace Dynamo.PackageManager.UI
             if (this.ChildItems.Contains(item)) return;
             this.ChildItems.Add(item);
         }
-
-        internal void AddChild(PackageItemRootViewModel elem)
+        /// <summary>
+        /// The methods is used for adding a child item to all the encountered parent folders in a nested path
+        /// and make sure all the intermediate file paths are created as separate PackageItemRootViewModel.
+        /// For example if we have a path like "\dir1\dir2\dir3" and we want to add a child item to "dir1", the method will
+        /// add "dir 3" to "dir2" and then "dir2" to "dir1".
+        /// </summary>
+        /// <param name="elem">Child item to be added.</param>
+        internal void AddChildRecursively(PackageItemRootViewModel elem)
         {
             if (elem.DependencyType.Equals(DependencyType.CustomNode)) return;
 
@@ -149,7 +155,7 @@ namespace Dynamo.PackageManager.UI
 
             while (di.Parent != null)
             {
-                // if we already have a subfodler item with that name,
+                // if we already have a subfolder item with that name,
                 // add this element's children to its children instead of creating a new subfolder branch
                 if(existingSubFolders.Keys.Contains(elem.DirectoryName))
                 {

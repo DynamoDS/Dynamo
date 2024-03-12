@@ -120,6 +120,8 @@ namespace Dynamo.Utilities
         /// </summary>
         internal void InitializeLuceneConfig()
         {
+            if (DynamoModel.IsHeadless) return;
+
             addedFields = new List<string>();
 
             DirectoryInfo luceneUserDataFolder;
@@ -231,7 +233,8 @@ namespace Dynamo.Utilities
         /// <param name="value">Field value</param>
         /// <param name="isTextField">This is used when the value need to be tokenized(broken down into pieces), whereas StringTextFields are tokenized.</param>
         /// <param name="isLast">This is used for the last value set in the document. It will fetch all the fields not set in the document and add them with an empty string.</param>
-        internal void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
+        /// <param name="isTSpline">Indicate if the field being indexed belongs to a T-Spline node or not</param>
+        internal void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false, bool isTSpline = false)
         {
             string[] indexedFields = null;
             if (startConfig.Directory.Equals(LuceneConfig.NodesIndexingDirectory))
@@ -247,6 +250,10 @@ namespace Dynamo.Utilities
             if (isTextField && !field.Equals("DocName"))
             {
                 ((TextField)doc.GetField(field)).SetStringValue(value);
+
+                //Index-time boost, setting the weight to 0 for TSpline nodes and 1 for the other nodes, this only apply for Description and SearchKeywords fields
+                ((TextField)doc.GetField(field)).SetStringValue(value);
+                ((TextField)doc.GetField(field)).Boost = isTSpline == true ? 0 : 1;
             }
             else
             {
@@ -262,6 +269,18 @@ namespace Dynamo.Utilities
                 }
                 addedFields.Clear();
             }
+        }
+
+        /// <summary>
+        /// Check if the term passed as parameter is found inside the FullCategoryName
+        /// </summary>
+        /// <param name="term">Splitted search term e.g. if the search term is "set parameter" the parameter will be "set" or "parameter"</param>
+        /// <param name="FullCategoryName">The complete category used for a specific node, like Core.File.FileSystem</param>
+        /// <returns></returns>
+        private bool IsMatchingCategory(string term, string FullCategoryName)
+        {
+            var categoryTerms = FullCategoryName.Split(".").Select(x => x.ToLower());
+            return categoryTerms.Contains(term);
         }
 
         /// <summary>
@@ -306,6 +325,8 @@ namespace Dynamo.Utilities
 
             foreach (string f in fields)
             {
+                Occur occurQuery = Occur.SHOULD;
+
                 //Needs to be again due that now a query can contain different values per field (e.g. CategorySplitted:list, Name:tr)
                 searchTerm = QueryParser.Escape(SearchTerm);
                 if (searchType == SearchType.ByCategory)
@@ -335,6 +356,36 @@ namespace Dynamo.Utilities
                 if (string.IsNullOrEmpty(searchTerm))
                     continue;
 
+                bool firstTermIsCategory = false;
+
+                //This will only valid when the search term has empty spaces
+                if (hasEmptySpaces)
+                {
+                    //Check if the first term of the search criteria match any category
+                    var possibleCategory = searchTerm.Split(' ')[0];
+                    if (string.IsNullOrEmpty(possibleCategory)) continue;
+
+                    var specificCategoryEntries = dynamoModel.SearchModel.Entries.Where(entry => IsMatchingCategory(possibleCategory, entry.FullCategoryName) == true);
+                    firstTermIsCategory = specificCategoryEntries.Any();
+
+                    //Get the node matching the Category provided in the search term
+                    var matchingCategory = specificCategoryEntries.FirstOrDefault();
+                    if (matchingCategory == null && firstTermIsCategory == true) continue;
+
+                    if (f == nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName) && firstTermIsCategory == true)
+                    {
+                        //Means that the first term is a category when we will be using the FullCategoryName for making a specific search based in the category
+                        trimmedSearchTerm = matchingCategory?.FullCategoryName;
+                        occurQuery = Occur.MUST;
+                    }
+                    else if (f == nameof(LuceneConfig.NodeFieldsEnum.Name) && firstTermIsCategory == true)
+                    {
+                        //If the field being iterated is Name and we are sure that the first term is a Category when we remove the term from the string so we can search for the specific node Name
+                        trimmedSearchTerm = trimmedSearchTerm?.Replace(possibleCategory, string.Empty);
+                        if (string.IsNullOrEmpty(trimmedSearchTerm)) continue;
+                    }
+                }
+
                 FuzzyQuery fuzzyQuery;
                 if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
                 {
@@ -347,14 +398,11 @@ namespace Dynamo.Utilities
 
                 if (searchType == SearchType.ByCategory && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
                 {
-                    booleanQuery.Add(fieldQuery, Occur.MUST);
-                    booleanQuery.Add(wildcardQuery, Occur.MUST);
+                    occurQuery = Occur.MUST;
                 }
-                else
-                {
-                    booleanQuery.Add(fieldQuery, Occur.SHOULD);
-                    booleanQuery.Add(wildcardQuery, Occur.SHOULD);
-                }
+               
+                booleanQuery.Add(fieldQuery, occurQuery);
+                booleanQuery.Add(wildcardQuery, occurQuery);
 
                 if (searchTerm.Contains(' '))
                 {
@@ -518,6 +566,8 @@ namespace Dynamo.Utilities
             // If the index writer is still null, skip the indexing
             if (writer == null) return;
 
+            bool isTSplineNode = node.FullCategoryName.ToLower().Contains("tspline")? true: false;
+
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
 
             var categoryParts = node.FullCategoryName.Split('.');
@@ -531,10 +581,10 @@ namespace Dynamo.Utilities
             string nameParsed = nameParts.Length > 1 ? nameParts[nameParts.Length - 1] : node.Name;
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.NameSplitted), nameParsed);
 
-            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description, true, false, isTSplineNode);
             if (node.SearchKeywords.Count > 0)
             {
-                SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+                SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true, isTSplineNode);
             }
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 

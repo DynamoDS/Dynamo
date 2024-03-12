@@ -1981,6 +1981,14 @@
                                  Foreground="#F5F5F5"
                                  IsReadOnly="{TemplateBinding IsReadOnly}"
                                  Visibility="Hidden" />
+                        <TextBlock x:Name="PART_ReadOnlyTextBlock"
+                                 Margin="10,0,20,0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Focusable="True"
+                                 TextWrapping="Wrap"
+                                 TextTrimming="CharacterEllipsis"
+                                 Visibility="{Binding IsVisibleDropDownTextBlock, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" /> 
                         <Popup Name="Popup"
                                AllowsTransparency="True"
                                Focusable="False"

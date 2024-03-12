@@ -1,4 +1,6 @@
+using System;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -59,8 +61,6 @@ namespace Dynamo.Wpf
 
             publishCustomNodeItem.Command = nodeView.ViewModel.DynamoViewModel.PublishSelectedNodesCommand;
             publishCustomNodeItem.CommandParameter = functionNodeModel;
-
-            nodeView.UpdateLayout();
         }
 
         private void EditCustomNodeProperties()

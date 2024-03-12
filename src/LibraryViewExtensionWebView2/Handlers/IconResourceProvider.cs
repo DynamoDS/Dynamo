@@ -80,9 +80,10 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
                 url = url?.Replace("about:", string.Empty);
             }
 
-            if (!String.IsNullOrEmpty(url) && urlToBase64DataCache.ContainsKey(url))
+            Tuple<string, string> tmpUrl = null;
+            if (!String.IsNullOrEmpty(url) && urlToBase64DataCache.TryGetValue(url, out tmpUrl))
             {
-                var cachedData = urlToBase64DataCache[url];
+                var cachedData = tmpUrl;
                 extension = cachedData.Item2;
                 return cachedData.Item1;
             }
