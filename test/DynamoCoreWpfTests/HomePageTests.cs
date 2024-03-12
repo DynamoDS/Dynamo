@@ -114,7 +114,9 @@ namespace DynamoCoreWpfTests
         }})();";
         }
 
+
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanClickRecentGraph()
         {
             // Arrange
@@ -155,6 +157,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanClickSampleGraph()
         {
             // Arrange
@@ -200,6 +203,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanClickTourGuide()
         {
             // Arrange
@@ -234,6 +238,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ReceiveCorrectNumberOfRecentGrphs()
         {
             // Arrange
@@ -263,6 +268,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ReceiveCorrectNumberOfSamples()
         {
             // Arrange
@@ -299,6 +305,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ReceiveCorrectNumberOfTourGuides()
         {
             // Arrange
@@ -319,6 +326,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ReceiveCorrectNumberOfCarouselVideos()
         {
             // Arrange
@@ -339,6 +347,7 @@ namespace DynamoCoreWpfTests
         }
         
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanRunNewHomeWorkspaceCommandFromHomePage()
         {
             // Arrange
@@ -376,6 +385,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanRunNewCustomNodeCommandFromHomePage()
         {
             // Arrange
@@ -408,6 +418,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanOpenWorkspaceCommandFromHomePage()
         {
             // Arrange
@@ -440,6 +451,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ShowTemplateCommandFromHomePage()
         {
             // Arrange
@@ -473,6 +485,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ShowBackupFolderCommandFromHomePage()
         {
             // Arrange
@@ -505,6 +518,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ShowSampleFilesFolderCommandFromHomePage()
         {
             // Arrange
