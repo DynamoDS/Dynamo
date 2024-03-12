@@ -537,18 +537,20 @@ namespace DSCore
         {
             public Type Type { get; private set; }
             public string Name { get; private set; }
-            public DataNodeDynamoType Parent { get; private set; }
+            public int Level { get; private set; }
 
             public DataNodeDynamoType(Type type, string name = null)
             {
                 Type = type;
                 Name = name ?? type.Name;
+                Level = 0;
+
             }
 
-            public DataNodeDynamoType(Type type, DataNodeDynamoType parent, string name = null)
+            public DataNodeDynamoType(Type type, int level, string name = null)
             : this(type, name)
             {
-                Parent = parent;
+                Level = level;
             }
         }
 
@@ -567,17 +569,17 @@ namespace DSCore
             // Subtypes of Curve
             var crv = new DataNodeDynamoType(typeof(Curve));
             typeList.Add(crv);
-            typeList.Add(new DataNodeDynamoType(typeof(Arc), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Circle), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Ellipse), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(EllipseArc), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Helix), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Line), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(NurbsCurve), crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Arc), 1));
+            typeList.Add(new DataNodeDynamoType(typeof(Circle), 1));
+            typeList.Add(new DataNodeDynamoType(typeof(Ellipse), 1));
+            typeList.Add(new DataNodeDynamoType(typeof(EllipseArc), 1));
+            typeList.Add(new DataNodeDynamoType(typeof(Helix), 1));
+            typeList.Add(new DataNodeDynamoType(typeof(Line), 1));
+            typeList.Add(new DataNodeDynamoType(typeof(NurbsCurve), 1));
 
-            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), crv);
-            var polygon = new DataNodeDynamoType(typeof(Polygon), polyCurve);  // polygon is subtype of polyCurve
-            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), polygon);    // rectangle is subtype of polygon
+            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1);
+            var polygon = new DataNodeDynamoType(typeof(Polygon), 2);  // polygon is subtype of polyCurve
+            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3);    // rectangle is subtype of polygon
 
             typeList.Add(polyCurve);
             typeList.Add(polygon);
@@ -592,10 +594,10 @@ namespace DSCore
 
             // Subtypes of Solid
             var solid = new DataNodeDynamoType(typeof(Solid));
-            var cone = new DataNodeDynamoType(typeof(Cone), solid);    // cone is subtype of solid
-            var cylinder = new DataNodeDynamoType(typeof(Cylinder), cone); // cylinder is subtype of cone 
-            var cuboid = new DataNodeDynamoType(typeof(Cuboid), solid);    // cuboid is subtype of solid
-            var sphere = new DataNodeDynamoType(typeof(Sphere), solid);    // sphere is subtype of solid
+            var cone = new DataNodeDynamoType(typeof(Cone), 1);    // cone is subtype of solid
+            var cylinder = new DataNodeDynamoType(typeof(Cylinder), 2); // cylinder is subtype of cone 
+            var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1);    // cuboid is subtype of solid
+            var sphere = new DataNodeDynamoType(typeof(Sphere), 1);    // sphere is subtype of solid
 
             typeList.Add(solid);
             typeList.Add(cone);
@@ -606,8 +608,8 @@ namespace DSCore
 
             // Subtypes of Surface
             var surface = new DataNodeDynamoType(typeof(Surface));
-            var nurbsSrf = new DataNodeDynamoType(typeof(NurbsSurface), surface);    // nurbsSrf is subtype of surface
-            var polySrf = new DataNodeDynamoType(typeof(PolySurface), surface); // polySrf is subtype of surface
+            var nurbsSrf = new DataNodeDynamoType(typeof(NurbsSurface), 1);    // nurbsSrf is subtype of surface
+            var polySrf = new DataNodeDynamoType(typeof(PolySurface), 1); // polySrf is subtype of surface
 
             typeList.Add(surface);
             typeList.Add(nurbsSrf);
@@ -699,7 +701,7 @@ namespace DSCore
             {
                 if (!(inputValue is ArrayList arrayList)) return false;
 
-                foreach (var item in arrayList)
+                foreach (var item in arrayList) 
                 {
                     if (!IsItemOfType(item, type))
                     {

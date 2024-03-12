@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -49,6 +51,19 @@ namespace CoreNodeModelsWpf.Nodes
             dropdown.MinWidth = 220;
             dropdown.FontSize = 12;
 
+            var indentConverter = new LevelToIndentConverter();
+
+            // Dynamically create a DataTemplate for ComboBox items
+            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
+            textBlockFactory.SetBinding(TextBlock.TextProperty, new Binding("Name")); 
+            textBlockFactory.SetBinding(TextBlock.MarginProperty, new Binding("Item.Level") { Converter = indentConverter }); 
+
+            DataTemplate itemTemplate = new DataTemplate { VisualTree = textBlockFactory };
+            itemTemplate.Seal();
+
+            // Apply the DataTemplate to the ComboBox
+            dropdown.ItemTemplate = itemTemplate;
+
             Grid.SetRow(dropdown, 0);
             Grid.SetColumn(dropdown, 0); 
 
@@ -69,6 +84,23 @@ namespace CoreNodeModelsWpf.Nodes
             Grid.SetRow(toggleButton, 0); 
             Grid.SetColumn(toggleButton, 1); 
             nodeView.inputGrid.Children.Add(toggleButton);
+        }
+
+        public class LevelToIndentConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (value is int level)
+                {
+                    return new Thickness(level * 20, 0, 0, 0); 
+                }
+                return new Thickness(0);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
