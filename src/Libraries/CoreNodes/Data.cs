@@ -621,24 +621,57 @@ namespace DSCore
 
 
         [IsVisibleInDynamoLibrary(false)]
-        public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue, string typeString, bool isList)
+        public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
+            string typeString, bool isList, bool isAutoMode)
         {
-            var type = GetDataNodeDynamoTypeList().First(x => x.Type.ToString().Equals(typeString)).Type;
+            if(inputValue == null) { return null; }
 
-            if (type == null)
+            object result;  // Tuple<IsValid: bool, UpdateList: bool, InputType: DataNodeDynamoType>
+
+            var type = GetDataNodeDynamoTypeList().First(x => x.Type.ToString().Equals(typeString));
+
+            if (isAutoMode)
             {
+                // If running in AutoMode, then we would propagate the actual Type and List value and validate against them
+                // List logic
+                bool updateList = false;
+
+                var assertList = inputValue is ArrayList;
+                if (assertList != isList)
+                {
+                    updateList = true;
+                }
+
+                // Type logic
+                if (type == null || !IsSupportedDataNodeDynamoType(inputValue, type.Type, assertList))
+                {
+                    var valueType = assertList ? (inputValue as ArrayList)[0].GetType() : inputValue.GetType();
+                    var inputType = GetDataNodeDynamoTypeList().FirstOrDefault(x => x.Type == valueType, null);
+                    result = (IsValid: false, UpdateList: updateList, InputType: inputType);
+                }
+                else
+                {
+                    result = (IsValid: true, UpdateList: updateList, InputType: type);
+                }
+
                 return new Dictionary<string, object>
                 {
                     { ">", inputValue },
-                    { "Validation", false }
+                    { "Validation", result }
                 };
             }
-
-            return new Dictionary<string, object>
+            else
             {
-                { ">", inputValue },
-                { "Validation", IsSupportedDataNodeDynamoType(inputValue, type, isList) }
-            };
+                // If we are in 'Manual mode' then we just validate and throw as needed
+                var isSupportedType = IsSupportedDataNodeDynamoType(inputValue, type.Type, isList);
+                result = (IsValid: isSupportedType, UpdateList: false, InputType: type);
+
+                return new Dictionary<string, object>
+                {
+                    { ">", inputValue },
+                    { "Validation", result }
+                };
+            }
         }
 
         /// <summary>

@@ -8,14 +8,11 @@ namespace CoreNodeModelsWpf.Controls
     /// </summary>
     public partial class DefineDataControl : UserControl
     {
-        private readonly DefineData model;
-
         internal ComboBox BaseComboBox { get; set; }
 
-        public DefineDataControl(DefineDataViewModel viewModel)
+        public DefineDataControl(DefineData model)
         {
-            DataContext = viewModel;
-            model = viewModel.Model;
+            DataContext = model;
 
             InitializeComponent();
         }

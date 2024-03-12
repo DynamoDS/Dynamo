@@ -8,6 +8,7 @@ using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
+using static DSCore.Data;
 
 
 namespace CoreNodeModels
@@ -21,14 +22,37 @@ namespace CoreNodeModels
     [IsDesignScriptCompatible]
     public class DefineData : DSDropDownBase
     {
-        private bool context;
         private List<DynamoDropDownItem> serializedItems;
+        private bool isAutoMode;
+        private bool isList;
 
+        /// <summary>
+        /// AutoMode property
+        /// </summary>
         [JsonProperty]
-        public bool IsList { get; set; }
+        public bool IsAutoMode
+        {
+            get { return isAutoMode; }
+            set
+            {
+                isAutoMode = value;
+                RaisePropertyChanged(nameof(IsAutoMode));
+            }
+        }
 
+        /// <summary>
+        /// IsList property
+        /// </summary>
         [JsonProperty]
-        public bool AutoMode { get; set; }
+        public bool IsList
+        {
+            get { return isList; }
+            set
+            {
+                isList = value;
+                RaisePropertyChanged(nameof(IsList));
+            }
+        }
 
         /// <summary>
         /// Copy of <see cref="DSDropDownBase.Items"/> to be serialized./>
@@ -83,7 +107,7 @@ namespace CoreNodeModels
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-
+       
         }
 
         protected override void OnBuilt()
@@ -110,11 +134,13 @@ namespace CoreNodeModels
             // the object to be (type) evaluated
             // the expected datatype
             // if the input is an ArrayList or not
-            var function = new Func<object, string, bool, Dictionary<string, object>>(DSCore.Data.IsSupportedDataNodeType);
+            var function = new Func<object, string, bool, bool, Dictionary<string, object>>(DSCore.Data.IsSupportedDataNodeType);
             var funtionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
                 AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
-                AstFactory.BuildBooleanNode(IsList) };
+                AstFactory.BuildBooleanNode(IsList),
+                AstFactory.BuildBooleanNode(IsAutoMode)
+            };
 
 
             var functionCall = AstFactory.BuildFunctionCall(function, funtionInputs);
@@ -146,17 +172,33 @@ namespace CoreNodeModels
         /// <param name="data"></param>
         private void DataBridgeCallback(object data)
         {
-            var validationResult = (bool) data; // the result of the validation function - true/false
+            if (data == null) return;
 
-            // do things with the dropdown or throw error
-            if (!validationResult && !AutoMode)
+            (bool IsValid, bool UpdateList, DataNodeDynamoType InputType) resultData = (ValueTuple<bool, bool, DataNodeDynamoType>)data;
+
+            if (IsAutoMode && resultData.UpdateList)
             {
-                SelectedIndex = 0;
+                IsList = !IsList;
             }
-            if(!validationResult && AutoMode)
+
+            if (!resultData.IsValid)
             {
-                // set the type to the dropdown
+                if (IsAutoMode)
+                {
+                    // Assign to the correct value, if the object was of supported type
+                    if (resultData.InputType != null)
+                    {
+                        var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
+                        SelectedIndex = index;
+                    }
+                }
+                else
+                {
+                    // Throw an exception/warning and go back to the default dropdown value
+                    SelectedIndex = 0;
+                }
             }
+
         }
 
 
