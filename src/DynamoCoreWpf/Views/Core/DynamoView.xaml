@@ -7,6 +7,7 @@
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:workspaces="clr-namespace:Dynamo.Graph.Workspaces;assembly=DynamoCore"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:uiviews="clr-namespace:Dynamo.UI.Views"
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
         xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
@@ -1761,31 +1762,45 @@
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
         <!--Start Page-->
-        <ItemsControl Name="startPageItemsControl"
-                      Grid.Row="2"
-                      Grid.RowSpan="4"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="5">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type uictrls:StartPageViewModel}">
-                    <Grid>
-                        <Grid.Height>
-                            <Binding Path="ActualHeight"
-                                     Mode="OneWay"
-                                     RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
-                        </Grid.Height>
-                        <uictrls:StartPageView />
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.Visibility>
-                <Binding Path="DataContext.ShowStartPage"
-                         Mode="OneWay"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                         Converter="{StaticResource BooleanToVisibilityConverter}"
-                         UpdateSourceTrigger="Explicit" />
-            </ItemsControl.Visibility>
-        </ItemsControl>
+        <Grid x:Name="oldHomePageContainer"
+              Visibility="{Binding IsNewAppHomeEnabled,
+                                    Converter={StaticResource InverseBoolToVisibilityConverter},
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+              Grid.Row="2"
+              Grid.RowSpan="4"
+              Grid.Column="0"
+              Grid.ColumnSpan="5">
+            <ItemsControl Name="startPageItemsControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type uictrls:StartPageViewModel}">
+                        <Grid>
+                            <Grid.Height>
+                                <Binding Path="ActualHeight"
+                                         Mode="OneWay"
+                                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
+                            </Grid.Height>  
+                            <uictrls:StartPageView />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.Visibility>
+                    <Binding Path="DataContext.ShowStartPage"
+                             Mode="OneWay"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                             UpdateSourceTrigger="Explicit" />
+                </ItemsControl.Visibility>
+            </ItemsControl>
+            </Grid>
+        <!--Do not delete newHomePageContainer grid as it is hosting the HomePage-->
+        <Grid x:Name="newHomePageContainer"
+              Visibility="{Binding IsNewAppHomeEnabled, 
+                                   Converter={StaticResource BooleanToVisibilityConverter}, 
+                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+              Grid.Row="2"
+              Grid.RowSpan="4"
+              Grid.Column="0"
+              Grid.ColumnSpan="5"/>
 
         <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
     </Grid>

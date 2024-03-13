@@ -2666,6 +2666,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo 1.x file format.
+        /// </summary>
+        public static string DynamoXmlFileFormat {
+            get {
+                return ResourceManager.GetString("DynamoXmlFileFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Group Title.
         /// </summary>
         public static string EditAnnotationTitle {
@@ -3242,6 +3251,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GetStartedGuide {
             get {
                 return ResourceManager.GetString("GetStartedGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start your visual programming journey with this short guide. Here you&apos;ll learn some basics about the Dynamo interface and features..
+        /// </summary>
+        public static string GetStartedGuideDescription {
+            get {
+                return ResourceManager.GetString("GetStartedGuideDescription", resourceCulture);
             }
         }
         
@@ -5207,6 +5225,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph..
+        /// </summary>
+        public static string OnboardingGuideDescription {
+            get {
+                return ResourceManager.GetString("OnboardingGuideDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Let’s run the graph and see the results of the adjustments you made. Click Run..
         /// </summary>
         public static string OnboardingGuideRunGraphText {
@@ -6659,6 +6686,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideDependenciesTitle {
             get {
                 return ResourceManager.GetString("PackagesGuideDependenciesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A package is a toolkit of utilities that let you do more with Dynamo, beyond its core functionality. This guide shows how to find, install, and use packages. It installs a sample Autodesk package for you to explore..
+        /// </summary>
+        public static string PackagesGuideDescription {
+            get {
+                return ResourceManager.GetString("PackagesGuideDescription", resourceCulture);
             }
         }
         

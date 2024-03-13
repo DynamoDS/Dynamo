@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Configuration;
-using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
@@ -24,7 +23,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search.SearchElements;
@@ -109,6 +107,8 @@ namespace Dynamo.Controls
         internal PreferencesView PreferencesWindow {
             get { return preferencesWindow; }
         }
+
+        internal Dynamo.UI.Views.HomePage homePage;
 
         /// <summary>
         /// Keeps the default value of the Window's MinWidth to calculate it again later
@@ -1384,7 +1384,34 @@ namespace Dynamo.Controls
             {
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
+
+            // Load the new HomePage
+            if (IsNewAppHomeEnabled) LoadHomePage();
+
             loaded = true;
+        }
+
+        // Add the HomePage to the DynamoView once its loaded
+        private void LoadHomePage()
+        {
+            if (homePage == null && startPage != null)
+            {
+                homePage = new UI.Views.HomePage();
+                homePage.DataContext = startPage;
+
+                var visibilityBinding = new System.Windows.Data.Binding
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DynamoView), 1),
+                    Path = new PropertyPath("DataContext.ShowStartPage"),
+                    Mode = BindingMode.OneWay,
+                    Converter = new BooleanToVisibilityConverter(),
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                };
+
+                BindingOperations.SetBinding(homePage, UIElement.VisibilityProperty, visibilityBinding);
+
+                this.newHomePageContainer.Children.Add(homePage);
+            }
         }
 
         /// <summary>
@@ -2022,10 +2049,22 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
 
+            if (homePage != null)
+            {
+                RemoveHomePage();
+            }
+
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
             this._pkgSearchVM?.Dispose();
             this._pkgVM?.Dispose();
+        }
+
+        // Remove the HomePage from the visual tree and dispose of its resources
+        private void RemoveHomePage()
+        {
+            this.newHomePageContainer.Children.Remove(homePage);
+            this.homePage.Dispose();
         }
 
         // the key press event is being intercepted before it can get to
@@ -2626,6 +2665,17 @@ namespace Dynamo.Controls
                 }
 
                 return extensionsCollapsed;
+            }
+        }
+
+        /// <summary>
+        /// A feature flag controlling the appearance of the Dynamo home navigation page
+        /// </summary>
+        public bool IsNewAppHomeEnabled
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNewAppHomeEnabled", false) ?? false;
             }
         }
 
