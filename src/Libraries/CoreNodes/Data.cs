@@ -626,7 +626,10 @@ namespace DSCore
         public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
             string typeString, bool isList, bool isAutoMode)
         {
-            if(inputValue == null) { return null; }
+            if (inputValue == null)
+            {
+                throw new ArgumentNullException("The node was called with null stuff (from Data.cs)");
+            }
 
             object result;  // Tuple<IsValid: bool, UpdateList: bool, InputType: DataNodeDynamoType>
 
@@ -666,6 +669,10 @@ namespace DSCore
             {
                 // If we are in 'Manual mode' then we just validate and throw as needed
                 var isSupportedType = IsSupportedDataNodeDynamoType(inputValue, type.Type, isList);
+                if (!isSupportedType)
+                {
+                    throw new ArgumentNullException("Unsupported during manual, dont' return anything");
+                }
                 result = (IsValid: isSupportedType, UpdateList: false, InputType: type);
 
                 return new Dictionary<string, object>

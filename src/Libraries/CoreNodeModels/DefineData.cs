@@ -36,6 +36,7 @@ namespace CoreNodeModels
             set
             {
                 isAutoMode = value;
+                OnNodeModified();
                 RaisePropertyChanged(nameof(IsAutoMode));
             }
         }
@@ -50,29 +51,11 @@ namespace CoreNodeModels
             set
             {
                 isList = value;
+                OnNodeModified();
                 RaisePropertyChanged(nameof(IsList));
             }
         }
 
-        /// <summary>
-        /// Copy of <see cref="DSDropDownBase.Items"/> to be serialized./>
-        /// </summary>
-        [JsonProperty]
-        protected List<DynamoDropDownItem> SerializedItems
-        {
-            get => serializedItems;
-            set
-            {
-                serializedItems = value;
-
-                Items.Clear();
-
-                foreach (DynamoDropDownItem item in serializedItems)
-                {
-                    Items.Add(item);
-                }
-            }
-        }
 
         /// <summary>
         /// Construct a new DefineData Dropdown Menu node
@@ -85,18 +68,6 @@ namespace CoreNodeModels
             RegisterAllPorts();
 
             PropertyChanged += OnPropertyChanged;
-
-            //Items.Add(new DynamoDropDownItem("Select a type", null));
-
-            foreach (var dataType in Data.GetDataNodeDynamoTypeList())
-            {
-                var displayName = dataType.Name;
-                var value = dataType;
-
-                Items.Add(new DynamoDropDownItem(displayName, value));
-            }
-
-            SelectedIndex = 0;
         }
 
         [JsonConstructor]
@@ -128,6 +99,11 @@ namespace CoreNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            if(inputAstNodes == null)
+            {
+                throw new ArgumentNullException("The node was called with null stuff");
+            }
+
             var resultAst = new List<AssociativeNode>();
 
             // function call inputs - reference to the function, and the function arguments coming from the inputs
@@ -137,7 +113,7 @@ namespace CoreNodeModels
             var function = new Func<object, string, bool, bool, Dictionary<string, object>>(DSCore.Data.IsSupportedDataNodeType);
             var funtionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
-                AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
+                AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.  DataNodeDynamoType).Type.ToString()),
                 AstFactory.BuildBooleanNode(IsList),
                 AstFactory.BuildBooleanNode(IsAutoMode)
             };
@@ -204,6 +180,18 @@ namespace CoreNodeModels
 
         protected override SelectionState PopulateItemsCore(string currentSelection)
         {
+            Items.Clear();
+
+            foreach (var dataType in Data.GetDataNodeDynamoTypeList())
+            {
+                var displayName = dataType.Name;
+                var value = dataType;
+
+                Items.Add(new DynamoDropDownItem(displayName, value));
+            }
+
+            SelectedIndex = 0;
+
             return SelectionState.Restore;
         }
 
