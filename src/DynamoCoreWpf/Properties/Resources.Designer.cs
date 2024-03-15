@@ -1206,6 +1206,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Toggle the List on if the upstream node that connects to this node includes any list..
+        /// </summary>
+        public static string DataInputNodeInformationTooltip {
+            get {
+                return ResourceManager.GetString("DataInputNodeInformationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to lock the current data type. Once locked, the upstream data type must match the selected type of this node..
+        /// </summary>
+        public static string DataInputNodeModeLockTooltip {
+            get {
+                return ResourceManager.GetString("DataInputNodeModeLockTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use System Default.
         /// </summary>
         public static string DefaultPythonEngineNone {

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"   
              xmlns:core="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
@@ -38,7 +38,7 @@
                 </Path>                    
             </Viewbox>
             <Canvas.ToolTip>
-                <ToolTip Content="Fill in later"
+                <ToolTip Content="{x:Static p:Resources.DataInputNodeInformationTooltip}"
                          Style="{StaticResource GenericToolTipLight}"/>
             </Canvas.ToolTip>
         </Canvas>

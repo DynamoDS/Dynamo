@@ -1,4 +1,4 @@
-﻿{
+{
     "loadedTypes": [
         {
             "fullyQualifiedName": "Core.Input.Code Block",
@@ -5927,6 +5927,14 @@
             "parameters": null,
             "itemType": "query",
             "keywords": "Dictionary, Values"
+        },
+        {
+            "fullyQualifiedName": "Core.Data.DefineData",
+            "iconUrl": "http://localhost/icons/CoreNodeModels.DefineData.Small?path=nodes\\CoreNodeModels.dll",
+            "contextData": "DefineData",
+            "parameters": null,
+            "itemType": "query",
+            "keywords": "Data.DefineData, Input/Output, definedata"
         }
     ]
 }

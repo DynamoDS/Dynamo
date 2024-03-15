@@ -8,6 +8,7 @@ using CoreNodeModels;
 using CoreNodeModelsWpf.Controls;
 using Dynamo.Controls;
 using Dynamo.Wpf;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -69,6 +70,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             // Add the padlock button
             var toggleButtonStyle = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["PadlockToggleButton"];
+            var toggleButtonTooltipStyle = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["GenericToolTipLight"];
             var toggleButton = new ToggleButton();
             toggleButton.Style = toggleButtonStyle;
 
@@ -80,6 +82,14 @@ namespace CoreNodeModelsWpf.Nodes
             toggleButton.Margin = new Thickness(5, 0, 0, 5); 
             toggleButton.HorizontalAlignment = HorizontalAlignment.Right;
             toggleButton.VerticalAlignment = VerticalAlignment.Center;
+
+            var toggleButtonToolTip = new ToolTip
+            {
+                Content = Res.ResourceManager.GetString(nameof(Res.DataInputNodeModeLockTooltip), CultureInfo.InvariantCulture),
+                Style = toggleButtonTooltipStyle 
+            };
+
+            toggleButton.ToolTip = toggleButtonToolTip;
 
             Grid.SetRow(toggleButton, 0); 
             Grid.SetColumn(toggleButton, 1); 

@@ -3934,4 +3934,12 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="DynamoXmlFileFormat" xml:space="preserve">
     <value>Dynamo 1.x file format</value>
   </data>
+  <data name="DataInputNodeModeLockTooltip" xml:space="preserve">
+    <value>Click to lock the current data type. Once locked, the upstream data type must match the selected type of this node.</value>
+    <comment>Tool-tip for the padlock toggle button controlling auto/manual mode.</comment>
+  </data>
+  <data name="DataInputNodeInformationTooltip" xml:space="preserve">
+    <value>Toggle the List on if the upstream node that connects to this node includes any list.</value>
+    <comment>Tool-tip for info questionmark icon.</comment>
+  </data>
 </root>

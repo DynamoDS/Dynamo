@@ -20,6 +20,7 @@ namespace CoreNodeModels
     [OutPortTypes("var[]..[]")]
     [OutPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.RememberOuputToolTip))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("Data.DefineData")]
     public class DefineData : DSDropDownBase
     {
         private List<DynamoDropDownItem> serializedItems;
