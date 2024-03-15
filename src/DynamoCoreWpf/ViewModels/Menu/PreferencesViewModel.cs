@@ -1539,6 +1539,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [Obsolete("API obsolete - This is a deprecated API and should not be used. Use UpdatePreferenceItemLocation instead")]
+        public bool UpdateBackupLocation(string newBackupLocation)
+        {
+            return dynamoViewModel.Model.UpdatePreferenceItemLocation(Core.PathManager.PreferenceItem.Backup, newBackupLocation);
+        }
+        [Obsolete("API obsolete - This is a deprecated API and should not be used. Use ResetPreferenceItemLocation instead")]
+        public void ResetBackupLocation()
+        {
+            dynamoViewModel.Model.ResetPreferenceItemLocation(Core.PathManager.PreferenceItem.Backup);
+        }
+
         public event EventHandler<PythonTemplatePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PythonTemplatePathEventArgs e)
         {

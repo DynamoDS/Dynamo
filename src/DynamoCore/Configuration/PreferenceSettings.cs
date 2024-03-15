@@ -954,7 +954,6 @@ namespace Dynamo.Configuration
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
-            PythonTemplateFilePath = PathManager.TemplateDirectoryName;
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
@@ -1277,7 +1276,6 @@ namespace Dynamo.Configuration
             if (!IsFirstRun) return;
             string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
             AddTrustedLocation(Path.Combine(ProgramData, Configurations.AutodeskAsString));
-            AddTrustedLocation(Path.Combine(ProgramData, Configurations.DynamoAsString));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             AddTrustedLocation(Path.Combine(ProgramFiles, Configurations.AutodeskAsString));

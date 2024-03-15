@@ -2719,6 +2719,7 @@ Dynamo.ViewModels.PreferencesViewModel.PythonEnginesList.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PythonTemplateFilePath.get -> string
 Dynamo.ViewModels.PreferencesViewModel.PythonTemplateFilePath.set -> void
 Dynamo.ViewModels.PreferencesViewModel.RequestShowFileDialog -> System.EventHandler<Dynamo.ViewModels.PythonTemplatePathEventArgs>
+Dynamo.ViewModels.PreferencesViewModel.ResetBackupLocation() -> void
 Dynamo.ViewModels.PreferencesViewModel.RunPreviewEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.RunPreviewIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.RunPreviewIsChecked.set -> void
@@ -2760,6 +2761,7 @@ Dynamo.ViewModels.PreferencesViewModel.TrustedPathsViewModel.get -> Dynamo.ViewM
 Dynamo.ViewModels.PreferencesViewModel.TrustedPathsViewModel.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UnitList.get -> System.Collections.ObjectModel.ObservableCollection<string>
 Dynamo.ViewModels.PreferencesViewModel.UnitList.set -> void
+Dynamo.ViewModels.PreferencesViewModel.UpdateBackupLocation(string newBackupLocation) -> bool
 Dynamo.ViewModels.PreferencesViewModel.UpdatePythonPathCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PreferencesViewModel.UseHardwareAcceleration.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.UseHardwareAcceleration.set -> void
@@ -5121,7 +5123,6 @@ static Dynamo.Wpf.Properties.Resources.PreferencesSecuritySettingsTab.get -> str
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingBackupInterval.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingCustomPythomTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingDefaultBackupLocation.get -> string
-static Dynamo.Wpf.Properties.Resources.PreferencesSettingDefaultTemplateLocationLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingHardwareAcceleration.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingMaxRecentFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingResetBackupLocationTooltip.get -> string
@@ -5132,6 +5133,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupLocationDialogTi
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateLocationDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingTemplateLocationLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateBackupLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateTemplateLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnits.get -> string
