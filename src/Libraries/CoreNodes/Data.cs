@@ -538,19 +538,21 @@ namespace DSCore
             public Type Type { get; private set; }
             public string Name { get; private set; }
             public int Level { get; private set; }
+            public bool IsLastChild { get; private set; }
 
             public DataNodeDynamoType(Type type, string name = null)
             {
                 Type = type;
                 Name = name ?? type.Name;
                 Level = 0;
-
+                IsLastChild = false;
             }
 
-            public DataNodeDynamoType(Type type, int level, string name = null)
+            public DataNodeDynamoType(Type type, int level, bool isLastChild = false, string name = null)
             : this(type, name)
             {
                 Level = level;
+                IsLastChild = isLastChild;
             }
         }
 
@@ -579,7 +581,7 @@ namespace DSCore
 
             var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1);
             var polygon = new DataNodeDynamoType(typeof(Polygon), 2);  // polygon is subtype of polyCurve
-            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3);    // rectangle is subtype of polygon
+            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3, true);    // rectangle is subtype of polygon
 
             typeList.Add(polyCurve);
             typeList.Add(polygon);
@@ -597,7 +599,7 @@ namespace DSCore
             var cone = new DataNodeDynamoType(typeof(Cone), 1);    // cone is subtype of solid
             var cylinder = new DataNodeDynamoType(typeof(Cylinder), 2); // cylinder is subtype of cone 
             var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1);    // cuboid is subtype of solid
-            var sphere = new DataNodeDynamoType(typeof(Sphere), 1);    // sphere is subtype of solid
+            var sphere = new DataNodeDynamoType(typeof(Sphere), 1, true);    // sphere is subtype of solid
 
             typeList.Add(solid);
             typeList.Add(cone);
@@ -609,7 +611,7 @@ namespace DSCore
             // Subtypes of Surface
             var surface = new DataNodeDynamoType(typeof(Surface));
             var nurbsSrf = new DataNodeDynamoType(typeof(NurbsSurface), 1);    // nurbsSrf is subtype of surface
-            var polySrf = new DataNodeDynamoType(typeof(PolySurface), 1); // polySrf is subtype of surface
+            var polySrf = new DataNodeDynamoType(typeof(PolySurface), 1, true); // polySrf is subtype of surface
 
             typeList.Add(surface);
             typeList.Add(nurbsSrf);
@@ -628,7 +630,7 @@ namespace DSCore
         {
             if (inputValue == null)
             {
-                throw new ArgumentNullException("The node was called with null stuff (from Data.cs)");
+                throw new ArgumentNullException(Properties.Resources.DefineDataNullExceptionMessage);
             }
 
             object result;  // Tuple<IsValid: bool, UpdateList: bool, InputType: DataNodeDynamoType>
@@ -671,7 +673,8 @@ namespace DSCore
                 var isSupportedType = IsSupportedDataNodeDynamoType(inputValue, type.Type, isList);
                 if (!isSupportedType)
                 {
-                    throw new ArgumentNullException("Unsupported during manual, dont' return anything");
+                    throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnexpectedInputExceptionMessage,
+                        inputValue.GetType().FullName, type.Type.FullName));
                 }
                 result = (IsValid: isSupportedType, UpdateList: false, InputType: type);
 

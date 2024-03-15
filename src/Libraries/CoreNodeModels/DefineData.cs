@@ -57,6 +57,10 @@ namespace CoreNodeModels
             }
         }
 
+        public override bool IsInputNode
+        {
+            get { return false; }
+        }
 
         /// <summary>
         /// Construct a new DefineData Dropdown Menu node
@@ -102,7 +106,7 @@ namespace CoreNodeModels
         {
             if(inputAstNodes == null)
             {
-                throw new ArgumentNullException("The node was called with null stuff");
+                throw new ArgumentNullException(Properties.Resources.BooleanSelectorSearchTags);
             }
 
             var resultAst = new List<AssociativeNode>();

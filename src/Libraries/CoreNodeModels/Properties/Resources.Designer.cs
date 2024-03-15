@@ -295,6 +295,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input must be a single value or a non-nested list..
+        /// </summary>
+        public static string DefineDataNullExceptionMessage {
+            get {
+                return ResourceManager.GetString("DefineDataNullExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a directory object from the given path.
         /// </summary>
         public static string DirectoryFromPathDescription {

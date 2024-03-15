@@ -70,6 +70,24 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input must be a single value or a non-nested list..
+        /// </summary>
+        internal static string DefineDataNullExceptionMessage {
+            get {
+                return ResourceManager.GetString("DefineDataNullExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This node expected a {0} input but received a {1} input. Please provide the expected input, or place a new DefineData node to use a different data type..
+        /// </summary>
+        internal static string DefineDataUnexpectedInputExceptionMessage {
+            get {
+                return ResourceManager.GetString("DefineDataUnexpectedInputExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Friday.
         /// </summary>
         internal static string EnumDateOfWeekFriday {

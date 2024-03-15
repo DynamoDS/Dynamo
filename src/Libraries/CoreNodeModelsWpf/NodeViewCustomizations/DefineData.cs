@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using CoreNodeModels;
 using CoreNodeModelsWpf.Controls;
 using Dynamo.Controls;
@@ -36,6 +38,10 @@ namespace CoreNodeModelsWpf.Nodes
             Grid.SetColumn(formControl, 0);
             Grid.SetColumnSpan(formControl, 2); 
             nodeView.inputGrid.Children.Add(formControl);
+            nodeView.SnapsToDevicePixels = true;
+            nodeView.UseLayoutRounding = true;
+
+            RenderOptions.SetBitmapScalingMode(nodeView, BitmapScalingMode.NearestNeighbor);
 
             // Add the dropdown.
             base.CustomizeView(model, nodeView);
@@ -52,21 +58,83 @@ namespace CoreNodeModelsWpf.Nodes
             dropdown.MinWidth = 220;
             dropdown.FontSize = 12;
 
-            var indentConverter = new LevelToIndentConverter();
+            // Create the Grid as the root visual for the item template
+            var gridFactory = new FrameworkElementFactory(typeof(Grid));
+            var col = new FrameworkElementFactory(typeof(ColumnDefinition));
+            gridFactory.AppendChild(col);
 
-            // Dynamically create a DataTemplate for ComboBox items
-            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
-            textBlockFactory.SetBinding(TextBlock.TextProperty, new Binding("Name")); 
-            textBlockFactory.SetBinding(TextBlock.MarginProperty, new Binding("Item.Level") { Converter = indentConverter }); 
+            var pathFactory = new FrameworkElementFactory(typeof(Path));
+            pathFactory.SetValue(Path.StrokeProperty, Brushes.White); 
+            pathFactory.SetValue(Path.UseLayoutRoundingProperty, true);
+            pathFactory.SetValue(Path.SnapsToDevicePixelsProperty, true);
+            pathFactory.SetValue(Path.StrokeThicknessProperty, 0.5); 
+            pathFactory.SetValue(Path.StrokeDashArrayProperty, new DoubleCollection(new double[] { 4, 5 }));
+            pathFactory.SetValue(Path.MarginProperty, new Thickness(0, -5, 0, -5));
+            pathFactory.SetBinding(Path.VisibilityProperty, new Binding("Item.Level") { Converter = new LevelToVisibilityConverter() });
 
-            DataTemplate itemTemplate = new DataTemplate { VisualTree = textBlockFactory };
+            var pathDataBinding = new MultiBinding { Converter = new LevelAndLastChildPropertyToPathGeometryConverter() };
+            pathDataBinding.Bindings.Add(new Binding("Item.Level"));
+            pathDataBinding.Bindings.Add(new Binding("Item.IsLastChild"));
+            pathFactory.SetBinding(Path.DataProperty, pathDataBinding);
+            pathFactory.SetValue(Grid.ColumnProperty, 0);
+
+            gridFactory.AppendChild(pathFactory);
+
+            // TextBlock setup
+            FrameworkElementFactory textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
+            textBlockFactory.SetBinding(TextBlock.TextProperty, new Binding("Name"));
+            textBlockFactory.SetBinding(TextBlock.MarginProperty, new Binding("Item.Level") { Converter = new LevelToIndentConverter() });
+            textBlockFactory.SetValue(Grid.ColumnProperty, 0); 
+
+            // Add line and TextBlock to the Grid
+            gridFactory.AppendChild(textBlockFactory);
+
+            // Create and seal the DataTemplate
+            DataTemplate itemTemplate = new DataTemplate { VisualTree = gridFactory };
             itemTemplate.Seal();
-
-            // Apply the DataTemplate to the ComboBox
             dropdown.ItemTemplate = itemTemplate;
 
             Grid.SetRow(dropdown, 0);
-            Grid.SetColumn(dropdown, 0); 
+            Grid.SetColumn(dropdown, 0);
+
+            var selectedItemDisplay = new TextBox
+            {
+                IsReadOnly = true,
+                Focusable = false,
+                IsHitTestVisible = false,
+                Margin = new Thickness(0, 0, 0, 0),
+                Padding = new Thickness(2, -1, 0, 0),
+                VerticalAlignment = VerticalAlignment.Top,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Width = 160,
+                Height = 30,
+                FontSize = 12,
+                Background = new SolidColorBrush(Color.FromRgb(42, 42, 42)),
+                BorderBrush = Brushes.Transparent,
+                Foreground = new SolidColorBrush(Color.FromRgb(199, 199, 199)),
+            };  
+
+            // Binding setup as shown above     
+            var selectedItemBinding = new Binding("SelectedItem.Name")
+            {
+                Source = dropdown, 
+                Mode = BindingMode.OneWay
+            };
+            selectedItemDisplay.SetBinding(TextBox.TextProperty, selectedItemBinding);
+
+            var visibilityBinding = new Binding("IsDropDownOpen")   
+            {
+                Source = dropdown,
+                Converter = new BoolToVisibilityConverter(),
+                Mode = BindingMode.OneWay
+            };
+            //selectedItemDisplay.SetBinding(UIElement.VisibilityProperty, visibilityBinding);
+
+            Grid.SetRow(selectedItemDisplay, 0); 
+            Grid.SetColumn(selectedItemDisplay, 0);
+
+            nodeView.inputGrid.Children.Add(selectedItemDisplay);
 
             // Add the padlock button
             var toggleButtonStyle = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["PadlockToggleButton"];
@@ -105,6 +173,66 @@ namespace CoreNodeModelsWpf.Nodes
                     return new Thickness(level * 20, 0, 0, 0); 
                 }
                 return new Thickness(0);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+            
+        public class LevelToVisibilityConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (value is int level && level > 0)
+                {
+                    return Visibility.Visible;
+                }
+                return Visibility.Hidden;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class LevelAndLastChildPropertyToPathGeometryConverter : IMultiValueConverter
+        {
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (values[0] is int level && values[1] is bool isLastChild)
+                {
+                    double lineLength = -2 + (level * 20);
+
+                    var simpleGeometry = new PathGeometry();
+                    var horLine = new PathFigure { StartPoint = new Point(1, 13) };
+                    horLine.Segments.Add(new LineSegment(new Point(lineLength, 13), true)); 
+                    simpleGeometry.Figures.Add(horLine);
+                        
+                    var vertLine = new PathFigure { StartPoint = new Point(0, 0) };
+                    vertLine.Segments.Add(new LineSegment(new Point(0, isLastChild ? 14 : 28), true)); 
+                    simpleGeometry.Figures.Add(vertLine);
+                    RenderOptions.SetEdgeMode(simpleGeometry, EdgeMode.Aliased);
+
+                    return simpleGeometry;
+                }
+
+                return null; 
+            }
+
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+            
+        public class BoolToVisibilityConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return value is bool && (bool)value ? Visibility.Collapsed : Visibility.Visible;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

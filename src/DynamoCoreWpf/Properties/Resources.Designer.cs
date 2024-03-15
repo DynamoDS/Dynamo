@@ -1206,7 +1206,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Toggle the List on if the upstream node that connects to this node includes any list..
+        ///   Looks up a localized string similar to Toggle on if the input data contains a list..
         /// </summary>
         public static string DataInputNodeInformationTooltip {
             get {
@@ -1215,7 +1215,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to lock the current data type. Once locked, the upstream data type must match the selected type of this node..
+        ///   Looks up a localized string similar to When locked, this node only accepts the selected data type as input. When unlocked, the input can be any supported data type..
         /// </summary>
         public static string DataInputNodeModeLockTooltip {
             get {

@@ -664,4 +664,7 @@ In Generative Design workflows, this node should be used to control and block th
   <data name="GateSearchTags" xml:space="preserve">
     <value>gate;stop;data</value>
   </data>
+  s<data name="DefineDataNullExceptionMessage" xml:space="preserve">
+    <value>Input must be a single value or a non-nested list.</value>
+  </data>
 </root>
