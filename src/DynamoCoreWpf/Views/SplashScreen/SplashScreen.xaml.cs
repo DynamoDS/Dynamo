@@ -475,9 +475,15 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// If the user wants to close the window, we shutdown the application and don't launch Dynamo
         /// </summary>
-        internal void CloseWindow()
+        /// <param name="isCheckboxChecked">If true, the user has chosen to not show splash screen on next run.</param>
+        internal void CloseWindow(bool isCheckboxChecked = false)
         {
             CloseWasExplicit = true;
+            if (viewModel != null && isCheckboxChecked)
+            {
+                viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            }
+
             if (Application.Current != null)
             {
                 Application.Current.Shutdown();
@@ -519,6 +525,9 @@ namespace Dynamo.UI.Views
         success
     }
 
+    /// <summary>
+    /// This class is used to expose the methods that can be called from the webview2 component, SplashScreen.
+    /// </summary>
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
     public class ScriptObject
@@ -528,7 +537,12 @@ namespace Dynamo.UI.Views
         readonly Func<bool> RequestSignIn;
         readonly Func<bool> RequestSignOut;
         readonly Action RequestCloseWindow;
+        readonly Action<bool> RequestCloseWindowPreserve;
 
+        /// <summary>
+        /// [Obsolete] Constructor for ScriptObject
+        /// </summary>
+        [Obsolete]
         public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestCloseWindow)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
@@ -536,6 +550,17 @@ namespace Dynamo.UI.Views
             RequestSignIn = requestSignIn;
             RequestSignOut = requestSignOut;
             RequestCloseWindow = requestCloseWindow;
+        }
+        /// <summary>
+        /// Constructor for ScriptObject with an overload for close window method, to preserve "Don't show again" setting on splash screen on explicit close event.
+        /// </summary>
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func<bool> requestSignIn, Func<bool> requestSignOut, Action<bool> requestCloseWindow)
+        {
+            RequestLaunchDynamo = requestLaunchDynamo;
+            RequestImportSettings = requestImportSettings;
+            RequestSignIn = requestSignIn;
+            RequestSignOut = requestSignOut;
+            RequestCloseWindowPreserve = requestCloseWindow;
         }
 
         public void LaunchDynamo(bool showScreenAgain)
@@ -559,6 +584,10 @@ namespace Dynamo.UI.Views
         public void CloseWindow()
         {
             RequestCloseWindow();
+        }
+        public void CloseWindowPreserve(bool isCheckboxChecked)
+        {
+            RequestCloseWindowPreserve(isCheckboxChecked);
         }
     }
 }
