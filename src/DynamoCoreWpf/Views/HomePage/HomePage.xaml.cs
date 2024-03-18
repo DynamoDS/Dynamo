@@ -61,6 +61,8 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal static Action<string> TestHook { get; set; }
 
+        internal AsyncMethodState initState = AsyncMethodState.NotStarted;
+
         public HomePage()
         {   
             InitializeComponent();
@@ -151,6 +153,7 @@ namespace Dynamo.UI.Views
             //ContentRendered ensures that the webview2 component is visible.
             try
             {
+                initState = AsyncMethodState.Started;
                 await dynWebView.Initialize();
 
                 // Set WebView2 settings
@@ -193,6 +196,8 @@ namespace Dynamo.UI.Views
                                         RequestShowSampleFilesInFolder,
                                         RequestShowBackupFilesInFolder,
                                         RequestShowTemplate));
+
+                initState = AsyncMethodState.Done;
             }
             catch (ObjectDisposedException ex)
             {
