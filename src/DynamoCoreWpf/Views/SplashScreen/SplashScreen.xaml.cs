@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Xml.Serialization;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
@@ -218,8 +219,8 @@ namespace Dynamo.UI.Views
         private void SplashScreenRequestClose(object sender, EventArgs e)
         {
             //This is only called when shutdownparams.closeDynamoView = true
-            //which is during tests or an exist command
-            //which is used rarely, during but we it is used when the Revit document is lost and Dynamo is open.
+            //which is during tests or an exit command
+            //which is used rarely, but it is used when the Revit document is lost and Dynamo is open.
             CloseWindow();
             viewModel.RequestClose -= SplashScreenRequestClose;
         }
@@ -657,29 +658,34 @@ namespace Dynamo.UI.Views
             RequestSignOut = requestSignOut;
             RequestCloseWindowPreserve = requestCloseWindow;
         }
-
+        [DynamoJSInvokable]
         public void LaunchDynamo(bool showScreenAgain)
         {
             RequestLaunchDynamo(showScreenAgain);
             Analytics.TrackEvent(Actions.Start, Categories.SplashScreenOperations);
         }
-
+        [DynamoJSInvokable]
         public void ImportSettings(string file)
         {
             RequestImportSettings(file);
         }
+        [DynamoJSInvokable]
         public bool SignIn()
         {
             return RequestSignIn();
         }
+        [DynamoJSInvokable]
         public bool SignOut()
         {
             return RequestSignOut();
         }
+        [Obsolete]
+        [DynamoJSInvokable]
         public void CloseWindow()
         {
             RequestCloseWindow();
         }
+        [DynamoJSInvokable]
         public void CloseWindowPreserve(bool isCheckboxChecked)
         {
             RequestCloseWindowPreserve(isCheckboxChecked);
