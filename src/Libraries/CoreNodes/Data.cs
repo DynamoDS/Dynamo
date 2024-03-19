@@ -628,10 +628,14 @@ namespace DSCore
         public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
             string typeString, bool isList, bool isAutoMode, string playerValue)
         {
-
             if (inputValue == null)
             {
-                throw new ArgumentNullException(Properties.Resources.DefineDataNullExceptionMessage);
+                // Don't raise a warning if the node is unused
+                return new Dictionary<string, object>
+                {
+                    { ">", inputValue },
+                    { "Validation", null }
+                };
             }
 
             // If the playerValue is not empty, then we assume it was set by the player.
@@ -689,8 +693,8 @@ namespace DSCore
                 var isSupportedType = IsSupportedDataNodeDynamoType(inputValue, type.Type, isList);
                 if (!isSupportedType)
                 {
-                    throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnexpectedInputExceptionMessage,
-                        inputValue.GetType().FullName, type.Type.FullName));
+                    throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnexpectedInputExceptionMessage, type.Type.FullName,
+                        inputValue.GetType().FullName));
                 }
                 result = (IsValid: isSupportedType, UpdateList: false, InputType: type);
 

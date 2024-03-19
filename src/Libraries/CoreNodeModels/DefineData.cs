@@ -122,11 +122,6 @@ namespace CoreNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if(inputAstNodes == null)
-            {
-                throw new ArgumentNullException(Properties.Resources.BooleanSelectorSearchTags);
-            }
-
             var resultAst = new List<AssociativeNode>();
 
             // function call inputs - reference to the function, and the function arguments coming from the inputs
@@ -141,7 +136,6 @@ namespace CoreNodeModels
                 AstFactory.BuildBooleanNode(IsAutoMode),
                 AstFactory.BuildStringNode(PlayerValue)
             };
-
 
             var functionCall = AstFactory.BuildFunctionCall(function, funtionInputs);
             var functionCallIdentifier = AstFactory.BuildIdentifier(GUID + "_func");
@@ -197,11 +191,6 @@ namespace CoreNodeModels
                         var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
                         SelectedIndex = index;
                     }
-                }
-                else
-                {
-                    // Throw an exception/warning and go back to the default dropdown value
-                    SelectedIndex = 0;
                 }
             }
         }
