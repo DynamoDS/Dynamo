@@ -440,6 +440,9 @@ namespace Dynamo.Engine
             {
                 if (!node.IsInputNode) continue;
 
+                //We also don't want any nodes that do have input ports or where derived from custom nodes.
+                if (node.InPorts.Any() || node.IsCustomFunction) continue;
+
                 // Only one or the other of the two lists, Added or Modified, will match the node GUID if they do. 
                 bool isAdded = false;
                 for (int i = 0; i < graphSyncdata.AddedSubtrees.Count; i++)
