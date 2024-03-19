@@ -30,7 +30,17 @@ namespace CoreNodeModels
         private string playerValue = "";
 
         /// <summary>
-        /// AutoMode property
+        /// The IsAutoMode property enables the node to automatically validate and process input data.
+        /// AutoMode = true: the node checks input types for serialization compatibility, supports single values and non-nested lists,
+        /// and distinguishes between homogeneous and certain heterogeneous collections through inheritance.
+        /// Invalid or unsupported data types result in error messages,
+        /// while successful validation updates node properties and UI elements to reflect the processed data.
+        /// AutoMode = false: the node enters a manual processing mode,
+        /// where it strictly validates that the TypeID and Context predefined on the node match the attached input data.
+        /// Mismatches in expected data types or contexts—such as receiving a list instead of a single item,
+        /// or input data not matching the specified TypeID—result in errors, without automatically adjusting node settings.
+        /// This manual mode maintains the node's current configurations, ensuring an output is passed only when valid data is processed,
+        /// and retains the node's state in warning without resetting selections for invalid data.
         /// </summary>
         [JsonProperty]
         public bool IsAutoMode
@@ -45,7 +55,8 @@ namespace CoreNodeModels
         }
 
         /// <summary>
-        /// IsList property
+        /// IsList property defines if the input is of a type ArrayList.
+        /// The node supports only non-nested lists of homogeneous or heterogenous collections through inheritance
         /// </summary>
         [JsonProperty]
         public bool IsList
