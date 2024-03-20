@@ -295,11 +295,47 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Validates and returns data from a currently or previously connected node.
+        /// </summary>
+        public static string DefineDataDescription {
+            get {
+                return ResourceManager.GetString("DefineDataDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Types.
+        /// </summary>
+        public static string DefineDataDisplayValueMessage {
+            get {
+                return ResourceManager.GetString("DefineDataDisplayValueMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input data to be validated.
+        /// </summary>
+        public static string DefineDataInputTooltip {
+            get {
+                return ResourceManager.GetString("DefineDataInputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input must be a single value or a non-nested list..
         /// </summary>
         public static string DefineDataNullExceptionMessage {
             get {
                 return ResourceManager.GetString("DefineDataNullExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data if validation is successful.
+        /// </summary>
+        public static string DefineDataOutputTooltip {
+            get {
+                return ResourceManager.GetString("DefineDataOutputTooltip", resourceCulture);
             }
         }
         

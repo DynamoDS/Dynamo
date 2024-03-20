@@ -43,7 +43,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             RenderOptions.SetBitmapScalingMode(nodeView, BitmapScalingMode.NearestNeighbor);
 
-            // Add the dropdown.
+            // Add the dropdown
             base.CustomizeView(model, nodeView);
 
             var style = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["NodeViewComboBox"];
@@ -52,7 +52,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             formControl.BaseComboBox = dropdown;
 
-            // Add margin to the dropdown to show the expander.
+            // Add margin to the dropdown to show the expander
             dropdown.Margin = new Thickness(0, 0, 0, 5);
             dropdown.VerticalAlignment = VerticalAlignment.Top;
             dropdown.MinWidth = 220;
@@ -97,6 +97,7 @@ namespace CoreNodeModelsWpf.Nodes
             Grid.SetRow(dropdown, 0);
             Grid.SetColumn(dropdown, 0);
 
+            // Mask over the dropdown to display the selected value without the indentation
             var selectedItemDisplay = new TextBox
             {
                 IsReadOnly = true,
@@ -114,22 +115,13 @@ namespace CoreNodeModelsWpf.Nodes
                 BorderBrush = Brushes.Transparent,
                 Foreground = new SolidColorBrush(Color.FromRgb(199, 199, 199)),
             };  
-
-            // Binding setup as shown above     
-            var selectedItemBinding = new Binding("SelectedItem.Name")
+    
+            var selectedItemBinding = new Binding("DisplayValue")
             {
-                Source = dropdown, 
+                Source = model, 
                 Mode = BindingMode.OneWay
             };
             selectedItemDisplay.SetBinding(TextBox.TextProperty, selectedItemBinding);
-
-            var visibilityBinding = new Binding("IsDropDownOpen")   
-            {
-                Source = dropdown,
-                Converter = new BoolToVisibilityConverter(),
-                Mode = BindingMode.OneWay
-            };
-            //selectedItemDisplay.SetBinding(UIElement.VisibilityProperty, visibilityBinding);
 
             Grid.SetRow(selectedItemDisplay, 0); 
             Grid.SetColumn(selectedItemDisplay, 0);

@@ -15,11 +15,14 @@ using static DSCore.Data;
 namespace CoreNodeModels
 {
     [NodeName("DefineData")]
-    [NodeDescription(nameof(Properties.Resources.RememberDescription), typeof(Properties.Resources))]
+    [NodeDescription(nameof(Properties.Resources.DefineDataDescription), typeof(Properties.Resources))]
     [NodeCategory("Core.Data")]
+    [InPortNames(">")]
+    [InPortTypes("var[]..[]")]
+    [InPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.DefineDataInputTooltip))]
     [OutPortNames(">")]
     [OutPortTypes("var[]..[]")]
-    [OutPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.RememberOuputToolTip))]
+    [OutPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.DefineDataOutputTooltip))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Data.DefineData")]
     public class DefineData : DSDropDownBase
@@ -28,6 +31,7 @@ namespace CoreNodeModels
         private bool isAutoMode;
         private bool isList;
         private string playerValue = "";
+        private string displayValue = Properties.Resources.DefineDataDisplayValueMessage;
 
         /// <summary>
         /// The IsAutoMode property enables the node to automatically validate and process input data.
@@ -70,6 +74,22 @@ namespace CoreNodeModels
             }
         }
 
+        /// <summary>
+        /// This is a mediator property handling the displayed value on the dropdown
+        /// </summary>
+        ///
+        [JsonProperty]
+        public string DisplayValue
+        {
+            get { return displayValue; }
+            set
+            {
+                displayValue = value;
+                RaisePropertyChanged(nameof(DisplayValue));
+            }
+        }
+
+
         [JsonIgnore]
         public override bool IsInputNode
         {
@@ -96,17 +116,13 @@ namespace CoreNodeModels
         /// </summary>
         public DefineData() : base(">")
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Properties.Resources.WatchPortDataInputToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.WatchPortDataResultToolTip)));
-
-            RegisterAllPorts();
-
             PropertyChanged += OnPropertyChanged;
         }
 
         [JsonConstructor]
         private DefineData(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(">", inPorts, outPorts)
         {
+            RegisterAllPorts();
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -183,7 +199,18 @@ namespace CoreNodeModels
             //Now we reset this value to empty string so that the next time a value is set from upstream nodes we can know that it is not coming from the player
             playerValue = "";
 
-            if (data == null) return;
+            if (data == null)
+            {
+                if(IsAutoMode)
+                {
+                    DisplayValue = Properties.Resources.DefineDataDisplayValueMessage;
+                }
+                else
+                {
+                    DisplayValue = SelectedString;
+                }
+                return;
+            }
 
             (bool IsValid, bool UpdateList, DataNodeDynamoType InputType) resultData = (ValueTuple<bool, bool, DataNodeDynamoType>)data;
 
@@ -192,17 +219,16 @@ namespace CoreNodeModels
                 IsList = !IsList;
             }
 
-            if (!resultData.IsValid)
+            if (IsAutoMode && resultData.InputType != null)
             {
-                if (IsAutoMode)
+                if(!resultData.IsValid)
                 {
                     // Assign to the correct value, if the object was of supported type
-                    if (resultData.InputType != null)
-                    {
-                        var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
-                        SelectedIndex = index;
-                    }
+                    var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
+                    SelectedIndex = index;
                 }
+                // Assign the current
+                DisplayValue = resultData.InputType.Name;
             }
         }
 

@@ -664,7 +664,19 @@ In Generative Design workflows, this node should be used to control and block th
   <data name="GateSearchTags" xml:space="preserve">
     <value>gate;stop;data</value>
   </data>
+  <data name="DefineDataDescription" xml:space="preserve">
+    <value>Validates and returns data from a currently or previously connected node</value>
+  </data>
+  <data name="DefineDataInputTooltip" xml:space="preserve">
+    <value>Input data to be validated</value>
+  </data>
+  <data name="DefineDataOutputTooltip" xml:space="preserve">
+    <value>Data if validation is successful</value>
+  </data>
   s<data name="DefineDataNullExceptionMessage" xml:space="preserve">
     <value>Input must be a single value or a non-nested list.</value>
+  </data>
+  <data name="DefineDataDisplayValueMessage" xml:space="preserve">
+    <value>Select Types</value>
   </data>
 </root>
