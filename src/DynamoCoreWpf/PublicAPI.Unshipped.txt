@@ -4011,11 +4011,9 @@ Dynamo.Wpf.Views.Debug.DebugModesWindow
 Dynamo.Wpf.Views.Debug.DebugModesWindow.DebugModesWindow() -> void
 Dynamo.Wpf.Views.Debug.DebugModesWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow
-Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.errorFile -> string
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.IsUpdateEnabled.get -> bool
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.IsUpdateEnabled.set -> void
-Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.logFile -> string
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NewIconPaths.get -> string
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NewIconPaths.set -> void
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata
@@ -4036,7 +4034,6 @@ Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeName.get -> st
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeName.set -> void
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.OldData.get -> string
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.OldData.set -> void
-Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.OnPropertyChanged(string propertyName) -> void
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.Output.get -> string
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.Output.set -> void
 Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.PropertyChanged -> System.ComponentModel.PropertyChangedEventHandler
@@ -5554,7 +5551,6 @@ static readonly Dynamo.Wpf.ViewModels.Watch3D.AttachedProperties.IsolationModePr
 static readonly Dynamo.Wpf.ViewModels.Watch3D.AttachedProperties.IsSpecialRenderPackageProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.Wpf.ViewModels.Watch3D.AttachedProperties.ShowSelectedProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.Wpf.ViewModels.Watch3D.DynamoGeometryModel3D.RequiresPerVertexColorationProperty -> System.Windows.DependencyProperty
-static readonly Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.logPath -> string
 static readonly Dynamo.Wpf.Views.GuidedTour.RatingControl.ValueProperty -> System.Windows.DependencyProperty
 UI.Prompts.PortPropertiesEditPrompt
 UI.Prompts.PortPropertiesEditPrompt.Description.get -> string
