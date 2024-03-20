@@ -1845,6 +1845,8 @@ namespace Dynamo.ViewModels
                         commandString,
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
+
+                    this.ShowStartPage = true;  // Triggers start page change to notify the frontend
                 }
                 else
                 {
