@@ -99,7 +99,7 @@ namespace CoreNodeModels
 
             //Items.Add(new DynamoDropDownItem("Select a type", null));
 
-            foreach (var dataType in Data.GetDataNodeDynamoTypeList())
+            foreach (var dataType in Data.DataNodeDynamoTypeList)
             {
                 var displayName = dataType.Name;
                 var value = dataType;
