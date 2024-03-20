@@ -4,8 +4,7 @@
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
-        xmlns:w="clr-namespace:System.Windows;assembly=PresentationCore"
-        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         Title="{x:Static p:Resources.GenericTaskDialogTitle}"
         MinWidth="400"
         MaxWidth="500"
@@ -120,11 +119,11 @@
                                      Style="{StaticResource GenericToolTipLight}"/>
                         </Label.ToolTip>
                         <Label.Content>
-                            <fa5:ImageAwesome Width="15" 
+                            <fa:ImageAwesome Width="15" 
                                              Height="15" 
                                              VerticalAlignment="Bottom" 
                                              HorizontalAlignment="Left" 
-                                             Icon="Solid_QuestionCircle"                                               
+                                             Icon="QuestionCircle"                                               
                                              Foreground="#808080"/>
                         </Label.Content>
                     </Label>
