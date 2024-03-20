@@ -64,7 +64,7 @@ namespace DynamoUtilities
         {
 
             //wait for response
-            var dataFromCLI = GetData(featureFlagTimeoutMs).Result;    
+            var dataFromCLI = GetData(featureFlagTimeoutMs);    
             //convert from json string to dictionary.
             try
             {
