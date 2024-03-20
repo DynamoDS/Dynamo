@@ -1,0 +1,341 @@
+{
+  "Uuid": "ff205ac3-d314-4c24-b8d1-ec0f3dfbf011",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DataInput",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "8401fd3e60434531b5596bdd2c6e589b",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9b30fc26c18e4819a7a5341cccb36f3e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b30bed9bad604a6ea2f8205a7e004c7c",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2e60244c94b5438fb842b3073850da08",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b42b8ba327964cbca39d468cdf28fa52",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "704fbc82904648679ad503a1c72ededb",
+          "Name": "",
+          "Description": "Value of expression at line 5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "be37aef4ed8e413a94b1535213282bd9",
+          "Name": "",
+          "Description": "Value of expression at line 6",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "\"The quick brown fox jumps over the lazy dog\";\n1;\n21.1;\nfalse;\nPoint.ByCoordinates(0,0,0);\n[1,2,3,4,5];"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
+      "IsAutoMode": false,
+      "IsList": false,
+      "DisplayValue": "Number",
+      "SelectedIndex": 15,
+      "SelectedString": "Number",
+      "Id": "341b49997a5740cfa4470fda4c145392",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "ce9252aa515a489790b48664611de307",
+          "Name": ">",
+          "Description": "Input data to be validated",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1260ee19254c45848bbbd43331b8e790",
+          "Name": ">",
+          "Description": "Data if validation is successful",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Validates and returns data from a currently or previously connected node"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
+      "IsAutoMode": true,
+      "IsList": true,
+      "DisplayValue": "Integer",
+      "SelectedIndex": 16,
+      "SelectedString": "Integer",
+      "Id": "b0263a5695eb46bea670edba50703bbd",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "53fc0ceb63c64b53807f6aa6cdca79ec",
+          "Name": ">",
+          "Description": "Input data to be validated",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5c2b05f6b2b54795bd50642d1d8232cd",
+          "Name": ">",
+          "Description": "Data if validation is successful",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Validates and returns data from a currently or previously connected node"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
+      "IsAutoMode": false,
+      "IsList": false,
+      "DisplayValue": "Number",
+      "SelectedIndex": 15,
+      "SelectedString": "Number",
+      "Id": "a4116564c3564028a6461282b498d62e",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "d507fd9590e242ccb8c1b6347b350bd2",
+          "Name": ">",
+          "Description": "Input data to be validated",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b8a74f4ba05342e99e2aca0f5a11d4db",
+          "Name": ">",
+          "Description": "The selected >",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Validates and returns data from a currently or previously connected node"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9b30fc26c18e4819a7a5341cccb36f3e",
+      "End": "ce9252aa515a489790b48664611de307",
+      "Id": "4ec42a40e52a47e793b3f2c58f5efa41",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2e60244c94b5438fb842b3073850da08",
+      "End": "d507fd9590e242ccb8c1b6347b350bd2",
+      "Id": "1184bb5532c44f59adbd67e7a42f3d67",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "be37aef4ed8e413a94b1535213282bd9",
+      "End": "53fc0ceb63c64b53807f6aa6cdca79ec",
+      "Id": "3e7415930d584f95bd4fe9d92f9c71f0",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.1",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.1.0.3411",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "8401fd3e60434531b5596bdd2c6e589b",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -89.08466029404468,
+        "Y": 164.48711803028766
+      },
+      {
+        "Id": "341b49997a5740cfa4470fda4c145392",
+        "Name": "DefineData",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 504.79869346839416,
+        "Y": 62.116295816353556
+      },
+      {
+        "Id": "b0263a5695eb46bea670edba50703bbd",
+        "Name": "DefineData",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 508.6923454366158,
+        "Y": 416.6206473722925
+      },
+      {
+        "Id": "a4116564c3564028a6461282b498d62e",
+        "Name": "DefineData",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 503.5451066974623,
+        "Y": -146.65588355581608
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "0ca2413e63fe4db79a09078c5ede2480",
+        "Title": "Automatic validation is locked",
+        "DescriptionText": "when in this mode, the node only accepts valid data.",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "341b49997a5740cfa4470fda4c145392",
+          "a4116564c3564028a6461282b498d62e"
+        ],
+        "HasNestedGroups": false,
+        "Left": 493.5451066974623,
+        "Top": -262.6558835558161,
+        "Width": 359.25358677093186,
+        "Height": 491.77217937216966,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": -146.65588355581608,
+        "InitialHeight": 351.8500604167258,
+        "TextblockHeight": 106.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "bd2fd81958024114a3437c340f1b0135",
+        "Title": "Automatic validation is unlocked",
+        "DescriptionText": "The node will automatically set the matching data type.",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "b0263a5695eb46bea670edba50703bbd"
+        ],
+        "HasNestedGroups": false,
+        "Left": 498.6923454366158,
+        "Top": 300.6206473722925,
+        "Width": 358.0,
+        "Height": 271.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 416.6206473722925,
+        "InitialHeight": 185.0,
+        "TextblockHeight": 106.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 258.29615881197935,
+    "Y": 328.38191913885566,
+    "Zoom": 0.994488700419556
+  }
+}
