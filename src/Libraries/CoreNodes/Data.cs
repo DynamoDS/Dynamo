@@ -534,10 +534,22 @@ namespace DSCore
 
         #region Input Output Node
 
+        /// <summary>
+        /// A class representing a DataType supported by Dynamo
+        /// </summary>
         public class DataNodeDynamoType
         {
+            /// <summary>
+            /// The underlying Type
+            /// </summary>
             public Type Type { get; private set; }
+            /// <summary>
+            /// An optional Name to override the Type name (`Number` instead of `long`)
+            /// </summary>
             public string Name { get; private set; }
+            /// <summary>
+            /// The parent of the DataType, if inheriting (to be removed in later updates)
+            /// </summary>
             public DataNodeDynamoType Parent { get; private set; }
 
             public DataNodeDynamoType(Type type, string name = null)
@@ -624,9 +636,17 @@ namespace DSCore
             DataNodeDynamoTypeList = new ReadOnlyCollection<DataNodeDynamoType>(typeList);
         }
 
-
+        /// <summary>
+        /// This is the function used by AST
+        /// Handles some of the the node logic while performing the validation
+        /// </summary>
+        /// <param name="inputValue">Upstream input value</param>
+        /// <param name="typeString">The Type as string (it would be better to pass an object of type 'Type' for direct type comparison)</param>
+        /// <param name="isList">If the input is of type `ArrayList`</param>
+        /// <param name="isAutoMode">If the node is in Auto mode</param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
+        internal static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
             string typeString, bool isList, bool isAutoMode)
         {
             if(inputValue == null) { return null; }
@@ -687,7 +707,7 @@ namespace DSCore
         /// <param name="isList">The value of this boolean decides if the input is a single object or a list</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static bool IsSupportedDataNodeDynamoType([ArbitraryDimensionArrayImport] object inputValue, Type type, bool isList)
+        internal static bool IsSupportedDataNodeDynamoType([ArbitraryDimensionArrayImport] object inputValue, Type type, bool isList)
         {
             if (inputValue == null || type == null)
             {
@@ -723,12 +743,7 @@ namespace DSCore
         /// <param name="item">The item to check the data type for</param>
         /// <param name="dataType">The DataType to check against</param>
         /// <returns>A true or false result based on the check validation</returns>
-        private static bool IsItemOfType(object item, Type dataType)
-        {
-            if (dataType.IsInstanceOfType(item)) return true;
-            
-            return false;
-        }
+        private static bool IsItemOfType(object item, Type dataType) => dataType.IsInstanceOfType(item);
 
         #endregion
     }

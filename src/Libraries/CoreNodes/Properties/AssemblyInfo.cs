@@ -11,3 +11,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("976bdb58-dbbb-42cb-88c5-4ac66aa5b9ef")]
 [assembly: InternalsVisibleTo("DSCoreNodesTests")]
 [assembly: InternalsVisibleTo("CoreNodeModels")]
+[assembly: InternalsVisibleTo("DynamoCoreTests")]
