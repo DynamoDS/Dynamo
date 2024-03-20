@@ -20,6 +20,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -598,7 +599,7 @@ namespace Dynamo.ViewModels
         /// <param name="engine"></param>
         /// <param name="saveContext"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
+        internal bool Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -627,6 +628,23 @@ namespace Dynamo.ViewModels
                 {
                     // For intentional SaveAs either through UI or API calls, replace workspace elements' Guids and workspace Id
                     jo["Uuid"] = Guid.NewGuid().ToString();
+                    if (jo["Bindings"] != null && jo["Bindings"].Any())
+                    {
+                        jo["Bindings"] = JToken.Parse("[]");
+
+                        if (!DynamoModel.IsTestMode)
+                        {
+                            var result = DynamoMessageBox.Show(Wpf.Properties.Resources.ElementBindingWarningMessage,
+                                Wpf.Properties.Resources.ElementBindingWarningTitle, MessageBoxButton.OKCancel,
+                                MessageBoxImage.Warning, Wpf.Properties.Resources.ElementBindingDesc);
+
+                            if (result == MessageBoxResult.Cancel)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+
                     saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());
                 }
                 else
@@ -656,6 +674,8 @@ namespace Dynamo.ViewModels
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 throw (ex);
             }
+
+            return true;
         }
         /// <summary>
         /// This function appends view block to the model json

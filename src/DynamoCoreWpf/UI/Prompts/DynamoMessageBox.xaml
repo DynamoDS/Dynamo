@@ -4,7 +4,7 @@
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
-        xmlns:w="clr-namespace:System.Windows;assembly=PresentationCore"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         Title="{x:Static p:Resources.GenericTaskDialogTitle}"
         MinWidth="400"
         MaxWidth="500"
@@ -98,6 +98,35 @@
                                Foreground="#3C3C3C"
                                Text="{Binding TitleText, UpdateSourceTrigger=PropertyChanged}"
                                TextWrapping="Wrap" />
+                    <Label HorizontalAlignment="Right" 
+                           Name="TooltipInfo"
+                           VerticalAlignment="Center" 
+                           Height="26" 
+                           Width="53" 
+                           Margin="20 -3 0 0">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ShowTooltip}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                        <Label.ToolTip>
+                            <ToolTip Content="{Binding Path=Tooltip}" 
+                                     Style="{StaticResource GenericToolTipLight}"/>
+                        </Label.ToolTip>
+                        <Label.Content>
+                            <fa:ImageAwesome Width="15" 
+                                             Height="15" 
+                                             VerticalAlignment="Bottom" 
+                                             HorizontalAlignment="Left" 
+                                             Icon="QuestionCircle"                                               
+                                             Foreground="#808080"/>
+                        </Label.Content>
+                    </Label>
                 </DockPanel>
                 <Rectangle Name="Separator"
                            Grid.Row="0"
