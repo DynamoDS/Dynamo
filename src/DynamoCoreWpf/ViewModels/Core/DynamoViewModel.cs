@@ -133,8 +133,11 @@ namespace Dynamo.ViewModels
                 return preferencesViewModel;
             }
         }
+        /// <summary>
+        /// Denotes the last location used to open or close a workspace.
+        /// </summary>
+        internal string LastSavedLocation { get; set; }
 
-       
 
         /// <summary>
         /// Guided Tour Manager
@@ -1998,6 +2001,10 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Present the open dialog and open the workspace that is selected.
+        /// - If template is selected, opens the template folder
+        /// - else, if current file is saved , opens the file dialog at the current file's directory
+        /// - else, opens the samples directory, if available
+        /// - else , opens the last accessed path (or desktop, if it was the templates directory)
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowOpenDialogAndOpenResult(object parameter)
@@ -2050,7 +2057,13 @@ namespace Dynamo.ViewModels
                 string path = Path.Combine(location, "samples", UICulture);
 
                 if (Directory.Exists(path))
+                {
                     _fileDialog.InitialDirectory = path;
+                }
+                else
+                {
+                    SetDefaultInitialDirectory(_fileDialog);
+                }
             }
                 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -2065,8 +2078,37 @@ namespace Dynamo.ViewModels
                     else
                     {
                         Open(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                        LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
                     }
                 }
+            }
+        }
+
+        private void SetDefaultInitialDirectory(DynamoOpenFileDialog _fileDialog)
+        {
+            try
+            {
+                //check if the last accessed path was the templates directory, if yes, change it to default
+                var lastPath = _fileDialog.GetLastAccessedPath();
+                if (!string.IsNullOrEmpty(lastPath))
+                {
+                    if (Path.GetFullPath(lastPath).Equals(Path.GetFullPath(Model.PathManager.TemplatesDirectory), StringComparison.OrdinalIgnoreCase))
+                    {
+                        //use the last saved location
+                        if (!string.IsNullOrEmpty(LastSavedLocation) && !Path.GetFullPath(LastSavedLocation).Equals(Path.GetFullPath(Model.PathManager.TemplatesDirectory), StringComparison.OrdinalIgnoreCase))
+                        {
+                            _fileDialog.InitialDirectory = LastSavedLocation;
+                        }
+                        else
+                        {
+                            _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             }
         }
 
@@ -2229,7 +2271,7 @@ namespace Dynamo.ViewModels
                 if (path.Contains(Model.PathManager.TemplatesDirectory))
                 {
                     // Give user notifications
-                    DynamoMessageBox.Show(WpfResources.WorkspaceSaveTemplateDirectoryBlockMsg, WpfResources.WorkspaceSaveTemplateDirectoryBlockTitle,
+                    DynamoMessageBox.Show(Owner, WpfResources.WorkspaceSaveTemplateDirectoryBlockMsg, WpfResources.WorkspaceSaveTemplateDirectoryBlockTitle,
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 else
@@ -2600,8 +2642,17 @@ namespace Dynamo.ViewModels
             {
                 FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
-                // If the filePath is not empty set the default directory
-                if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
+                // If the current workspace is a template use the last saved location.
+                if (vm.Model.CurrentWorkspace.IsTemplate)
+                {
+                    var loc = string.IsNullOrEmpty(LastSavedLocation) ?
+                        Environment.GetFolderPath(Environment.SpecialFolder.Desktop) :
+                        LastSavedLocation;
+                    var fi = new DirectoryInfo(loc);
+                    _fileDialog.InitialDirectory = fi.FullName;
+                }
+                // If the filePath is not empty and is not a template path, set the default directory
+                else if (!vm.Model.CurrentWorkspace.IsTemplate && !string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
                 {
                     var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
                     _fileDialog.InitialDirectory = fi.DirectoryName;
@@ -2617,6 +2668,9 @@ namespace Dynamo.ViewModels
                 if (_fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     SaveAs(_fileDialog.FileName);
+                    LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
+                    //set the IsTemplate to false, after saving it as a file
+                    vm.Model.CurrentWorkspace.IsTemplate = false;
                 }
             }
             catch (PathTooLongException)
