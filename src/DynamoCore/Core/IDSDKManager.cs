@@ -222,21 +222,21 @@ namespace Dynamo.Core
                 {
                     if (Client.IsInitialized())
                     {
-                            IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
-                            if (hWnd != null)
-                            {
-                                Client.SetHost(hWnd);
-                            }
+                        IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
+                        if (hWnd != null)
+                        {
+                            Client.SetHost(hWnd);
+                        }
 
-                            bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
-                            if (ret)
-                            {
-                                Client.LogoutCompleteEvent += AuthCompleteEventHandler;
-                                Client.LoginCompleteEvent += AuthCompleteEventHandler;
-                                ret = SetProductConfigs(Configurations.DynamoAsString, server, client_id);
-                                Client.SetServer(server);
-                                return ret;
-                            }
+                        bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
+                        if (ret)
+                        {
+                            Client.LogoutCompleteEvent += AuthCompleteEventHandler;
+                            Client.LoginCompleteEvent += AuthCompleteEventHandler;
+                            ret = SetProductConfigs(Configurations.DynamoAsString, server, client_id);
+                            Client.SetServer(server);
+                            return ret;
+                        }
                     }
                 }
                 return false;
