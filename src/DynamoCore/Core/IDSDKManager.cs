@@ -213,38 +213,38 @@ namespace Dynamo.Core
 
         private bool Initialize()
         {
-            if (Client.IsInitialized()) return true;
-            idsdk_status_code bRet = Client.Init();
-
-            if (Client.IsSuccess(bRet))
+            try
             {
-                if (Client.IsInitialized())
-                {
-                    try
-                    {
-                        IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
-                        if (hWnd != null)
-                        {
-                            Client.SetHost(hWnd);
-                        }
+                if (Client.IsInitialized()) return true;
+                idsdk_status_code bRet = Client.Init();
 
-                        bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
-                        if (ret)
-                        {
-                            Client.LogoutCompleteEvent += AuthCompleteEventHandler;
-                            Client.LoginCompleteEvent += AuthCompleteEventHandler;
-                            ret = SetProductConfigs(Configurations.DynamoAsString, server, client_id);
-                            Client.SetServer(server);
-                            return ret;
-                        }
-                    }
-                    catch (Exception)
+                if (Client.IsSuccess(bRet))
+                {
+                    if (Client.IsInitialized())
                     {
-                        return false;
+                            IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
+                            if (hWnd != null)
+                            {
+                                Client.SetHost(hWnd);
+                            }
+
+                            bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
+                            if (ret)
+                            {
+                                Client.LogoutCompleteEvent += AuthCompleteEventHandler;
+                                Client.LoginCompleteEvent += AuthCompleteEventHandler;
+                                ret = SetProductConfigs(Configurations.DynamoAsString, server, client_id);
+                                Client.SetServer(server);
+                                return ret;
+                            }
                     }
                 }
+                return false;
             }
-            return false;
+            catch (Exception)
+            {
+                return false;
+            }
         }
         private bool Deinitialize()
         {
