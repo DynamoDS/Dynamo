@@ -12,7 +12,6 @@ ProtoGeometry.customization.dll
 ProtoGeometry.dll
 .\en-US\ProtoGeometry.resources.dll
 Python.Included.dll
-Python.Included.SciPy.dll
 Python.Runtime.dll
 Dynamo.Microsoft.Xaml.Behaviors.dll
 
