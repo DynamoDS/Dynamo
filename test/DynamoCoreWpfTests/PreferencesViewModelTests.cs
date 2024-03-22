@@ -162,7 +162,28 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Path.GetFullPath(singletonPathManager.UserDataDirectory), Path.GetFullPath(dynamoRevitUserDataDirectory));
             Assert.AreEqual(Path.GetFullPath(singletonPathManager.CommonDataDirectory), Path.GetFullPath(dynamoRevitCommonDataDirectory));
             Assert.AreEqual(Path.GetFullPath(singletonPathManager.SamplesDirectory), Path.GetFullPath(dynamoRevitSamplesPath));
-            Assert.AreEqual(Path.GetFullPath(singletonPathManager.TemplatesDirectory), Path.GetFullPath(dynamoRevitTemplatesPath));
+            Assert.AreEqual(Path.GetFullPath(singletonPathManager.DefaultTemplatesDirectory), Path.GetFullPath(dynamoRevitTemplatesPath));
+        }
+
+        [Test]
+        public void EnsureTemplatePathsAreSetAndCanBeUpdated()
+        {
+            PathManager pathManager = PathManager.Instance;
+            Assert.IsFalse(string.IsNullOrEmpty(ViewModel.PreferencesViewModel.TemplateLocation));
+            Assert.IsFalse(string.IsNullOrEmpty(pathManager.DefaultTemplatesDirectory));
+            Assert.IsTrue(ViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Templates));
+            Assert.IsFalse(ViewModel.PreferencesViewModel.CanResetTemplateLocation);
+
+            // Set a new template location
+            ViewModel.Model.UpdatePreferenceItemLocation(PathManager.PreferenceItem.Templates, Path.GetTempPath());
+            Assert.AreEqual(Path.GetTempPath(), ViewModel.PreferencesViewModel.TemplateLocation);
+            Assert.AreEqual(Path.GetTempPath(), ViewModel.PreferenceSettings.TemplateFilePath);
+            Assert.IsTrue(ViewModel.PreferencesViewModel.CanResetTemplateLocation);
+
+            // Reset the template location
+            ViewModel.Model.ResetPreferenceItemLocation(PathManager.PreferenceItem.Templates);
+            Assert.IsTrue(ViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Templates));
+            Assert.IsFalse(ViewModel.PreferencesViewModel.CanResetTemplateLocation);
         }
     }
 }

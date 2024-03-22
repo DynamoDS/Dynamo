@@ -2619,6 +2619,15 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>_User Interface Tour</value>
     <comment>Get Started Dynamo Tour</comment>
   </data>
+  <data name="GetStartedGuideDescription" xml:space="preserve">
+    <value>Start your visual programming journey with this short guide. Here you'll learn some basics about the Dynamo interface and features.</value>
+  </data>
+  <data name="OnboardingGuideDescription" xml:space="preserve">
+    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph.</value>
+  </data>
+  <data name="PackagesGuideDescription" xml:space="preserve">
+    <value>A package is a toolkit of utilities that let you do more with Dynamo, beyond its core functionality. This guide shows how to find, install, and use packages. It installs a sample Autodesk package for you to explore.</value>
+  </data>
   <data name="InteractiveGuides" xml:space="preserve">
     <value>_Interactive Guides</value>
     <comment>Dynamo Guided Tours</comment>
@@ -3928,5 +3937,29 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="PreferencesWindowShowNodeIconsTooltip" xml:space="preserve">
     <value>When toggled on, the node’s icons will be displayed on the top-left corner of the node.</value>
+  </data>
+  <data name="PreferencesSettingTemplateLocationLabel" xml:space="preserve">
+    <value>Templates Path</value>
+  </data>
+  <data name="PreferencesSettingResetTemplateLocationTooltip" xml:space="preserve">
+    <value>Reset Template Location</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedMessage" xml:space="preserve">
+    <value>Failed to update template location</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedTitle" xml:space="preserve">
+    <value>Invalid Template Location</value>
+  </data>
+  <data name="PreferencesSettingsTemplateLocationDialogTitle" xml:space="preserve">
+    <value>Select Folder for Templates</value>
+  </data>
+  <data name="PreferencesSettingUpdateTemplateLocationTooltip" xml:space="preserve">
+    <value>Edit Template Location</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsTemplate" xml:space="preserve">
+    <value>Templates</value>
+  </data>
+  <data name="DynamoXmlFileFormat" xml:space="preserve">
+    <value>Dynamo 1.x file format</value>
   </data>
 </root>

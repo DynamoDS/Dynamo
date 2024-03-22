@@ -214,7 +214,9 @@ static Dynamo.Utilities.TypeExtensions.ImplementsGeneric(System.Type generic, Sy
 static Dynamo.Utilities.VersionUtilities.PartialParse(string versionString, int numberOfFields = 3) -> System.Version
 static DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(string assemblyPath) -> bool
 static DynamoUtilities.PathHelper.CreateFolderIfNotExist(string folderPath) -> System.Exception
+static DynamoUtilities.PathHelper.ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, System.Reflection.Assembly assembly) -> void
 static DynamoUtilities.PathHelper.FileInfoAtPath(string path, out bool fileExists, out string size) -> void
+static DynamoUtilities.PathHelper.GetDateModified(string filePath) -> string
 static DynamoUtilities.PathHelper.GetFileSize(string path) -> string
 static DynamoUtilities.PathHelper.GetScreenCaptureNameFromPath(string filePath, bool isTimeStampIncluded) -> string
 static DynamoUtilities.PathHelper.GetServiceBackendAddress(object o, string serviceKey) -> string
@@ -226,6 +228,7 @@ static DynamoUtilities.PathHelper.IsReadOnlyPath(string filePath) -> bool
 static DynamoUtilities.PathHelper.isValidJson(string path, out string fileContents, out System.Exception ex) -> bool
 static DynamoUtilities.PathHelper.IsValidPath(string filePath) -> bool
 static DynamoUtilities.PathHelper.isValidXML(string path, out System.Xml.XmlDocument xmlDoc, out System.Exception ex) -> bool
+static DynamoUtilities.PathHelper.LoadEmbeddedResourceAsString(string resourcePath, System.Reflection.Assembly assembly) -> string
 static DynamoUtilities.TypeSwitch.Case<T>(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo
 static DynamoUtilities.TypeSwitch.Case<T>(System.Action<T> action) -> DynamoUtilities.TypeSwitch.CaseInfo
 static DynamoUtilities.TypeSwitch.Default(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo

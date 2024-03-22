@@ -133,6 +133,10 @@ namespace Dynamo.Interfaces
         /// Return full path to the Python (.py) file to use as a starting template when creating a new PythonScript Node.
         /// </summary>
         string PythonTemplateFilePath { get; set; }
+        /// <summary>
+        /// Return full path of the template directory with template file(s) to use as a starting template when creating a new graph from a template.
+        /// </summary>
+        string TemplateFilePath { get; set; }
 
         /// <summary>
         /// Returns active state of specified background preview 

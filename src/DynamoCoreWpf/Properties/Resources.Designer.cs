@@ -2666,6 +2666,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo 1.x file format.
+        /// </summary>
+        public static string DynamoXmlFileFormat {
+            get {
+                return ResourceManager.GetString("DynamoXmlFileFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Group Title.
         /// </summary>
         public static string EditAnnotationTitle {
@@ -3242,6 +3251,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GetStartedGuide {
             get {
                 return ResourceManager.GetString("GetStartedGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start your visual programming journey with this short guide. Here you&apos;ll learn some basics about the Dynamo interface and features..
+        /// </summary>
+        public static string GetStartedGuideDescription {
+            get {
+                return ResourceManager.GetString("GetStartedGuideDescription", resourceCulture);
             }
         }
         
@@ -5207,6 +5225,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph..
+        /// </summary>
+        public static string OnboardingGuideDescription {
+            get {
+                return ResourceManager.GetString("OnboardingGuideDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Let’s run the graph and see the results of the adjustments you made. Click Run..
         /// </summary>
         public static string OnboardingGuideRunGraphText {
@@ -6663,6 +6690,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A package is a toolkit of utilities that let you do more with Dynamo, beyond its core functionality. This guide shows how to find, install, and use packages. It installs a sample Autodesk package for you to explore..
+        /// </summary>
+        public static string PackagesGuideDescription {
+            get {
+                return ResourceManager.GetString("PackagesGuideDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n.
         /// </summary>
         public static string PackagesGuideExitAcceptTerms {
@@ -7337,6 +7373,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset Template Location.
+        /// </summary>
+        public static string PreferencesSettingResetTemplateLocationTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesSettingResetTemplateLocationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Backup location.
         /// </summary>
         public static string PreferencesSettingsBackupFailedMessage {
@@ -7364,11 +7409,56 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to update template location.
+        /// </summary>
+        public static string PreferencesSettingsTemplateFailedMessage {
+            get {
+                return ResourceManager.GetString("PreferencesSettingsTemplateFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Template Location.
+        /// </summary>
+        public static string PreferencesSettingsTemplateFailedTitle {
+            get {
+                return ResourceManager.GetString("PreferencesSettingsTemplateFailedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Folder for Templates.
+        /// </summary>
+        public static string PreferencesSettingsTemplateLocationDialogTitle {
+            get {
+                return ResourceManager.GetString("PreferencesSettingsTemplateLocationDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Templates Path.
+        /// </summary>
+        public static string PreferencesSettingTemplateLocationLabel {
+            get {
+                return ResourceManager.GetString("PreferencesSettingTemplateLocationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Backup Location.
         /// </summary>
         public static string PreferencesSettingUpdateBackupLocationTooltip {
             get {
                 return ResourceManager.GetString("PreferencesSettingUpdateBackupLocationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Template Location.
+        /// </summary>
+        public static string PreferencesSettingUpdateTemplateLocationTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesSettingUpdateTemplateLocationTooltip", resourceCulture);
             }
         }
         
@@ -7571,6 +7661,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewGeneralSettingsRun {
             get {
                 return ResourceManager.GetString("PreferencesViewGeneralSettingsRun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Templates.
+        /// </summary>
+        public static string PreferencesViewGeneralSettingsTemplate {
+            get {
+                return ResourceManager.GetString("PreferencesViewGeneralSettingsTemplate", resourceCulture);
             }
         }
         

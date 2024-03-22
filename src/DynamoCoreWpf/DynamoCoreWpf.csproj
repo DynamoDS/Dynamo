@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UILib>true</UILib>
   </PropertyGroup>
@@ -22,9 +22,10 @@
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-      <!--This command gets the latest build from the splash screen-->
+      <!--This command updates the npm registry configuration if necessary-->
       <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
-      <Exec Command="npm pack @dynamods/splash-screen@latest" />
+      <!--This command gets a specific splash screen build from npm-->
+      <Exec Command="npm pack @dynamods/splash-screen@1.0.18" />
   </Target>
 
     <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">      
@@ -33,11 +34,6 @@
             <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
         </ItemGroup>
 
-        <!--Reverse the order of the files to get the higher version-->
-        <ItemGroup>
-            <Reversed Include="@(TGZFiles-&gt;Reverse())" />
-        </ItemGroup>
-        
         <PropertyGroup>
             <Last>%(TGZFiles.Filename)</Last>
         </PropertyGroup>
@@ -50,11 +46,41 @@
 
         <!--Deletes the tgz file-->
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
-    </Target> 
-   
-  <ItemGroup>
+    </Target>
+
+
+    <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
+        <!--This command updates the npm registry configuration if necessary-->
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
+        <!--Download a specific build of the Dynamo Home package from npm-->
+        <Exec Command="npm pack @dynamods/dynamo-home@1.0.5" />
+    </Target>
+
+    <Target Name="ExtractTGZFileDynamoHome" DependsOnTargets="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
+        <!--Locate the .tgz files for the Dynamo Home package-->
+        <ItemGroup>
+            <TGZFilesDynamoHome Include="./dynamods-dynamo-home-*.tgz" />
+        </ItemGroup>
+
+        <PropertyGroup>
+            <Last>%(TGZFilesDynamoHome.Filename)</Last>
+        </PropertyGroup>
+
+        <!--Create the folder for the Dynamo Home package-->
+        <MakeDir Directories="Packages/DynamoHome" />
+
+        <!--Extract the file to the specified directory-->
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/DynamoHome"></Exec>
+
+        <!--Delete the tgz file-->
+        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
+    </Target>
+
+    <ItemGroup>
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
+    <None Remove="Packages\DynamoHome\build\index.bundle.js" />
+    <None Remove="Packages\DynamoHome\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <None Remove="UI\Images\checkmark_16px.png" />
     <None Remove="UI\Images\close_16px.png" />
@@ -90,6 +116,8 @@
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
+    <EmbeddedResource Include="Packages\DynamoHome\build\index.bundle.js" />
+    <EmbeddedResource Include="Packages\DynamoHome\build\index.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -158,7 +186,7 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="6.0.0" />
+	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="8.0.0" />
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\net6.0-windows\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference> 
@@ -447,6 +475,7 @@
     <Compile Include="Views\GuidedTour\SurveyPopupWindow.xaml.cs">
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\HomePage\HomePage.xaml.cs" />
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
@@ -502,6 +531,9 @@
     </Compile>
     <Compile Include="Views\SplashScreen\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HomePage\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
@@ -1559,6 +1591,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\HomePage\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -1770,6 +1808,9 @@
     <Resource Include="UI\Images\not-authenticated.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Views\HomePage\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Views\PackageManager\Controls\CustomBrowserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

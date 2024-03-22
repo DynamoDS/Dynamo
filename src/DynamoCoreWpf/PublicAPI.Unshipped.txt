@@ -1,4 +1,4 @@
-﻿abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
+abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
 abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.set -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Dispose() -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Name.get -> string
@@ -37,6 +37,10 @@ Dynamo.Controls.AutoLacingToVisibilityConverter
 Dynamo.Controls.AutoLacingToVisibilityConverter.AutoLacingToVisibilityConverter() -> void
 Dynamo.Controls.AutoLacingToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.AutoLacingToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.Base64ToImageConverter
+Dynamo.Controls.Base64ToImageConverter.Base64ToImageConverter() -> void
+Dynamo.Controls.Base64ToImageConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.Base64ToImageConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BinaryRadioButtonCheckedConverter
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.BinaryRadioButtonCheckedConverter() -> void
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -197,6 +201,7 @@ Dynamo.Controls.DynamoView.ExtensionsCollapsed.get -> bool
 Dynamo.Controls.DynamoView.InitializeComponent() -> void
 Dynamo.Controls.DynamoView.LibraryCollapsed.get -> bool
 Dynamo.Controls.DynamoView.PlacePopup(System.Windows.Size popupSize, System.Windows.Size targetSize, System.Windows.Point offset) -> System.Windows.Controls.Primitives.CustomPopupPlacement[]
+Dynamo.Controls.DynamoView.IsNewAppHomeEnabled.get -> bool
 Dynamo.Controls.ElementGroupToColorConverter
 Dynamo.Controls.ElementGroupToColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ElementGroupToColorConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -1445,15 +1450,21 @@ Dynamo.UI.Controls.StartPageListItem.Action
 Dynamo.UI.Controls.StartPageListItem.Action.ExternalUrl = 2 -> Dynamo.UI.Controls.StartPageListItem.Action
 Dynamo.UI.Controls.StartPageListItem.Action.FilePath = 1 -> Dynamo.UI.Controls.StartPageListItem.Action
 Dynamo.UI.Controls.StartPageListItem.Action.RegularCommand = 0 -> Dynamo.UI.Controls.StartPageListItem.Action
+Dynamo.UI.Controls.StartPageListItem.Author.get -> string
 Dynamo.UI.Controls.StartPageListItem.Caption.get -> string
 Dynamo.UI.Controls.StartPageListItem.ClickAction.get -> Dynamo.UI.Controls.StartPageListItem.Action
 Dynamo.UI.Controls.StartPageListItem.ClickAction.set -> void
 Dynamo.UI.Controls.StartPageListItem.ContextData.get -> string
 Dynamo.UI.Controls.StartPageListItem.ContextData.set -> void
+Dynamo.UI.Controls.StartPageListItem.DateModified.get -> string
+Dynamo.UI.Controls.StartPageListItem.DateModified.set -> void
+Dynamo.UI.Controls.StartPageListItem.Description.get -> string
 Dynamo.UI.Controls.StartPageListItem.Icon.get -> System.Windows.Media.ImageSource
 Dynamo.UI.Controls.StartPageListItem.IconVisibility.get -> System.Windows.Visibility
 Dynamo.UI.Controls.StartPageListItem.SubScript.get -> string
 Dynamo.UI.Controls.StartPageListItem.SubScript.set -> void
+Dynamo.UI.Controls.StartPageListItem.Thumbnail.get -> string
+Dynamo.UI.Controls.StartPageListItem.Thumbnail.set -> void
 Dynamo.UI.Controls.StartPageListItem.ToolTip.get -> string
 Dynamo.UI.Controls.StartPageListItem.ToolTip.set -> void
 Dynamo.UI.Controls.StartPageView
@@ -1536,11 +1547,38 @@ Dynamo.UI.Views.AboutWindow
 Dynamo.UI.Views.AboutWindow.AboutWindow(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
 Dynamo.UI.Views.AboutWindow.InitializeComponent() -> void
 Dynamo.UI.Views.AboutWindow.InstallNewUpdate.get -> bool
+Dynamo.UI.Views.GuidedTourItem
+Dynamo.UI.Views.GuidedTourItem.Description.get -> string
+Dynamo.UI.Views.GuidedTourItem.Description.set -> void
+Dynamo.UI.Views.GuidedTourItem.GuidedTourItem(string name, string description, string type) -> void
+Dynamo.UI.Views.GuidedTourItem.Name.get -> string
+Dynamo.UI.Views.GuidedTourItem.Name.set -> void
+Dynamo.UI.Views.GuidedTourItem.Type.get -> string
+Dynamo.UI.Views.GuidedTourItem.Type.set -> void
+Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.GuidedTourType.GetStarted = 1 -> Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.GuidedTourType.Packages = 2 -> Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.GuidedTourType.UserInterface = 0 -> Dynamo.UI.Views.GuidedTourType
 Dynamo.UI.Views.HandlingEventTrigger
 Dynamo.UI.Views.HandlingEventTrigger.HandlingEventTrigger() -> void
+Dynamo.UI.Views.HomePage
+Dynamo.UI.Views.HomePage.Dispose() -> void
+Dynamo.UI.Views.HomePage.HomePage() -> void
+Dynamo.UI.Views.HomePage.InitializeComponent() -> void
 Dynamo.UI.Views.LibraryView
 Dynamo.UI.Views.LibraryView.InitializeComponent() -> void
 Dynamo.UI.Views.LibraryView.LibraryView() -> void
+Dynamo.UI.Views.ScriptHomeObject
+Dynamo.UI.Views.ScriptHomeObject.ApplicationLoaded() -> void
+Dynamo.UI.Views.ScriptHomeObject.NewCustomNodeWorkspace() -> void
+Dynamo.UI.Views.ScriptHomeObject.NewWorkspace() -> void
+Dynamo.UI.Views.ScriptHomeObject.OpenFile(string path) -> void
+Dynamo.UI.Views.ScriptHomeObject.OpenWorkspace() -> void
+Dynamo.UI.Views.ScriptHomeObject.ScriptHomeObject(System.Action<string> requestOpenFile, System.Action requestNewWorkspace, System.Action requestOpenWorkspace, System.Action requestNewCustomNodeWorkspace, System.Action requestApplicationLoaded, System.Action<string> requestShowGuidedTour, System.Action requestShowSampleFilesInFolder, System.Action requestShowBackupFilesInFolder, System.Action requestShowTemplate) -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowBackupFilesInFolder() -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowSampleFilesInFolder() -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowTempalte() -> void
+Dynamo.UI.Views.ScriptHomeObject.StartGuidedTour(string path) -> void
 Dynamo.UI.Views.ScriptObject
 Dynamo.UI.Views.ScriptObject.CloseWindow() -> void
 Dynamo.UI.Views.ScriptObject.CloseWindowPreserve(bool isCheckboxChecked) -> void
@@ -2605,7 +2643,7 @@ Dynamo.ViewModels.PreferencesViewModel.BackupIntervalInMinutes.set -> void
 Dynamo.ViewModels.PreferencesViewModel.BackupLocation.get -> string
 Dynamo.ViewModels.PreferencesViewModel.BackupLocation.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CanResetBackupLocation.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.CanResetBackupLocation.set -> void
+Dynamo.ViewModels.PreferencesViewModel.CanResetTemplateLocation.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CurrentWarningMessage.get -> string
@@ -2718,6 +2756,8 @@ Dynamo.ViewModels.PreferencesViewModel.StaticSplashScreenEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.StaticSplashScreenEnabled.set -> void
 Dynamo.ViewModels.PreferencesViewModel.StyleItemsList.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Configuration.GroupStyleItem>
 Dynamo.ViewModels.PreferencesViewModel.StyleItemsList.set -> void
+Dynamo.ViewModels.PreferencesViewModel.TemplateLocation.get -> string
+Dynamo.ViewModels.PreferencesViewModel.TemplateLocation.set -> void
 Dynamo.ViewModels.PreferencesViewModel.TessellationDivisions.get -> int
 Dynamo.ViewModels.PreferencesViewModel.TessellationDivisions.set -> void
 Dynamo.ViewModels.PreferencesViewModel.TrustedPathsViewModel.get -> Dynamo.ViewModels.TrustedPathViewModel
@@ -3973,6 +4013,36 @@ Dynamo.Wpf.Views.CodeHighlightingRuleFactory
 Dynamo.Wpf.Views.Debug.DebugModesWindow
 Dynamo.Wpf.Views.Debug.DebugModesWindow.DebugModesWindow() -> void
 Dynamo.Wpf.Views.Debug.DebugModesWindow.InitializeComponent() -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.InitializeComponent() -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.IsUpdateEnabled.get -> bool
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.IsUpdateEnabled.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NewIconPaths.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NewIconPaths.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconName.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconName.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconResxFile.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconResxFile.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconSuffix.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IconSuffix.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.Icon_Base64String.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.Icon_Base64String.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IsUpdated.get -> bool
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.IsUpdated.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NewIconPath.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NewIconPath.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeIconMetadata(string nodeName, string newIconPath, string iconName, string iconSuffix, string oldData, string resxFile, bool isUpdated = false) -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeName.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.NodeName.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.OldData.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata.OldData.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.Output.get -> string
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.Output.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.PropertyChanged -> System.ComponentModel.PropertyChangedEventHandler
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.UpdatedIconList.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.NodeIconMetadata>
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.UpdatedIconList.set -> void
+Dynamo.Wpf.Views.Debug.UpdateNodeIconsWindow.UpdateNodeIconsWindow(System.Collections.Generic.IEnumerable<Dynamo.Search.SearchElements.NodeSearchElement> entries) -> void
 Dynamo.Wpf.Views.FileTrust.FileTrustWarning
 Dynamo.Wpf.Views.FileTrust.FileTrustWarning.FileTrustWarning(Dynamo.Controls.DynamoView dynamoViewWindow) -> void
 Dynamo.Wpf.Views.FileTrust.FileTrustWarning.InitializeComponent() -> void
@@ -4540,6 +4610,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewViewMenuShowGrid.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewViewMenuZoom.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewViewMenuZoomIn.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewViewMenuZoomOut.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoXmlFileFormat.get -> string
 static Dynamo.Wpf.Properties.Resources.EditAnnotationTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.EditNoteWindowTitle.get -> string
@@ -4604,6 +4675,7 @@ static Dynamo.Wpf.Properties.Resources.GESUnitMeters.get -> string
 static Dynamo.Wpf.Properties.Resources.GESUnitMiles.get -> string
 static Dynamo.Wpf.Properties.Resources.GESUnitMillimeters.get -> string
 static Dynamo.Wpf.Properties.Resources.GetStartedGuide.get -> string
+static Dynamo.Wpf.Properties.Resources.GetStartedGuideDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.GetStartedGuideLibraryText.get -> string
 static Dynamo.Wpf.Properties.Resources.GetStartedGuideLibraryTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.GetStartedGuidePreferencesText.get -> string
@@ -4817,6 +4889,7 @@ static Dynamo.Wpf.Properties.Resources.OKButton.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuide.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideConnectNodesText.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideConnectNodesTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.OnboardingGuideDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideRunGraphText.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideRunGraphTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.OnboardingGuideSurveyText.get -> string
@@ -4978,6 +5051,7 @@ static Dynamo.Wpf.Properties.Resources.PackagesGuide.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideContinueButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideDependenciesText.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideDependenciesTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PackagesGuideDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideExitAcceptTerms.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideExitButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PackagesGuideExitTitle.get -> string
@@ -5052,10 +5126,16 @@ static Dynamo.Wpf.Properties.Resources.PreferencesSettingDefaultBackupLocation.g
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingHardwareAcceleration.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingMaxRecentFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingResetBackupLocationTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingResetTemplateLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupFailedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupFailedTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupLocationDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateLocationDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingTemplateLocationLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateBackupLocationTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateTemplateLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnits.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnitsToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewAlreadyExistingStyleWarning.get -> string
@@ -5078,6 +5158,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewFontSizeLabel.get -> strin
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsBackup.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsGeoScaling.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsRun.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
@@ -5353,6 +5434,7 @@ static Dynamo.Wpf.Properties.Resources.UnloadFailureMessageBoxTitle.get -> strin
 static Dynamo.Wpf.Properties.Resources.UnpinNodeTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateNodeIconsDebugMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.UsageReportPromptDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UseLevelKeepListStructureHint.get -> string
 static Dynamo.Wpf.Properties.Resources.UseLevelKeepListStructurePopupMenuItem.get -> string

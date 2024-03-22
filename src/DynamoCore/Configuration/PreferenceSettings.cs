@@ -78,6 +78,7 @@ namespace Dynamo.Configuration
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
+        private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
 
         #region Constants
@@ -444,6 +445,19 @@ namespace Dynamo.Configuration
             {
                 backupLocation = value;
                 RaisePropertyChanged(nameof(BackupLocation));
+            }
+        }
+
+        /// <summary>
+        /// Template path
+        /// </summary>
+        public string TemplateFilePath
+        {
+            get { return templateFilePath; }
+            set
+            {
+                templateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateFilePath));
             }
         }
 
@@ -936,6 +950,8 @@ namespace Dynamo.Configuration
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
             BackupLocation = string.Empty;
+
+            TemplateFilePath = string.Empty;
 
             LibraryZoomScale = 100;
             PythonScriptZoomScale = 100;

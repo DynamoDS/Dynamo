@@ -18,6 +18,9 @@
     <Compile Remove="AstBuilderTest.cs" />
     <Compile Remove="Saving.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="TestResource.txt" />
+  </ItemGroup>
     <ItemGroup>
         <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
@@ -129,6 +132,9 @@
   <ItemGroup>
     <Content Include="Crypto\AnAlteredFile.txt" />
     <Content Include="Crypto\AnImportantFile.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\TestResource.txt" />
   </ItemGroup>
 <Target Name="CopyDisableADPTestDeps">
     <!--ms diag runtime + deps -->

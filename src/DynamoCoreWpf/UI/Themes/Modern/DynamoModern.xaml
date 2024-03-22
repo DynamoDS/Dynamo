@@ -489,6 +489,136 @@
         </Setter>
         <Style.Triggers />
     </Style>
+
+
+    <!-- NodeView c ustomization styles --> 
+    <ControlTemplate x:Key="NodeViewComboBoxToggleButton" TargetType="ToggleButton">
+        <Grid>
+            <Border x:Name="Border"
+                    Background="#2a2a2a"
+                    BorderThickness="0"/>
+            <Path x:Name="Arrow"
+                  Margin="0 0 5 0"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center"
+                  Data="M 0 0 L 4 4 L 8 0 Z"
+                  Fill="#999" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="ToggleButton.IsMouseOver"
+                     Value="true">
+                <Setter TargetName="Arrow"
+                        Property="Fill"
+                        Value="#fff" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    
+    <Style x:Key="NodeViewComboBox" TargetType="{x:Type ComboBox}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+        <Setter Property="MinWidth" Value="40" />
+        <Setter Property="Padding" Value="5 0" />
+        <Setter Property="MinHeight" Value="20" />
+        <Setter Property="MaxHeight" Value="30" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="#C7C7C7" />
+        <Setter Property="ItemContainerStyle" Value="{DynamicResource PackageManagerComboBoxItemStyle}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <ToggleButton Name="ToggleButton"   
+                                      Grid.Column="2"
+                                      ClickMode="Press"
+                                      Focusable="false"
+                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Template="{DynamicResource NodeViewComboBoxToggleButton}" />
+                        <ContentPresenter Name="ContentSite"
+                                          Margin="5,3,12,3"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          IsHitTestVisible="False" />
+                        <TextBox x:Name="PART_EditableTextBox"
+                                 Margin="3,3,23,3"
+                                 Padding="10"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Background="#2a2a2a"
+                                 CaretBrush="#bbbbbb"
+                                 Focusable="True"
+                                 Foreground="#bbbbbb"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}"
+                                 Style="{x:Null}"
+                                 Template="{StaticResource ComboBoxTextBox}"
+                                 Visibility="Hidden" />
+                        <Popup Name="Popup"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               Placement="Bottom"
+                               PopupAnimation="Slide">
+                            <Grid Name="DropDown"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                  SnapsToDevicePixels="True">
+                                <Border x:Name="DropDownBorder"
+                                        Background="#2a2a2a"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0" />
+                                <ScrollViewer Margin="0,6,0,6"
+                                              SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True"
+                                                KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems"
+                                 Value="false">
+                            <Setter TargetName="DropDownBorder"
+                                    Property="MinHeight"
+                                    Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping"
+                                 Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll"
+                                    Value="false" />
+                        </Trigger>
+                        <Trigger SourceName="Popup"
+                                 Property="Popup.AllowsTransparency"
+                                 Value="true">
+                            <Setter TargetName="DropDownBorder"
+                                    Property="CornerRadius"
+                                    Value="0" />
+                            <Setter TargetName="DropDownBorder"
+                                    Property="Margin"
+                                    Value="0,0,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsEditable"
+                                 Value="true">
+                            <Setter Property="IsTabStop"
+                                    Value="false" />
+                            <Setter TargetName="PART_EditableTextBox"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                            <Setter TargetName="ContentSite"
+                                    Property="Visibility"
+                                    Value="Hidden" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers />
+    </Style>
     <!-- End Package Manager Styles -->
     <Style x:Key="SComboBox_Update" TargetType="{x:Type ComboBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -1981,6 +2111,14 @@
                                  Foreground="#F5F5F5"
                                  IsReadOnly="{TemplateBinding IsReadOnly}"
                                  Visibility="Hidden" />
+                        <TextBlock x:Name="PART_ReadOnlyTextBlock"
+                                 Margin="10,0,20,0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Focusable="True"
+                                 TextWrapping="Wrap"
+                                 TextTrimming="CharacterEllipsis"
+                                 Visibility="{Binding IsVisibleDropDownTextBlock, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" /> 
                         <Popup Name="Popup"
                                AllowsTransparency="True"
                                Focusable="False"

@@ -1,5 +1,7 @@
 
 
+using Dynamo.Configuration;
+using Dynamo.Models;
 using DynamoCoreWpfTests.Utility;
 using DynamoUtilities;
 using NUnit.Framework;
@@ -11,6 +13,26 @@ using System.Threading.Tasks;
 
 namespace DynamoCoreWpfTests
 {
+
+    [TestFixture]
+    class SplashScreenViewTests: DynamoTestUIBase
+    {
+        [Test]
+        public void SplashScreen_ClosePersistSetsPrefs()
+        {
+            var ss = new Dynamo.UI.Views.SplashScreen();
+            ss.DynamoView = View;
+            var oldPref = ViewModel.PreferenceSettings.EnableStaticSplashScreen;
+            Assert.IsTrue(oldPref);
+
+            ss.CloseWindow(true);
+            var newPref = ViewModel.PreferenceSettings.EnableStaticSplashScreen;
+            Assert.False(newPref);
+
+            Assert.IsTrue(ss.CloseWasExplicit);
+        }
+    }
+
     [TestFixture]
     internal class SplashScreenTests
     {
@@ -67,8 +89,9 @@ namespace DynamoCoreWpfTests
             ss.CloseWindow();
             Assert.IsTrue(ss.CloseWasExplicit);
         }
-
         [Test]
+        //note that this test sends a windows close message directly to the window
+        //but skips the JS interop that users rely on to close the window - so that is not tested by this test.
         public void SplashScreen_MultipleCloseMessages()
         {
             var ss = new Dynamo.UI.Views.SplashScreen();
@@ -97,10 +120,10 @@ namespace DynamoCoreWpfTests
             }
             ss.webView.NavigationCompleted += WebView_NavigationCompleted;
 
-            bool windoClosed = false;
+            bool windowClosed = false;
             void WindowClosed(object sender, EventArgs e)
             {
-                windoClosed = true;
+                windowClosed = true;
                 ss.Closed -= WindowClosed;
             }
 
@@ -108,10 +131,10 @@ namespace DynamoCoreWpfTests
 
             ss.Show();
 
-            DispatcherUtil.DoEventsLoop(() => windoClosed);
+            DispatcherUtil.DoEventsLoop(() => windowClosed);
 
             Assert.IsNull(ss.webView);// Make sure webview2 was disposed
-            Assert.IsTrue(windoClosed);// Make sure the window was closed
+            Assert.IsTrue(windowClosed);// Make sure the window was closed
         }
     }
 }
