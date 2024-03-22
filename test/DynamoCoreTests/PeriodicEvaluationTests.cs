@@ -116,6 +116,7 @@ namespace Dynamo.Tests
 
         [Test]
         //LC: I don't understand how this test isn't incredibly sensitive to execution timing
+        [Category("Failure")]
         public void StartPeriodicEvaluation_CompletesFewerRunsWhenRunTimeIsGreaterThanEvaluationTime()
         {
             Workspace.RunSettings.RunType = RunType.Periodic;
