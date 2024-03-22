@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using Autodesk.IDSDK;
+using Dynamo.Configuration;
+using DynamoServices;
 using Greg;
 using Greg.AuthProviders;
 using RestSharp;
@@ -212,14 +214,14 @@ namespace Dynamo.Core
 
         private bool Initialize()
         {
-            if (Client.IsInitialized()) return true;
-            idsdk_status_code bRet = Client.Init();
-
-            if (Client.IsSuccess(bRet))
+            try
             {
-                if (Client.IsInitialized())
+                if (Client.IsInitialized()) return true;
+                idsdk_status_code bRet = Client.Init();
+
+                if (Client.IsSuccess(bRet))
                 {
-                    try
+                    if (Client.IsInitialized())
                     {
                         IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
                         if (hWnd != null)
@@ -235,13 +237,15 @@ namespace Dynamo.Core
                             return ret;
                         }
                     }
-                    catch (Exception e)
-                    {
-                        return false;
-                    }
                 }
+                DynamoConsoleLogger.OnLogMessageToDynamoConsole("Auth Service (IDSDK) could not be initialized!");
+                return false;
             }
-            return false;
+            catch (Exception)
+            {
+                DynamoConsoleLogger.OnLogMessageToDynamoConsole("An error occurred while initializing Auth Service (IDSDK).");
+                return false;
+            }
         }
         private bool Deinitialize()
         {
