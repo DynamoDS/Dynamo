@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using Autodesk.IDSDK;
 using Dynamo.Configuration;
+using DynamoServices;
 using Greg;
 using Greg.AuthProviders;
 using RestSharp;
@@ -239,10 +240,12 @@ namespace Dynamo.Core
                         }
                     }
                 }
+                DynamoConsoleLogger.OnLogMessageToDynamoConsole("Auth Service (IDSDK) could not be initialized!");
                 return false;
             }
             catch (Exception)
             {
+                DynamoConsoleLogger.OnLogMessageToDynamoConsole("An error occurred while initializing Auth Service (IDSDK).");
                 return false;
             }
         }
