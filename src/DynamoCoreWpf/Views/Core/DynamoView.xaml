@@ -113,9 +113,10 @@
         <KeyBinding Key="O"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
-        <KeyBinding Key="T"
-                    Modifiers="Control"
-                    Command="{Binding Path=DataContext.ShowOpenTemplateDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="O"
+                    Modifiers="Control+Shift"
+                    Command="{Binding Path=DataContext.ShowOpenTemplateDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                    CommandParameter="Template"/>
         <KeyBinding Key="I"
                     Modifiers="Control+Shift"
                     Command="{Binding Path=DataContext.ShowInsertDialogAndInsertResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
