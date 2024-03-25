@@ -272,7 +272,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Determines whether the the search text box should be displayed.
+        /// Determines whether the search text box should be displayed.
         /// <para>
         /// Returns false if the search state is syncing, 
         /// </para>
@@ -639,7 +639,7 @@ namespace Dynamo.PackageManager
 
             List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
 
-            // We need the user to be logged in, otherwise there is no point in runnig this routine
+            // We need the user to be logged in, otherwise there is no point in running this routine
             if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn)
             {
                 SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
@@ -708,7 +708,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         private void Sort(object searchQuery = null)
         {
-            if (searchQuery == null)
+            if (searchQuery == null || searchQuery as string == "")
             {
                 this.Sort();
             }
@@ -763,7 +763,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Toggles `dependecy` and `no dependecy` filters so that both cannot be 'ON' at the same time.
+        /// Toggles `dependency` and `no dependency` filters so that both cannot be 'ON' at the same time.
         /// We need both filters to function individually in their 'OFF' states (it's not a simple toggle state switch)
         /// </summary>
         /// <param name="sender"></param>
@@ -903,7 +903,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Sets all current filetrs to false
+        /// Sets all current filters to false
         /// </summary>
         /// <param name="obj"></param>
         private void ClearAllFilters(object obj)
@@ -1351,7 +1351,7 @@ namespace Dynamo.PackageManager
             var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
 
             // Filter based on user preference
-            // A package has depndencies if the number of direct_dependency_ids is more than 1
+            // A package has dependencies if the number of direct_dependency_ids is more than 1
             var initialResults = LastSync?.Select(x => new PackageManagerSearchElementViewModel(x,
                                                    PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                                                    CanInstallPackage(x.Name), isEnabledForInstall));
