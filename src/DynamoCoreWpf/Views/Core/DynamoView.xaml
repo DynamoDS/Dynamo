@@ -349,7 +349,7 @@
                                       Name="openTemplateMenuItem"
                                       Command="{Binding ShowOpenTemplateDialogCommand}"
                                       CommandParameter="Template"
-                                      InputGestureText="Ctrl + T">
+                                      InputGestureText="Ctrl + Shift + O">
                             </MenuItem>
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuInsert}"
