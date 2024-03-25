@@ -5,7 +5,7 @@ In the example below, a T-Spline surface is matched with a NURBS curve using
 node is the base `tSplineSurface`, a set of edges of the surface, provided in `tsEdges` input, and a curve or
 list of curves.
 The following inputs control the parameters of the match:
-- `continuity` allows to set the continuity type for the match. The input expects values 0, 1, or 2, corresponding to G0 Positional, G1 Tangent, and G2 Curvature continuity. However, for matching a surface with a curve, only the GO (input value 0) is available.
+- `continuity` allows to set the continuity type for the match. The input expects values 0, 1, or 2, corresponding to G0 Positional, G1 Tangent, and G2 Curvature continuity. However, for matching a surface with a curve, only the G0 (input value 0) is available.
 - `useArcLength` controls the alignment type options. If set to True, the alignment type used is Arc
 Length. This alignment minimizes the physical distance between each point of the T-Spline surface and
 the corresponding point on the curve. When False input is provided, the alignment type is Parametric -
