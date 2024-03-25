@@ -1386,7 +1386,7 @@ namespace Dynamo.Controls
             }
 
             // Load the new HomePage
-            if (IsNewAppHomeEnabled) LoadHomePage();
+            if (DynamoModel.IsTestMode || IsNewAppHomeEnabled) LoadHomePage();
 
             loaded = true;
         }
@@ -1394,7 +1394,7 @@ namespace Dynamo.Controls
         // Add the HomePage to the DynamoView once its loaded
         private void LoadHomePage()
         {
-            if (homePage == null && startPage != null)
+            if (homePage == null && (startPage != null || DynamoModel.IsTestMode))
             {
                 homePage = new UI.Views.HomePage();
                 homePage.DataContext = startPage;
