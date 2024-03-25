@@ -272,7 +272,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Determines whether the the search text box should be displayed.
+        /// Determines whether the search text box should be displayed.
         /// <para>
         /// Returns false if the search state is syncing, 
         /// </para>
