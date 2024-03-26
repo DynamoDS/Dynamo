@@ -149,7 +149,8 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Return a dictionary of GraphChecksumItems
+        /// Return a dictionary of GraphChecksumItems.
+        /// Key will be the workspace guid and its value will be a list of saved checksums(sha256 hash) for that workspace.
         /// </summary>
         internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
 

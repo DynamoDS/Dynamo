@@ -1864,6 +1864,8 @@ Dynamo.Models.DynamoModel.ExtensionManager.get -> Dynamo.Extensions.IExtensionMa
 Dynamo.Models.DynamoModel.ForceRun() -> void
 Dynamo.Models.DynamoModel.ForceRunCancelCommand
 Dynamo.Models.DynamoModel.ForceRunCancelCommand.ForceRunCancelCommand(bool showErrors, bool cancelRun) -> void
+Dynamo.Models.DynamoModel.GraphChecksumList.get -> System.Collections.Generic.List<Dynamo.Configuration.GraphChecksumPair>
+Dynamo.Models.DynamoModel.GraphChecksumList.set -> void
 Dynamo.Models.DynamoModel.HostVersion.get -> string
 Dynamo.Models.DynamoModel.HostVersion.set -> void
 Dynamo.Models.DynamoModel.InsertFileCommand

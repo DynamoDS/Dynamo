@@ -6,8 +6,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -391,7 +389,7 @@ namespace Dynamo.ViewModels
 
                 if (nodeInfoConnections.Count > 0)
                 {
-                    var checksumhash = ConvertToSha256(String.Join(",", nodeInfoConnections));
+                    var checksumhash = Hash.ToSha256String(String.Join(",", nodeInfoConnections));
                     CurrentCheckSum = checksumhash;
                     return checksumhash;
                 }
@@ -401,21 +399,6 @@ namespace Dynamo.ViewModels
                     return string.Empty;
                 }
             }            
-        }
-
-        // converts the checksum string into a sha 256 hash.
-        private string ConvertToSha256(string s)
-        {
-            using var mySHA256 = SHA256.Create();
-
-            byte[] bytes = mySHA256.ComputeHash(Encoding.UTF8.GetBytes(s));
-            var sb = new StringBuilder();
-
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                sb.Append(bytes[i].ToString("x2"));
-            }
-            return sb.ToString();
         }
 
         Tuple<string,int> GetNodeByInputId(string inputId, JObject jsonWorkspace)
