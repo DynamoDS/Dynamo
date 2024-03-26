@@ -107,6 +107,12 @@ Dynamo.Configuration.GraphChecksumItem.Checksum.set -> void
 Dynamo.Configuration.GraphChecksumItem.GraphChecksumItem() -> void
 Dynamo.Configuration.GraphChecksumItem.GraphId.get -> string
 Dynamo.Configuration.GraphChecksumItem.GraphId.set -> void
+Dynamo.Configuration.GraphChecksumPair
+Dynamo.Configuration.GraphChecksumPair.Checksum.get -> System.Collections.Generic.List<string>
+Dynamo.Configuration.GraphChecksumPair.Checksum.set -> void
+Dynamo.Configuration.GraphChecksumPair.GraphChecksumPair() -> void
+Dynamo.Configuration.GraphChecksumPair.GraphId.get -> string
+Dynamo.Configuration.GraphChecksumPair.GraphId.set -> void
 Dynamo.Configuration.GroupStyleItem
 Dynamo.Configuration.GroupStyleItem.GroupStyleItem() -> void
 Dynamo.Configuration.PreferenceSettings
