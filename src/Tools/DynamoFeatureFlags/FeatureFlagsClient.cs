@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -107,7 +107,7 @@ namespace DynamoFeatureFlags
         internal void Init(string mobileKey)
         {
             //start up client.
-            ldClient =  LaunchDarkly.Sdk.Client.LdClient.Init(mobileKey, user,TimeSpan.FromSeconds(5));
+            ldClient =  LaunchDarkly.Sdk.Client.LdClient.Init(mobileKey, LaunchDarkly.Sdk.Client.ConfigurationBuilder.AutoEnvAttributes.Disabled, user, TimeSpan.FromSeconds(5));
             if (ldClient.Initialized)
             {
                 MessageLogged?.Invoke($"launch darkly initalized");
