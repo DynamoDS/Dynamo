@@ -1403,10 +1403,10 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is string)) return Visibility.Collapsed;
+            if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+            if (packageManagerSearchElement.IsDeprecated) return Visibility.Visible;
 
-            DateTime.TryParse(value.ToString(), out DateTime dateTime);
-
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateTime);
             TimeSpan difference = DateTime.Now - dateTime;
 
             if (difference.TotalDays >= 30) return Visibility.Collapsed;
@@ -1430,6 +1430,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+            if (packageManagerSearchElement.IsDeprecated) return Resources.PackageManagerPackageDeprecated;
 
             DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
             TimeSpan difference = DateTime.Now - dateLastUpdated;
@@ -1437,9 +1438,9 @@ namespace Dynamo.Controls
 
             if (numberVersions > 1)
             {
-                return difference.TotalDays >= 30 ? "" : Wpf.Properties.Resources.PackageManagerPackageUpdated;
+                return difference.TotalDays >= 30 ? "" : Resources.PackageManagerPackageUpdated;
             }
-            return Wpf.Properties.Resources.PackageManagerPackageNew;
+            return Resources.PackageManagerPackageNew;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

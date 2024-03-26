@@ -12,6 +12,7 @@
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
+
   <ItemGroup>
     <None Remove="UI\Images\AboutWindow\logo_about_dark.png" />
     <None Remove="UI\Images\Alignment\align_bottom.png" />
@@ -818,6 +819,7 @@
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-hover-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\max-darktheme-default-16px.png" />
@@ -1519,6 +1521,7 @@
     <Resource Include="UI\Images\Filter.png" />
     <Resource Include="UI\Images\Flag.png" />
     <Resource Include="UI\Images\Profile.png" />
+    <Resource Include="UI\Images\Profile_48px.png" />
     <Resource Include="UI\Images\Requirements.png" />
     <Resource Include="UI\Images\Sort.png" />
     <Resource Include="UI\Images\View details.png" />
