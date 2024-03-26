@@ -2538,6 +2538,7 @@ namespace Dynamo.ViewModels
         /// Present the new preset dialogue and add a new presetModel 
         /// to the preset set on this graph
         /// </summary>
+        [Obsolete("The preset functionality is deprecated, DO NOT USE, will be removed in future version.")]
         private void ShowNewPresetStateDialogAndMakePreset(object parameter)
         {
             var selectedNodes = GetInputNodesFromSelectionForPresets().ToList();
