@@ -174,6 +174,11 @@ namespace Dynamo.ViewModels
             else if (PortViewModel.PortModel.PortType == PortType.Output)
             {
                 portType = PortViewModel.PortModel.GetOutPortType();
+                //if the custom node output name contains spaces, try using the first word.
+                if (PortViewModel.PortModel.Owner is Graph.Nodes.CustomNodes.Function && portType.Any(char.IsWhiteSpace))
+                {
+                    portType = string.Concat(portType.TrimStart().TakeWhile(char.IsLetterOrDigit));
+                }
             }
 
             //List of input types that are skipped temporarily, and will display list of default suggestions instead.
@@ -198,7 +203,6 @@ namespace Dynamo.ViewModels
             var ast = parseResult?.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
             //if parsing the type failed, revert to original string.
             portType = ast != null ? ast.datatype.Name : portType;
-
             //check if the input port return type is in the skipped input types list
             if (skippedInputTypes.Any(s => s == portType))
             {
@@ -237,7 +241,8 @@ namespace Dynamo.ViewModels
                 {
                     foreach (var inputParameter in ztSearchElement.Descriptor.Parameters.Select((value, index) => new { value, index }))
                     {
-                        if (inputParameter.value.Type.ToString() == portType || DerivesFrom(inputParameter.value.Type.ToString(), portType, core))
+                        var ZTparamName = inputParameter.value.Type.Name ?? inputParameter.value.Type.ToString();
+                        if (ZTparamName == portType || DerivesFrom(ZTparamName, portType, core))
                         {
                             ztSearchElement.AutoCompletionNodeElementInfo.PortToConnect = ztSearchElement.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
                             elements.Add(ztSearchElement);
