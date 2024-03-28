@@ -226,16 +226,14 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle PublishAsync(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, bool retainFolderStructure)
+        internal Task<PackageUploadHandle> PublishAsync(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, bool retainFolderStructure)
         {
-            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
-
-            Task.Factory.StartNew(() =>
+            return Task.Factory.StartNew(() =>
             {
+                var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
                 Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle, retainFolderStructure);
+                return packageUploadHandle;
             });
-
-            return packageUploadHandle;
         }
 
         internal void Publish(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle, bool retainFolderStructure = false)

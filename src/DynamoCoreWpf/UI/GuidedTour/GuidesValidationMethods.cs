@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -615,7 +616,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method will calculate the Popup location based in a item from the Library
         /// </summary>
-        internal static async void CalculateLibraryItemLocation(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        internal static async Task CalculateLibraryItemLocation(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
             if (uiAutomationData == null) return;

@@ -8,11 +8,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
 using Dynamo.Core;
+using Dynamo.Extensions;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -2189,22 +2191,23 @@ namespace Dynamo.PackageManager
                 if (!updatedFiles.Any()) return;
             }
 
-            try
-            {
-                // begin submission
-                var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, RetainFolderStructureOverride ? updatedFiles : contentFiles, MarkdownFiles, IsNewVersion, RetainFolderStructureOverride);
+            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
 
-                // start upload
-                Uploading = true;
-                UploadHandle = handle;
-            }
-            catch (Exception e)
+            pmExtension.PackageManagerClient.PublishAsync(Package,
+                RetainFolderStructureOverride ? updatedFiles : contentFiles,
+                MarkdownFiles, IsNewVersion, RetainFolderStructureOverride).ContinueWith((t) =>
             {
-                UploadState = PackageUploadHandle.State.Error;
-                ErrorString = TranslatePackageManagerError(e.Message);
-                dynamoViewModel.Model.Logger.Log(e);
-            }
+                // start upload
+                UploadHandle = t.Result;
+                if (t.Exception != null)
+                {
+                    UploadState = PackageUploadHandle.State.Error;
+                    ErrorString = TranslatePackageManagerError(t.Exception.Message);
+                    dynamoViewModel.Model.Logger.Log(t.Exception);
+                }
+            });
+
+            Uploading = true;
         }
 
         private static readonly Regex UserIsNotAMaintainerRegex =
