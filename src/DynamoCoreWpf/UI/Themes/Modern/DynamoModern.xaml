@@ -4440,6 +4440,66 @@
         </Setter>
     </Style>
 
+    <!--  This is a Padlock toggle button  -->
+    <PathGeometry x:Key="PadlockIcon" Figures="M18 3C15.7909 3 14 4.79086 14 7V10H6C5.44772 10 5 10.4477 5 11V19C5 19.5523 5.44772 20 6 20H16C16.5523 20 17 19.5523 17 19V11C17 10.4477 16.5523 10 16 10H15V7C15 5.34315 16.3431 4 18 4C19.6569 4 21 5.34315 21 7V9H22V7C22 4.79086 20.2091 3 18 3ZM6 11H16V19H6L6 11Z"/>
+    <PathGeometry x:Key="PadlockLockedIcon" Figures="M11 4C8.79084 4 6.99998 5.79087 6.99999 8.00001L7 10H6C5.44772 10 5 10.4477 5 11V19C5 19.5523 5.44772 20 6 20H16C16.5523 20 17 19.5523 17 19V11C17 10.4477 16.5523 10 16 10H15V7.99999C15 5.79086 13.2091 4 11 4ZM14 10V7.99999C14 6.34314 12.6568 5 11 5C9.34313 5 7.99998 6.34315 7.99999 8L8 10H14ZM6 11H16V19H6L6 11Z"/>
+    <Style x:Key="PadlockToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid x:Name="mainGrid">
+                        <Border Background="Transparent" Name="_borderOn">
+                            <Viewbox Width="24"
+                                     Height="24"
+                                     VerticalAlignment="Center"
+                                     Margin="2 0 0 0">
+                                <Path x:Name="_toggleOn"
+                                      Fill="#999999"
+                                      Data="{StaticResource PadlockIcon}"
+                                      StrokeThickness="0"
+                                      Stroke="#999999">
+                                </Path>
+                            </Viewbox>
+                        </Border>
+                        <Border Background="Transparent" Name="_borderOff">
+                            <Viewbox Width="22"
+                                     Height="22"
+                                     VerticalAlignment="Center"
+                                     Margin="0 0 4 1">
+                                <Path x:Name="_toggleOff"
+                                      Fill="#999999"
+                                      Data="{StaticResource PadlockLockedIcon}"
+                                      StrokeThickness="0"
+                                      Stroke="#999999">
+                                </Path>
+                            </Viewbox>
+                        </Border>
+                    </Grid>
+
+                    <!--  triggers toggle visual appearance  -->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="_borderOff" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="_borderOn" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="_borderOff" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="_borderOn" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="_toggleOn" Property="Fill" Value="#6AC0E7" />
+                            <Setter TargetName="_toggleOff" Property="Fill" Value="#6AC0E7" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="mainGrid" Property="OpacityMask" Value="{StaticResource SemiTransparent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <!--  This is a Toogle button shown in the Preferences Window for the General tab, when is checked shows a Blue button  -->
     <Style x:Key="EllipseToggleButton1" TargetType="{x:Type ToggleButton}">
         <Setter Property="Template">

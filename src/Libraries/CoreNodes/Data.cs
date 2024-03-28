@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -44,11 +45,11 @@ namespace DSCore
                     var obj = token as JObject;
 
                     var dynObj = DynamoJObjectToNative(obj);
-                    if(dynObj != null)
+                    if (dynObj != null)
                     {
                         return dynObj;
                     }
-     
+
                     var dict = new Dictionary<string, object>();
                     foreach (var kv in obj)
                     {
@@ -171,7 +172,7 @@ namespace DSCore
                         return null;
                 }
             }
-             
+
             if (jObject.ContainsKey("typeid"))
             {
                 var typeid = jObject["typeid"].ToString();
@@ -312,7 +313,7 @@ namespace DSCore
             {
                 string serializedValue;
 
-                switch(value)
+                switch (value)
                 {
                     case Geometry item:
                         var geoString = item.ToJson();
@@ -337,7 +338,7 @@ namespace DSCore
                         return;
                 }
 
-                throw new NotSupportedException(Properties.Resources.Exception_Serialize_DesignScript_Unsupported); 
+                throw new NotSupportedException(Properties.Resources.Exception_Serialize_DesignScript_Unsupported);
             }
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -488,7 +489,7 @@ namespace DSCore
                     {
                         cachedObject = ParseJSON(cachedJson);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         dynamoLogger?.Log("Remember failed to deserialize with this exception: " + ex.Message);
                         throw new NotSupportedException(Properties.Resources.Exception_Deserialize_Unsupported_Cache);
@@ -515,12 +516,12 @@ namespace DSCore
             {
                 newCachedJson = StringifyJSON(inputObject);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 dynamoLogger?.Log("Remember failed to serialize with this exception: " + ex.Message);
                 throw new NotSupportedException(string.Format(Properties.Resources.Exception_Serialize_Unsupported_Type, inputObject.GetType().FullName));
             }
-            
+
             return new Dictionary<string, object>
             {
                 { ">", inputObject },
@@ -533,10 +534,22 @@ namespace DSCore
 
         #region Input Output Node
 
+        /// <summary>
+        /// A class representing a DataType supported by Dynamo
+        /// </summary>
         public class DataNodeDynamoType
         {
+            /// <summary>
+            /// The underlying Type
+            /// </summary>
             public Type Type { get; private set; }
+            /// <summary>
+            /// An optional Name to override the Type name (`Number` instead of `long`)
+            /// </summary>
             public string Name { get; private set; }
+            /// <summary>
+            /// The parent of the DataType, if inheriting (to be removed in later updates)
+            /// </summary>
             public DataNodeDynamoType Parent { get; private set; }
 
             public DataNodeDynamoType(Type type, string name = null)
@@ -552,12 +565,16 @@ namespace DSCore
             }
         }
 
+        /// <summary>
+        /// A static list for all Dynamo supported data types
+        /// </summary>
+        /// <returns>The list containing the supported data types</returns>
+        internal static readonly ReadOnlyCollection<DataNodeDynamoType> DataNodeDynamoTypeList;
 
         /// <summary>
-        /// A static dictionary for all Dynamo supported data types
+        /// Static constructor
         /// </summary>
-        /// <returns>The dictionary containing the supported data types</returns>
-        public static List<DataNodeDynamoType> GetDataNodeDynamoTypeList()
+        static Data()
         {
             var typeList = new List<DataNodeDynamoType>();
             typeList.Add(new DataNodeDynamoType(typeof(bool)));
@@ -616,35 +633,96 @@ namespace DSCore
             typeList.Add(new DataNodeDynamoType(typeof(UV)));
             typeList.Add(new DataNodeDynamoType(typeof(Vector)));
 
-            return typeList;
+            DataNodeDynamoTypeList = new ReadOnlyCollection<DataNodeDynamoType>(typeList);
+        }
+
+        /// <summary>
+        /// This is the function used by AST
+        /// Handles some of the the node logic while performing the validation
+        /// </summary>
+        /// <param name="inputValue">Upstream input value</param>
+        /// <param name="typeString">The Type as string (it would be better to pass an object of type 'Type' for direct type comparison)</param>
+        /// <param name="isList">If the input is of type `ArrayList`</param>
+        /// <param name="isAutoMode">If the node is in Auto mode</param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        internal static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
+            string typeString, bool isList, bool isAutoMode)
+        {
+            if(inputValue == null) { return null; }
+
+            object result;  // Tuple<IsValid: bool, UpdateList: bool, InputType: DataNodeDynamoType>
+
+            var type = DataNodeDynamoTypeList.First(x => x.Type.ToString().Equals(typeString));
+
+            if (isAutoMode)
+            {
+                // If running in AutoMode, then we would propagate the actual Type and List value and validate against them
+                // List logic
+                bool updateList = false;
+
+                var assertList = inputValue is ArrayList;
+                if (assertList != isList)
+                {
+                    updateList = true;
+                }
+
+                // Type logic
+                if (type == null || !IsSupportedDataNodeDynamoType(inputValue, type.Type, assertList))
+                {
+                    var valueType = assertList ? (inputValue as ArrayList)[0].GetType() : inputValue.GetType();
+                    var inputType = DataNodeDynamoTypeList.FirstOrDefault(x => x.Type == valueType, null);
+                    result = (IsValid: false, UpdateList: updateList, InputType: inputType);
+                }
+                else
+                {
+                    result = (IsValid: true, UpdateList: updateList, InputType: type);
+                }
+
+                return new Dictionary<string, object>
+                {
+                    { ">", inputValue },
+                    { "Validation", result }
+                };
+            }
+            else
+            {
+                // If we are in 'Manual mode' then we just validate and throw as needed
+                var isSupportedType = IsSupportedDataNodeDynamoType(inputValue, type.Type, isList);
+                result = (IsValid: isSupportedType, UpdateList: false, InputType: type);
+
+                return new Dictionary<string, object>
+                {
+                    { ">", inputValue },
+                    { "Validation", result }
+                };
+            }
         }
 
         /// <summary>
         /// Function to validate input type against supported Dynamo input types
         /// </summary>
         /// <param name="inputValue">The incoming data to validate</param>
-        /// <param name="typeString">The input type provided by the user. It has to match the inputValue type</param>
+        /// <param name="type">The input type provided by the user. It has to match the inputValue type</param>
         /// <param name="isList">The value of this boolean decides if the input is a single object or a list</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static bool IsSupportedDataNodeDynamoType([ArbitraryDimensionArrayImport] object inputValue, string typeString, bool isList)
+        internal static bool IsSupportedDataNodeDynamoType([ArbitraryDimensionArrayImport] object inputValue, Type type, bool isList)
         {
-            var type = GetDataNodeDynamoTypeList().FirstOrDefault(x => x.Type.ToString().Equals(typeString)).Type;
-            if (type == null) { return false; } // Add exception
             if (inputValue == null || type == null)
             {
-                return false;   // Add exception
+                return false;
             }
 
             if (!isList)
             {
-                if (inputValue is ArrayList) return false;  // Add exception ?
+                if (inputValue is ArrayList) return false;
 
                 return IsItemOfType(inputValue, type);
             }
             else
             {
-                if (!(inputValue is ArrayList arrayList)) return false; // Add exception ?
+                if (!(inputValue is ArrayList arrayList)) return false;
 
                 foreach (var item in arrayList)
                 {
@@ -660,17 +738,12 @@ namespace DSCore
 
         /// <summary>
         /// This method checks if an item is of a required Dynamo DataType
-        /// 'IsInstanceOfType' recursivelly checks for upward inheritance
+        /// 'IsInstanceOfType' recursively checks for upward inheritance
         /// </summary>
-        /// <param name="item">The item to chek the data type for</param>
+        /// <param name="item">The item to check the data type for</param>
         /// <param name="dataType">The DataType to check against</param>
         /// <returns>A true or false result based on the check validation</returns>
-        private static bool IsItemOfType(object item, Type dataType)
-        {
-            if (dataType.IsInstanceOfType(item)) return true;
-            
-            return false;
-        }
+        private static bool IsItemOfType(object item, Type dataType) => dataType.IsInstanceOfType(item);
 
         #endregion
     }
