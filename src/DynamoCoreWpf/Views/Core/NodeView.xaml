@@ -315,7 +315,8 @@
             <!--  The Icon for this Node  -->
             <Rectangle Name="nodeIcon"
                      Width="34"
-                     Height="34">
+                     Height="34"
+                     Visibility="{Binding ShowNodeIcons, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >
                 <Rectangle.Style>
                     <Style TargetType="Rectangle">
                         <Setter Property="Fill">

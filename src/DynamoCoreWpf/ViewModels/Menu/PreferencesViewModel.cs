@@ -796,6 +796,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Indicates if node icons should be displayed on nodes.
+        /// </summary>
+        public bool ShowNodeIcons
+        {
+            get
+            {
+                return preferenceSettings.ShowNodeIcons;
+            }
+            set
+            {
+                preferenceSettings.ShowNodeIcons = value;
+                RaisePropertyChanged(nameof(ShowNodeIcons));
+            }
+        }
+
+        /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
         /// Also toggles between Host and Dynamo units 
         /// </summary>
@@ -1806,6 +1822,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowPreviewBubbles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(ShowNodeIcons):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowNodeIcons), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowCodeBlockNodeLineNumber), System.Globalization.CultureInfo.InvariantCulture);
