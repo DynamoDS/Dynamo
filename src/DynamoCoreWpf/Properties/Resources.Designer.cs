@@ -7962,6 +7962,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Instancing (Beta).
+        /// </summary>
+        public static string PreferencesViewVisualSettingUseInstancing {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingUseInstancing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 0%.
         /// </summary>
         public static string PreferencesViewZoomScaling0Percent {
@@ -8048,6 +8057,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesWindowShowPreviewBubblesTooltip {
             get {
                 return ResourceManager.GetString("PreferencesWindowShowPreviewBubblesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, some symmetric geometry types such as cubes, rectangles, or spheres will render faster due to mutiple copies being drawn at once vs sequentially..
+        /// </summary>
+        public static string PreferencesWindowUseInstancingTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowUseInstancingTooltip", resourceCulture);
             }
         }
         

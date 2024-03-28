@@ -3864,6 +3864,12 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="ElementBindingDesc" xml:space="preserve">
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
   </data>
+  <data name="PreferencesViewVisualSettingUseInstancing" xml:space="preserve">
+    <value>Use Instancing (Beta)</value>
+  </data>
+  <data name="PreferencesWindowUseInstancingTooltip" xml:space="preserve">
+    <value>When toggled on, some symmetric geometry types such as cubes, rectangles, or spheres will render faster due to mutiple copies being drawn at once vs sequentially.</value>
+  </data>
   <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
     <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreements for Data Collection.</value>
   </data>

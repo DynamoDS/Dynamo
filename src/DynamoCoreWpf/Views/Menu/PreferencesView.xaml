@@ -1451,10 +1451,44 @@
                                             </Image>
                                         </Label>
                                     </StackPanel>
-                                    
+
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
                                                 Grid.Row="3">
+                                        <ToggleButton Name="UserRenderInstancingToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=UseRenderInstancing}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewVisualSettingUseInstancing}" 
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                                    Name="UseRenderInstancingInfoLabel"
+                                                    VerticalAlignment="Center" 
+                                                    Height="26" 
+                                                    Width="53"
+                                                    Margin="0 3 0 0">
+                                            <Image
+                                                Margin="5,3,0,0"
+                                                Width="14"
+                                                Height="14"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource QuestionIcon}"
+                                                ToolTipService.ShowDuration="30000"> 
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowUseInstancingTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="4">
                                         <ToggleButton Name="CodeBlockNodeLineNumbersToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -1488,7 +1522,7 @@
 
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
-                                                Grid.Row="4">
+                                                Grid.Row="5">
                                         <ToggleButton Name="ShowPreviewBubblesToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -1522,7 +1556,7 @@
                                     
                                     <Grid x:Name="GraphicHelpersScale"
                                           Margin="0 12 0 5"
-                                          Grid.Row="5">
+                                          Grid.Row="6">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>

@@ -348,7 +348,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// Internal interface to enable adding labels that are related to an instanceableGraphicItem.
     /// </summary>
-    internal interface IRenderInstancedLabels
+    public interface IRenderInstancedLabels
     {
         /// <summary>
         /// Adds a label to the render package, but first transforms the label by the transform matrix of the 
@@ -372,7 +372,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// Represents instance matrices and references to tessellated geometry in the RenderPackage
     /// </summary>
-    internal interface IInstancingRenderPackage
+    public interface IInstancingRenderPackage
     {
         /// <summary>
         /// Checks if a base tessellation guid has already been registered with this <see cref="IInstancingRenderPackage"/>.
@@ -528,7 +528,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// An interface that defines items whose graphics are defined by a single base tessellation and instance transforms defined by 4x4 transformation matrices.
     /// </summary>
-    internal interface IInstanceableGraphicItem
+    public interface IInstanceableGraphicItem
     {
         /// <summary>
         /// A Guid used to reference the base tessellation geometry that will be transformed for all related instances
@@ -581,6 +581,12 @@ namespace Autodesk.DesignScript.Interfaces
         public bool ShowEdges { get; set; }
 
         /// <summary>
+        /// A flag indicating whether rendering data for instancing
+        /// is included in the RenderPackage. Default is false.
+        /// </summary>
+        public bool UseRenderInstancing { get; set; }
+
+        /// <summary>
         /// The scale factor set in the workspace that must be applied to 
         /// distance and coordinate values used in rendering only ASM geometry.
         /// This scale factor is consumed only by LibG in its Tessellate method implementation.
@@ -592,6 +598,7 @@ namespace Autodesk.DesignScript.Interfaces
             Tolerance = -1;
             MaxTessellationDivisions = 512;
             ShowEdges = false;
+            UseRenderInstancing = false;
             ScaleFactor = 1.0;
         }
     }
