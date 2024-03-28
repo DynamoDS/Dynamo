@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Generate changelog
         id: generate_changelog
-        uses: metcalfc/changelog-generator@v4.2.0
+        uses: metcalfc/changelog-generator@d552ecf3366cf9d6da9fd7dbe425325d3d095aa8 # v4.3.1
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
           head-ref: ${{ github.event.inputs.head-ref }}
@@ -30,7 +30,7 @@ jobs:
         run: |
           cat <<EOF >> $GITHUB_STEP_SUMMARY
           # Changelog
-          [changes](${{ format('{0}/compare/{1}...{2})', github.repository, github.event.inputs.base-ref, github.event.inputs.head-ref) }})
+          [Compare changes](${{ format('{0}/{1}/compare/{2}...{3}', github.server_url, github.repository, github.event.inputs.base-ref, github.event.inputs.head-ref) }})
 
           ${{ steps.generate_changelog.outputs.changelog }}
           EOF
