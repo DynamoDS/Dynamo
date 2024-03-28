@@ -1,6 +1,3 @@
-using Dynamo.Utilities;
-using Dynamo.Notifications.View;
-using NUnit.Framework;
 using System;
 using System.IO;
 using System.Linq;
@@ -8,8 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Notifications;
-using Dynamo.DocumentationBrowser;
+using Dynamo.Notifications.View;
+using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests.ViewExtensions
 {
@@ -28,6 +27,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             {
                 return notificationExtension.notificationCenterController.initState == DynamoUtilities.AsyncMethodState.Done;
             });
+            
             Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, notificationExtension.notificationCenterController.initState);
 
             NotificationUI notificationUI = PresentationSource.CurrentSources.OfType<System.Windows.Interop.HwndSource>()
@@ -37,9 +37,9 @@ namespace DynamoCoreWpfTests.ViewExtensions
                                         .OfType<NotificationUI>()
                                         .FirstOrDefault(p => p.IsOpen);
 
-            Assert.NotNull(notificationUI);
+            Assert.NotNull(notificationUI, "Notification popup not part of the dynamo visual tree");
             var webView = notificationUI.FindName("webView");
-            Assert.NotNull(webView);
+            Assert.NotNull(webView, "WebView framework element not found.");
         }
 
         [Test]

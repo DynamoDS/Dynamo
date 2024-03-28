@@ -78,6 +78,7 @@ namespace Dynamo.Configuration
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
+        private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
 
         #region Constants
@@ -444,6 +445,19 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// Template path
+        /// </summary>
+        public string TemplateFilePath
+        {
+            get { return templateFilePath; }
+            set
+            {
+                templateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateFilePath));
+            }
+        }
+
+        /// <summary>
         /// A list of backup file paths.
         /// </summary>
         public List<string> BackupFiles { get; set; }
@@ -472,6 +486,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Return a list of GraphChecksumItems
         /// </summary>
+        [Obsolete("This property is not needed anymore in the preference settings and can be removed in a future version of Dynamo.")]
         public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
 
         // This function is used to deserialize the trusted locations manually
@@ -856,7 +871,7 @@ namespace Dynamo.Configuration
         /// This property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
-        internal Version ironPythonResolveTargetVersion = new Version(3, 0, 0);
+        internal Version ironPythonResolveTargetVersion = new Version(3, 2, 0);
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
@@ -931,6 +946,8 @@ namespace Dynamo.Configuration
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
             BackupLocation = string.Empty;
+
+            TemplateFilePath = string.Empty;
 
             LibraryZoomScale = 100;
             PythonScriptZoomScale = 100;
@@ -1141,14 +1158,34 @@ namespace Dynamo.Configuration
             return defaultPythonEngine;
         }
 
+        /// <summary>
+        /// Initialize namespaces to exclude from Library based on conditions
+        /// </summary>
         internal void InitializeNamespacesToExcludeFromLibrary()
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                NamespacesToExcludeFromLibrary.Add(
+                NamespacesToExcludeFromLibrary = new List<string>()
+                {
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel"
+                };  
+                NamespacesToExcludeFromLibrarySpecified = true;
+            }
+        }
+
+        /// <summary>
+        /// Update namespaces to exclude from Library based on feature flags
+        /// </summary>
+        internal void UpdateNamespacesToExcludeFromLibrary()
+        {
+            // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
+            if (!DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false)
+            {
+                NamespacesToExcludeFromLibrary.Remove(
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
                 );
-                NamespacesToExcludeFromLibrarySpecified = true;
+                return;
             }
         }
 
@@ -1238,13 +1275,11 @@ namespace Dynamo.Configuration
         internal void AddDefaultTrustedLocations()
         {
             if (!IsFirstRun) return;
-
-            const string Autodesk = "Autodesk";
             string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramData, Configurations.AutodeskAsString));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            AddTrustedLocation(Path.Combine(ProgramFiles, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramFiles, Configurations.AutodeskAsString));
         }
 
         /// <summary>

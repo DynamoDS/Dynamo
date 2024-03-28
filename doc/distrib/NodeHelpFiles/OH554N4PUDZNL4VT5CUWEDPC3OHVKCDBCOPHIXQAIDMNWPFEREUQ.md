@@ -5,5 +5,5 @@ ByOriginVectors (origin, xAxis, yAxis) will return a new CoordinateSystem at an 
 ___
 ## Example File
 
-![ByOriginVectors (origin, xAxis, yAxis)](./Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin,%20xAxis,%20yAxis)_img.jpg)
+![ByOriginVectors (origin, xAxis, yAxis)](./OH554N4PUDZNL4VT5CUWEDPC3OHVKCDBCOPHIXQAIDMNWPFEREUQ_img.jpg)
 

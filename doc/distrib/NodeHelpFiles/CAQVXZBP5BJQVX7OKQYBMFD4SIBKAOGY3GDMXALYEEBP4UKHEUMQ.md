@@ -5,5 +5,5 @@ Translates any given geometry by the given displacements in the x, y, and z dire
 ___
 ## Example File
 
-![Translate (xTranslation, yTranslation, zTranslation)](./Autodesk.DesignScript.Geometry.Geometry.Translate(xTranslation,%20yTranslation,%20zTranslation)_img.jpg)
+![Translate (xTranslation, yTranslation, zTranslation)](./CAQVXZBP5BJQVX7OKQYBMFD4SIBKAOGY3GDMXALYEEBP4UKHEUMQ_img.jpg)
 

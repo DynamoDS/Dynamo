@@ -1,0 +1,37 @@
+name: API Break Analysis
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  analyze:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v4
+        with:
+          path: Dynamo
+          repository: DynamoDS/Dynamo
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v1.3
+
+      - name: Install dependencies for windows runtime
+        run: |
+          dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64
+
+      - name: Build and analyze
+        run: |
+          Write-Output "***Continue with the build, Good luck developer!***"
+          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true
+
+      

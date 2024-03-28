@@ -2589,7 +2589,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Package/Library Search Paths</value>
   </data>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
-    <value>Switchable only when the current workspace is in Manual run mode.</value>
+    <value>To preview the execution state of your graph, wires connected to ports that will be affected by a graph run are highlighted in orange. Available only when the current workspace is in Manual run mode.</value>
   </data>
   <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
     <value>Issues found</value>
@@ -2618,6 +2618,15 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="GetStartedGuide" xml:space="preserve">
     <value>_User Interface Tour</value>
     <comment>Get Started Dynamo Tour</comment>
+  </data>
+  <data name="GetStartedGuideDescription" xml:space="preserve">
+    <value>Start your visual programming journey with this short guide. Here you'll learn some basics about the Dynamo interface and features.</value>
+  </data>
+  <data name="OnboardingGuideDescription" xml:space="preserve">
+    <value>Learn about the basic building blocks of Dynamo. Get hands-on practice working with a graph.</value>
+  </data>
+  <data name="PackagesGuideDescription" xml:space="preserve">
+    <value>A package is a toolkit of utilities that let you do more with Dynamo, beyond its core functionality. This guide shows how to find, install, and use packages. It installs a sample Autodesk package for you to explore.</value>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
     <value>_Interactive Guides</value>
@@ -3183,7 +3192,7 @@ To install the latest version of a package, click Install. \n
 %./UI/Images/alert.png% The sample Autodesk package is already installed on your computer.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nIf you need other software or tools in order to use this package, they are listed under Dependencies.</value>
+    <value>\nIf you need other software or tools in order to use this package, they are listed under Versions and Package Requirements.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
@@ -3856,7 +3865,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
   </data>
   <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
-    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreement and Terms of Use.</value>
+    <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreements for Data Collection.</value>
   </data>
   <data name="GESUnitCentimeters" xml:space="preserve">
     <value>Centimeters</value>
@@ -3878,5 +3887,72 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="GESUnitMillimeters" xml:space="preserve">
     <value>Millimeters</value>
+  </data>
+  <data name="SignOutConfirmationDialogText" xml:space="preserve">
+    <value>Signing out of Dynamo will sign you out of all Autodesk desktop products.</value>
+  </data>
+  <data name="SignOutConfirmationDialogTitle" xml:space="preserve">
+    <value>Sign out of Dynamo</value>
+  </data>
+  <data name="PackageDetailsGroup" xml:space="preserve">
+    <value>GROUP</value>
+  </data>
+  <data name="PackageDetailsKeywords" xml:space="preserve">
+    <value>KEYWORDS</value>
+  </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="PackageDetailsLinks" xml:space="preserve">
+    <value>LINKS</value>
+  </data>
+  <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
+    <value>Your changes will be lost if you proceed.</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenFile" xml:space="preserve">
+    <value>_File</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
+    <value>_Template</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
+    <value>Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file.</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockTitle" xml:space="preserve">
+    <value>Invalid Save Path</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureToggleButtonText" xml:space="preserve">
+    <value>Retain folder structure</value>
+  </data>
+  <data name="UpdateNodeIconsDebugMenu" xml:space="preserve">
+    <value>Update Node Icons</value>
+  </data>
+  <data name="PreferencesViewEnablePanelingNodes" xml:space="preserve">
+    <value>Enable Paneling nodes</value>
+    <comment>Preferences | Features | Experimental | Enable Paneling nodes</comment>
+  </data>
+  <data name="PreferencesSettingTemplateLocationLabel" xml:space="preserve">
+    <value>Templates Path</value>
+  </data>
+  <data name="PreferencesSettingResetTemplateLocationTooltip" xml:space="preserve">
+    <value>Reset Template Location</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedMessage" xml:space="preserve">
+    <value>Failed to update template location</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedTitle" xml:space="preserve">
+    <value>Invalid Template Location</value>
+  </data>
+  <data name="PreferencesSettingsTemplateLocationDialogTitle" xml:space="preserve">
+    <value>Select Folder for Templates</value>
+  </data>
+  <data name="PreferencesSettingUpdateTemplateLocationTooltip" xml:space="preserve">
+    <value>Edit Template Location</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsTemplate" xml:space="preserve">
+    <value>Templates</value>
+  </data>
+  <data name="DynamoXmlFileFormat" xml:space="preserve">
+    <value>Dynamo 1.x file format</value>
   </data>
 </root>

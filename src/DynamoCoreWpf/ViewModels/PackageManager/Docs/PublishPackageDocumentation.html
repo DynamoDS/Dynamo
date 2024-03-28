@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     Dynamo: https://github.com/DynamoDS/Dynamo
 -->
 <!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
@@ -162,11 +162,11 @@
     </p>
     <h4>Installing Dynamo packages</h4>
     <p>
-        You can browse and install packages in the Search for Packages tab of the Package Manager. Use the search field to locate specific packages. 
+        You can browse and install packages in the Search for Packages tab of the Package Manager. Use the search field to locate specific packages.
         You can also apply filters and sorting to narrow down the list to meet your criteria, such as a host program or lack of dependencies.
     </p>
     <p>
-        To view more information about a package, click View Details. This opens a panel where you can read a description of the package, find version and license information, and more.        
+        To view more information about a package, click View Details. This opens a panel where you can read a description of the package, find version and license information, and more.
     </p>
     <p>
         To install a package, click Install either in the search view or in the details panel. You can specify a version to install in the search view by clicking the drop-down and selecting a version; otherwise, the most recent version will be installed.
@@ -177,10 +177,10 @@
     </p>
     <h4>Publishing Dynamo Packages</h4>
     <p>
-        The Package Manager allows you to publish packages inside Dynamo. Open the Publish a Package tab to get started. 
+        The Package Manager allows you to publish packages inside Dynamo. Open the Publish a Package tab to get started.
         The Publish a Package tab asks for all required and optional information related to the package that you want to publish.
     </p>
-    
+
     <h4>Adding package details</h4>
 
     <p>
@@ -236,41 +236,42 @@
     </p>
     <p>
         <b>Add Files/Directory:</b><br />
-        <p>
-            Select and add all the files that are related to your package. Generally, the bin folder, binaries, and dependencies are added.
-            You can add individual files or folders.
-        </p>
-        <p>
-            After you’ve selected files or folders to add, you can view, remove, or add files on the Select Package Contents page. 
-            You can view the folder structure of your selected files in the left panel, and the contents of each folder in the right panel.
-        </p>
     <p>
-        <b>Select Node Libraries:</b><br />
-        <p>
-            Specify which of the files you added to the package are the node libraries by checking the box in the Node Library column.
-            Node libraries contain the types and methods that Dynamo will import as nodes. In general, you should mark any assembly as a node library which contains types you wish to import into Dynamo. 
-            ZeroTouch, NodeModel, or NodeViewCustomization assemblies should be marked as a node library.
-        </p>
-        <p>
-            To load UI NodeViewCustomizations, they should be either defined in the same assembly that contains the corresponding NodeModel definitions OR defined in a separate assembly.
-            In either case, the assembly must be tagged as a node library. Currently, for assemblies marked as node library that contain NodeModel or NodeCustomization types, all other types will be ignored. For this reason, it is important to separate NodeModel/NodeViewCustomization types from types you wish to import using ZeroTouch import.
-        </p>
+        Select and add all the files that are related to your package. Generally, the bin folder, binaries, and dependencies are added.
+        You can add individual files or folders.
     </p>
     <p>
+        After you’ve selected files or folders to add, you can view, remove, or add files on the Select Package Contents page.
+        You can view the folder structure of your selected files in the left panel, and the contents of each folder in the right panel.
+    </p>
+    <p>
+        <b>Select Node Libraries:</b><br />
+    <p>
+        Specify which of the files you added to the package are the node libraries by checking the box in the Node Library column.
+        Node libraries contain the types and methods that Dynamo will import as nodes. In general, you should mark any assembly as a node library which contains types you wish to import into Dynamo.
+        ZeroTouch, NodeModel, or NodeViewCustomization assemblies should be marked as a node library.
+    </p>
+    <p>
+        To load UI NodeViewCustomizations, they should be either defined in the same assembly that contains the corresponding NodeModel definitions OR defined in a separate assembly.
+        In either case, the assembly must be tagged as a node library. Currently, for assemblies marked as node library that contain NodeModel or NodeCustomization types, all other types will be ignored. For this reason, it is important to separate NodeModel/NodeViewCustomization types from types you wish to import using ZeroTouch import.
+    </p>
+    </p>
+    <p>
+
         <b>Retain folder structure:</b><br />
         <p>
-            Advanced package authors with complex package folder structures may want to enable the Retain Folder Structure toggle below the package contents preview panel.
-            When this setting is toggled on, Dynamo won’t make changes to your package folder structure; instead, the package will be uploaded as is.
+            Package authors with complex package folder structures may want to enable the Retain Folder Structure toggle below the package contents preview panel.
+            This setting is toggled on by default when a user is publishing a new version of an existing package, in this case, Dynamo won’t make changes to your package folder structure; instead, the package will be uploaded as is.
         </p>
         <p>
-            This is an advanced setting because packages need to be set up in a certain way to ensure they work and to avoid any issues. 
-            When in doubt, toggle the setting off to allow Dynamo to set up the folder structure.
+            If you need your package to be set up in a certain way to ensure they work and to avoid any issues, toggle the setting on.
+            When in doubt, or publishing a new package, toggle the setting off to allow Dynamo to set up the folder structure.
         </p>
     </p>
     <p>
         <b>Preview Package Contents:</b><br />
-            When you are satisfied with your package contents, click Next to see a preview of how the package files will be set up once they are published.
-            This page is view only; to make additional changes to the package contents, go back to the previous page. Click Finish to return to the package details page.
+        When you are satisfied with your package contents, click Next to see a preview of how the package files will be set up once they are published.
+        This page is view only; to make additional changes to the package contents, go back to the previous page. Click Finish to return to the package details page.
     </p>
     <p>
         <b>Add markdown file path (optional):</b><br />
@@ -282,13 +283,13 @@
     </p>
 
     <hr />
-    
+
     <h3>Anti-virus Scans</h3>
     <p>
-        To provide a secure environment to all Dynamo package users, we have introduced anti-virus scans for new packages. 
-        When a user uploads a package, it will be scanned for viruses and will only be available publicly once it has been flagged as safe. 
-        The scan will happen during the package upload process and will not add to the usual duration of 10-15 minutes for the new package to be available online. 
-        If your package is flagged as infected, the Package Manager search page will display a notification stating that the uploaded package has been found to be infected and won't be published online. 
+        To provide a secure environment to all Dynamo package users, we have introduced anti-virus scans for new packages.
+        When a user uploads a package, it will be scanned for viruses and will only be available publicly once it has been flagged as safe.
+        The scan will happen during the package upload process and will not add to the usual duration of 10-15 minutes for the new package to be available online.
+        If your package is flagged as infected, the Package Manager search page will display a notification stating that the uploaded package has been found to be infected and won't be published online.
         To make the package publicly available, check the files included with the package and upload a new version through the Package Manager.
     </p>
     <h3>Managing your packages</h3>

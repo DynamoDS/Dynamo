@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -67,8 +67,9 @@ namespace Dynamo.Wpf.Services
 
         internal ImageSource LoadIconInternal(string iconKey)
         {
-            if (cachedIcons.ContainsKey(iconKey))
-                return cachedIcons[iconKey];
+            ImageSource icon;
+            if (cachedIcons.TryGetValue(iconKey, out icon))
+                return icon;
 
             if (resourceAssembly == null)
             {

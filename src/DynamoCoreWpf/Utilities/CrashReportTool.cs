@@ -162,6 +162,21 @@ namespace Dynamo.Wpf.Utilities
             }
         }
 
+        internal static void ShowCrashWindow(object sender, CrashPromptArgs args)
+        {
+            var viewModel = sender as DynamoViewModel;
+
+            if (CrashReportTool.ShowCrashErrorReportWindow(viewModel,
+                (args is CrashErrorReportArgs cerArgs) ? cerArgs :
+                new CrashErrorReportArgs(args.Details)))
+            {
+                return;
+            }
+            // Backup crash reporting dialog (in case ADSK CER is not found)
+            var prompt = new Nodes.Prompts.CrashPrompt(args, viewModel);
+            prompt.ShowDialog();
+        }
+
         /// <summary>
         /// Calls external CER tool (with UI)
         /// </summary>
@@ -177,10 +192,11 @@ namespace Dynamo.Wpf.Utilities
 
             DynamoModel model = viewModel?.Model;
 
-            string cerToolDir = !string.IsNullOrEmpty(model.CERLocation) ?
-                model.CERLocation : FindCERToolInInstallLocations();
+            string cerToolDir = !string.IsNullOrEmpty(model?.CERLocation) ?
+                model?.CERLocation : FindCERToolInInstallLocations();
 
-            var cerToolPath = Path.Combine(cerToolDir, CERDllName);
+            var cerToolPath = !string.IsNullOrEmpty(cerToolDir) ? Path.Combine(cerToolDir, CERDllName) : string.Empty;
+
             if (string.IsNullOrEmpty(cerToolPath) || !File.Exists(cerToolPath))
             {
                 model?.Logger?.LogError($"The CER tool was not found at location {cerToolPath}");
@@ -199,30 +215,57 @@ namespace Dynamo.Wpf.Utilities
                 {
                     string logFile = Path.Combine(cerDir.FullName, "DynamoLog.log");
 
-                    File.Copy(model.Logger.LogPath, logFile);
-                    // might be usefull to dump all loaded Packages into
-                    // the log at this point.
-                    filesToSend.Add(logFile);
+                    if(File.Exists(model.Logger.LogPath))
+                    {
+                        File.Copy(model.Logger.LogPath, logFile);
+                        filesToSend.Add(logFile);
+                    }
+                    else
+                    {
+                        model?.Logger?.LogError($"Failed to add DynamoLog.log to CER with the following error : {model.Logger.LogPath} Not Found");
+                    }
                 }
 
                 if (args.SendSettingsFile && model != null)
                 {
                     string settingsFile = Path.Combine(cerDir.FullName, "DynamoSettings.xml");
-                    File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
 
-                    filesToSend.Add(settingsFile);
+                    if (File.Exists(model.PathManager.PreferenceFilePath))
+                    {
+                        File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
+
+                        filesToSend.Add(settingsFile);
+                    }
+                    else
+                    {
+                        model?.Logger?.LogError($"Failed to add DynamoSettings.xml to CER with the following error : {model.PathManager.PreferenceFilePath} Not Found");
+                    }
                 }
 
                 if (args.HasDetails())
                 {
                     var stackTracePath = Path.Combine(cerDir.FullName, "StackTrace.log");
-                    File.WriteAllText(stackTracePath, args.Details);
-                    filesToSend.Add(stackTracePath);
+                    try
+                    {
+                        File.WriteAllText(stackTracePath, args.Details);
+                        filesToSend.Add(stackTracePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to add StackTrace.log to CER with the following error : {ex.Message}");
+                    }
                 }
 
                 if (args.SendRecordedCommands && viewModel != null)
                 {
-                    filesToSend.Add(viewModel.DumpRecordedCommands());
+                    try
+                    {
+                        filesToSend.Add(viewModel.DumpRecordedCommands());
+                    }
+                    catch (Exception ex)
+                    {
+                        model?.Logger?.LogError($"Failed to add recorded commands to CER with the following error : {ex.Message}");
+                    }
                 }
 
                 string appConfig = "";
@@ -234,9 +277,23 @@ namespace Dynamo.Wpf.Utilities
                                 $"session_start_count=\"0\" session_clean_close_count=\"0\" current_session_length=\"0\" />";
                 }
 
-                string dynName = viewModel?.Model.CurrentWorkspace.Name;
+                string dynName = model?.CurrentWorkspace.Name;
 
-                var miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
+                var miniDumpFilePath = string.Empty;
+                try
+                {
+                    miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
+                }
+                catch (Exception ex)
+                {
+                    model?.Logger?.LogError($"Failed to generate minidump file for CER due to the following error : {ex.Message}");
+                }
+
+                if (string.IsNullOrEmpty(miniDumpFilePath))
+                {
+                    return false;
+                }
+
                 var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
 
                 using (var cerDLL = new CerDLL(cerToolPath)) 

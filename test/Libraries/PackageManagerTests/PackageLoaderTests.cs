@@ -141,7 +141,7 @@ namespace Dynamo.PackageManager.Tests
                 
             };
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(20, loader.LocalPackages.Count());
+            Assert.AreEqual(21, loader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
             var entries = CurrentDynamoModel.SearchModel.Entries.ToList();
@@ -150,7 +150,7 @@ namespace Dynamo.PackageManager.Tests
             packagesLoaded = false;
             // This function is called upon addition of new package paths in the UI.
             loader.LoadNewCustomNodesAndPackages(new List<string>(), CurrentDynamoModel.CustomNodeManager);
-            Assert.AreEqual(20, loader.LocalPackages.Count());
+            Assert.AreEqual(21, loader.LocalPackages.Count());
 
             // Assert packages are not reloaded if there are no new package paths.
             Assert.False(packagesLoaded);
@@ -187,7 +187,7 @@ namespace Dynamo.PackageManager.Tests
                 Preferences =settings,
             };
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(20, loader.LocalPackages.Count());
+            Assert.AreEqual(21, loader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
             var entries = CurrentDynamoModel.SearchModel.Entries.ToList();
@@ -198,7 +198,7 @@ namespace Dynamo.PackageManager.Tests
             var newPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
             // This function is called upon addition of new package paths in the UI.
             loader.LoadNewCustomNodesAndPackages(newPaths, CurrentDynamoModel.CustomNodeManager);
-            Assert.AreEqual(21, loader.LocalPackages.Count());
+            Assert.AreEqual(22, loader.LocalPackages.Count());
 
             // Assert packages are reloaded if there are new package paths.
             Assert.True(packagesLoaded);
@@ -503,8 +503,8 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             });
 
-            // There are 20 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(20, loader.LocalPackages.Count());
+            // There are 21 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(21, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             // TODO: Review these assertions. Lambdas are not using x, so they are basically just checking that test files exist.
@@ -541,8 +541,8 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             });
 
-            // There are 20 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(20, loader.LocalPackages.Count());
+            // There are 21 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(21, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -555,7 +555,7 @@ namespace Dynamo.PackageManager.Tests
 
             // Check that node belonging to one of the preloaded packages exists and is unique
             var entries = CurrentDynamoModel.SearchModel.Entries.ToList();
-            Assert.IsTrue(entries.Count(x => x.FullName == "AnotherPackage.AnotherPackage.AnotherPackage.HelloAnotherWorld") == 1);
+            Assert.IsTrue(entries.Count(x => x.FullName == "Package.Package.Package.Package") == 1);
 
             loader.PackagesLoaded -= libraryLoader.LoadPackages;
             loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
@@ -669,8 +669,8 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             });
 
-            // There are 20 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(20, loader.LocalPackages.Count());
+            // There are 21 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(21, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.Entries.OfType<CustomNodeSearchElement>();
 

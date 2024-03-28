@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -63,6 +64,26 @@ namespace DynamoUtilities
         public static bool IsValidPath(string filePath)
         {
             return (!string.IsNullOrEmpty(filePath) && (File.Exists(filePath)));
+        }
+
+        /// <summary>
+        /// Utility method to get the last time a file has been modified
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static string GetDateModified(string filePath)
+        {
+            FileInfo fileInfo = new(filePath);
+
+            if (fileInfo.Exists)
+            {
+                DateTime lastModified = fileInfo.LastWriteTime;
+                return lastModified.ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         /// <summary>
@@ -497,6 +518,64 @@ namespace DynamoUtilities
                 }
             }
             return val;
+        }
+
+        /// <summary>
+        /// Loads embedded resources such as HTML and JS files and returns the content as a string.
+        /// </summary>
+        /// <param name="resourcePath">The resource path to return.</param>
+        /// <param name="assembly">The assembly containing the resource.</param>
+        /// <returns>The embedded resource as a string.</returns>
+        public static string LoadEmbeddedResourceAsString(string resourcePath, Assembly assembly)
+        {
+            if (string.IsNullOrEmpty(resourcePath))
+                throw new ArgumentNullException(nameof(resourcePath), "The resource path cannot be null or empty.");
+
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly), "The assembly cannot be null.");
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream == null)
+                    throw new FileNotFoundException("The specified resource was not found in the assembly.", resourcePath);
+
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        /// <summary>
+        /// This function will extract the embedded font file and save it to a specified directory
+        /// </summary>
+        /// <param name="resourcePath">The location of the font resource</param>
+        /// <param name="outputPath">The temporary path to save the resource to</param>
+        /// <param name="outputFileName">The name of the temporary resource file</param>
+        /// <param name="assembly">The assembly containing the resource</param>
+        public static void ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, Assembly assembly)
+        {
+            if (string.IsNullOrEmpty(resourcePath) || string.IsNullOrEmpty(outputPath) || string.IsNullOrEmpty(outputFileName))
+                throw new ArgumentNullException($"One of the input arguments is null or empty.");
+
+            if (assembly == null)
+                throw new ArgumentNullException($"The assembly cannot be null.");
+
+            using (var stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream != null)
+                {
+                    var fontData = new byte[stream.Length];
+                    stream.Read(fontData, 0, fontData.Length);
+
+                    // Create the output directory if it doesn't exist
+                    Directory.CreateDirectory(outputPath);
+
+                    // Write the font file to the output directory
+                    var fontFilePath = Path.Combine(outputPath, outputFileName);
+                    File.WriteAllBytes(fontFilePath, fontData);
+                }
+            }
         }
     }
 }
