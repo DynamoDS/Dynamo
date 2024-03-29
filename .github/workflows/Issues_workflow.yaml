@@ -25,7 +25,7 @@ jobs:
         id: regex-match
         with:
           text: ${{github.event.issue.title}}
-          regex: '^[A-Za-z0-9 _.]*$'
+          regex: '[^\x00-\x7F]+|[a-zA-Z0-9?.><;,{}()[\]\-_+=!@#$%\^&*|''\s]*'
           flags: g
 
       #If the regex output is '' means that the issue title contains special chars
