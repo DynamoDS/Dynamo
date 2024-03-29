@@ -1431,7 +1431,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Evaluates whether both nodes associated with connector are collapsed, if so, collapses the connector itself.
+        /// Evaluates whether both nodes associated with a connector are collapsed, if so, collapses the connector itself.
         /// This is to address DYN-4449.  Connectors are only recorded in the Undo stack when they are connected.
         /// Consequently, if a group is collapsed and then moved, performing an Undo operation will not restore
         /// the connector to its state at the time the move was recorded.
