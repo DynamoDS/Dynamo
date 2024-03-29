@@ -136,14 +136,13 @@ namespace Dynamo.GraphMetadata
                 return;
             }
 
-            if (string.IsNullOrEmpty(hwm.FileName))
+            if (!hwm.IsTemplate && string.IsNullOrEmpty(hwm.FileName) )
             {
                 GraphDescription = string.Empty;
                 GraphAuthor = string.Empty;
                 HelpLink = null;
                 Thumbnail = null;
             }
-
             else
             {
                 currentWorkspace = hwm;
