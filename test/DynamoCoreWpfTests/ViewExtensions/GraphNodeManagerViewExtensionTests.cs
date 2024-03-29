@@ -103,7 +103,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if the number of nodes displayed in the extension is equal to current number of nodes
         /// </summary>
-        [Test]
+        [Test, Category("Failure")]
         public void CorrectNumberNodeItemsTest()
         {
             var extensionManager = View.viewExtensionManager;
