@@ -607,6 +607,44 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(wasTestHookInvoked, "The ShowSampleFilesFolderCommand method did not invoke the test hook as expected.");
             Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
+
+        [Test]
+        [Ignore("IsNewAppHomeEnabled flag is set to false")]
+        public void CanOpenGraphOnDragAndDrop()
+        {
+            // Arrange
+            var filePath = new Uri(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\nodeLocationTest.dyn"));
+            var vm = View.DataContext as DynamoViewModel;
+            var wasTestHookInvoked = false;
+
+            string receivedPath = null;
+            HomePage.TestHook = (path) =>
+            {
+                receivedPath = path;
+                wasTestHookInvoked = true;
+            };
+
+            Assert.IsFalse(wasTestHookInvoked);
+
+            // Create the startPage manually, as it is not created under Test environment
+            var startPage = new StartPageViewModel(vm, true);
+            var homePage = View.homePage;
+            homePage.DataContext = startPage;
+            InitializeWebView2(homePage.dynWebView);
+
+            // Act
+            var result = homePage.ProcessUri(filePath.ToString());
+
+            Assert.IsTrue(result, "The file Uri was not processed correctly.");
+
+            // Clean up to avoid failures testing in pipeline
+            var windowClosed = CloseViewAndCleanup(View);
+
+            // Assert
+            Assert.IsTrue(wasTestHookInvoked, "The OpenFile method did not invoke the test hook as expected.");
+            Assert.AreEqual(filePath, receivedPath, "The command did not return the same filePath");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
+        }
         #endregion
 
         #region helpers

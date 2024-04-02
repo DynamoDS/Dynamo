@@ -521,9 +521,9 @@ https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/Licen
 ImageMagick
 https://imagemagick.org/script/license.php
 
-LiveChartsCore v.2.0.0-beta.855:
-LiveChartsCore.SkiaSharpView v.2.0.0-beta.855:
-LiveChartsCore.SkiaSharpView.WPF v.2.0.0-beta.855:
+LiveChartsCore v.2.0.0-rc2:
+LiveChartsCore.SkiaSharpView v.2.0.0-rc2:
+LiveChartsCore.SkiaSharpView.WPF v.2.0.0-rc2:
 Copyright (c) 2021 Alberto Rodriguez Orozco
 
 MIT License
@@ -710,12 +710,12 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-SkiaSharp v.2.88.4-preview.84
-SkiaSharp.HarfBuzz v.2.88.4-preview.84
-SkiaSharp.NativeAssets.macOS v.2.88.4-preview.84
-SkiaSharp.NativeAssets.Win32 v.2.88.4-preview.84
-SkiaSharp.Views.Desktop.Common v.2.88.4-preview.84
-SkiaSharp.Views.WPF v.2.88.4-preview.84
+SkiaSharp v.2.88.6
+SkiaSharp.HarfBuzz v.2.88.6
+SkiaSharp.NativeAssets.macOS v.2.88.6
+SkiaSharp.NativeAssets.Win32 v.2.88.6
+SkiaSharp.Views.Desktop.Common v.2.88.6
+SkiaSharp.Views.WPF v.2.88.6
 Copyright (c) 2015-2016 Xamarin, Inc.
 Copyright (c) 2017-2018 Microsoft Corporation.
 

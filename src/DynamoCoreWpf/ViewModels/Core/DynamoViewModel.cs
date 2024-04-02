@@ -14,6 +14,8 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Xml;
+using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -67,6 +69,7 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         private PreferencesViewModel preferencesViewModel;
+        private string dynamoMLDataPath = string.Empty;
 
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
@@ -133,8 +136,11 @@ namespace Dynamo.ViewModels
                 return preferencesViewModel;
             }
         }
+        /// <summary>
+        /// Denotes the last location used to open or close a workspace.
+        /// </summary>
+        internal string LastSavedLocation { get; set; }
 
-       
 
         /// <summary>
         /// Guided Tour Manager
@@ -768,11 +774,26 @@ namespace Dynamo.ViewModels
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
             model.RequestNotification += model_RequestNotification;
 
-            preferencesViewModel = new PreferencesViewModel(this);            
+            preferencesViewModel = new PreferencesViewModel(this);
+
+            dynamoMLDataPath = Path.Combine(Model.PathManager.UserDataDirectory, "DynamoMLDataPipeline.xml");
 
             if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
             {
                 model.State = DynamoModel.DynamoModelState.StartedUI;
+
+                // deserialize workspace checksum hashes that is used for Dynamo ML data pipeline.
+                var checksums = new List<GraphChecksumPair>();
+                var serializer = new XmlSerializer(Model.GraphChecksumList.GetType());
+
+                if (File.Exists(dynamoMLDataPath))
+                {
+                    using (var reader = XmlReader.Create(dynamoMLDataPath))
+                    {
+                        checksums = (List<GraphChecksumPair>)serializer.Deserialize(reader);
+                    }
+                    Model.GraphChecksumDictionary = checksums.ToDictionary(x => x.GraphId, x => x.Checksum);
+                }
             }
 
             FileTrustViewModel = new FileTrustWarningViewModel();
@@ -1998,6 +2019,10 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Present the open dialog and open the workspace that is selected.
+        /// - If template is selected, opens the template folder
+        /// - else, if current file is saved , opens the file dialog at the current file's directory
+        /// - else, opens the samples directory, if available
+        /// - else , opens the last accessed path (or desktop, if it was the templates directory)
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowOpenDialogAndOpenResult(object parameter)
@@ -2050,7 +2075,13 @@ namespace Dynamo.ViewModels
                 string path = Path.Combine(location, "samples", UICulture);
 
                 if (Directory.Exists(path))
+                {
                     _fileDialog.InitialDirectory = path;
+                }
+                else
+                {
+                    SetDefaultInitialDirectory(_fileDialog);
+                }
             }
                 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -2065,8 +2096,37 @@ namespace Dynamo.ViewModels
                     else
                     {
                         Open(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                        LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
                     }
                 }
+            }
+        }
+
+        private void SetDefaultInitialDirectory(DynamoOpenFileDialog _fileDialog)
+        {
+            try
+            {
+                //check if the last accessed path was the templates directory, if yes, change it to default
+                var lastPath = _fileDialog.GetLastAccessedPath();
+                if (!string.IsNullOrEmpty(lastPath))
+                {
+                    if (Path.GetFullPath(lastPath).Equals(Path.GetFullPath(Model.PathManager.TemplatesDirectory), StringComparison.OrdinalIgnoreCase))
+                    {
+                        //use the last saved location
+                        if (!string.IsNullOrEmpty(LastSavedLocation) && !Path.GetFullPath(LastSavedLocation).Equals(Path.GetFullPath(Model.PathManager.TemplatesDirectory), StringComparison.OrdinalIgnoreCase))
+                        {
+                            _fileDialog.InitialDirectory = LastSavedLocation;
+                        }
+                        else
+                        {
+                            _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             }
         }
 
@@ -2194,30 +2254,58 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Indicates if the graph has been changed substantially bearing in mind the connections of its nodes and store the checksum value of the graph in the preferences to later comparison
+        /// Indicates if the workspace has been changed based on node connections and store the checksum value of the graph.
         /// </summary>
         /// <returns></returns>
-        private bool HasSubstantialCheckSum()
+        private bool HasDifferentialCheckSum()
         {
-            bool substantialChecksum = false;
+            bool differentialChecksum = false;
             string graphId = Model.CurrentWorkspace.Guid.ToString();
 
-            GraphChecksumItem checksumItem = PreferenceSettings.GraphChecksumItemsList.Where(i => i.GraphId == graphId).FirstOrDefault();
-            if (checksumItem != null)
+
+            Model.GraphChecksumDictionary.TryGetValue(graphId, out List<string> checksums);
+
+            // compare the current checksum with previous hash values.
+            if (checksums != null)
             {
-                if (checksumItem.Checksum != currentWorkspaceViewModel.Checksum)
+                if (!checksums.Contains(currentWorkspaceViewModel.CurrentCheckSum))
                 {
-                    PreferenceSettings.GraphChecksumItemsList.Remove(checksumItem);
-                    PreferenceSettings.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
-                    substantialChecksum = true;
+                    checksums.Add(currentWorkspaceViewModel.CurrentCheckSum);
+                    Model.GraphChecksumDictionary.Remove(graphId);
+                    Model.GraphChecksumDictionary.Add(graphId, checksums);
+                    differentialChecksum = true;
                 }
             }
             else
             {
-                PreferenceSettings.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
-                substantialChecksum = true;
+                Model.GraphChecksumDictionary.Add(graphId, new List<string>() { currentWorkspaceViewModel.CurrentCheckSum });
+                differentialChecksum = true;
             }
-            return substantialChecksum;
+
+            // if the checksum is different from previous hashes, serialize this new info. 
+            if (differentialChecksum)
+            {
+                var graphChecksums = new List<GraphChecksumPair>();
+                foreach (KeyValuePair<string, List<string>> entry in Model.GraphChecksumDictionary)
+                {
+                    var item = new GraphChecksumPair
+                    {
+                        GraphId = entry.Key,
+                        Checksum = entry.Value
+                    };
+
+                    graphChecksums.Add(item);
+                }
+
+                var serializer = new XmlSerializer(Model.GraphChecksumList.GetType());
+                using (var writer = XmlWriter.Create(dynamoMLDataPath))
+                {
+                    Model.GraphChecksumList = graphChecksums;
+                    serializer.Serialize(writer, Model.GraphChecksumList);
+                }
+            }
+
+            return differentialChecksum;
         }
 
         private void InternalSaveAs(string path, SaveContext saveContext, bool isBackup = false)
@@ -2229,7 +2317,7 @@ namespace Dynamo.ViewModels
                 if (path.Contains(Model.PathManager.TemplatesDirectory))
                 {
                     // Give user notifications
-                    DynamoMessageBox.Show(WpfResources.WorkspaceSaveTemplateDirectoryBlockMsg, WpfResources.WorkspaceSaveTemplateDirectoryBlockTitle,
+                    DynamoMessageBox.Show(Owner, WpfResources.WorkspaceSaveTemplateDirectoryBlockMsg, WpfResources.WorkspaceSaveTemplateDirectoryBlockTitle,
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 else
@@ -2241,13 +2329,14 @@ namespace Dynamo.ViewModels
                 {
                     AddToRecentFiles(path);
 
-                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX && IsMLDataIngestionPipelineinBeta && currentWorkspaceViewModel.Checksum != string.Empty)
+                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash &&
+                         Model.CurrentWorkspace.IsValidForFDX && !IsMLDataIngestionPipelineinBeta && currentWorkspaceViewModel.Checksum != string.Empty)
                     {
-                        Model.Logger.Log("The Workspace is valid for FDX");
-                        Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
-                        Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
-                        Model.Logger.Log("The Workspace has Substantial checksum, so is ready to send to FDX : " + HasSubstantialCheckSum().ToString());
-                        MLDataPipelineExtension.DynamoMLDataPipeline.DataExchange(path);
+                        if (HasDifferentialCheckSum())
+                        {
+                            Model.Logger.Log("This Workspace is shared to train the Dynamo Machine Learning model.");
+                            MLDataPipelineExtension.DynamoMLDataPipeline.DataExchange(path);
+                        }
                     }
                 }                           
             }
@@ -2496,6 +2585,7 @@ namespace Dynamo.ViewModels
         /// Present the new preset dialogue and add a new presetModel 
         /// to the preset set on this graph
         /// </summary>
+        [Obsolete("The preset functionality is deprecated, DO NOT USE, will be removed in future version.")]
         private void ShowNewPresetStateDialogAndMakePreset(object parameter)
         {
             var selectedNodes = GetInputNodesFromSelectionForPresets().ToList();
@@ -2600,8 +2690,17 @@ namespace Dynamo.ViewModels
             {
                 FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
-                // If the filePath is not empty set the default directory
-                if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
+                // If the current workspace is a template use the last saved location.
+                if (vm.Model.CurrentWorkspace.IsTemplate)
+                {
+                    var loc = string.IsNullOrEmpty(LastSavedLocation) ?
+                        Environment.GetFolderPath(Environment.SpecialFolder.Desktop) :
+                        LastSavedLocation;
+                    var fi = new DirectoryInfo(loc);
+                    _fileDialog.InitialDirectory = fi.FullName;
+                }
+                // If the filePath is not empty and is not a template path, set the default directory
+                else if (!vm.Model.CurrentWorkspace.IsTemplate && !string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
                 {
                     var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
                     _fileDialog.InitialDirectory = fi.DirectoryName;
@@ -2617,6 +2716,9 @@ namespace Dynamo.ViewModels
                 if (_fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     SaveAs(_fileDialog.FileName);
+                    LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
+                    //set the IsTemplate to false, after saving it as a file
+                    vm.Model.CurrentWorkspace.IsTemplate = false;
                 }
             }
             catch (PathTooLongException)
