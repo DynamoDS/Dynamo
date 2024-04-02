@@ -3546,17 +3546,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Displays file open error dialog if the file is of a future version than the currently installed version
+        /// Displays file open error dialog if the file is of a future version than the currently installed version.
         /// </summary>
         /// <param name="fullFilePath"></param>
         /// <param name="fileVersion"></param>
         /// <param name="currVersion"></param>
-        /// <returns> true if the file must be opened and false otherwise </returns>
+        /// <returns> true if the file must be opened and false otherwise. </returns>
         private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
-            var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
-
             string summary = Resources.FutureFileSummary;
             var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 
