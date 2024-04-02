@@ -149,6 +149,17 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Return a dictionary of GraphChecksumItems.
+        /// Key will be the workspace guid and its value will be a list of saved checksums(sha256 hash) for that workspace.
+        /// </summary>
+        internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
+
+        /// <summary>
+        /// Return a list of GraphChecksumItems
+        /// </summary>
+        public List<GraphChecksumPair> GraphChecksumList { get; set; }
+
         #endregion
 
         #region static properties
@@ -980,6 +991,10 @@ namespace Dynamo.Models
             {
                 LuceneUtility.DisposeWriter();
             }
+
+            GraphChecksumList = new List<GraphChecksumPair>();
+            GraphChecksumDictionary = new Dictionary<string, List<string>>();
+                 
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
         }

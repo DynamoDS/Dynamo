@@ -152,6 +152,7 @@ namespace Dynamo.Interfaces
         /// <param name="value">Active state to set</param>
         void SetIsBackgroundPreviewActive(string name, bool value);
 
+        [Obsolete("This property is not needed anymore in the preference settings and can be removed in a future version of Dynamo.")]
         /// <summary>
         /// Return a list of GraphChecksumItems
         /// </summary>
