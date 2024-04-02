@@ -145,9 +145,11 @@ namespace Dynamo.UI.Views
             PathHelper.CreateFolderIfNotExist(userDataDir.ToString());
             var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
+            var userDataFolder = CreateUniqueUserDataFolder(webBrowserUserDataFolder.FullName);
+
             dynWebView.CreationProperties = new CoreWebView2CreationProperties
             {
-                UserDataFolder = webBrowserUserDataFolder.FullName
+                UserDataFolder = userDataFolder.FullName
             };
 
             //ContentRendered ensures that the webview2 component is visible.
@@ -476,14 +478,51 @@ namespace Dynamo.UI.Views
 
         #endregion
 
+        #region Helper Functions
+        /// <summary>
+        /// Create unique subfolder to allocate webView2 resources
+        /// </summary>
+        /// <param name="baseDir"></param>
+        /// <returns></returns>
+        private DirectoryInfo CreateUniqueUserDataFolder(string baseDir)
+        {
+            Directory.CreateDirectory(baseDir);
+
+            var uniqueSubfolderName = Guid.NewGuid().ToString();
+            var uniquePath = Path.Combine(baseDir, uniqueSubfolderName);
+            Directory.CreateDirectory(uniquePath);
+
+            return new DirectoryInfo(uniquePath);
+        }
+        #endregion
+
         #region Dispose
         public void Dispose()
         {
             DataContextChanged -= OnDataContextChanged;
+
             if(startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            if (this.dynWebView != null)
+            {
+                var userDataFolder = this.dynWebView.CoreWebView2.Environment.UserDataFolder;
+                if (userDataFolder != null && Directory.Exists(userDataFolder))
+                {
+                    // Try shutting down the browser with Dispose, and wait for process to exit
+                    try
+                    {
+                        var webViewProcessId = Convert.ToInt32(this.dynWebView.CoreWebView2.BrowserProcessId);
+                        var webViewProcess = Process.GetProcessById(webViewProcessId);
 
-            this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
+                        this.dynWebView.Dispose();
+                        webViewProcess.WaitForExit(3000);
 
+                        Directory.Delete(userDataFolder, true);
+                    }
+                    catch {
+                    }
+                }
+
+            }
             if (File.Exists(fontFilePath))
             {
                 File.Delete(fontFilePath);

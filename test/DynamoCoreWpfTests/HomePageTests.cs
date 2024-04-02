@@ -19,9 +19,17 @@ namespace DynamoCoreWpfTests
         public void GuidedTourItems_InitializationShouldContainExpectedItems()
         {
             // Arrange
-            var homePage = new HomePage();
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            var homePage = View.homePage;
 
-            // Act - initialization happens in the constructor
+            // Act - Delegates are set in the constructor
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Assert
             Assert.IsNotNull(homePage.GuidedTourItems);
@@ -35,9 +43,17 @@ namespace DynamoCoreWpfTests
         public void ActionDelegates_ShouldBeProperlySetAfterConstruction()
         {
             // Arrange
-            var homePage = new HomePage();
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            var homePage = View.homePage;
 
             // Act - Delegates are set in the constructor
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Assert
             Assert.IsNotNull(homePage.RequestOpenFile);
@@ -113,7 +129,6 @@ namespace DynamoCoreWpfTests
 
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task CanClickRecentGraph()
         {
             // Arrange
@@ -159,7 +174,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task CanClickSampleGraph()
         {
             // Arrange
@@ -210,7 +224,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task CanClickTourGuide()
         {
             // Arrange
@@ -250,7 +263,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task ReceiveCorrectNumberOfRecentGrphs()
         {
             // Arrange
@@ -285,7 +297,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task ReceiveCorrectNumberOfSamples()
         {
             // Arrange
@@ -327,7 +338,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task ReceiveCorrectNumberOfTourGuides()
         {
             // Arrange
@@ -353,7 +363,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task ReceiveCorrectNumberOfCarouselVideos()
         {
             // Arrange
@@ -379,7 +388,6 @@ namespace DynamoCoreWpfTests
         }
         
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task CanRunNewHomeWorkspaceCommandFromHomePage()
         {
             // Arrange
@@ -422,7 +430,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task CanRunNewCustomNodeCommandFromHomePage()
         {
             // Arrange
@@ -460,7 +467,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task CanOpenWorkspaceCommandFromHomePage()
         {
             // Arrange
@@ -498,7 +504,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task ShowTemplateCommandFromHomePage()
         {
             // Arrange
@@ -536,7 +541,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("Concurrent execution of webView2 tests leads to timeout - assumption")]
         public async Task ShowBackupFolderCommandFromHomePage()
         {
             // Arrange
@@ -609,7 +613,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanOpenGraphOnDragAndDrop()
         {
             // Arrange
@@ -630,7 +633,13 @@ namespace DynamoCoreWpfTests
             var startPage = new StartPageViewModel(vm, true);
             var homePage = View.homePage;
             homePage.DataContext = startPage;
-            InitializeWebView2(homePage.dynWebView);
+
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
             var result = homePage.ProcessUri(filePath.ToString());
