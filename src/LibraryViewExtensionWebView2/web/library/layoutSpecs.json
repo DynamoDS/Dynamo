@@ -1472,9 +1472,18 @@
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Mesh"
-                },
+                }
+              ],
+              "childElements": []
+            },
+            {
+              "text": "PanelSurface",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
                 {
-                  "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Panel"
+                  "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurface",
+                  "inclusive": false
                 }
               ],
               "childElements": []
