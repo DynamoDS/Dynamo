@@ -62,6 +62,7 @@ namespace Dynamo.UI.Views
         internal static Action<string> TestHook { get; set; }
 
         internal AsyncMethodState initState = AsyncMethodState.NotStarted;
+        private DirectoryInfo userDataFolder;
 
         public HomePage()
         {   
@@ -145,7 +146,7 @@ namespace Dynamo.UI.Views
             PathHelper.CreateFolderIfNotExist(userDataDir.ToString());
             var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
-            var userDataFolder = CreateUniqueUserDataFolder(webBrowserUserDataFolder.FullName);
+            userDataFolder = CreateUniqueUserDataFolder(webBrowserUserDataFolder.FullName);
 
             dynWebView.CreationProperties = new CoreWebView2CreationProperties
             {
@@ -504,8 +505,7 @@ namespace Dynamo.UI.Views
             if(startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
             if (this.dynWebView != null)
             {
-                var userDataFolder = this.dynWebView.CoreWebView2.Environment.UserDataFolder;
-                if (userDataFolder != null && Directory.Exists(userDataFolder))
+                if (userDataFolder != null && Directory.Exists(userDataFolder.FullName))
                 {
                     // Try shutting down the browser with Dispose, and wait for process to exit
                     try
@@ -516,7 +516,7 @@ namespace Dynamo.UI.Views
                         this.dynWebView.Dispose();
                         webViewProcess.WaitForExit(3000);
 
-                        Directory.Delete(userDataFolder, true);
+                        Directory.Delete(userDataFolder.FullName, true);
                     }
                     catch {
                     }
