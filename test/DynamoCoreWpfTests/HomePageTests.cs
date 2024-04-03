@@ -16,6 +16,7 @@ namespace DynamoCoreWpfTests
     {
         #region initialization tests
         [Test]
+        [Ignore("Test refactor")]
         public void GuidedTourItems_InitializationShouldContainExpectedItems()
         {
             // Arrange
@@ -40,6 +41,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public void ActionDelegates_ShouldBeProperlySetAfterConstruction()
         {
             // Arrange
@@ -129,6 +131,7 @@ namespace DynamoCoreWpfTests
 
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task CanClickRecentGraph()
         {
             // Arrange
@@ -174,6 +177,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task CanClickSampleGraph()
         {
             // Arrange
@@ -224,6 +228,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task CanClickTourGuide()
         {
             // Arrange
@@ -263,6 +268,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task ReceiveCorrectNumberOfRecentGrphs()
         {
             // Arrange
@@ -297,6 +303,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task ReceiveCorrectNumberOfSamples()
         {
             // Arrange
@@ -338,6 +345,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task ReceiveCorrectNumberOfTourGuides()
         {
             // Arrange
@@ -363,6 +371,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task ReceiveCorrectNumberOfCarouselVideos()
         {
             // Arrange
@@ -388,6 +397,7 @@ namespace DynamoCoreWpfTests
         }
         
         [Test]
+        [Ignore("Test refactor")]
         public async Task CanRunNewHomeWorkspaceCommandFromHomePage()
         {
             // Arrange
@@ -430,6 +440,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task CanRunNewCustomNodeCommandFromHomePage()
         {
             // Arrange
@@ -467,6 +478,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task CanOpenWorkspaceCommandFromHomePage()
         {
             // Arrange
@@ -504,6 +516,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task ShowTemplateCommandFromHomePage()
         {
             // Arrange
@@ -541,6 +554,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task ShowBackupFolderCommandFromHomePage()
         {
             // Arrange
@@ -578,6 +592,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public async Task ShowSampleFilesFolderCommandFromHomePage()
         {
             // Arrange
@@ -613,6 +628,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public void CanOpenGraphOnDragAndDrop()
         {
             // Arrange

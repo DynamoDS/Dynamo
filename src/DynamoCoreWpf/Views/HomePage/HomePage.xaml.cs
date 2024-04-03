@@ -35,8 +35,6 @@ namespace Dynamo.UI.Views
         private static readonly string fontUrl = $"http://{virtualFolderName}/ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderPath = Path.Combine(Path.GetTempPath(), virtualFolderName);
 
-        private string fontFilePath;
-
         private StartPageViewModel startPage;
 
         /// <summary>
@@ -502,7 +500,7 @@ namespace Dynamo.UI.Views
         {
             DataContextChanged -= OnDataContextChanged;
 
-            if(startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            if (startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
             if (this.dynWebView != null)
             {
                 if (userDataFolder != null && Directory.Exists(userDataFolder.FullName))
@@ -522,10 +520,6 @@ namespace Dynamo.UI.Views
                     }
                 }
 
-            }
-            if (File.Exists(fontFilePath))
-            {
-                File.Delete(fontFilePath);
             }
         }
         #endregion
