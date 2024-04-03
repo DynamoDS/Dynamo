@@ -3955,4 +3955,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="DynamoXmlFileFormat" xml:space="preserve">
     <value>Dynamo 1.x file format</value>
   </data>
+  <data name="MessagePackageOlderDynamo" xml:space="preserve">
+    <value>The package or one of its dependencies use an older version of {0} than you are currently using. Do you want to continue?</value>
+  </data>
+  <data name="PackageUseOlderDynamoMessageBoxTitle" xml:space="preserve">
+    <value>Package Uses OlderVersion of {0}!</value>
+  </data>
 </root>

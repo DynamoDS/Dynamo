@@ -4607,6 +4607,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package or one of its dependencies use an older version of {0} than you are currently using. Do you want to continue?.
+        /// </summary>
+        public static string MessagePackageOlderDynamo {
+            get {
+                return ResourceManager.GetString("MessagePackageOlderDynamo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The package or one of its dependencies targets a different environment, such as Revit, Civil 3D, Advance Steel, Alias or FormIt. This can cause instability and unexpected problems. Do you want to continue?.
         /// </summary>
         public static string MessagePackageTargetOtherHosts {
@@ -7117,6 +7126,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageUseNewerDynamoMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageUseNewerDynamoMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Uses OlderVersion of {0}!.
+        /// </summary>
+        public static string PackageUseOlderDynamoMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("PackageUseOlderDynamoMessageBoxTitle", resourceCulture);
             }
         }
         
