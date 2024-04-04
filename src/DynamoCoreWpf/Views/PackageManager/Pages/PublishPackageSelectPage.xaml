@@ -594,7 +594,7 @@
                           IsChecked="{Binding Path=RetainFolderStructureOverride, Mode=TwoWay}"
                           IsTabStop="False"
                           Style="{StaticResource EllipseToggleButton1}" />
-            <TextBlock Text="Retain folder structure (Advanced)"
+            <TextBlock Text="{x:Static p:Resources.PublishPackageRetainFolderStructureToggleButtonText}"
                        Style="{StaticResource LabelStyle}"
                        Margin="5 0"
                        VerticalAlignment="Center" />
@@ -609,7 +609,6 @@
                              Style="{StaticResource GenericToolTipLight}" />
                 </Rectangle.ToolTip>
             </Rectangle>
-
         </StackPanel>
     </Grid>
 </Page>

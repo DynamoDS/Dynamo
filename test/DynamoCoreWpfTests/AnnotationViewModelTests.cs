@@ -1427,6 +1427,58 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(true, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
         }
 
+        [Test]
+        public void ConnectorsRemainCollapsedOnUndoCollapsedGroup()
+        {
+            // Arrange
+            var parentGroupName = "parentGroup";
+
+            OpenModel(@"core\annotationViewModelTests\connectorsRemainCollapsedAfterUndo.dyn");
+
+            var parentGroupVM = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == parentGroupName);
+            var connectors = ViewModel.CurrentSpaceViewModel.Connectors;
+
+            // Assert group exists and connectors are expanded
+            Assert.IsNotNull(parentGroupVM);
+            Assert.AreEqual(0, connectors.Count(c => c.IsCollapsed));
+
+            // Act
+            // Collapse the parent group
+            parentGroupVM.IsExpanded = false;
+
+            // Assert connectors are collapsed
+            Assert.AreEqual(2, connectors.Count(c => c.IsCollapsed));
+
+            // Select the all nodes from parent group and move them
+            DynamoSelection.Instance.Selection.Clear();
+            parentGroupVM.SelectAll();
+
+            // Perform move operation
+            var initialGroupX = parentGroupVM.Left;
+            var initialGroupY = parentGroupVM.Top;
+
+            var operation = DynamoModel.DragSelectionCommand.Operation.BeginDrag;
+            var command = new DynamoModel.DragSelectionCommand(new Point2D(100, 100), operation);
+
+            ViewModel.ExecuteCommand(command);
+
+            operation = DynamoModel.DragSelectionCommand.Operation.EndDrag;
+            command = new DynamoModel.DragSelectionCommand(new Point2D(300, 300), operation);
+
+            ViewModel.ExecuteCommand(command);
+
+            // Assert the group has moved and connectors remain collapsed
+            Assert.AreNotEqual(initialGroupX, parentGroupVM.Left);
+            Assert.AreNotEqual(initialGroupY, parentGroupVM.Top);
+            Assert.AreEqual(2, connectors.Count(c => c.IsCollapsed));
+
+            // Undo move operation
+            ViewModel.UndoCommand.Execute(null);
+
+            // Assert connectors remain collapsed post-undo
+            Assert.AreEqual(2, connectors.Count(c => c.IsCollapsed));
+        }
+
         #endregion
     }
 }

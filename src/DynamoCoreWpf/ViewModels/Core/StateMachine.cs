@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
@@ -763,7 +761,7 @@ namespace Dynamo.ViewModels
                             .ToList();
 
                         // AddModelsToGroupModelCommand adds models to the selected group
-                        // therefor we add the dropGroup to the selection before calling
+                        // therefore we add the dropGroup to the selection before calling
                         // the command.
                         DynamoSelection.Instance.Selection.AddUnique(dropGroup.AnnotationModel);
 
@@ -796,7 +794,9 @@ namespace Dynamo.ViewModels
                             owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
                         }
                         dropGroup.NodeHoveringState = false;
-                        dropGroup.SelectAll();
+                        //select only those models which were added to the group
+                        DynamoSelection.Instance.ClearSelection();
+                        DynamoSelection.Instance.Selection.AddRange(modelsToAdd);
                     }
 
                     SetCurrentState(State.None); // Dragging operation ended.

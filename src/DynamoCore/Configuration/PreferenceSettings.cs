@@ -48,12 +48,21 @@ namespace Dynamo.Configuration
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource, IHideAutocompleteMethodOptions
     {
-        internal readonly static Lazy<PreferenceSettings>
+        private readonly static Lazy<PreferenceSettings>
             lazy = new Lazy<PreferenceSettings>
             (() => PreferenceSettings.Load(PathManager.Instance.PreferenceFilePath));
 
+        /// <summary>
+        /// Return a PreferenceSetting object.  The object returned is based on the following conditions:
+        /// 1) if DynamoModel present, the DynamoModel.PreferenceSettings object is returned,
+        /// 2) else, if a valid setting xml file exists, the PreferenceSettings object de-serialized from the xml file is returned,
+        /// 3) else, if no DynamoModel and no valid xml file exists, a new PreferenceSettings object returned
+        /// Note that Instance is a runtime object only.  No changes to the PreferenceSettings will be persisted on disk with condition 2 or 3.
+        /// User of Instance must initiate save operations to insure persistence of modifications to the PreferenceSettings model.
+        /// In some cases even the save will not guarantee persistence of modifications depending on the startup of DynamoModel.
+        /// </summary>
         [XmlIgnore]
-        public static PreferenceSettings Instance { get; internal set; } = lazy.Value;
+        internal static PreferenceSettings Instance { get; set; } = lazy.Value;
 
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -69,6 +78,7 @@ namespace Dynamo.Configuration
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
+        private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
 
         #region Constants
@@ -324,7 +334,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]
+        [Obsolete("Property will be deprecated in a future version of Dynamo, please use BackgroundPreviews")]
         public bool IsBackgroundPreviewActive
         {
             get
@@ -441,6 +451,19 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// Template path
+        /// </summary>
+        public string TemplateFilePath
+        {
+            get { return templateFilePath; }
+            set
+            {
+                templateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateFilePath));
+            }
+        }
+
+        /// <summary>
         /// A list of backup file paths.
         /// </summary>
         public List<string> BackupFiles { get; set; }
@@ -469,6 +492,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Return a list of GraphChecksumItems
         /// </summary>
+        [Obsolete("This property is not needed anymore in the preference settings and can be removed in a future version of Dynamo.")]
         public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
 
         // This function is used to deserialize the trusted locations manually
@@ -850,10 +874,10 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
-        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value
+        /// This property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
-        internal static Version ironPythonResolveTargetVersion = new Version(2, 4, 0);
+        internal Version ironPythonResolveTargetVersion = new Version(3, 2, 0);
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
@@ -930,6 +954,8 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
             BackupLocation = string.Empty;
 
+            TemplateFilePath = string.Empty;
+
             LibraryZoomScale = 100;
             PythonScriptZoomScale = 100;
 
@@ -955,7 +981,7 @@ namespace Dynamo.Configuration
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
             GraphChecksumItemsList = new List<GraphChecksumItem>();
-            isMLAutocompleteTOUApproved = false;
+            isMLAutocompleteTOUApproved = true;
         }
 
         /// <summary>
@@ -1139,14 +1165,34 @@ namespace Dynamo.Configuration
             return defaultPythonEngine;
         }
 
+        /// <summary>
+        /// Initialize namespaces to exclude from Library based on conditions
+        /// </summary>
         internal void InitializeNamespacesToExcludeFromLibrary()
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                NamespacesToExcludeFromLibrary.Add(
+                NamespacesToExcludeFromLibrary = new List<string>()
+                {
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel"
+                };  
+                NamespacesToExcludeFromLibrarySpecified = true;
+            }
+        }
+
+        /// <summary>
+        /// Update namespaces to exclude from Library based on feature flags
+        /// </summary>
+        internal void UpdateNamespacesToExcludeFromLibrary()
+        {
+            // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
+            if (!DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false)
+            {
+                NamespacesToExcludeFromLibrary.Remove(
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
                 );
-                NamespacesToExcludeFromLibrarySpecified = true;
+                return;
             }
         }
 
@@ -1236,13 +1282,11 @@ namespace Dynamo.Configuration
         internal void AddDefaultTrustedLocations()
         {
             if (!IsFirstRun) return;
-
-            const string Autodesk = "Autodesk";
             string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramData, Configurations.AutodeskAsString));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            AddTrustedLocation(Path.Combine(ProgramFiles, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramFiles, Configurations.AutodeskAsString));
         }
 
         /// <summary>

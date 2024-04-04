@@ -353,15 +353,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// This property getter returns an empty GeometryCollection
-        /// </summary>
-        [Obsolete("This property will be removed in Dynamo 3.0 - please use NestedGroupsGeometries instead.")]
-        public GeometryCollection NestedGroupsGeometryCollection
-        {
-            get => new GeometryCollection();
-        }
-
-        /// <summary>
         /// Collection of rectangles based on AnnotationModels
         /// that belongs to this group.
         /// This is used to make a cutout in this groups background
@@ -651,7 +642,7 @@ namespace Dynamo.ViewModels
 
             ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
 
-            // Add all grouped AnnotaionModels to the CutGeometryDictionary.
+            // Add all grouped AnnotationModels to the CutGeometryDictionary.
             // And raise ZIndex changed to make sure nested groups have
             // a higher zIndex than the parent.
             using (NestedGroupsGeometries.DeferCollectionReset())

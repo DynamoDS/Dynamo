@@ -369,6 +369,9 @@
                     <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DisableRemove}" Value="True">
                         <Setter Property="Visibility" TargetName="RemoveButton" Value="Hidden"/>
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Tag}" Value="True">
+                        <Setter Property="Visibility" TargetName="RemoveButton" Value="Hidden"/>
+                    </DataTrigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
 

@@ -66,13 +66,10 @@ namespace Dynamo.Core
         public const string ViewExtensionsDirectoryName = "viewExtensions";
         public const string DefinitionsDirectoryName = "definitions";
         public const string SamplesDirectoryName = "samples";
-        [Obsolete("This property will be removed in Dynamo 3.0")]
-        public const string GalleryDirectoryName = "gallery";
+        public const string TemplateDirectoryName = "templates";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
         public const string PythonTemplateFileName = "PythonTemplate.py";
-        [Obsolete("This property will be removed in Dynamo 3.0")]
-        public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
@@ -86,6 +83,8 @@ namespace Dynamo.Core
         private string commonPackages;
         private string logDirectory;
         private string samplesDirectory;
+        private string templatesDirectory;
+        private string defaultTemplatesDirectory;
         private string backupDirectory;
         private string defaultBackupDirectory;
         private string preferenceFilePath;
@@ -208,6 +207,16 @@ namespace Dynamo.Core
         }
 
         /// <summary>
+        /// The enum will contain the possible values for Preference Item 
+        /// </summary>
+        public enum PreferenceItem
+        {
+            Backup,
+            Templates,
+            Samples
+        }
+
+        /// <summary>
         /// Default directory where new packages are downloaded to.
         /// This directory path is user configurable and if set to something other than the default,
         /// the currently selected path can be obtained from preference settings.
@@ -244,6 +253,21 @@ namespace Dynamo.Core
             get { return samplesDirectory; }
         }
 
+        /// <summary>
+        /// Dynamo Templates folder
+        /// </summary>
+        public string TemplatesDirectory
+        {
+            get { return templatesDirectory; }
+        }
+        /// <summary>
+        /// Default templates directory, it is used when the user resets the custom template path
+        /// </summary>
+        public string DefaultTemplatesDirectory
+        {
+            get { return defaultTemplatesDirectory; }
+        }
+
         public string BackupDirectory
         {
             get { return backupDirectory; }
@@ -262,12 +286,6 @@ namespace Dynamo.Core
         public string PythonTemplateFilePath
         {
             get { return pythonTemplateFilePath; }
-        }
-
-        [Obsolete("This property will be removed in Dynamo 3.0")]
-        public string GalleryFilePath
-        {
-            get;
         }
 
         public IEnumerable<string> NodeDirectories
@@ -473,13 +491,21 @@ namespace Dynamo.Core
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }
 
-        internal bool UpdateBackupLocation(string newBackupLocation)
+        internal bool UpdatePreferenceItemPath(PreferenceItem item, string newLocation)
         {
-            bool isValidFolder = PathHelper.CreateFolderIfNotExist(newBackupLocation) == null;
+            bool isValidFolder = PathHelper.CreateFolderIfNotExist(newLocation) == null;
             if (!isValidFolder)
                 return false;
 
-            backupDirectory = newBackupLocation;
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    backupDirectory = newLocation;
+                    break;
+                case PreferenceItem.Templates:
+                    templatesDirectory = newLocation;
+                    break;
+            }
             return true;
         }
 
@@ -582,6 +608,7 @@ namespace Dynamo.Core
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
+            defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
 
             rootDirectories = new List<string> { userDataDir };
 
@@ -637,7 +664,7 @@ namespace Dynamo.Core
                 return userDataDir; //Return the cached userDataDir if we have one.
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
+            return GetDynamoDataFolder(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"));
         }
 
         /// <summary>
@@ -658,7 +685,7 @@ namespace Dynamo.Core
                 return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
+            return GetDynamoDataFolder(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"));
         }
 
         private string GetDynamoDataFolder(string folder)
@@ -725,7 +752,51 @@ namespace Dynamo.Core
 
             return sampleDirectory;
         }
-        
+
+        /// <summary>
+        /// Get template folder path from common data directory
+        /// </summary>
+        /// <param name="dataRootDirectory"></param>
+        /// <returns></returns>
+        private string GetTemplateFolder(string dataRootDirectory)
+        {
+            var versionedDirectory = dataRootDirectory;
+            if (!Directory.Exists(versionedDirectory))
+            {
+                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
+                // does not, then root directory would be "%ProgramData%\{...}".
+                //
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+            }
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, TemplateDirectoryName)))
+            {
+                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\templates" exists. If it
+                // doesn't exist, then root directory would be "%ProgramData%\{...}".
+                //
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+            }
+
+            var uiCulture = CultureInfo.CurrentUICulture.Name;
+            var templateDirectory = Path.Combine(dataRootDirectory, TemplateDirectoryName, uiCulture);
+
+            // If the localized template directory does not exist then fall back 
+            // to using the en-US template folder. Do an additional check to see 
+            // if the localized folder is available but is empty.
+            // 
+            var di = new DirectoryInfo(templateDirectory);
+            if (!Directory.Exists(templateDirectory) ||
+                !di.GetDirectories().Any() ||
+                !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
+            {
+                var neturalCommonTemplates = Path.Combine(dataRootDirectory, TemplateDirectoryName, "en-US");
+                if (Directory.Exists(neturalCommonTemplates))
+                    templateDirectory = neturalCommonTemplates;
+            }
+
+            return templateDirectory;
+        }
+
         private IEnumerable<string> LibrarySearchPaths(string library)
         {
             // Strip out possible directory from library path.

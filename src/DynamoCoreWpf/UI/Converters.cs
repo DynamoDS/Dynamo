@@ -10,6 +10,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -164,26 +166,6 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-
-    /// <summary>
-    /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
-    /// </summary>
-    [Obsolete("This class will be removed in Dynamo 3.0")]
-    public class EmptyDepStringToCollapsedConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter,
-          CultureInfo culture)
-        {
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-          CultureInfo culture)
         {
             return null;
         }
@@ -1758,38 +1740,6 @@ namespace Dynamo.Controls
         }
     }
 
-    //TODO remove(this is not used anywhere) in Dynamo 3.0
-    public class ZoomToVisibilityConverter : IValueConverter
-    {
-        /// <summary>
-        /// Returns hidden for small zoom sizes - appears unused.
-        /// </summary>
-        /// <param name="value">zoom size</param>
-        /// <param name="targetType">unused</param>
-        /// <param name="parameter">unused</param>
-        /// <param name="culture">unused</param>
-        /// <returns></returns>
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            try
-            {
-                double zoom = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
-                if (zoom < .5)
-                    return Visibility.Hidden;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"problem attempting to parse zoomsize or param {value}{ e.Message}");
-            }
-            return Visibility.Visible;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-    }
-
     public class ZoomToBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2128,6 +2078,53 @@ namespace Dynamo.Controls
         }
     }
 
+    public class CopyrightInfoTooltipConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
+            {
+                return null;
+            }
+            if (values != null && values.Count() > 0)
+            {
+                var cph = string.IsNullOrEmpty((string)values[0]) ? "N/A" : (string)values[0];
+                var cpy = string.IsNullOrEmpty((string)values[1]) ? "N/A" : (string)values[1];
+                var tooltip = Resources.PackageDetailsCopyRightHolder + ": " + cph + Environment.NewLine +
+                    Resources.PackageDetailsCopyRightYear + ": " + cpy;
+                return tooltip;
+            }
+            return "";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class PackageDetailsLinkCollapseOnEmpty : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
+            {
+                return null;
+            }
+            if (values != null && values.Count() > 0)
+            {
+                if (!string.IsNullOrEmpty((string)values[0]) || !string.IsNullOrEmpty((string)values[1]))
+                return Visibility.Visible; ;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public sealed class WarningLevelToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2222,8 +2219,8 @@ namespace Dynamo.Controls
         }
     }
 
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
-    public class MeasureConverter : IValueConverter
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the ForgeUnit SDK based methods")]
+    internal class MeasureConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -3369,6 +3366,40 @@ namespace Dynamo.Controls
             }
             return "#DCDCDC";
         }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Base64ToImageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return null;
+
+            string s = string.Empty;
+            if (value is string)
+            {
+                s = value as string;
+            }
+
+            if (string.IsNullOrEmpty(s)) return null;
+
+            BitmapImage loadedBitM = null;
+            using (MemoryStream ms = new MemoryStream(System.Convert.FromBase64String(s)))
+            {
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.StreamSource = ms;
+                bi.CacheOption = BitmapCacheOption.OnLoad;
+                bi.EndInit();
+                loadedBitM = bi;
+            }
+
+            return loadedBitM;
+        }
+
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();

@@ -22,13 +22,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public event Func<string, bool> UpvoteRequested;
 
-        /// <summary>
-        ///     An event that's invoked when the user has attempted to downvote this
-        ///     package.
-        /// </summary>
-        [Obsolete("This event will be removed in Dynamo 3.0")]
-        public event Func<string, bool> DownvoteRequested;
-
         public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x => x.username)); } }
         private int _votes;
         public int Votes
@@ -43,7 +36,7 @@ namespace Dynamo.PackageManager
         public string LatestVersion { get { return Header.versions != null ? Header.versions[Header.versions.Count - 1].version : String.Empty; } }
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
 
-        public IEnumerable<string> PackageVersions { get { return Header.versions.Select(x => x.version); } }
+        public IEnumerable<string> PackageVersions { get { return Header.versions.OrderByDescending(x => x.version).Select(x => x.version); } }
 
         /// <summary>
         /// Hosts dependencies specified for latest version of particular package
@@ -188,33 +181,6 @@ namespace Dynamo.PackageManager
                 , TaskScheduler.FromCurrentSynchronizationContext());
 
             HasUpvote = true;
-        }
-
-        [Obsolete("This API will no longer decrease package votes and will be removed in Dynamo 3.0")]
-        public void Downvote()
-        {
-            Task<bool>.Factory.StartNew(() => DownvoteRequested(this.Id))
-                .ContinueWith((t) =>
-                {
-                    if (t.Result)
-                    {
-                        this.Votes -= 1;
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        [Obsolete("No longer used. Remove in 3.0.")]
-        public static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
-            IEnumerable<PackageHeader> headers, PackageVersion version)
-        {
-            return headers.Zip(
-                version.full_dependency_versions,
-                (header, v) => new Tuple<PackageHeader, string>(header, v))
-                .Select(
-                    (pair) =>
-                        new Tuple<PackageHeader, PackageVersion>(
-                        pair.Item1,
-                        pair.Item1.versions.First(x => x.version == pair.Item2)));
         }
     }
 }

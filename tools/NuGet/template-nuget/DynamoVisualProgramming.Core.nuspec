@@ -10,27 +10,15 @@
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>
-            Assemblies required to start a DynamoModel and execute DesignScript code. Contains the following files:
-            1) DynamoApplications.dll
-            2) DynamoCore.dll
-            3) DynamoInstallDetective.dll
-            4) DynamoShapeManager.dll
-            5) DynamoUtilities.dll
-            6) ProtoCore.dll
-            7) DesignScriptBuiltin.dll
-            8) VMDataBridge.dll
-            9) DSCPython.dll
-            10) DynamoPackages.dll
+            Assemblies required to reference core APIs from Dynamo.
         </description>
         <summary>This package contains the core assemblies for Dynamo.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <!--TODO - why do we reference nunit from dynamo core? This is an odd partial collection of dependencies to mark.-->
             <group targetFramework="$TargetFramework$">
-                <dependency id="NUnit" version="3.13.3"/>
                 <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
+                <!--NewtonSoft types are exposed in Dynamo public APIs-->
                 <dependency id="Newtonsoft.Json" version="13.0.1"/>
-                <dependency id="System.Collections.Immutable" version="5.0.0"/>
             </group>
         </dependencies>
     </metadata>

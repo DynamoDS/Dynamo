@@ -151,6 +151,8 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event Action<NodeModel> ParentNodeRemoved;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -168,7 +170,7 @@ namespace Dynamo.ViewModels
         internal void ResetAutoCompleteSearchViewState()
         {
             DisplayAutocompleteMLStaticPage = false;
-            DisplayLowConfidence = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel && PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
+            DisplayLowConfidence = dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel && dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
             AutocompleteMLMessage = string.Empty;
             AutocompleteMLTitle = string.Empty;
             FilteredResults = new List<NodeSearchElementViewModel>();
@@ -372,7 +374,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, Math.Round(result.Score * 100));
                             results.Add(viewModelElement);
                         }
                     }
@@ -405,7 +407,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, Math.Round(result.Score * 100));
                             results.Add(viewModelElement);
                         }
                     }
@@ -423,7 +425,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // Show low confidence section if there are some results under threshold and feature enabled
-                DisplayLowConfidence = FilteredLowConfidenceResults.Any() && PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel;
+                DisplayLowConfidence = FilteredLowConfidenceResults.Any() && dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel;
 
                 if (!FilteredHighConfidenceResults.Any())
                 {
@@ -434,7 +436,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // By default, show only the results which are above the threshold
-                FilteredResults = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel? FilteredHighConfidenceResults : results    ;
+                FilteredResults = dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel? FilteredHighConfidenceResults : results    ;
             }
         }
 
@@ -450,8 +452,12 @@ namespace Dynamo.ViewModels
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     var client = new RestClient(uri);
                     var request = new RestRequest(string.Empty,Method.Post);
-
-                    request.AddHeader("Authorization",$"Bearer {tokenprovider?.GetAccessToken()}");
+                    var tkn = tokenprovider?.GetAccessToken();
+                    if (string.IsNullOrEmpty(tkn))
+                    {
+                        throw new Exception("Authentication required.");
+                    }
+                    request.AddHeader("Authorization",$"Bearer {tkn}");
                     request = request.AddJsonBody(requestJSON);
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request);
@@ -530,6 +536,7 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
+            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
             ResetAutoCompleteSearchViewState();
 
             if (IsDisplayingMLRecommendation)
@@ -593,6 +600,16 @@ namespace Dynamo.ViewModels
             {
                 FilteredResults = DefaultResults.Where(e => e.Name == "Watch" || e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
             }
+        }
+
+        internal void OnNodeAutoCompleteWindowClosed()
+        {
+            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
+        }
+
+        internal void NodeViewModel_Removed(NodeModel node)
+        {
+            ParentNodeRemoved?.Invoke(node);
         }
 
         /// <summary>

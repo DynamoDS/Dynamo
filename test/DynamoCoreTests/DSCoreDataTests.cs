@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using DynamoUnits;
@@ -494,17 +494,17 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void RememberRestoresFromCacheWhenPassedUnsupportedInputAndValidCacheJson()
+        public void RememberRestoresFromCacheWhenPassedUnsupportedInputAndvCacheJson()
         {
-            var validCachedJson = "2";
+            var vCachedJson = "2";
             object unsupportedInput = null;
-            var dict = DSCore.Data.Remember(unsupportedInput, validCachedJson);
+            var dict = DSCore.Data.Remember(unsupportedInput, vCachedJson);
 
             var returnObject = dict[">"];
             var returnCacheJson = dict["Cache"];
 
             Assert.AreEqual(2, returnObject);
-            Assert.AreEqual(validCachedJson, returnCacheJson);
+            Assert.AreEqual(vCachedJson, returnCacheJson);
         }
 
         [Test]
@@ -524,11 +524,11 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void RememberWillUpdateCacheWhenPassedSupportedInputAndValidCacheJson()
+        public void RememberWillUpdateCacheWhenPassedSupportedInputAndvCacheJson()
         {
-            var validCachedJson = "2";
+            var vCachedJson = "2";
             var newInputObject = true;
-            var dict = DSCore.Data.Remember(newInputObject, validCachedJson);
+            var dict = DSCore.Data.Remember(newInputObject, vCachedJson);
 
             var returnObject = dict[">"];
             var returnCacheJson = dict["Cache"];
@@ -556,22 +556,347 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void ThrowsWhenPassedUnsupportedInputAndInvalidCacheJson()
+        public void ThrowsWhenPassedUnsupportedInputAndInvCacheJson()
         {
-            var invalidCachedJson = "{\"one: 2}";
+            var invCachedJson = "{\"one: 2}";
             object unsupportedInput = null;
 
-            Assert.That(() => DSCore.Data.Remember(unsupportedInput, invalidCachedJson), Throws.Exception);
+            Assert.That(() => DSCore.Data.Remember(unsupportedInput, invCachedJson), Throws.Exception);
         }
 
         [Test]
         [Category("UnitTests")]
         public void ThrowsWhenPassedAnObjectThatCanNotSerialize()
         {
-            var validCachedJson = "";
+            var vCachedJson = "";
             object unsupportedInput = new FileInfo(Path.Combine(TestDirectory, @"core\json\Solid_Cylinder_JSONParsing.dyn"));
 
-            Assert.That(() => DSCore.Data.Remember(unsupportedInput, validCachedJson), Throws.Exception);
+            Assert.That(() => DSCore.Data.Remember(unsupportedInput, vCachedJson), Throws.Exception);
+        }
+
+
+        [Test]
+        [Category("UnitTests")]
+        [Ignore("Temp ignore, fixed in the follow-up PR")]
+        public void IsNotSupportedNullInput()
+        {
+            object nullInput = null;
+            var vType = typeof(String);
+            var invType = typeof(Nullable);
+
+            var vString = "input string";
+
+            // Assert - check for nulls - fail
+            var validate = DSCore.Data.IsSupportedDataNodeDynamoType(nullInput, vType.ToString(), false);
+            Assert.AreEqual(false, validate, "Null input should not be supported.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vString, invType.ToString(), false);
+            Assert.AreEqual(false, validate, "Unexisting enum type should not be supported.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        [Ignore("Temp ignore, fixed in the follow-up PR")]
+        public void IsSupportedPrimitiveDataType()
+        {
+            var vString = "input string";
+            var vInt = 5;
+            var vDouble = 3.14;
+            var vDateTime = DSCore.DateTime.ByDate(2001, 1, 1);
+            var vLocation = Location.ByLatitudeAndLongitude(50, 50);
+            var vTimeSpan = DSCore.TimeSpan.ByDateDifference(vDateTime, DSCore.DateTime.ByDate(2000, 1, 1));
+
+            var invStringList = new ArrayList() { vString, vInt, vDouble };
+            var vStringList = new ArrayList() { vString };
+            var vIntList = new ArrayList() { vInt };
+            var vDoubleList = new ArrayList() { vDouble };
+            var vDateTimeList = new ArrayList() { vDateTime };
+            var vLocationList = new ArrayList() { vLocation };
+            var vTimeSpanList = new ArrayList() { vTimeSpan };
+
+            // Assert - check list - succeed
+            var singleChecks = new Dictionary<Type, object>();
+            singleChecks[typeof(string)] = vString;
+            singleChecks[typeof(int)] = vInt;
+            singleChecks[typeof(double)] = vDouble;
+            singleChecks[typeof(DateTime)] = vDateTime;
+            singleChecks[typeof(Location)] = vLocation;
+            singleChecks[typeof(TimeSpan)] = vTimeSpan;
+
+            foreach (var kv in singleChecks)
+            {
+                Assert.AreEqual(
+                    true,
+                    DSCore.Data.IsSupportedDataNodeDynamoType(kv.Value, kv.Key.ToString(), false),
+                    String.Format($"Couldn't validate {kv.Key} input."));
+            }
+
+            // Assert - check list - fail
+            var validate = DSCore.Data.IsSupportedDataNodeDynamoType(vStringList, typeof(string).ToString(), false);
+            Assert.AreEqual(false, validate, "Shouldn't validate list values with list flag off.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vString, typeof(string).ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate single values with list flag on.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(invStringList, typeof(string).ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate heterogenous list input.");
+
+            // Assert - check homogenous list values - succeed
+            var listChecks = new Dictionary<Type, object>();
+            listChecks[typeof(string)] = vStringList;
+            listChecks[typeof(int)] = vIntList;
+            listChecks[typeof(double)] = vDoubleList;
+            listChecks[typeof(DateTime)] = vDateTimeList;
+            listChecks[typeof(Location)] = vLocationList;
+            listChecks[typeof(TimeSpan)] = vTimeSpanList;
+
+            foreach (var kv in listChecks)
+            {
+                Assert.AreEqual(
+                    true,
+                    DSCore.Data.IsSupportedDataNodeDynamoType(kv.Value, kv.Key.ToString(), true),
+                    String.Format($"Couldn't validate {kv.Key} list input."));
+            }
+        }
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void IsSupportedGeometryDataType()
+        {
+            // Single values and primitive composites
+            var point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1);
+            var point2 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(2, 2, 1);
+            var point3 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(3, 3, 3);
+            var vector = Vector.ByCoordinates(0, 0, 1);
+            var plane = Plane.ByBestFitThroughPoints([point, point2, point3]);
+            var vBoundingBox = BoundingBox.ByCorners(point, point3);
+            var vCoordinateSystem = CoordinateSystem.ByOrigin(0, 0);
+            var vSurface = Surface.ByPerimeterPoints([point, point2, point3]);
+            var vUV = UV.ByCoordinates(0, 0);
+            var vCurve = Curve.ByParameterLineOnSurface(vSurface, vUV, vUV);
+            var vArc = Arc.ByThreePoints(point, point2, point3);
+            var vCircle = Circle.ByBestFitThroughPoints([point, point2, point3]);
+            var vEllipse = Ellipse.ByOriginRadii(point, 5, 5);
+            var vEllipseArc = EllipseArc.ByPlaneRadiiAngles(plane, 2, 2, 0, 180);
+            var vHelix = Helix.ByAxis(point, vector, point3, 1, 360);
+            var vLine = Line.ByBestFitThroughPoints([point, point2, point3]);
+            var vNurbsCurve = NurbsCurve.ByControlPoints([point, point2, point3, point]);
+            var vPolyCurve = PolyCurve.ByJoinedCurves([vCurve, vCurve], 0.001);
+            var vPolygon = Polygon.ByPoints([point, point2, point3, point]);
+            var vRectangle = Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(5, 10);
+            var indexGroup = IndexGroup.ByIndices(0, 1, 2);
+            var vMesh = Mesh.ByPointsFaceIndices([point, point2, point3], [indexGroup, indexGroup, indexGroup]);
+            var vSolid = Solid.ByJoinedSurfaces([vSurface, vSurface, vSurface, vSurface, vSurface, vSurface]);
+            var vCone = Cone.ByCoordinateSystemHeightRadii(vCoordinateSystem, 1, 1, 1);
+            var vCylinder = Cylinder.ByPointsRadius(point, point3, 1);
+            var vCuboid = Cuboid.ByCorners(point, point3);
+            var vSphere = Sphere.ByCenterPointRadius(point, 1);
+            var vNurbsSurface = NurbsSurface.ByControlPoints([[point, point2, point3, point],
+                [point, point3, point2, point],
+                [point2, point3, point, point2]], 2, 2);
+            var vPolySurface = PolySurface.ByJoinedSurfaces([vSurface, vSurface]);
+
+            // Lists
+            var invBoundingBoxList = new ArrayList() { point, vBoundingBox };
+            var vBoundingBoxList = new ArrayList() { vBoundingBox, vBoundingBox };
+            var vCoordinateSystemList = new ArrayList() { vCoordinateSystem, vCoordinateSystem };
+            var vPointList = new ArrayList() { point, point };
+            var vVectorList = new ArrayList() { vector, vector };
+            var vPlaneList = new ArrayList() { plane, plane };
+            var vSurfaceList = new ArrayList() { vSurface, vSurface };
+            var vUVList = new ArrayList() { vUV, vUV };
+            var vCurveList = new ArrayList() { vCurve, vCurve };
+            var vArcList = new ArrayList() { vArc, vArc };
+            var vCircleList = new ArrayList() { vCircle, vCircle };
+            var vEllipseList = new ArrayList() { vEllipse, vEllipse };
+            var vEllipseArcList = new ArrayList() { vEllipseArc, vEllipseArc };
+            var vHelixList = new ArrayList() { vHelix, vHelix };
+            var vLineList = new ArrayList() { vLine, vLine };
+            var vNurbsCurveList = new ArrayList() { vNurbsCurve, vNurbsCurve };
+            var vPolyCurveList = new ArrayList() { vPolyCurve, vPolyCurve };
+            var vPolygonList = new ArrayList() { vPolygon, vPolygon };
+            var vRectangleList = new ArrayList() { vRectangle, vRectangle };
+            var vMeshList = new ArrayList() { vMesh, vMesh };
+            var vSolidList = new ArrayList() { vSolid, vSolid };
+            var vConeList = new ArrayList() { vCone, vCone };
+            var vCylinderList = new ArrayList() { vCylinder, vCylinder };
+            var vCuboidList = new ArrayList() { vCuboid, vCuboid };
+            var vSphereList = new ArrayList() { vSphere, vSphere };
+            var vNurbsSurfaceList = new ArrayList() { vNurbsSurface, vNurbsSurface };
+            var vPolySurfaceList = new ArrayList() { vPolySurface, vPolySurface };
+
+            // Assert - check signle values - succeed
+            var singleChecks = new Dictionary<Type, object>();
+            singleChecks[typeof(BoundingBox)] = vBoundingBox;
+            singleChecks[typeof(CoordinateSystem)] = vCoordinateSystem;
+            singleChecks[typeof(Autodesk.DesignScript.Geometry.Point)] = point;
+            singleChecks[typeof(Vector)] = vector;
+            singleChecks[typeof(Plane)] = plane;
+            singleChecks[typeof(Surface)] = vSurface;
+            singleChecks[typeof(UV)] = vUV;
+            singleChecks[typeof(Curve)] = vCurve;
+            singleChecks[typeof(Arc)] = vArc;
+            singleChecks[typeof(Circle)] = vCircle;
+            singleChecks[typeof(Ellipse)] = vEllipse;
+            singleChecks[typeof(EllipseArc)] = vEllipseArc;
+            singleChecks[typeof(Helix)] = vHelix;
+            singleChecks[typeof(Line)] = vLine;
+            singleChecks[typeof(NurbsCurve)] = vNurbsCurve;
+            singleChecks[typeof(PolyCurve)] = vPolyCurve;
+            singleChecks[typeof(Polygon)] = vPolygon;
+            singleChecks[typeof(Autodesk.DesignScript.Geometry.Rectangle)] = vRectangle;
+            singleChecks[typeof(Mesh)] = vMesh;
+            singleChecks[typeof(Solid)] = vSolid;
+            singleChecks[typeof(Cone)] = vCone;
+            singleChecks[typeof(Cylinder)] = vCylinder;
+            singleChecks[typeof(Cuboid)] = vCuboid;
+            singleChecks[typeof(Sphere)] = vSphere;
+            singleChecks[typeof(NurbsSurface)] = vNurbsSurface;
+            singleChecks[typeof(PolySurface)] = vPolySurface;
+
+            foreach (var kv in singleChecks)
+            {
+                Assert.AreEqual(
+                    true,
+                    DSCore.Data.IsSupportedDataNodeDynamoType(kv.Value, kv.Key.ToString(), false),
+                    String.Format($"Couldn't validate {kv.Key} input."));
+            }
+
+            // Assert - check list - fail
+            var validate = DSCore.Data.IsSupportedDataNodeDynamoType(invBoundingBoxList, typeof(BoundingBox).ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate heterogenous list input.");
+
+            // Assert - check homogenous list values - succeed
+            var listChecks = new Dictionary<Type, object>();
+            listChecks[typeof(BoundingBox)] = vBoundingBoxList;
+            listChecks[typeof(CoordinateSystem)] = vCoordinateSystemList;
+            listChecks[typeof(Autodesk.DesignScript.Geometry.Point)] = vPointList;
+            listChecks[typeof(Vector)] = vVectorList;
+            listChecks[typeof(Plane)] = vPlaneList;
+            listChecks[typeof(Surface)] = vSurfaceList;
+            listChecks[typeof(UV)] = vUVList;
+            listChecks[typeof(Curve)] = vCurveList;
+            listChecks[typeof(Arc)] = vArcList;
+            listChecks[typeof(Circle)] = vCircleList;
+            listChecks[typeof(Ellipse)] = vEllipseList;
+            listChecks[typeof(EllipseArc)] = vEllipseArcList;
+            listChecks[typeof(Helix)] = vHelixList;
+            listChecks[typeof(Line)] = vLineList;
+            listChecks[typeof(NurbsCurve)] = vNurbsCurveList;
+            listChecks[typeof(PolyCurve)] = vPolyCurveList;
+            listChecks[typeof(Polygon)] = vPolygonList;
+            listChecks[typeof(Autodesk.DesignScript.Geometry.Rectangle)] = vRectangleList;
+            listChecks[typeof(Mesh)] = vMeshList;
+            listChecks[typeof(Solid)] = vSolidList;
+            listChecks[typeof(Cone)] = vConeList;
+            listChecks[typeof(Cylinder)] = vCylinderList;
+            listChecks[typeof(Cuboid)] = vCuboidList;
+            listChecks[typeof(Sphere)] = vSphereList;
+            listChecks[typeof(NurbsSurface)] = vNurbsSurfaceList;
+            listChecks[typeof(PolySurface)] = vPolySurfaceList;
+
+            foreach (var kv in listChecks)
+            {
+                Assert.AreEqual(
+                    true,
+                    DSCore.Data.IsSupportedDataNodeDynamoType(kv.Value, kv.Key.ToString(), true),
+                    String.Format($"Couldn't validate {kv.Key} list input."));
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void IsSupprtedInheritanceDataType()
+        {
+            // Primitives
+            var point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1);
+            var point2 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(2, 2, 1);
+            var point3 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(3, 3, 3);
+            var vector = Vector.ByCoordinates(0, 0, 1);
+            var plane = Plane.ByBestFitThroughPoints([point, point2, point3]);
+            var vCoordinateSystem = CoordinateSystem.ByOrigin(0, 0);
+            var vSurface = Surface.ByPerimeterPoints([point, point2, point3]);
+
+            // Curve
+            var vUV = UV.ByCoordinates(0, 0);
+            var vCurve = Curve.ByParameterLineOnSurface(vSurface, vUV, vUV);
+            var vArc = Arc.ByThreePoints(point, point2, point3);
+            var vCircle = Circle.ByBestFitThroughPoints([point, point2, point3]);
+            var vEllipse = Ellipse.ByOriginRadii(point, 5, 5);
+            var vEllipseArc = EllipseArc.ByPlaneRadiiAngles(plane, 2, 2, 0, 180);
+            var vHelix = Helix.ByAxis(point, vector, point3, 1, 360);
+            var vLine = Line.ByBestFitThroughPoints([point, point2, point3]);
+            var vNurbsCurve = NurbsCurve.ByControlPoints([point, point2, point3, point]);
+            var vPolyCurve = PolyCurve.ByJoinedCurves([vCurve, vCurve], 0.001);
+            var vPolygon = Polygon.ByPoints([point, point2, point3, point]);
+            var vRectangle = Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(5, 10);
+
+
+            var indexGroup = IndexGroup.ByIndices(0, 1, 2);
+            var vMesh = Mesh.ByPointsFaceIndices([point, point2, point3], [indexGroup, indexGroup, indexGroup]);
+
+            // Solid
+            var vSolid = Solid.ByJoinedSurfaces([vSurface, vSurface, vSurface, vSurface, vSurface, vSurface]);
+            var vCone = Cone.ByCoordinateSystemHeightRadii(vCoordinateSystem, 1, 1, 1);
+            var vCylinder = Cylinder.ByPointsRadius(point, point3, 1);
+            var vCuboid = Cuboid.ByCorners(point, point3);
+            var vSphere = Sphere.ByCenterPointRadius(point, 1);
+
+            // Surface
+            var vNurbsSurface = NurbsSurface.ByControlPoints([[point, point2, point3, point],
+                [point, point3, point2, point],
+                [point2, point3, point, point2]], 2, 2);
+            var vPolySurface = PolySurface.ByJoinedSurfaces([vSurface, vSurface]);
+
+            // Heterogeneous lists
+            var vCurveInheritanceList = new ArrayList() { vRectangle, vPolygon, vNurbsCurve, vEllipse };
+            var vPolyCurveInheritanceList = new ArrayList() { vRectangle, vPolygon, vPolyCurve };
+            var vSolidInheritanceList = new ArrayList() { vSolid, vCone, vCylinder, vCuboid, vSphere };
+            var vSurfaceInheritanceList = new ArrayList() { vNurbsSurface, vPolySurface };
+
+            var ivCurveInheritanceList = new ArrayList() { vRectangle, vPolygon, vNurbsCurve, vEllipse, vSphere };
+            var ivPolyCurveInheritanceList = new ArrayList() { vRectangle, vPolygon, vPolyCurve, vCurve };
+            var ivSolidInheritanceList = new ArrayList() { vPolygon, vCone, vCylinder, vCuboid, vSphere };
+            var ivSurfaceInheritanceList = new ArrayList() { vNurbsSurface, vPolySurface, vCylinder, vCuboid, vSphere };
+
+            // Assert - check single upward inheritence - succeed
+            var validate = DSCore.Data.IsSupportedDataNodeDynamoType(vRectangle, typeof(Curve).ToString(), false);
+            Assert.AreEqual(true, validate, "Couldn't vaidate Rectangle inheritance from Curve.");
+
+            // Assert - check single downward inheritance - fail 
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vCurve, typeof(Autodesk.DesignScript.Geometry.Rectangle).ToString(), false);
+            Assert.AreEqual(false, validate, "Shouldn't vaidate Curve inheritance from Rectangle.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vCone, typeof(Curve).ToString(), false);
+            Assert.AreEqual(false, validate, "Shouldn't vaidate Cone inheritance from Curve.");
+
+            // Assert - check heterogeneous list values - succeed
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vCurveInheritanceList, typeof(Curve).ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from Curve in a heterogeneous list input.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vPolyCurveInheritanceList, typeof(PolyCurve).ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from PolyCurve in a heterogeneous list input.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vSolidInheritanceList, typeof(Solid).ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from Solid in a heterogeneous list input.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(vSurfaceInheritanceList, typeof(Surface).ToString(), true);
+            Assert.AreEqual(true, validate, "Couldn't validate DataTypes inheriting from Surface in a heterogeneous list input.");
+
+
+            // Assert - check invalid heterogeneous list values - fail
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(ivCurveInheritanceList, typeof(Curve).ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Curve if there is a Sphere in the list input.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(ivPolyCurveInheritanceList, typeof(PolyCurve).ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate DataTypes - Curve does not inherit from PolyCurve.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(ivSolidInheritanceList, typeof(Solid).ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Solid if there is a Polygone in the list input.");
+
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(ivSurfaceInheritanceList, typeof(Surface).ToString(), true);
+            Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Surface with Cylindar, Cuboid and Sphere in the list.");
         }
     }
 }

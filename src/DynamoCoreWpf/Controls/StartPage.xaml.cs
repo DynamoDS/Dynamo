@@ -15,6 +15,7 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
+using Newtonsoft.Json;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.UI.Controls
@@ -72,6 +73,10 @@ namespace Dynamo.UI.Controls
         public string Caption { get; private set; }
         public string SubScript { get; set; }
         public string ToolTip { get; set; }
+        public string DateModified { get; set; }
+        public string Description { get; internal set; }
+        public string Thumbnail { get; set; }
+        public string Author { get; internal set; }
         public string ContextData { get; set; }
         public Action ClickAction { get; set; }
 
@@ -371,25 +376,92 @@ namespace Dynamo.UI.Controls
             {
                 try
                 {
+                    // Skip files which were moved or deleted (consistent with Revit behavior)
+                    if (!DynamoUtilities.PathHelper.IsValidPath(filePath)) continue;
+
                     var extension = Path.GetExtension(filePath).ToUpper();
                     // If not extension specified and code reach here, this means this is still a valid file
                     // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-                    var subScript = extension.IndexOf(".") == 0 ? extension.Substring(1) : "";
+                    var subScript = extension.StartsWith(".") ? extension.Substring(1) : "";
                     var caption = Path.GetFileNameWithoutExtension(filePath);
+
+                    // deserializes the file only once
+                    var jsonObject = DeserializeJsonFile(filePath); 
+                    var description = jsonObject != null ? GetGraphDescription(jsonObject) : string.Empty;
+                    var thumbnail = jsonObject != null ? GetGraphThumbnail(jsonObject) : string.Empty;
+                    var author = jsonObject != null ? GetGraphAuthor(jsonObject) : Resources.DynamoXmlFileFormat;
+
+                    var date = DynamoUtilities.PathHelper.GetDateModified(filePath);
 
                     files.Add(new StartPageListItem(caption)
                     {
                         ContextData = filePath,
                         ToolTip = filePath,
                         SubScript = subScript,
-                        ClickAction = StartPageListItem.Action.FilePath
-                    });
+                        Description = description,
+                        Thumbnail = thumbnail,
+                        Author = author,
+                        DateModified = date,
+                        ClickAction = StartPageListItem.Action.FilePath,
+
+                    }); 
                 }
                 catch (ArgumentException ex)
                 {
                     DynamoViewModel.Model.Logger.Log("File path is not valid: " + ex.StackTrace);
                 }
+                catch (Exception ex)
+                {
+                    DynamoViewModel.Model.Logger.Log("Error loading the file: " + ex.StackTrace);
+                }
             }
+        }
+
+        private Dictionary<string, object> DeserializeJsonFile(string filePath)
+        {
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string jsonString, out Exception ex))
+            {
+                return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+            }
+            else
+            {
+                if(ex is JsonReaderException)
+                {
+                    DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
+                }
+                else
+                {
+                    DynamoViewModel.Model.Logger.Log("File is not valid: " + ex.StackTrace);
+                }
+                return null;
+            }
+        }
+
+        private const string BASE64PREFIX = "data:image/png;base64,";
+
+        private string GetGraphThumbnail(Dictionary<string, object> jsonObject)
+        {
+            jsonObject.TryGetValue("Thumbnail", out object thumbnail);
+
+            if (string.IsNullOrEmpty(thumbnail as string)) return string.Empty;
+
+            var base64 = String.Format("{0}{1}", BASE64PREFIX, thumbnail as string);
+
+            return base64;
+        }
+
+        private string GetGraphDescription(Dictionary<string, object> jsonObject)
+        {
+            jsonObject.TryGetValue("Description", out object description);
+
+            return description as string;
+        }
+
+        private string GetGraphAuthor(Dictionary<string, object> jsonObject)
+        {
+            jsonObject.TryGetValue("Author", out object author);
+
+            return author as string;
         }
 
         private void HandleRegularCommand(StartPageListItem item)

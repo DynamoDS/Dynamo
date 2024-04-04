@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
-using Dynamo.GraphMetadata;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -42,7 +41,7 @@ namespace DynamoCoreWpfTests.PackageManager
         {
 
             Assert.That(Model.ExtensionManager.Extensions.Select(x => x.Name),
-                Is.EquivalentTo(new List<string> { "DynamoPackageManager", "testExtension" }));
+                Is.EquivalentTo(new List<string> { "DynamoPackageManager", "DynamoMLDataPipelineExtension", "testExtension" }));
         }
         [Test]
         public void PackageManagerLoadsExtensionAndItWorks()
@@ -86,7 +85,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Model.CurrentWorkspace.AddAndRegisterNode(node);
 
             //assert a menu item was added with the correct header.
-            var mi = View.viewMenu.Items.Cast<MenuItem>().Where
+            var mi = View.ExtensionsMenu.Items.Cast<MenuItem>().Where
                 (x => (string)x.Header == "Show View Extension Sample Window").FirstOrDefault();
             Assert.IsNotNull(mi);
         }

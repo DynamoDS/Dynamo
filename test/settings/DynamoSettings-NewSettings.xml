@@ -40,6 +40,7 @@
   <BackupFiles>
     <string>C:\Users\user\Documents\dynamofile.dyn</string>
   </BackupFiles>
+  <TemplateFilePath>C:\ProgramData\Dynamo\Dynamo Core\templates\en-US</TemplateFilePath>
   <CustomPackageFolders>
     <string>%BuiltInPackages%</string>
     <string>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\2.16</string>
@@ -74,7 +75,7 @@
   <HideAutocompleteMethodOptions>true</HideAutocompleteMethodOptions>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
-  <IsMLAutocompleteTOUApproved>true</IsMLAutocompleteTOUApproved>
+  <IsMLAutocompleteTOUApproved>false</IsMLAutocompleteTOUApproved>
   <IsTimeStampIncludedInExportFilePath>false</IsTimeStampIncludedInExportFilePath>
   <EnablePersistExtensions>true</EnablePersistExtensions>
   <DefaultPythonEngine/>
@@ -132,7 +133,7 @@
     </GroupStyleItem>
   </GroupStyleItemsList>
   <NodeSearchTagSizeLimit>500</NodeSearchTagSizeLimit>
-  <IronPythonResolveTargetVersion>2.1.X</IronPythonResolveTargetVersion>
+  <IronPythonResolveTargetVersion>2.1.0</IronPythonResolveTargetVersion>
   <ReadNotificationIds>
     <string>1</string>
   </ReadNotificationIds>

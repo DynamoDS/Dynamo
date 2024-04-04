@@ -18,6 +18,7 @@ namespace Dynamo.ViewModels
             SaveCommand = new DelegateCommand(Save, CanSave);
             SaveAsCommand = new DelegateCommand(SaveAs, CanSaveAs);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
+            ShowOpenTemplateDialogCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
             ShowInsertDialogAndInsertResultCommand = new DelegateCommand(ShowInsertDialogAndInsertResult, CanShowInsertDialogAndInsertResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
@@ -67,8 +68,6 @@ namespace Dynamo.ViewModels
             GettingStartedGuideCommand = new DelegateCommand(StartGettingStartedGuide, CanStartGettingStartedGuide);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowPackageManagerCommand = new DelegateCommand(ShowPackageManager, CanShowPackageManager);
-            ShowInstalledPackagesCommand = new DelegateCommand(o => { }, o => true);
-            ManagePackagePathsCommand = new DelegateCommand(o => { }, o => true);
 
             if (PackageManagerClientViewModel != null && !Model.IsServiceMode)
             {
@@ -100,6 +99,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenIfSavedCommand { get; set; }
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
+        public DelegateCommand ShowOpenTemplateDialogCommand { get; set; }
         public DelegateCommand ShowInsertDialogAndInsertResultCommand { get; set; }
         public DelegateCommand WriteToLogCmd { get; set; }
         public DelegateCommand PostUiActivationCommand { get; set; }
@@ -120,10 +120,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand GraphAutoLayoutCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand ShowInstalledPackagesCommand { get; set; }
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand ManagePackagePathsCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
         public DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand { get; set; }

@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Configuration;
-using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
@@ -24,7 +23,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Prompts;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search.SearchElements;
@@ -42,6 +40,7 @@ using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
+using Dynamo.Wpf.Views.GuidedTour;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ICSharpCode.AvalonEdit;
@@ -108,6 +107,8 @@ namespace Dynamo.Controls
         internal PreferencesView PreferencesWindow {
             get { return preferencesWindow; }
         }
+
+        internal Dynamo.UI.Views.HomePage homePage;
 
         /// <summary>
         /// Keeps the default value of the Window's MinWidth to calculate it again later
@@ -538,7 +539,13 @@ namespace Dynamo.Controls
 
             return tab;
         }
-
+        private void UpdateNodeIcons_Click(object sender, RoutedEventArgs e)
+        {
+            var updateNodeIconsWindow = new UpdateNodeIconsWindow(dynamoViewModel.Model.SearchModel.Entries);
+            updateNodeIconsWindow.Owner = this;
+            updateNodeIconsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            updateNodeIconsWindow.ShowDialog();
+        }
         /// <summary>
         /// Dock the window to right side bar panel.
         /// </summary>
@@ -1334,7 +1341,6 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestSave3DImage += DynamoViewModelRequestSave3DImage;
             dynamoViewModel.SidebarClosed += DynamoViewModelSidebarClosed;
 
-            dynamoViewModel.Model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
             dynamoViewModel.Model.RequestTaskDialog += Controller_RequestTaskDialog;
 
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
@@ -1360,7 +1366,6 @@ namespace Dynamo.Controls
             BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
             background_grid.Children.Add(BackgroundPreview);
             BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
-            BackgroundPreview.Margin = new System.Windows.Thickness(0, 20, 0, 0);
             var vizBinding = new Binding
             {
                 Source = dynamoViewModel.BackgroundPreviewViewModel,
@@ -1379,7 +1384,34 @@ namespace Dynamo.Controls
             {
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
+
+            // Load the new HomePage
+            if (IsNewAppHomeEnabled) LoadHomePage();
+
             loaded = true;
+        }
+
+        // Add the HomePage to the DynamoView once its loaded
+        private void LoadHomePage()
+        {
+            if (homePage == null && (startPage != null))
+            {
+                homePage = new UI.Views.HomePage();
+                homePage.DataContext = startPage;
+
+                var visibilityBinding = new System.Windows.Data.Binding
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DynamoView), 1),
+                    Path = new PropertyPath("DataContext.ShowStartPage"),
+                    Mode = BindingMode.OneWay,
+                    Converter = new BooleanToVisibilityConverter(),
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                };
+
+                BindingOperations.SetBinding(homePage, UIElement.VisibilityProperty, visibilityBinding);
+
+                this.newHomePageContainer.Children.Add(homePage);
+            }
         }
 
         /// <summary>
@@ -1493,6 +1525,10 @@ namespace Dynamo.Controls
 
                 if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
             }
+            if (_pkgVM != null)
+            {
+                _pkgVM.PublishPackageViewModel = model;
+            }
 
             packageManagerWindow.Focus();
             packageManagerWindow.Navigate(Wpf.Properties.Resources.PackageManagerPublishTab);
@@ -1600,19 +1636,6 @@ namespace Dynamo.Controls
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
             dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
-        }
-
-        private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
-        {
-            if (CrashReportTool.ShowCrashErrorReportWindow(dynamoViewModel,
-                (args is CrashErrorReportArgs cerArgs) ? cerArgs : 
-                new CrashErrorReportArgs(args.Details)))
-            {
-                return;
-            }
-            // Backup crash reporting dialog (in case ADSK CER is not found)
-            var prompt = new CrashPrompt(args, dynamoViewModel);
-            prompt.ShowDialog();
         }
 
         private void Controller_RequestTaskDialog(object sender, TaskDialogEventArgs e)
@@ -1978,7 +2001,6 @@ namespace Dynamo.Controls
 
             if (dynamoViewModel.Model != null)
             {
-                dynamoViewModel.Model.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
                 dynamoViewModel.Model.RequestTaskDialog -= Controller_RequestTaskDialog;
                 dynamoViewModel.Model.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
             }
@@ -2027,10 +2049,22 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
 
+            if (homePage != null)
+            {
+                RemoveHomePage();
+            }
+
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
             this._pkgSearchVM?.Dispose();
             this._pkgVM?.Dispose();
+        }
+
+        // Remove the HomePage from the visual tree and dispose of its resources
+        private void RemoveHomePage()
+        {
+            this.newHomePageContainer.Children.Remove(homePage);
+            this.homePage.Dispose();
         }
 
         // the key press event is being intercepted before it can get to
@@ -2038,6 +2072,7 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         private void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
+            Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
@@ -2161,7 +2196,7 @@ namespace Dynamo.Controls
                 string[] filePaths = Directory.GetFiles(samplesDirectory, "*.dyn");
 
                 // handle top-level files
-                if (filePaths.Any())
+                if (filePaths.Length != 0)
                 {
                     foreach (string path in filePaths)
                     {
@@ -2311,9 +2346,43 @@ namespace Dynamo.Controls
             cmd.Dispose();
         }
 
-        internal void EnableEnvironment(bool isEnabled)
+        /// <summary>
+        /// Adds/Removes an overlay so the user won't be able to interact with the background (this behavior was implemented for Dynamo and for Library)
+        /// </summary>
+        /// <param name="isEnabled">True if the overlay is enable otherwise will be false</param>
+        internal void EnableOverlayBlocker(bool isEnabled)
         {
-            this.mainGrid.IsEnabled = isEnabled;
+            object[] parametersInvokeScript = new object[] { "fullOverlayVisible", new object[] { isEnabled } };
+            ResourceUtilities.ExecuteJSFunction(this, parametersInvokeScript);
+            var backgroundName = "BackgroundBlocker";
+
+            if (isEnabled)
+            {
+                //By default the shortcutsBarGrid has a ZIndex = 1 then will be shown over the overlay that's why we need to change the ZIndex
+                Panel.SetZIndex(shortcutsBarGrid, 0);
+                var backgroundElement = new GuideBackground(this)
+                {
+                    Name = backgroundName,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Visibility = Visibility.Visible
+                };
+
+                //adds the overlay to the main Dynamo grid
+                mainGrid.Children.Add(backgroundElement);
+                Grid.SetColumnSpan(backgroundElement, mainGrid.ColumnDefinitions.Count);
+                Grid.SetRowSpan(backgroundElement, mainGrid.RowDefinitions.Count);
+            }
+            else
+            {
+                //Restoring the ZIndex value to the default one.
+                Panel.SetZIndex(shortcutsBarGrid, 1);
+                var backgroundElement = mainGrid.Children.OfType<GuideBackground>().Where(element => element.Name == backgroundName).FirstOrDefault();
+                if (backgroundElement != null)
+                {
+                    mainGrid.Children.Remove(backgroundElement);
+                }
+            }
         }
 
         /// <summary>
@@ -2599,6 +2668,17 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// A feature flag controlling the appearance of the Dynamo home navigation page
+        /// </summary>
+        public bool IsNewAppHomeEnabled
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNewAppHomeEnabled", false) ?? false;
+            }
+        }
+
         // Check if library is collapsed or expanded and apply appropriate button state
         private void UpdateLibraryCollapseIcon()
         {
@@ -2784,6 +2864,7 @@ namespace Dynamo.Controls
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
             dynamoViewModel.IsMouseDown = true;
         }
 

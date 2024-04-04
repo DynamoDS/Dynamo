@@ -91,51 +91,6 @@ namespace DynamoShapeManager
             "ASMWELD230A.DLL",
             "MMSDK.DLL",
         };
-        private static readonly ISet<string> ASM229DllNames = new HashSet<string>()
-        {
-            "TBB.DLL",
-            "TBBMALLOC.DLL",
-            "TSPLINES11.DLL",
-            "ASMAHL229A.DLL",
-            "ASMBASE229A.DLL",
-            "ASMBLND229A.DLL",
-            "ASMBOOL229A.DLL",
-            "ASMCOVR229A.DLL",
-            "ASMCSTR229A.DLL",
-            "ASMCT229A.DLL",
-            "ASMDATAX229A.DLL",
-            "ASMDEFM229A.DLL",
-            "ASMEULR229A.DLL",
-            "ASMFCT229A.DLL",
-            "ASMFREC229A.DLL",
-            "ASMGA229A.DLL",
-            "ASMHEAL229A.DLL",
-            "ASMIMPORT229A.DLL",
-            "ASMINTR229A.DLL",
-            "ASMKERN229A.DLL",
-            "ASMLAW229A.DLL",
-            "ASMLOP229A.DLL",
-            "ASMLOPT229A.DLL",
-            "ASMNPCH229A.DLL",
-            "ASMOFST229A.DLL",
-            "ASMOPER229A.DLL",
-            "ASMPID229A.DLL",
-            "ASMRBASE229A.DLL",
-            "ASMRBI229A.DLL",
-            "ASMREM229A.DLL",
-            "ASMSASM229A.DLL",
-            "ASMSBAP229A.DLL",
-            "ASMSBOOL229A.DLL",
-            "ASMSHL229A.DLL",
-            "ASMSKIN229A.DLL",
-            "ASMSWP229A.DLL",
-            "ASMTOPT229A.DLL",
-            "ASMTWK229A.DLL",
-            "ASMUFLD229A.DLL",
-            "ASMWELD229A.DLL",
-            "MMSDK.DLL"
-        };
-
         #endregion
 
         #region public properties
@@ -153,83 +108,6 @@ namespace DynamoShapeManager
         /// </summary>
         public static readonly string ASMFileMask = "ASMAHL*A.dll";
         #endregion
-
-
-        /// <summary>
-        /// Call this method to determine the version of ASM that is installed 
-        /// on the user machine. The method scans through a list of known Autodesk 
-        /// product folders for ASM binaries with the targeted version.
-        /// </summary>
-        /// <param name="versions">A list of version numbers to check for in order 
-        /// of preference. This argument cannot be null or empty.</param>
-        /// <param name="location">The full path of the directory in which targeted
-        /// ASM binaries are found. This argument cannot be null.</param>
-        /// <param name="rootFolder">This method makes use of DynamoInstallDetective
-        /// to determine the installation location of various Autodesk products. This 
-        /// argument is not optional and must represent the full path to the folder 
-        /// which contains DynamoInstallDetective.dll. An exception is thrown if the 
-        /// assembly cannot be located.</param>
-        /// <returns>Returns LibraryVersion of ASM if any installed ASM is found, 
-        /// or None otherwise.</returns>
-        /// 
-        [Obsolete("Please use version of this method which accepts precise collection of version objects.")]
-#if NET6_0_OR_GREATER
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
-        public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location, string rootFolder)
-        {
-            if (string.IsNullOrEmpty(rootFolder))
-                throw new ArgumentNullException("rootFolder");
-            if (!Directory.Exists(rootFolder))
-                throw new DirectoryNotFoundException(rootFolder);
-            if ((versions == null) || versions.Count <= 0)
-                throw new ArgumentNullException("versions");
-            if (location == null)
-                throw new ArgumentNullException("location");
-
-            location = string.Empty;
-
-            try
-            {
-                var installations = GetAsmInstallations(rootFolder);
-
-                foreach (var v in versions)
-                {
-                    foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
-                    {
-                        if ((int)v == install.Value.Item1)
-                        {
-                            location = install.Key;
-                            return (LibraryVersion)install.Value.Item1;
-                        }
-                    }
-                }
-
-
-                //Fallback mechanism, look inside libg folders if any of them
-                //contain ASM dlls.
-                foreach (var v in versions)
-                {
-                    var folderName = string.Format("libg_{0}", (int)v);
-                    var dir = new DirectoryInfo(Path.Combine(rootFolder, folderName));
-                    if (!dir.Exists)
-                        continue;
-
-                    var files = dir.GetFiles(ASMFileMask);
-                    if (!files.Any())
-                        continue;
-
-                    location = dir.FullName;
-                    return v; // Found version.
-                }
-            }
-            catch (Exception)
-            {
-                return LibraryVersion.None;
-            }
-
-            return LibraryVersion.None;
-        }
 
         /// <summary>
         /// Call this method to determine the version of ASM that is installed 
@@ -574,8 +452,6 @@ namespace DynamoShapeManager
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
             switch (majorVersion)
             {
-                case 229:
-                    return !ASM229DllNames.Except(fileNames).Any();
                 case 230:
                     return !ASM230DllNames.Except(fileNames).Any();
                 default:

@@ -264,7 +264,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
         /// <summary>
         /// This unit test will validate the correctness of the Status filter, where
         /// `New` and `Updated` filters are mutually exclusive
-        /// `Deprecated` resutls are excluded, unless the filter is turned on
+        /// `Deprecated` results are excluded, unless the filter is turned on
         /// </summary>
         [Test]
         public void PackageSearchDialogSearchTestStatusFilters()
@@ -274,7 +274,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
             string packageVersionNumber = "1.0.0.0";
             string newAndUpdatedPackageCreatedDateString = DateTime.Now.ToString("yyyy - MM - ddTHH:mm:ss.ffffff K");
-            string activePackageCreatedDateString = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, DateTime.Now.Day).ToString("yyyy - MM - ddTHH:mm:ss.ffffff K");
+            string activePackageCreatedDateString = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy - MM - ddTHH:mm:ss.ffffff K");
             string advSteelFilterName = "Advance Steel";
             string formItFilterName = "FormIt";
 
@@ -430,7 +430,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
             //Dependency Packages
             List<string> dependencyPackagesName = new List<string> { "DynamoIronPython2.7", "dynamo", "Celery for Dynamo 2.5" };
-            //No deoendency Packages
+            //No dependency Packages
             List<string> noDependencyPackagesName = new List<string> { "DynamoIronPython2.7", "dynamo", "mise en barre", "Test-PackageDependencyFilter" };
 
             var mockGreg = new Mock<IGregClient>();
@@ -538,7 +538,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.IsFalse(packageManagerSearchViewModel.NonHostFilter[4].OnChecked);
         }
 		
-		  /// <summary>
+		/// <summary>
         /// This unit test will validate that we can search packages in different languages and they will be found.
         /// </summary>
         [Test]
@@ -601,6 +601,105 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.That(resultingNodesChinese.Count(), Is.EqualTo(1), "There was no results");
             Assert.That(resultingNodesRussian.Count(), Is.EqualTo(1), "There was no results");
             Assert.That(resultingNodesSpanish.Count(), Is.EqualTo(1), "There was no results");
+        }
+
+        /// <summary>
+        /// This unit test will validate that the search order will not reset on search text clear.
+        /// </summary>
+        [Test]
+        public void PackageSearchOrderAfterTextReset()
+        {
+            //Arrange
+            string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
+            string packageVersionNumber = "1.0.0.0";
+            string packageCreatedDateString = "2016 - 12 - 02T13:13:20.135000 + 00:00";
+            string formItFilterName = "FormIt";
+
+            //Packages list
+            List<string> packageNames = new List<string> { "package 1", "package 2", "package 3", "package 4" };
+            List<int> packagesDownloads = new List<int> { 100, 400, 300, 200 };
+            List<int> packagesVotes = new List<int> { 50, 60, 90, 40 };
+
+            var mockGreg = new Mock<IGregClient>();
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };   
+            var packageManagerSearchVM = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchVM.RegisterTransientHandlers();
+
+            //Add packages
+            for (int i = 0; i < packageNames.Count; i++)
+            {
+                var tmpPackageVersion = new PackageVersion
+                {
+                    version = packageVersionNumber,
+                    host_dependencies = new List<string> { formItFilterName },
+                    created = packageCreatedDateString
+                };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = packageNames[i],
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                    votes = packagesVotes[i],
+                    downloads = packagesDownloads[i]
+                }), false);
+                packageManagerSearchVM.AddToSearchResults(tmpPackage);
+            }
+
+            //We need to add the PackageManagerSearchElementViewModel because otherwise the search will crash
+            packageManagerSearchVM.LastSync = new List<PackageManagerSearchElement>();
+            foreach (var result in packageManagerSearchVM.SearchResults)
+            {
+                packageManagerSearchVM.LastSync.Add(result.SearchElementModel);
+            }
+
+            //Act - Sort packages by Downloads in descending order
+            packageManagerSearchVM.SortingKey = PackageSortingKey.Downloads;
+            packageManagerSearchVM.SortingDirection = PackageSortingDirection.Descending;
+            packageManagerSearchVM.Sort();
+
+            //Set search text to a value and then reset
+            packageManagerSearchVM.SearchText = "package";
+            packageManagerSearchVM.SearchAndUpdateResults();
+            packageManagerSearchVM.SearchText = string.Empty;
+            packageManagerSearchVM.SearchAndUpdateResults();
+
+            bool isOrderedByDownloads = true;
+
+            for (int i = 0; i < packageManagerSearchVM.SearchResults.Count - 1; i++)
+            {
+                if (packageManagerSearchVM.SearchResults[i].Downloads < packageManagerSearchVM.SearchResults[i + 1].Downloads)
+                {
+                    isOrderedByDownloads = false; break;
+                }
+            }
+
+            //Assert - validate order by Downloads
+            Assert.IsTrue(isOrderedByDownloads && packageManagerSearchVM.SearchResults.Count != 0);
+
+            //Act - Sort packages by Votes in ascending order
+            packageManagerSearchVM.SortingKey = PackageSortingKey.Votes;
+            packageManagerSearchVM.SortingDirection = PackageSortingDirection.Ascending;
+            packageManagerSearchVM.Sort();
+
+            //Set search text to a value and then reset
+            packageManagerSearchVM.SearchText = "package";
+            packageManagerSearchVM.SearchAndUpdateResults();
+            packageManagerSearchVM.SearchText = string.Empty;
+            packageManagerSearchVM.SearchAndUpdateResults();
+
+            bool isOrderedByVotes = true;
+
+            for (int i = 0; i < packageManagerSearchVM.SearchResults.Count - 1; i++)
+            {
+                if (packageManagerSearchVM.SearchResults[i].Votes > packageManagerSearchVM.SearchResults[i + 1].Votes)
+                {
+                    isOrderedByVotes = false; break;
+                }
+            }
+
+            //Assert - validate order by Votes
+            Assert.IsTrue(isOrderedByVotes && packageManagerSearchVM.SearchResults.Count != 0);
         }
     }
 }
