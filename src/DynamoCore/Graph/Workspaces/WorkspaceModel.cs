@@ -2352,6 +2352,50 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Updates a workspace model with extra view information. When loading a workspace from JSON,
         /// the data is split into two parts, model and view. This method sets the view information.
+        /// </summary>
+        /// <param name="workspaceViewInfo">The extra view information from the workspace to update the model with.</param>
+        public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
+        {
+            if (workspaceViewInfo == null)
+                return;
+
+
+            X = workspaceViewInfo.X;
+            Y = workspaceViewInfo.Y;
+            Zoom = workspaceViewInfo.Zoom;
+
+            OnCurrentOffsetChanged(
+                this,
+                new PointEventArgs(new Point2D(X, Y)));
+
+            Dictionary<Guid, NodeModel> nodeMap = Nodes.ToDictionary(x => x.GUID);
+
+            // This function loads standard nodes
+            LoadNodes(workspaceViewInfo.NodeViews, ref nodeMap);
+
+            // This function loads notes from the Notes array in the JSON format
+            // NOTE: This is here to support early JSON graphs
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadLegacyNotes(workspaceViewInfo.Notes);
+
+            // This function loads notes from the Annotations array in the JSON format
+            // that have an empty nodes collection
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
+
+            // This function loads ConnectorPins to the corresponding connector models.
+            LoadConnectorPins(workspaceViewInfo.ConnectorPins);
+
+            // This function loads annotations from the Annotations array in the JSON format
+            // that have a non-empty nodes collection
+            LoadAnnotations(workspaceViewInfo.Annotations, ref nodeMap);
+        }
+
+        /// <summary>
+        /// Updates a workspace model with extra view information. When loading a workspace from JSON,
+        /// the data is split into two parts, model and view. This method sets the view information.
         /// This overload allows to 'move' the incoming when placing them
         /// </summary>
         /// <param name="workspaceViewInfo"></param>
@@ -2371,8 +2415,10 @@ namespace Dynamo.Graph.Workspaces
                 this,
                 new PointEventArgs(new Point2D(X, Y)));
 
+            Dictionary<Guid, NodeModel> nodeMap = Nodes.ToDictionary(x => x.GUID);
+
             // This function loads standard nodes
-            LoadNodes(workspaceViewInfo.NodeViews, offsetX, offsetY);
+            LoadNodes(workspaceViewInfo.NodeViews, ref nodeMap, offsetX, offsetY);
 
             // This function loads notes from the Notes array in the JSON format
             // NOTE: This is here to support early JSON graphs
@@ -2391,7 +2437,7 @@ namespace Dynamo.Graph.Workspaces
 
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
-            LoadAnnotations(workspaceViewInfo.Annotations);
+            LoadAnnotations(workspaceViewInfo.Annotations, ref nodeMap);
         }
 
         private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews, ref Dictionary<Guid, NodeModel> nodeMap, double offsetX = 0.0, double offsetY = 0.0)
