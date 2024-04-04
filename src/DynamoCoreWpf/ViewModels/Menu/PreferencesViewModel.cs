@@ -386,7 +386,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the Show Static Splash Screen toogle button
+        /// Controls the IsChecked property in the Show Static Splash Screen toggle button
         /// </summary>
         public bool StaticSplashScreenEnabled
         {

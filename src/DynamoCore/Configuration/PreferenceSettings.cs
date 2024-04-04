@@ -359,7 +359,7 @@ namespace Dynamo.Configuration
         public bool ShowEdges { get; set; }
 
         /// <summary>
-        /// Indicates whether background preview use instancing
+        /// Indicates whether background preview use instancing when rendering geometry.
         /// be rendered.
         /// </summary>
         public bool UseRenderInstancing { get; set; }
