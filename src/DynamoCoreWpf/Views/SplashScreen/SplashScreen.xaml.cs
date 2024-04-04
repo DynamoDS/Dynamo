@@ -490,7 +490,9 @@ namespace Dynamo.UI.Views
                    $"importSettingsTitle: \"{Wpf.Properties.Resources.ImportSettingsDialogTitle}\"," +
                    $"showScreenAgainLabel: \"{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}\"," +
                    $"signInTitle: \"{Wpf.Properties.Resources.SplashScreenSignIn}\"," +
+                   $"signInTooltip: \"{Wpf.Properties.Resources.SignInButtonContentToolTip}\"," +
                    $"signOutTitle: \"{Wpf.Properties.Resources.SplashScreenSignOut}\"," +
+                   $"signOutTooltip: \"{Wpf.Properties.Resources.SignOutConfirmationDialogText}\"," +
                    $"signingInTitle: \"{Wpf.Properties.Resources.SplashScreenSigningIn}\"," +
                    $"importSettingsTooltipDescription: \"{Wpf.Properties.Resources.ImportPreferencesInfo}\"" + "})");
             }
