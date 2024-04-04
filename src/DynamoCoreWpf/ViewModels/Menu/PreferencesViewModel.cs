@@ -418,7 +418,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the Enabled property in the Show Run Preview toogle button
+        /// Controls the Enabled property in the Show Run Preview toggle button
         /// </summary>
         public bool RunPreviewEnabled
         {
@@ -716,7 +716,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the binding for the ShowEdges toogle in the Preferences->Visual Settings->Display Settings section
+        /// Controls the binding for the ShowEdges toggle in the Preferences->Visual Settings->Display Settings section
         /// </summary>
         public bool ShowEdges
         {
@@ -732,7 +732,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the binding for the UseRenderInstancing toogle in the Preferences->Visual Settings->Display Settings section
+        /// Controls the binding for the UseRenderInstancing toggle in the Preferences->Visual Settings->Display Settings section
         /// </summary>
         public bool UseRenderInstancing
         {
@@ -764,7 +764,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the binding for the IsolateSelectedGeometry toogle in the Preferences->Visual Settings->Display Settings section
+        /// Controls the binding for the IsolateSelectedGeometry toggle in the Preferences->Visual Settings->Display Settings section
         /// </summary>
         public bool IsolateSelectedGeometry
         {
@@ -1093,7 +1093,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Node autocomplete" toogle button
+        /// Controls the IsChecked property in the "Node autocomplete" toggle button
         /// </summary>
         public bool NodeAutocompleteIsChecked
         {
@@ -1190,7 +1190,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Hide nodes below a specific confidence level" toogle button
+        /// Controls the IsChecked property in the "Hide nodes below a specific confidence level" toggle button
         /// </summary>
         public bool HideNodesBelowSpecificConfidenceLevelIsChecked
         {
@@ -1247,7 +1247,7 @@ namespace Dynamo.ViewModels
         #endregion        
 
         /// <summary>
-        /// Controls the IsChecked property in the "Enable T-spline nodes" toogle button
+        /// Controls the IsChecked property in the "Enable T-spline nodes" toggle button
         /// </summary>
         public bool EnableTSplineIsChecked
         {
@@ -1264,7 +1264,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Enable Paneling nodes" toogle button
+        /// Controls the IsChecked property in the "Enable Paneling nodes" toggle button
         /// </summary>
         public bool EnablePanelingIsChecked
         {
