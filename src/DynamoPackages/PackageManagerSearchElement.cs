@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,13 +22,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public event Func<string, bool> UpvoteRequested;
 
-        /// <summary>
-        ///     An event that's invoked when the user has attempted to downvote this
-        ///     package.
-        /// </summary>
-        [Obsolete("This event will be removed in Dynamo 3.0")]
-        public event Func<string, bool> DownvoteRequested;
-
         public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x => x.username)); } }
         private int _votes;
         public int Votes
@@ -40,8 +33,10 @@ namespace Dynamo.PackageManager
         public int Downloads { get { return this.Header.downloads; } }
         public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
         public int UsedBy { get { return this.Header.used_by.Count; } }
-        public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
+        public string LatestVersion { get { return Header.versions != null ? Header.versions[Header.versions.Count - 1].version : String.Empty; } }
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
+
+        public IEnumerable<string> PackageVersions { get { return Header.versions.OrderByDescending(x => x.version).Select(x => x.version); } }
 
         /// <summary>
         /// Hosts dependencies specified for latest version of particular package
@@ -122,6 +117,25 @@ namespace Dynamo.PackageManager
         public string InfectedPackageVersion { get; set; }
         public string InfectedPackageCreationDate { get; set; }
 
+        private bool hasUpvote;
+        /// <summary>
+        ///     Shows if the current user has upvoted this package
+        /// </summary>
+        public bool HasUpvote
+        {
+            get
+            {
+                return hasUpvote;
+            }
+
+            internal set
+            {
+                hasUpvote = value;
+                RaisePropertyChanged(nameof(HasUpvote));
+            }
+        }
+
+
         #endregion
 
         /// <summary>
@@ -165,33 +179,8 @@ namespace Dynamo.PackageManager
                     }
                 }
                 , TaskScheduler.FromCurrentSynchronizationContext());
-        }
 
-        [Obsolete("This API will no longer decrease package votes and will be removed in Dynamo 3.0")]
-        public void Downvote()
-        {
-            Task<bool>.Factory.StartNew(() => DownvoteRequested(this.Id))
-                .ContinueWith((t) =>
-                {
-                    if (t.Result)
-                    {
-                        this.Votes -= 1;
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        [Obsolete("No longer used. Remove in 3.0.")]
-        public static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
-            IEnumerable<PackageHeader> headers, PackageVersion version)
-        {
-            return headers.Zip(
-                version.full_dependency_versions,
-                (header, v) => new Tuple<PackageHeader, string>(header, v))
-                .Select(
-                    (pair) =>
-                        new Tuple<PackageHeader, PackageVersion>(
-                        pair.Item1,
-                        pair.Item1.versions.First(x => x.version == pair.Item2)));
+            HasUpvote = true;
         }
     }
 }

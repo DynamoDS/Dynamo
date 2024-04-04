@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
@@ -33,13 +33,8 @@ namespace PythonNodeModelsWpf
             pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
 
-            var availableEngineNames = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
-            // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
-            if (!availableEngineNames.Contains(nodeModel.EngineName))
-            {
-                availableEngineNames.Add(nodeModel.EngineName);
-            }
-            availableEngineNames.ForEach(x => AddPythonEngineToMenuItems(x));
+            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => PythonNodeViewCustomization.AddPythonEngineToMenuItems(
+                pythonStringNodeModel, pythonEngineVersionMenu, UpdateEngine, engineName));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
@@ -49,8 +44,17 @@ namespace PythonNodeModelsWpf
 
             nodeModel.Disposed += NodeModel_Disposed;
 
-            nodeView.PresentationGrid.Visibility = Visibility.Visible;
-            nodeView.PresentationGrid.Children.Add(new EngineLabel(pythonStringNodeModel));
+            var engineLabel = new EngineLabel(pythonStringNodeModel);
+            engineLabel.HorizontalAlignment = HorizontalAlignment.Left;
+            engineLabel.VerticalAlignment = VerticalAlignment.Bottom;
+            engineLabel.Margin = new Thickness(14, -4, -10, 4);
+            Canvas.SetZIndex(engineLabel, 5);
+
+            nodeView.grid.Visibility = Visibility.Visible;
+            nodeView.grid.Children.Add(engineLabel);
+
+            Grid.SetColumn(engineLabel, 0);
+            Grid.SetRow(engineLabel, 3);
         }
 
         private void NodeModel_Disposed(Dynamo.Graph.ModelBase obj)
@@ -98,28 +102,15 @@ namespace PythonNodeModelsWpf
         private void PythonEnginesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
-            {
                 foreach (var item in e.NewItems)
                 {
-                    AddPythonEngineToMenuItems((item as PythonEngine).Name);
+                    if (item is PythonEngine newEngine)
+                    {
+                        PythonNodeViewCustomization.AddPythonEngineToMenuItems(
+                            pythonStringNodeModel,pythonEngineVersionMenu,UpdateEngine,newEngine.Name);
+                    }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Adds python engine to MenuItems
-        /// </summary>
-        private void AddPythonEngineToMenuItems(string engineName)
-        {
-            var pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
-            pythonEngineItem.Click += UpdateEngine;
-            pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonStringNodeModel.EngineName))
-            {
-                Source = pythonStringNodeModel,
-                Converter = new CompareToParameterConverter(),
-                ConverterParameter = engineName
-            });
-            pythonEngineVersionMenu.Items.Add(pythonEngineItem);
         }
     }
 }
+

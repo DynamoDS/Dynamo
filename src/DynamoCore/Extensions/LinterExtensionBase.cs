@@ -15,7 +15,7 @@ namespace Dynamo.Extensions
     /// <summary>
     /// Base class for all LinterExtensions
     /// </summary>
-    internal abstract class LinterExtensionBase : IExtension
+    public abstract class LinterExtensionBase : IExtension
     {
         private const string NODE_ADDED_PROPERTY = "NodeAdded";
         private const string NODE_REMOVED_PROPERTY = "NodeRemoved";
@@ -26,9 +26,12 @@ namespace Dynamo.Extensions
         private LinterManager linterManager;
         private HomeWorkspaceModel currentWorkspace;
 
-        internal ReadyParams ReadyParamsRef { get; set; }
+        public ReadyParams ReadyParamsRef { get; private set; }
 
-        internal bool IsActive => this.linterManager?.IsExtensionActive(UniqueId) ?? false;
+        /// <summary>
+        /// Is this linter currently active for the active workspace.
+        /// </summary>
+        public bool IsActive => this.linterManager?.IsExtensionActive(UniqueId) ?? false;
 
         internal bool SetupComplete { get; set; } = false;
   
@@ -103,7 +106,7 @@ namespace Dynamo.Extensions
         internal void Deactivate()
         {
             //Nothing to deactivate if we have not setup everything properly
-            //yet or we alreay deativated this linter extension
+            //yet or we already deactivated this linter extension
             if (!SetupComplete)
             {
                 return;

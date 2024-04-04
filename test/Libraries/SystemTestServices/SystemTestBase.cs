@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
@@ -13,10 +15,9 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Tests;
-using Dynamo.Updates;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
-
+using DynamoUtilities;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
@@ -46,15 +47,12 @@ namespace SystemTestServices
 
         protected DynamoModel Model { get; set; }
 
-        protected IUpdateManager UpdateManager { get; set; }
-
         protected string ExecutingDirectory
         {
             get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); }
         }
 
         protected string TempFolder { get; private set; }
-
         #endregion
 
         #region public methods
@@ -62,6 +60,9 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
+
             var testConfig = GetTestSessionConfiguration();
 
             if (assemblyResolver == null)
@@ -139,9 +140,12 @@ namespace SystemTestServices
             {
                 Console.WriteLine(ex.StackTrace);
             }
+
+            TestUtilities.WebView2Tag = string.Empty;
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name} ");
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public virtual void FinalTearDown()
         {
             // Fix for COM exception on close
@@ -149,7 +153,7 @@ namespace SystemTestServices
             //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
-        #endregion
+#endregion
 
         #region protected methods
 
@@ -193,8 +197,8 @@ namespace SystemTestServices
                     StartInTestMode = true,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    UpdateManager = this.UpdateManager,
-                    ProcessMode = TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous,
+                    DynamoCorePath = testConfig.DynamoCorePath
                 });
 
             ViewModel = DynamoViewModel.Start(
@@ -207,7 +211,7 @@ namespace SystemTestServices
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         /// <summary>
@@ -305,15 +309,29 @@ namespace SystemTestServices
             Assert.AreEqual(count, data.GetElements().ToList().Count);
         }
 
-        public NodeModel GetNode<T>(string guid) where T : NodeModel
+        /// <summary>
+        /// Returns the NodeModel corresponding to the input guid
+        /// </summary>
+        /// <typeparam name="T">A NodeModel (or derived) type</typeparam>
+        /// <param name="guid">The node Guid</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
+        public NodeModel GetNode<T>(string guid) where T : class
         {
+            bool isNodeModel = typeof(T) == typeof(NodeModel);
+            bool isDerivedFromNodeModel = typeof(T).IsSubclassOf(typeof(NodeModel));
+            if ( !isNodeModel && !isDerivedFromNodeModel)
+            {
+                throw new Exception($"{typeof(T)} is not of type NodeModel");
+            }
             var allNodes = ViewModel.Model.CurrentWorkspace.Nodes;
             var nodes = allNodes.Where(x => string.CompareOrdinal(x.GUID.ToString(), guid) == 0);
             if (nodes.Count() < 1)
                 return null;
             else if (nodes.Count() > 1)
                 throw new Exception("There are more than one nodes with the same GUID!");
-            return nodes.ElementAt(0) as T;
+            return nodes.ElementAt(0);
         }
 
         public object GetPreviewValue(string guid)

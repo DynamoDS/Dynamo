@@ -1,0 +1,462 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Subtract",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Line": {
+        "Key": "Autodesk.DesignScript.Geometry.Line",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "cbbbbabd6b1d43528ced247cf3b96786",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "1.42",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.01,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
+      "Id": "3fe6e9c43bad49daabc28ead2635c324",
+      "Inputs": [
+        {
+          "Id": "0ac15ad444604e48a27c1f0910ada65b",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "81e3babb1d9147c6870f00310feb99e7",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "adf47bf1d21742ed89140183091b7d83",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1b59db3151dc45528d46566c9d6f0fca",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;",
+      "Id": "c5ff1762517247d2a09d7b68bf84950d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4c07abacb2c9432ba51c176f1fba5794",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.Subtract@Autodesk.DesignScript.Geometry.Vector",
+      "Id": "b6c2ecebd86949cc950f9272827f6f33",
+      "Inputs": [
+        {
+          "Id": "d62c9ba078564bb1916d0f4472197068",
+          "Name": "vector",
+          "Description": "Autodesk.DesignScript.Geometry.Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "520b851e2e0c41d2b70ab6d4539cfbda",
+          "Name": "vectorToSubtract",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9a8049ccf9b045d3bf000c4b8155f801",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Subtract a vector\n\nVector.Subtract (vectorToSubtract: Vector): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ZAxis",
+      "Id": "c925828903b74a6c814f2c6c2a0d1f1b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c77076c2aadd447597d5f0b758114788",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the canonical Z axis Vector (0,0,1)\n\nVector.ZAxis ( ): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "pt = Point.ByCoordinates(0,0,0);\n\nLine.ByStartPointDirectionLength(pt, v1, 5);\nLine.ByStartPointDirectionLength(pt, v2, 5);\nLine.ByStartPointDirectionLength(pt, v3, 5);",
+      "Id": "e60f777f008047afb3f4171680674326",
+      "Inputs": [
+        {
+          "Id": "88e20750f7b2444d85ddfc3bfec60e65",
+          "Name": "v1",
+          "Description": "v1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ae249c8f990147f2849035848d78d445",
+          "Name": "v2",
+          "Description": "v2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d8947da8a2bd483da5b7cbbe13685a46",
+          "Name": "v3",
+          "Description": "v3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4a140e8e8af84182bf590e59507e5e92",
+          "Name": "",
+          "Description": "pt",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bf082626544447b08da7b51f165dc914",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7bdbec1510fc4b60b04c224413312533",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "05c89fc007ab419c9415be5997d78015",
+          "Name": "",
+          "Description": "Value of expression at line 5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ZAxis",
+      "Id": "a4dea69c86f94e8b959a2d1beec29ae3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a4b73280d7174423b7801daabb259aad",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the canonical Z axis Vector (0,0,1)\n\nVector.ZAxis ( ): Vector"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.01,
+      "InputValue": 1.42,
+      "Id": "cbbbbabd6b1d43528ced247cf3b96786",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1afa0af0c05c41378dc403064785fc87",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Object.Identity@var",
+      "Id": "35b0de0f6e944cdc87d5d048edc47afb",
+      "Inputs": [
+        {
+          "Id": "6a5641ae6e1743dd9b46c6b65111f750",
+          "Name": "obj",
+          "Description": "An object.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c67bc3583dc9436cb7bd648e892ba4ff",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns what is passed in, doing nothing.\n\nObject.Identity (obj: var): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "1b59db3151dc45528d46566c9d6f0fca",
+      "End": "d62c9ba078564bb1916d0f4472197068",
+      "Id": "1ee886e18aba4a399815406ca4bd7baa"
+    },
+    {
+      "Start": "1b59db3151dc45528d46566c9d6f0fca",
+      "End": "88e20750f7b2444d85ddfc3bfec60e65",
+      "Id": "60c0aa93c6a449f6ab646cf749e33b0e"
+    },
+    {
+      "Start": "4c07abacb2c9432ba51c176f1fba5794",
+      "End": "0ac15ad444604e48a27c1f0910ada65b",
+      "Id": "21fe27c6d69d454caa395e1b9f69cdea"
+    },
+    {
+      "Start": "9a8049ccf9b045d3bf000c4b8155f801",
+      "End": "d8947da8a2bd483da5b7cbbe13685a46",
+      "Id": "8a2a0a8c40ee4684a0e670b5943599e2"
+    },
+    {
+      "Start": "c77076c2aadd447597d5f0b758114788",
+      "End": "520b851e2e0c41d2b70ab6d4539cfbda",
+      "Id": "e19561dc9c194d12bd6410107e80b866"
+    },
+    {
+      "Start": "05c89fc007ab419c9415be5997d78015",
+      "End": "6a5641ae6e1743dd9b46c6b65111f750",
+      "Id": "0b304c3965524c54ad101b8142b1f636"
+    },
+    {
+      "Start": "a4b73280d7174423b7801daabb259aad",
+      "End": "ae249c8f990147f2849035848d78d445",
+      "Id": "e23951ec4a44470b93918f25bfaf39fd"
+    },
+    {
+      "Start": "1afa0af0c05c41378dc403064785fc87",
+      "End": "adf47bf1d21742ed89140183091b7d83",
+      "Id": "a312930a758647d98773cc6e22b8b433"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 4.0143275260925293,
+      "EyeY": 6.460479736328125,
+      "EyeZ": 7.42013692855835,
+      "LookX": -5.6253137588500977,
+      "LookY": -3.63043212890625,
+      "LookZ": -10.143896102905273,
+      "UpX": -0.042268086224794388,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.076220288872718811
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.ByCoordinates",
+        "Id": "3fe6e9c43bad49daabc28ead2635c324",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2548.98195810729,
+        "Y": 3894.0944949582
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c5ff1762517247d2a09d7b68bf84950d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2427.52545170166,
+        "Y": 3878.1475372289
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.Subtract",
+        "Id": "b6c2ecebd86949cc950f9272827f6f33",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2726.74621073375,
+        "Y": 4053.62211982689
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.ZAxis",
+        "Id": "c925828903b74a6c814f2c6c2a0d1f1b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2593.4543282595,
+        "Y": 4079.32385113069
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e60f777f008047afb3f4171680674326",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2971.00120869386,
+        "Y": 3897.49277245425
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.ZAxis",
+        "Id": "a4dea69c86f94e8b959a2d1beec29ae3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2835.54621073375,
+        "Y": 3966.31739163352
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "cbbbbabd6b1d43528ced247cf3b96786",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2197.92545170166,
+        "Y": 3965.95939517008
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Subtracted Vector",
+        "Id": "35b0de0f6e944cdc87d5d048edc47afb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3418.53074727496,
+        "Y": 3962.96929362294
+      }
+    ],
+    "Annotations": [],
+    "X": -1728.9299581802661,
+    "Y": -2904.8682942922096,
+    "Zoom": 0.82539528398304818
+  }
+}

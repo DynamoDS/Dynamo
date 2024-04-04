@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -63,7 +63,7 @@ namespace Dynamo.PackageManager.Tests
             IList<ILogMessage> ws = new List<ILogMessage>();
             Assert.False(Package.IsNodeLibrary(new List<string>
             {
-                "\\ x x x x x x"
+                "\\ x \\ x x x x x"
             }, assemName, ref ws));
             Assert.AreEqual(2, ws.Count());
         }

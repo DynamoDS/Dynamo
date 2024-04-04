@@ -1,0 +1,147 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByPointsTangentsKnotsDerivatives",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives@Autodesk.DesignScript.Geometry.Point[][],Autodesk.DesignScript.Geometry.Vector[],Autodesk.DesignScript.Geometry.Vector[],Autodesk.DesignScript.Geometry.Vector[],Autodesk.DesignScript.Geometry.Vector[],double[],double[],Autodesk.DesignScript.Geometry.Vector[]",
+      "Id": "c563368366994b8381d51f920494d077",
+      "Inputs": [
+        {
+          "Id": "9f4692a021a14610af06c47a3f70d7e5",
+          "Name": "points",
+          "Description": "Point[][]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c5890cd1f21e437db0d6092093dfb7a0",
+          "Name": "startUTangents",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2fee06ae656d4226b6e763deccf2c781",
+          "Name": "endUTangents",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fb5616e9ce79401da9db330d87686f1d",
+          "Name": "startVTangents",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5747434cc57d425ca174f71f181885c5",
+          "Name": "endVTangents",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "49c4292959bf4fc9a3301c970f5834e6",
+          "Name": "uKnots",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c92cef31b588477a830e3db7aca94334",
+          "Name": "vKnots",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b6b2776c89ed48d29230a326bcb30a08",
+          "Name": "cornerTwistDerivatives",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "36f91accfc90448f9b51cb00325e35f7",
+          "Name": "NurbsSurface",
+          "Description": "NurbsSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a NurbsSurface satisfying a collection of different surface characteristics. This is the most advanced surface fitting method. The resultant surface will pass through all of the points. The number of tangents must match the number of points in the corresponding direction. The resultant surface will be degree 3 in both the U and V direction. The corner derivatives should be second order (dP/dUdV) and should be supplied in this order [ lowU, lowV ], [ highU, lowV ], [ lowU, highV ], [ highU, highV ].\n\nNurbsSurface.ByPointsTangentsKnotsDerivatives (points: Point[][], startUTangents: Vector[], endUTangents: Vector[], startVTangents: Vector[], endVTangents: Vector[], uKnots: double[], vKnots: double[], cornerTwistDerivatives: Vector[]): NurbsSurface"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.2.6826",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "NurbsSurface.ByPointsTangentsKnotsDerivatives",
+        "Id": "c563368366994b8381d51f920494d077",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 645.9782347450157,
+        "Y": 326.89543280306026
+      }
+    ],
+    "Annotations": [],
+    "X": -180.7632111030191,
+    "Y": -32.565695725101506,
+    "Zoom": 1.2777169841077238
+  }
+}

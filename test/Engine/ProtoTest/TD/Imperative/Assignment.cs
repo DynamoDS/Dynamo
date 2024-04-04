@@ -505,7 +505,7 @@ i = [Imperative]
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("i", new[] { 5, 1, 6, 1.5 });
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T26_Defect_1450854()
         {
             string src = @"[Imperative]
@@ -528,7 +528,7 @@ i = [Imperative]
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("c", 3);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T27_Defect_1450847()
         {
             string src = @"[Imperative]
@@ -561,7 +561,7 @@ i = [Imperative]
 
 
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T29_Defect_1449887()
         {
             string src = @"[Imperative]
@@ -575,7 +575,7 @@ i = [Imperative]
             thisTest.Verify("c", 6);
             thisTest.Verify("d", 15);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T30_Defect_1449887_2()
         {
             string src = @"[Imperative]
@@ -972,7 +972,7 @@ def foo : string (x : string )
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", "sarmistha", 0);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T50_Defect_1449889()
         {
             string code = @"

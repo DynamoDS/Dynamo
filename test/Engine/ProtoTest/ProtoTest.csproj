@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
@@ -20,17 +20,14 @@
     <EmbeddedResource Remove="ComponentTest\**" />
     <None Remove="ComponentTest\**" />
   </ItemGroup>
-  <ItemGroup>
-	  <PackageReference Include="NUnit" Version="2.6.3" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="NUnit" Version="3.13.3" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    </ItemGroup>
+   
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
@@ -69,4 +66,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
+    <Copy SourceFiles="..\..\test_support_projects\EmbeddedInterop.dll" DestinationFolder="$(TestDependenciesPath)" />  
+  </Target>
 </Project>

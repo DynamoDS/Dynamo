@@ -1010,8 +1010,26 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
-                    //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type
-                    if (redefinitionAllowed && st.IsInput && node is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode))
+                    //search the cached subtree(node's asts) for a binary expression containing a matching LHS identifer node.
+                    //we can currently only apply input optimizations if the previous assignment was also from a primitive.
+                    BinaryExpressionNode prevBNE = null;
+                    var bne = node as BinaryExpressionNode;
+                    if (bne != null){
+                        foreach (var prevNode in st.AstNodes)
+                        {
+                            if(prevNode is BinaryExpressionNode PrevNodeBNE && PrevNodeBNE.LeftNode is IdentifierNode prevId &&
+                                bne.LeftNode is IdentifierNode curId && prevId.Value == curId.Value)
+                            {
+                                prevBNE = PrevNodeBNE;
+                                break;
+                            }
+                        }
+                    }
+
+                    //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type, also
+                    //ensure that the previous RHS of this assignment was a primitive value, or we'll have generated incorrect instructions.
+                    if (redefinitionAllowed && st.IsInput && bne != null && CoreUtils.IsPrimitiveASTNode(bne.RightNode)
+                        && (prevBNE == null || CoreUtils.IsPrimitiveASTNode(prevBNE.RightNode)))
                     {
                         // An input node is not re-compiled and executed
                         // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
@@ -1180,7 +1198,6 @@ namespace ProtoScript.Runners
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
         List<Guid> PreviewGraph(GraphSyncData syncData);
-        void UpdateCmdLineInterpreter(string code);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
 
         void UpdateGraph(AssociativeNode astNode);
@@ -1190,6 +1207,7 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
+        IDictionary<Guid, List<ProtoCore.Runtime.InfoEntry>> GetRuntimeInfos();
         IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID);
         void RemoveRecordedAstGuidsForSession(Guid SessionID);
     }
@@ -1489,19 +1507,6 @@ namespace ProtoScript.Runners
                 throw new NotImplementedException();
             }
 
-        }
-
-        /// <summary>
-        /// This api needs to be called by a command line REPL for each DS command/expression entered to be executed
-        /// </summary>
-        /// <param name="code"></param>
-        [Obsolete("No longer used. Remove in 3.0")]
-        public void UpdateCmdLineInterpreter(string code)
-        {
-            lock (mutexObject)
-            {
-                SynchronizeInternal(code);
-            }
         }
 
         #region Internal Implementation
@@ -1822,6 +1827,37 @@ namespace ProtoScript.Runners
                                                   .GroupBy(w => w.ExpressionID)
                                                   .Select(g => g.FirstOrDefault());
                 ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(trimmedWarnings);
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Returns runtime info.
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<Guid, List<ProtoCore.Runtime.InfoEntry>> GetRuntimeInfos()
+        {
+            var ret = new Dictionary<Guid, List<ProtoCore.Runtime.InfoEntry>>();
+            if (runtimeCore == null)
+                return ret;
+
+            // Group all infos by their expression ids, and only keep the last
+            // warning for each expression, and then group by GUID.  
+            var infos = runtimeCore.RuntimeStatus
+                                     .Infos
+                                     .Where(w => !w.GraphNodeGuid.Equals(Guid.Empty))
+                                     .OrderBy(w => w.GraphNodeGuid)
+                                     .GroupBy(w => w.GraphNodeGuid);
+
+            foreach (var infoGroup in infos)
+            {
+                Guid guid = infoGroup.FirstOrDefault().GraphNodeGuid;
+                // If there are two infos in the same expression, take the first one.
+                var trimmedInfos = infoGroup.OrderBy(w => w.ExpressionID)
+                                                  .GroupBy(w => w.ExpressionID)
+                                                  .Select(g => g.FirstOrDefault());
+                ret[guid] = new List<ProtoCore.Runtime.InfoEntry>(trimmedInfos);
             }
 
             return ret;

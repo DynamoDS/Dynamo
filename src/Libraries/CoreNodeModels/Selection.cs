@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -79,7 +79,7 @@ namespace CoreNodeModels
         }
 
         [JsonProperty("NodeType")]
-        public string NodeType
+        public new string NodeType
         {
             get
             {
@@ -161,8 +161,8 @@ namespace CoreNodeModels
 
             Prefix = prefix;
 
-            State = ElementState.Warning; 
-            
+            Warning(Resources.SelectionNodeNothingSelected, true);
+
             ShouldDisplayPreviewCore = true;
         }
 
@@ -183,7 +183,7 @@ namespace CoreNodeModels
 
             Prefix = prefix;
 
-            State = ElementState.Warning;
+            Warning(Resources.SelectionNodeNothingSelected);
 
             ShouldDisplayPreviewCore = true;
 
@@ -220,9 +220,13 @@ namespace CoreNodeModels
         private void SetSelectionNodeState()
         {
             if (null == selectionResults || selectionResults.Count == 0)
+            {
                 State = ElementState.Warning;
-            else if (State == ElementState.Warning)
-                State = ElementState.Active;
+            }
+            else if (State == ElementState.Warning || State == ElementState.PersistentWarning)
+            {
+                base.ClearErrorsAndWarnings();
+            }
         }
 
         public bool CanBeginSelect()

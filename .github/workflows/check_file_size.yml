@@ -1,0 +1,31 @@
+name: Check file size
+on: pull_request
+
+jobs:
+  check_file_size:
+    name: Check file size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Get changed files
+        id: get_changed_files
+        uses: tj-actions/changed-files@v44
+        with:
+          write_output_files: true
+      - name: List changed files
+        run: |
+          echo "# Changed Files" >> $GITHUB_STEP_SUMMARY
+          echo "Files changed - ${{ steps.get_changed_files.outputs.all_changed_files_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size | Check |" >> $GITHUB_STEP_SUMMARY
+          echo "| :-- | :-- | :-- |" >> $GITHUB_STEP_SUMMARY
+          for file in $(cat .github/outputs/all_changed_files.txt); do
+            size=$(ls -lh ${file} | awk '{print $5}')
+            check=$([[ -n $(find "${file}" -type f -size +50M) ]] && echo "❌" || echo "✅")
+            echo "| ${file} | ${size} | ${check} |" >> $GITHUB_STEP_SUMMARY
+          done
+      - name: Check file size
+        run: |
+          for file in $(cat .github/outputs/all_changed_files.txt); do
+            [[ -n $(find "${file}" -type f -size +50M) ]] && { echo "❌ $file exceeds file size limit"; exit 1; } || echo "✅ $file"
+          done

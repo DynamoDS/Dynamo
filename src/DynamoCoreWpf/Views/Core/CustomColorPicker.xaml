@@ -1,0 +1,817 @@
+<Popup
+    x:Class="Dynamo.Controls.CustomColorPicker"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Dynamo.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:ui="clr-namespace:Dynamo.UI"
+    xmlns:viewmodel="clr-namespace:Dynamo.ViewModels"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    x:Name="PART_ColorPickerPalettePopup"
+    Width="Auto"
+    Height="Auto"
+    VerticalAlignment="Bottom"
+    d:DesignHeight="550"
+    d:DesignWidth="800"
+    AllowsTransparency="True"
+    Focusable="True"
+    PopupAnimation="Slide"
+    StaysOpen="False"
+    mc:Ignorable="d">
+    <Popup.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <viewmodel:CustomColorPickerViewModel x:Key="CustomColorPickerViewModel" />
+            <controls:AdditionConverter x:Key="AdditionConverter" />
+            <controls:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
+
+            <DataTemplate x:Key="ColorItemTemplate">
+                <Grid>
+                    <Border
+                        Margin="1"
+                        Background="White"
+                        BorderBrush="LightGray"
+                        BorderThickness="1">
+                        <Rectangle Width="26" Height="26">
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Setter Property="Fill" Value="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                    </Border>
+                </Grid>
+            </DataTemplate>
+
+            <!--  Used by ColorPicker and ColorCanvas  -->
+            <!--  =========================================================================  -->
+            <DrawingBrush
+                x:Key="CheckerBrush"
+                TileMode="Tile"
+                Viewport="0,0,10,10"
+                ViewportUnits="Absolute">
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="White">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0 100,100" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="LightGray">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0 50,50" />
+                                    <RectangleGeometry Rect="50,50 50,50" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+
+            <!--  Panel Background  -->
+            <LinearGradientBrush x:Key="PanelBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+                <LinearGradientBrush.GradientStops>
+                    <GradientStopCollection>
+                        <GradientStop Offset="0" Color="#FFF0F0F0" />
+                        <GradientStop Offset="1" Color="#FFE5E5E5" />
+                    </GradientStopCollection>
+                </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
+
+
+            <Style x:Key="ColorItemContainerStyle" TargetType="{x:Type ListBoxItem}">
+                <Setter Property="ToolTip" Value="{Binding Name}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Grid x:Name="mainGrid" ToolTip="{Binding Name}">
+                                <Grid.Resources>
+                                    <Style TargetType="ToolTip">
+                                        <Style.Triggers>
+                                            <Trigger Property="Content" Value="{x:Static sys:String.Empty}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Resources>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <Border
+                                    x:Name="_outerBorder"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Transparent"
+                                    BorderBrush="{StaticResource PreferencesWindowButtonColor}"
+                                    BorderThickness="2"
+                                    Visibility="{Binding Path=IsColorItemSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <Border
+                                    x:Name="_innerBorder"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="1" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="_outerBorder" Property="BorderBrush" Value="{StaticResource PreferencesWindowButtonColor}" />
+                                    <Setter TargetName="_innerBorder" Property="BorderBrush" Value="{StaticResource PreferencesWindowButtonColor}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="ColorListStyle" TargetType="ListBox">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="MaxHeight" Value="300" />
+
+                <Setter Property="ItemsPanel">
+                    <Setter.Value>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}, Converter={StaticResource AdditionConverter}, ConverterParameter=-4}" />
+                        </ItemsPanelTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ItemContainerStyle" Value="{StaticResource ColorItemContainerStyle}" />
+                <Setter Property="ItemTemplate" Value="{StaticResource ColorItemTemplate}" />
+                <Setter Property="SelectionMode" Value="Single" />
+            </Style>
+
+            <!--  ===============================================================================  -->
+            <!--  ColorCanvasTextBox (Style)  -->
+            <!--  ===============================================================================  -->
+
+            <Style
+                x:Key="ColorCanvasTextBoxStyle"
+                BasedOn="{StaticResource {x:Type TextBox}}"
+                TargetType="TextBox">
+                <Setter Property="Background" Value="White" />
+                <Setter Property="BorderBrush" Value="#e9e9e9" />
+            </Style>
+
+            <!--  ===============================================================================  -->
+            <!--  SliderRepeatButton (Style)  -->
+            <!--  ===============================================================================  -->
+
+            <Style x:Key="SliderRepeatButtonStyle" TargetType="{x:Type RepeatButton}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="IsTabStop" Value="false" />
+                <Setter Property="Focusable" Value="false" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Border Background="{TemplateBinding Background}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!--  ===============================================================================  -->
+            <!--  VerticalSlideThumb (Template and Style)  -->
+            <!--  ===============================================================================  -->
+
+            <ControlTemplate x:Key="VerticalSlideThumbTemplate" TargetType="{x:Type Thumb}">
+                <Canvas Background="Transparent" SnapsToDevicePixels="true">
+                    <Path
+                        x:Name="LeftArrow"
+                        Width="6"
+                        Height="8"
+                        Data="F1 M 276.761,316L 262.619,307.835L 262.619,324.165L 276.761,316 Z "
+                        Fill="#FF000000"
+                        RenderTransformOrigin="0.5,0.5"
+                        Stretch="Fill"
+                        Stroke="#FF000000"
+                        StrokeLineJoin="Round">
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <TranslateTransform Y="6" />
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                    <Path
+                        x:Name="RightArrow"
+                        Width="6"
+                        Height="8"
+                        Data="F1 M 276.761,316L 262.619,307.835L 262.619,324.165L 276.761,316 Z "
+                        Fill="#FF000000"
+                        RenderTransformOrigin="0.5,0.5"
+                        Stretch="Fill"
+                        Stroke="#FF000000"
+                        StrokeLineJoin="Round">
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="-180" />
+                                <TranslateTransform X="9" Y="6" />
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                </Canvas>
+            </ControlTemplate>
+
+            <Style x:Key="VerticalSlideThumbStyle" TargetType="{x:Type Thumb}">
+                <Setter Property="Focusable" Value="false" />
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="Height" Value="12" />
+                <Setter Property="Width" Value="15" />
+                <Setter Property="Foreground" Value="Gray" />
+                <Setter Property="Template" Value="{StaticResource VerticalSlideThumbTemplate}" />
+            </Style>
+
+            <!--  ===============================================================================  -->
+            <!--  ColorSpectrumSlider (Template and Style)  -->
+            <!--  ===============================================================================  -->
+
+            <ControlTemplate x:Key="ColorSpectrumSliderTemplate" TargetType="{x:Type xctk:ColorSpectrumSlider}">
+                <Grid>
+                    <Border
+                        Margin="0,8,0,0"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border x:Name="PART_TrackBackground" Width="15">
+                            <Rectangle
+                                x:Name="PART_SpectrumDisplay"
+                                VerticalAlignment="Stretch"
+                                Stretch="Fill" />
+                        </Border>
+                    </Border>
+
+                    <Track Name="PART_Track">
+                        <Track.DecreaseRepeatButton>
+                            <RepeatButton Command="Slider.DecreaseLarge" Style="{StaticResource SliderRepeatButtonStyle}" />
+                        </Track.DecreaseRepeatButton>
+                        <Track.IncreaseRepeatButton>
+                            <RepeatButton Command="Slider.IncreaseLarge" Style="{StaticResource SliderRepeatButtonStyle}" />
+                        </Track.IncreaseRepeatButton>
+                        <Track.Thumb>
+                            <Thumb Style="{StaticResource VerticalSlideThumbStyle}" />
+                        </Track.Thumb>
+                    </Track>
+                </Grid>
+            </ControlTemplate>
+
+
+            <Style TargetType="{x:Type xctk:ColorSpectrumSlider}">
+                <Setter Property="BorderBrush" Value="DarkGray" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="SmallChange" Value="10" />
+                <Setter Property="Orientation" Value="Vertical" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                <Setter Property="Minimum" Value="0" />
+                <Setter Property="Maximum" Value="360" />
+                <Setter Property="TickFrequency" Value="0.001" />
+                <Setter Property="IsSnapToTickEnabled" Value="True" />
+                <Setter Property="IsDirectionReversed" Value="False" />
+                <Setter Property="IsMoveToPointEnabled" Value="True" />
+                <Setter Property="Value" Value="0" />
+                <Setter Property="Template" Value="{StaticResource ColorSpectrumSliderTemplate}" />
+            </Style>
+
+            <!--  ===============================================================================  -->
+            <!--  ColorCanvas (Template and Style)  -->
+            <!--  ===============================================================================  -->
+
+            <ControlTemplate x:Key="ColorCanvasTemplate" TargetType="{x:Type xctk:ColorCanvas}">
+                <Border
+                    Padding="3"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+                    <Grid Margin="20,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="0,0,0,-15">
+                            <Grid x:Name="titleGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="7*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Margin="-4,5,0,20"
+                                    Padding="2"
+                                    Background="Transparent"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="20"
+                                    Foreground="Black"
+                                    Text="{x:Static p:Resources.CustomColorsPopupTitle}" />
+                                <Button
+                                    Name="CustomColorsCloseButton"
+                                    Grid.Column="1"
+                                    Width="12"
+                                    Height="12"
+                                    Margin="0,-8,0,10"
+                                    Click="CustomColorsCloseButton_Click"
+                                    Style="{StaticResource PopupCloseButtonStyle}" />
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="420" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!--  Contains all the colors in a Canvas  -->
+                            <Border
+                                Margin="0,0,5,0"
+                                Background="{StaticResource CheckerBrush}"
+                                BorderBrush="DarkGray"
+                                BorderThickness="1"
+                                ClipToBounds="True">
+                                <Canvas
+                                    x:Name="PART_ColorShadingCanvas"
+                                    Width="420"
+                                    MinHeight="120"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Rectangle
+                                        x:Name="ColorShadingRectangle"
+                                        Width="{Binding ElementName=PART_ColorShadingCanvas, Path=Width}"
+                                        MinHeight="120"
+                                        Fill="{Binding SelectedColor, ElementName=PART_SpectrumSlider, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+                                    <Rectangle
+                                        x:Name="WhiteGradient"
+                                        Width="{Binding ElementName=PART_ColorShadingCanvas, Path=Width}"
+                                        MinHeight="120">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                <GradientStop Offset="0" Color="#ffffffff" />
+                                                <GradientStop Offset="1" Color="Transparent" />
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <Rectangle
+                                        x:Name="BlackGradient"
+                                        Width="{Binding ElementName=PART_ColorShadingCanvas, Path=Width}"
+                                        MinHeight="120">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,1" EndPoint="0, 0">
+                                                <GradientStop Offset="0" Color="#ff000000" />
+                                                <GradientStop Offset="1" Color="#00000000" />
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <Canvas
+                                        x:Name="PART_ColorShadeSelector"
+                                        Width="10"
+                                        Height="10"
+                                        IsHitTestVisible="False">
+                                        <Ellipse
+                                            Width="10"
+                                            Height="10"
+                                            IsHitTestVisible="False"
+                                            Stroke="#FFFFFFFF"
+                                            StrokeThickness="3" />
+                                        <Ellipse
+                                            Width="10"
+                                            Height="10"
+                                            IsHitTestVisible="False"
+                                            Stroke="#FF000000"
+                                            StrokeThickness="1" />
+                                    </Canvas>
+                                </Canvas>
+                            </Border>
+
+                            <!--  Contains the Color (Hexadecimal) label and value  -->
+                            <Border Grid.Row="1" Margin="0,5,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border
+                                        x:Name="SelectedColorBorder"
+                                        Height="22"
+                                        Margin="2,0,2,0"
+                                        Background="{StaticResource CheckerBrush}"
+                                        BorderBrush="#FFC9CACA"
+                                        BorderThickness="1">
+                                        <Rectangle x:Name="SelectedColor" Fill="{Binding SelectedColor, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+                                    </Border>
+                                    <TextBox
+                                        x:Name="PART_HexadecimalTextBox"
+                                        Grid.Column="1"
+                                        MinHeight="22"
+                                        Margin="2,0,5,0"
+                                        VerticalAlignment="Center"
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        Style="{StaticResource ColorCanvasTextBoxStyle}" />
+                                </Grid>
+                            </Border>
+
+                            <!--  Contains the right side vertical Colors Slider  -->
+                            <Border
+                                Grid.Row="0"
+                                Grid.RowSpan="2"
+                                Grid.Column="1"
+                                Margin="7,-8,10,0"
+                                ClipToBounds="False">
+                                <xctk:ColorSpectrumSlider x:Name="PART_SpectrumSlider" VerticalAlignment="Stretch" />
+                            </Border>
+                        </Grid>
+
+                        <!--  Middle part of the control that contain the Sliders and the R,G,B values  -->
+                        <Border
+                            x:Name="RGBBorder"
+                            Grid.Row="2"
+                            MinWidth="180"
+                            Margin="0,10,0,0"
+                            BorderThickness="1"
+                            ClipToBounds="True">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="44" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Text="R" />
+                                <Slider
+                                    x:Name="PART_RSlider"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="4,6,4,6"
+                                    VerticalAlignment="Center"
+                                    LargeChange="10"
+                                    Maximum="255"
+                                    SmallChange="1"
+                                    TickFrequency="1"
+                                    Value="{Binding R, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    BorderThickness="0"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Text="{Binding Value, ElementName=PART_RSlider}" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Text="G" />
+                                <Slider
+                                    x:Name="PART_GSlider"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="4,6,4,6"
+                                    VerticalAlignment="Center"
+                                    LargeChange="10"
+                                    Maximum="255"
+                                    SmallChange="1"
+                                    TickFrequency="1"
+                                    Value="{Binding G, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    BorderThickness="0"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Text="{Binding Value, ElementName=PART_GSlider}" />
+
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Text="B" />
+                                <Slider
+                                    x:Name="PART_BSlider"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="4,6,4,6"
+                                    VerticalAlignment="Center"
+                                    LargeChange="10"
+                                    Maximum="255"
+                                    SmallChange="1"
+                                    TickFrequency="1"
+                                    Value="{Binding B, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    BorderThickness="0"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Text="{Binding Value, ElementName=PART_BSlider}" />
+
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Text="A"
+                                    Visibility="{Binding Path=UsingAlphaChannel, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <Slider
+                                    x:Name="PART_OpacitySlider"
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Margin="4,6,4,6"
+                                    VerticalAlignment="Center"
+                                    LargeChange="10"
+                                    Maximum="255"
+                                    SmallChange="1"
+                                    Visibility="{Binding Path=UsingAlphaChannel, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Value="{Binding Path=A, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    BorderThickness="0"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Text="{Binding Value, ElementName=PART_OpacitySlider}" />
+                            </Grid>
+                        </Border>
+
+                        <Separator
+                            Grid.Row="3"
+                            Margin="5,5,20,5"
+                            Background="#dbdbd2" />
+
+                        <!--  Bottom buttons section (Apply and Cancel buttons)  -->
+                        <Border Grid.Row="4">
+                            <Grid Margin="0,10,20,10" HorizontalAlignment="Right">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button
+                                    x:Name="CustomColorsCancelBtn"
+                                    Grid.Column="0"
+                                    Click="CustomColorsCancelBtn_Click"
+                                    Content="{x:Static p:Resources.CustomColorPickerCancelBtn}"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource OutlinedButtonStyleInverted}" TargetType="{x:Type Button}">
+                                            <Setter Property="IsEnabled" Value="True" />
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button
+                                    x:Name="CustomColorsApplyBtn"
+                                    Grid.Column="1"
+                                    Click="CustomColorsApplyBtn_Click"
+                                    Content="{x:Static p:Resources.CustomColorPickerApplyBtn}"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
+                                            <Setter Property="IsEnabled" Value="True" />
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                    </Trigger>
+                    <Trigger Property="SelectedColor" Value="{x:Null}">
+                        <Setter TargetName="PART_ColorShadeSelector" Property="Visibility" Value="Collapsed" />
+                        <Setter TargetName="SelectedColorBorder" Property="Background" Value="Transparent" />
+                        <Setter TargetName="RGBBorder" Property="IsEnabled" Value="False" />
+                        <Setter TargetName="RGBBorder" Property="TextElement.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <Style TargetType="{x:Type xctk:ColorCanvas}">
+                <Setter Property="Background" Value="{StaticResource PanelBackgroundBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Template" Value="{StaticResource ColorCanvasTemplate}" />
+            </Style>
+
+        </ResourceDictionary>
+    </Popup.Resources>
+    <Border
+        Background="Transparent"
+        BorderBrush="Transparent"
+        BorderThickness="10"
+        CornerRadius="10">
+        <Border
+            Name="MainBorder"
+            Background="White"
+            BorderBrush="Transparent"
+            BorderThickness="4"
+            CornerRadius="10">
+            <Border.Effect>
+                <DropShadowEffect
+                    BlurRadius="15"
+                    Direction="-90"
+                    RenderingBias="Quality"
+                    ShadowDepth="2"
+                    Color="LightGray" />
+            </Border.Effect>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <!--  This Grid will in charge of showing the normal color selection controls or the custom colors controls  -->
+                <Grid>
+
+                    <!--  Normal Colors Window  -->
+                    <Grid
+                        x:Name="gridNormalColorSelection"
+                        Margin="21,10,20,10"
+                        HorizontalAlignment="Left"
+                        Background="Transparent"
+                        Visibility="{Binding Path=IsCustomColorSelectionEnabled, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!--  Title  -->
+                        <Grid Grid.Row="0">
+                            <Grid x:Name="titleCustomColorsGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Margin="0"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Foreground="Black"
+                                    Text="{x:Static p:Resources.CustomColorPickerTitle}" />
+                                <Button
+                                    Name="NormalColorsCloseButton"
+                                    Grid.Column="1"
+                                    Width="12.8"
+                                    Height="12.8"
+                                    Click="NormalColorsCloseButton_Click"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Style="{StaticResource PopupCloseButtonStyle}" />
+                            </Grid>
+
+                        </Grid>
+
+                        <!--  Basic Colors  -->
+                        <Grid Grid.Row="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Margin="0,10,0,0"
+                                    Padding="2"
+                                    Background="Transparent"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="14"
+                                    Foreground="Black"
+                                    Text="{x:Static p:Resources.CustomColorPickerBasicColors}" />
+                                <ListBox
+                                    x:Name="PART_AvailableColors"
+                                    Grid.Row="1"
+                                    MinWidth="485"
+                                    Margin="0,5,0,5"
+                                    ItemsSource="{Binding BasicColors}"
+                                    SelectionChanged="PART_BasicColors_SelectionChanged"
+                                    Style="{StaticResource ColorListStyle}" />
+                            </Grid>
+                        </Grid>
+
+                        <!--  Custom Colors  -->
+                        <Grid Grid.Row="2">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Margin="0,10,0,-9"
+                                    Padding="2"
+                                    Background="Transparent"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="14"
+                                    Foreground="Black"
+                                    Text="{x:Static p:Resources.CustomColorPickerCustomColors}" />
+
+                                <ListBox
+                                    x:Name="PART_CustomColors"
+                                    Grid.Row="1"
+                                    MinWidth="485"
+                                    Margin="0,5,0,5"
+                                    ItemsSource="{Binding CustomColors}"
+                                    SelectionChanged="PART_CustomColors_SelectionChanged"
+                                    Style="{StaticResource ColorListStyle}" />
+                            </Grid>
+                        </Grid>
+
+                        <!--  Define Colors  -->
+                        <Grid Grid.Row="3">
+                            <Button
+                                x:Name="DefineColorBtn"
+                                MaxWidth="200"
+                                Margin="3,0,0,0"
+                                Padding="10"
+                                HorizontalAlignment="Left"
+                                Click="DefineColorBtn_Click"
+                                Content="{x:Static p:Resources.CustomColorPickerCustomColorBtn}">
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+
+                        <!--  Separator  -->
+                        <Grid Grid.Row="4">
+                            <Separator Margin="5,5,0,5" Background="#dbdbd2" />
+                        </Grid>
+
+                        <!--  Buttons  -->
+                        <Grid Grid.Row="5" HorizontalAlignment="Right">
+                            <Grid Margin="10,7,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button
+                                    x:Name="NormalColorsCancelBtn"
+                                    Grid.Column="0"
+                                    Padding="10,5,10,5"
+                                    Click="NormalColorsCancelBtn_Click"
+                                    Content="{x:Static p:Resources.CustomColorPickerCancelBtn}"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource OutlinedButtonStyleInverted}" TargetType="{x:Type Button}">
+                                            <Setter Property="IsEnabled" Value="True" />
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button
+                                    x:Name="NormalColorsApplyBtn"
+                                    Grid.Column="1"
+                                    Padding="10,5,10,5"
+                                    Click="NormalColorsApplyBtn_Click"
+                                    Content="{x:Static p:Resources.CustomColorPickerApplyBtn}"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
+                                            <Setter Property="IsEnabled" Value="True" />
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <!--  Custom Colors Window  -->
+                    <Grid
+                        x:Name="gridCustomColorSelection"
+                        Background="Transparent"
+                        Visibility="{Binding Path=IsCustomColorSelectionEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <xctk:ColorCanvas
+                            x:Name="colorCanvasControl"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            DataContext="{StaticResource CustomColorPickerViewModel}"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}"
+                            UsingAlphaChannel="{Binding UsingAlphaChannel, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+    </Border>
+</Popup>

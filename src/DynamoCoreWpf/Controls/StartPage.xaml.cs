@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,17 +15,18 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
-using Microsoft.Practices.Prism.ViewModel;
+using Newtonsoft.Json;
+using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// This class represents the unified data class that is bound to all the 
-    /// list boxes on the StartPageView. The bound data item can be handled in 
+    /// This class represents the unified data class that is bound to all the
+    /// list boxes on the StartPageView. The bound data item can be handled in
     /// different ways depending on their ClickAction and ContextData properties.
     /// See "Action" enumeration below for more details of each item sub-type.
     /// </summary>
-    /// 
+    ///
     public class StartPageListItem : NotificationObject
     {
         private ImageSource icon = null;
@@ -32,16 +34,16 @@ namespace Dynamo.UI.Controls
         public enum Action
         {
             /// <summary>
-            /// Indicates a regular command should be invoked if the list view 
-            /// item corresponding to this StartPageListItem is clicked. The 
+            /// Indicates a regular command should be invoked if the list view
+            /// item corresponding to this StartPageListItem is clicked. The
             /// meaning of ContextData will be interpreted in StartPageViewModel
             /// and corresponding action taken as a result.
             /// </summary>
             RegularCommand,
 
             /// <summary>
-            /// Indicates that the StartPageListItem carries a file path. When 
-            /// clicked, StartPageViewModel issues a file open command to open 
+            /// Indicates that the StartPageListItem carries a file path. When
+            /// clicked, StartPageViewModel issues a file open command to open
             /// the file path indicated by ContextData property.
             /// </summary>
             FilePath,
@@ -49,7 +51,7 @@ namespace Dynamo.UI.Controls
             /// <summary>
             /// Indicates that the StartPageListItem points to an external URL.
             /// When the list view item corresponding to this StartPageListItem
-            /// is clicked, StartPageViewModel brings up the default browser and 
+            /// is clicked, StartPageViewModel brings up the default browser and
             /// navigate to the URL indicated by ContextData property.
             /// </summary>
             ExternalUrl
@@ -71,6 +73,10 @@ namespace Dynamo.UI.Controls
         public string Caption { get; private set; }
         public string SubScript { get; set; }
         public string ToolTip { get; set; }
+        public string DateModified { get; set; }
+        public string Description { get; internal set; }
+        public string Thumbnail { get; set; }
+        public string Author { get; internal set; }
         public string ContextData { get; set; }
         public Action ClickAction { get; set; }
 
@@ -167,12 +173,6 @@ namespace Dynamo.UI.Controls
 
             #region Reference List
 
-            references.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-whats-new.png")
-            {
-                ContextData = ButtonNames.ShowGallery,
-                ClickAction = StartPageListItem.Action.RegularCommand
-            });
-
             references.Add(new StartPageListItem(Resources.StartPageDynamoPrimer, "icon-reference.png")
             {
                 ContextData = Configurations.DynamoPrimer,
@@ -190,7 +190,7 @@ namespace Dynamo.UI.Controls
                 ContextData = Configurations.DynamoDictionary,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
-            
+
             #endregion
 
             #region Contribution Links
@@ -203,7 +203,7 @@ namespace Dynamo.UI.Controls
 
             contributeLinks.Add(new StartPageListItem(Resources.StartPageSendIssues, "icon-issues.png")
             {
-                ContextData = Configurations.GitHubBugReportingLink,
+                ContextData = Configurations.GitHubBugReportingLink + "?template=issue.yml",
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
@@ -224,7 +224,7 @@ namespace Dynamo.UI.Controls
                 {
                     foreach (System.IO.DirectoryInfo directory in directories)
                     {
-                        //Make sure the folder's name is not "backup" 
+                        //Make sure the folder's name is not "backup"
                         if (!directory.Name.Equals(Configurations.BackupFolderName))
                         {
                             // Resursive call for each subdirectory.
@@ -236,7 +236,7 @@ namespace Dynamo.UI.Controls
                     }
                 }
 
-                // Secondly, process all the files directly under this folder 
+                // Secondly, process all the files directly under this folder
                 System.IO.FileInfo[] dynamoFiles = null;
                 dynamoFiles = root.GetFiles("*.dyn", System.IO.SearchOption.TopDirectoryOnly);
 
@@ -245,7 +245,7 @@ namespace Dynamo.UI.Controls
                     foreach (System.IO.FileInfo file in dynamoFiles)
                     {
                         if (sampleFolderPath == null)
-                        {                            
+                        {
                             sampleFolderPath = Path.GetDirectoryName(file.FullName);
                         }
                         // Add each file under the root directory property list.
@@ -335,7 +335,7 @@ namespace Dynamo.UI.Controls
         {
             get
             {
-                if (StabilityUtils.IsLastShutdownClean 
+                if (StabilityUtils.IsLastShutdownClean
                     || DynamoViewModel.Model.PreferenceSettings.BackupFiles.Count == 0)
                 {
                     return Dynamo.Wpf.Properties.Resources.StartPageBackupNoCrash;
@@ -372,22 +372,96 @@ namespace Dynamo.UI.Controls
             IEnumerable<string> filePaths)
         {
             files.Clear();
-            foreach (var filePath in filePaths)
+            foreach (var filePath in filePaths.Where(x => x != null))
             {
-                var extension = Path.GetExtension(filePath).ToUpper();
-                // If not extension specified and code reach here, this means this is still a valid file 
-                // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-                var subScript = extension.IndexOf(".") == 0 ? extension.Substring(1) : "";
-                var caption = Path.GetFileNameWithoutExtension(filePath);
-
-                files.Add(new StartPageListItem(caption)
+                try
                 {
-                    ContextData = filePath,
-                    ToolTip = filePath,
-                    SubScript = subScript,
-                    ClickAction = StartPageListItem.Action.FilePath
-                });
+                    // Skip files which were moved or deleted (consistent with Revit behavior)
+                    if (!DynamoUtilities.PathHelper.IsValidPath(filePath)) continue;
+
+                    var extension = Path.GetExtension(filePath).ToUpper();
+                    // If not extension specified and code reach here, this means this is still a valid file
+                    // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
+                    var subScript = extension.StartsWith(".") ? extension.Substring(1) : "";
+                    var caption = Path.GetFileNameWithoutExtension(filePath);
+
+                    // deserializes the file only once
+                    var jsonObject = DeserializeJsonFile(filePath); 
+                    var description = jsonObject != null ? GetGraphDescription(jsonObject) : string.Empty;
+                    var thumbnail = jsonObject != null ? GetGraphThumbnail(jsonObject) : string.Empty;
+                    var author = jsonObject != null ? GetGraphAuthor(jsonObject) : Resources.DynamoXmlFileFormat;
+
+                    var date = DynamoUtilities.PathHelper.GetDateModified(filePath);
+
+                    files.Add(new StartPageListItem(caption)
+                    {
+                        ContextData = filePath,
+                        ToolTip = filePath,
+                        SubScript = subScript,
+                        Description = description,
+                        Thumbnail = thumbnail,
+                        Author = author,
+                        DateModified = date,
+                        ClickAction = StartPageListItem.Action.FilePath,
+
+                    }); 
+                }
+                catch (ArgumentException ex)
+                {
+                    DynamoViewModel.Model.Logger.Log("File path is not valid: " + ex.StackTrace);
+                }
+                catch (Exception ex)
+                {
+                    DynamoViewModel.Model.Logger.Log("Error loading the file: " + ex.StackTrace);
+                }
             }
+        }
+
+        private Dictionary<string, object> DeserializeJsonFile(string filePath)
+        {
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string jsonString, out Exception ex))
+            {
+                return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+            }
+            else
+            {
+                if(ex is JsonReaderException)
+                {
+                    DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
+                }
+                else
+                {
+                    DynamoViewModel.Model.Logger.Log("File is not valid: " + ex.StackTrace);
+                }
+                return null;
+            }
+        }
+
+        private const string BASE64PREFIX = "data:image/png;base64,";
+
+        private string GetGraphThumbnail(Dictionary<string, object> jsonObject)
+        {
+            jsonObject.TryGetValue("Thumbnail", out object thumbnail);
+
+            if (string.IsNullOrEmpty(thumbnail as string)) return string.Empty;
+
+            var base64 = String.Format("{0}{1}", BASE64PREFIX, thumbnail as string);
+
+            return base64;
+        }
+
+        private string GetGraphDescription(Dictionary<string, object> jsonObject)
+        {
+            jsonObject.TryGetValue("Description", out object description);
+
+            return description as string;
+        }
+
+        private string GetGraphAuthor(Dictionary<string, object> jsonObject)
+        {
+            jsonObject.TryGetValue("Author", out object author);
+
+            return author as string;
         }
 
         private void HandleRegularCommand(StartPageListItem item)
@@ -403,13 +477,9 @@ namespace Dynamo.UI.Controls
                 case ButtonNames.OpenWorkspace:
                     dvm.ShowOpenDialogAndOpenResultCommand.Execute(null);
                     break;
-                    
+
                 case ButtonNames.NewCustomNodeWorkspace:
                     dvm.ShowNewFunctionDialogCommand.Execute(null);
-                    break;
-
-                case ButtonNames.ShowGallery:
-                    dvm.ShowGalleryCommand.Execute(null);
                     break;
 
                 default:
@@ -426,7 +496,7 @@ namespace Dynamo.UI.Controls
 
         private void HandleExternalUrl(StartPageListItem item)
         {
-            System.Diagnostics.Process.Start(item.ContextData);
+            System.Diagnostics.Process.Start(new ProcessStartInfo(item.ContextData) { UseShellExecute = true });
         }
 
         #endregion
@@ -438,7 +508,6 @@ namespace Dynamo.UI.Controls
         public const string NewWorkspace = "NewWorkspace";
         public const string NewCustomNodeWorkspace = "NewCustomNodeWorkspace";
         public const string OpenWorkspace = "OpenWorkspace";
-        public const string ShowGallery = "ShowGallery";
     }
 
     public partial class StartPageView : UserControl
@@ -476,12 +545,6 @@ namespace Dynamo.UI.Controls
 
             var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
             StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
-
-            if (startPageViewModel.IsFirstRun)
-            {
-                dynamoViewModel.ShowGalleryCommand.Execute(null);
-            }
-
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -493,18 +556,11 @@ namespace Dynamo.UI.Controls
             var startPageViewModel = this.DataContext as StartPageViewModel;
             startPageViewModel.HandleListItemClicked(selected);
 
-            // Clear list box selection so that the same item, when 
+            // Clear list box selection so that the same item, when
             // clicked, still triggers "selection changed" notification.
             var listBox = sender as ListBox;
             listBox.SelectedIndex = -1;
         }
-
-        private void OnCloseStartPageClicked(object sender, MouseButtonEventArgs e)
-        {
-            this.dynamoViewModel.ShowStartPage = false;
-        }
-
-        #endregion
 
         private void OnSampleFileSelected(object sender, RoutedEventArgs e)
         {
@@ -520,7 +576,7 @@ namespace Dynamo.UI.Controls
 
             if (!Path.GetExtension(filePath).Equals(".dyn"))
                 return;
-            
+
             var dvm = this.dynamoViewModel;
             if (dvm.OpenCommand.CanExecute(filePath))
                 dvm.OpenCommand.Execute(filePath);
@@ -529,14 +585,15 @@ namespace Dynamo.UI.Controls
         private void ShowSamplesInFolder(object sender, MouseButtonEventArgs e)
         {
             var startPageViewModel = this.DataContext as StartPageViewModel;
-            Process.Start("explorer.exe", "/select," 
-                + startPageViewModel.SampleFolderPath);
+            Process.Start(new ProcessStartInfo("explorer.exe", "/select,"
+                + startPageViewModel.SampleFolderPath)
+                { UseShellExecute = true });
         }
 
         private void ShowBackupFilesInFolder(object sender, MouseButtonEventArgs e)
         {
             var startPageViewModel = this.DataContext as StartPageViewModel;
-            Process.Start("explorer.exe", dynamoViewModel.Model.PathManager.BackupDirectory);
+            Process.Start(new ProcessStartInfo("explorer.exe", dynamoViewModel.Model.PathManager.BackupDirectory) { UseShellExecute = true });
         }
 
         private void StartPage_OnDrop(object sender, DragEventArgs e)
@@ -545,7 +602,7 @@ namespace Dynamo.UI.Controls
             {
                 // Note that you can have more than one file.
                 var homespace = dynamoViewModel.HomeSpace;
-                if (homespace.HasUnsavedChanges && 
+                if (homespace.HasUnsavedChanges &&
                     !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(homespace))
                 {
                     return;
@@ -563,6 +620,7 @@ namespace Dynamo.UI.Controls
 
             }
         }
+        #endregion
     }
 
     public class SampleFileEntry

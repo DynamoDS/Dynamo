@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using Dynamo.Logging;
-using Dynamo.Services;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 
@@ -28,64 +26,31 @@ namespace Dynamo.UI.Prompts
             InitializeComponent();
             if (resourceProvider != null)
             {
-                TitleTextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.Title);
+                TitleTextBlock.Text = resourceProvider.GetString(ResourceNames.ConsentForm.Title);
             }
+
             viewModel = dynamoViewModel;
-            var googleAnalyticsFile = "GoogleAnalyticsConsent.rtf";
 
-            if (viewModel.Model.PathManager.ResolveDocumentPath(ref googleAnalyticsFile))
-                GoogleAnalyticsConsent.File = googleAnalyticsFile;
+            // Resolve and load ADP Analytics Consent file
             var adpAnalyticsFile = "ADPAnalyticsConsent.rtf";
-
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
                 ADPAnalyticsConsent.File = adpAnalyticsFile;
-
-            //disable adp configure dialog version check fails.
+            // disable adp configuration if version check fails.
             //also disabled below id all analytics disabled.
             configure_adp_button.IsEnabled = AnalyticsService.IsADPAvailable();
 
-            AcceptGoogleAnalyticsCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
-
-            if (Analytics.DisableAnalytics)
-            {
-                AcceptGoogleAnalyticsCheck.IsChecked = false;
-                AcceptGoogleAnalyticsTextBlock.IsEnabled = false;
-                AcceptGoogleAnalyticsCheck.IsEnabled = false;
-
-                configure_adp_button.IsEnabled = false;
-            }
-           
-        }
-
-        private void ToggleIsUsageReportingChecked(object sender, RoutedEventArgs e)
-        {
-            UsageReportingManager.Instance.SetUsageReportingAgreement(
-                AcceptUsageReportingCheck.IsChecked.HasValue &&
-                AcceptUsageReportingCheck.IsChecked.Value);
-            AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
-        }
-
-        private void ToggleIsGoogleAnalyticsChecked(object sender, RoutedEventArgs e)
-        {
-            UsageReportingManager.Instance.SetAnalyticsReportingAgreement(
-                AcceptGoogleAnalyticsCheck.IsChecked.HasValue &&
-                AcceptGoogleAnalyticsCheck.IsChecked.Value);
+            // Resolve and load ML Node Autocomplete Consent file
+            var mlNodeAutocompleteFile = "MLNodeAutocompleteConsent.rtf";
+            if (viewModel.Model.PathManager.ResolveDocumentPath(ref mlNodeAutocompleteFile))
+                MLNodeAutocompleteConsent.File = mlNodeAutocompleteFile;
+            // Initialize the checkbox to the current value
+            AgreeToMLAutocompleteTOUCheckbox.IsChecked = dynamoViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved;
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            // Update user agreement for GA.
-            //ADP is set via the ADPSDK consent window.
-            UsageReportingManager.Instance.SetAnalyticsReportingAgreement(AcceptGoogleAnalyticsCheck.IsChecked.Value);
+            viewModel.PreferenceSettings.IsMLAutocompleteTOUApproved = AgreeToMLAutocompleteTOUCheckbox.IsChecked ?? false;
             Close();
-        }
-
-        private void OnLearnMoreClick(object sender, RoutedEventArgs e)
-        {
-            var aboutBox = viewModel.BrandingResourceProvider.CreateAboutBox(viewModel);
-            aboutBox.Owner = this;
-            aboutBox.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            aboutBox.ShowDialog();
         }
 
         protected override void OnClosed(System.EventArgs e)
@@ -101,7 +66,7 @@ namespace Dynamo.UI.Prompts
             {
                 handle = new WindowInteropHelper(Owner).Handle;
             }
-            AnalyticsService.ShowADPConsetDialog(handle);
+            AnalyticsService.ShowADPConsentDialog(handle);
         }
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)

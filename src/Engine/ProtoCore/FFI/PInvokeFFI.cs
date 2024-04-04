@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +27,8 @@ namespace ProtoFFI
             Name = name;
             AssemblyName = new AssemblyName();
             AssemblyName.Name = name;
-            AssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                    AssemblyName, AssemblyBuilderAccess.Run);
+            AssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(AssemblyName,
+                AssemblyBuilderAccess.Run);
             ModuleBuilder = AssemblyBuilder.DefineDynamicModule(AssemblyName.Name);
         }
 
@@ -349,12 +349,6 @@ namespace ProtoFFI
             //object ret = mFunction.Invoke(parameters);
             object ret = mFunction.Execute(parameters.ToArray());
             return ConvertReturnValue(ret, context, dsi);
-        }
-
-        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> stack) instead")]
-        public override object Execute(ProtoCore.Runtime.Context context, Interpreter dsi)
-        {
-            return Execute(context, dsi, null);
         }
     }
 

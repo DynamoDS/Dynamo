@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Dynamo.Utilities;
 
@@ -81,6 +81,47 @@ namespace Dynamo.DocumentationBrowser
 
             var html = converter.ParseMd2Html(mdString, mdFilePath);
             writer.WriteLine(html);
+        }
+
+        /// <summary>
+        /// Converts a markdown string into Html string.
+        /// </summary>
+        /// <param name="nodeNamespace"></param>
+        internal string ParseToHtml(string nodeNamespace, string packageName)
+        {
+            var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace, packageName);
+
+            string mdString;
+
+            if (string.IsNullOrWhiteSpace(mdFilePath) ||
+                !File.Exists(mdFilePath))
+                mdString = ResourceUtilities.LoadContentFromResources(NODE_ANNOTATION_NOT_FOUND, GetType().Assembly);
+
+            else
+            {
+                // Doing this to avoid 'System.ObjectDisposedException'
+                // https://docs.microsoft.com/en-us/visualstudio/code-quality/ca2202?view=vs-2019
+                Stream stream = null;
+                try
+                {
+                    stream = File.Open(mdFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        stream = null;
+                        mdString = reader.ReadToEnd();
+                    }
+                }
+                finally
+                {
+                    stream?.Dispose();
+                }
+
+                if (string.IsNullOrWhiteSpace(mdString))
+                    return string.Empty;
+            }
+
+            var html = converter.ParseMd2Html(mdString, mdFilePath);
+            return html;
         }
 
         /// <summary>

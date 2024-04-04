@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -119,6 +119,61 @@ namespace DynamoCoreWpfTests
             //Check that the GroupStyles in the AnnotationView match the ones in the PreferencesView
             Assert.AreEqual(annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().Count(), currentGroupStylesCounter);
 
+        }
+
+        [Test]
+        public void CustomColorPicker_PrePopulateDefaultColors()
+        {
+            Open(@"UI\GroupTest.dyn");
+            var tabName = "Visual Settings";
+            var expanderName = "Group Styles";
+
+            var preferencesSettings = (View.DataContext as DynamoViewModel).PreferenceSettings;
+
+            //Creates the Preferences dialog 
+            var preferencesWindow = new PreferencesView(View);
+            
+            //Validate the 4 default existing styles list
+            Assert.AreEqual(preferencesSettings.GroupStyleItemsList.Count, 4);
+
+            //Adds two Custom Group Styles to the PreferencesView
+            preferencesSettings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "Custom 1", HexColorString = "FFFF00", IsDefault = false });
+            preferencesSettings.GroupStyleItemsList.Add(new GroupStyleItem { Name = "Custom 2", HexColorString = "FF00FF", IsDefault = false });
+
+            //Finds the Visual Settings tab and open it
+            var tabControl = preferencesWindow.preferencesTabControl;
+            if (tabControl == null) return;
+            var preferencesTab = (from TabItem tabItem in tabControl.Items
+                                    where tabItem.Header.ToString().Equals(tabName)
+                                    select tabItem).FirstOrDefault();
+            if (preferencesTab == null) return;
+            tabControl.SelectedItem = preferencesTab;
+
+            //Finds the Group Styles section and open it 
+            var listExpanders = WpfUtilities.ChildrenOfType<Expander>(preferencesTab.Content as ScrollViewer);
+            var tabExpander = (from expander in listExpanders
+                                where expander.Header.ToString().Equals(expanderName)
+                                select expander).FirstOrDefault();
+            if (tabExpander == null) return;
+            tabExpander.IsExpanded = true;
+                   
+                 
+            preferencesWindow.Show();
+            DispatcherUtil.DoEvents();
+
+            //Click the AddStyle button
+            preferencesWindow.AddStyleButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            //The custom Colors list used by ColorPicker is empty
+            Assert.AreEqual(preferencesWindow.stylesCustomColors.Count, 0);
+
+            //Clicks the color button, this will populate the custom Colors list with the style colors added in Group Styles
+            preferencesWindow.buttonColorPicker.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            //Validates that the 3 added custom colors are present in the custom Colors list
+            Assert.AreEqual(preferencesWindow.stylesCustomColors.Count, 2);
         }
     }
 }

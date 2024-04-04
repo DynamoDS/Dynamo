@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -9,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -18,7 +20,9 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using SharpDX.DXGI;
 
@@ -36,26 +40,11 @@ namespace DynamoCoreWpfTests
             libraries.Add("FFITarget.dll");
         }
 
-        public override void Open(string path)
-        {
-            base.Open(path);
-
-            DispatcherUtil.DoEvents();
-        }
-
-        public override void Run()
-        {
-            base.Run();
-
-            DispatcherUtil.DoEvents();
-        }
-
         [Test]
         public void FooterNotificationControlTest()
         {
             // Arrange
             Open(@"UI\ZoomNodeColorStates.dyn");
-
             var workspace = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             Debug.Assert(workspace != null, nameof(workspace) + " != null");
             workspace.Run();
@@ -107,12 +96,11 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void OpeningWorkspaceWithTrustWarning()
+        public void OpeningWorkspaceWithTclsrustWarning()
         {
             // Open workspace with test mode as false, to verify trust warning.
             DynamoModel.IsTestMode = false;
             Open(@"core\CustomNodes\TestAdd.dyn");
-
             Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
 
             // Close workspace
@@ -122,6 +110,75 @@ namespace DynamoCoreWpfTests
             // Asert that the warning popup is closed, when the workspace is closed.
             Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
             DynamoModel.IsTestMode = true;
+        }
+
+        [Test]
+        public void ElementBinding_SaveAs()
+        {
+            var prebindingPathInTestDir = @"core\callsite\trace_test-prebinding.dyn";
+            var prebindingPath = Path.Combine(GetTestDirectory(ExecutingDirectory), prebindingPathInTestDir);
+
+            var pathInTestsDir = @"core\callsite\trace_test.dyn";
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
+
+            // Always start with a fresh workspace with no binding data for this test.
+            File.Copy(prebindingPath, filePath,true);
+            OpenAndRun(pathInTestsDir);
+
+            // Assert that the node doesn't have trace data the first time it's run.
+            var hasTraceData = Model.CurrentWorkspace.Nodes.FirstOrDefault(x =>
+                x.Name == "IncrementerTracedClass.WasCreatedWithTrace");
+            Assert.AreEqual(false, hasTraceData.CachedValue.Data);
+
+            // Saving the workspace after a run serializes trace data to the DYN.
+            ViewModel.SaveCommand.Execute(null);
+
+            DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex);
+            var obj = DSCore.Data.ParseJSON(fileContents) as Dictionary<string, object>;
+            Assert.AreEqual(1, (obj["Bindings"] as IEnumerable<object>).Count());
+
+            var saveAsPathInTestDir = @"core\callsite\trace_test2.dyn";
+            var saveAsPath = Path.Combine(GetTestDirectory(ExecutingDirectory), saveAsPathInTestDir);
+
+            // SaveAs current workspace, close workspace.
+            ViewModel.SaveAsCommand.Execute(saveAsPath);
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+
+            Open(saveAsPathInTestDir);
+
+            // Assert saved as file doesn't have binding data after open.
+            DynamoUtilities.PathHelper.isValidJson(saveAsPath, out fileContents, out ex);
+            obj = DSCore.Data.ParseJSON(fileContents) as Dictionary<string, object>;
+            Assert.AreEqual(0, (obj["Bindings"] as IEnumerable<object>).Count());
+
+            File.Delete(filePath);
+            File.Delete(saveAsPath);
+        }
+
+        [Test]
+        public void TestToastNotificationClosingBehavior()
+        {
+            var preferencesWindow = new PreferencesView(View);
+            preferencesWindow.Show();
+            string selectedLanguage = (string)((ComboBox)preferencesWindow.FindName("LanguageCmb")).SelectedItem;
+            var english = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "en-US").Key;
+            var spanish = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "es-ES").Key;
+            ViewModel.PreferencesViewModel.SelectedLanguage = selectedLanguage == english ? spanish : english;
+
+            ViewModel.HomeSpace.HasUnsavedChanges = false;
+            if (View.IsLoaded)
+                View.Close();
+
+            if (ViewModel != null)
+            {
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
+            }
+
+            bool isToastNotificationVisible = (bool)(ViewModel.MainGuideManager?.ExitTourPopupIsVisible);
+            Assert.IsFalse(isToastNotificationVisible);
         }
     }
 }

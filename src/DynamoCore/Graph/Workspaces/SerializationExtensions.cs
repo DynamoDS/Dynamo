@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -94,6 +94,6 @@ namespace Dynamo.Graph.Workspaces
             var rgx2 = new Regex(@"\bCoreNodeModels.Input.IntegerSlider64Bit\b");
 
             return rgx2.Replace(result, "CoreNodeModels.Input.IntegerSlider");
-        }
+        }        
     }
 }

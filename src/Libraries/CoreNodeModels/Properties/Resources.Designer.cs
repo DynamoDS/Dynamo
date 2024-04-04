@@ -61,7 +61,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false..
+        ///   Looks up a localized string similar to Boolean AND: Returns True only if all of the inputs are true. If any is false, returns False..
         /// </summary>
         public static string AndDescription {
             get {
@@ -88,7 +88,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Selection between a true and false..
+        ///   Looks up a localized string similar to Enables selection between True and False.
         /// </summary>
         public static string BooleanDescription {
             get {
@@ -124,7 +124,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get a color given a color range..
+        ///   Looks up a localized string similar to Returns a color given a color range.
         /// </summary>
         public static string ColorRangeDescription {
             get {
@@ -286,7 +286,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a DateTime object from a formatted date and time string. Date and time must be of the format &quot;April 12, 1977 12:00 PM&quot;.
+        ///   Looks up a localized string similar to Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format &quot;MMMM dd, yyyy h:mm tt&quot;, e.g. &quot;April 02, 1977 12:00 PM&quot;.
         /// </summary>
         public static string DateTimeDescription {
             get {
@@ -295,7 +295,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a directory object from a path..
+        ///   Looks up a localized string similar to Creates a directory object from the given path.
         /// </summary>
         public static string DirectoryFromPathDescription {
             get {
@@ -304,7 +304,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows you to select a directory on the system to get its path.
+        ///   Looks up a localized string similar to Allows you to select a directory on the system and returns its path.
         /// </summary>
         public static string DirectoryNodeDescription {
             get {
@@ -313,7 +313,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a directory object from a path.
+        ///   Looks up a localized string similar to Creates a directory object from the given path.
         /// </summary>
         public static string DirectoryObjectNodeDescription {
             get {
@@ -340,7 +340,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows you to select a directory on the system to get its path..
+        ///   Looks up a localized string similar to Allows you to select a directory on the system and returns its path.
         /// </summary>
         public static string DirectoryPathDescription {
             get {
@@ -376,7 +376,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A slider that produces double values..
+        ///   Looks up a localized string similar to Produces numeric values.
         /// </summary>
         public static string DoubleSliderDescription {
             get {
@@ -385,7 +385,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A slider that produces numeric values..
+        ///   Looks up a localized string similar to Produces numeric values.
         /// </summary>
         public static string DoubleSliderNodeDescription {
             get {
@@ -421,7 +421,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compares if two numbers are equal given a certain tolerance..
+        ///   Looks up a localized string similar to Returns True if x and y are equal given a certain tolerance.
         /// </summary>
         public static string EqualsWithToleranceDescription {
             get {
@@ -467,7 +467,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a file object from a path..
+        ///   Looks up a localized string similar to Creates a file object from the given path.
         /// </summary>
         public static string FileFromPathDescription {
             get {
@@ -485,7 +485,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a file object from a path..
+        ///   Looks up a localized string similar to Creates a file object from the given path.
         /// </summary>
         public static string FileObjectNodeDescription {
             get {
@@ -512,7 +512,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows you to select a file on the system to get its file path..
+        ///   Looks up a localized string similar to Allows you to select a file on the system and returns its file path.
         /// </summary>
         public static string FilePathDescription {
             get {
@@ -575,7 +575,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/.
+        ///   Looks up a localized string similar to Evaluates mathematical formulas using NCalc.
         /// </summary>
         public static string FormulaDescription {
             get {
@@ -647,7 +647,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point..
+        ///   Looks up a localized string similar to Returns the result of a function with given arguments.
         /// </summary>
         public static string FunctionApplyDescription {
             get {
@@ -656,11 +656,49 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns a single function from multiple functions. Ex: the modulus and divide functions are composed into a single function to apply to a list..
+        ///   Looks up a localized string similar to Returns a single function from multiple functions.
         /// </summary>
         public static string FunctionComposeDescription {
             get {
                 return ResourceManager.GetString("FunctionComposeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.
+        ///
+        ///In Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit.
+        /// </summary>
+        public static string GateDescription {
+            get {
+                return ResourceManager.GetString("GateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data to pass to a downstream node with gated controls..
+        /// </summary>
+        public static string GateInPortToolTip {
+            get {
+                return ResourceManager.GetString("GateInPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string GateOutPortToolTip {
+            get {
+                return ResourceManager.GetString("GateOutPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to gate;stop;data.
+        /// </summary>
+        public static string GateSearchTags {
+            get {
+                return ResourceManager.GetString("GateSearchTags", resourceCulture);
             }
         }
         
@@ -683,7 +721,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A slider that produces integer values..
+        ///   Looks up a localized string similar to Produces integer values.
         /// </summary>
         public static string IntegerSliderDescription {
             get {
@@ -701,7 +739,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A slider that produces integer values..
+        ///   Looks up a localized string similar to Produces integer values.
         /// </summary>
         public static string IntegerSliderNodeDescription {
             get {
@@ -728,7 +766,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Applies a combinator to each pair in the cartesian product of two sequences.
+        ///   Looks up a localized string similar to Applies a combinator to each pair in the Cartesian product of two sequences.
         /// </summary>
         public static string ListCartesianProductDescription {
             get {
@@ -764,7 +802,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Makes a new list out of the given inputs.
+        ///   Looks up a localized string similar to Makes a new list from the given inputs.
         /// </summary>
         public static string ListCreateDescription {
             get {
@@ -791,7 +829,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filters a sequence by a given condition such that for an arbitrary element &quot;x,&quot; condition(x) = True or False..
+        ///   Looks up a localized string similar to Filters items on a list in or out based on the given condition. If the condition is true, items are filtered in, and if the condition is false, items are filtered out..
         /// </summary>
         public static string ListFilterDescription {
             get {
@@ -881,7 +919,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reduces a list into a new value by combining each element with an accumulated result..
+        ///   Looks up a localized string similar to Reduces a list into a new value by combining each element with an accumulated result.
         /// </summary>
         public static string ListReduceDescription {
             get {
@@ -953,7 +991,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false..
+        ///   Looks up a localized string similar to Boolean OR: Returns True if any of the inputs are true. If none are true, returns False..
         /// </summary>
         public static string OrDescription {
             get {
@@ -1034,7 +1072,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a sequence of numbers or letters in the specified range..
+        ///   Looks up a localized string similar to Creates a sequence of numbers or letters in the given range.
         /// </summary>
         public static string RangeDescription {
             get {
@@ -1079,7 +1117,34 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replaces an object with a given substitute if the original object satisfies a given condition..
+        ///   Looks up a localized string similar to Store data passing through this node to the Dynamo file. Return the stored data if the input is null..
+        /// </summary>
+        public static string RememberDescription {
+            get {
+                return ResourceManager.GetString("RememberDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data to sample and store in the file..
+        /// </summary>
+        public static string RememberInputToolTip {
+            get {
+                return ResourceManager.GetString("RememberInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string RememberOuputToolTip {
+            get {
+                return ResourceManager.GetString("RememberOuputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replaces an item with the given substitute if the original item satisfies the given condition.
         /// </summary>
         public static string ReplaceByConditionDescription {
             get {
@@ -1318,6 +1383,33 @@ namespace CoreNodeModels.Properties {
         public static string StringInputNodeDescription {
             get {
                 return ResourceManager.GetString("StringInputNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nodes that execute an action.
+        /// </summary>
+        public static string TooltipTextAction {
+            get {
+                return ResourceManager.GetString("TooltipTextAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nodes that create data.
+        /// </summary>
+        public static string TooltipTextCreate {
+            get {
+                return ResourceManager.GetString("TooltipTextCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nodes that query data.
+        /// </summary>
+        public static string TooltipTextQuery {
+            get {
+                return ResourceManager.GetString("TooltipTextQuery", resourceCulture);
             }
         }
         

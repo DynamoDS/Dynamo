@@ -1,9 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
@@ -14,25 +17,80 @@ using DynamoUtilities;
 
 namespace Dynamo.Configuration
 {
+    static class ExtensionMethods
+    {
+        /// <summary>
+        /// Copy Properties from a PreferenceSettings instance to another iterating the Properties of the destination instance and populate them from their source counterparts, excluding the properties that are obsolete and only read.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        internal static void CopyProperties(this PreferenceSettings source, PreferenceSettings destination)
+        {
+            var destinationProperties = destination.GetType().GetProperties();
+
+            foreach (var destinationPi in destinationProperties)
+            {
+                var sourcePi = source.GetType().GetProperty(destinationPi.Name);
+
+                if (destinationPi.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).Length == 0 && destinationPi.CanWrite)
+                {
+                    destinationPi.SetValue(destination, sourcePi.GetValue(source, null), null);
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// PreferenceSettings is a class for GUI to persist certain settings.
     /// Upon running of the GUI, those settings that are persistent will be loaded
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource
+    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource, IHideAutocompleteMethodOptions
     {
+        private readonly static Lazy<PreferenceSettings>
+            lazy = new Lazy<PreferenceSettings>
+            (() => PreferenceSettings.Load(PathManager.Instance.PreferenceFilePath));
+
+        /// <summary>
+        /// Return a PreferenceSetting object.  The object returned is based on the following conditions:
+        /// 1) if DynamoModel present, the DynamoModel.PreferenceSettings object is returned,
+        /// 2) else, if a valid setting xml file exists, the PreferenceSettings object de-serialized from the xml file is returned,
+        /// 3) else, if no DynamoModel and no valid xml file exists, a new PreferenceSettings object returned
+        /// Note that Instance is a runtime object only.  No changes to the PreferenceSettings will be persisted on disk with condition 2 or 3.
+        /// User of Instance must initiate save operations to insure persistence of modifications to the PreferenceSettings model.
+        /// In some cases even the save will not guarantee persistence of modifications depending on the startup of DynamoModel.
+        /// </summary>
+        [XmlIgnore]
+        internal static PreferenceSettings Instance { get; set; } = lazy.Value;
+
         private string numberFormat;
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
+        private float gridScaleFactor;
+        private Configurations.Units currentHostUnits;
+        private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isEnablePersistExtensionsEnabled;
+        private bool isStaticSplashScreenEnabled;
+        private bool isTimeStampIncludedInExportFilePath;
+        private bool isCreatedFromValidFile = true;
+        private string backupLocation;
+        private string templateFilePath;
+        private bool isMLAutocompleteTOUApproved;
+
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
         /// </summary>
         internal const int DefaultMaxNumRecentFiles = 10;
+
+        /// <summary>
+        /// The default time interval between backup files. 1 minute.
+        /// </summary>
+        internal const int DefaultBackupInterval = 60000;
 
         /// <summary>
         /// Indicates the default render precision, i.e. the maximum number of tessellation divisions
@@ -52,11 +110,11 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default time
         /// </summary>
-        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
+        public static readonly DateTime DynamoDefaultTime = new DateTime(1977, 4, 12, 12, 12, 0, 0);
 
         #endregion
 
-        /// The following settings are persistent between Dynamo sessions and are user-controllable
+        // The following settings are persistent between Dynamo sessions and are user-controllable
         #region Collect Information settings
 
         /// <summary>
@@ -65,24 +123,33 @@ namespace Dynamo.Configuration
         public bool IsFirstRun { get; set; }
 
         /// <summary>
-        /// Indicates whether usage reporting is approved or not.
+        /// This defines if the user export file path would include timestamp
         /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        public bool IsUsageReportingApproved { get { return false; } set { } }
-
-        /// <summary>
-        /// Indicates whether Google analytics reporting is approved or not.
-        /// </summary>
-        public bool IsAnalyticsReportingApproved { get; set; }
+        public bool IsTimeStampIncludedInExportFilePath
+        {
+            get
+            {
+                return isTimeStampIncludedInExportFilePath;
+            }
+            set
+            {
+                isTimeStampIncludedInExportFilePath = value;
+            }
+        }
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
+        /// Note that the getter will communicate to a analytics server which might be slow.
+        /// This API should only be used in UI scenarios (not in performance sensitive areas)
         /// </summary>
         [XmlIgnore]
-        [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
+        [Obsolete("API obsolete - This is an internal API and should not be used.")]
         public bool IsADPAnalyticsReportingApproved
         {
-            get { return Logging.AnalyticsService.IsADPOptedIn; }
+            get
+            {
+                return AnalyticsService.IsADPOptedIn;
+            }
             set { throw new Exception("do not use"); }
         }
         #endregion
@@ -95,6 +162,16 @@ namespace Dynamo.Configuration
         public int LibraryWidth { get; set; }
 
         /// <summary>
+        /// The locale of Dynamo UI, serialize locale instead of language name as ease of conversion back and forth
+        /// </summary>
+        public string Locale { get; set; }
+
+        /// <summary>
+        /// Contains the currently selected unit used for scaling the graphic helpers (grids, axes)
+        /// </summary>
+        public string GraphicScaleUnit { get; set; }
+
+        /// <summary>
         /// The height of the console display.
         /// </summary>
         public int ConsoleHeight { get; set; }
@@ -103,6 +180,11 @@ namespace Dynamo.Configuration
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
         public bool ShowPreviewBubbles { get; set; }
+
+        /// <summary>
+        /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
+        /// </summary>
+        public bool UseHostScaleUnits { get; set; }
 
         /// <summary>
         /// Indicates if code block node line numbers should  be displayed.
@@ -120,6 +202,16 @@ namespace Dynamo.Configuration
         public bool ShowConnectorToolTip { get; set; }
 
         /// <summary>
+        /// Indicates the zoom scale of the library
+        /// </summary>
+        public int LibraryZoomScale { get; set; }
+
+        /// <summary>
+        /// Indicates the zoom scale of the Python editor
+        /// </summary>
+        public int PythonScriptZoomScale { get; set; }
+
+        /// <summary>
         /// The types of connector: Bezier or Polyline.
         /// </summary>
         public ConnectorType ConnectorType { get; set; }
@@ -130,7 +222,7 @@ namespace Dynamo.Configuration
         public List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
 
         /// <summary>
-        /// Returns active state of specified background preview 
+        /// Returns active state of specified background preview
         /// </summary>
         /// <param name="name">Background preview name</param>
         /// <returns>The active state</returns>
@@ -142,7 +234,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Sets active state of specified background preview 
+        /// Sets active state of specified background preview
         /// </summary>
         /// <param name="name">Background preview name</param>
         /// <param name="value">Active state</param>
@@ -184,11 +276,65 @@ namespace Dynamo.Configuration
             }
         }
 
+        /// <summary>
+        /// Sets the background grid element scale
+        /// </summary>
+        public float GridScaleFactor
+        {
+            get
+            {
+                return gridScaleFactor;
+            }
+            set
+            {
+                if (value == gridScaleFactor) return;
+                gridScaleFactor = value;
+
+                RaisePropertyChanged(nameof(GridScaleFactor));
+            }
+        }
+
+        /// <summary>
+        /// The current Host document units. Will be updated the first time Dynamo is started
+        /// </summary>
+        internal Configurations.Units CurrentHostUnits
+        {
+            get
+            {
+                return currentHostUnits;
+            }
+            set
+            {
+                if (value == currentHostUnits) return;
+                currentHostUnits = value;
+
+                RaisePropertyChanged(nameof(CurrentHostUnits));
+            }
+        }
+
+        /// <summary>
+        /// Default geometry scale factor for a new workspace
+        /// </summary>
+        public double DefaultScaleFactor
+        {
+            get
+            {
+                return defaultScaleFactor;
+            }
+            set
+            {
+                if (value == defaultScaleFactor) return;
+                defaultScaleFactor = value;
+
+                RaisePropertyChanged(nameof(DefaultScaleFactor));
+            }
+        }
+
 
         /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]
+        [Obsolete("Property will be deprecated in a future version of Dynamo, please use BackgroundPreviews")]
         public bool IsBackgroundPreviewActive
         {
             get
@@ -206,6 +352,7 @@ namespace Dynamo.Configuration
         /// </summary>
         public int RenderPrecision { get; set; }
 
+        /// <summary>
         /// Indicates whether surface and solid edges will
         /// be rendered.
         /// </summary>
@@ -285,6 +432,32 @@ namespace Dynamo.Configuration
         public List<string> RecentFiles { get; set; }
 
         /// <summary>
+        /// Backup files path
+        /// </summary>
+        public string BackupLocation
+        {
+            get { return backupLocation; }
+            set
+            {
+                backupLocation = value;
+                RaisePropertyChanged(nameof(BackupLocation));
+            }
+        }
+
+        /// <summary>
+        /// Template path
+        /// </summary>
+        public string TemplateFilePath
+        {
+            get { return templateFilePath; }
+            set
+            {
+                templateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateFilePath));
+            }
+        }
+
+        /// <summary>
         /// A list of backup file paths.
         /// </summary>
         public List<string> BackupFiles { get; set; }
@@ -309,6 +482,12 @@ namespace Dynamo.Configuration
         /// This represents the user modifiable list of locations.
         /// </summary>
         private List<string> trustedLocations { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Return a list of GraphChecksumItems
+        /// </summary>
+        [Obsolete("This property is not needed anymore in the preference settings and can be removed in a future version of Dynamo.")]
+        public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
 
         // This function is used to deserialize the trusted locations manually
         // so that the TrustedLocation propertie's setter does not need to be public.
@@ -341,7 +520,7 @@ namespace Dynamo.Configuration
             try
             {
                 return bool.Parse(preferenceSettingsElement.SelectSingleNode($@"//{nameof(DisableTrustWarnings)}").InnerText);
-                
+
             }
             catch (Exception ex)
             {
@@ -362,6 +541,30 @@ namespace Dynamo.Configuration
                 //manually load some xml we don't want to create public setters for.
                 var doc = new System.Xml.XmlDocument();
                 doc.Load(prefsFilePath);
+                var prefs = doc.SelectSingleNode($@"//{nameof(PreferenceSettings)}");
+
+                var deserializedLocations = DeserializeTrustedLocations(prefs);
+                SetTrustedLocations(deserializedLocations.Distinct());
+                var trustWarningsDisabled = DeserializeDisableTrustWarnings(prefs);
+                SetTrustWarningsDisabled(trustWarningsDisabled);
+            }
+            catch
+            { }
+        }
+
+        /// <summary>
+        /// Manually deserialize some preferences from the PreferencesSettings file.
+        /// This is done so that we can avoid exposing these property setters to the public API.
+        /// </summary>
+        /// <param name="content">The content of the XML file</param>
+
+        private void DeserializeInternalPrefsContent(string content)
+        {
+            try
+            {
+                //manually load some xml we don't want to create public setters for.
+                var doc = new System.Xml.XmlDocument();
+                doc.LoadXml(content);
                 var prefs = doc.SelectSingleNode($@"//{nameof(PreferenceSettings)}");
 
                 var deserializedLocations = DeserializeTrustedLocations(prefs);
@@ -414,7 +617,7 @@ namespace Dynamo.Configuration
         public int BackupFilesCount { get; set; }
 
         /// <summary>
-        /// Indicates if the user has accepted the terms of 
+        /// Indicates if the user has accepted the terms of
         /// use for downloading packages from package manager.
         /// </summary>
         public bool PackageDownloadTouAccepted { get; set; }
@@ -428,6 +631,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// This defines if user wants to see the Iron Python Extension Dialog box on every new session.
         /// </summary>
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
         public bool IsIronPythonDialogDisabled { get; set; }
 
         /// <summary>
@@ -439,6 +643,35 @@ namespace Dynamo.Configuration
         /// This defines if user wants to see the enabled node Auto Complete feature for port interaction.
         /// </summary>
         public bool EnableNodeAutoComplete { get; set; }
+
+        /// <summary>
+        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
+        /// This defines whether legacy (pre-3.0) PolyCurve behavior is selected by default.
+        /// This flag can be overridden by individual workspaces that have the EnableLegacyPolyCurveBehavior flag defined.
+        /// Note: For internal use only and will be removed in a future version of Dynamo.
+        /// </summary>
+        [IsObsolete("This property will be removed in a future version of Dynamo.")]
+        public bool DefaultEnableLegacyPolyCurveBehavior { get; set; }
+
+        /// <summary>
+        /// This defines if user wants to hide the nodes below a specific confidenc level.
+        /// </summary>
+        public bool HideNodesBelowSpecificConfidenceLevel { get; set; }
+
+        /// <summary>
+        /// This defines the level of confidence related to the ML recommendation.
+        /// </summary>
+        public int MLRecommendationConfidenceLevel { get; set; }
+
+        /// <summary>
+        /// This defines the number of results of the  ML recommendation
+        /// </summary>
+        public int MLRecommendationNumberOfResults { get; set; }
+
+        /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        public bool HideAutocompleteMethodOptions { get; set; }
 
         /// <summary>
         /// This defines if user wants to see the enabled Dynamo Notification Center.
@@ -455,6 +688,53 @@ namespace Dynamo.Configuration
                 RaisePropertyChanged(nameof(EnableNotificationCenter));
             }
         }
+
+        /// <summary>
+        /// This defines if user wants the Extensions settings to persist across sessions.
+        /// </summary>
+        public bool EnablePersistExtensions
+        {
+            get
+            {
+                return isEnablePersistExtensionsEnabled;
+            }
+            set
+            {
+                isEnablePersistExtensionsEnabled = value;
+                RaisePropertyChanged(nameof(EnablePersistExtensions));
+            }
+        }
+
+
+        /// <summary>
+        /// This defines if the user wants to see the static splash screen again
+        /// </summary>
+        public bool EnableStaticSplashScreen
+        {
+            get
+            {
+                return isStaticSplashScreenEnabled;
+            }
+            set
+            {
+                isStaticSplashScreenEnabled = value;
+            }
+        }
+
+        /// <summary>
+        /// This defines if the user is agree to the ML Automcomplete Terms of Use
+        /// </summary>
+        public bool IsMLAutocompleteTOUApproved
+        {
+            get
+            {
+                return isMLAutocompleteTOUApproved;
+            }
+            set
+            {
+                isMLAutocompleteTOUApproved = value;
+            }
+        }        
 
         /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
@@ -555,6 +835,11 @@ namespace Dynamo.Configuration
         public RunType DefaultRunType { get; set; }
 
         /// <summary>
+        /// Defines the default method of the Node Autocomplete
+        /// </summary>
+        public NodeAutocompleteSuggestion DefaultNodeAutocompleteSuggestion { get; set; }
+
+        /// <summary>
         /// Show Run Preview flag.
         /// </summary>
         public bool ShowRunPreview { get; set; }
@@ -566,41 +851,56 @@ namespace Dynamo.Configuration
         public List<GroupStyleItem> GroupStyleItemsList { get; set; }
 
         /// <summary>
-        /// Limits the size of the tags used by the SearchDictionary
-        /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
+        /// Limits the size of the tags used by the EntryDictionary
+        /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value
         /// if found at deserialize time.
         /// </summary>
-        internal static int NodeSearchTagSizeLimitValue = 300;
+        internal static int nodeSearchTagSizeLimit = 300;
 
         /// <summary>
-        /// Limits the size of the tags used by the SearchDictionary
+        /// Limits the size of the tags used by the EntryDictionary
         /// </summary>
         public int NodeSearchTagSizeLimit
         {
-            get { return NodeSearchTagSizeLimitValue; }
-            set { NodeSearchTagSizeLimitValue = value; }
+            get { return nodeSearchTagSizeLimit; }
+            set { nodeSearchTagSizeLimit = value; }
         }
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
-        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value 
+        /// This property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
-        internal static Version IronPythonResolveVersion = new Version(2, 4, 0);
+        internal Version ironPythonResolveTargetVersion = new Version(3, 2, 0);
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
         /// </summary>
         public string IronPythonResolveTargetVersion
         {
-            get { return IronPythonResolveVersion.ToString(); }
-            set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
+            get { return ironPythonResolveTargetVersion.ToString(); }
+            set { ironPythonResolveTargetVersion = Version.TryParse(value, out Version newVal) ? newVal : ironPythonResolveTargetVersion; }
         }
 
         /// <summary>
         /// Stores the notification ids that was read by the user
         /// </summary>
         public List<string> ReadNotificationIds { get; set; }
+        #endregion
+
+        #region Dynamo Player and Generative Design settings
+
+        /// <summary>
+        /// Enable legacy behavior for Dynamo Player to allow renamed Watch nodes to be seen as graph output.
+        /// This flag is for use in the 2024 product release year and can removed for 2025
+        /// </summary>
+        public bool EnableDynamoPlayerRenamedWatchAsOutput { get; set; }
+
+        /// <summary>
+        /// Collections of folders used by individual Dynamo Player or Generative Design as entry points.
+        /// </summary>
+        public List<DynamoPlayerFolderGroup> DynamoPlayerFolderGroups { get; set; }
+
         #endregion
 
         /// <summary>
@@ -617,7 +917,7 @@ namespace Dynamo.Configuration
 
             // Default Settings
             IsFirstRun = true;
-            IsAnalyticsReportingApproved = true;
+            Locale = Configurations.SupportedLocaleDic.FirstOrDefault().Value;
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;
@@ -626,6 +926,9 @@ namespace Dynamo.Configuration
             ShowConnectorToolTip = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundGridVisible = true;
+            GraphicScaleUnit = Configurations.SupportedUnits.FirstOrDefault().Key.ToString();
+            GridScaleFactor = (float)Configurations.SupportedUnits.FirstOrDefault().Value;
+            UseHostScaleUnits = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
@@ -637,22 +940,41 @@ namespace Dynamo.Configuration
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
             DefaultRunType = RunType.Automatic;
+            DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
 
-            BackupInterval = 60000; // 1 minute
+            BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
-                        
+            BackupLocation = string.Empty;
+
+            TemplateFilePath = string.Empty;
+
+            LibraryZoomScale = 100;
+            PythonScriptZoomScale = 100;
+
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            DefaultEnableLegacyPolyCurveBehavior = true;
+            HideNodesBelowSpecificConfidenceLevel = false;
+            MLRecommendationConfidenceLevel = 10;
+            MLRecommendationNumberOfResults = 10;
+            HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
+            isStaticSplashScreenEnabled = true;
+            isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
+            EnableDynamoPlayerRenamedWatchAsOutput = false;
+            DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
+            backupLocation = string.Empty;
+            GraphChecksumItemsList = new List<GraphChecksumItem>();
+            isMLAutocompleteTOUApproved = true;
         }
 
         /// <summary>
@@ -682,11 +1004,11 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Saves PreferenceSettings in a default directory when no path is 
+        /// Saves PreferenceSettings in a default directory when no path is
         /// specified.
         /// </summary>
         /// <param name="preferenceFilePath">The file path to save preference
-        /// settings to. If this parameter is null or empty string, preference 
+        /// settings to. If this parameter is null or empty string, preference
         /// settings will be saved to the default path.</param>
         /// <returns>True if file is saved successfully, false if an error occurred.</returns>
         public bool SaveInternal(string preferenceFilePath)
@@ -729,10 +1051,9 @@ namespace Dynamo.Configuration
             {
                 if (settings == null)
                 {
-                    return new PreferenceSettings();
+                    return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
-
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
@@ -740,6 +1061,82 @@ namespace Dynamo.Configuration
             settings.DeserializeInternalPrefs(filePath);
 
             return settings;
+        }
+
+        /// <summary>
+        /// Loads PreferenceSettings from specified XML file if possible,
+        /// else initializes PreferenceSettings with default values.
+        /// </summary>
+        /// <param name="content">The content of the xml file</param>
+        /// <returns></returns>
+        public static PreferenceSettings LoadContent(string content)
+        {
+            // Constructor will be called anyway in either condition below so no need to initialize now.
+            PreferenceSettings settings = null;
+
+            if(string.IsNullOrEmpty(content))
+                return new PreferenceSettings();
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
+                using (TextReader reader = new StringReader(content))
+                {
+                    settings = serializer.Deserialize(reader) as PreferenceSettings;
+                }
+            }
+            catch
+            {
+                if (settings == null)
+                {
+                    return new PreferenceSettings() { isCreatedFromValidFile = false };
+                }
+            }
+
+            settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
+            MigrateStdLibTokenToBuiltInToken(settings);
+
+            settings.DeserializeInternalPrefsContent(content);
+
+            return settings;
+        }
+
+        /// <summary>
+        /// Return the predefined Font size values
+        /// </summary>
+        [XmlIgnore]
+        public ObservableCollection<int> PredefinedGroupStyleFontSizes
+        {
+            get
+            {
+                return new ObservableCollection<int>
+            {
+                14,
+                18,
+                24,
+                30,
+                36,
+                48,
+                60,
+                72,
+                96
+            };
+            }
+        }
+
+        /// <summary>
+        /// Checking for invalid values or tainted data and sanitize them
+        /// </summary>
+        internal void SanitizeValues()
+        {
+            foreach (var groupStyle in GroupStyleItemsList)
+            {
+                if (!PredefinedGroupStyleFontSizes.Contains(groupStyle.FontSize))
+                {
+                    groupStyle.FontSize = GroupStyleItem.DefaultGroupStyleItems.FirstOrDefault().FontSize;
+                }
+            }
         }
 
         /// <summary>
@@ -761,14 +1158,34 @@ namespace Dynamo.Configuration
             return defaultPythonEngine;
         }
 
+        /// <summary>
+        /// Initialize namespaces to exclude from Library based on conditions
+        /// </summary>
         internal void InitializeNamespacesToExcludeFromLibrary()
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                NamespacesToExcludeFromLibrary.Add(
+                NamespacesToExcludeFromLibrary = new List<string>()
+                {
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel"
+                };  
+                NamespacesToExcludeFromLibrarySpecified = true;
+            }
+        }
+
+        /// <summary>
+        /// Update namespaces to exclude from Library based on feature flags
+        /// </summary>
+        internal void UpdateNamespacesToExcludeFromLibrary()
+        {
+            // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
+            if (!DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false)
+            {
+                NamespacesToExcludeFromLibrary.Remove(
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
                 );
-                NamespacesToExcludeFromLibrarySpecified = true;
+                return;
             }
         }
 
@@ -844,6 +1261,10 @@ namespace Dynamo.Configuration
             trustedLocations.AddRange(locs);
         }
 
+        /// <summary>
+        /// Disable Trust Warnings for file security
+        /// </summary>
+        /// <param name="disabled"></param>
         internal void SetTrustWarningsDisabled(bool disabled)
         {
             disableTrustWarnings = disabled;
@@ -854,13 +1275,11 @@ namespace Dynamo.Configuration
         internal void AddDefaultTrustedLocations()
         {
             if (!IsFirstRun) return;
-
-            const string Autodesk = "Autodesk";
             string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramData, Configurations.AutodeskAsString));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            AddTrustedLocation(Path.Combine(ProgramFiles, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramFiles, Configurations.AutodeskAsString));
         }
 
         /// <summary>
@@ -898,8 +1317,54 @@ namespace Dynamo.Configuration
             {
                 return false;
             }
-            
+
         }
+
+        /// <summary>
+        /// Different ways to ask the user about display the Trusted location
+        /// </summary>
+        public enum AskForTrustedLocationResult
+        {
+            /// <summary>
+            /// Ask for the Trusted location
+            /// </summary>
+            Ask,
+            /// <summary>
+            /// Don't ask about the Trusted location
+            /// </summary>
+            DontAsk,
+            /// <summary>
+            /// Unable to ask about the Trusted location
+            /// </summary>
+            UnableToAsk
+        }
+
+        /// <summary>
+        /// AskForTrustedLocation function
+        /// </summary>
+        /// <param name="isOpenedFile"></param>
+        /// <param name="isHomeSpace"></param>
+        /// <param name="isShowStartPage"></param>
+        /// <param name="isDisableTrustWarnings"></param>
+        /// <param name="isFileInTrustedLocation"></param>
+        /// <returns></returns>
+        public static AskForTrustedLocationResult AskForTrustedLocation(bool isOpenedFile, bool isFileInTrustedLocation, bool isHomeSpace, bool isShowStartPage, bool isDisableTrustWarnings)
+        {
+            AskForTrustedLocationResult result = AskForTrustedLocationResult.UnableToAsk;
+            if (isOpenedFile)
+            {
+                if (isHomeSpace && !isShowStartPage && !isDisableTrustWarnings && !isFileInTrustedLocation)
+                {
+                    result = AskForTrustedLocationResult.Ask;
+                }
+                else
+                {
+                    result = AskForTrustedLocationResult.DontAsk;
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         #region ILogSource
@@ -914,5 +1379,24 @@ namespace Dynamo.Configuration
             MessageLogged?.Invoke(msg);
         }
         #endregion
+
+        /// <summary>
+        /// List of static Fields to be excluded for evaluation due to their access level
+        /// </summary>
+        /// <returns></returns>
+        public List<string> StaticFields()
+        {
+            return typeof(PreferenceSettings).GetMembers(BindingFlags.Static | BindingFlags.NonPublic).OfType<FieldInfo>().Select(field => field.Name).ToList();
+        }
+
+        /// <summary>
+        /// Indicates when an instance has been created from a preferences file correctly, a support property
+        /// </summary>
+        [XmlIgnore]
+        public bool IsCreatedFromValidFile
+        {
+            get { return isCreatedFromValidFile; }
+        }
+
     }
 }

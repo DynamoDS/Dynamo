@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -41,5 +41,14 @@ namespace Dynamo.Models
     /// <param name="e"><see cref="EventArgs"/></param>
     public delegate void NodeEventHandler(object sender, EventArgs e);
 
-    internal delegate void SettingsMigrationHandler(SettingsMigrationEventArgs args);
+    /// <summary>
+    /// This delegate is used in Splash Screen events
+    /// </summary>
+    /// <param name="args"></param>
+    internal delegate void SplashScreenLoadingHandler(SplashScreenLoadEventArgs args);
+
+    /// <summary>
+    /// This delegate is used to notify the detected language to the Splash Screen.
+    /// </summary>
+    internal delegate void SplashScreenLanguageDetected();
 }

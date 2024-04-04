@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -51,10 +51,10 @@ namespace Dynamo.Nodes.Prompts
         {
             InitializeComponent();
 
-            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
+            var packageLoader = dynamoViewModel?.Model?.GetPackageManagerExtension()?.PackageLoader;
             markdownPackages = Wpf.Utilities.CrashUtilities.PackagesToMakrdown(packageLoader);
 
-            productName = dynamoViewModel.BrandingResourceProvider.ProductName;
+            productName = dynamoViewModel?.BrandingResourceProvider.ProductName ?? Process.GetCurrentProcess().ProcessName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             TitleTextBlock.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
@@ -131,7 +131,7 @@ namespace Dynamo.Nodes.Prompts
                 return;
 
             // Catch for exception, for cases where the directory does not exist
-            try { Process.Start(@folderPath); }
+            try { Process.Start(new ProcessStartInfo(@folderPath) { UseShellExecute = true }); }
             catch { }
         }
 

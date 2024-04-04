@@ -89,46 +89,6 @@
       ],
       "Replication": "Auto",
       "Description": "Returns the colour black."
-    },
-    {
-      "ConcreteType": "SampleLibraryUI.Examples.ButtonCustomNodeModel, SampleLibraryUI",
-      "ButtonText": "Default Button Text",
-      "WindowText": "Default Window Text",
-      "NodeType": "ExtensionNode",
-      "Id": "73f814ac558b430fa1050fca82f00f2b",
-      "Inputs": [
-        {
-          "Id": "5bdb9084a83f4a68876e48a3c55f441d",
-          "Name": "inputString",
-          "Description": "a string value displayed on our button",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "8291c0770fcc4b3997c903327242eafc",
-          "Name": "button value",
-          "Description": "returns the string value displayed on our button",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "1b68990b945341539000cff4159e896c",
-          "Name": "window value",
-          "Description": "returns the string value displayed in our window when button is pressed",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "A sample UI node which displays custom UI."
     }
   ],
   "Connectors": [],
@@ -159,14 +119,6 @@
       "ReferenceType": "Package",
       "Nodes": [
         "adfa5ed1381e42929f53c086928cd07e"
-      ]
-    },
-    {
-      "Name": "Dynamo Samples",
-      "Version": "2.0.0",
-      "ReferenceType": "Package",
-      "Nodes": [
-        "73f814ac558b430fa1050fca82f00f2b"
       ]
     }
   ],
@@ -222,16 +174,6 @@
         "Excluded": false,
         "X": 451.0,
         "Y": 402.0
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Button Custom Node Model",
-        "Id": "73f814ac558b430fa1050fca82f00f2b",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 384.0,
-        "Y": 210.0
       }
     ],
     "Annotations": [],

@@ -6,7 +6,6 @@ using ProtoCore.AssociativeGraph;
 using ProtoCore.DSASM;
 using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
-using ProtoCore.Mirror;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoFFI;
@@ -99,8 +98,7 @@ namespace ProtoCore
         /// It will initialize the runtime execution data and configuration
         /// </summary>
         /// <param name="compileCore"></param>
-        /// <param name="isCodeCompiled"></param>
-        /// <param name="context"></param>
+        /// <param name="globalStackFrameSize"></param>
         public void SetupForExecution(ProtoCore.Core compileCore, int globalStackFrameSize)
         {
             if (globalStackFrameSize > 0)
@@ -272,7 +270,6 @@ namespace ProtoCore
         {
             OnDispose();
             CLRModuleType.ClearTypes();
-            GraphicDataProvider.ClearMarshaller();
         }
 
         public void NotifyExecutionEvent(ExecutionStateEventArgs.State state)

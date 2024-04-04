@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -14,8 +15,10 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
+using DynamoUtilities;
 using NUnit.Framework;
 using TestServices;
 
@@ -39,6 +42,9 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
+
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -77,7 +83,7 @@ namespace DynamoCoreWpfTests
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
@@ -137,14 +143,9 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-        }
 
-        [TestFixtureTearDown]
-        public void FinalTearDown()
-        {
-            // Fix for COM exception on close
-            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
-            //Dispatcher.CurrentDispatcher.InvokeShutdown();
+            TestUtilities.WebView2Tag = string.Empty;
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)

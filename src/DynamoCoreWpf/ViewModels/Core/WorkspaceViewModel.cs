@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -28,6 +27,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ViewModels.Core;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
 namespace Dynamo.ViewModels
@@ -437,6 +437,91 @@ namespace Dynamo.ViewModels
             get { return Model == DynamoViewModel.HomeSpace; }
         }
 
+        /// <summary>
+        /// Returns the Json representation of the current graph
+        /// </summary>
+        [JsonIgnore]
+        internal JObject JsonRepresentation { get; set; }
+
+        [JsonIgnore]
+        internal string CurrentCheckSum { get; set; }
+
+        /// <summary>
+        /// Returns the stringified representation of the node connections in the workspace.
+        /// </summary>
+        [JsonIgnore]
+        public string Checksum
+        {
+            get
+            {
+                List<string> nodeInfoConnections = new List<string>();
+                var connectors = Connectors;
+
+                foreach (var connector in Connectors)
+                {
+                    var connectorModel = connector.ConnectorModel;
+
+                    var startingPort= connectorModel.Start;
+                    var endingPort = connectorModel.End;
+
+                    // node info connections has a unique id in the format: startnodeid[outputindex]endnodeid[outputindex].
+                    nodeInfoConnections.Add(startingPort.Owner.AstIdentifierGuid + "[" + startingPort.Index.ToString() + "]" + endingPort.Owner.AstIdentifierGuid + "[" + endingPort.Index.ToString() + "]");
+                }
+
+                if (nodeInfoConnections.Count > 0)
+                {
+                    var checksumhash = Hash.ToSha256String(String.Join(",", nodeInfoConnections));
+                    CurrentCheckSum = checksumhash;
+                    return checksumhash;
+                }
+                else
+                {
+                    CurrentCheckSum = string.Empty;
+                    return string.Empty;
+                }
+            }            
+        }
+
+        Tuple<string,int> GetNodeByInputId(string inputId, JObject jsonWorkspace)
+        {
+            var nodes = jsonWorkspace["Nodes"];
+
+            string nodeId = string.Empty;
+            int connectedInputIndex = 1;
+            bool foundNode = false;
+
+            foreach (var node in nodes)
+            {
+                if (!foundNode)
+                {
+                    nodeId = string.Empty;
+                    connectedInputIndex = 1;
+
+                    var nodeProperties = node.Children<JProperty>();
+                    JProperty nodeProperty = nodeProperties.FirstOrDefault(x => x.Name == "Id");
+                    nodeId = (String)nodeProperty.Value;
+
+                    JProperty nodeInputs = nodeProperties.FirstOrDefault(x => x.Name == "Inputs");
+                    var inputs = (JArray)nodeInputs.Value;
+
+                    foreach (JObject input in inputs)
+                    {
+                        var inputProperties = input.Children<JProperty>();
+                        JProperty connectedNodeInputId = inputProperties.FirstOrDefault(x => x.Name == "Id");
+
+                        if ((String)connectedNodeInputId.Value == inputId)
+                        {
+                            foundNode = true;
+                            break;
+                        }
+                        connectedInputIndex++;
+                    }
+                }                
+            }
+
+            return new Tuple<string, int>(nodeId, connectedInputIndex);
+        }
+
         [JsonIgnore]
         public bool HasUnsavedChanges
         {
@@ -512,6 +597,17 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
+
+
+        private GeometryScalingViewModel geoScalingViewModel;
+        internal GeometryScalingViewModel GeoScalingViewModel
+        {
+            get
+            {
+                return geoScalingViewModel;
+            }
+        }
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -574,10 +670,17 @@ namespace Dynamo.ViewModels
 
             // InCanvasSearchViewModel needs to happen before the nodes are created
             // as we rely upon it to retrieve node icon images
-            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
+            if (!dynamoViewModel.Model.IsServiceMode)
             {
-                Visible = true
-            };
+                InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
+                {
+                    Visible = true
+                };
+                NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
+                {
+                    Visible = true
+                };
+            }
 
             // sync collections
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
@@ -589,6 +692,9 @@ namespace Dynamo.ViewModels
             {
                 Visible = true
             };
+
+            geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
+            geoScalingViewModel.ScaleValue = this.DynamoViewModel.ScaleFactorLog;
         }
 
         /// <summary>
@@ -647,8 +753,9 @@ namespace Dynamo.ViewModels
             Errors.Clear();
             Annotations.Clear();
             viewModelCache.Clear();
-            InCanvasSearchViewModel.Dispose();
-            NodeAutoCompleteSearchViewModel.Dispose();
+            InCanvasSearchViewModel?.Dispose();
+            NodeAutoCompleteSearchViewModel.LuceneUtility?.DisposeAll();
+            NodeAutoCompleteSearchViewModel?.Dispose();
         }
 
         internal void ZoomInInternal()
@@ -665,14 +772,26 @@ namespace Dynamo.ViewModels
             ResetFitViewToggle(null);
         }
 
+        internal JObject GetJsonRepresentation(EngineController engine = null)
+        {
+            // Step 1: Serialize the workspace.
+            var json = Model.ToJson(engine);
+            var json_parsed = JObject.Parse(json);
+
+            // Step 2: Add the View.
+            return AddViewBlockToJSON(json_parsed);
+        }
+
         /// <summary>
         /// WorkspaceViewModel's Save method does a two-part serialization. First, it serializes the Workspace,
         /// then adds a View property to serialized Workspace, and sets its value to the serialized ViewModel.
         /// </summary>
         /// <param name="filePath"></param>
+        /// <param name="isBackup"></param>
         /// <param name="engine"></param>
+        /// <param name="saveContext"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
+        internal bool Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -688,29 +807,73 @@ namespace Dynamo.ViewModels
 
                 //set the name before serializing model.
                 this.Model.setNameBasedOnFileName(filePath, isBackup);
-                // Stage 1: Serialize the workspace.
-                var json = Model.ToJson(engine);
-                var json_parsed = JObject.Parse(json);
 
-                // Stage 2: Add the View.
-                var jo = AddViewBlockToJSON(json_parsed);
+                // Stage 1: Serialize the workspace and the View
+                var jo = GetJsonRepresentation(engine);
 
-                // Stage 3: Save
-                File.WriteAllText(filePath, jo.ToString());
+                // Stage 2: Save
+                string saveContent;
+                if(saveContext == SaveContext.SaveAs && !isBackup)
+                {
+                    // For intentional SaveAs either through UI or API calls, replace workspace elements' Guids and workspace Id
+                    jo["Uuid"] = Guid.NewGuid().ToString();
+                    if (jo["Bindings"] != null && jo["Bindings"].Any())
+                    {
+                        jo["Bindings"] = JToken.Parse("[]");
 
+                        if (!DynamoModel.IsTestMode)
+                        {
+                            var result = DynamoMessageBox.Show(Wpf.Properties.Resources.ElementBindingWarningMessage,
+                                Wpf.Properties.Resources.ElementBindingWarningTitle, MessageBoxButton.OKCancel,
+                                MessageBoxImage.Warning, Wpf.Properties.Resources.ElementBindingDesc);
+
+                            if (result == MessageBoxResult.Cancel)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());                    
+                }
+                else
+                {
+                    saveContent = jo.ToString();
+                }                
+
+                File.WriteAllText(filePath, saveContent);
+                
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
+                // The assignation of the JsonRepresentation and Guid is only for the checksum flow, it will grab info only from .dyn files
                 if (!isBackup)
                 {
+                    if (Path.GetExtension(filePath).Equals(".dyn"))
+                    {
+                        JsonRepresentation = JObject.Parse(saveContent);
+                        DynamoViewModel.Workspaces[0].Model.Guid = new Guid(JsonRepresentation.Properties().First(p => p.Name == "Uuid").Value.ToString());
+                    }
+
                     Model.FileName = filePath;
                     Model.OnSaved();
+                }
+
+                // If a new CustomNodeWorkspaceModel is created, store that info in CustomNodeManager without creating an instance of the custom node.
+                if (this.Model is CustomNodeWorkspaceModel customNodeWorkspaceModel)
+                {
+                    //If the custom node Name is already set and the FileName is already set then we don't need to change the Name with "backup"
+                    if(string.IsNullOrEmpty(customNodeWorkspaceModel.Name) && string.IsNullOrEmpty(customNodeWorkspaceModel.FileName))
+                        customNodeWorkspaceModel.SetInfo(Path.GetFileNameWithoutExtension(filePath));
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw (ex);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
+
+            return true;
         }
         /// <summary>
         /// This function appends view block to the model json
@@ -722,34 +885,6 @@ namespace Dynamo.ViewModels
             modelData.Add("View", token);
 
             return modelData;
-        }
-
-        /// <summary>
-        /// Load the extra view information required to fully construct a WorkspaceModel object 
-        /// </summary>
-        /// <param name="json"></param>
-        static public ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
-        {
-            JsonReader reader = new JsonTextReader(new StringReader(json));
-            var obj = JObject.Load(reader);
-            var viewBlock = obj["View"];
-            if (viewBlock == null)
-              return null;
-
-           var settings = new JsonSerializerSettings
-           {
-               Error = (sender, args) =>
-               {
-                   args.ErrorContext.Handled = true;
-                   Console.WriteLine(args.ErrorContext.Error);
-               },
-               ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-               TypeNameHandling = TypeNameHandling.Auto,
-               Formatting = Newtonsoft.Json.Formatting.Indented,
-               Culture = CultureInfo.InvariantCulture
-           };
-
-            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         void CopyPasteChanged(object sender, EventArgs e)
@@ -1418,8 +1553,14 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
-                    DynamoViewModel.Model.RemoveWorkspace(Model);
+                // Close the custom workspace only if all docked node windows are saved and can be closed.
+                if (DynamoViewModel.CanCloseDockedNodeWindows(Nodes))
+                {
+                    if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
+                    {
+                        DynamoViewModel.Model.RemoveWorkspace(Model);
+                    }
+                }
             }
         }
 
@@ -1487,7 +1628,15 @@ namespace Dynamo.ViewModels
 
         private bool _fitViewActualZoomToggle = false;
 
-        internal void FitViewInternal()
+        /// <summary>
+        ///     Zoom around current selection
+        ///     _fitViewActualZoomToggle is used internally to toggle
+        /// between the default 1.0 zoom level and the intended zoom around selection
+        ///     The optional toggle boolean is introduced to avoid this behavior and only zoom around the selection
+        /// no matter how many times the operation is performed
+        /// </summary>
+        /// <param name="toggle"></param>
+        internal void FitViewInternal(bool toggle = true)
         {
             // Get the offset and focus width & height (zoom if 100%)
             double minX, maxX, minY, maxY;
@@ -1532,10 +1681,19 @@ namespace Dynamo.ViewModels
             double focusWidth = maxX - minX;
             double focusHeight = maxY - minY;
 
-            _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
-            ZoomEventArgs zoomArgs = _fitViewActualZoomToggle
-                ? new ZoomEventArgs(offset, focusWidth, focusHeight)
-                : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
+            ZoomEventArgs zoomArgs;
+
+            if (toggle)
+            {
+                _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
+                zoomArgs = _fitViewActualZoomToggle && toggle
+                    ? new ZoomEventArgs(offset, focusWidth, focusHeight)
+                    : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
+            }
+            else
+            {
+                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight);
+            }
 
             OnRequestZoomToFitView(this, zoomArgs);
         }
@@ -1640,7 +1798,7 @@ namespace Dynamo.ViewModels
             Model.DoGraphAutoLayout();
             DynamoViewModel.RaiseCanExecuteUndoRedo();
 
-            Dynamo.Logging.Analytics.TrackCommandEvent("GraphLayout");
+            Dynamo.Logging.Analytics.TrackTaskCommandEvent("GraphLayout");
         }
 
         private static bool CanDoGraphAutoLayout(object o)
@@ -1712,7 +1870,7 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.Model.CustomNodeManager.Collapse(selectedNodes,
                 selectedNotes, Model, DynamoModel.IsTestMode, args));
 
-            Dynamo.Logging.Analytics.TrackCommandEvent("NewCustomNode",
+            Dynamo.Logging.Analytics.TrackTaskCommandEvent("NewCustomNode",
                 "NodeCount", selectedNodes.Count());
         }
 

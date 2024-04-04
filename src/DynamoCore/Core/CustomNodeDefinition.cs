@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Engine;
@@ -41,7 +41,6 @@ namespace Dynamo
 
             var topMost = new List<Tuple<int, NodeModel>>();
 
-            List<string> outNames;
             returns = new List<Tuple<string, string>>();
 
             // if we found output nodes, add select their inputs

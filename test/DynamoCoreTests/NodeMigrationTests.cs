@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -10,7 +10,6 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.PackageManager;
 using NUnit.Framework;
 using PythonNodeModels;
-using SystemTestServices;
 
 namespace Dynamo.Tests
 {
@@ -119,7 +118,7 @@ namespace Dynamo.Tests
         {
             TestMigration("TestMigration_File_Directory.dyn");
         }
-
+        
         [Test]
         public void TestMigration_ImportExportCSV()
         {
@@ -143,7 +142,8 @@ namespace Dynamo.Tests
         {
             TestMigration("TestMigration_InputOutput_Excel.dyn");
         }
-
+        //TODO_MSIL pull csv nodes into their own file with a partial class?
+        //or mark excel methods windows only.
         [Test]
         public void TestMigration_InputOutput_File()
         {
@@ -173,12 +173,6 @@ namespace Dynamo.Tests
         public void TestMigration_Logic_Conditional()
         {
             TestMigration("TestMigration_Logic_Conditional.dyn");
-        }
-
-        [Test]
-        public void TestMigration_Logic_Effect()
-        {
-            TestMigration("TestMigration_Logic_Effect.dyn");
         }
 
         [Test]
@@ -2251,7 +2245,7 @@ namespace Dynamo.Tests
         public void TestPackageNodeMigrationForJSONGraphs()
         {
             // Define package loading reference paths
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\MigrationTesting");
             var legacyGraph = Path.Combine(pkgDir, "extra\\LegacyPackageSampleGraph.dyn");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();

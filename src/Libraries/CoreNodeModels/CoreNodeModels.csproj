@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -9,7 +9,10 @@
     <RootNamespace>CoreNodeModels</RootNamespace>
     <AssemblyName>CoreNodeModels</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
-    <DocumentationFile>$(OutputPath)\CoreNodeModels.XML</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ReferenceCopyLocalPaths>
@@ -21,13 +24,7 @@
     <None Remove="CoreNodeModelsImages.resources" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="ncalc" Version="1.3.8">
-    <GeneratePathProperty>true</GeneratePathProperty>
-    <!--Exclude copying the runtime dlls because we will handle it in the BinaryCompatibilityOps target -->
-    <ExcludeAssets>runtime</ExcludeAssets>
-  </PackageReference>
-	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
-    <Reference Include="System.Web" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -86,20 +83,9 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="BinaryCompatibilityOps" BeforeTargets="Build">
-    <Copy SourceFiles="$(PkgNCalc)\lib\NCalc.dll" DestinationFolder="$(OutputPath)" />
-  </Target>
-  <Target Name="GenerateFiles" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
-    </GetAssemblyIdentity>
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsImages.resources" OutputAssembly="$(OutDir)CoreNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />
    </Target>
 </Project>

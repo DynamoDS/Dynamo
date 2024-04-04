@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
@@ -191,6 +190,11 @@ namespace Dynamo.ViewModels
         public string PackageName { get; private set; }
 
         /// <summary>
+        /// The original name of the Node
+        /// </summary>
+        public string OriginalName { get; set; }
+
+        /// <summary>
         /// Collection of the nodes input names.
         /// </summary>
         public IEnumerable<string> InputNames { get; private set; }
@@ -206,6 +210,10 @@ namespace Dynamo.ViewModels
         /// Collection of the nodes outputs description.
         /// </summary>
         public IEnumerable<string> OutputDescriptions { get; private set; }
+        /// <summary>
+        /// Collection of the nodes collection of warnings/errors/infos.
+        /// </summary>
+        public IEnumerable<Info> NodeInfos { get; private set; }
 
         /// <summary>
         /// Creates a new instance of OpenNodeAnnotationEventArgs, which contains data used
@@ -220,12 +228,13 @@ namespace Dynamo.ViewModels
             var packageInfo = dynamoViewModel.Model.CurrentWorkspace.GetNodePackage(model);
             PackageName = packageInfo?.Name ?? string.Empty;
             MinimumQualifiedName = GetMinimumQualifiedName(model, dynamoViewModel);
+            OriginalName = model.GetOriginalName();
             Type = model.Name;
             Description = model.Description;
             Category = model.Category;
+            NodeInfos = model.NodeInfos;
             SetInputs(model);
             SetOutputs(model);
-
         }
 
         private void SetOutputs(NodeModel nodeModel)
@@ -323,11 +332,11 @@ namespace Dynamo.ViewModels
 
         private static bool NodeModelHasCollisions(string typeName, DynamoViewModel viewModel)
         {     
-            var searchEntries = viewModel.Model.SearchModel.SearchEntries
+            var entries = viewModel.Model.SearchModel.Entries
                 .Where(x => x.CreationName == typeName)
                 .Select(x => x).ToList();
 
-            if (searchEntries.Count() > 1)
+            if (entries.Count() > 1)
                 return true;
 
             return false;

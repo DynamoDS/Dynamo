@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections;
+using System.Reflection;
 
 namespace Autodesk.DesignScript.Runtime
 {
@@ -289,21 +290,62 @@ namespace Autodesk.DesignScript.Runtime
     /// <summary> 
     /// This attribute indicates the node is obsolete
     /// </summary> 
-    [AttributeUsage(AttributeTargets.Method)] 
-    public class IsObsoleteAttribute : Attribute 
-    { 
-        public string Message { get; protected set; } 
- 
-        public IsObsoleteAttribute() 
-        { 
-            Message = String.Empty; 
-        } 
- 
-        public IsObsoleteAttribute(string message) 
-        { 
-            Message = message; 
-        } 
-    } 
+    [AttributeUsage(AttributeTargets.Method| AttributeTargets.Constructor | AttributeTargets.Property)]
+    public class IsObsoleteAttribute : Attribute
+    {
+        public string Message { get; protected set; }
+
+        public IsObsoleteAttribute()
+        {
+            Message = String.Empty;
+        }
+
+        public IsObsoleteAttribute(string message)
+        {
+            Message = message;
+        }
+
+        /// <summary>
+        /// Attribute constructor which enables localized message lookup.
+        /// </summary>
+        /// <param name="descriptionResourceID">resx id for this resource</param>
+        /// <param name="resourceType">type that contains resource strings.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public IsObsoleteAttribute(string descriptionResourceID, Type resourceType)
+        {
+            LookupResourceByID(descriptionResourceID, resourceType);
+        }
+        /// <summary>
+        /// Attribute constructor which enables localized message lookup.
+        /// </summary>
+        /// <param name="descriptionResourceID">resx id for this resource</param>
+        /// <param name="typeName">name of type that contains resource strings.
+        /// !!!Please note that in some .net contexts you must use the fully assembly qualified type name
+        /// including version,culture info etc. In others only the type, assembly name are required.
+        ///  <see cref="Type.AssemblyQualifiedName"/> </param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public IsObsoleteAttribute(string descriptionResourceID, string typeName)
+        {
+            var type = Type.GetType(typeName);
+            LookupResourceByID(descriptionResourceID, type);
+        }
+        private void LookupResourceByID(string descriptionResourceID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException(nameof(resourceType));
+
+            var prop = resourceType.GetProperty(descriptionResourceID,
+                BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+            if (prop != null && prop.PropertyType == typeof(string))
+            {
+                Message = prop.GetValue(null, null) as string;
+            }
+            else
+            {
+                Message = descriptionResourceID;
+            }
+        }
+    }
 
 
     /// <summary>
@@ -363,5 +405,16 @@ namespace Autodesk.DesignScript.Runtime
         {
             IsAllowed = isAllowed;
         }
+    }
+    /// <summary>
+    /// This attribute is used to mark methods that are called from javascript web components.
+    /// Usually these methods are internal apis with no c# references so developers might inadvertently
+    /// change them and break interop with the js component. We might use this attribute in the future to analyze
+    /// when these methods change.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    internal class DynamoJSInvokable : Attribute
+    {
+
     }
 }

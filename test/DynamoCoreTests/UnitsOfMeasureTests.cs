@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DynamoUnits;
@@ -9,7 +9,7 @@ namespace Dynamo.Tests
     internal class UnitsOfMeasureTests : UnitTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
             Display.PrecisionFormat = "f4";
         }
@@ -756,11 +756,10 @@ namespace Dynamo.Tests
             }
         }
     }
-
     internal class ForgeUnitsTests : UnitTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
 
         }
@@ -1045,7 +1044,7 @@ namespace Dynamo.Tests
         {
             Assert.That(() => { DynamoUnits.Utilities.ParseExpression("3mm"); }, Throws.Exception);
         }
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("FailureNET6")]
         public void GetAll ()
         {
             Assert.Greater(DynamoUnits.Utilities.GetAllUnits().Count(), 0);

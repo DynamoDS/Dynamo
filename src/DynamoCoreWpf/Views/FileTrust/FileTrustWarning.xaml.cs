@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
@@ -96,6 +96,8 @@ namespace Dynamo.Wpf.Views.FileTrust
             if (runSettingsViewModel.SelectedRunTypeItem.RunType == RunType.Manual)
             {
                 popupPlacementTarget = runSettingsControl.RunButton;
+                double marginRight = 13;
+                HorizontalOffset = -((runSettingsControl.RunButton.Width / 2) - marginRight);
             }
             else
             {
@@ -160,8 +162,6 @@ namespace Dynamo.Wpf.Views.FileTrust
                 (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationMessage = Properties.Resources.RunReady;
                 (dynViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel).CurrentNotificationLevel = NotificationLevel.Mild;
             }
-
-            fileTrustWarningViewModel.DynFileDirectoryName = string.Empty;
         }
 
         /// <summary>

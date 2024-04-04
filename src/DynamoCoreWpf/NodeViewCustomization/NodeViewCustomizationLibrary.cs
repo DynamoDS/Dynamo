@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using Dynamo.Controls;
@@ -103,7 +103,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Used only for testing.
         /// </summary>
-        /// <param name="nodeModel"></param>
+        /// <param name="nodeModelType"></param>
         /// <returns></returns>
         internal bool ContainsCustomizationForNodeModel(Type nodeModelType)
         {

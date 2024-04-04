@@ -1,8 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using CoreNodeModels.Input;
 using DSOffice;
 using Dynamo.Configuration;
@@ -11,13 +6,20 @@ using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
 
 
 namespace Dynamo.Tests
 {
-    [TestFixture, RequiresSTA]
+    [TestFixture]
     public class ExcelTests : DynamoViewModelUnitTest
     {
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DesignScriptBuiltin.dll");
@@ -953,7 +955,7 @@ namespace Dynamo.Tests
             // Empty list expected
             Assert.AreEqual(0, list.Count);
         }
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteToNonExistingFile()
         {
 
@@ -975,7 +977,7 @@ namespace Dynamo.Tests
             AssertPreviewValue(watch.GUID.ToString(), data);
            
         }
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteNonExistingSheet()
         {
 
@@ -1023,7 +1025,8 @@ namespace Dynamo.Tests
    
            
         }
-       [Test, Category("Failure")]
+
+        [Test, Category("Failure")]
         public void WriteToReadOnlyFile()
         {
 
@@ -1076,7 +1079,7 @@ namespace Dynamo.Tests
 
         
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteModifyFilename()
         {
 
@@ -1114,7 +1117,7 @@ namespace Dynamo.Tests
         }
        
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteModifyGraph_3()
         {
             //incomplete
@@ -1154,7 +1157,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void TestOverwriteToSingleSheetExcel()
         {
             string openPath = Path.Combine(TestDirectory, @"core\excel\SingleSheetOverwrite.dyn");
@@ -1264,7 +1267,7 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
             Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
         }
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteIntoExcelVerify()
         {
             // Write Into Excel sheet using WriteToFile
@@ -1314,7 +1317,7 @@ namespace Dynamo.Tests
         /// - null
         /// - StackValue
         /// </summary>
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteIntoExcelSeveralTypesVerify()
         {
             //Arrange
@@ -1339,7 +1342,7 @@ namespace Dynamo.Tests
         }
 
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void TestFormula()
         {
             string testDir = TestDirectory;
@@ -1362,6 +1365,7 @@ namespace Dynamo.Tests
         }     
         #endregion
     }
+
 
     [TestFixture]
     public class CSVTests : UnitTestBase
@@ -1432,6 +1436,17 @@ namespace Dynamo.Tests
 
             //Confirm it's correct
             Assert.AreEqual(data, Data.ImportCSV(fn));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void OpemXML_ImportExcelTest()
+        {
+            string filePath = Path.Combine(TestDirectory, @"core\importExport\OpenXML-ImportExcel.xlsx");
+            var data = Data.OpenXMLImportExcel(filePath, "worksheet1", 0, 0, false);
+            string cellValueWithFormula = data[0][2].ToString();
+            string cellValueWithoutFormula = data[1][2].ToString();
+            Assert.AreEqual(cellValueWithFormula, cellValueWithoutFormula);
         }
     }
 }

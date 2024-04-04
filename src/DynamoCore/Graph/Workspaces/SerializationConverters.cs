@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -46,18 +46,35 @@ namespace Dynamo.Graph.Workspaces
         // Map of all loaded assemblies including LoadFrom context assemblies
         private Dictionary<string, List<Assembly>> loadedAssemblies;
 
-        [Obsolete("This constructor will be removed in Dynamo 3.0, please use new NodeReadConverter constructor with additional parameters to support node migration.")]
-        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
+        private CodeBlockNodeModel DeserializeAsCBN(string code, JObject obj, Guid guid)
         {
-            this.manager = manager;
-            this.libraryServices = libraryServices;
-            this.isTestMode = isTestMode;
-            // We only do this in test mode because it should not be required-
-            // see comment below in NodeReadConverter.ReadJson - and it could be slow.
-            if (this.isTestMode)
+            var codeBlockNode = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
+
+            // If the code block node is in an error state read the extra port data
+            // and initialize the input and output ports
+            if (codeBlockNode.IsInErrorState)
             {
-                this.loadedAssemblies = this.buildMapOfLoadedAssemblies();
+                List<string> inPortNames = new List<string>();
+                var inputs = obj["Inputs"];
+                foreach (var input in inputs)
+                {
+                    inPortNames.Add(input["Name"].ToString());
+                }
+
+                // NOTE: This could be done in a simpler way, but is being implemented
+                //       in this manner to allow for possible future port line number
+                //       information being available in the file
+                List<int> outPortLineIndexes = new List<int>();
+                var outputs = obj["Outputs"];
+                int outputLineIndex = 0;
+                foreach (var output in outputs)
+                {
+                    outPortLineIndexes.Add(outputLineIndex++);
+                }
+
+                codeBlockNode.SetErrorStatePortData(inPortNames, outPortLineIndexes);
             }
+            return codeBlockNode;
         }
 
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, NodeFactory nodeFactory, bool isTestMode = false)
@@ -111,7 +128,7 @@ namespace Dynamo.Graph.Workspaces
             {
                type = Type.GetType(obj["$type"].Value<string>());
                typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
-
+                
                 if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction"))
                 {
                     // If it is a zero touch node, then get the whole function name including the namespace.
@@ -165,7 +182,7 @@ namespace Dynamo.Graph.Workspaces
 
             // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
+            
             var replication = obj["Replication"].Value<string>();
            
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -176,9 +193,9 @@ namespace Dynamo.Graph.Workspaces
 
             bool remapPorts = true;
 
-            // If type is still null at this point return a dummy node
             if (type == null)
             {
+                // If type is still null at this point return a dummy node
                 node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
             }
             // Attempt to create a valid node using the type
@@ -197,37 +214,10 @@ namespace Dynamo.Graph.Workspaces
                 if (isUnresolved)
                   function.UpdatePortsForUnresolved(inPorts, outPorts);
             }
-
             else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
-                CodeBlockNodeModel codeBlockNode = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
-                node = codeBlockNode;
-
-                // If the code block node is in an error state read the extra port data
-                // and initialize the input and output ports
-                if (node.IsInErrorState)
-                {
-                    List<string> inPortNames = new List<string>();
-                    var inputs = obj["Inputs"];
-                    foreach (var input in inputs)
-                    {
-                        inPortNames.Add(input["Name"].ToString());
-                    }
-
-                    // NOTE: This could be done in a simpler way, but is being implemented
-                    //       in this manner to allow for possible future port line number
-                    //       information being available in the file
-                    List<int> outPortLineIndexes = new List<int>();
-                    var outputs = obj["Outputs"];
-                    int outputLineIndex = 0;
-                    foreach (var output in outputs)
-                    {
-                        outPortLineIndexes.Add(outputLineIndex++);
-                    }
-
-                    codeBlockNode.SetErrorStatePortData(inPortNames, outPortLineIndexes);
-                }
+                node = DeserializeAsCBN(code, obj, guid);
             }
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
@@ -263,17 +253,30 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (type.ToString() == "CoreNodeModels.Formula")
             {
-                node = (NodeModel)obj.ToObject(type);
+                var code = obj["Formula"].Value<string>();
+                var formulaConverter = new MigrateFormulaToDS();
+                string convertedCode = string.Empty;
+                bool conversionFailed = false;
+                try
+                {
+                    convertedCode = formulaConverter.ConvertFormulaToDS(code);
+                }
+                catch (BuildHaltException)
+                {
+                    node = DeserializeAsCBN(code + ";", obj, guid);
+                    (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaDSConversionFailure);
+                    conversionFailed = true;
+                }
+                if (!conversionFailed)
+                {
+                    node = DeserializeAsCBN(convertedCode + ";", obj, guid);
+                    (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaMigrated);
+                }
             }
             else
             {
                 node = (NodeModel)obj.ToObject(type);
                 
-                // if node is an customNode input symbol - assign the element resolver.
-                if(node is Nodes.CustomNodes.Symbol)
-                {
-                    (node as Nodes.CustomNodes.Symbol).ElementResolver = ElementResolver;
-                }
                 // We don't need to remap ports for any nodes with json constructors which pass ports
                 remapPorts = false;
             }
@@ -340,6 +343,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="inPorts">The deserialized input ports.</param>
         /// <param name="outPorts">The deserialized output ports.</param>
         /// <param name="resolver">The IdReferenceResolver used during deserialization.</param>
+        /// <param name="logger"></param>
         private static void RemapPorts(NodeModel node, PortModel[] inPorts, PortModel[] outPorts, IdReferenceResolver resolver, ILogger logger)
         {
             foreach (var p in node.InPorts)
@@ -497,8 +501,8 @@ namespace Dynamo.Graph.Workspaces
             var name = obj["Name"].Value<string>();
 
             var elementResolver = obj["ElementResolver"].ToObject<ElementResolver>(serializer);
-            var nmc = (NodeReadConverter)serializer.Converters.First(c => c is NodeReadConverter);
-            nmc.ElementResolver = elementResolver;
+            var nrc = (NodeReadConverter)serializer.Converters.First(c => c is NodeReadConverter);
+            nrc.ElementResolver = elementResolver;
 
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
 
@@ -604,6 +608,11 @@ namespace Dynamo.Graph.Workspaces
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
                 workspaceReferences = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
+                //if deserialization failed, reset to empty.
+                if (workspaceReferences == null)
+                {
+                    workspaceReferences = new List<INodeLibraryDependencyInfo>();
+                }
             }
             else
             {
@@ -649,27 +658,38 @@ namespace Dynamo.Graph.Workspaces
             #region Restore trace data
             // Trace Data
             Dictionary<Guid, List<CallSite.RawTraceData>> loadedTraceData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
+            bool containsLegacyTraceData = false;
             // Restore trace data if bindings are present in json
             if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
             {
-                JEnumerable<JToken> bindings = obj["Bindings"].Children();
+                var wrc = serializer.Converters.First(c => c is WorkspaceReadConverter) as WorkspaceReadConverter;
 
-                // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
-                foreach (JToken entity in bindings)
+                if (wrc.engine.CurrentWorkspaceVersion < new Version(3, 0, 0))
                 {
-                    Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
-                    string bindingString = entity["Binding"].ToString();
+                    containsLegacyTraceData = true;
+                }
+                else
+                {
+                    JEnumerable<JToken> bindings = obj["Bindings"].Children();
 
-                    // Key(callsiteId) : Value(traceData)
-                    Dictionary<string, string> bindingData = JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
-                    List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
-
-                    foreach (KeyValuePair<string, string> pair in bindingData)
+                    // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
+                    foreach (JToken entity in bindings)
                     {
-                        callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
-                    }
+                        Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
+                        string bindingString = entity["Binding"].ToString();
 
-                    loadedTraceData.Add(nodeId, callsiteTraceData);
+                        // Key(callsiteId) : Value(traceData)
+                        Dictionary<string, string> bindingData =
+                            JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
+                        List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
+
+                        foreach (KeyValuePair<string, string> pair in bindingData)
+                        {
+                            callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
+                        }
+
+                        loadedTraceData.Add(nodeId, callsiteTraceData);
+                    }
                 }
             }
             #endregion
@@ -687,11 +707,15 @@ namespace Dynamo.Graph.Workspaces
                     Enumerable.Empty<PresetModel>(), elementResolver,
                     info, verboseLogging, isTestMode, linterManager);
 
+                // EnableLegacyPolyCurveBehavior
+                var enable = obj[nameof(HomeWorkspaceModel.EnableLegacyPolyCurveBehavior)];
+                homeWorkspace.EnableLegacyPolyCurveBehavior = enable?.Value<bool?>();
+
                 // Thumbnail
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
                     homeWorkspace.Thumbnail = thumbnail.ToString();
 
-                // GraphDocumentaionLink
+                // GraphDocumentationLink
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
                 {
                     if (Uri.TryCreate(helpLink.ToString(), UriKind.Absolute, out Uri uri))
@@ -704,6 +728,7 @@ namespace Dynamo.Graph.Workspaces
                 // If there is a active linter serialized in the graph we set it to the active linter else set the default None.
                 SetActiveLinter(obj);
 
+
                 ws = homeWorkspace;
             }
 
@@ -712,7 +737,9 @@ namespace Dynamo.Graph.Workspaces
             ws.ExternalFiles = externalFiles;
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
-
+            
+            ws.ContainsLegacyTraceData = containsLegacyTraceData;
+            
             return ws;
         }
 
@@ -820,7 +847,7 @@ namespace Dynamo.Graph.Workspaces
             // Element resolver
             writer.WritePropertyName("ElementResolver");
             serializer.Serialize(writer, ws.ElementResolver);
-
+            
             // Inputs
             writer.WritePropertyName("Inputs");
             // Find nodes which are inputs and get their inputData if its not null.
@@ -890,6 +917,10 @@ namespace Dynamo.Graph.Workspaces
 
             if (!isCustomNode && ws is HomeWorkspaceModel hws)
             {
+                // EnableLegacyPolyCurveBehavior
+                writer.WritePropertyName(nameof(HomeWorkspaceModel.EnableLegacyPolyCurveBehavior));
+                serializer.Serialize(writer, hws.EnableLegacyPolyCurveBehavior);
+
                 // Thumbnail
                 writer.WritePropertyName(nameof(HomeWorkspaceModel.Thumbnail));
                 writer.WriteValue(hws.Thumbnail);
@@ -1370,7 +1401,7 @@ namespace Dynamo.Graph.Workspaces
         /// Add a reference to a newly created object, referencing
         /// an old id.
         /// </summary>
-        /// <param name="oldid">The old id of the object.</param>
+        /// <param name="oldId">The old id of the object.</param>
         /// <param name="newObject">The new object which maps to the old id.</param>
         public void AddToReferenceMap(Guid oldId, object newObject)
         {

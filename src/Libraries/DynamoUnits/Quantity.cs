@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Runtime;
+using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
 {
@@ -9,9 +10,9 @@ namespace DynamoUnits
     /// </summary>
     public class Quantity
     {
-        internal readonly ForgeUnitsCLR.Quantity forgeQuantity;
+        internal readonly ForgeUnits.Quantity forgeQuantity;
 
-        internal Quantity(ForgeUnitsCLR.Quantity quantity)
+        internal Quantity(ForgeUnits.Quantity quantity)
         {
             this.forgeQuantity = quantity ?? throw new ArgumentNullException();
         }
@@ -57,7 +58,7 @@ namespace DynamoUnits
             {
                 return new Quantity(Utilities.ForgeUnitsEngine.getQuantity(typeId));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //The exact match for the Forge TypeID failed.  Test for a fallback.  This can be either earlier or later version number.
                 if (Utilities.TryParseTypeId(typeId, out string typeName, out Version version))

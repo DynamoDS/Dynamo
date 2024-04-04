@@ -129,4 +129,7 @@
   <data name="MismatchedAssemblyVersionTitle" xml:space="preserve">
     <value>Error Loading A Dependency</value>
   </data>
+  <data name="SplashScreenPreLoadingAsm" xml:space="preserve">
+    <value>Preloading Geometry library</value>
+  </data>
 </root>

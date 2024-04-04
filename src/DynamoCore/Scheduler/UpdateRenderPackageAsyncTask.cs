@@ -21,6 +21,10 @@ namespace Dynamo.Scheduler
         internal IEnumerable<KeyValuePair<Guid, string>> DrawableIdMap { get; set; }
 
         internal bool ForceUpdate { get; set; }
+        /// <summary>
+        /// Set to true to ignore the preview state of the node
+        /// </summary>
+        internal bool IgnoreIsVisible { get; set; }
     }
 
     /// <summary>
@@ -88,9 +92,14 @@ namespace Dynamo.Scheduler
             if (nodeModel.WasRenderPackageUpdatedAfterExecution && !initParams.ForceUpdate)
                 return false; // Not has not been updated at all.
 
-            // If a node is in either of the following states, then it will not 
-            // produce any geometric output. Bail after clearing the render packages.
-            if (nodeModel.IsInErrorState || !nodeModel.IsVisible)
+            // If a node is in an error state it won't produce any geometric output.
+            // Bail after clearing the render packages.
+            if (nodeModel.IsInErrorState)
+                return false;
+
+            // If a node is not set as visible and the override is not set to true then
+            // bail after clearing the render packages.
+            if (!nodeModel.IsVisible && initParams.IgnoreIsVisible == false)
                 return false;
 
             // Without AstIdentifierForPreview, a node cannot have MirrorData.
@@ -221,7 +230,7 @@ namespace Dynamo.Scheduler
                 var previousMeshVertexCount = package.MeshVertexCount;
 
                 //Todo Plane tessellation needs to be handled here vs in LibG currently
-                bool instancingEnabled = DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing", false);
+                bool instancingEnabled = DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("graphics-primitive-instancing", false) ?? false;
                 if (graphicItem is Plane plane)
                 {
                     CreatePlaneTessellation(package, plane);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using Dynamo.Controls;
+using Dynamo.PackageManager.UI;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -499,6 +500,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="uiAutomationData">UIAutomation info read from a json file</param>
         /// <param name="enableUIAutomation">Enable/Disable the automation action for a specific UIElement</param>
+        /// <param name="currentFlow"></param>
         private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation, Guide.GuideFlow currentFlow)
         {
             var popupBorderName = "SubmenuBorder";
@@ -606,7 +608,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                             if (ownedWindow != null)
                             {
-                                viewModel = ownedWindow.DataContext as PackageManager.PackageManagerSearchViewModel;
+                                var packageManager = (ownedWindow as PackageManagerView);
+                                if (packageManager == null) return;
+                                viewModel = packageManager.PackageManagerViewModel.PackageSearchViewModel;
                             }
 
                             parametersArray = new object[] { viewModel };
@@ -633,7 +637,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Calculate the Popup.PlacementTarget dynamically if is the case and highlight the sub MenuItem if the information was provided
         /// </summary>
-        /// <param name="bVisible">When the Step is shown this variable will be false when is hidden(due to passing to the next Step) it will be false</param>
         internal void CalculateTargetHost()
         {
             if (HostPopupInfo.DynamicHostWindow == true)
@@ -644,6 +647,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         /// <summary>
         /// This function will highlight a Window element (the element can be located in DynamoView or another Window or can be a MenuItem
+        /// </summary>
         /// <param name="bVisible">Indicates if the highlight should be applied or removed</param>
         internal void HighlightWindowElement(bool bVisible)
         {

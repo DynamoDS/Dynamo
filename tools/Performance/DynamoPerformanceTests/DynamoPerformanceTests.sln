@@ -1,20 +1,26 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2050
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPerformanceTests", "DynamoPerformanceTests.csproj", "{B19C56FE-48C0-445E-9200-2CBF9B6AC77F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoPerformanceTests", "DynamoPerformanceTests.csproj", "{F30253B6-6F68-4E56-9358-0832E4F38A0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|NET_Linux = Debug|NET_Linux
 		Release|Any CPU = Release|Any CPU
+		Release|NET_Linux = Release|NET_Linux
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B19C56FE-48C0-445E-9200-2CBF9B6AC77F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B19C56FE-48C0-445E-9200-2CBF9B6AC77F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B19C56FE-48C0-445E-9200-2CBF9B6AC77F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B19C56FE-48C0-445E-9200-2CBF9B6AC77F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET_Linux.ActiveCfg = Debug|NET_Linux
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET_Linux.Build.0 = Debug|NET_Linux
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET_Linux.ActiveCfg = Release|NET_Linux
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET_Linux.Build.0 = Release|NET_Linux
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

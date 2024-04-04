@@ -1,0 +1,38 @@
+<UserControl x:Class="CoreNodeModelsWpf.Charts.Controls.HeatSeriesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CoreNodeModelsWpf.Charts.Controls"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="500" 
+             Height="500" Width="500"
+             d:DataContext="{d:DesignInstance local:HeatSeriesControl}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+
+        <lvc:CartesianChart Style="{StaticResource CartesianLiveChart}" Name="HeatSeriesUI" Grid.Row="1"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}"
+                            LegendPosition="Bottom">
+        </lvc:CartesianChart>
+
+        <Thumb Name ="resizeThumb"
+               Style="{StaticResource ChartsThumb}"
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler">
+            <Thumb.ToolTip>
+                <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+            </Thumb.ToolTip>
+        </Thumb>
+    </Grid>
+</UserControl>

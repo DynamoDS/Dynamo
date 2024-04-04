@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -8,25 +8,29 @@ using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
-using FontAwesome.WPF;
-using Microsoft.Practices.Prism.Commands;
+using FontAwesome5;
+using Prism.Commands;
 
 namespace Dynamo.Wpf.ViewModels
 {
     public class NodeSearchElementViewModel : ViewModelBase, ISearchEntryViewModel
     {
-        private Dictionary<SearchElementGroup, FontAwesomeIcon> FontAwesomeDict;
+        private Dictionary<SearchElementGroup, EFontAwesomeIcon> FontAwesomeDict;
 
         private bool isSelected;
         private SearchViewModel searchViewModel;
         private IDisposable undoRecorderGroup;
         private int spacingBetweenNodes = 50;
         private int spacingforHigherWidthNodes = 450;
+
+        /// <summary>
+        /// Machine Learning related info
+        /// </summary>
+        public AutoCompletionNodeMachineLearningInfo AutoCompletionNodeMachineLearningInfo { get; set; } = new AutoCompletionNodeMachineLearningInfo();
 
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
@@ -164,21 +168,21 @@ namespace Dynamo.Wpf.ViewModels
         /// </summary>
         private void LoadFonts()
         {
-            FontAwesomeDict = new Dictionary<SearchElementGroup, FontAwesomeIcon>();
+            FontAwesomeDict = new Dictionary<SearchElementGroup, EFontAwesomeIcon>();
 
-            FontAwesomeDict.Add(SearchElementGroup.Create, FontAwesomeIcon.Plus);
-            FontAwesomeDict.Add(SearchElementGroup.Action, FontAwesomeIcon.Bolt);
-            FontAwesomeDict.Add(SearchElementGroup.Query, FontAwesomeIcon.Question);
+            FontAwesomeDict.Add(SearchElementGroup.Create, EFontAwesomeIcon.Solid_Plus);
+            FontAwesomeDict.Add(SearchElementGroup.Action, EFontAwesomeIcon.Solid_Bolt);
+            FontAwesomeDict.Add(SearchElementGroup.Query, EFontAwesomeIcon.Solid_Question);
         }
 
         /// <summary>
         /// Indicates group icon, e.g. create - plus icon.
         /// </summary>
-        public FontAwesomeIcon GroupIconName
+        public EFontAwesomeIcon GroupIconName
         {
             get
             {
-                return FontAwesomeDict.ContainsKey(Group) ? FontAwesomeDict[Group] : FontAwesomeIcon.None;
+                return FontAwesomeDict.ContainsKey(Group) ? FontAwesomeDict[Group] : EFontAwesomeIcon.None;
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DSCore;
 using NUnit.Framework;
 
@@ -27,7 +27,8 @@ namespace DSCoreNodesTests
         {
             string url = "https://api.github.com/rate_limit";
             string result = Web.WebRequestByUrl(url);
-            Assert.IsNotNullOrEmpty(result);
+            Assert.IsNotNull(result);
+            Assert.IsNotEmpty(result);
         }
     }
 }

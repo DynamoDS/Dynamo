@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,9 @@ namespace DynamoInstallDetective
     /// <summary>
     /// Utility class for install detective
     /// </summary>
+#if NET6_0_OR_GREATER
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     public static class Utilities
     {
         /// <summary>

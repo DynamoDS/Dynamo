@@ -1,0 +1,295 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Edges",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Display": {
+        "Key": "Display.Display",
+        "Value": "Display.dll"
+      },
+      "GeometryColor": {
+        "Key": "Modifiers.GeometryColor",
+        "Value": "GeometryColor.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByCorners@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Id": "7a59348baf424db7b4d1fc8423f52ffa",
+      "Inputs": [
+        {
+          "Id": "6d21b5c9226342d9abc59920db904700",
+          "Name": "lowPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e96fbd03c28144868568eca4f9f268e7",
+          "Name": "highPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ce2b2eb9a7514ed39da5d478bccf6534",
+          "Name": "Cuboid",
+          "Description": "Cuboid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create an Cuboid spanning from low Point to high Point.\n\nCuboid.ByCorners (lowPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), highPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1)): Cuboid"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "abe0c77f86f24ed98aa8685134ba6434",
+      "Inputs": [
+        {
+          "Id": "3e2b1627ee7f41bf9d47c1f18802a28c",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ae9d0a373a694d45833c1920cdea3e4f",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Topology.Edges",
+      "Id": "9135ec7b24874253925bb5043b6183b2",
+      "Inputs": [
+        {
+          "Id": "df2eaa2977f44d6eba6ad4946fb9baa9",
+          "Name": "topology",
+          "Description": "Autodesk.DesignScript.Geometry.Topology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b98d14ca582c4ba3a228ba83da58f6f5",
+          "Name": "Edge[]",
+          "Description": "Edge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The Edges of the Topology\n\nTopology.Edges: Edge[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Edge.CurveGeometry",
+      "Id": "8eab14c9fedc40948bb16576a3669151",
+      "Inputs": [
+        {
+          "Id": "70582efab41442edbdfc30a58289aa59",
+          "Name": "edge",
+          "Description": "Autodesk.DesignScript.Geometry.Edge",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "35dd1946d3404fd89ed1599486ff33c4",
+          "Name": "Curve",
+          "Description": "Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The underlying Curve making up the Edge\n\nEdge.CurveGeometry: Curve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "color = Color.ByARGB(100,141,198,217);\nGeometryColor.ByGeometryColor(geometry, color);",
+      "Id": "e1e7d204e43a4d2f847194e3557e5c43",
+      "Inputs": [
+        {
+          "Id": "488b831c54ec4e629e89439754f0d1e7",
+          "Name": "geometry",
+          "Description": "geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "02c0bbe680b94cb4816d6f18283a3850",
+          "Name": "",
+          "Description": "color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "115a05682e894a668c5dadfa5a8bd3de",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ce2b2eb9a7514ed39da5d478bccf6534",
+      "End": "df2eaa2977f44d6eba6ad4946fb9baa9",
+      "Id": "b2f1740ad1ca47d5a12b733ef3082a1c"
+    },
+    {
+      "Start": "ce2b2eb9a7514ed39da5d478bccf6534",
+      "End": "488b831c54ec4e629e89439754f0d1e7",
+      "Id": "08e447402e96400e8628077bcbf7c2c4"
+    },
+    {
+      "Start": "ae9d0a373a694d45833c1920cdea3e4f",
+      "End": "70582efab41442edbdfc30a58289aa59",
+      "Id": "52c75abbaeac4b4db3eecc4d2ce055ad"
+    },
+    {
+      "Start": "b98d14ca582c4ba3a228ba83da58f6f5",
+      "End": "3e2b1627ee7f41bf9d47c1f18802a28c",
+      "Id": "95ebb5fdbd104d3c82b2fa91bff06dd2"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -0.32769864797592163,
+      "EyeY": 1.5163028240203857,
+      "EyeZ": 2.0407218933105469,
+      "LookX": 6.0298018455505371,
+      "LookY": -2.7384574413299561,
+      "LookZ": -7.422482967376709,
+      "UpX": 0.039591424167156219,
+      "UpY": 0.99802666902542114,
+      "UpZ": -0.04873570054769516
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Cuboid.ByCorners",
+        "Id": "7a59348baf424db7b4d1fc8423f52ffa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 864.58791301408621,
+        "Y": 362.2175462063704
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "abe0c77f86f24ed98aa8685134ba6434",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1401.8777228113104,
+        "Y": 417.272580401128
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Topology.Edges",
+        "Id": "9135ec7b24874253925bb5043b6183b2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1149.11970029566,
+        "Y": 417.272580401128
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Edge.CurveGeometry",
+        "Id": "8eab14c9fedc40948bb16576a3669151",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1712.7643352664704,
+        "Y": 417.272580401128
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e1e7d204e43a4d2f847194e3557e5c43",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1150.79146648987,
+        "Y": 320.051726186369
+      }
+    ],
+    "Annotations": [],
+    "X": -363.46362444568683,
+    "Y": 18.723887588096261,
+    "Zoom": 0.7992003028160819
+  }
+}

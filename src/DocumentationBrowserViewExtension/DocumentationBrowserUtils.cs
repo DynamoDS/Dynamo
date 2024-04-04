@@ -1,4 +1,4 @@
-﻿using Dynamo.Utilities;
+using Dynamo.Utilities;
 using System.IO;
 using System.Reflection;
 
@@ -17,7 +17,14 @@ namespace Dynamo.DocumentationBrowser
         {
             return ResourceUtilities.DPISCRIPT;
         }
-
+        /// <summary>
+        /// Returns the Image Navigation Script
+        /// </summary>
+        /// <returns></returns>
+        internal static string GetImageNavigationScript()
+        {
+            return ResourceUtilities.IMGNAVIGATIONSCRIPT;
+        }
         /// <summary>
         /// Returns the content of an embedded resource file.
         /// </summary>

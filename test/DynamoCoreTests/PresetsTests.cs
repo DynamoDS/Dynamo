@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -344,7 +344,7 @@ namespace Dynamo.Tests
               Assert.IsTrue(File.Exists(newPath));
           }
 
-        [Test, Ignore]
+        [Test, Ignore("unknown reason")]
         public void CanSaveAndLoadStateWithMissingNodesWithoutLosingThem()
         {
             var model = CurrentDynamoModel;

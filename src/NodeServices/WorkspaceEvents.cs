@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Dynamo.Events
 {
@@ -76,6 +76,26 @@ namespace Dynamo.Events
                 handler(new WorkspacesSettingsChangedEventArgs(scaleFactor));
             }
         }
+
+        /// <summary>
+        /// An event raised when workspace EnableLegacyPolyCurveBehavior setting is changed.
+        /// </summary>
+        // TODO: Remove in Dynamo 4.0.
+        internal static event WorkspaceSettingsChangedEventHandler WorkspaceEnableLegacyPolyCurveSettingChanged;
+        internal static void OnWorkspaceSettingsChanged(bool enableLegacyPolyCurveBehavior)
+        {
+            var handler = WorkspaceEnableLegacyPolyCurveSettingChanged;
+            if (handler != null)
+            {
+                try
+                {
+                    handler(new WorkspacesSettingsChangedEventArgs(enableLegacyPolyCurveBehavior));
+                }
+                catch (NullReferenceException)
+                {
+                }
+            }
+        }
     }
 
     public class WorkspacesModificationEventArgs : EventArgs
@@ -96,9 +116,23 @@ namespace Dynamo.Events
     {
         public double ScaleFactor { get; private set; }
 
+        /// <summary>
+        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
+        /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
+        /// A workspace setting if exists, overrides the default preference setting. 
+        /// </summary>
+        // TODO: Remove in Dynamo 4.0.
+        internal bool EnableLegacyPolyCurveBehavior { get; private set; }
+
         public WorkspacesSettingsChangedEventArgs(double scaleFactor)
         {
             ScaleFactor = scaleFactor;
+        }
+
+        // TODO: Remove in Dynamo 4.0.
+        internal WorkspacesSettingsChangedEventArgs(bool enableLegacyPolyCurveBehavior)
+        {
+            EnableLegacyPolyCurveBehavior = enableLegacyPolyCurveBehavior;
         }
     }
 }

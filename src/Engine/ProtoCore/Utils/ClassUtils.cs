@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ProtoCore.DSASM;
 
@@ -11,7 +11,7 @@ namespace ProtoCore.Utils
         /// It includes the class itself
         /// </summary>
         /// <param name="cn"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static List<int> GetClassUpcastChain(ClassNode cn, RuntimeCore runtimeCore)
         {
@@ -39,7 +39,7 @@ namespace ProtoCore.Utils
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static int GetUpcastCountTo(ClassNode from, ClassNode to, RuntimeCore runtimeCore)
         {
@@ -53,30 +53,6 @@ namespace ProtoCore.Utils
             return upcastChain.IndexOf(toID);
 
 
-        }
-
-        // classScope is a global context, it tells we are in which class's scope
-        // functionScope is telling us which function we are in. 
-        // 
-        // 1. Try to find if the target is a member function's local variable
-        //        classScope != kInvalidIndex && functionScope != kInvalidIndex;
-        // 
-        // 2. Try to find if the target is a member variable
-        //     2.1 In a member functions classScope != kInvalidIndex && functionScope != kInvalidIndex.
-        //         Returns member in derived class, or non-private member in base classes
-        // 
-        //     2.2 In a global functions classScope == kInvalidIndex && functionScope != kInvalidIndex.
-        //         Returns public member in derived class, or public member in base classes
-        // 
-        //     2.3 Otherwise, classScope == kInvalidIndex && functionScope == kInvalidIndex
-        //         Return public member in derived class, or public member in base classes 
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        public static int GetSymbolIndex(ClassNode classNode, string name, int classScope, int functionScope, int blockId, List<CodeBlock> codeblocks, out bool hasThisSymbol, out ProtoCore.DSASM.AddressType addressType)
-        {
-            var dict = new SortedDictionary<int, CodeBlock>();
-            codeblocks.ForEach(x => dict.Add(x.codeBlockId, x));
-
-            return GetSymbolIndex(classNode, name, classScope, functionScope, blockId, dict, out hasThisSymbol, out addressType);
         }
 
         // classScope is a global context, it tells we are in which class's scope
@@ -177,15 +153,6 @@ namespace ProtoCore.Utils
             }
 
             return Constants.kInvalidIndex;
-        }
-
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        public static List<int> GetAncestorBlockIdsOfBlock(int blockId, List<CodeBlock> codeblocks)
-        {
-            var dict = new SortedDictionary<int, CodeBlock>();
-            codeblocks.ForEach(x => dict.Add(x.codeBlockId, x));
-
-            return GetAncestorBlockIdsOfBlock(blockId, dict);
         }
 
         internal static List<int> GetAncestorBlockIdsOfBlock(int blockId, SortedDictionary<int, CodeBlock> codeblocks)

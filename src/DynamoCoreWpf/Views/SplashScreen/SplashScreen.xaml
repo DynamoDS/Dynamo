@@ -1,0 +1,18 @@
+<Window x:Class="Dynamo.UI.Views.SplashScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dynamo SplashScreen"
+        Width="654"
+        Height="452"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Grid Margin="20" x:Name="ShadowGrid" Background="White">
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90"
+                              RenderingBias="Quality" ShadowDepth="2"/>
+        </Grid.Effect>
+    </Grid>
+</Window>

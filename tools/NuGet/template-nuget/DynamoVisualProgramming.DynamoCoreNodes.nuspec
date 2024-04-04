@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>DynamoVisualProgramming.DynamoCoreNodes</id>
@@ -9,25 +9,31 @@
         <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Build core nodes for Dynamo. It contains the following files:
-        1) Analysis.dll
-        2) GeometryColor.dll
-        3) DSCoreNodes.dll</description>
-        <copyright>Copyright Autodesk 2020</copyright>
+        <description>
+            Reference the core node types for Dynamo.
+        </description>
+        <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework=".NETFramework4.8">
+            <group targetFramework="$TargetFramework$">
                 <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$" />
                 <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$" />
             </group>
         </dependencies>
     </metadata>
+    <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
-        <file src="Analysis.dll" target="lib\net48" />
-        <file src="Analysis.xml" target="build\net48" />
-        <file src="GeometryColor.dll" target="lib\net48" />
-        <file src="GeometryColor.xml" target="build\net48" />
-        <file src="DSCoreNodes.dll" target="lib\net48" />
-        <file src="DSCoreNodes.xml" target="build\net48" />
+        <file src="Analysis.dll" target="lib\$TargetFramework$" />
+        <file src="Analysis.xml" target="lib\$TargetFramework$" />
+        <file src="GeometryColor.dll" target="lib\$TargetFramework$" />
+        <file src="GeometryColor.xml" target="lib\$TargetFramework$" />
+        <file src="DSCoreNodes.dll" target="lib\$TargetFramework$" />
+        <file src="DSCoreNodes.xml" target="lib\$TargetFramework$" />
+        <file src="nodes\CoreNodeModels.dll" target="lib\$TargetFramework$" />
+        <file src="nodes\CoreNodeModels.xml" target="lib\$TargetFramework$" />
+        <file src="nodes\Watch3DNodeModels.dll" target="lib\$TargetFramework$" />
+        <file src="nodes\Watch3DNodeModels.xml" target="lib\$TargetFramework$" />
+        <file src="nodes\UnitsNodeModels.dll" target="lib\$TargetFramework$" />
+        <file src="nodes\UnitsNodeModels.xml" target="lib\$TargetFramework$" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

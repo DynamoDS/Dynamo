@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Media.Imaging;
@@ -136,14 +136,13 @@ namespace Dynamo.GraphMetadata
                 return;
             }
 
-            if (string.IsNullOrEmpty(hwm.FileName))
+            if (!hwm.IsTemplate && string.IsNullOrEmpty(hwm.FileName) )
             {
                 GraphDescription = string.Empty;
                 GraphAuthor = string.Empty;
                 HelpLink = null;
                 Thumbnail = null;
             }
-
             else
             {
                 currentWorkspace = hwm;
@@ -266,6 +265,7 @@ namespace Dynamo.GraphMetadata
         public void Dispose()
         {
             this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            this.viewLoadedParams.CurrentWorkspaceCleared -= OnCurrentWorkspaceChanged;
             if (linterManager != null)
             {
                 linterManager.PropertyChanged -= OnLinterManagerPropertyChange;

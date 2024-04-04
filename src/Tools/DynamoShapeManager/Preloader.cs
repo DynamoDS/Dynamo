@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -52,58 +52,15 @@ namespace DynamoShapeManager
         /// typical setup this would be the same directory that contains Dynamo 
         /// core modules. This must represent a valid directory.
         /// </param>
-        /// 
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         public Preloader(string rootFolder)
             : this(rootFolder, new[]
             {
-                new Version(228,5,0),
+                new Version(230,0,0),
             })
         {
-        }
-
-        // TODO: Remove in Dynamo 3.0 -> The following old libG Folder mapping usage 
-        // used to convert libraryVersions to the real asm versions they represented
-        private static Dictionary<LibraryVersion, Version> ASMLibVersionToVersion = new Dictionary<LibraryVersion, Version>()
-        {
-            { LibraryVersion.Version221, new Version(221,0,0) },
-            { LibraryVersion.Version222, new Version(222,0,0) },
-            { LibraryVersion.Version223, new Version(223,0,1) },
-            { LibraryVersion.Version224, new Version(224,0,1) },
-
-        };
-
-        internal static Version MapLibGVersionEnumToFullVersion(LibraryVersion libVersion)
-        {
-            Version version;
-            if (ASMLibVersionToVersion.TryGetValue(libVersion, out version))
-            {
-                return version;
-            }
-            else
-            {
-                version = new Version((int)libVersion, 0, 0);
-                Console.WriteLine("Could not find a full version mapping for LibGVersion: " + libVersion + "returning: " + version.ToString());
-                return version;
-            }
-        }
-
-        /// <summary>
-        /// Constructs a preloader object to help preload a specific version of 
-        /// shape manager.
-        /// </summary>
-        /// <param name="rootFolder">Full path of the directory that contains 
-        /// LibG_xxx folder, where 'xxx' represents the library version. In a 
-        /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory.
-        /// </param>
-        /// <param name="versions">A list of version numbers to check for in order 
-        /// of preference. This argument cannot be null or empty.</param>
-        /// 
-        [Obsolete("please use constructor Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
-        public Preloader(string rootFolder, IEnumerable<LibraryVersion> versions) :
-            this(rootFolder, versions.Select(libVersion => MapLibGVersionEnumToFullVersion(libVersion)))
-        {
-
         }
 
         /// <summary>
@@ -117,7 +74,9 @@ namespace DynamoShapeManager
         /// </param>
         /// <param name="versions">A list of version numbers to check for in order 
         /// of preference. This argument cannot be null or empty.</param>
-        /// 
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         public Preloader(string rootFolder, IEnumerable<Version> versions)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -137,57 +96,6 @@ namespace DynamoShapeManager
                 Utilities.GeometryFactoryAssembly);
         }
 
-        /// <summary>
-        /// Constructs a preloader object to help preload the specified version 
-        /// of shape manager from the given directory.
-        /// </summary>
-        /// <param name="rootFolder">Full path of the directory that contains 
-        /// LibG_xxx folder, where 'xxx' represents the library version. In a 
-        /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory.
-        /// </param>
-        /// <param name="shapeManagerPath">The directory from where shape manager
-        /// binaries can be preloaded from.</param>
-        /// <param name="version">The version of shape manager.</param>
-        /// 
-        [Obsolete("please use Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
-        public Preloader(string rootFolder, string shapeManagerPath, LibraryVersion version)
-        {
-            if (string.IsNullOrEmpty(rootFolder))
-                throw new ArgumentNullException("rootFolder");
-            if (!Directory.Exists(rootFolder))
-                throw new DirectoryNotFoundException(rootFolder);
-
-            if (string.IsNullOrEmpty(shapeManagerPath))
-                throw new ArgumentNullException("shapeManagerPath");
-            if (!Directory.Exists(shapeManagerPath))
-                throw new DirectoryNotFoundException(shapeManagerPath);
-
-            if (version == LibraryVersion.None)
-                throw new ArgumentOutOfRangeException("version");
-
-            this.Version2 = MapLibGVersionEnumToFullVersion(version);
-            this.ShapeManagerPath = shapeManagerPath;
-
-            var libGFolderName = string.Format("libg_{0}_{1}_{2}", this.Version2.Major, this.Version2.Minor, this.Version2.Build);
-            PreloaderLocation = Path.Combine(rootFolder, libGFolderName);
-            GeometryFactoryPath = Path.Combine(PreloaderLocation,
-                Utilities.GeometryFactoryAssembly);
-        }
-
-        /// <summary>
-        /// Construct a Preloader by specifying a required library version.
-        /// </summary>
-        /// <param name="rootFolder">Full path of the directory that contains 
-        /// LibG_xxx folder, where 'xxx' represents the library version. In a 
-        /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory.
-        /// </param>
-        /// <param name="version">The version of shape manager.</param>
-        /// <returns></returns>
-        [Obsolete("please use constructor Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
-        public Preloader(string rootFolder, LibraryVersion version)
-            : this(rootFolder, new[] { version }) { }
 
         /// <summary>
         /// Attempts to load the geometry library binaries using the version and location

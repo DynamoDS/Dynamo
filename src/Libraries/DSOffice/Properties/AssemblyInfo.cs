@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,7 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DSOffice")]
 [assembly: AssemblyCulture("")]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4b9906ad-ac4d-469c-9f6e-0373b8c7a12a")]
-[assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
+
+#if _WINDOWS
+    [assembly: TypeForwardedTo(typeof(DSOffice.WorkBook))]
+    [assembly: TypeForwardedTo(typeof(DSOffice.WorkSheet))]
+#endif

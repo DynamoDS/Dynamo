@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -41,7 +41,7 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Initializes a new instance of the <see cref="MouseClickManager"/> class.
         /// </summary>
-        /// <param name="control">The control.</param>
+        /// <param name="doubleClickTimeout">The control.</param>
         public MouseClickManager(int doubleClickTimeout)
         {
             this.Clicked = false;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Dynamo.Core;
@@ -56,8 +56,6 @@ namespace Dynamo.ViewModels
     public class PackagePathViewModel : ViewModelBase
     {
         public ObservableCollection<string> RootLocations { get; private set; }
-        [Obsolete("SelectedIndex is no longer referenced, do not use.")]
-        public int SelectedIndex { get; set; }
        
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -266,6 +264,8 @@ namespace Dynamo.ViewModels
                 packageLoader.LoadNewCustomNodesAndPackages(newPaths, customNodeManager);
             }
             packagePathsEnabled.Clear();
+            // Dispose node Index writer to avoid file lock after new package path applied and packages loaded.
+            Search.LuceneSearch.LuceneUtilityNodeSearch.DisposeWriter();
         }
 
         internal void SetPackagesScheduledState(string packagePath, bool packagePathDisabled)
@@ -302,6 +302,7 @@ namespace Dynamo.ViewModels
             {
                 RootLocations[index] = Resources.PackagePathViewModel_BuiltInPackages;
             }
+            RaisePropertyChanged(string.Empty);
         }
 
         private List<string> CommitRootLocations()

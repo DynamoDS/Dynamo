@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -86,12 +86,6 @@ namespace Dynamo.Wpf.Extensions
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
         }
 
-        [Obsolete("Method will be deprecated in Dynamo 3.0, please use AddExtensionMenuItem")]
-        public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
-        {
-            AddItemToMenu(type, menuItem, index);
-        }
-
         /// <summary>
         /// Adds a menu item to the extensions menu
         /// Items will be ordered alphabetically
@@ -120,7 +114,7 @@ namespace Dynamo.Wpf.Extensions
         /// <returns></returns>
         public void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
-            bool added  = dynamoView.AddOrFocusExtensionControl(viewExtension, contentControl);
+            bool added = dynamoView.AddOrFocusExtensionControl(viewExtension, contentControl);
 
             if (added)
             {
@@ -223,7 +217,7 @@ namespace Dynamo.Wpf.Extensions
         {
             dynamoViewModel.OnViewExtensionOpenRequest(extensionName);
         }
-        
+
         /// <summary>
         /// Event raised when a component inside Dynamo raises a request to open a view extension.
         /// </summary>
@@ -245,6 +239,13 @@ namespace Dynamo.Wpf.Extensions
             // so that the ViewLoadedParams class itself doesn't appear as a subscriber to the event
             add => dynamoViewModel.ViewExtensionOpenWithParameterRequest += value;
             remove => dynamoViewModel.ViewExtensionOpenWithParameterRequest -= value;
+        }
+
+        public new void Dispose()
+        {
+            if (CommandExecutive is IDisposable disposable)
+            { disposable.Dispose(); }
+            base.Dispose();
         }
 
     }

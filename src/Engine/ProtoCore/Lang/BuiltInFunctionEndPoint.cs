@@ -459,7 +459,6 @@ namespace ProtoCore.Lang
                             runtimeCore.Heap.ToHeapObject<DSArray>(array).RemoveKey(key);
                         }
                         return array;
-                        break;
                     }
                 case BuiltInMethods.MethodID.Evaluate:
                     ret = ArrayUtilsForBuiltIns.Evaluate(

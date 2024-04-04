@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Dynamo.Core
@@ -17,7 +17,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Returns <see cref="Dispalyoptions"/> flag which indicates whether args contain default text overriden,
+        ///     Returns <see cref="DisplayOptions"/> flag which indicates whether args contain default text overriden,
         ///     has details or has file path
         /// </summary>
         public DisplayOptions Options { get; private set; }
@@ -125,12 +125,12 @@ namespace Dynamo.Core
         /// <summary>
         /// Allow Dynamo to send the log file to the CER system.
         /// </summary>
-        internal bool SendLogFile { get; set; } = false;
+        internal bool SendLogFile { get; set; } = true;
 
         /// <summary>
         /// Allow Dynamo to send the settings file to the CER system.
         /// </summary>
-        internal bool SendSettingsFile { get; set; } = false;
+        internal bool SendSettingsFile { get; set; } = true;
 
         /// <summary>
         /// Allow Dynamo to send the recorded commands file to the CER system.

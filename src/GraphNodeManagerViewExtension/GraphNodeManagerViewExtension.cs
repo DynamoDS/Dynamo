@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Logging;
@@ -32,6 +32,7 @@ namespace Dynamo.GraphNodeManager
         /// Extension Name
         /// </summary>
         public override string Name => Properties.Resources.ExtensionName;
+
         #endregion
 
         #region Add/Remove Extension 
@@ -63,6 +64,7 @@ namespace Dynamo.GraphNodeManager
         {
             AddToSidebar();
         }
+
         /// <summary>
         /// Close the Extension
         /// </summary>
@@ -70,7 +72,6 @@ namespace Dynamo.GraphNodeManager
         /// <param name="e"></param>
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
         {
-            this.Dispose();
             viewLoadedParamsReference.CloseExtensioninInSideBar(this);
         }
 
@@ -79,18 +80,19 @@ namespace Dynamo.GraphNodeManager
         /// </summary>
         private void AddToSidebar()
         {
+            // Use late initialization for the GraphNodeManagerViewModel
+            this.ViewModel ??= new GraphNodeManagerViewModel(this.viewLoadedParamsReference, UniqueId, MessageLogged);
             // initialise the ViewModel and View for the window
-            this.ViewModel = new GraphNodeManagerViewModel(this.viewLoadedParamsReference, UniqueId, MessageLogged);
-            this.ManagerView = new GraphNodeManagerView(this.ViewModel);
-
-            if (this.ManagerView == null)
-            {
-                return;
-            }
-
-            this.ViewModel.GraphNodeManagerView = this.ManagerView;
+            // Use late initialization for the GraphNodeManagerView
+            this.ManagerView ??= new GraphNodeManagerView(this.ViewModel);
 
             this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.ManagerView);
+        }
+
+        public override void ReOpen()
+        {
+            AddToSidebar();
+            this.graphNodeManagerMenuItem.IsChecked = true;
         }
         #endregion
 
@@ -98,7 +100,7 @@ namespace Dynamo.GraphNodeManager
         /// <summary>
         /// Tear down function
         /// </summary>
-        public void Shutdown()
+        public override void Shutdown()
         {
             this.Dispose();
         }
@@ -107,6 +109,7 @@ namespace Dynamo.GraphNodeManager
         /// </summary>
         public override void Dispose()
         {
+            this.ManagerView?.Dispose();
             this.ViewModel?.Dispose();
             this.ManagerView = null;
             this.ViewModel = null;

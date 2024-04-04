@@ -1,0 +1,444 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.Image.FromPixels(colors, width, height)_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
+      "Id": "04eeac73bb63475384fbe2d5d073de0b",
+      "Inputs": [
+        {
+          "Id": "47fee489fc8144478a22d4a41d6d237b",
+          "Name": "alpha",
+          "Description": "Alpha value (between 0 and 255 inclusive)\n\nint\nDefault value : 255",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a427bfff18a94192845d76a7cb6b03cd",
+          "Name": "red",
+          "Description": "Red value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c83d5f08df47415e83cddd7b50577c7b",
+          "Name": "green",
+          "Description": "Green value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4b72fb9f934d4b589f6226579316e2bf",
+          "Name": "blue",
+          "Description": "Blue value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6fe77669be6646b29b770e417a34b605",
+          "Name": "color",
+          "Description": "Color created from ARGB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Construct a color by alpha, red, green, and blue components.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..255..1;",
+      "Id": "eaeecbf600dd4a06acc816897a11ddd3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dead3c0fdbd649feb57a1dfad1e00c97",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.WatchImageCore, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "9a9048c179554df7903c5954eb68ade3",
+      "Inputs": [
+        {
+          "Id": "e52221d5f87c4cdc9b19b67393b7996f",
+          "Name": "image",
+          "Description": "Image for visualization",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "55c6728963e24d4e93bf729c27f4368a",
+          "Name": "image",
+          "Description": "Image for visualization",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Previews an image"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Count@var[]..[]",
+      "Id": "1750457e450a44beb22bfc0db6f904a1",
+      "Inputs": [
+        {
+          "Id": "751782dac16843ce8ccf61b7a05482d0",
+          "Name": "list",
+          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dd53d90704394542b5aee1f9f9958e21",
+          "Name": "int",
+          "Description": "List length.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "/@var[]..[],var[]..[]",
+      "Id": "46b5e9b7bf514d729462db53d9703cf6",
+      "Inputs": [
+        {
+          "Id": "22835581f02d49a8950d0f725c78546b",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fccdeba15b4e48a9b41d04bba0f51d3a",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8dc9c029484d486296ddc3b2a786ea3c",
+          "Name": "double",
+          "Description": "Result of division",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns division of x over y\n\n/ (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "8;",
+      "Id": "17a23ba9bec94305a9741b0b22ebba76",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d3c2af9d0263412e97c7556332dbbe27",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.Image.FromPixels@DSCore.Color[],int,int",
+      "Id": "778a95f20b9e4367b937941f95825595",
+      "Inputs": [
+        {
+          "Id": "97c241eac1984f79a28e4c95aa135aa1",
+          "Name": "colors",
+          "Description": "List of colors representing the pixels\n\nColor[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f8034ef4587a401b9716082f039feb83",
+          "Name": "width",
+          "Description": "Width of the new image, in pixels\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "22314a3d82a447a094390e506f23b4c0",
+          "Name": "height",
+          "Description": "Height of the new image, in pixels\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8ac91b33c3724051bc7786d6011ef292",
+          "Name": "image",
+          "Description": "Image from list of pixels",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Constructs an image from a flat list of pixels, a width, and a height.\n\nImage.FromPixels (colors: Color[], width: int, height: int): var"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6fe77669be6646b29b770e417a34b605",
+      "End": "751782dac16843ce8ccf61b7a05482d0",
+      "Id": "d3176bd291ec4f368ceff3f56a0fbb04",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6fe77669be6646b29b770e417a34b605",
+      "End": "97c241eac1984f79a28e4c95aa135aa1",
+      "Id": "f3ccb0280725454a89d599f44ee09712",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dead3c0fdbd649feb57a1dfad1e00c97",
+      "End": "a427bfff18a94192845d76a7cb6b03cd",
+      "Id": "ca5bb20e8b274d2bbd737e75c8c9400c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dead3c0fdbd649feb57a1dfad1e00c97",
+      "End": "c83d5f08df47415e83cddd7b50577c7b",
+      "Id": "7fb795ecc0674b8e8d059e686d89d32a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dd53d90704394542b5aee1f9f9958e21",
+      "End": "22835581f02d49a8950d0f725c78546b",
+      "Id": "a5ecebb337c04eb286f809f345f8cad4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8dc9c029484d486296ddc3b2a786ea3c",
+      "End": "22314a3d82a447a094390e506f23b4c0",
+      "Id": "8b33084b308e49be9899acce5c2d49cc",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d3c2af9d0263412e97c7556332dbbe27",
+      "End": "fccdeba15b4e48a9b41d04bba0f51d3a",
+      "Id": "3aa731ecf37d4e8498be44f6de242d35",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d3c2af9d0263412e97c7556332dbbe27",
+      "End": "f8034ef4587a401b9716082f039feb83",
+      "Id": "0a6555a7004a488b9fbf2c5e35e746ab",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8ac91b33c3724051bc7786d6011ef292",
+      "End": "e52221d5f87c4cdc9b19b67393b7996f",
+      "Id": "1c3f2e2f5e3e4176a412b4cd649468c2",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Color.ByARGB",
+        "ShowGeometry": true,
+        "Id": "04eeac73bb63475384fbe2d5d073de0b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3793.7286571240365,
+        "Y": 4186.0290789905575
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "eaeecbf600dd4a06acc816897a11ddd3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3531.3286571240365,
+        "Y": 4236.8565789905579
+      },
+      {
+        "Name": "Watch Image",
+        "ShowGeometry": true,
+        "Id": "9a9048c179554df7903c5954eb68ade3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4951.3908476132165,
+        "Y": 4187.9022219256385
+      },
+      {
+        "Name": "List.Count",
+        "ShowGeometry": true,
+        "Id": "1750457e450a44beb22bfc0db6f904a1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4092.6896306747835,
+        "Y": 4546.02165073088
+      },
+      {
+        "Name": "/",
+        "ShowGeometry": true,
+        "Id": "46b5e9b7bf514d729462db53d9703cf6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4387.2347418162035,
+        "Y": 4411.3704548972919
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "17a23ba9bec94305a9741b0b22ebba76",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4115.4737682654559,
+        "Y": 4327.476007795799
+      },
+      {
+        "Name": "Image.FromPixels",
+        "ShowGeometry": true,
+        "Id": "778a95f20b9e4367b937941f95825595",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4644.9908476132159,
+        "Y": 4187.9022219256385
+      }
+    ],
+    "Annotations": [],
+    "X": -2213.751475709269,
+    "Y": -1898.270454054991,
+    "Zoom": 0.59690650769099451
+  }
+}

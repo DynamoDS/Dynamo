@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -46,8 +46,8 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_AttractorPoint.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(12, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -68,8 +68,8 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(104, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(80, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -77,14 +77,13 @@ namespace Dynamo.Tests
             // Examples from First Section of DYN files (there are total 6 sections)
 
             // Checking decimal points in CBN: 3.142
-            AssertPreviewValue("27c2f333-f51f-4a0c-9f71-70dc64f2ecbe", 3.142);
+            AssertPreviewValue("c184fd253755407ba6086b80996df549", 3.14);
 
             // Checking String in CBN: "Less is more."
-            AssertPreviewValue("4c8ddee8-e2b1-4472-9470-a4142f56ac97", "Less is more.");
+            AssertPreviewValue("0aea97cdb971438c92165575e5d693df", "Less is more.");
 
             // Checking Multiplication in CBN: 3*5
-            AssertPreviewValue("d4ae3f27-c68c-41dd-830d-36ee0f8f51cc", 15.0);
-
+            AssertPreviewValue("30848488006e4a92a23fbdd17e1a85d8", 15.0);
         }
 
         [Test, Category("SmokeTests")]
@@ -93,39 +92,39 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(104, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(80, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
             //============================================================================
             // Examples from Second Section of DYN files (there are total 6 sections)
 
-            var pointNodeID = "5ba4c6a0-4641-4624-86f7-d26506f554b0";
+            var pointNodeID = "238c40dbe78b41238b7c21625a9ba06a";
             // output will be Point @ 0,-10
             var pt1 = GetPreviewValue(pointNodeID) as Point;
             Assert.AreEqual(0, pt1.X);
             Assert.AreEqual(-10, pt1.Y);
 
-            var cbnNodeID = "4ea1d0d8-4882-4f6f-b659-2dcb297db34e";
+            var cbnNodeID = "26d3385a14f84aeca233a3d7bb0248f4";
             // output will be Point @ 0,0,0
             var pt = GetPreviewValue(cbnNodeID) as Point;
             Assert.AreEqual(0, pt.X);
             Assert.AreEqual(0, pt.Y);
             Assert.AreEqual(0, pt.Z);
 
-            var pointVecAdd = "9aa85384-3767-46da-b524-e0b969d9420a";
+            var pointVecAdd = "830475257e894a3ba744a4640def0e57";
             // Add Point and Vector in CBN
             var pt2 = GetPreviewValue(pointVecAdd) as Point;
             Assert.AreEqual(0, pt2.X);
             Assert.AreEqual(0, pt2.Y);
             Assert.AreEqual(1, pt2.Z);
 
-            var nodeID = "613c6d53-0eab-414f-9aeb-fc7c56de6900";
+            var nodeID = "3639dc028a7741e086e1cc34307bcb42";
             // Getting Property in CBN
             AssertPreviewValue(nodeID, 10);
 
-            var cbnNodeID1 = "34a4b2fc-a1c5-4c18-a0fe-48b1c3b8f711";
+            var cbnNodeID1 = "d55dadaea1f04a4ea23a7a897db02c85";
             // CBN with different input
             var pt3 = GetPreviewValue(cbnNodeID1) as Point;
             Assert.AreEqual(10, pt3.X);
@@ -140,8 +139,8 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(104, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(80, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -150,7 +149,7 @@ namespace Dynamo.Tests
             // This section is for creating and accessing List in CBN.
 
             // Multiline CBN
-            string nodeID = "d71e5f04-9928-437a-863c-5bf34666370b";
+            string nodeID = "e211542ff30140eea2c43c5f87ae479b";
             var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(nodeID);
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(6, cbn.OutPorts.Count);
@@ -158,11 +157,11 @@ namespace Dynamo.Tests
             AssertPreviewValue(nodeID, new string[] { "alpha", "beta", "charlie", "delta", "echo" });
 
             // Indexing in CBN using Range expression
-            AssertPreviewValue("0c192d74-5c94-41d1-a433-fb79536d5d73",
+            AssertPreviewValue("1f6946f3b2ea490fb505737d8a9c22a0",
                 new string[] { "charlie", "delta" });
 
             // Indexing in CBN for 2D Array
-            AssertPreviewValue("72665884-ac4e-488f-84cd-6ad8b26b3c56", "dirty clothes");
+            AssertPreviewValue("8abf1aba83174c3d872cbd5cdb9c4437", "dirty clothes");
             //=============================================================================
 
         }
@@ -173,8 +172,8 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(104, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(80, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -183,16 +182,16 @@ namespace Dynamo.Tests
             // This section is for Defining Functions in CBN
 
             // Writing Function CBN
-            string nodeID = "79bff081-608e-4b02-9ae0-e5197ff4a3a6";
+            string nodeID = "c31fab7f5cd042c2a21b7644c748b29a";
             var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(nodeID);
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(0, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             // Using Function in CBN. Fucntion was writting in another CBN.
-            AssertPreviewValue("cba93904-d0da-4452-9864-0d1c02706e95", 3);
+            AssertPreviewValue("c25ac1d9c87444778c5287b87496b940", 3);
 
-            AssertPreviewValue("9256e209-fd59-492c-81c8-65cb84552ef5", "catdog");
+            AssertPreviewValue("95710e5082324b8cb5e52a6f8a19e326", "catdog");
             //=============================================================================
 
         }
@@ -203,8 +202,8 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(104, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(80, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -214,7 +213,7 @@ namespace Dynamo.Tests
             // Calling function with different argument in CBN
 
             // Writing entire code in CBN to create some Geometry object.
-            string nodeID = "e4a7b57e-420d-41d1-bdef-cea7956fbd3b";
+            string nodeID = "15af5d1edb7347b5b849a541fc5ec868";
             var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(nodeID);
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(11, cbn.OutPorts.Count);
@@ -222,7 +221,7 @@ namespace Dynamo.Tests
 
             var nurbsCurve = GetPreviewValue(nodeID) as NurbsCurve;
 
-            var cbnNodeID = "8dce8e89-1d9d-4ffe-b6ea-e7251ab1368b";
+            var cbnNodeID = "de7376216b3c49f28a28736d69b2ded3";
             AssertPreviewCount(cbnNodeID, 24);
 
             for (int i = 0; i <= 23; i++)
@@ -279,23 +278,23 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(201, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(151, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(157, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
             // Operators Test
             // Arithmetic Operators in CBN and Formula Node.
-            AssertPreviewValue("4151d6e3-7dff-4800-a066-d1b0fccfd423", 1); // CBN
-            AssertPreviewValue("a8155c26-edb0-4a47-8dee-7fabc7e7ec6d", 1); //Formula Node
+            AssertPreviewValue("5ae3c3563e8343a9a12695b82cdcacc1", 1); // CBN
+            AssertPreviewValue("4151d6e37dff4800a066d1b0fccfd423", 1); //Formula Node
 
             // Boolean Operators in CBN and Formula Node.
-            AssertPreviewValue("2df0798e-3eae-4425-b2ed-5c263f0c9042", false); // CBN 
-            AssertPreviewValue("960221c2-8b6b-4478-a7d1-af11ae0e7a4b", false); //Formula Node
+            AssertPreviewValue("cb92c120c2d74277b8b1213ba6800e91", false); // CBN 
+            AssertPreviewValue("cb966af8f0d84965aeaa1ee0c4cbc373", false); //Formula Node
 
             // Rounding Operators in CBN and Formula Node.
-            AssertPreviewValue("0a71dd72-43b7-4370-a2e9-a05b61256827", 4); // CBN 
-            AssertPreviewValue("33784fd9-2846-408e-a58e-292504f0e5c8", 4); //Formula Node
+            AssertPreviewValue("6583492a29c94ac4923f5b0a23f0838a", 4); // CBN 
+            AssertPreviewValue("0a71dd7243b74370a2e9a05b61256827", 4); //Formula Node
 
         }
 
@@ -305,25 +304,25 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(201, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(151, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(157, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
             // Testing from the section "Angles in nodes or Code Block are in radians."
-            var cbnNodeID1 = "f87d0ef6-1cd4-46cc-a5eb-0a518296d27b";
-            var line = GetPreviewValue(cbnNodeID1) as Line;
-            Assert.IsNotNull(line);
-            Assert.AreEqual(20, line.StartPoint.X);
-            Assert.AreEqual(35, line.StartPoint.Y);
-            Assert.AreEqual(0, line.StartPoint.Z);
+            var cbnNodeID1 = "8e406f77898f4e2cb2091fcfc3104214";
+            var arc = GetPreviewValue(cbnNodeID1) as Arc;
+            Assert.IsNotNull(arc);
+            Assert.AreEqual(20, arc.StartPoint.X);
+            Assert.AreEqual(35, arc.StartPoint.Y);
+            Assert.AreEqual(0, arc.StartPoint.Z);
 
-            var cbnNodeID2 = "ccf76cd8-73c3-486a-a4e2-9493c9bc1f3f";
-            var line1 = GetPreviewValue(cbnNodeID2) as Line;
-            Assert.IsNotNull(line1);
-            Assert.AreEqual(0, line1.EndPoint.X);
-            Assert.AreEqual(35, line1.EndPoint.Y);
-            Assert.AreEqual(0, line1.EndPoint.Z);
+            var cbnNodeID2 = "89f252d833e74575acbacb127c2fd303";
+            var arc1 = GetPreviewValue(cbnNodeID2) as Arc;
+            Assert.IsNotNull(arc1);
+            Assert.AreEqual(-1.8875070607700219, arc1.EndPoint.X);
+            Assert.AreEqual(30.369954957503836, arc1.EndPoint.Y);
+            Assert.AreEqual(0, arc1.EndPoint.Z);
 
         }
 
@@ -333,23 +332,19 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(201, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(151, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(157, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
             // Testing from the section "Angles in nodes or Code Block are in radians."
-            var cbnNodeID1 = "288d67b1-9d89-48bd-9dcc-15f7f443b09c";
+            var cbnNodeID1 = "ceec2673d0974245938d6a3a7abb24f4";
             var nurbsCurve = GetPreviewValue(cbnNodeID1) as NurbsCurve;
             Assert.IsNotNull(nurbsCurve);
 
-            var cbnNodeID2 = "ceec2673-d097-4245-938d-6a3a7abb24f4";
+            var cbnNodeID2 = "288d67b19d8948bd9dcc15f7f443b09c";
             var nurbsCurve1 = GetPreviewValue(cbnNodeID2) as NurbsCurve;
             Assert.IsNotNull(nurbsCurve1);
-
-            var cbnNodeID3 = "445edc7a-5bf1-4056-88aa-e503cda048a0";
-            var nurbsCurve2 = GetPreviewValue(cbnNodeID3) as NurbsCurve;
-            Assert.IsNotNull(nurbsCurve2);
 
         }
 
@@ -359,42 +354,35 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(201, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(151, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(157, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
             // Testing from the section "Different ways to approach dealing with Math functions."
-            var cbnNodeID1 = "de9ea606-0507-4a81-ad3a-8bfb0fc19e6f";
+            var cbnNodeID1 = "354a6f9e05d04370a72ba14a2c831362";
             var surface = GetPreviewValue(cbnNodeID1) as Surface;
             Assert.IsNotNull(surface);
             Assert.IsFalse(surface.Closed);
             Assert.IsFalse(surface.ClosedInU);
             Assert.IsFalse(surface.ClosedInV);
 
-            var cbnNodeID2 = "354a6f9e-05d0-4370-a72b-a14a2c831362";
+            var cbnNodeID2 = "019f2710869d4f26ac773e8332b78bb6";
             var surface1 = GetPreviewValue(cbnNodeID2) as Surface;
             Assert.IsNotNull(surface1);
             Assert.IsFalse(surface1.Closed);
             Assert.IsFalse(surface1.ClosedInU);
             Assert.IsFalse(surface1.ClosedInV);
 
-            var cbnNodeID3 = "4941b1c0-0045-4223-9aee-1b7a936c7d4a";
+            var cbnNodeID3 = "4941b1c0004542239aee1b7a936c7d4a";
             var surface2 = GetPreviewValue(cbnNodeID3) as Surface;
             Assert.IsNotNull(surface2);
             Assert.IsFalse(surface2.Closed);
             Assert.IsFalse(surface2.ClosedInU);
             Assert.IsFalse(surface2.ClosedInV);
 
-            var cbnNodeID4 = "019f2710-869d-4f26-ac77-3e8332b78bb6";
-            var surface3 = GetPreviewValue(cbnNodeID4) as Surface;
-            Assert.IsNotNull(surface3);
-            Assert.IsFalse(surface3.Closed);
-            Assert.IsFalse(surface3.ClosedInU);
-            Assert.IsFalse(surface3.ClosedInV);
-
             // All surfaces are creating in a differnet ways and involving many Math operations
-            // that is the reason I have put verification all 4 surfaces.
+            // that is the reason I have put verification all 3 surfaces.
         }
 
         [Test, Category("SmokeTests")]
@@ -460,21 +448,21 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_RangeSyntax.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(35, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(24, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(31, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(22, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
             // CBN 0..#howMany..3;
-            AssertPreviewValue("99552b5c-caf6-4ae4-85ab-9e8660643726", new int[] { 0, 3, 6, 9, 12 });
+            AssertPreviewValue("99552b5ccaf64ae485ab9e8660643726", new int[] { 0, 3, 6, 9, 12, 15, 18 });
 
-            // CBN 0..#10..2;
-            AssertPreviewValue("b00ccf43-2f2e-49fe-aa81-d072a3598834",
-                new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 });
+            // CBN 0..10..2;
+            AssertPreviewValue("2750ebb54e0b487fb2a122494fd159d8",
+                new int[] { 0, 2, 4, 6, 8, 10 });
 
             // Range Sequence Node;
-            AssertPreviewValue("8b6a80c2-5218-459a-8bf7-5a0cb5b558d6",
-                new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 });
+            AssertPreviewValue("8b6a80c25218459a8bf75a0cb5b558d6",
+                new int[] { 0, 2, 4, 6, 8, 10, 12, 14 });
 
         }
 
@@ -484,13 +472,13 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_Strings.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(32, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(37, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(53, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(56, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
             // Output from String.CountOccurrences, which is using so many String Operations.;
-            AssertPreviewValue("a93dc4ad-9f2a-4158-b994-363ce737a070", 2);
+            AssertPreviewValue("a93dc4ad9f2a4158b994363ce737a070", 2);
 
             // String.Contains;
             Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -500,7 +488,7 @@ namespace Dynamo.Tests
                 {16, true},
                 {20, true},
 			};
-            SelectivelyAssertPreviewValues("d78216bf-d28d-4b15-b605-0b6a66f603c9", validationData);
+            SelectivelyAssertPreviewValues("d78216bfd28d4b15b6050b6a66f603c9", validationData);
         }
 
         [Test, Category("SmokeTests")]
@@ -554,7 +542,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
             //Todo Ritesh: Locally passing but failing on CI.
             //After fixing issue with this test case add Smoke Test Category.
         public void ImportExport_Excel_to_Dynamo()

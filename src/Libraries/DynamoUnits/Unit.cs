@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Runtime;
+using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
 {
@@ -9,9 +10,9 @@ namespace DynamoUnits
     /// </summary>
     public class Unit
     {
-        internal readonly ForgeUnitsCLR.Unit forgeUnit;
+        internal readonly ForgeUnits.Unit forgeUnit;
 
-        internal Unit(ForgeUnitsCLR.Unit unit)
+        internal Unit(ForgeUnits.Unit unit)
         {
             this.forgeUnit = unit ?? throw new ArgumentNullException();
         }
@@ -36,7 +37,7 @@ namespace DynamoUnits
         {
             get
             {
-                Dictionary<string, ForgeUnitsCLR.Unit> units = Utilities.ForgeUnitsEngine.getConvertibleUnits(TypeId);
+                Dictionary<string, ForgeUnits.Unit> units = Utilities.ForgeUnitsEngine.getConvertibleUnits(TypeId);
                 return Utilities.ConvertForgeUnitDictionaryToCollection(units);
             }
         }
@@ -65,7 +66,7 @@ namespace DynamoUnits
             {
                 return new Unit(Utilities.ForgeUnitsEngine.getUnit(typeId));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //The exact match for the Forge TypeID failed.  Test for a fallback.  This can be either earlier or later version number.
                 if (Utilities.TryParseTypeId(typeId, out string typeName, out Version version))

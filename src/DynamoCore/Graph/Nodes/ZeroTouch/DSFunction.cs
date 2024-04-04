@@ -1,5 +1,6 @@
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Engine;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -25,6 +26,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             }
         }
 
+        [JsonProperty(Order = 5)]
         public string FunctionSignature
         {
             get
@@ -45,7 +47,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         /// <summary>
         ///     Initializes a new instance of the <see cref="DSFunction"/> class.
         /// </summary>
-        /// <param name="description">Function descritor.</param>
+        /// <param name="functionDescription">Function descritor.</param>
         public DSFunction(FunctionDescriptor functionDescription) 
             : base(new ZeroTouchNodeController<FunctionDescriptor>(functionDescription)) 
         {

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Xml;
@@ -11,6 +11,21 @@ using Newtonsoft.Json;
 
 namespace DynamoUtilities
 {
+    internal static class OSHelper
+    {
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatformGuard("windows")]
+#endif
+        public static bool IsWindows()
+        {
+#if NET6_0_OR_GREATER
+            return OperatingSystem.IsWindows();
+#else
+            return true;// net48, assuming we will no deliver net48 on anything else but windows (also no more mono builds)
+#endif
+
+        }
+    }
     public class PathHelper
     {
         private static readonly string sizeUnits = " KB";
@@ -23,6 +38,9 @@ namespace DynamoUtilities
         {
             try
             {
+                // Do not even try when folder path is null or empty.
+                // This usually happens when system folder dialog is initialized with empty path
+                if (string.IsNullOrEmpty(folderPath)) return null;
                 // When network path is access denied, the Directory.Exits however still 
                 // return true.
                 // EnumerateDirectories operation is additional check
@@ -49,6 +67,26 @@ namespace DynamoUtilities
         }
 
         /// <summary>
+        /// Utility method to get the last time a file has been modified
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static string GetDateModified(string filePath)
+        {
+            FileInfo fileInfo = new(filePath);
+
+            if (fileInfo.Exists)
+            {
+                DateTime lastModified = fileInfo.LastWriteTime;
+                return lastModified.ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
         /// Check if user has readonly privilege to the folder path.
         /// </summary>
         /// <param name="filePath">File path</param>
@@ -61,7 +99,10 @@ namespace DynamoUtilities
                 // We mark the path read only when
                 // 1. file read-only
                 // 2. user does not have write access to the folder
-                return Finfo.IsReadOnly || !HasWritePermissionOnDir(Finfo.Directory.ToString());
+
+                // We have no cross platform Directory access writes APIs.
+                bool hasWritePermissionOnDir = OSHelper.IsWindows() ? HasWritePermissionOnDir(Finfo.Directory.ToString()) : true;
+                return Finfo.IsReadOnly || !hasWritePermissionOnDir;
             }
             else
                 return false;
@@ -72,13 +113,19 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="folderPath">Folder path</param>
         /// <returns></returns>
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         public static bool HasWritePermissionOnDir(string folderPath)
         {
             try
             {
                 var writeAllow = false;
                 var writeDeny = false;
-                var accessControlList = Directory.GetAccessControl(folderPath);
+                DirectoryInfo dInfo = new DirectoryInfo(folderPath);
+                if (dInfo == null)
+                    return false;
+                var accessControlList = dInfo.GetAccessControl();
                 if (accessControlList == null)
                     return false;
                 var accessRules = accessControlList.GetAccessRules(true, true,
@@ -100,7 +147,7 @@ namespace DynamoUtilities
 
                 return writeAllow && !writeDeny;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return false;
             }
@@ -111,13 +158,20 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="folderPath">Folder path</param>
         /// <returns></returns>
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         internal static bool HasReadPermissionOnDir(string folderPath)
         {
             try
             {
                 var readAllow = false;
                 var readDeny = false;
-                var accessControlList = Directory.GetAccessControl(folderPath);
+
+                DirectoryInfo dInfo = new DirectoryInfo(folderPath);
+                if (dInfo == null)
+                    return false;
+                var accessControlList = dInfo.GetAccessControl();
                 if (accessControlList == null)
                     return false;
 
@@ -136,7 +190,7 @@ namespace DynamoUtilities
                     if (!curentUser.User.Equals(rule.IdentityReference) &&
                         !curentUser.Groups.Contains(rule.IdentityReference))
                         continue;
-                    
+
                     if (rule.AccessControlType == AccessControlType.Allow)
                         readAllow = true;
                     else if (rule.AccessControlType == AccessControlType.Deny)
@@ -156,6 +210,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="path">path to the target xml file</param>
         /// <param name="xmlDoc">System.Xml.XmlDocument representation of target xml file</param>
+        /// <param name="ex"></param>
         /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
         public static bool isValidXML(string path, out XmlDocument xmlDoc, out Exception ex)
         {
@@ -168,7 +223,7 @@ namespace DynamoUtilities
                 ex = null;
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 xmlDoc = null;
                 ex = e;
@@ -180,6 +235,7 @@ namespace DynamoUtilities
         /// This is a utility method for checking if a given string represents a valid Json document.
         /// </summary>
         /// <param name="fileContents"> string contents of target json file</param>
+        /// <param name="ex"></param>
         /// <returns>Return true if fileContents is Json, false if file is not Json, exception as out param</returns>
         public static bool isFileContentsValidJson(string fileContents, out Exception ex)
         {
@@ -189,7 +245,7 @@ namespace DynamoUtilities
                 ex = new JsonReaderException();
                 return false;
             }
-            
+
             try
             {
                 fileContents = fileContents.Trim();
@@ -199,16 +255,16 @@ namespace DynamoUtilities
                     var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
                     return true;
                 }
-                else 
+                else
                 {
                     ex = new JsonReaderException();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ex = e;
             }
-            
+
             return false;
         }
 
@@ -217,6 +273,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="path">path to the target json file</param>
         /// <param name="fileContents"> string contents of target json file</param>
+        /// <param name="ex"></param>
         /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
         public static bool isValidJson(string path, out string fileContents, out Exception ex)
         {
@@ -246,17 +303,27 @@ namespace DynamoUtilities
             return false;
         }
 
+
         /// <summary>
         /// This is a utility method for generating a default name to the snapshot image. 
         /// </summary>
         /// <param name="filePath">File path</param>
+        /// <param name="isTimeStampIncluded">Is timestamp included in file path</param>
         /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
-        public static String GetScreenCaptureNameFromPath(String filePath)
+        public static String GetScreenCaptureNameFromPath(String filePath, bool isTimeStampIncluded)
         {
             FileInfo fileInfo = new FileInfo(filePath);
-            String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
-            String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
-            return snapshotName;
+            if (isTimeStampIncluded)
+            {
+                String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
+                String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
+                return snapshotName;
+            }
+            else
+            {
+                return fileInfo.Name.Replace(fileInfo.Extension, string.Empty);
+            }
+
         }
 
         /// <summary>
@@ -278,7 +345,9 @@ namespace DynamoUtilities
         /// <summary>
         /// Checks if the file exists at the specified path and computes size.
         /// </summary>
-        /// <param name="filePath">File path</param>
+        /// <param name="path">File path</param>
+        /// <param name="fileExists"></param>
+        /// <param name="size"></param>
         /// <returns>Returns a boolean if the file exists at the path and also returns its size</returns>
         public static void FileInfoAtPath(string path, out bool fileExists, out string size)
         {
@@ -339,14 +408,18 @@ namespace DynamoUtilities
                 throw new DirectoryNotFoundException($"The input path: {directoryPath} does not exist or is not a folder");
             }
 
-            if (read && !PathHelper.HasReadPermissionOnDir(directoryPath))
+            // TODO: figure out read/write permissions for Linux
+            if (OSHelper.IsWindows())
             {
-                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
-            }
+                if (read && !PathHelper.HasReadPermissionOnDir(directoryPath))
+                {
+                    throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+                }
 
-            if (write && !PathHelper.HasWritePermissionOnDir(directoryPath))
-            {
-                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+                if (write && !PathHelper.HasWritePermissionOnDir(directoryPath))
+                {
+                    throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+                }
             }
 
             return directoryPath;
@@ -388,19 +461,19 @@ namespace DynamoUtilities
         {
             string subdirPath = FormatDirectoryPath(subdirectory);
             string directoryPath = FormatDirectoryPath(directory);
-            
+
             return subdirPath.StartsWith(directoryPath, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
-        /// Returns the path configured for package manager to retrieve packages from 
-        /// as defined inside config file
+        /// Returns the path configured for the requested service to retrieve URL resources
+        /// as defined inside the config file
         /// </summary>
         /// <param name="o">The "this" object from where the function is being called from.</param>
         /// <param name="serviceKey">Service or feature for which the address is being requested. 
         /// It should match the key specified in the config file.</param>
-        /// <returns>Path that will be used to fetch packages</returns>
-        public static string getServiceBackendAddress(object o, string serviceKey)
+        /// <returns>Path that will be used to fetch resources</returns>
+        public static string GetServiceBackendAddress(object o, string serviceKey)
         {
             string url = null;
             if (o != null)
@@ -420,6 +493,89 @@ namespace DynamoUtilities
                 }
             }
             return url;
+        }
+
+        /// <summary>
+        /// Returns the path configured for the requested service to retrieve resources value
+        /// as defined inside the config file
+        /// </summary>
+        /// <param name="o">The "this" object from where the function is being called from.</param>
+        /// <param name="serviceKey">Service or feature for which the resource is being requested. 
+        /// It should match the key specified in the config file.</param>
+        /// <returns>Value related to the key in the config file</returns>
+        public static string getServiceConfigValues(object o, string serviceKey)
+        {
+            string val = null;
+            if (o != null)
+            {
+                var path = o.GetType().Assembly.Location;
+                var config = ConfigurationManager.OpenExeConfiguration(path);
+                var key = config.AppSettings.Settings[serviceKey];
+
+                if (key != null)
+                {
+                    val = key.Value;
+                }
+            }
+            return val;
+        }
+
+        /// <summary>
+        /// Loads embedded resources such as HTML and JS files and returns the content as a string.
+        /// </summary>
+        /// <param name="resourcePath">The resource path to return.</param>
+        /// <param name="assembly">The assembly containing the resource.</param>
+        /// <returns>The embedded resource as a string.</returns>
+        public static string LoadEmbeddedResourceAsString(string resourcePath, Assembly assembly)
+        {
+            if (string.IsNullOrEmpty(resourcePath))
+                throw new ArgumentNullException(nameof(resourcePath), "The resource path cannot be null or empty.");
+
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly), "The assembly cannot be null.");
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream == null)
+                    throw new FileNotFoundException("The specified resource was not found in the assembly.", resourcePath);
+
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        /// <summary>
+        /// This function will extract the embedded font file and save it to a specified directory
+        /// </summary>
+        /// <param name="resourcePath">The location of the font resource</param>
+        /// <param name="outputPath">The temporary path to save the resource to</param>
+        /// <param name="outputFileName">The name of the temporary resource file</param>
+        /// <param name="assembly">The assembly containing the resource</param>
+        public static void ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, Assembly assembly)
+        {
+            if (string.IsNullOrEmpty(resourcePath) || string.IsNullOrEmpty(outputPath) || string.IsNullOrEmpty(outputFileName))
+                throw new ArgumentNullException($"One of the input arguments is null or empty.");
+
+            if (assembly == null)
+                throw new ArgumentNullException($"The assembly cannot be null.");
+
+            using (var stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream != null)
+                {
+                    var fontData = new byte[stream.Length];
+                    stream.Read(fontData, 0, fontData.Length);
+
+                    // Create the output directory if it doesn't exist
+                    Directory.CreateDirectory(outputPath);
+
+                    // Write the font file to the output directory
+                    var fontFilePath = Path.Combine(outputPath, outputFileName);
+                    File.WriteAllBytes(fontFilePath, fontData);
+                }
+            }
         }
     }
 }

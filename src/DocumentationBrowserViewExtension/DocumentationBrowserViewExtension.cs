@@ -1,14 +1,26 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
+using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.DocumentationBrowser.Properties;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Selection;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Interfaces;
+using DynamoProperties = Dynamo.Properties;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -16,8 +28,9 @@ namespace Dynamo.DocumentationBrowser
     /// The DocumentationBrowser view extension displays web or local html files on the Dynamo right panel.
     /// It reacts to documentation display request events in Dynamo to know what and when to display documentation.
     /// </summary>
-    public class DocumentationBrowserViewExtension : ViewExtensionBase, IViewExtension, ILogSource
+    public class DocumentationBrowserViewExtension : ViewExtensionBase, IViewExtension, ILogSource, ILayoutSpecSource
     {
+        private ViewStartupParams viewStartupParamsReference;
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem documentationBrowserMenuItem;
         private PackageManagerExtension pmExtension;
@@ -26,8 +39,11 @@ namespace Dynamo.DocumentationBrowser
         internal DirectoryInfo fallbackDocPath;
         internal DirectoryInfo webBrowserUserDataFolder;
 
+        internal Dictionary<string, string> BreadCrumbsDict { get; set; }
+
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
+        private DynamoViewModel DynamoViewModel { get; set; }
 
         /// <summary>
         /// Extension Name
@@ -58,15 +74,32 @@ namespace Dynamo.DocumentationBrowser
 
         #region IViewExtension lifecycle
 
+        private Func<LayoutSpecification> layouthandler;
+
+        // Interface implementation allowing us to subscribe to the LayoutSpecification handler 
+        public event Action<string> RequestApplyLayoutSpec;
+        // Interface implementation allowing us to subscribe to the LayoutSpecification handler 
+        public event Func<LayoutSpecification> RequestLayoutSpec
+        {
+            add { layouthandler += value; }
+            remove { layouthandler -= value; }
+        }
+
         public override void Startup(ViewStartupParams viewStartupParams)
         {
+            this.viewStartupParamsReference = viewStartupParams;
+
             pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             PackageDocumentationManager.Instance.AddDynamoPaths(viewStartupParams.PathManager);
 
             var pathManager = viewStartupParams.PathManager;
             if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
             {
-                var docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                var docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!docsDir.Exists)
+                {
+                    docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
             }
 
@@ -76,7 +109,11 @@ namespace Dynamo.DocumentationBrowser
                 //e.g. for Revit the variable HostApplicationDirectory = C:\Program Files\Autodesk\Revit 2023\AddIns\DynamoForRevit\Revit
                 //Then we need to remove the last folder from the path so we can find the fallback_docs directory.
                 var hostAppDirectory = Directory.GetParent(pathManager.HostApplicationDirectory).FullName;
-                var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!docsDir.Exists)
+                {
+                    docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
                 fallbackDocPath = docsDir.Exists ? docsDir : null;
             }
 
@@ -100,11 +137,12 @@ namespace Dynamo.DocumentationBrowser
         public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
+            this.viewLoadedParamsReference = viewLoadedParams; 
 
             this.ViewModel.MessageLogged += OnViewModelMessageLogged;
+            this.ViewModel.HandleInsertFile += OnInsertFile;
             PackageDocumentationManager.Instance.MessageLogged += OnMessageLogged;
 
-            this.viewLoadedParamsReference = viewLoadedParams; 
 
             // Add a button to Dynamo View menu to manually show the window
             this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
@@ -131,7 +169,229 @@ namespace Dynamo.DocumentationBrowser
             {
                 OnPackageLoaded(pkg);
             }
+
+            this.DynamoViewModel = (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel);
+
+            // set the viewmodel UIElement property to be used for Nodes Library manipulation
+            this.ViewModel.DynamoView = viewLoadedParams.DynamoWindow;
         }
+
+        public override void Shutdown()
+        {
+            // Do nothing for now
+        }
+
+        private void OnInsertFile(object sender, InsertDocumentationLinkEventArgs e)
+        {
+            if (e.Data.Equals(Resources.FileNotFoundFailureMessage))
+            {
+                var message = String.Format(Resources.ToastFileNotFoundLocationNotificationText, e.Name);
+                DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(message, true);
+
+                return;
+            }
+
+            if (DynamoViewModel.Model.CurrentWorkspace is HomeWorkspaceModel)
+            {
+                var homeWorkspace = DynamoViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+                if (homeWorkspace != null && homeWorkspace.RunSettings.RunType != RunType.Manual)
+                {
+                    DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Resources.ToastInsertGraphNotificationText, true);
+                    homeWorkspace.RunSettings.RunType = RunType.Manual;
+                }
+            }
+            
+            var existingGroups = GetExistingGroups();
+
+            // Insert the file and select all the elements that were inserted 
+            this.DynamoViewModel.Model.InsertFileFromPath(e.Data);
+
+            if (!DynamoSelection.Instance.Selection.Any()) return;
+
+            Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+            {
+                GroupInsertedGraph(existingGroups, e.Name);
+            });
+            //we want to wait for the new group to be inserted and actually rendered, so we add the layout command
+            //as a background priority task on the ui dispatcher.
+            Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+            {
+                // We have selected all the nodes and notes from the inserted graph
+                // Now is the time to auto layout the inserted nodes
+                this.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
+                this.DynamoViewModel.FitViewCommand.Execute(false);
+            },DispatcherPriority.Background);
+        }
+
+
+        private void GroupInsertedGraph(List<AnnotationViewModel> existingGroups, string graphName)
+        {
+            var selection = GetCurrentSelection();
+            var hostGroups = GetAllHostingGroups(existingGroups);
+
+            foreach (var group in hostGroups)
+            {
+                group.DissolveNestedGroupsCommand.Execute(null);
+            }
+
+            foreach (var group in hostGroups)
+            {
+                selection.RemoveAll(x => group.AnnotationModel.ContainsModel(x as ModelBase));
+            }
+            
+            DynamoSelection.Instance.Selection.AddRange(selection);
+            DynamoSelection.Instance.Selection.AddRange(hostGroups.Select(x => x.AnnotationModel));
+
+            // Add the inserted nodes into a group
+            var annotation = this.DynamoViewModel.Model.CurrentWorkspace.AddAnnotation(Resources.InsertedGroupSubTitle, Guid.NewGuid());
+            if (annotation != null)
+            {
+                annotation.AnnotationText = graphName;
+
+                var annotationViewModel = DynamoViewModel.CurrentSpaceViewModel.Annotations
+                        .First(x => x.AnnotationModel == annotation);
+
+                var styleItem = annotationViewModel.GroupStyleList.First(x => x.Name.Equals(DynamoProperties.Resources.GroupStyleDefaultReview));
+                var groupStyleItem = new GroupStyleItem {Name = styleItem.Name, HexColorString = styleItem.HexColorString};
+                annotationViewModel.UpdateGroupStyle(groupStyleItem);
+
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.AddRange(annotation.Nodes);
+                DynamoSelection.Instance.Selection.Add(annotation);
+
+                if (annotation.HasNestedGroups)
+                {
+                    DynamoSelection.Instance.Selection.AddRange(annotation.Nodes.OfType<AnnotationModel>().SelectMany(x => x.Nodes));
+                }
+            }
+        }
+
+        private List<AnnotationViewModel> GetAllHostingGroups(List<AnnotationViewModel> existingGroups)
+        {
+            List<AnnotationViewModel> hostGroups = new List<AnnotationViewModel>();
+
+            foreach (var group in this.DynamoViewModel.CurrentSpaceViewModel.Annotations)
+            {
+                if (existingGroups.Contains(group)) continue;
+                if (group.AnnotationModel.HasNestedGroups)
+                {
+                    hostGroups.Add(group);
+                }
+            }
+
+            return hostGroups;
+        }
+
+        /// <summary>
+        /// This method will return a reorganized version of the current selection
+        /// discarding nodes if they are in groups, selecting the group instead
+        /// </summary>
+        /// <returns></returns>
+        private List<ISelectable> GetCurrentSelection()
+        {
+            List<ISelectable> selection = new List<ISelectable>();
+
+            foreach (var selected in DynamoSelection.Instance.Selection)
+            {
+                var nodeOrGroup = SelectNodeOrGroup(selected, selection);
+                if (nodeOrGroup != null)
+                {
+                    selection.Add(nodeOrGroup);
+                }
+            }
+
+            return selection;
+        }
+
+        private ISelectable SelectNodeOrGroup(ISelectable selected, List<ISelectable> selection)
+        {
+            foreach (var group in this.DynamoViewModel.CurrentSpaceViewModel.Annotations)
+            {
+                // Check if the current selected element is part of a group
+                if (group.Nodes.Contains(selected))
+                {
+                    // If that's the case, and the group is not part of the selection set yet, add the group to the selection set
+                    if (!selection.Contains(group.AnnotationModel))
+                    {
+                        return group.AnnotationModel;
+                    }
+                    // Else (if the element is part of a group, and the group has been added already to the selection set) skip this iteration
+                    return null;
+                }
+            }
+            // if the element was not part of a group, add it to the selection set
+            return selected;
+        }
+
+        private List<AnnotationViewModel> GetExistingGroups()
+        {
+            List<AnnotationViewModel> result = new List<AnnotationViewModel>();
+
+            foreach (var group in this.DynamoViewModel.CurrentSpaceViewModel.Annotations)
+            {
+                result.Add(group);
+            }
+
+            return result;
+        }
+
+        private void RequestLoadLayoutSpecs()
+        {
+            if (BreadCrumbsDict != null) return;
+
+            var output = layouthandler?.Invoke();
+            if (output == null) return;
+
+            PopulateBreadCrumbsDictionary(output);
+        }
+
+        private void PopulateBreadCrumbsDictionary(LayoutSpecification layoutSpec)
+        {
+            BreadCrumbsDict = new Dictionary<string, string>();
+
+            if (layoutSpec == null || !layoutSpec.sections.Any())
+            {
+                return;
+            }
+            var section = layoutSpec.sections.First();
+            var breadCrumb = string.Empty;
+
+
+            if (section.childElements.Count == 0) return;
+
+            foreach (var child in section.childElements)
+            {
+                breadCrumb = child.text + " / ";
+
+                RecursiveIncludeSearch(child, breadCrumb);
+            }
+
+            this.ViewModel.BreadCrumbsDictionary = BreadCrumbsDict;
+        }
+        
+        private void RecursiveIncludeSearch(LayoutElement child, string breadCrumb)
+        {
+            string crumb = breadCrumb;
+
+            if (child.childElements.Any())
+            {
+                foreach (var grandchild in child.childElements)
+                {
+                    crumb = breadCrumb + grandchild.text + " / ";
+
+                    RecursiveIncludeSearch(grandchild, crumb);
+                }
+            }
+
+            foreach (var info in child.include)
+            {
+                var typeArray = info.path.Split('.');
+                var type = typeArray[typeArray.Length - 2] + "." + typeArray[typeArray.Length - 1];
+
+                BreadCrumbsDict[type] = crumb.Remove(crumb.Length-3);
+            }
+        }
+
 
         private void OnPackageLoaded(Package pkg)
         {
@@ -160,6 +420,7 @@ namespace Dynamo.DocumentationBrowser
             if (this.ViewModel != null)
             {
                 this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
+                this.ViewModel.HandleInsertFile -= OnInsertFile;
             }
 
             if (this.documentationBrowserMenuItem != null)
@@ -181,6 +442,8 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.pmExtension.PackageLoader.PackgeLoaded -= OnPackageLoaded;
             }
+
+            PackageDocumentationManager.Instance.MessageLogged -= OnMessageLogged;
             PackageDocumentationManager.Instance.Dispose();
         }
 
@@ -207,6 +470,9 @@ namespace Dynamo.DocumentationBrowser
             // ignore events targeting remote resources so the sidebar is not displayed
             if (args.IsRemoteResource)
                 return;
+
+            // make sure the breadcrumbs dictionary has been loaded
+            RequestLoadLayoutSpecs();
 
             // make sure the view is added to the Sidebar
             // this also forces the Sidebar to open

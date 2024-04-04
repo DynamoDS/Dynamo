@@ -1,0 +1,548 @@
+<UserControl x:Class="Dynamo.PackageManager.UI.PackageManagerPublishControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
+             mc:Ignorable="d"
+             UseLayoutRounding="True"
+             d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter" />
+            <controls:ReadyToPublishToVisibilityCollapsedConverter x:Key="ReadyToPublishToVisibilityCollapsedConverter" />            
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <SolidColorBrush x:Key="DetailsButtonBorderColorBrush" Color="#808080" Opacity="0.5"/>
+            <ControlTemplate x:Key="ComboBoxToggleButton"
+                             TargetType="{x:Type ToggleButton}">
+                <Grid Height="29px"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="20" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Background="Transparent" />
+                    <Border x:Name="Border"
+                            Grid.Column="1" />
+                    <Border Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            BorderBrush="#8F8F8F"
+                            BorderThickness="0,0,0,1" />
+                    <Rectangle x:Name="BlueUnderline"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="2"
+                               Height="1px"
+                               VerticalAlignment="Bottom" />
+                    <Path x:Name="Arrow"
+                          Grid.Column="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Data="M0,0 L3.5,4 L7,0"
+                          Fill="White" />
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="ToggleButton.IsMouseOver"
+                             Value="true">
+                        <Setter TargetName="Border"
+                                Property="Background"
+                                Value="#808080" />
+                    </Trigger>
+                    <Trigger Property="ToggleButton.IsChecked"
+                             Value="true">
+                        <Setter TargetName="Arrow"
+                                Property="Fill"
+                                Value="#6AC0E7" />
+                        <Setter TargetName="Arrow"
+                                Property="Data"
+                                Value="M0,4 L3.5,0 L7,4" />
+                        <Setter TargetName="BlueUnderline"
+                                Property="Fill"
+                                Value="#6AC0E7" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter TargetName="Border"
+                                Property="Background"
+                                Value="#EEEEEE" />
+                        <Setter TargetName="Border"
+                                Property="BorderBrush"
+                                Value="#AAAAAA" />
+                        <Setter Property="Foreground"
+                                Value="#888888" />
+                        <Setter TargetName="Arrow"
+                                Property="Fill"
+                                Value="#888888" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+            <Style x:Key="ComboBoxStyle" TargetType="{x:Type ComboBox}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+                <Setter Property="Margin" Value="-6,0,0,0" />
+                <Setter Property="Height" Value="29px" />
+                <Setter Property="Foreground" Value="#DCDCDC" />
+                <Setter Property="FontSize" Value="12px" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ComboBox}">
+                            <Grid>
+                                <ToggleButton Name="ToggleButton"
+                                              Grid.Column="2"
+                                              ClickMode="Press"
+                                              Focusable="false"
+                                              IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Template="{StaticResource ComboBoxToggleButton}" />
+                                <ContentPresenter Name="ContentSite"
+                                                  Margin="3,0,0,0"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                  IsHitTestVisible="False" />
+                                <TextBox x:Name="PART_EditableTextBox"
+                                         Margin="0,0,25,4"
+                                         Padding="3,0"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Center"
+                                         Focusable="True"
+                                         FontFamily="{StaticResource ArtifaktElementRegular}"
+                                         FontSize="10px"
+                                         Foreground="#F5F5F5"
+                                         IsReadOnly="{TemplateBinding IsReadOnly}"
+                                         Visibility="Hidden" />
+                                <Popup Name="Popup"
+                                       AllowsTransparency="True"
+                                       Focusable="False"
+                                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                                       Placement="Bottom"
+                                       PopupAnimation="Slide"
+                                       VerticalOffset="0">
+                                    <Grid Name="DropDown"
+                                          MinWidth="{TemplateBinding ActualWidth}"
+                                          MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                          SnapsToDevicePixels="True">
+                                        <Border x:Name="DropDownBorder"
+                                                Background="#666666" />
+                                        <ScrollViewer Margin="0"
+                                                      HorizontalAlignment="Stretch"
+                                                      SnapsToDevicePixels="True"
+                                                      VerticalScrollBarVisibility="Visible">
+                                            <StackPanel Margin="-5,0,0,0"
+                                                        IsItemsHost="True"
+                                                        KeyboardNavigation.DirectionalNavigation="Contained" />
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Popup>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasItems"
+                                         Value="false">
+                                    <Setter TargetName="DropDownBorder"
+                                            Property="MinHeight"
+                                            Value="95" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="false">
+                                    <Setter Property="Foreground"
+                                            Value="#888888" />
+                                </Trigger>
+                                <Trigger Property="IsGrouping"
+                                         Value="true">
+                                    <Setter Property="ScrollViewer.CanContentScroll"
+                                            Value="false" />
+                                </Trigger>
+                                <Trigger SourceName="Popup"
+                                         Property="Popup.AllowsTransparency"
+                                         Value="true">
+                                    <Setter TargetName="DropDownBorder"
+                                            Property="CornerRadius"
+                                            Value="0" />
+                                    <Setter TargetName="DropDownBorder"
+                                            Property="Margin"
+                                            Value="0,0,0,0" />
+                                </Trigger>
+                                <Trigger Property="IsEditable"
+                                         Value="true">
+                                    <Setter Property="IsTabStop"
+                                            Value="false" />
+                                    <Setter TargetName="PART_EditableTextBox"
+                                            Property="Visibility"
+                                            Value="Visible" />
+                                    <Setter TargetName="ContentSite"
+                                            Property="Visibility"
+                                            Value="Hidden" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- TabControl -->
+            <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Background" Value="{StaticResource TabItem.Selected.Background}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource TabItem.Selected.Border}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabControl}">
+                            <Grid x:Name="templateRoot" ClipToBounds="true" SnapsToDevicePixels="true" KeyboardNavigation.TabNavigation="Local">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition x:Name="ColumnDefinition0"/>
+                                    <ColumnDefinition x:Name="ColumnDefinition1" Width="0"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition x:Name="RowDefinition0" Height="Auto"/>
+                                    <RowDefinition x:Name="RowDefinition1" Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TabPanel x:Name="headerPanel" Background="Transparent" Grid.Column="0" IsItemsHost="true" Margin="0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"/>
+                                <Border x:Name="contentPanel" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
+                                    <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Border>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="TabStripPlacement" Value="Bottom">
+                                    <Setter Property="Grid.Row" TargetName="headerPanel" Value="1"/>
+                                    <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition1" Value="Auto"/>
+                                    <Setter Property="Margin" TargetName="headerPanel" Value="2,0,2,2"/>
+                                </Trigger>
+                                <Trigger Property="TabStripPlacement" Value="Left">
+                                    <Setter Property="Grid.Row" TargetName="headerPanel" Value="0"/>
+                                    <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Grid.Column" TargetName="headerPanel" Value="0"/>
+                                    <Setter Property="Grid.Column" TargetName="contentPanel" Value="1"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition1" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                                    <Setter Property="Margin" TargetName="headerPanel" Value="2,2,0,2"/>
+                                </Trigger>
+                                <Trigger Property="TabStripPlacement" Value="Right">
+                                    <Setter Property="Grid.Row" TargetName="headerPanel" Value="0"/>
+                                    <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Grid.Column" TargetName="headerPanel" Value="1"/>
+                                    <Setter Property="Grid.Column" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition0" Value="*"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition1" Value="Auto"/>
+                                    <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                                    <Setter Property="Margin" TargetName="headerPanel" Value="0,2,2,2"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <!-- TabItem -->
+            <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
+                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Foreground" Value="#F5F5F5"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontFamily" Value="{DynamicResource ArtifaktElementRegular}"/>
+                <Setter Property="UseLayoutRounding" Value="True"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border BorderThickness="{TemplateBinding BorderThickness}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    Padding="10 5"
+                                    Background="{TemplateBinding Background}">
+                                <ContentPresenter Content="{TemplateBinding Header}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#434343"/>
+                                    <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Border Name="mainBorder"
+            BorderThickness="0"
+            BorderBrush="#7E7E7E">
+
+        <Grid Name="mainGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="66px" />
+            </Grid.RowDefinitions>
+
+            <StackPanel UseLayoutRounding="True"
+                        Margin="2">
+                <ItemsControl ItemsSource="{Binding Path=Breadcrumbs, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                              Name="breadcrumbsNavigation"
+                              Visibility="Collapsed">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="/"
+                                           FontSize="12"
+                                           Margin="5,0,5,0"
+                                           Foreground="#F5F5F5">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}"
+                                                             Value="{x:Null}">
+                                                    <Setter Property="Visibility"
+                                                            Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <Button Content="{Binding}"
+                                        Tag="{Binding}"
+                                        Click="BreadcrumbButton_Click"
+                                        Foreground="#F5F5F5"
+                                        FontSize="12"
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Main navigation frame hosting the pages -->
+            <Frame x:Name="mainFrame"
+                   Grid.Row="1" 
+                   NavigationUIVisibility="Hidden"
+                   Navigated="mainFrame_Navigated"/>
+
+            <!--  Bottom Section: Publish Buttons + Status Label    -->
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"
+                       x:Name="PublishPageButtonStack"
+                       Margin="25,0">
+
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Horizontal">
+
+                    <!--  Cancel  -->
+                    <Button Click="CancelButton_Click"
+                            Content="{x:Static p:Resources.PublishPackageResetButton}"
+                            IsEnabled="{Binding HasChanges}"
+                            DockPanel.Dock="Right"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+                    
+                    <!--  Publish Online  -->
+                    <Button Command="{Binding Path=SubmitCommand}"
+                            Content="{x:Static p:Resources.PublishPackage}"
+                            x:Name="publishButton"
+                            DockPanel.Dock="Right"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+
+                    <!--  Publish Locally  -->
+                    <Button Command="{Binding Path=PublishLocallyCommand}"
+                            Content="{x:Static p:Resources.PublishPackageLocally}"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+
+                <!--  Status Label  -->
+                <Image Width="18px"
+                        Height="18px"
+                        Margin="5,0"
+                        UseLayoutRounding="True"
+                        HorizontalAlignment="Center"    
+                        VerticalAlignment="Center"
+                        Visibility="{Binding ErrorString, Converter={StaticResource ReadyToPublishToVisibilityCollapsedConverter}}"
+                        Source="/DynamoCoreWpf;component/UI/Images/checkmark_16px.png" />
+                <TextBlock Margin="0,4,0,0"
+                            VerticalAlignment="Center"
+                            x:Name="statusLabel"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource LabelStyle}"
+                            Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
+                            TextTrimming="CharacterEllipsis">
+                    <TextBlock.ToolTip>
+                        <ToolTip Content="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource GenericToolTipLight}" />
+                    </TextBlock.ToolTip>
+                </TextBlock>  
+                
+            </DockPanel>
+
+            <!-- Select --> 
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"
+                       x:Name="SelectPageButtonStack"
+                       Visibility="Collapsed"
+                       Margin="25,0">
+
+                <StackPanel DockPanel.Dock="Right"
+                        Orientation="Horizontal">
+
+                    <!--  Back to Details -->
+                    <Button Content="Back to Package Details"
+                            Tag="Back"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+
+                    <!--  Next  -->
+                    <Button Content="Next"
+                            Tag="Next"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+                
+                <TextBlock Margin="0,4,0,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource LabelStyle}"
+                            Text="{x:Static p:Resources.PublishPackageSelectPackageContentsMessage}"
+                            TextTrimming="CharacterEllipsis">
+                </TextBlock>
+
+            </DockPanel>
+
+            <!--  Preview  -->
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"
+                       x:Name="PreviewPageButtonStack"
+                       Visibility="Collapsed"
+                       Margin="25,0">
+
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Horizontal">
+
+                    <!--  Back to Selection -->
+                    <Button Content="Back to File Selection"
+                            Tag="Back"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+
+                    <!--  Finish  -->
+                    <Button Content="Finish"
+                            Tag="Finish"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+
+
+                <!--  Status Label  -->
+                <Image Width="18px"
+                        Height="18px"
+                        Margin="5,0"
+                        UseLayoutRounding="True"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Source="/DynamoCoreWpf;component/UI/Images/info.png" />
+                <TextBlock Margin="0,4,0,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource LabelStyle}"
+                            Text="{x:Static p:Resources.PublishPackagePreviewPackageContentsMessage}"
+                            TextTrimming="CharacterEllipsis">
+                </TextBlock>
+            </DockPanel>
+
+            <!--  Done  -->
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"                       
+                       x:Name="FinishPageButtonStack"
+                       Visibility="Collapsed"
+                       LastChildFill="False"
+                       Margin="25,0">
+
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Horizontal">
+                    <Button Content="Done"
+                            Tag="Done"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+            </DockPanel>
+
+        </Grid>
+    </Border>
+</UserControl>

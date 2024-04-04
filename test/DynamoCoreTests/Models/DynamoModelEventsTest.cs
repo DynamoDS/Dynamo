@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +7,6 @@ using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.Wpf.Utilities;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -87,30 +86,6 @@ namespace Dynamo.Tests.ModelsTest
             //This will validate that the local handler was executed and set the flag in true
             Assert.IsTrue(dispatcherExecuted);
             Assert.IsTrue(evaluationCompleted);
-        }
-
-       
-
-        /// <summary>
-        /// This test method will execute the event OnRequestDispatcherBeginInvoke
-        /// </summary>
-        [Test]
-        [Category("UnitTests")]
-        public void TestOnRequestMigrationStatusDialog()
-        {
-            //Arrange
-            //This will subscribe our local method to the RequestMigrationStatusDialog event
-            DynCmd.RequestMigrationStatusDialog += DynamoModel_RequestMigrationStatusDialog;
-
-            //Act
-            //This will execute the OnRequestMigrationStatusDialog() in the DynamoModelEvents class
-            DynCmd.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                SettingsMigrationEventArgs.EventStatusType.Begin));
-
-            //Assert
-            DynCmd.RequestMigrationStatusDialog -= DynamoModel_RequestMigrationStatusDialog;
-            //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(migrationStatusDialog);
         }
 
         /// <summary>
@@ -364,22 +339,18 @@ namespace Dynamo.Tests.ModelsTest
             //Arrange
             //This will subscribe our local method to the RequestsCrashPrompt event
             CurrentDynamoModel.RequestsCrashPrompt += CurrentDynamoModel_RequestsCrashPrompt;
-            var crashArgs = new Dynamo.Core.CrashPromptArgs("Crash Event", "Test Message");
 
             var e = new Exception("Test");
             var cerArgs = new Dynamo.Core.CrashErrorReportArgs(e);
-            var cArgs = new Dynamo.Core.CrashPromptArgs(e);
 
             //Act
-            CurrentDynamoModel.OnRequestsCrashPrompt(null, cerArgs);
-            CurrentDynamoModel.OnRequestsCrashPrompt(null, cArgs);
-            CurrentDynamoModel.OnRequestsCrashPrompt(this, crashArgs);
+            CurrentDynamoModel.OnRequestsCrashPrompt(cerArgs);
 
             //Assert
             //Unsubcribe from event
             CurrentDynamoModel.RequestsCrashPrompt -= CurrentDynamoModel_RequestsCrashPrompt;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.AreEqual(3, requestsCrashPrompt);
+            Assert.AreEqual(1, requestsCrashPrompt);
         }
 
      
@@ -546,11 +517,6 @@ namespace Dynamo.Tests.ModelsTest
         private void Model_RequestLayoutUpdate(object sender, EventArgs e)
         {
             layoutUpdate = true;
-        }
-
-        private void DynamoModel_RequestMigrationStatusDialog(SettingsMigrationEventArgs args)
-        {
-            migrationStatusDialog = true;
         }
 
         private void DynamoModel_RequestDispatcherBeginInvoke(Action action)

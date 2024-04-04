@@ -95,9 +95,9 @@ namespace Watch3DNodeModels
     [OutPortTypes("var")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview", "Dynamo.Nodes.Watch3D", "DynamoWatch3D.Watch3D")]
     [IsDesignScriptCompatible]
-    public class Watch3D : NodeModel
+    public class Watch3D : VariableInputNode
     {
-        // If the view model, which maintains the camera, 
+        // If the view model, which maintains the camera,
         // is not created until the view customization is applied,
         // as in the case of a Watch3D node,
         // we cache the camera position data returned from the file
@@ -122,8 +122,8 @@ namespace Watch3DNodeModels
             }
         }
 
-        public double WatchWidth { get; private set; }
-        public double WatchHeight { get; private set; }
+        public double WatchWidth { get; set; }
+        public double WatchHeight { get; set; }
         public bool WasExecuted { get; internal set; }
 
         public delegate void VoidHandler();
@@ -134,10 +134,7 @@ namespace Watch3DNodeModels
         private Watch3D(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            WatchWidth = 200;
-            WatchHeight = 200;
             ShouldDisplayPreviewCore = false;
-            Camera = new Watch3DCamera();
         }
 
         public Watch3D()
@@ -174,34 +171,10 @@ namespace Watch3DNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (IsPartiallyApplied)
+            return new[]
             {
-                return new[]
-                {
-                    AstFactory.BuildAssignment(
-                        GetAstIdentifierForOutputIndex(0),
-                        AstFactory.BuildFunctionObject(
-                            new IdentifierListNode
-                            {
-                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
-                                RightNode = AstFactory.BuildIdentifier("BridgeData")
-                            },
-                            2,
-                            new[] { 0 },
-                            new List<AssociativeNode>
-                            {
-                                AstFactory.BuildStringNode(GUID.ToString()),
-                                AstFactory.BuildNullNode()
-                            }))
-                };
-            }
-
-            var resultAst = new[]
-            {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildExprList(inputAstNodes))
             };
-
-            return resultAst;
         }
 
         #endregion
@@ -211,7 +184,7 @@ namespace Watch3DNodeModels
         public Watch3DCamera Camera
         {
             get;
-            private set;
+            set;
         }
 
         #endregion
@@ -244,14 +217,14 @@ namespace Watch3DNodeModels
                     WatchWidth = Convert.ToDouble(node.Attributes["width"].Value, CultureInfo.InvariantCulture);
                     WatchHeight = Convert.ToDouble(node.Attributes["height"].Value, CultureInfo.InvariantCulture);
 
-                    // Cache the data if we're using a node view customization 
+                    // Cache the data if we're using a node view customization
                     // to create the view model.
                     initialCameraData = node;
 
                     // Trigger the event, in case the view model already exists
                     OnDeserialized(node);
 
-                    // Deserialized can be null, when we are running on Unix. There is no WPF 
+                    // Deserialized can be null, when we are running on Unix. There is no WPF
                     // and that's why no Helix. But we still have to process camera position to use it in Flood.
                     if (Deserialized == null)
                     {
@@ -267,7 +240,7 @@ namespace Watch3DNodeModels
         }
 
         /// <summary>
-        /// Deserializes camera from XML, if there is no any Deserialized action. 
+        /// Deserializes camera from XML, if there is no any Deserialized action.
         /// It's used for creation of camera, that will be sent to Flood.
         /// </summary>
         private void DeserializeCamera()
@@ -312,6 +285,24 @@ namespace Watch3DNodeModels
         {
             // No visualization update is required for this node type.
             return false;
+        }
+
+        protected override string GetInputTooltip(int index)
+        {
+            return Resources.Watch3DPortDataInputToolTip;
+        }
+
+        protected override string GetInputName(int index)
+        {
+            return string.Empty;
+        }
+
+        protected override void RemoveInput()
+        {
+            if (InPorts.Count > 1)
+            {
+                base.RemoveInput();
+            }
         }
     }
 }

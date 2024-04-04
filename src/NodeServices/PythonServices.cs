@@ -1,27 +1,16 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.PythonServices.EventHandlers;
 
-namespace PythonNodeModels
-{
-    /// <summary>
-    /// Enum of possible values of python engine versions.
-    /// </summary>
-    [Obsolete("This Enum will be remove in Dynamo 3.0")]
-    public enum PythonEngineVersion
-    {
-        Unspecified,
-        IronPython2,
-        CPython3
-    }
-}
 
 namespace Dynamo.PythonServices.EventHandlers
 {
@@ -43,17 +32,19 @@ namespace Dynamo.PythonServices.EventHandlers
 
 namespace Dynamo.PythonServices
 {
-    [SupressImportIntoVM]
     /// <summary>
     /// Enum of possible python evaluation states.
     /// </summary>
+    [SupressImportIntoVM]
     public enum EvaluationState { Success, Failed }
 
+    /// <summary>
+    /// This abstract class is intended to act as a base class for different python engines.
+    /// When you derive from this class to implement a new python engine, ensure all referenced assemblies from the
+    /// assembly that contains your python engine type are loadable at runtime or Dynamo will not load your python engine type.
+    /// </summary>
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
-    /// <summary>
-    /// This abstract class is intended to act as a base class for different python engines
-    /// </summary>
     public abstract class PythonEngine
     {
         /// <summary>
@@ -83,13 +74,11 @@ namespace Dynamo.PythonServices
         /// <summary>
         /// Add an event handler before the Python evaluation begins
         /// </summary>
-        /// <param name="callback"></param>
         public abstract event EvaluationStartedEventHandler EvaluationStarted;
 
         /// <summary>
         /// Add an event handler after the Python evaluation has finished
         /// </summary>
-        /// <param name="callback"></param>
         public abstract event EvaluationFinishedEventHandler EvaluationFinished;
 
         /// <summary>
@@ -119,6 +108,9 @@ namespace Dynamo.PythonServices
             new Lazy<PythonEngineManager>
             (() => new PythonEngineManager());
 
+        private readonly string[] dotNetRuntimePaths;
+        private readonly IEnumerable<string> dynCorePaths;
+
         #region Public members
         /// <summary>
         /// The actual instance stored in the Singleton class
@@ -126,9 +118,11 @@ namespace Dynamo.PythonServices
         public static PythonEngineManager Instance { get { return lazy.Value; } }
         #endregion
 
+        //TODO see DYN-6550 when hiding/replacing this obsolete field.
         /// <summary>
         /// An observable collection of all the loaded Python engines
         /// </summary>
+        [Obsolete("AvailableEngines field will be replaced in a future Dynamo release.")]
         public ObservableCollection<PythonEngine> AvailableEngines;
 
         #region Constant strings
@@ -142,7 +136,6 @@ namespace Dynamo.PythonServices
         /// IronPython2 Engine name
         /// </summary>
         internal static readonly string IronPython2EngineName = "IronPython2";
-
         internal static string PythonEvaluatorSingletonInstance = "Instance";
 
         internal static string IronPythonEvaluatorClass = "IronPythonEvaluator";
@@ -169,6 +162,9 @@ namespace Dynamo.PythonServices
         /// </summary>
         private PythonEngineManager()
         {
+            dotNetRuntimePaths = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+            dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
+
             AvailableEngines = new ObservableCollection<PythonEngine>();
 
             // We check only for the default python engine because it is the only one loaded by static references.
@@ -197,9 +193,9 @@ namespace Dynamo.PythonServices
             }
         }
 
-        private PythonEngine GetEngine(string version)
+        private PythonEngine GetEngine(string name)
         {
-            return AvailableEngines.FirstOrDefault(x => x.Name == version);
+            return AvailableEngines.FirstOrDefault(x => x.Name == name);
         }
 
         // This method can throw exceptions.
@@ -218,7 +214,6 @@ namespace Dynamo.PythonServices
             {
                 return;
             }
-
             // Currently we are using try-catch to validate loaded assembly and Singleton Instance method exist
             // but we can optimize by checking all loaded types against evaluators interface later
             try
@@ -233,25 +228,60 @@ namespace Dynamo.PythonServices
                     instanceProp = eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static);
                     if (instanceProp == null) return;
                 }
-                catch {
+                catch
+                {
                     // Ignore exceptions from iterating assembly types.
                     return;
                 }
 
                 PythonEngine engine = (PythonEngine)instanceProp.GetValue(null);
-                if (engine == null) 
+                if (engine == null)
                 {
                     throw new Exception($"Could not get a valid PythonEngine instance by calling the {eType.Name}.{PythonEvaluatorSingletonInstance} method");
                 }
+
+                VerifyEngineReferences(assembly,dotNetRuntimePaths.Concat(dynCorePaths));
 
                 if (GetEngine(engine.Name) == null)
                 {
                     AvailableEngines.Add(engine);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception($"Failed to add a Python engine from assembly {assembly.GetName().Name}.dll with error: {ex.Message}");
+            }
+        }
+        /// <summary>
+        /// Attempts to verify that the dependencies of the given assembly can be found and loaded into an MetadataLoadContext.
+        /// Will throw exceptions if assemblies cannot be loaded.
+        /// Used to avoid loading python engines that can only be partially loaded and will fail later at a worse time.
+        /// </summary>
+        /// <param name="assembly">assembly to check references</param>
+        /// <param name="standardPaths">standard set of assembly paths that will be used to resolve the assemblt references</param>
+        private static void VerifyEngineReferences(Assembly assembly, IEnumerable<string> standardPaths)
+        {
+            MetadataLoadContext mlc = null;
+            //get assembly paths in the same directory tree as the assembly we're verifying.
+            var localAssemPaths = new FileInfo(assembly.Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
+
+            // Create PathAssemblyResolver that can resolve assemblies using the list of paths.
+            var resolver = new PathAssemblyResolver(standardPaths.Concat(localAssemPaths));
+            mlc = new MetadataLoadContext(resolver);
+
+            //at this point we have found an assembly that contains a python engine
+            //and is correctly formed, let's see if we can load its dependencies in the mlc
+            //this will help test that it will not fail to load later outside of a try / catch for example.
+            try
+            {
+                foreach (var asm in assembly.GetReferencedAssemblies())
+                {
+                    var mlcasm = mlc.LoadFromAssemblyName(asm);
+                }
+            }
+            finally
+            {
+                mlc?.Dispose();
             }
         }
     }
@@ -319,10 +349,8 @@ namespace Dynamo.PythonServices
         internal static readonly string atLeastOneSpaceRegex = @"(\s+)";
         internal static readonly string dictRegex = "({.*})";
         internal static readonly string basicImportRegex = @"(import)";
-        internal static readonly string fromImportRegex = @"^(from)"; internal static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
-        internal static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        internal static readonly string fromImportRegex = @"^(from)";
         internal static string arrayRegex = "(\\[.*\\])";
-        internal static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
         internal static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
         internal static string intRegex = @"([-+]?\d+)[\s\n]*$";
         internal const string quotesStringRegex = "[\"']([^\"']*)[\"']";
@@ -706,7 +734,7 @@ namespace Dynamo.PythonServices
                     var type = Type.GetType(typeName);
                     ImportedTypes.Add(name, type);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     LogError(String.Format("Failed to load module: {0}, with statement: {1}", memberName, statement));
                     // Log(e.ToString());
@@ -1020,7 +1048,6 @@ namespace Dynamo.PythonServices
         /// the given regex
         /// </summary>
         /// <param name="code">The code to search</param>
-        /// <param name="valueRegex">Your regex to match the type</param>
         /// <returns>A dictionary of name to assignment line pairs</returns>
         internal Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
         {

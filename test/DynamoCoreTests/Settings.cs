@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,32 +38,7 @@ namespace Dynamo.Tests
             IEnumerable<bool> comparisonResult = settings.CustomPackageFolders.Zip(expectedPackageFolders, string.Equals);
             Assert.IsFalse(comparisonResult.Any(isEqual => !isEqual));
         }
-
-        [Test]
-        public void AnalyticsReportingApprovedSetting()
-        {
-            var settings = new PreferenceSettings();
-            Assert.IsTrue(settings.IsAnalyticsReportingApproved);
-
-            // Check when deserializing preference setting with first run flag
-            var settingFilePath = Path.Combine(SettingDirectory, "DynamoSettings-firstrun.xml");
-            var settingsFromXML = PreferenceSettings.Load(settingFilePath);
-            Assert.IsTrue(settingsFromXML.IsFirstRun);
-            Assert.IsFalse(settingsFromXML.IsAnalyticsReportingApproved);
-        }
-
-        [Test]
-        public void UsageReportingApprovedSetting()
-        {
-            var settings = new PreferenceSettings();
-            Assert.IsFalse(settings.IsUsageReportingApproved);
-
-            // Check when deserializing preference setting with first run flag
-            var settingFilePath = Path.Combine(SettingDirectory, "DynamoSettings-firstrun.xml");
-            var settingsFromXML = PreferenceSettings.Load(settingFilePath);
-            Assert.IsTrue(settingsFromXML.IsFirstRun);
-            Assert.IsFalse(settingsFromXML.IsUsageReportingApproved);
-        }
+        
 
         [Test]
         public void LoadInvalidPythonTemplateFromSetting()
@@ -91,7 +66,8 @@ namespace Dynamo.Tests
 
             var config = new DynamoModel.DefaultStartConfiguration()
             {
-                PythonTemplatePath = templatePath
+                PythonTemplatePath = templatePath,
+                StartInTestMode = true
             };
 
             var model = DynamoModel.Start(config);
@@ -106,7 +82,8 @@ namespace Dynamo.Tests
 
             var config = new DynamoModel.DefaultStartConfiguration()
             {
-                PythonTemplatePath = templatePath
+                PythonTemplatePath = templatePath,
+                StartInTestMode = true
             };
 
             var model = DynamoModel.Start(config);

@@ -19,7 +19,7 @@ namespace Dynamo.Notifications.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -115,11 +115,47 @@ namespace Dynamo.Notifications.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You currently have no notifications. New notifications will appear above.
+        /// </summary>
+        public static string NoNotificationsMsg {
+            get {
+                return ResourceManager.GetString("NoNotificationsMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No notifications.
+        /// </summary>
+        public static string NoNotificationsTitle {
+            get {
+                return ResourceManager.GetString("NoNotificationsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notification Center feature is disabled. Enable it in preference panel to see latest news..
         /// </summary>
         public static string NotificationCenterDisabledMsg {
             get {
                 return ResourceManager.GetString("NotificationCenterDisabledMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark all as read.
+        /// </summary>
+        public static string NotificationsCenterBottomButtonText {
+            get {
+                return ResourceManager.GetString("NotificationsCenterBottomButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string NotificationsCenterTitle {
+            get {
+                return ResourceManager.GetString("NotificationsCenterTitle", resourceCulture);
             }
         }
     }

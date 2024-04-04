@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Runtime;
+using DynamoServices;
 
 namespace DesignScript
 {
@@ -11,11 +12,56 @@ namespace DesignScript
     {
         public class Dictionary
         {
+            private class CustomKeyComparer : IEqualityComparer<string>
+            {
+                public bool Equals(string x, string y)
+                {
+                    return string.Equals(x, y);
+                }
+
+                /// <summary>
+                /// This code has been copied from String.GetHashCode() for .NET framework 4.8, which uses a
+                /// deterministic hashing algorithm. More specifically, this is the String.GetLegacyNonRandomizedHashCode()
+                /// function found here: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html
+                /// </summary>
+                /// <param name="obj"></param>
+                /// <returns></returns>
+                public int GetHashCode(string obj)
+                {
+                    unsafe
+                    {
+                        fixed (char* src = obj)
+                        {
+                            Validity.Assert(src[obj.Length] == '\0', "src[this.Length] == '\\0'");
+                            Validity.Assert(((int)src) % 4 == 0, "Managed string should start at 4 bytes boundary");
+
+
+                            int hash1 = 5381;
+                            int hash2 = hash1;
+
+                            int c;
+                            char* s = src;
+                            while ((c = s[0]) != 0)
+                            {
+                                hash1 = ((hash1 << 5) + hash1) ^ c;
+                                c = s[1];
+                                if (c == 0)
+                                    break;
+                                hash2 = ((hash2 << 5) + hash2) ^ c;
+                                s += 2;
+                            }
+
+                            return hash1 + (hash2 * 1566083941);
+                        }
+                    }
+                }
+            }
+
             private readonly ImmutableDictionary<string, object> D;
 
             private Dictionary(ImmutableDictionary<string, object> dict)
             {
-                this.D = dict;
+                D = dict.WithComparers(new CustomKeyComparer());
             }
 
             /// <summary>
@@ -62,7 +108,7 @@ namespace DesignScript
             public IEnumerable<object> Values
             {
                 [return: ArbitraryDimensionArrayImport]
-                get { return D.Values; }
+                get => D.Values;
             }
 
             /// <summary>
@@ -129,6 +175,7 @@ namespace DesignScript
                 result.Append("}");
                 return result.ToString();
             }
+
         }
     }
 }
