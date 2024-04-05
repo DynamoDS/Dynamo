@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Controls;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -637,6 +638,42 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(outPort_With_Function.ValueMarkerWidth, outPort_With_Function.ValueMarkerWidthWithFunction);
             Assert.AreEqual(outPort_Without_Function.ValueMarkerWidth, outPort_Without_Function.ValueMarkerWidthWithoutFunction);
+        }
+
+        /// <summary>
+        /// Assert that connector pins are included in selection from SelectNeighbors()
+        /// </summary>
+        [Test]
+        public void TestSelectNeighborPins()
+        {
+            //Open and run the workspace
+            Open(@"core\ConnectorPinSelectionTest.dyn");
+
+            // Clear the selection to ensure a clean state
+            DynamoSelection.Instance.ClearSelection();
+
+            //Select the node 
+            var nodeView = NodeViewWithGuid("10134271-f43a-49a7-b043-755f874f9873"); 
+
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+            WorkspaceModel ws = nodeViewModel.DynamoViewModel.CurrentSpace;
+
+            // Check if connectors are in the model
+            var allConnectors = ws.Connectors;
+
+            DynamoSelection.Instance.Selection.Add(nodeViewModel.NodeModel);
+
+            var countBefore = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(1, countBefore);
+
+            //Run the method and assert whether more nodes were selected
+            nodeViewModel.NodeModel.SelectNeighbors();
+
+            var modelsSelected = DynamoSelection.Instance.Selection.Select(s => s as ModelBase);
+            var guids = modelsSelected.Select(n => n.GUID.ToString()).ToArray();
+            var countAfter = modelsSelected.Count();
+
+            Assert.AreEqual(5, countAfter);
         }
     }
 }

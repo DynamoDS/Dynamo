@@ -1,0 +1,217 @@
+{
+  "Uuid": "2823733d-5ffb-4e1d-aff3-6af1a2c17c37",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ConnectorPinSelectionTest",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "10134271f43a49a7b043755f874f9873",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "2c8ebdcc6a9149ec816c3dab4eb10348",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "115ec06429ea47f1ae4331029b8d6cea",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5380a21aafe84a1387cd14ac6505d1b2",
+          "Name": "number",
+          "Description": "The product of the two input numbers",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "*@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "2fa7d900ffc0450b86d09c56b08517be",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5eccf8526353437c925db2b46e8230ed",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 10.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 42.0,
+      "WatchHeight": 200.0,
+      "Id": "510709bee031484f89e7589e4b9fd54f",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "b5f7fea657a048e7a23e655755c4dfec",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6dd47f23c9964cdf896106fba1da8503",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5380a21aafe84a1387cd14ac6505d1b2",
+      "End": "b5f7fea657a048e7a23e655755c4dfec",
+      "Id": "a4b8a830c441434c8f70907f3823a091",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5eccf8526353437c925db2b46e8230ed",
+      "End": "2c8ebdcc6a9149ec816c3dab4eb10348",
+      "Id": "cb32b55a2ee54eff9b09fa6a9ee63300",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5eccf8526353437c925db2b46e8230ed",
+      "End": "115ec06429ea47f1ae4331029b8d6cea",
+      "Id": "8081d5df276448e1b63686efad4b4c60",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.1",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.1.0.3411",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -13.922417640686035,
+      "EyeY": 87.18775939941406,
+      "EyeZ": 36.473995208740234,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [
+      {
+        "Left": 1057.3020662393644,
+        "Top": 87.31457626454403,
+        "IsHidden": false,
+        "ConnectorGuid": "cb32b55a-2ee5-4eff-9b09-fa6a9ee63300"
+      },
+      {
+        "Left": 1336.5231266095495,
+        "Top": 72.23193132217816,
+        "IsHidden": false,
+        "ConnectorGuid": "a4b8a830-c441-434c-8f70-907f3823a091"
+      }
+    ],
+    "NodeViews": [
+      {
+        "Id": "10134271f43a49a7b043755f874f9873",
+        "Name": "*",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1140.6626510300075,
+        "Y": 215.0428486772912
+      },
+      {
+        "Id": "2fa7d900ffc0450b86d09c56b08517be",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 877.016465530963,
+        "Y": 251.62246472828656
+      },
+      {
+        "Id": "510709bee031484f89e7589e4b9fd54f",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1404.6648819295979,
+        "Y": 215.24077605618527
+      }
+    ],
+    "Annotations": [],
+    "X": -689.9819534658063,
+    "Y": 62.7540063392772,
+    "Zoom": 0.8785307573780549
+  }
+}
