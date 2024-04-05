@@ -157,6 +157,7 @@ namespace Dynamo.UI.Views
                 this.dynWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 this.dynWebView.CoreWebView2.Settings.IsZoomControlEnabled = false;
                 this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
+                this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
                 // Load the embeded resources
                 var assembly = Assembly.GetExecutingAssembly();
@@ -198,6 +199,39 @@ namespace Dynamo.UI.Views
             {
                 this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
             }
+        }
+
+        private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            e.Handled = true;
+            ProcessUri(e.Uri);
+        }
+
+        internal bool ProcessUri(string uri)
+        {
+            if (string.IsNullOrWhiteSpace(uri)) return false;
+
+            Uri fileUri;
+            try
+            {
+                fileUri = new Uri(uri);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            if (fileUri.IsFile)
+            {
+                var filePath = fileUri.LocalPath;
+                if (filePath.EndsWith(".dyn") || filePath.EndsWith(".dyf"))
+                {
+                    OpenFile(filePath);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         internal async void LoadingDone()   
@@ -443,6 +477,7 @@ namespace Dynamo.UI.Views
             DataContextChanged -= OnDataContextChanged;
             if(startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
 
+            this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
 
             if (File.Exists(fontFilePath))
             {
@@ -450,6 +485,7 @@ namespace Dynamo.UI.Views
             }
         }
         #endregion
+
     }
 
 

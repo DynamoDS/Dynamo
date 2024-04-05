@@ -2642,7 +2642,7 @@ Dynamo.ViewModels.PreferencesViewModel.BackupIntervalInMinutes.set -> void
 Dynamo.ViewModels.PreferencesViewModel.BackupLocation.get -> string
 Dynamo.ViewModels.PreferencesViewModel.BackupLocation.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CanResetBackupLocation.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.CanResetBackupLocation.set -> void
+Dynamo.ViewModels.PreferencesViewModel.CanResetTemplateLocation.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CurrentWarningMessage.get -> string
@@ -2753,6 +2753,8 @@ Dynamo.ViewModels.PreferencesViewModel.StaticSplashScreenEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.StaticSplashScreenEnabled.set -> void
 Dynamo.ViewModels.PreferencesViewModel.StyleItemsList.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Configuration.GroupStyleItem>
 Dynamo.ViewModels.PreferencesViewModel.StyleItemsList.set -> void
+Dynamo.ViewModels.PreferencesViewModel.TemplateLocation.get -> string
+Dynamo.ViewModels.PreferencesViewModel.TemplateLocation.set -> void
 Dynamo.ViewModels.PreferencesViewModel.TessellationDivisions.get -> int
 Dynamo.ViewModels.PreferencesViewModel.TessellationDivisions.set -> void
 Dynamo.ViewModels.PreferencesViewModel.TrustedPathsViewModel.get -> Dynamo.ViewModels.TrustedPathViewModel
@@ -5121,10 +5123,16 @@ static Dynamo.Wpf.Properties.Resources.PreferencesSettingDefaultBackupLocation.g
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingHardwareAcceleration.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingMaxRecentFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingResetBackupLocationTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingResetTemplateLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupFailedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupFailedTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupLocationDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateLocationDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingTemplateLocationLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateBackupLocationTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateTemplateLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnits.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnitsToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewAlreadyExistingStyleWarning.get -> string
@@ -5147,6 +5155,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewFontSizeLabel.get -> strin
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsBackup.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsGeoScaling.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsRun.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string

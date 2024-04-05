@@ -133,6 +133,10 @@ namespace Dynamo.Interfaces
         /// Return full path to the Python (.py) file to use as a starting template when creating a new PythonScript Node.
         /// </summary>
         string PythonTemplateFilePath { get; set; }
+        /// <summary>
+        /// Return full path of the template directory with template file(s) to use as a starting template when creating a new graph from a template.
+        /// </summary>
+        string TemplateFilePath { get; set; }
 
         /// <summary>
         /// Returns active state of specified background preview 
@@ -148,6 +152,7 @@ namespace Dynamo.Interfaces
         /// <param name="value">Active state to set</param>
         void SetIsBackgroundPreviewActive(string name, bool value);
 
+        [Obsolete("This property is not needed anymore in the preference settings and can be removed in a future version of Dynamo.")]
         /// <summary>
         /// Return a list of GraphChecksumItems
         /// </summary>

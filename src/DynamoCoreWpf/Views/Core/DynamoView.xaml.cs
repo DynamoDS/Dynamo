@@ -1394,7 +1394,7 @@ namespace Dynamo.Controls
         // Add the HomePage to the DynamoView once its loaded
         private void LoadHomePage()
         {
-            if (homePage == null && startPage != null)
+            if (homePage == null && (startPage != null))
             {
                 homePage = new UI.Views.HomePage();
                 homePage.DataContext = startPage;
