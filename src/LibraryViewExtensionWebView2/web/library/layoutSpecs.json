@@ -1484,6 +1484,10 @@
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurface",
                   "inclusive": false
+                },
+                {
+                  "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition",
+                  "inclusive": true
                 }
               ],
               "childElements": []
