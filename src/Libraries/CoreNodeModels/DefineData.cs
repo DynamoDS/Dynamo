@@ -117,6 +117,18 @@ namespace CoreNodeModels
         public DefineData() : base(">")
         {
             PropertyChanged += OnPropertyChanged;
+
+            //Items.Add(new DynamoDropDownItem("Select a type", null));
+
+            foreach (var dataType in Data.DataNodeDynamoTypeList)
+            {
+                var displayName = dataType.Name;
+                var value = dataType;
+
+                Items.Add(new DynamoDropDownItem(displayName, value));
+            }
+
+            SelectedIndex = 0;
         }
 
         [JsonConstructor]
