@@ -84,8 +84,11 @@ namespace CoreNodeModels
             get { return displayValue; }
             set
             {
-                displayValue = value;
-                RaisePropertyChanged(nameof(DisplayValue));
+                if (displayValue != value)
+                {
+                    displayValue = value;
+                    RaisePropertyChanged(nameof(DisplayValue));
+                }
             }
         }
 
@@ -239,8 +242,13 @@ namespace CoreNodeModels
                     var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
                     SelectedIndex = index;
                 }
-                // Assign the current
-                DisplayValue = resultData.InputType.Name;
+            }
+
+            if (resultData.InputType != null)
+            {
+                // Assign the current type
+                if (!DisplayValue.Equals(resultData.InputType.Name))
+                    DisplayValue = resultData.InputType.Name;
             }
         }
 
@@ -249,7 +257,7 @@ namespace CoreNodeModels
         {
             Items.Clear();
 
-            foreach (var dataType in Data.GetDataNodeDynamoTypeList())
+            foreach (var dataType in Data.DataNodeDynamoTypeList)
             {
                 var displayName = dataType.Name;
                 var value = dataType;
