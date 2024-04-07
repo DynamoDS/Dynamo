@@ -94,11 +94,14 @@ namespace Dynamo.UI.Views
             GuidedTourItems = new List<GuidedTourItem>
             {
                 new GuidedTourItem(Wpf.Properties.Resources.GetStartedGuide.TrimStart('_'),
-                    Wpf.Properties.Resources.GetStartedGuideDescription, GuidedTourType.UserInterface.ToString()),
+                    Wpf.Properties.Resources.GetStartedGuideDescription, GuidedTourType.UserInterface.ToString(),
+                    Wpf.Properties.Resources.HomePageInteractiveGuideGettingStartedImg),
                 new GuidedTourItem(Wpf.Properties.Resources.OnboardingGuide.TrimStart('_'),
-                    Wpf.Properties.Resources.OnboardingGuideDescription, GuidedTourType.GetStarted.ToString()),
+                    Wpf.Properties.Resources.OnboardingGuideDescription, GuidedTourType.GetStarted.ToString(),
+                    Wpf.Properties.Resources.HomePageInteractiveGuideUITourImg),
                 new GuidedTourItem(Wpf.Properties.Resources.PackagesGuide.TrimStart('_'),
-                    Wpf.Properties.Resources.PackagesGuideDescription, GuidedTourType.Packages.ToString())
+                    Wpf.Properties.Resources.PackagesGuideDescription, GuidedTourType.Packages.ToString(),
+                    Wpf.Properties.Resources.HomePageInteractiveGuidePackagesTourImg)
             };
         }
 
@@ -585,12 +588,14 @@ namespace Dynamo.UI.Views
         public string Name { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
+        public string Thumbnail { get; set; }
 
-        public GuidedTourItem(string name, string description, string type)
+        public GuidedTourItem(string name, string description, string type, string thumbnail)
         {
             Name = name;
             Description = description;
             Type = type;
+            Thumbnail = thumbnail;
         }
     }
 }

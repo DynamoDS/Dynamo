@@ -1550,7 +1550,7 @@ Dynamo.UI.Views.AboutWindow.InstallNewUpdate.get -> bool
 Dynamo.UI.Views.GuidedTourItem
 Dynamo.UI.Views.GuidedTourItem.Description.get -> string
 Dynamo.UI.Views.GuidedTourItem.Description.set -> void
-Dynamo.UI.Views.GuidedTourItem.GuidedTourItem(string name, string description, string type) -> void
+Dynamo.UI.Views.GuidedTourItem.GuidedTourItem(string name, string description, string type, string thumbnail) -> void
 Dynamo.UI.Views.GuidedTourItem.Name.get -> string
 Dynamo.UI.Views.GuidedTourItem.Name.set -> void
 Dynamo.UI.Views.GuidedTourItem.Type.get -> string
