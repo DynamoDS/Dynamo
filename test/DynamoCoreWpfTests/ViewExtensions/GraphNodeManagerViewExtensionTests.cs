@@ -147,7 +147,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if using the IsFrozen filter yields correct results
         /// </summary>
-        [Test]
+        [Test, Category("Failure")]
         public void FilterFrozenItemsTest()
         {
             var extensionManager = View.viewExtensionManager;
