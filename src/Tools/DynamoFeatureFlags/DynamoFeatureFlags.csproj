@@ -9,6 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
+      
+    <!--Need version >= 1.0.2 of LaunchDarkly.Logging to fix jira task DYN-6777, missing timestamp-->
+    <!--Remove LaunchDarkly.Logging once LaunchDarkly.ClientSdk is upgraded-->
+    <PackageReference Include="LaunchDarkly.Logging" Version="1.0.2" />
     <PackageReference Include="LaunchDarkly.ClientSdk" Version="2.0.1">
     </PackageReference>
   </ItemGroup>
