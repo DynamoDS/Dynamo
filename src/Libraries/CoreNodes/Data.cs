@@ -532,7 +532,7 @@ namespace DSCore
         internal static DynamoLogger dynamoLogger = ExecutionEvents.ActiveSession?.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
         #endregion
 
-        #region Input Output Node
+        #region DefineData Node
 
         /// <summary>
         /// A class representing a DataType supported by Dynamo
@@ -671,6 +671,11 @@ namespace DSCore
                 };
             }
 
+            if (!IsSingleValueOrSingleLevelArrayList(inputValue))
+            {
+                throw new NotSupportedException(Properties.Resources.DefineDataSupportedInputValueExceptionMessage);
+            }
+
             // If the playerValue is not empty, then we assume it was set by the player.
             // In that case, we need to parse it to get the actual value replace the inputValue.
             if (!string.IsNullOrEmpty(playerValue))
@@ -679,7 +684,7 @@ namespace DSCore
                 {
                     inputValue = ParseJSON(playerValue);
                 }
-                catch (Exception ex)
+                catch (Exception ex)    
                 {
                     dynamoLogger?.Log("A Player value failed to deserialize with this exception: " + ex.Message);
                     throw new NotSupportedException(Properties.Resources.Exception_Deserialize_Unsupported_Cache);
@@ -709,14 +714,18 @@ namespace DSCore
                     var valueType = assertList ? FindCommonAncestor(inputValue) : inputValue.GetType();
                     if (valueType == null)
                     {
-                        // TODO: Potentially throw instead here? "Could not find a data type that's common for the list items"
-                        return new Dictionary<string, object>
-                        {
-                            { ">", inputValue },
-                            { "Validation", null }
-                        };
+                        // We couldn't find a common ancestor - list containing unsupported or incompatible data types
+                        var incompatibleDataTypes = ConcatenateUniqueDataTypes(inputValue);
+                        throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage,
+                            incompatibleDataTypes));
                     }
                     var inputType = DataNodeDynamoTypeList.FirstOrDefault(x => x.Type == valueType, null);
+                    if(inputType == null)
+                    {
+                        // We couldn't find a Dynamo data type that fits, so we throw
+                        throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage,
+                            valueType.Name));
+                    }
                     result = (IsValid: false, UpdateList: updateList, InputType: inputType);
                 }
                 else
@@ -747,6 +756,20 @@ namespace DSCore
                     { "Validation", result }
                 };
             }
+        }
+
+        private static string ConcatenateUniqueDataTypes(object inputValue)
+        {
+            if (inputValue is not ArrayList) return string.Empty;
+
+            var list = inputValue as ArrayList;
+            var dataTypeList = GetListFromTypes(list);
+
+            var resultString = string.Join(", ", dataTypeList
+                .GroupBy(x => x.Type)
+                .Select(g => g.First().Name));
+
+            return resultString;
         }
 
         /// <summary>
@@ -823,6 +846,8 @@ namespace DSCore
             {
                 if (node.Type == likelyAncestor.Type) continue;
                 likelyAncestor = FindCommonAncestorBetweenTwoNodes(node, likelyAncestor);
+
+                if (likelyAncestor == null) break; 
             }
 
             return likelyAncestor;
@@ -864,6 +889,35 @@ namespace DSCore
                 }
             }
             return typeList;
+        }
+
+        /// <summary>
+        /// Check if the input object is a single value or an ArrayList
+        /// </summary>
+        /// <param name="obj">The input object to evaluate</param>
+        /// <returns></returns>
+        private static bool IsSingleValueOrSingleLevelArrayList(object obj)
+        {
+            if (obj == null) return true;
+
+            // Check if the object is a string, since strings are IEnumerable but usually considered single values
+            if (obj is string) return true;
+
+            if (obj is ArrayList arrayList)
+            {
+                foreach (var item in arrayList)
+                {
+                    if (item is IEnumerable && !(item is string))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            if (obj is IEnumerable) return false;
+
+            return true;
         }
 
         /// <summary>

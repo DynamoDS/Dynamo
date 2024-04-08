@@ -313,7 +313,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input data to be validated.
+        ///   Looks up a localized string similar to Input data to be validated. Refer to drop-down for list of allowed types.
         /// </summary>
         public static string DefineDataInputTooltip {
             get {
@@ -322,16 +322,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input must be a single value or a non-nested list..
-        /// </summary>
-        public static string DefineDataNullExceptionMessage {
-            get {
-                return ResourceManager.GetString("DefineDataNullExceptionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Data if validation is successful.
+        ///   Looks up a localized string similar to Validated data.
         /// </summary>
         public static string DefineDataOutputTooltip {
             get {

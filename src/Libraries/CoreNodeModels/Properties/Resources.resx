@@ -668,13 +668,10 @@ In Generative Design workflows, this node should be used to control and block th
     <value>Validates and returns data from a currently or previously connected node</value>
   </data>
   <data name="DefineDataInputTooltip" xml:space="preserve">
-    <value>Input data to be validated</value>
+    <value>Input data to be validated. Refer to drop-down for list of allowed types</value>
   </data>
   <data name="DefineDataOutputTooltip" xml:space="preserve">
-    <value>Data if validation is successful</value>
-  </data>
-  <data name="DefineDataNullExceptionMessage" xml:space="preserve">
-    <value>Input must be a single value or a non-nested list.</value>
+    <value>Validated data</value>
   </data>
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Select Types</value>
