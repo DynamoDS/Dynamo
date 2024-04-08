@@ -1553,6 +1553,8 @@ Dynamo.UI.Views.GuidedTourItem.Description.set -> void
 Dynamo.UI.Views.GuidedTourItem.GuidedTourItem(string name, string description, string type, string thumbnail) -> void
 Dynamo.UI.Views.GuidedTourItem.Name.get -> string
 Dynamo.UI.Views.GuidedTourItem.Name.set -> void
+Dynamo.UI.Views.GuidedTourItem.Thumbnail.get -> string
+Dynamo.UI.Views.GuidedTourItem.Thumbnail.set -> void
 Dynamo.UI.Views.GuidedTourItem.Type.get -> string
 Dynamo.UI.Views.GuidedTourItem.Type.set -> void
 Dynamo.UI.Views.GuidedTourType
@@ -4713,6 +4715,9 @@ static Dynamo.Wpf.Properties.Resources.GroupStylesCancelButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStylesSaveButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.HideClassicNodeLibrary.get -> string
 static Dynamo.Wpf.Properties.Resources.HideWiresPopupMenuItem.get -> string
+static Dynamo.Wpf.Properties.Resources.HomePageInteractiveGuideGettingStartedImg.get -> string
+static Dynamo.Wpf.Properties.Resources.HomePageInteractiveGuidePackagesTourImg.get -> string
+static Dynamo.Wpf.Properties.Resources.HomePageInteractiveGuideUITourImg.get -> string
 static Dynamo.Wpf.Properties.Resources.ImportLibraryDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.ImportPreferencesInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.ImportPreferencesText.get -> string
