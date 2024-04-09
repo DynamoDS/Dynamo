@@ -194,7 +194,12 @@ namespace Dynamo.ViewModels
             {
                 foreach (var query in queries)
                 {
-                    candidates.Add(foundNode);
+                    var foundNode = Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
+                    if (foundNode != null)
+                    {
+                        candidates.Add(foundNode);
+                        DynamoViewModel.DefaultAutocompleteCandidates.Add(foundNode.Name, foundNode);
+                    }
                 }
                 DefaultResults = candidates;
             }
