@@ -650,7 +650,7 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.Selection.Clear();
 
             // Select the node
-            var nodeView = NodeViewWithGuid("80eca4d6-45bf-4c54-9412-d7d175c9a9b5");
+            var nodeView = NodeViewWithGuid("a0d7d02a-df09-455e-bd04-c38def8f3e07");
 
             NodeViewModel nodeVM = (nodeView.DataContext as NodeViewModel);
             WorkspaceModel ws = nodeVM.DynamoViewModel.CurrentSpace;
@@ -663,14 +663,13 @@ namespace DynamoCoreWpfTests
             var countBefore = DynamoSelection.Instance.Selection.Count;
             Assert.AreEqual(1, countBefore);
 
-            // Run method ans assert whether more nodes were selected
+            // Run method and assert whether more nodes were selected
             nodeVM.NodeModel.SelectNeighbors();
 
             var modelsSelected = DynamoSelection.Instance.Selection.Select(s => s as ModelBase);
             var countAfter = modelsSelected.Count();
 
             Assert.AreEqual(5, countAfter);
-
         }
     }
 }
