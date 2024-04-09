@@ -93,6 +93,8 @@ namespace Dynamo.ViewModels
 
         internal DynamoMLDataPipelineExtension MLDataPipelineExtension { get; set; }
 
+        internal static Dictionary<string, NodeSearchElementViewModel> DefaultAutocompleteCandidates = new Dictionary<string, NodeSearchElementViewModel>();
+
         /// <summary>
         /// Collection of Right SideBar tab items: view extensions and docked windows.
         /// </summary>
