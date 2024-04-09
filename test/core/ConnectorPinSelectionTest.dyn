@@ -1,0 +1,217 @@
+{
+  "Uuid": "c484caa8-858d-4a32-92db-f17e7197d804",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ConnectorPinSelectionTest",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "a0d7d02adf09455ebd04c38def8f3e07",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c2b90a87544c4c1796b0452a94b93948",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f97306cf803e409cb395c6a2a61f4e18",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "13fee9dc55894984929a7bdeeb44611d",
+          "Name": "number",
+          "Description": "The product of the two input numbers",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "*@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "41b2aa88001c4b3991e6b05c52dfeff6",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5da9bf8a700c409bb37ec5b15f93f509",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 0.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 28.0,
+      "WatchHeight": 38.0,
+      "Id": "7cdc095c2d41415b9935b44c990ee782",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "965d08cf73744b8189d21214ab0cc6c4",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a995cd9966414d10879bdec9e009d872",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "13fee9dc55894984929a7bdeeb44611d",
+      "End": "965d08cf73744b8189d21214ab0cc6c4",
+      "Id": "dd11a60aae71472e9b5c3613e9095574",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5da9bf8a700c409bb37ec5b15f93f509",
+      "End": "c2b90a87544c4c1796b0452a94b93948",
+      "Id": "59214901d88d4940bd97c323d5dd1835",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5da9bf8a700c409bb37ec5b15f93f509",
+      "End": "f97306cf803e409cb395c6a2a61f4e18",
+      "Id": "70a4abb9e07c4e80b7797c28bceedb43",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": null,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.1",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.1.0.3411",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [
+      {
+        "Left": 570.0,
+        "Top": 94.0001,
+        "IsHidden": false,
+        "ConnectorGuid": "66f58071-534f-4710-96e0-68d5aa11987d"
+      },
+      {
+        "Left": 268.0,
+        "Top": 44.0001,
+        "IsHidden": false,
+        "ConnectorGuid": "aef055ee-0f7a-4e99-993e-9947275ca71b"
+      }
+    ],
+    "NodeViews": [
+      {
+        "Id": "a0d7d02adf09455ebd04c38def8f3e07",
+        "Name": "*",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 363.5,
+        "Y": 164.0
+      },
+      {
+        "Id": "41b2aa88001c4b3991e6b05c52dfeff6",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 96.5,
+        "Y": 198.0
+      },
+      {
+        "Id": "7cdc095c2d41415b9935b44c990ee782",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 658.5,
+        "Y": 179.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
