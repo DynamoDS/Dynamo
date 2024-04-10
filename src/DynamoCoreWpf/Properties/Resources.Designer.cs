@@ -1694,6 +1694,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Unpin PB.
+        /// </summary>
+        public static string DynamoViewEditMenuUnpinPB {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuUnpinPB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to E_xtensions.
         /// </summary>
         public static string DynamoViewExtensionsMenu {

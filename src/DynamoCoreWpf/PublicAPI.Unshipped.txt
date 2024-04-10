@@ -2024,6 +2024,8 @@ Dynamo.ViewModels.DynamoViewModel.ScaleFactorLog.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAll(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.UnpinPBCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.UnpinPBCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectNeighbors(object parameters) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectNeighborsCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectNeighborsCommand.set -> void
@@ -3027,6 +3029,7 @@ Dynamo.ViewModels.WorkspaceViewModel.ResetFitViewToggleCommand.get -> Dynamo.UI.
 Dynamo.ViewModels.WorkspaceViewModel.RunSettingsViewModel.get -> Dynamo.Wpf.ViewModels.RunSettingsViewModel
 Dynamo.ViewModels.WorkspaceViewModel.RunSettingsViewModel.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.WorkspaceViewModel.UnpinPBCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.SelectionArgumentLacing.get -> Dynamo.Graph.Nodes.LacingStrategy
 Dynamo.ViewModels.WorkspaceViewModel.SetArgumentLacingCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.SetCurrentOffsetCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -3034,6 +3037,7 @@ Dynamo.ViewModels.WorkspaceViewModel.SetZoomCommand.get -> Dynamo.UI.Commands.De
 Dynamo.ViewModels.WorkspaceViewModel.ShowAllWiresCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowHideAllGeometryPreviewCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowInCanvasSearchCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.WorkspaceViewModel.UnpinPBsTriggered -> System.EventHandler
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.Watch3DFullscreenViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.WorkspaceElements.get -> System.Windows.Data.CompositeCollection
@@ -4495,6 +4499,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuPresetsMenu.get -> stri
 static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuRedo.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuRestorePreset.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuSelectAll.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuUnpinPB.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuSelectNeighbours.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuUndo.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewExtensionsMenu.get -> string

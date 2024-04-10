@@ -450,6 +450,15 @@
                                   Command="{Binding SelectAllCommand}"
                                   Name="selectAll"
                                   InputGestureText="Ctrl + A" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuUnpinPB}"
+                                  Command="{Binding UnpinPBCommand}"
+                                  Name="unpinPB" />
+
+
+
+
+
+                        
                         <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeleteSelected}"
                                   Command="{Binding DeleteCommand}"
                                   Name="deleteSelected"

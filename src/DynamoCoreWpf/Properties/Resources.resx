@@ -330,6 +330,17 @@
     <value>_Select All</value>
     <comment>Edit menu | Select all nodes</comment>
   </data>
+    <data name="DynamoViewEditMenuUnpinPB" xml:space="preserve">
+    <value>_Unpin PB</value>
+    <comment>Edit menu | Unpin preview bubbles</comment>
+  </data>
+
+
+
+
+
+
+    
   <data name="DynamoViewEditMenuUndo" xml:space="preserve">
     <value>_Undo</value>
     <comment>Edit menu | Undo</comment>

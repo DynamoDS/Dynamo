@@ -180,6 +180,14 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        // ip code :
+        internal void ForceHidePreviewBubble()
+        {
+            StaysOpen = false;
+            if (IsExpanded) TransitionToState(State.Condensed);
+            if (IsCondensed) TransitionToState(State.Hidden);
+        }
+
         /// <summary>
         /// It is possible for a run to complete while the preview display is
         /// in transition.  In these situations, we can store the MirrorData and

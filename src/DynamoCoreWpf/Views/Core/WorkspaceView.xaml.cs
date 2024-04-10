@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using DSCore;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -143,6 +144,9 @@ namespace Dynamo.Views
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
 
+            // ip code :
+            ViewModel.UnpinPBsTriggered -= OnUnpinPBsTriggered;
+
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
             DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
@@ -171,10 +175,27 @@ namespace Dynamo.Views
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
 
+            // ip code :
+            ViewModel.UnpinPBsTriggered += OnUnpinPBsTriggered;
+
             ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
             infiniteGridView.AttachToZoomBorder(zoomBorder);
+        }
+
+        
+
+
+        // ip code :
+        public void OnUnpinPBsTriggered(object sender, EventArgs e)
+        {
+            var allNodes = this.ChildrenOfType<NodeView>().Where(view => view.HasPreviewControl);
+
+            foreach (var node in allNodes)
+            {
+                node.PreviewControl.ForceHidePreviewBubble();     // look for HidePreviewBubble()
+            }
         }
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
@@ -390,8 +411,8 @@ namespace Dynamo.Views
                 if (!initialized) return null;
 
                 // Add padding to the edge and make them multiples of two (pad 10px on each side).
-                bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
-                bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
+                bounds.Width = 20 + ((((int)System.Math.Ceiling(bounds.Width)) + 1) & ~0x01);
+                bounds.Height = 20 + ((((int)System.Math.Ceiling(bounds.Height)) + 1) & ~0x01);
 
                 var currentTransformGroup = WorkspaceElements.RenderTransform as TransformGroup;
                 WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X - minX, 10.0 - bounds.Y - minY);
@@ -783,6 +804,31 @@ namespace Dynamo.Views
             }
         }
 
+
+        // ip code :
+        private void OnForceHidePreview(object sender, MouseButtonEventArgs e)
+        {
+            //if (snappedPort != null)
+            //{
+            //    ViewModel.HandlePortClicked(snappedPort);
+            //}
+            //else if (Keyboard.Modifiers != ModifierKeys.Control)
+            //{
+            //    ViewModel.HandleLeftButtonDown(workBench, e);
+            //}
+
+            //if (!ViewModel.IsDragging) return;
+
+            var nodesToHidePreview = this.ChildrenOfType<NodeView>().Where(view =>
+                view.HasPreviewControl && !view.PreviewControl.IsHidden && view.PreviewControl.StaysOpen);
+
+            foreach (var node in nodesToHidePreview)
+            {
+                node.PreviewControl.ForceHidePreviewBubble();
+            }
+        }
+
+
         private void OnCanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
             ContextMenuPopup.IsOpen = false;
@@ -877,9 +923,9 @@ namespace Dynamo.Views
 
                 // Check that current mouse position is far enough from start position.
                 var canDrag =
-                    (Math.Abs(currentMousePosition.X - startMousePosition.X) >
+                    (System.Math.Abs(currentMousePosition.X - startMousePosition.X) >
                      SystemParameters.MinimumHorizontalDragDistance) &&
-                    (Math.Abs(currentMousePosition.Y - startMousePosition.Y) >
+                    (System.Math.Abs(currentMousePosition.Y - startMousePosition.Y) >
                      SystemParameters.MinimumVerticalDragDistance) &&
                     e.OriginalSource is DragCanvas;
 

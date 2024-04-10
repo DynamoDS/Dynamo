@@ -251,7 +251,16 @@ namespace Dynamo.Controls
                 case "IsSetAsOutput":
                     (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
                     break;
+
+                case "PreviewPinned":
+                    HidePreview();
+                    break;
             }
+        }
+
+        public void HidePreview()
+        {
+           
         }
 
         /// <summary>
@@ -501,7 +510,7 @@ namespace Dynamo.Controls
 
     #region Preview Control Related Event Handlers
 
-    private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
+        private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
@@ -567,6 +576,16 @@ namespace Dynamo.Controls
             if (PreviewControl.IsCondensed && Mouse.Captured == null)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+            }
+        }
+
+        // ip code : 
+        private void OnForceUnpinPB(object sender, RoutedEventArgs e)
+        {
+            if (PreviewControl.StaysOpen)
+            {
+                //PreviewControl.StaysOpen = false;
+
             }
         }
 

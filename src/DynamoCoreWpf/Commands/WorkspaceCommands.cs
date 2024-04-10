@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
@@ -23,6 +23,13 @@ namespace Dynamo.ViewModels
         private DelegateCommand setArgumentLacingCommand;
         private DelegateCommand findNodesFromSelectionCommand;
         private DelegateCommand selectAllCommand;
+
+        private DelegateCommand unpinPBCommand;
+
+
+
+
+
         private DelegateCommand graphAutoLayoutCommand;
         private DelegateCommand showHideAllGeometryPreviewCommand;
         private DelegateCommand showInCanvasSearchCommand;
@@ -57,6 +64,21 @@ namespace Dynamo.ViewModels
                 return selectAllCommand;
             }
         }
+
+
+        [JsonIgnore]
+        public DelegateCommand UnpinPBCommand
+        {
+            get
+            {
+                if (unpinPBCommand == null)
+                    unpinPBCommand = new DelegateCommand(UnpinPB, CanUnpinPB);
+                return unpinPBCommand;
+            }
+        }
+
+
+
 
         [JsonIgnore]
         public DelegateCommand GraphAutoLayoutCommand

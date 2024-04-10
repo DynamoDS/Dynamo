@@ -94,11 +94,19 @@ namespace Dynamo.ViewModels
                 if (previewPinned == value) return;
                 previewPinned = value;
 
+                // ip code:
+                RaisePropertyChanged(nameof(PreviewPinned));
+
                 DynamoViewModel.ExecuteCommand(
                     new DynamoModel.UpdateModelValueCommand(
                         System.Guid.Empty, NodeModel.GUID, "PreviewPinned", previewPinned.ToString()));
             }
         }
+
+        //protected virtual void OnPreviewPinnedChanged()
+        //{
+        //    PreviewPinnedChanged?.Invoke(this, EventArgs.Empty);
+        //}
 
         [JsonIgnore]
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }

@@ -40,6 +40,15 @@ namespace Dynamo.ViewModels
             GraphAutoLayoutCommand = new DelegateCommand(DoGraphAutoLayout, CanDoGraphAutoLayout);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
+
+            UnpinPBCommand = new DelegateCommand(UnpinPB, CanUnpinPB);
+
+
+
+
+
+
+
             HomeCommand = new DelegateCommand(GoHome, CanGoHome);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
@@ -136,6 +145,13 @@ namespace Dynamo.ViewModels
         public DelegateCommand ToggleBackgroundGridVisibilityCommand { get; set; }
         public DelegateCommand UpdateGraphicHelpersScaleCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
+
+        public DelegateCommand UnpinPBCommand { get; set; }
+
+
+
+
+
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand Save3DImageCommand { get; set; }
         public DelegateCommand ValidateWorkSpaceBeforeToExportAsImageCommand { get; set; }
