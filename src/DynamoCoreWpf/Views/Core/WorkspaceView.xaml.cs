@@ -11,7 +11,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using DSCore;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -786,47 +785,21 @@ namespace Dynamo.Views
             }
         }
 
-
-
-
-
-
-        // ip code :
+        /// <summary>
+        /// Handles the event triggered when all preview bubbles in the workspace need to be unpinned
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void vm_UnpinAllPreviewBubblesTriggered(object sender, EventArgs e)
         {
-            var allNodes = this.ChildrenOfType<NodeView>().Where(view => view.HasPreviewControl);
+            var nodesWithPinnedPreview = this.ChildrenOfType<NodeView>()
+                .Where(view => view.HasPreviewControl && view.PreviewControl.StaysOpen);
 
-            foreach (var node in allNodes)
+            foreach (var node in nodesWithPinnedPreview)
             {
-                node.PreviewControl.UnpinAllPreviewBubbles();
+                node.PreviewControl.UnpinPreviewBubble();
             }
         }
-
-
-
-        //// ip code :
-        //private void OnForceHidePreview(object sender, MouseButtonEventArgs e)
-        //{
-        //    //if (snappedPort != null)
-        //    //{
-        //    //    ViewModel.HandlePortClicked(snappedPort);
-        //    //}
-        //    //else if (Keyboard.Modifiers != ModifierKeys.Control)
-        //    //{
-        //    //    ViewModel.HandleLeftButtonDown(workBench, e);
-        //    //}
-
-        //    //if (!ViewModel.IsDragging) return;
-
-        //    var nodesToHidePreview = this.ChildrenOfType<NodeView>().Where(view =>
-        //        view.HasPreviewControl && !view.PreviewControl.IsHidden && view.PreviewControl.StaysOpen);
-
-        //    foreach (var node in nodesToHidePreview)
-        //    {
-        //        node.PreviewControl.UnpinAllPreviewBubbles();
-        //    }
-        //}
-
 
         private void OnCanvasMouseDown(object sender, MouseButtonEventArgs e)
         {

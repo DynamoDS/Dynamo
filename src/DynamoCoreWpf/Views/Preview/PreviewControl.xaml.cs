@@ -181,20 +181,12 @@ namespace Dynamo.UI.Controls
         }
 
         /// <summary>
-        /// Unpins and hides all preview bubbles
+        /// Unpins and hides the preview bubbles
         /// </summary>
-        internal void UnpinAllPreviewBubbles()
+        internal void UnpinPreviewBubble()
         {
             StaysOpen = false;
-            if (IsExpanded)
-            {
-                TransitionToState(State.Condensed);
-            }
-
-            if (IsCondensed)
-            {
-                TransitionToState(State.Hidden);
-            }
+            this.HidePreviewBubble();
         }
 
         /// <summary>

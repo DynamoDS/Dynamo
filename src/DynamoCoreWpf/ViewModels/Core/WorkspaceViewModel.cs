@@ -1737,20 +1737,19 @@ namespace Dynamo.ViewModels
             }
         }
 
-        // ip code :
-        public event EventHandler UnpinAllPreviewBubblesTriggered;
+        public event ViewEventHandler UnpinAllPreviewBubblesTriggered;
         /// <summary>
-        /// ip code :
+        /// Triggers unpinning of all preview bubbles in the workspace
         /// </summary>
         /// <param name="parameter"></param>
         internal void UnpinAllPreviewBubbles(object parameter)
         {
-            RaisePropertyChanged("UnpinAllPBs");
+            RaisePropertyChanged("UnpinAllPreviewBubbles");
 
-            foreach (var nodeVM in Nodes)
-            {
-                nodeVM.PreviewPinned = false;
-            }
+            //foreach (var nodeVM in Nodes)
+            //{
+            //    nodeVM.PreviewPinned = false;
+            //}
             UnpinAllPreviewBubblesTriggered?.Invoke(this, EventArgs.Empty);
         }
 

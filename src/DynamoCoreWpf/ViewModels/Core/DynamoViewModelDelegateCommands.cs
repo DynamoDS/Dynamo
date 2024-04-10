@@ -177,6 +177,5 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenDocumentationLinkCommand { get; set; }
         public DelegateCommand ShowNodeDocumentationCommand { get; set; }
         public DelegateCommand UnpinAllPreviewBubblesCommand { get; set; }
-
     }
 }
