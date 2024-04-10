@@ -1741,19 +1741,15 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Triggers unpinning of all preview bubbles in the workspace
         /// </summary>
-        /// <param name="parameter"></param>
-        internal void UnpinAllPreviewBubbles(object parameter)
+        /// <param name="o"></param>
+        internal void UnpinAllPreviewBubbles(object o)
         {
             RaisePropertyChanged("UnpinAllPreviewBubbles");
 
-            //foreach (var nodeVM in Nodes)
-            //{
-            //    nodeVM.PreviewPinned = false;
-            //}
             UnpinAllPreviewBubblesTriggered?.Invoke(this, EventArgs.Empty);
         }
 
-        internal bool CanUnpinAllPreviewBubbles(object parameter)
+        internal bool CanUnpinAllPreviewBubbles(object o)
         {
             return true;
         }

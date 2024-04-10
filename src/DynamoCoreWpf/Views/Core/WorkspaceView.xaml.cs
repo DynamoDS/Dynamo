@@ -392,8 +392,8 @@ namespace Dynamo.Views
                 if (!initialized) return null;
 
                 // Add padding to the edge and make them multiples of two (pad 10px on each side).
-                bounds.Width = 20 + ((((int)System.Math.Ceiling(bounds.Width)) + 1) & ~0x01);
-                bounds.Height = 20 + ((((int)System.Math.Ceiling(bounds.Height)) + 1) & ~0x01);
+                bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
+                bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
 
                 var currentTransformGroup = WorkspaceElements.RenderTransform as TransformGroup;
                 WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X - minX, 10.0 - bounds.Y - minY);
@@ -895,9 +895,9 @@ namespace Dynamo.Views
 
                 // Check that current mouse position is far enough from start position.
                 var canDrag =
-                    (System.Math.Abs(currentMousePosition.X - startMousePosition.X) >
+                    (Math.Abs(currentMousePosition.X - startMousePosition.X) >
                      SystemParameters.MinimumHorizontalDragDistance) &&
-                    (System.Math.Abs(currentMousePosition.Y - startMousePosition.Y) >
+                    (Math.Abs(currentMousePosition.Y - startMousePosition.Y) >
                      SystemParameters.MinimumVerticalDragDistance) &&
                     e.OriginalSource is DragCanvas;
 

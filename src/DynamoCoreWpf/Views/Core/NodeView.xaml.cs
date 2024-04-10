@@ -570,16 +570,6 @@ namespace Dynamo.Controls
             }
         }
 
-        ////// ip code : 
-        ////private void OnForceUnpinPB(object sender, RoutedEventArgs e)
-        ////{
-        ////    if (PreviewControl.StaysOpen)
-        ////    {
-        ////        //PreviewControl.StaysOpen = false;
-
-        ////    }
-        ////}
-
         /// <summary>
         /// This event fires right after preview's state has been changed.
         /// This event is necessary, it handles some preview's manipulations, 

@@ -58,7 +58,7 @@ namespace Dynamo.ViewModels
                 return selectAllCommand;
             }
         }
-          
+
         [JsonIgnore]
         public DelegateCommand GraphAutoLayoutCommand
         {
@@ -278,7 +278,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// View Command to hide all pinned preview bubbles, if any are pinned
+        /// View Command to hide all currently pinned preview bubbles within the workspace
         /// </summary>
         [JsonIgnore]
         public DelegateCommand UnpinAllPreviewBubblesCommand
