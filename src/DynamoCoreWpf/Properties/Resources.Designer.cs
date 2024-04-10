@@ -10288,7 +10288,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file..
+        ///   Looks up a localized string similar to Workspaces cannot be saved directly to the Templates folder. Please choose a different folder to save your file.\n\nTo make this file into a new template, save it to a different folder, then move it to the Templates folder..
         /// </summary>
         public static string WorkspaceSaveTemplateDirectoryBlockMsg {
             get {
