@@ -1,0 +1,7 @@
+publisher,name,version,copyright,dateAdded,estimatedReleaseData,license,distributed
+"",core-js,"3.21.1","Copyright (c) 2014-2022 Denis Pushkarev","","",MIT,false
+"TJ Holowaychuk",express,"4.17.3","Copyright (c) 2009-2014 TJ Holowaychuk <tj@vision-media.ca>. Copyright (c) 2013-2014 Roman Shtylman <shtylman+expressjs@gmail.com>. Copyright (c) 2014-2015 Douglas Christopher Wilson <doug@somethingdoug.com>","","",MIT,false
+"Mikael Brevik",node-notifier,"9.0.0","Copyright (c) 2017 Mikael Brevik","","",MIT,false
+"",react-dom,"16.14.0","Copyright (c) Facebook, Inc. and its affiliates.","","",MIT,false
+"",react,"16.14.0","Copyright (c) Facebook, Inc. and its affiliates.","","",MIT,false
+"Jeremy Ashkenas",underscore,"1.12.1","Copyright (c) 2009-2020 Jeremy Ashkenas, DocumentCloud and Investigative. Reporters & Editors","","",MIT,false
