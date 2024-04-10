@@ -942,7 +942,7 @@ namespace Dynamo.Configuration
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
             RenderPrecision = DefaultRenderPrecision;
             ShowEdges = false;
-            UseRenderInstancing = false;
+            UseRenderInstancing = true;
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
