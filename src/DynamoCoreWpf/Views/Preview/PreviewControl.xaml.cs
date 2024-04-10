@@ -186,8 +186,15 @@ namespace Dynamo.UI.Controls
         internal void UnpinAllPreviewBubbles()
         {
             StaysOpen = false;
-            if (IsExpanded) TransitionToState(State.Condensed);
-            if (IsCondensed) TransitionToState(State.Hidden);
+            if (IsExpanded)
+            {
+                TransitionToState(State.Condensed);
+            }
+
+            if (IsCondensed)
+            {
+                TransitionToState(State.Hidden);
+            }
         }
 
         /// <summary>
