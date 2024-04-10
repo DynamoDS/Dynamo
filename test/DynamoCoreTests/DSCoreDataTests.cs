@@ -577,7 +577,6 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        [Ignore("Temp ignore, fixed in the follow-up PR")]
         public void IsNotSupportedNullInput()
         {
             object nullInput = null;
@@ -596,7 +595,6 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        [Ignore("Temp ignore, fixed in the follow-up PR")]
         public void IsSupportedPrimitiveDataType()
         {
             var vString = "input string";
