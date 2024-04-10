@@ -143,9 +143,7 @@ namespace Dynamo.Views
             ViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
-
-            // ip code :
-            ViewModel.UnpinPBsTriggered -= OnUnpinPBsTriggered;
+            ViewModel.UnpinAllPreviewBubblesTriggered -= vm_UnpinAllPreviewBubblesTriggered;
 
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
@@ -174,28 +172,12 @@ namespace Dynamo.Views
             ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
-
-            // ip code :
-            ViewModel.UnpinPBsTriggered += OnUnpinPBsTriggered;
+            ViewModel.UnpinAllPreviewBubblesTriggered += vm_UnpinAllPreviewBubblesTriggered;
 
             ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
             infiniteGridView.AttachToZoomBorder(zoomBorder);
-        }
-
-        
-
-
-        // ip code :
-        public void OnUnpinPBsTriggered(object sender, EventArgs e)
-        {
-            var allNodes = this.ChildrenOfType<NodeView>().Where(view => view.HasPreviewControl);
-
-            foreach (var node in allNodes)
-            {
-                node.PreviewControl.ForceHidePreviewBubble();     // look for HidePreviewBubble()
-            }
         }
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
@@ -805,28 +787,45 @@ namespace Dynamo.Views
         }
 
 
+
+
+
+
         // ip code :
-        private void OnForceHidePreview(object sender, MouseButtonEventArgs e)
+        public void vm_UnpinAllPreviewBubblesTriggered(object sender, EventArgs e)
         {
-            //if (snappedPort != null)
-            //{
-            //    ViewModel.HandlePortClicked(snappedPort);
-            //}
-            //else if (Keyboard.Modifiers != ModifierKeys.Control)
-            //{
-            //    ViewModel.HandleLeftButtonDown(workBench, e);
-            //}
+            var allNodes = this.ChildrenOfType<NodeView>().Where(view => view.HasPreviewControl);
 
-            //if (!ViewModel.IsDragging) return;
-
-            var nodesToHidePreview = this.ChildrenOfType<NodeView>().Where(view =>
-                view.HasPreviewControl && !view.PreviewControl.IsHidden && view.PreviewControl.StaysOpen);
-
-            foreach (var node in nodesToHidePreview)
+            foreach (var node in allNodes)
             {
-                node.PreviewControl.ForceHidePreviewBubble();
+                node.PreviewControl.UnpinAllPreviewBubbles();
             }
         }
+
+
+
+        //// ip code :
+        //private void OnForceHidePreview(object sender, MouseButtonEventArgs e)
+        //{
+        //    //if (snappedPort != null)
+        //    //{
+        //    //    ViewModel.HandlePortClicked(snappedPort);
+        //    //}
+        //    //else if (Keyboard.Modifiers != ModifierKeys.Control)
+        //    //{
+        //    //    ViewModel.HandleLeftButtonDown(workBench, e);
+        //    //}
+
+        //    //if (!ViewModel.IsDragging) return;
+
+        //    var nodesToHidePreview = this.ChildrenOfType<NodeView>().Where(view =>
+        //        view.HasPreviewControl && !view.PreviewControl.IsHidden && view.PreviewControl.StaysOpen);
+
+        //    foreach (var node in nodesToHidePreview)
+        //    {
+        //        node.PreviewControl.UnpinAllPreviewBubbles();
+        //    }
+        //}
 
 
         private void OnCanvasMouseDown(object sender, MouseButtonEventArgs e)

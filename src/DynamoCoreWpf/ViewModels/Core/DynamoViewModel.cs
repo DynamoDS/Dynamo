@@ -2803,21 +2803,15 @@ namespace Dynamo.ViewModels
             return this.CurrentSpaceViewModel.CanSelectAll(null);
         }
 
-        public void UnpinPB(object parameter)
+        public void UnpinAllPreviewBubbles(object parameter)
         {
-            this.CurrentSpaceViewModel.UnpinPB(null);
+            this.CurrentSpaceViewModel.UnpinAllPreviewBubbles(null);
         }
 
-        internal bool CanUnpinPB(object parameter)
+        internal bool CanUnpinAllPreviewBubbles(object parameter)
         {
-            return this.CurrentSpaceViewModel.CanUnpinPB(null);
+            return this.CurrentSpaceViewModel.CanUnpinAllPreviewBubbles(null);
         }
-
-
-
-
-
-
 
         public void MakeNewHomeWorkspace(object parameter)
         {

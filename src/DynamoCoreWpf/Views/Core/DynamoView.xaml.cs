@@ -268,13 +268,6 @@ namespace Dynamo.Controls
             CalculateWindowMinWidth();
         }
 
-        // ip code :
-
-        private void ForceUnpinPB()
-        {
-
-        }
-
         private void OnWorkspaceHidden(WorkspaceModel workspace)
         {            
             CalculateWindowMinWidth();

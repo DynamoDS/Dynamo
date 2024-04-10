@@ -23,13 +23,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand setArgumentLacingCommand;
         private DelegateCommand findNodesFromSelectionCommand;
         private DelegateCommand selectAllCommand;
-
-        private DelegateCommand unpinPBCommand;
-
-
-
-
-
         private DelegateCommand graphAutoLayoutCommand;
         private DelegateCommand showHideAllGeometryPreviewCommand;
         private DelegateCommand showInCanvasSearchCommand;
@@ -37,6 +30,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand hideAllPopupCommand;
         private DelegateCommand showAllWiresCommand;
         private DelegateCommand hideAllWiresCommand;
+        private DelegateCommand unpinAllPreviewBubblesCommand;
 
         #endregion
 
@@ -64,22 +58,7 @@ namespace Dynamo.ViewModels
                 return selectAllCommand;
             }
         }
-
-
-        [JsonIgnore]
-        public DelegateCommand UnpinPBCommand
-        {
-            get
-            {
-                if (unpinPBCommand == null)
-                    unpinPBCommand = new DelegateCommand(UnpinPB, CanUnpinPB);
-                return unpinPBCommand;
-            }
-        }
-
-
-
-
+          
         [JsonIgnore]
         public DelegateCommand GraphAutoLayoutCommand
         {
@@ -295,6 +274,20 @@ namespace Dynamo.ViewModels
                     hideAllWiresCommand = new DelegateCommand(HideAllWires, CanHideAllWires);
 
                 return hideAllWiresCommand;
+            }
+        }
+
+        /// <summary>
+        /// View Command to hide all pinned preview bubbles, if any are pinned
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand UnpinAllPreviewBubblesCommand
+        {
+            get
+            {
+                if (unpinAllPreviewBubblesCommand == null)
+                    unpinAllPreviewBubblesCommand = new DelegateCommand(UnpinAllPreviewBubbles, CanUnpinAllPreviewBubbles);
+                return unpinAllPreviewBubblesCommand;
             }
         }
         #endregion

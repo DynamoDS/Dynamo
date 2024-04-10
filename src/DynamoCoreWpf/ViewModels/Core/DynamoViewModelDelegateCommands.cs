@@ -40,15 +40,6 @@ namespace Dynamo.ViewModels
             GraphAutoLayoutCommand = new DelegateCommand(DoGraphAutoLayout, CanDoGraphAutoLayout);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
-
-            UnpinPBCommand = new DelegateCommand(UnpinPB, CanUnpinPB);
-
-
-
-
-
-
-
             HomeCommand = new DelegateCommand(GoHome, CanGoHome);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
@@ -102,6 +93,7 @@ namespace Dynamo.ViewModels
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             OpenDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink);
             ShowNodeDocumentationCommand = new DelegateCommand(ShowNodeDocumentation, CanShowNodeDocumentation);
+            UnpinAllPreviewBubblesCommand = new DelegateCommand(UnpinAllPreviewBubbles, CanUnpinAllPreviewBubbles);
         }
         public DelegateCommand OpenFromJsonIfSavedCommand { get; set; }
         public DelegateCommand OpenFromJsonCommand { get; set; }
@@ -145,13 +137,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand ToggleBackgroundGridVisibilityCommand { get; set; }
         public DelegateCommand UpdateGraphicHelpersScaleCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
-
-        public DelegateCommand UnpinPBCommand { get; set; }
-
-
-
-
-
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand Save3DImageCommand { get; set; }
         public DelegateCommand ValidateWorkSpaceBeforeToExportAsImageCommand { get; set; }
@@ -191,6 +176,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand OpenDocumentationLinkCommand { get; set; }
         public DelegateCommand ShowNodeDocumentationCommand { get; set; }
-        
+        public DelegateCommand UnpinAllPreviewBubblesCommand { get; set; }
+
     }
 }

@@ -1694,11 +1694,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Unpin PB.
+        ///   Looks up a localized string similar to _Unpin All Preview Bubbles.
         /// </summary>
-        public static string DynamoViewEditMenuUnpinPB {
+        public static string DynamoViewEditMenuUnpinAllPreviewBubbles {
             get {
-                return ResourceManager.GetString("DynamoViewEditMenuUnpinPB", resourceCulture);
+                return ResourceManager.GetString("DynamoViewEditMenuUnpinAllPreviewBubbles", resourceCulture);
             }
         }
         

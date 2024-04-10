@@ -1027,30 +1027,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        // ip code :
-        public event EventHandler UnpinPBsTriggered;
-        /// <summary>
-        /// ip code :
-        /// </summary>
-        /// <param name="parameter"></param>
-        internal void UnpinPB(object parameter)
-        {
-            RaisePropertyChanged("UnpinAllPBs");
-
-            foreach (var nodeVM in Nodes)
-            {
-                nodeVM.PreviewPinned = false;
-            }
-            UnpinPBsTriggered?.Invoke(this, EventArgs.Empty);
-        }
-
-        internal bool CanUnpinPB(object parameter)
-        {
-            return true;
-        }
-
-
-
         /// <summary>
         /// After command framework is implemented, this method should now be only 
         /// called from a menu item (i.e. Ctrl + W). It should not be used as a 
@@ -1759,6 +1735,28 @@ namespace Dynamo.ViewModels
 
                 }
             }
+        }
+
+        // ip code :
+        public event EventHandler UnpinAllPreviewBubblesTriggered;
+        /// <summary>
+        /// ip code :
+        /// </summary>
+        /// <param name="parameter"></param>
+        internal void UnpinAllPreviewBubbles(object parameter)
+        {
+            RaisePropertyChanged("UnpinAllPBs");
+
+            foreach (var nodeVM in Nodes)
+            {
+                nodeVM.PreviewPinned = false;
+            }
+            UnpinAllPreviewBubblesTriggered?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal bool CanUnpinAllPreviewBubbles(object parameter)
+        {
+            return true;
         }
 
         /// <summary>

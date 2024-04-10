@@ -180,8 +180,10 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        // ip code :
-        internal void ForceHidePreviewBubble()
+        /// <summary>
+        /// Unpins and hides all preview bubbles
+        /// </summary>
+        internal void UnpinAllPreviewBubbles()
         {
             StaysOpen = false;
             if (IsExpanded) TransitionToState(State.Condensed);
