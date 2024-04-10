@@ -233,6 +233,10 @@ namespace Dynamo.UI.Views
                     return true;
                 }
             }
+            else
+            {
+                Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true });
+            }
 
             return false;
         }
