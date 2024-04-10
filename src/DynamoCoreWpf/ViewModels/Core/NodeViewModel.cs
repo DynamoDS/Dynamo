@@ -247,6 +247,18 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Returns if node icon should be displayed as per the preference settings or not.
+        /// </summary>
+        [JsonIgnore]
+        public bool ShowNodeIcons
+        {
+            get
+            {
+                return DynamoViewModel.Model.PreferenceSettings.ShowNodeIcons;
+            }
+        }
+
+        /// <summary>
         /// If a node has been renamed. Notice this boolean will be disabled
         /// (always false) if the node is dummy node or unloaded custom node.
         /// </summary>
@@ -885,9 +897,12 @@ namespace Dynamo.ViewModels
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
 
-            if (workspaceViewModel.InCanvasSearchViewModel != null && workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource))
+            if (DynamoViewModel.PreferenceSettings.ShowNodeIcons)
             {
-                ImageSource = imgSource;
+                if (workspaceViewModel.InCanvasSearchViewModel != null && workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource))
+                {
+                    ImageSource = imgSource;
+                }
             }
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
             logic.NodeInfoMessagesClearing += Logic_NodeInfoMessagesClearing;

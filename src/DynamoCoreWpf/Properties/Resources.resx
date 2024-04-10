@@ -3919,6 +3919,13 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Enable Paneling nodes</value>
     <comment>Preferences | Features | Experimental | Enable Paneling nodes</comment>
   </data>
+  <data name="PreferencesViewShowNodeIcons" xml:space="preserve">
+    <value>Show Node Icons</value>
+    <comment>Preferences | Visual Settings | Display Settings | Show Node Icons</comment>
+  </data>
+  <data name="PreferencesWindowShowNodeIconsTooltip" xml:space="preserve">
+    <value>When toggled on, the node’s icons will be displayed on the top-left corner of the node.</value>
+  </data>
   <data name="PreferencesSettingTemplateLocationLabel" xml:space="preserve">
     <value>Templates Path</value>
   </data>
