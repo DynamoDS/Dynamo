@@ -151,18 +151,6 @@ namespace DynamoMLDataPipeline
             RestRequest endFulfillmentRequest = new RestRequest(endFulfillmentUrl);
             AddHeadersToPostRequest(endFulfillmentRequest, token);
             var endFulfillmentResponse = client.ExecutePost(endFulfillmentRequest);
-            dynamic endFulfillmentResponseBody = JObject.Parse(endFulfillmentResponse.Content);
-            var fulfillmentStatus = endFulfillmentResponseBody.status.Value;
-            while (fulfillmentStatus == "IN_PROGRESS")
-            {
-                var fulfillmentStatusUrl = $"/v1/collections/{collectionId}/exchanges/{exchangeContainerId}/fulfillments/{fulfillmentId}";
-                RestRequest fulfillementStatusRequest = new RestRequest(fulfillmentStatusUrl);
-                fulfillementStatusRequest.AddHeader("Authorization", $"Bearer {token}");
-                var fulfillmentStatusResponse = client.ExecuteGet(fulfillementStatusRequest);
-                dynamic fulfillmentStatusResponseBody = JObject.Parse(fulfillmentStatusResponse.Content);
-                fulfillmentStatus = fulfillmentStatusResponseBody.status.Value;
-            }
-            LogMessage.Info($"The data exchange is {fulfillmentStatus}");
         }
 
         static public string ConvertDynToBase64(string filePath)
