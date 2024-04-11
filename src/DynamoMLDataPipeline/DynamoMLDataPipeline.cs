@@ -92,9 +92,6 @@ namespace DynamoMLDataPipeline
 
             // Construct parameter component
             var parameterComponent = new ParameterComponent();
-            //parameterComponent.AddParameterFromSchema("<Add user id>", userIdSchema);
-            //parameterComponent.AddParameterFromSchema("<Add dynamo host>", hostSchema);
-            //parameterComponent.AddParameterFromSchema("<Add dynamo version>", dynamoVersionSchema);
 
             parameterComponent.AddParameterFromSchema(UserId, userIdSchema);
             parameterComponent.AddParameterFromSchema(DynamoModel.HostAnalyticsInfo.HostName, hostSchema);
@@ -121,8 +118,8 @@ namespace DynamoMLDataPipeline
             // filtering on these attributes (query based on a custom attribute not currently
             // supported by the FDX API, but it may become available in the future)
             var clientIdAttribute = new Attribute("clientId", "Dynamo");
-            //var clientVersionAttribute = new Attribute("clientVersion", "<dynamo version>");
             var clientVersionAttribute = new Attribute("clientVersion", DynamoModel.HostAnalyticsInfo.HostVersion?.ToString());
+
             var attributes = new List<Attribute>
             {
                 clientIdAttribute,
