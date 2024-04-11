@@ -2745,6 +2745,8 @@ Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.set -> void
+Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPreviewBubbles.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowPreviewBubbles.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowWhitespaceIsChecked.get -> bool
@@ -3804,6 +3806,8 @@ Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.MaxTessellationDivisions.set
 Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.RenderPackageFactoryViewModel(Dynamo.Interfaces.IPreferences preferenceSettings) -> void
 Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.ShowEdges.get -> bool
 Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.ShowEdges.set -> void
+Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.UseRenderInstancing.get -> bool
+Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.UseRenderInstancing.set -> void
 Dynamo.Wpf.ViewModels.RootNodeCategoryViewModel
 Dynamo.Wpf.ViewModels.RootNodeCategoryViewModel.RootNodeCategoryViewModel(string name) -> void
 Dynamo.Wpf.ViewModels.RootNodeCategoryViewModel.RootNodeCategoryViewModel(string name, System.Collections.Generic.IEnumerable<Dynamo.Wpf.ViewModels.NodeSearchElementViewModel> entries, System.Collections.Generic.IEnumerable<Dynamo.Wpf.ViewModels.NodeCategoryViewModel> subs) -> void
@@ -5188,6 +5192,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingShowEdges.get
 static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingsIsolateSelectedGeo.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingsRenderPrecision.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingsTab.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingUseInstancing.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewZoomScaling0Percent.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewZoomScaling100Percent.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewZoomScaling25Percent.get -> string
@@ -5198,6 +5203,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesWindowIsolateSelectedGeoToolti
 static Dynamo.Wpf.Properties.Resources.PreferencesWindowShowCodeBlockNodeLineNumberTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesWindowShowEdgesTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesWindowShowPreviewBubblesTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesWindowUseInstancingTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferredConfidenceLevel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferredConfidenceLevelInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.PrePackagePublishMessage.get -> string
