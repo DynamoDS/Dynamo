@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Logging;
-using Greg;
 
 namespace DynamoMLDataPipeline
 {
@@ -32,7 +32,7 @@ namespace DynamoMLDataPipeline
         public void Startup(StartupParams sp)
         {
             DynamoMLDataPipeline = new DynamoMLDataPipeline();
-            DynamoMLDataPipeline.AuthTokenProvider = (IOAuth2AccessTokenProvider)sp.AuthProvider;
+            DynamoMLDataPipeline.AuthProvider = (IDSDKManager)sp.AuthProvider;
         }
 
         public void Ready(ReadyParams sp)

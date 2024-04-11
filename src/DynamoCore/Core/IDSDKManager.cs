@@ -79,6 +79,18 @@ namespace Dynamo.Core
         }
 
         /// <summary>
+        /// Gets the userid of the logged in user.
+        /// </summary>
+        public string UserId
+        {
+            get
+            {
+                var result = IDSDK_GetUserInfo();
+                return result != null ? result.UserId : String.Empty;
+            }
+        }
+
+        /// <summary>
         /// Used by the auth provider to sign request with the authorized token.
         /// </summary>
         public void SignRequest(ref RestRequest m, RestClient client)

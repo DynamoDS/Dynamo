@@ -2328,16 +2328,6 @@ namespace Dynamo.ViewModels
                 if (!isBackup && hasSaved)
                 {
                     AddToRecentFiles(path);
-
-                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash &&
-                         Model.CurrentWorkspace.IsValidForFDX && !IsMLDataIngestionPipelineinBeta && currentWorkspaceViewModel.Checksum != string.Empty)
-                    {
-                        if (HasDifferentialCheckSum())
-                        {
-                            Model.Logger.Log("This Workspace is shared to train the Dynamo Machine Learning model.");
-                            MLDataPipelineExtension.DynamoMLDataPipeline.DataExchange(path);
-                        }
-                    }
                 }                           
             }
             catch (Exception ex)
@@ -2925,6 +2915,30 @@ namespace Dynamo.ViewModels
 
         private void CloseHomeWorkspace(object parameter)
         {
+            // Upon closing a workspace, validate if the workspace is valid to be sent to the ML datapipeline and then send it.
+            if (!DynamoModel.IsTestMode && !HomeSpace.HasUnsavedChanges && (currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash)
+            {
+                if (IsMLDataIngestionPipelineinBeta && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
+                {
+                    if (HasDifferentialCheckSum())
+                    {
+                        Task.Run(() =>
+                        {
+                            try
+                            {
+                                MLDataPipelineExtension.DynamoMLDataPipeline.SendWorkspaceLog(model.CurrentWorkspace.FileName);
+                                Model.Logger.Log("This Workspace is shared to train the Dynamo Machine Learning model.");
+                            }
+                            catch (Exception ex)
+                            {
+                                Model.Logger.Log("Failed to share this workspace with ML pipeline.", LogLevel.File);
+                                Model.Logger.Log(ex.StackTrace, LogLevel.File);
+                            }
+                        });
+                    }
+                }
+            }
+
             if (ClearHomeWorkspaceInternal())
             {
                 // If after closing the HOME workspace, and there are no other custom 

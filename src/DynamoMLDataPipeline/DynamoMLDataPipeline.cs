@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Dynamo.Core;
 using Dynamo.Logging;
-using Greg;
+using Dynamo.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -11,7 +12,6 @@ using ContentType = RestSharp.DataFormat;
 
 namespace DynamoMLDataPipeline
 {
-
     internal class DynamoMLDataPipeline
     {
         internal static string CollectionId { get; set; }
@@ -49,24 +49,42 @@ namespace DynamoMLDataPipeline
             }
         }
 
-        internal static IOAuth2AccessTokenProvider AuthTokenProvider { get; set; }
+        internal DynamoModel DynamoModel { get; set; }
 
-        public static void AddHeadersToPostRequest(RestRequest request, string token)
+        internal static IDSDKManager AuthProvider { get; set; }
+
+        // Id of the user sending the post request.
+        private static string UserId
+        {
+            get
+            {
+                return AuthProvider.UserId;
+            }
+        }
+
+        // Authorization token needed for the restsharp post request in this pipeline.
+        private static string GetAuthorizationToken()
+        {
+            return AuthProvider.GetAccessToken();
+        }
+
+
+        internal static void AddHeadersToPostRequest(RestRequest request, string token)
         {
             request.AddHeader("Accept", "*/*");
             request.AddHeader("Authorization", $"Bearer {token}");
             request.AddHeader("Content-Type", "application/json");
         }
 
-        public static string ConstructCreateAssetRequestBody(string schemaNamespaceId, string binaryId, string operation)
+        internal static string ConstructCreateAssetRequestBody(string schemaNamespaceId, string binaryId, string operation)
         {
             // Define the custom parameter schemas
             var schemas = new List<Schema>();
-            var userIdSchema = new StringParameterSchema("UserId", schemaNamespaceId, "DynamoUserIdParam"); //here we need to pass the oxygenId
+            var userIdSchema = new StringParameterSchema("UserId", schemaNamespaceId, "DynamoUserIdParam");
             schemas.Add(userIdSchema);
-            var hostSchema = new StringParameterSchema("Host", schemaNamespaceId, "DynamoHostParam"); //here we need to pass Dynamo's host similar to what we pass to ADP logs
+            var hostSchema = new StringParameterSchema("Host", schemaNamespaceId, "DynamoHostParam");
             schemas.Add(hostSchema);
-            var dynamoVersionSchema = new StringParameterSchema("DynamoVersion", schemaNamespaceId, "DynamoVersionParam"); //here we need to pass Dynamo's version similar to what we pass to ADP logs
+            var dynamoVersionSchema = new StringParameterSchema("DynamoVersion", schemaNamespaceId, "DynamoVersionParam");
             schemas.Add(dynamoVersionSchema);
 
             // Define the assets
@@ -74,9 +92,13 @@ namespace DynamoMLDataPipeline
 
             // Construct parameter component
             var parameterComponent = new ParameterComponent();
-            parameterComponent.AddParameterFromSchema("<Add user id>", userIdSchema);
-            parameterComponent.AddParameterFromSchema("<Add dynamo host>", hostSchema);
-            parameterComponent.AddParameterFromSchema("<Add dynamo version>", dynamoVersionSchema);
+            //parameterComponent.AddParameterFromSchema("<Add user id>", userIdSchema);
+            //parameterComponent.AddParameterFromSchema("<Add dynamo host>", hostSchema);
+            //parameterComponent.AddParameterFromSchema("<Add dynamo version>", dynamoVersionSchema);
+
+            parameterComponent.AddParameterFromSchema(UserId, userIdSchema);
+            parameterComponent.AddParameterFromSchema(DynamoModel.HostAnalyticsInfo.HostName, hostSchema);
+            parameterComponent.AddParameterFromSchema(DynamoModel.HostAnalyticsInfo.HostVersion?.ToString(), dynamoVersionSchema);
 
             // Construct the base component
             var baseComponent = new BaseComponent("DynamoGraphLog");
@@ -99,7 +121,8 @@ namespace DynamoMLDataPipeline
             // filtering on these attributes (query based on a custom attribute not currently
             // supported by the FDX API, but it may become available in the future)
             var clientIdAttribute = new Attribute("clientId", "Dynamo");
-            var clientVersionAttribute = new Attribute("clientVersion", "<dynamo version>");
+            //var clientVersionAttribute = new Attribute("clientVersion", "<dynamo version>");
+            var clientVersionAttribute = new Attribute("clientVersion", DynamoModel.HostAnalyticsInfo.HostVersion?.ToString());
             var attributes = new List<Attribute>
             {
                 clientIdAttribute,
@@ -147,12 +170,9 @@ namespace DynamoMLDataPipeline
 
         static public string ConvertDynToBase64(string filePath)
         {
-            string parentDir = Directory.GetParent(filePath).FullName;
-            string savePath = Path.Combine(parentDir, "data.txt");
-
             // Read .dyn file as a string
             string sourceFileContent = File.ReadAllText(filePath);
-            LogMessage.Info($"Read file '{filePath}' with {sourceFileContent.Length} bytes");  // Should be 337,787 bytes
+            LogMessage.Info($"Read file '{filePath}' with {sourceFileContent.Length} bytes");
 
             // Convert the string to a byte array (buffer)
             byte[] stringBuffer = Encoding.UTF8.GetBytes(sourceFileContent);
@@ -161,14 +181,12 @@ namespace DynamoMLDataPipeline
             byte[] compressedBuffer = DataUtilities.Compress(stringBuffer);
 
             string base64CompressedBuffer = Convert.ToBase64String(compressedBuffer);
-            LogMessage.Info($"BASE64 string buffer has {base64CompressedBuffer.Length} bytes"); 
+            LogMessage.Info($"BASE64 string buffer has {base64CompressedBuffer.Length} bytes");
 
-            // Write to file for testing purposes
-            File.WriteAllText(savePath, base64CompressedBuffer);
             return base64CompressedBuffer;
         }
 
-        static void DataExchangeToForge(string filePath, RestClient client, string token)
+        static void SendToMLDataPipeline(string filePath, RestClient client, string token)
         {
             // STEP 1: CREATE A DATA EXCHANGE CONTAINER ---------------------            
             string exchangeBody = ConstructCreateExchangeRequestBody();
@@ -184,7 +202,7 @@ namespace DynamoMLDataPipeline
             // from the response - these will be consumed by the following API calls.
             ExchangeContainerId = exchangeRequestResponseBody["id"].Value;
 
-            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, "ExchangeContainerID", Convert.ToInt32(ExchangeContainerId));
+            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, ExchangeContainerId);
 
             var schemaNamespaceId = exchangeRequestResponseBody["components"]["data"]["insert"]["autodesk.data:exchange.source.default-1.0.0"]["source"]["String"]["id"].Value;
 
@@ -219,7 +237,7 @@ namespace DynamoMLDataPipeline
 
             uploadBinaryRequest.AddHeader("Content-Type", ContentType.Binary);
 
-            uploadBinaryRequest.AddOrUpdateParameter(ContentType.Binary.ToString(), base64CompressedBuffer);
+            uploadBinaryRequest.AddOrUpdateParameter(ContentType.Binary.ToString(), base64CompressedBuffer, ParameterType.RequestBody);
             var uploadBinaryResponse = fileUploadClient.ExecutePut(uploadBinaryRequest);
             if (uploadBinaryResponse.StatusCode != System.Net.HttpStatusCode.OK)
             {
@@ -233,6 +251,7 @@ namespace DynamoMLDataPipeline
             // Finish uploading binary assets: Let the system know that the binary assets have been uploaded and are ready for processing. 
             // This call can be made for a single binary or a batch of 25 binaries.
             var finishBinaryUploadUrl = $"/v1/collections/{CollectionId}/exchanges/{ExchangeContainerId}/fulfillments/{fulfillmentId}/binaries:finish";
+
             // Construct request body
             var uploadedBinaryAsset = new UploadedBinaryAsset(BinaryAssetGuid);
             var uploadedBinaries = new BinaryAssets();
@@ -259,7 +278,6 @@ namespace DynamoMLDataPipeline
             // Construct request body for an insert operation, i.e. fulfilling an initial excahnge
             string syncAssetRequestBody = ConstructCreateAssetRequestBody(schemaNamespaceId, BinaryAssetGuid, "insert");
 
-            //HttpClient client = new HttpClient();
             RestRequest syncAssetRequest = new RestRequest(syncAssetUrl);
             syncAssetRequest.AddStringBody(syncAssetRequestBody, ContentType.Json);
             AddHeadersToPostRequest(syncAssetRequest, token);
@@ -269,70 +287,20 @@ namespace DynamoMLDataPipeline
             EndFullFillment(client, CollectionId, ExchangeContainerId, fulfillmentId, token);
         }
 
-        static void TestPipeline(string filePath, string token, RestClient client)
+        public void SendWorkspaceLog(string filePath)
         {
-            // TEST THE PIPELINE -----------------------------------------------------------
-            // RETRIEVE BACK THE UPLOADED BINARY ASSET AND CONVERT TO DYNAMO GRAPH
-            // STEP 1: Download the binary asset from a specified exchange - this call will return an AWS download URL
-            var downloadBinaryUrl = $"/v1/collections/{CollectionId}/exchanges/{ExchangeContainerId}/assets/binaries:download";
-            RestRequest downloadBinaryRequest = new RestRequest(downloadBinaryUrl);
-
-            var downloadBinaryAsset = new UploadedBinaryAsset(BinaryAssetGuid);
-            var downloadBinaries = new BinaryAssets();
-            downloadBinaries.AddBinary(downloadBinaryAsset);
-            string binaryDownloadBody = JsonConvert.SerializeObject(downloadBinaries);
-
-            downloadBinaryRequest.AddStringBody(binaryDownloadBody, ContentType.Json);
-            AddHeadersToPostRequest(downloadBinaryRequest, token);
-            var downloadBinaryResponse = client.ExecutePost(downloadBinaryRequest);
-            dynamic downloadBinaryResponseBody = JObject.Parse(downloadBinaryResponse.Content);
-            var downloadURL = downloadBinaryResponseBody["binaries"][0]["downloadUrl"].Value;
-
-            // STEP 2: Retrieve the binary data using the returned AWS download URL
-            var fileDownloadClient = new RestClient();
-            RestRequest downloadDataRequest = new RestRequest(downloadURL);
-            var downloadDataResponse = fileDownloadClient.ExecuteGet(downloadDataRequest); // Data returned in base 64 compressed
-            var base64Data = downloadDataResponse.Content;
-
-            // STEP 3: Convert base64 compressed data back to .dyn file
-            byte[] compressedData = Convert.FromBase64String(base64Data);
-            byte[] uncompressedData = DataUtilities.Decompress(compressedData);
-            string uncompressedString = Encoding.UTF8.GetString(uncompressedData);
-            string parentDir = Directory.GetParent(filePath).FullName;
-            var dynamoParsedPath = Path.Combine(parentDir, "MaximizeWindowViews-deserialized.dyn");
-            File.WriteAllText(dynamoParsedPath, uncompressedString);
-        }
-
-        public void DataExchange(string filePath)
-        {
-            // The Forge team has recommended to use the Stage environment for testing.
-            // Depending on whether we are using Stage or Prod, a Forge token needs to be retrieved 
-            // using client and secret id from a Forge app created in the respective environment.
-            // Assuming there is a way to retrieve the 3-leg Forge token in Dynamo, I will use a hardcoded one here.
+            // Depending on whether we are using Stage or Prod, a token needs to be retrieved 
+            // using client and secret id from the app created in the respective environment.
             var token = GetAuthorizationToken();
 
-            // Stage collectionId created for Dynamo
+            // CollectionId created for Dynamo
             CollectionId = ProductionCollectionID;
 
-            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, "CollectionID", Convert.ToInt32(CollectionId));
-            //ExchangeContainerId = "";
+            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, CollectionId);
 
-            var forgeClient = new RestClient(ProductionClientUrl);
+            var client = new RestClient(ProductionClientUrl);
 
-            DataExchangeToForge(filePath, forgeClient, token);
-
-            // This is needed here to allow for the testing workflow to run after the upload has been completed.
-            // It looks like even though the fullfillment ran by teh SendNewLog function is being reported 
-            // as COMPLETED the upload is not done.
-
-            // Test pipeline is being commented out. 
-            //Thread.Sleep(5000);
-            //TestPipeline(filePath, token, forgeClient);
-        }
-
-        private static string GetAuthorizationToken()
-        {
-            return AuthTokenProvider.GetAccessToken();
+            SendToMLDataPipeline(filePath, client, token);
         }
     }
 }
