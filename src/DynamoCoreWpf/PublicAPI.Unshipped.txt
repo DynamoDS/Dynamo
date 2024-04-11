@@ -5481,6 +5481,7 @@ static Dynamo.Wpf.Utilities.CompactBubbleHandler.Process(ProtoCore.Mirror.Mirror
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
+static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.WebView2Utilities.ValidateWebView2RuntimeInstalled() -> bool
