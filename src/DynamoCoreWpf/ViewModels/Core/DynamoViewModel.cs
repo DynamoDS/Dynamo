@@ -791,7 +791,7 @@ namespace Dynamo.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        Model.Logger.Log("Failed to deserialize " + dynamoMLDataFileName + "::" +  ex.Message, LogLevel.File);
+                        Model.Logger.Log($"Failed to deserialize {dynamoMLDataFileName} : {ex.Message}", LogLevel.File);
                     }
                 }
             }
