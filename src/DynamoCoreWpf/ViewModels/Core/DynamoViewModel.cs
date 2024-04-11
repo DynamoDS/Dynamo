@@ -2904,7 +2904,7 @@ namespace Dynamo.ViewModels
             // Upon closing a workspace, validate if the workspace is valid to be sent to the ML datapipeline and then send it.
             if (!DynamoModel.IsTestMode && !HomeSpace.HasUnsavedChanges && (currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash)
             {
-                if (IsMLDataIngestionPipelineinBeta && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
+                if (!IsMLDataIngestionPipelineinBeta && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
                 {
                     if (HasDifferentialCheckSum())
                     {
