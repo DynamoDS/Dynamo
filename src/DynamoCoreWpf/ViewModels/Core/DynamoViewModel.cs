@@ -791,7 +791,7 @@ namespace Dynamo.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        Model.Logger.Log("Failed to deserilaize " + dynamoMLDataFileName + "::" +  ex.Message);
+                        Model.Logger.Log("Failed to deserialize " + dynamoMLDataFileName + "::" +  ex.Message, LogLevel.File);
                     }
                 }
             }
@@ -2284,10 +2284,17 @@ namespace Dynamo.ViewModels
             // if the checksum is different from previous hashes, serialize this new info. 
             if (differentialChecksum)
             {
-                using (StreamWriter file = File.CreateText(dynamoMLDataPath))
+                try
                 {
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(file, Model.GraphChecksumDictionary);
+                    using (StreamWriter file = File.CreateText(dynamoMLDataPath))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        serializer.Serialize(file, Model.GraphChecksumDictionary);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Model.Logger.Log("Failed to serialize " + dynamoMLDataFileName + "::" + ex.Message, LogLevel.File);
                 }
             }
 

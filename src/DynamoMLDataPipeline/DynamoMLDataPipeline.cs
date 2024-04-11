@@ -169,7 +169,6 @@ namespace DynamoMLDataPipeline
         {
             // Read .dyn file as a string
             string sourceFileContent = File.ReadAllText(filePath);
-            LogMessage.Info($"Read file '{filePath}' with {sourceFileContent.Length} bytes");
 
             // Convert the string to a byte array (buffer)
             byte[] stringBuffer = Encoding.UTF8.GetBytes(sourceFileContent);
@@ -178,7 +177,6 @@ namespace DynamoMLDataPipeline
             byte[] compressedBuffer = DataUtilities.Compress(stringBuffer);
 
             string base64CompressedBuffer = Convert.ToBase64String(compressedBuffer);
-            LogMessage.Info($"BASE64 string buffer has {base64CompressedBuffer.Length} bytes");
 
             return base64CompressedBuffer;
         }
