@@ -8,7 +8,6 @@ using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
