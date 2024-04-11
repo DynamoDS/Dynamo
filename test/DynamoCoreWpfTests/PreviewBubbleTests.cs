@@ -8,6 +8,7 @@ using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
@@ -534,6 +535,42 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void PreviewBubble_UnpinAllPreviewBubble()
+        {
+            Open(@"core\DetailedPreviewMargin_Test.dyn");
+            var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
+
+            var previewBubble = nodeView.PreviewControl;
+            previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            previewBubble.bubbleTools.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsTrue(previewBubble.IsCondensed, "Compact preview bubble should be shown");
+            Assert.AreEqual(Visibility.Collapsed, previewBubble.bubbleTools.Visibility, "Pin icon should not be shown");
+
+            // hover preview bubble to see pin icon
+            RaiseMouseEnterOnNode(previewBubble);
+            Assert.AreEqual(Visibility.Visible, previewBubble.bubbleTools.Visibility, "Pin icon should be shown");
+
+            // expand preview bubble
+            RaiseMouseEnterOnNode(previewBubble.bubbleTools);
+            Assert.IsTrue(previewBubble.IsExpanded, "Expanded preview bubble should be shown");
+
+            // click on the pin map
+            RaiseLeftMouseClick(previewBubble.pinIconBorder);
+            Assert.IsTrue(previewBubble.StaysOpen, "Expanded preview bubble should be pinned");
+            Assert.IsTrue(previewBubble.IsExpanded, "Expanded preview bubble should be pinned");
+
+            ViewModel.UnpinAllPreviewBubblesCommand.Execute(null);
+
+            Assert.IsTrue(!previewBubble.StaysOpen, "Expanded preview bubble should be unpinned");
+
+        }
+
+
+
+        [Test]
         public void PreviewBubble_ShowExpandedPreviewOnPinIconHover()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -918,6 +955,16 @@ namespace DynamoCoreWpfTests
             View.Dispatcher.Invoke(() =>
             {
                 nv.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseLeaveEvent });
+            });
+
+            DispatcherUtil.DoEvents();
+        }
+
+        private void RaiseLeftMouseClick(IInputElement nv)
+        {
+            View.Dispatcher.Invoke(() =>
+            {
+                nv.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) { RoutedEvent = Mouse.MouseDownEvent });
             });
 
             DispatcherUtil.DoEvents();
