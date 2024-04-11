@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
 using Dynamo.Core;
 using Dynamo.Extensions;
-using Dynamo.Logging;
 
 namespace DynamoMLDataPipeline
 {
 
-    internal class DynamoMLDataPipelineExtension : IExtension, IExtensionSource
+    internal class DynamoMLDataPipelineExtension : IExtension
     {
         private ReadyParams ReadyParams;
-        private DynamoLogger logger;
 
         /// <summary>
         ///     Dynamo Package Manager Instance.
@@ -23,11 +19,6 @@ namespace DynamoMLDataPipeline
         }
 
         public string Name { get { return "DynamoMLDataPipelineExtension"; } }
-
-        public IEnumerable<IExtension> RequestedExtensions => throw new NotImplementedException();
-
-        public event Func<string, IExtension> RequestLoadExtension;
-        public event Action<IExtension> RequestAddExtension;
 
         public void Startup(StartupParams sp)
         {
@@ -42,12 +33,12 @@ namespace DynamoMLDataPipeline
 
         public void Shutdown()
         {
-            throw new NotImplementedException();
+           // do nothing.
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            // do nothing.
         }
     }
 }
