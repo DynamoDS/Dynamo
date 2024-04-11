@@ -295,7 +295,14 @@ namespace DynamoMLDataPipeline
 
             var client = new RestClient(ProductionClientUrl);
 
-            SendToMLDataPipeline(filePath, client, token);
+            try
+            {
+                SendToMLDataPipeline(filePath, client, token);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Error("Failed to share the workspace with ML data pipeline: " + ex.StackTrace);
+            }
         }
     }
 }
