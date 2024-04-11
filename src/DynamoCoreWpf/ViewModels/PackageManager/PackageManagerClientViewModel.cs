@@ -885,7 +885,7 @@ namespace Dynamo.ViewModels
                 // may not work with the current version of Dynamo.
                 var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
                 var futureDeps = newPackageHeaders.Where(dep => VersionUtilities.PartialParse(dep.engine_version) > dynamoVersion);
-                // also identify packages that have a dynamo engine version than 3.x as a special case,
+                // also identify packages that have a dynamo engine version less than 3.x as a special case,
                 // as Dynamo 3.x uses .net8 and older versions used .net framework - these packages may not be compatible.
                 // This check will return empty if the current major version is not 3.
                 var preDYN3Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 3 && VersionUtilities.PartialParse(dep.engine_version).Major < dynamoVersion.Major);
@@ -910,13 +910,15 @@ namespace Dynamo.ViewModels
                 if (preDYN3Deps.Any())
                 {
                     var res = MessageBoxService.Show(ViewModelOwner,
-                    string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
+                    $"{string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
                     string.Format(Resources.PackageUseOlderDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
+                    //this message has a url link so we use the rich text box version of the message box.
+                    showRichTextBox:true,
                     MessageBoxButton.OKCancel,
                     MessageBoxImage.Warning);
                     if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
                     {
-                        return;
+                        return; 
                     }
                 }
 

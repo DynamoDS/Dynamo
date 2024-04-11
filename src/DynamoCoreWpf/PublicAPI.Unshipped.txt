@@ -4274,6 +4274,7 @@ static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string cap
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string caption, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string caption, System.Windows.MessageBoxButton button) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon, string tooltip = "") -> System.Windows.MessageBoxResult
+static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionary.get -> System.Windows.ResourceDictionary
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionaryUri.get -> System.Uri

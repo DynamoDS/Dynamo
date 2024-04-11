@@ -4652,6 +4652,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to #Learn more=https://primer2.dynamobim.org/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8.
+        /// </summary>
+        public static string MessagePackOlderDynamoLink {
+            get {
+                return ResourceManager.GetString("MessagePackOlderDynamoLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot contain special characters (# % * ? \ : [ ]).
         /// </summary>
         public static string MessagePortNameInvalid {
