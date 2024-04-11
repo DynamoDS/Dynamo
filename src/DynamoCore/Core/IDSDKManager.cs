@@ -81,7 +81,7 @@ namespace Dynamo.Core
         /// <summary>
         /// Gets the userid of the logged in user.
         /// </summary>
-        public string UserId
+        internal string UserId
         {
             get
             {
