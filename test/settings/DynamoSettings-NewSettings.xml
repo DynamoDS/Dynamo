@@ -25,6 +25,7 @@
   <DefaultScaleFactor>-2</DefaultScaleFactor>
   <RenderPrecision>8</RenderPrecision>
   <ShowEdges>true</ShowEdges>
+  <UseRenderInstancing>false</UseRenderInstancing>
   <ShowDetailedLayout>false</ShowDetailedLayout>
   <WindowX>-8</WindowX>
   <WindowY>-8</WindowY>
