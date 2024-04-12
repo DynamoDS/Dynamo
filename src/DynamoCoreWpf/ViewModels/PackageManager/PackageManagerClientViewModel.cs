@@ -892,11 +892,13 @@ namespace Dynamo.ViewModels
 
                 // If any of the required packages use a newer version of Dynamo, show a dialog to the user
                 // allowing them to cancel the package download
-                if (futureDeps.Any())
+                if (true)
                 {
                     var res = MessageBoxService.Show(ViewModelOwner,
-                        string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
+                        $"{string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
                         string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
+                        //this message has a url link so we use the rich text box version of the message box.
+                        showRichTextBox: true,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Warning);
                     if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)

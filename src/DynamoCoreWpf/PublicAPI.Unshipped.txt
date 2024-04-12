@@ -4825,6 +4825,7 @@ static Dynamo.Wpf.Properties.Resources.MessagePackageTargetOtherHosts.get -> str
 static Dynamo.Wpf.Properties.Resources.MessagePackageTargetOtherHosts2.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePackageTargetOtherHostShort.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePackageVersionNotFound.get -> string
+static Dynamo.Wpf.Properties.Resources.MessagePackOlderDynamoLink.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePortNameInvalid.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageRemovePythonPort.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageSamePackageDiffVersInBuiltinPackages.get -> string

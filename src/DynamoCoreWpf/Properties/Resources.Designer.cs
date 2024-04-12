@@ -4589,7 +4589,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?.
+        ///   Looks up a localized string similar to This package or one of its dependencies were created for a newer version of Dynamo. It may not work in this version. Do you want to continue?.
         /// </summary>
         public static string MessagePackageNewerDynamo {
             get {
@@ -4607,7 +4607,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The package or one of its dependencies use an older version of {0} than you are currently using. Do you want to continue?.
+        ///   Looks up a localized string similar to This package or one of its dependencies were created for a previous version of Dynamo. It may not work in this version. Do you want to continue?.
         /// </summary>
         public static string MessagePackageOlderDynamo {
             get {
@@ -7130,7 +7130,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package Uses Newer Version of {0}!.
+        ///   Looks up a localized string similar to Package may not work in this version of {0}!.
         /// </summary>
         public static string PackageUseNewerDynamoMessageBoxTitle {
             get {
@@ -7139,7 +7139,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package Uses OlderVersion of {0}!.
+        ///   Looks up a localized string similar to Package may not work in this version of Dynamo {0}!.
         /// </summary>
         public static string PackageUseOlderDynamoMessageBoxTitle {
             get {
