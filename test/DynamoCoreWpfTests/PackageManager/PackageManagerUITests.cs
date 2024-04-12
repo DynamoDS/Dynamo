@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Dynamo.Extensions;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.Interfaces;
 using Dynamo.PackageManager.Tests;
@@ -1188,6 +1189,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
             var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
             var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+            var sharedEngineVersion = DynamoModel.Version;
 
 
             //when we attempt a download - it returns a valid download path, also record order
@@ -1221,7 +1223,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var dep_pkgVer = new PackageVersion()
             {
                 version = dep_version,
-                engine_version = "2.1.1",
+                engine_version = sharedEngineVersion,
                 name = dep_name,
                 id = dep_id,
                 full_dependency_ids = dep_deps,
@@ -1237,7 +1239,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var pkgVer = new PackageVersion()
             {
                 version = version,
-                engine_version = "2.1.1",
+                engine_version = sharedEngineVersion,
                 name = name,
                 id = id,
                 full_dependency_ids = deps,
@@ -1591,7 +1593,8 @@ namespace DynamoCoreWpfTests.PackageManager
                 });
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
-            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
                 .Returns(MessageBoxResult.OK);
             MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
             pmVm.ExecutePackageDownload(id, pkgVersionObject, "");
@@ -1599,9 +1602,11 @@ namespace DynamoCoreWpfTests.PackageManager
             // Users should get 2 warnings :
             // 1. To confirm that they want to download the specified package.
             // 2. That this package is a legacy package.
-            dlgMock.Verify(x => x.Show(It.IsAny<Window>(), string.Format(Dynamo.Wpf.Properties.Resources.MessagePackageOlderDynamo, ViewModel.BrandingResourceProvider.ProductName),
+            dlgMock.Verify(x => x.Show(null,
+                       $"{string.Format(Dynamo.Wpf.Properties.Resources.MessagePackageOlderDynamo, ViewModel.BrandingResourceProvider.ProductName)} {Dynamo.Wpf.Properties.Resources.MessagePackOlderDynamoLink}",
                        string.Format(Dynamo.Wpf.Properties.Resources.PackageUseOlderDynamoMessageBoxTitle, ViewModel.BrandingResourceProvider.ProductName),
-                        MessageBoxButton.OKCancel,MessageBoxImage.Warning), Times.Exactly(1));
+                       true,
+                        MessageBoxButton.OKCancel,MessageBoxImage.Exclamation), Times.Exactly(1));
 
         }
         #endregion

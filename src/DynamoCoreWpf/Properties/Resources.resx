@@ -3946,7 +3946,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>This package or one of its dependencies were created for a previous version of Dynamo. It may not work in this version. Do you want to continue?</value>
   </data>
   <data name="PackageUseOlderDynamoMessageBoxTitle" xml:space="preserve">
-    <value>Package may not work in this version of Dynamo {0}!</value>
+    <value>Package may not work in this version of {0}!</value>
   </data>
   <data name="MessagePackOlderDynamoLink" xml:space="preserve">
     <value>#Learn more=https://primer2.dynamobim.org/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8</value>

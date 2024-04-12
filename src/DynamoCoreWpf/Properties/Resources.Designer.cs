@@ -7139,7 +7139,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package may not work in this version of Dynamo {0}!.
+        ///   Looks up a localized string similar to Package may not work in this version of {0}!.
         /// </summary>
         public static string PackageUseOlderDynamoMessageBoxTitle {
             get {

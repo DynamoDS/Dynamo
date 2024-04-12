@@ -892,7 +892,7 @@ namespace Dynamo.ViewModels
 
                 // If any of the required packages use a newer version of Dynamo, show a dialog to the user
                 // allowing them to cancel the package download
-                if (true)
+                if (futureDeps.Any())
                 {
                     var res = MessageBoxService.Show(ViewModelOwner,
                         $"{string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
