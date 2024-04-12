@@ -21,6 +21,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
+using DynamoServices;
 using Greg.AuthProviders;
 using Greg.Responses;
 using Prism.Commands;
@@ -883,45 +884,58 @@ namespace Dynamo.ViewModels
                 // Determine if there are any dependencies that have a newer dynamo version, (this includes the root package).
                 // We assume this means this package is compatibile with that dynamo version, but we should warn the user it
                 // may not work with the current version of Dynamo.
-                var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
-                var futureDeps = newPackageHeaders.Where(dep => VersionUtilities.PartialParse(dep.engine_version) > dynamoVersion);
-                // also identify packages that have a dynamo engine version less than 3.x as a special case,
-                // as Dynamo 3.x uses .net8 and older versions used .net framework - these packages may not be compatible.
-                // This check will return empty if the current major version is not 3.
-                var preDYN3Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 3 && VersionUtilities.PartialParse(dep.engine_version).Major < dynamoVersion.Major);
 
-                // If any of the required packages use a newer version of Dynamo, show a dialog to the user
-                // allowing them to cancel the package download
-                if (futureDeps.Any())
+                //wrap in try catch as it's possible version info could be missing. If so, we install the package and log an error.
+                try
                 {
-                    var res = MessageBoxService.Show(ViewModelOwner,
-                        $"{string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
-                        string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
+                    var dynamoVersion = Version.Parse(DynamoModel.Version);
+                    var futureDeps = newPackageHeaders.Where(dep => Version.Parse(dep.engine_version) > dynamoVersion);
+                    // also identify packages that have a dynamo engine version less than 3.x as a special case,
+                    // as Dynamo 3.x uses .net8 and older versions used .net framework - these packages may not be compatible.
+                    // This check will return empty if the current major version is not 3.
+                    var preDYN3Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 3 && Version.Parse(dep.engine_version).Major < dynamoVersion.Major);
+
+                    // If any of the required packages use a newer version of Dynamo, show a dialog to the user
+                    // allowing them to cancel the package download
+                    if (futureDeps.Any())
+                    {
+                        var res = MessageBoxService.Show(ViewModelOwner,
+                            $"{string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
+                            string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
+                            //this message has a url link so we use the rich text box version of the message box.
+                            showRichTextBox: true,
+                            MessageBoxButton.OKCancel,
+                            MessageBoxImage.Warning);
+                        if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
+                        {
+                            return;
+                        }
+                    }
+
+                    //if any of the required packages use a pre 3.x version of Dynamo, show a dialog to the user
+                    //allowing them to cancel the package download
+                    if (preDYN3Deps.Any())
+                    {
+                        var res = MessageBoxService.Show(ViewModelOwner,
+                        $"{string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
+                        string.Format(Resources.PackageUseOlderDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
                         //this message has a url link so we use the rich text box version of the message box.
                         showRichTextBox: true,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Warning);
-                    if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
-                    {
-                        return;
+                        if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
+                        {
+                            return;
+                        }
                     }
                 }
-
-                //if any of the required packages use a pre 3.x version of Dynamo, show a dialog to the user
-                //allowing them to cancel the package download
-                if (preDYN3Deps.Any())
+                catch(ArgumentException ex)
                 {
-                    var res = MessageBoxService.Show(ViewModelOwner,
-                    $"{string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
-                    string.Format(Resources.PackageUseOlderDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
-                    //this message has a url link so we use the rich text box version of the message box.
-                    showRichTextBox:true,
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Warning);
-                    if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
-                    {
-                        return; 
-                    }
+                    DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
+                }
+                catch(FormatException ex)
+                {
+                    DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
                 }
 
                 // add custom path to custom package folder list
