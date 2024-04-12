@@ -16,7 +16,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
-using Dynamo.Wpf.Views.Preview;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 
 namespace Dynamo.Controls
@@ -128,8 +127,6 @@ namespace Dynamo.Controls
             ContentFontSize = Configurations.PreviewTextFontSize;
             preview_LastMaxWidth = double.MaxValue;
             preview_LastMaxHeight = double.MaxValue;
-
-            //Visibility = Visibility.Collapsed;
 
             this.DataContextChanged += InfoBubbleView_DataContextChanged;
         }
@@ -290,6 +287,9 @@ namespace Dynamo.Controls
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
             backgroundPolygon.Stroke = FrozenResources.WarningFrameStrokeColor;
 
+            ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
+
             ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
             ContentMaxWidth = Configurations.ErrorContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
@@ -304,6 +304,11 @@ namespace Dynamo.Controls
             backgroundPolygon.Fill = FrozenResources.WarningFrameFill;
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
             backgroundPolygon.Stroke = FrozenResources.WarningFrameStrokeColor;
+
+            ContentContainer.MaxWidth = Configurations.ErrorCondensedMaxWidth;
+            ContentContainer.MinWidth = Configurations.ErrorCondensedMinWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorCondensedMaxHeight;
+            ContentContainer.MinHeight = Configurations.ErrorCondensedMinHeight;
 
             ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
             ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
@@ -320,6 +325,8 @@ namespace Dynamo.Controls
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
             backgroundPolygon.Stroke = FrozenResources.ErrorFrameStrokeColor;
 
+            ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
 
             ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
             ContentMaxWidth = Configurations.ErrorContentMaxWidth;
@@ -335,6 +342,11 @@ namespace Dynamo.Controls
             backgroundPolygon.Fill = FrozenResources.ErrorFrameFill;
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
             backgroundPolygon.Stroke = FrozenResources.ErrorFrameStrokeColor;
+
+            ContentContainer.MaxWidth = Configurations.ErrorCondensedMaxWidth;
+            ContentContainer.MinWidth = Configurations.ErrorCondensedMinWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorCondensedMaxHeight;
+            ContentContainer.MinHeight = Configurations.ErrorCondensedMinHeight;
 
             ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
             ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
@@ -356,6 +368,8 @@ namespace Dynamo.Controls
             //  expected size of it by using TextBox.Measure(..) method it will return the wrong value.
             //  The only solution that I can come up for now is clean the StackPanel content and 
             //  then add a new TextBox to it
+
+            ContentContainer.Children.Clear();
 
             if (ViewModel == null) return;
 
@@ -410,6 +424,7 @@ namespace Dynamo.Controls
                 Grid.SetRow(r3, 2);
                 myGrid.UseLayoutRounding = true;
 
+                ContentContainer.Children.Add(myGrid);
 
                 #endregion
             }
@@ -423,6 +438,15 @@ namespace Dynamo.Controls
                 else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
                 {
                     content = Wpf.Properties.Resources.InfoBubbleError + content;
+                }
+
+                TextBox textBox = GetNewTextBox(content);
+                ContentContainer.Children.Add(textBox);
+
+                if (viewModel.DocumentationLink != null)
+                {
+                    TextBlock linkBlock = GetHyperlinkTextBlock();
+                    ContentContainer.Children.Add(linkBlock);
                 }
             }
         }
@@ -511,6 +535,25 @@ namespace Dynamo.Controls
 
         private void UpdateShape()
         {
+            ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            double estimatedHeight = ContentContainer.DesiredSize.Height;
+            double estimatedWidth = ContentContainer.DesiredSize.Width;
+
+            PointCollection framePoints = new PointCollection();
+            switch (ViewModel.InfoBubbleStyle)
+            {
+                case InfoBubbleViewModel.Style.Warning:
+                case InfoBubbleViewModel.Style.WarningCondensed:
+                case InfoBubbleViewModel.Style.Error:
+                case InfoBubbleViewModel.Style.ErrorCondensed:
+                    framePoints = GetFramePoints_Error(estimatedHeight, estimatedWidth);
+                    break;
+                case InfoBubbleViewModel.Style.None:
+                    break;
+            }
+
+            if (framePoints != null)
+                backgroundPolygon.Points = framePoints;
         }
 
         private PointCollection GetFramePoints_NodeTooltipConnectBottom(double estimatedHeight, double estimatedWidth)
@@ -653,7 +696,7 @@ namespace Dynamo.Controls
             Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
             Canvas.SetLeft(mainGrid, ViewModel.TargetTopLeft.X);
         }
-        
+
         #endregion
 
         #region Resize
@@ -665,9 +708,25 @@ namespace Dynamo.Controls
             double newMaxWidth = deltaPoint.X;
             double newMaxHeight = deltaPoint.Y;
 
+            if (deltaPoint.X != double.MaxValue && newMaxWidth >= Configurations.PreviewMinWidth &&
+                newMaxWidth <= Configurations.PreviewMaxWidth)
+            {
+                ContentContainer.MaxWidth = newMaxWidth;
+                contentMaxWidth = newMaxWidth - 10;
+            }
+
+            if (deltaPoint.Y != double.MaxValue && newMaxHeight >= Configurations.PreviewMinHeight)
+            {
+                ContentContainer.MaxHeight = newMaxHeight;
+                contentMaxHeight = newMaxHeight - 17;
+            }
+
             UpdateContent();
             UpdateShape();
             UpdatePosition();
+
+            this.preview_LastMaxWidth = ContentContainer.MaxWidth;
+            this.preview_LastMaxHeight = ContentContainer.MaxHeight;
         }
 
         #endregion
@@ -863,10 +922,10 @@ namespace Dynamo.Controls
         private void ShowAllErrorsButton_Click(object sender, RoutedEventArgs e)
         {
             // If we're already expanded, this button collapses the border
-            if (ViewModel.NodeErrorsVisibilityState == 
+            if (ViewModel.NodeErrorsVisibilityState ==
                 InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
             {
-                ViewModel.NodeErrorsVisibilityState = 
+                ViewModel.NodeErrorsVisibilityState =
                     InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
                 ViewModel.NodeErrorsShowLessMessageVisible = false;
                 return;
@@ -898,7 +957,7 @@ namespace Dynamo.Controls
             if (ViewModel.NodeInfoVisibilityState ==
                 InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
             {
-                ViewModel.NodeInfoVisibilityState = 
+                ViewModel.NodeInfoVisibilityState =
                     InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
                 ViewModel.NodeInfoShowLessMessageVisible = false;
                 return;
@@ -932,7 +991,7 @@ namespace Dynamo.Controls
         private void ClearDismissedMessagesOfStyle(InfoBubbleViewModel.Style style)
         {
             ObservableCollection<InfoBubbleDataPacket> messagesToDismiss = GetDismissedMessagesOfStyle(style);
-            
+
             for (int i = messagesToDismiss.Count - 1; i >= 0; i--)
             {
                 ViewModel.DismissedMessages.RemoveAt(i);
@@ -1031,7 +1090,7 @@ namespace Dynamo.Controls
             HorizontalAlignment left = HorizontalAlignment.Left;
 
             bool isIcon;
-            
+
             switch (border.Name)
             {
                 case "InfoBorder":
