@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Threading;
 using DSCore;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
@@ -126,7 +125,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted += hwm_EvaluationStarted;
             hwm.EvaluationCompleted += hwm_EvaluationCompleted;
-            hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
+            hwm.SetNodeDeltaState += hwm_SetNodeDeltaState;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
             dynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
@@ -150,7 +149,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 Properties.Resources.RunReady; // Default value of the notification text block on opening
 
             FooterNotificationItem[]
-                footerItems = new FooterNotificationItem[3]; 
+                footerItems = new FooterNotificationItem[3];
             footerItems[0] = new FooterNotificationItem()
             {
                 NotificationCount = 0,
@@ -252,8 +251,19 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            //just call it directly 
-            UpdateNodeInfoBubbleContent(e);
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.BeginInvoke(new Action(() =>
+                {
+                    UpdateNodeInfoBubbleContent(e);
+                }));
+            }
+            else
+            {
+                //just call it directly 
+                UpdateNodeInfoBubbleContent(e);
+            }
+
             UpdateRunStatusMsgBasedOnStates();
             UpdateFooterItems(HasInfos, HasWarnings, HasErrors);
         }
@@ -265,7 +275,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         internal void UpdateRunStatusMsgBasedOnStates()
         {
             // Clear run status message if home workspace is not current workspace (custom node workspace)
-            if(IsHomeSpace && !IsCurrentSpace)
+            if (IsHomeSpace && !IsCurrentSpace)
             {
                 SetCurrentWarning(NotificationLevel.Mild, string.Empty);
                 return;
@@ -327,11 +337,11 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// <param name="hasErrors"></param>
         private void UpdateFooterItems(bool hasInfo, bool hasWarnings, bool hasErrors)
         {
-            
+
             if (hasErrors)
                 FooterNotificationItems[0].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Error);
             else
-                if(FooterNotificationItems[0].NotificationCount != 0) FooterNotificationItems[0].NotificationCount = 0;
+                if (FooterNotificationItems[0].NotificationCount != 0) FooterNotificationItems[0].NotificationCount = 0;
             if (hasWarnings)
                 FooterNotificationItems[1].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
             else
@@ -346,22 +356,13 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             if (evalargs.MessageKeys == null) return;
 
-            // If running Dynamo with UI, use dispatcher, otherwise not
-            DynamoViewModel.UIDispatcher.Invoke(() =>
+            foreach (var messageID in evalargs.MessageKeys)
             {
-                foreach (var messageID in evalargs.MessageKeys)
-                {
-                    var node = Nodes.FirstOrDefault(n => n.Id == messageID);
-                    if (node == null) continue;
+                var node = Nodes.FirstOrDefault(n => n.Id == messageID);
+                if (node == null) continue;
 
-                    node.UpdateBubbleContent();
-
-                    if (!Errors.Contains(node.ErrorBubble))
-                    {
-                        Errors.Add(node.ErrorBubble);
-                    }
-                }
-            });
+                node.UpdateBubbleContent();
+            }
         }
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
@@ -422,7 +423,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             return true;
         }
-        
+
         /// <summary> 
         /// Fit the current workspace view to the current selection
         /// </summary>
@@ -464,23 +465,23 @@ namespace Dynamo.Wpf.ViewModels.Core
                 this.notificationsCounter = 0;
                 this.footerNotificationType = currentNotificationType;
             }
-            
+
             // If we have reached the maximum nodes for this type, select all and reset the counter
             int maxCount = nodeModels.Length;
             if (IsMaxNotificationCounter(this.notificationsCounter, maxCount))
             {
                 this.notificationsCounter = 0;
             }
-            
+
             var node = nodeModels.ElementAt(this.notificationsCounter);
             nodeToSelect = node.GUID;
             this.notificationsCounter++;
-            
+
 
             // Select
             var command = new DynamoModel.SelectModelCommand(nodeToSelect, ModifierKeys.None);
             this.DynamoViewModel.ExecuteCommand(command);
-            
+
             // Focus on selected
             this.DynamoViewModel.CurrentSpaceViewModel.FocusNodeCommand.Execute(nodeToSelect.ToString());
         }
@@ -543,14 +544,14 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             if ("Inverse".Equals((string)parameter))
             {
-                if ((int) value == 0)
+                if ((int)value == 0)
                 {
                     return Visibility.Visible;
                 }
                 return Visibility.Collapsed;
             }
 
-            if ((int) value == 0)
+            if ((int)value == 0)
             {
                 return Visibility.Collapsed;
             }
@@ -583,8 +584,8 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// <summary>
         /// The number of Warnings, Errors or Info Nodes
         /// </summary>
-        public int NotificationCount 
-        { 
+        public int NotificationCount
+        {
             get { return _notificationCount; }
             set
             {
