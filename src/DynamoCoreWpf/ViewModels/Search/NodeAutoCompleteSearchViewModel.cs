@@ -185,15 +185,24 @@ namespace Dynamo.ViewModels
             // TODO: These are basic input types in Dynamo
             // This should be only served as a temporary default case.
             var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
-            foreach (var query in queries)
+            var nodeNamesList = DynamoViewModel.DefaultAutocompleteCandidates.Keys.ToList();
+            if (nodeNamesList.Where(queries.Contains).Any() == true)
             {
-                var foundNode = Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
-                if(foundNode != null)
-                {
-                    candidates.Add(foundNode);
-                }
+                DefaultResults = DynamoViewModel.DefaultAutocompleteCandidates.Values;
             }
-            DefaultResults = candidates;
+            else
+            {
+                foreach (var query in queries)
+                {
+                    var foundNode = Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
+                    if (foundNode != null)
+                    {
+                        candidates.Add(foundNode);
+                        DynamoViewModel.DefaultAutocompleteCandidates.Add(foundNode.Name, foundNode);
+                    }
+                }
+                DefaultResults = candidates;
+            }
         }
 
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
