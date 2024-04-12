@@ -226,8 +226,8 @@ namespace Dynamo.Controls
         private void ViewModel_ErrorBubbleCreated()
         {
             Dispatcher.Invoke(new Action(() => {
-                InfoBubble.Visibility = Visibility.Visible;
-                InfoBubble.DataContext = ViewModel.ErrorBubble;
+                //InfoBubble.Visibility = Visibility.Visible;
+                //InfoBubble.DataContext = ViewModel.ErrorBubble;
             }));
         }
 

@@ -129,7 +129,7 @@ namespace Dynamo.Controls
             preview_LastMaxWidth = double.MaxValue;
             preview_LastMaxHeight = double.MaxValue;
 
-            Visibility = Visibility.Collapsed;
+            //Visibility = Visibility.Collapsed;
 
             this.DataContextChanged += InfoBubbleView_DataContextChanged;
         }
@@ -179,24 +179,7 @@ namespace Dynamo.Controls
         private void InfoBubbleView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             ViewModel = e.NewValue as InfoBubbleViewModel;
-
-            switch (ViewModel.InfoBubbleState)
-            {
-                case InfoBubbleViewModel.State.Minimized:
-                    mainGrid.Visibility = Visibility.Collapsed;
-                    mainGrid.Opacity = 0;
-                    break;
-                case InfoBubbleViewModel.State.Pinned:
-                    mainGrid.Visibility = Visibility.Visible;
-                    mainGrid.Opacity = Configurations.MaxOpacity;
-                    UpdateStyle();
-                    break;
-            }
-
-            
             UpdateContent();
-            UpdateShape();
-            UpdatePosition();
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -667,8 +650,8 @@ namespace Dynamo.Controls
         /// </summary>
         private void UpdatePosition()
         {
-            //Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
-            //Canvas.SetLeft(mainGrid, ViewModel.TargetTopLeft.X);
+            Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
+            Canvas.SetLeft(mainGrid, ViewModel.TargetTopLeft.X);
         }
         
         #endregion
@@ -869,11 +852,8 @@ namespace Dynamo.Controls
         /// </summary>
         public void Dispose()
         {
-            if (viewModel != null)
-            {
-                viewModel.PropertyChanged -= ViewModel_PropertyChanged;
-                viewModel.RequestAction -= InfoBubbleRequestAction;
-            }
+            viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            viewModel.RequestAction -= InfoBubbleRequestAction;
 
             // make sure we unsubscribe from handling the hyperlink click event
             if (this.hyperlink != null)

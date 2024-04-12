@@ -19,6 +19,10 @@
         <nodes:NoteView></nodes:NoteView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type viewModels:InfoBubbleViewModel}">
+        <controls:InfoBubbleView></controls:InfoBubbleView>
+    </DataTemplate>
+    
     <DataTemplate DataType="{x:Type viewModels:AnnotationViewModel}">
         <nodes:AnnotationView></nodes:AnnotationView>
     </DataTemplate>

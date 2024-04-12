@@ -1268,7 +1268,7 @@ namespace Dynamo.ViewModels
                     // ErrorBubble's ZIndex should be the node's ZIndex + 2.
                     ZIndex = ZIndex + 2
                 };
-                ErrorBubbleCreated?.Invoke();
+                //ErrorBubbleCreated?.Invoke();
             }
 
             ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;

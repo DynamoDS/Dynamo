@@ -581,10 +581,8 @@
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True" />
 
-        <b:InfoBubbleView x:Name="InfoBubble" Visibility="Collapsed" DataContext="{Binding Path=DataContext.ErrorBubble}" >
-            
-        </b:InfoBubbleView>
-        
+        <!--b:InfoBubbleView x:Name="InfoBubble" Visibility="Collapsed" DataContext="{Binding Path=DataContext.ErrorBubble}" /-->
+
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is above 0.4 -->
         <Border Name="nodeColorOverlayZoomIn"
                 Grid.Row="1"

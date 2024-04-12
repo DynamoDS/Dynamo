@@ -347,32 +347,21 @@ namespace Dynamo.Wpf.ViewModels.Core
             if (evalargs.MessageKeys == null) return;
 
             // If running Dynamo with UI, use dispatcher, otherwise not
-            if (DynamoViewModel.UIDispatcher != null)
+            DynamoViewModel.UIDispatcher.Invoke(() =>
             {
-                DynamoViewModel.UIDispatcher.Invoke(() =>
+                foreach (var messageID in evalargs.MessageKeys)
                 {
-                    foreach (var messageID in evalargs.MessageKeys)
+                    var node = Nodes.FirstOrDefault(n => n.Id == messageID);
+                    if (node == null) continue;
+
+                    node.UpdateBubbleContent();
+
+                    if (!Errors.Contains(node.ErrorBubble))
                     {
-                        GetViewModel(messageID, out NodeViewModel node);
-                        if (node == null) continue;
-
-                        node.UpdateBubbleContent();
-
-                        //if (!Errors.Contains(node.ErrorBubble))
-                        //{
-                        //    bbubbles.Add(node.ErrorBubble);
-                        //}
+                        Errors.Add(node.ErrorBubble);
                     }
-                });
-            }
-
-            //List<InfoBubbleViewModel> bbubbles = [];
- 
-            //DynamoViewModel.UIDispatcher.Invoke(() =>
-            //{
-            //    bbubbles.ForEach(x => Errors.Add(x));
-            //});
-            //DynamoViewModel.UIDispatcher.Invoke(() => {});
+                }
+            });
         }
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
