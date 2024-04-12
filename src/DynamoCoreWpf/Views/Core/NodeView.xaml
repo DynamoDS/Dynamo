@@ -6,6 +6,7 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:controls="clr-namespace:Dynamo.Views"
+             xmlns:b="clr-namespace:Dynamo.Controls"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -580,6 +581,10 @@
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True" />
 
+        <b:InfoBubbleView x:Name="InfoBubble" Visibility="Collapsed" DataContext="{Binding Path=DataContext.ErrorBubble}" >
+            
+        </b:InfoBubbleView>
+        
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is above 0.4 -->
         <Border Name="nodeColorOverlayZoomIn"
                 Grid.Row="1"

@@ -219,7 +219,16 @@ namespace Dynamo.Controls
             ViewModel.RequestPortContextMenuPopupPlacementTarget += ViewModel_RequestPortContextMenuPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
+            ViewModel.ErrorBubbleCreated += ViewModel_ErrorBubbleCreated;
             MouseLeave += NodeView_MouseLeave;
+        }
+
+        private void ViewModel_ErrorBubbleCreated()
+        {
+            Dispatcher.Invoke(new Action(() => {
+                InfoBubble.Visibility = Visibility.Visible;
+                InfoBubble.DataContext = ViewModel.ErrorBubble;
+            }));
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)

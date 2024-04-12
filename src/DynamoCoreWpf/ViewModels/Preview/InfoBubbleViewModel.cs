@@ -479,7 +479,6 @@ namespace Dynamo.ViewModels
             {
                 InitializeInfoBubble(nodeViewModel.DynamoViewModel);
 
-            
                 var data = new InfoBubbleDataPacket
                 {
                     TopLeft = nodeViewModel.GetTopLeft(),

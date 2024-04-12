@@ -118,6 +118,8 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
+        internal event Action ErrorBubbleCreated;
+
         [JsonIgnore]
         public ObservableCollection<PortViewModel> InPorts
         {
@@ -1256,31 +1258,24 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void BuildErrorBubble()
         {
-            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(this)
+            if (ErrorBubble == null)
             {
-                IsCollapsed = this.IsCollapsed
-            };
+                ErrorBubble = new InfoBubbleViewModel(this)
+                {
+                    IsCollapsed = this.IsCollapsed,
+                    // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
+                    // the node as well and the ErrorBubble needs to display on top of these, the
+                    // ErrorBubble's ZIndex should be the node's ZIndex + 2.
+                    ZIndex = ZIndex + 2
+                };
+                ErrorBubbleCreated?.Invoke();
+            }
 
             ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
-            
-            if (DynamoViewModel.UIDispatcher != null)
-            {
-                DynamoViewModel.UIDispatcher.Invoke(() =>
-                {
-                    WorkspaceViewModel.Errors.Add(ErrorBubble);
-                });
-            }
-            
-            // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
-            // the node as well and the ErrorBubble needs to display on top of these, the
-            // ErrorBubble's ZIndex should be the node's ZIndex + 2.
-            ErrorBubble.ZIndex = ZIndex + 2;
-
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
-            
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
         }
 
@@ -1482,7 +1477,7 @@ namespace Dynamo.ViewModels
 
             if (ErrorBubble == null) BuildErrorBubble();
 
-            if (!WorkspaceViewModel.Errors.Contains(ErrorBubble)) return;
+            //if (!WorkspaceViewModel.Errors.Contains(ErrorBubble)) return;
 
             var topLeft = new Point(NodeModel.X, NodeModel.Y);
             var botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
@@ -1523,32 +1518,15 @@ namespace Dynamo.ViewModels
 
             ErrorBubble.InfoBubbleStyle = style;
 
-            // If running Dynamo with UI, use dispatcher, otherwise not
-            if (DynamoViewModel.UIDispatcher != null)
+            foreach (var data in packets)
             {
-                DynamoViewModel.UIDispatcher.Invoke(() =>
+                if (!ErrorBubble.NodeMessages.Contains(data))
                 {
-                    foreach (var data in packets)
-                    {
-                        if (!ErrorBubble.NodeMessages.Contains(data))
-                        {
-                            ErrorBubble.NodeMessages.Add(data);
-                        }
-                    }
-                    HandleColorOverlayChange();
-                });
-            }
-            else
-            {
-                foreach (var data in packets)
-                {
-                    if (!ErrorBubble.NodeMessages.Contains(data))
-                    {
-                        ErrorBubble.NodeMessages.Add(data);
-                    }
+                    ErrorBubble.NodeMessages.Add(data);
                 }
-                HandleColorOverlayChange();
             }
+            HandleColorOverlayChange();
+
             ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);            
         }
 

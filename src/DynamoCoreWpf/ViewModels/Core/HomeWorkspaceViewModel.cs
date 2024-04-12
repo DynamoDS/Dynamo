@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 using DSCore;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
@@ -251,19 +252,8 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            if (DynamoViewModel.UIDispatcher != null)
-            {
-                DynamoViewModel.UIDispatcher.BeginInvoke(new Action(() =>
-                {
-                    UpdateNodeInfoBubbleContent(e);
-                }));
-            }
-            else
-            {
-                //just call it directly 
-                UpdateNodeInfoBubbleContent(e);
-            }
-
+            //just call it directly 
+            UpdateNodeInfoBubbleContent(e);
             UpdateRunStatusMsgBasedOnStates();
             UpdateFooterItems(HasInfos, HasWarnings, HasErrors);
         }
@@ -356,13 +346,33 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             if (evalargs.MessageKeys == null) return;
 
-            foreach (var messageID in evalargs.MessageKeys)
+            // If running Dynamo with UI, use dispatcher, otherwise not
+            if (DynamoViewModel.UIDispatcher != null)
             {
-                var node = Nodes.FirstOrDefault(n => n.Id == messageID);
-                if (node == null) continue;
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    foreach (var messageID in evalargs.MessageKeys)
+                    {
+                        GetViewModel(messageID, out NodeViewModel node);
+                        if (node == null) continue;
 
-                node.UpdateBubbleContent();
+                        node.UpdateBubbleContent();
+
+                        //if (!Errors.Contains(node.ErrorBubble))
+                        //{
+                        //    bbubbles.Add(node.ErrorBubble);
+                        //}
+                    }
+                });
             }
+
+            //List<InfoBubbleViewModel> bbubbles = [];
+ 
+            //DynamoViewModel.UIDispatcher.Invoke(() =>
+            //{
+            //    bbubbles.ForEach(x => Errors.Add(x));
+            //});
+            //DynamoViewModel.UIDispatcher.Invoke(() => {});
         }
 
         void hwm_EvaluationStarted(object sender, EventArgs e)

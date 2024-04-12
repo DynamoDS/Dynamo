@@ -4080,6 +4080,8 @@ Dynamo.Wpf.Views.PackageManager.PackagePathView.PackagePathView() -> void
 Dynamo.Wpf.Views.PreferencesView
 Dynamo.Wpf.Views.PreferencesView.InitializeComponent() -> void
 Dynamo.Wpf.Views.PreferencesView.PreferencesView(Dynamo.Controls.DynamoView dynamoView) -> void
+Dynamo.Wpf.Views.Preview.InfoBubbleDetailedView
+Dynamo.Wpf.Views.Preview.InfoBubbleDetailedView.InfoBubbleDetailedView() -> void
 Dynamo.Wpf.Views.Preview.Watch3DSettingsControl
 Dynamo.Wpf.Views.Preview.Watch3DSettingsControl.InitializeComponent() -> void
 Dynamo.Wpf.Views.Preview.Watch3DSettingsControl.Watch3DSettingsControl() -> void

@@ -77,6 +77,10 @@
     </Target>
 
     <ItemGroup>
+      <None Remove="Packages\**" />
+    </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
@@ -112,12 +116,13 @@
     <None Remove="Views\PackageManager\Pages\PublishPackageSelectPage.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
+    
   <ItemGroup>
-    <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
-    <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
-    <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
-    <EmbeddedResource Include="Packages\DynamoHome\build\index.bundle.js" />
-    <EmbeddedResource Include="Packages\DynamoHome\build\index.html" />
+      <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
+      <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
+      <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
+      <EmbeddedResource Include="Packages\DynamoHome\build\index.bundle.js" />
+      <EmbeddedResource Include="Packages\DynamoHome\build\index.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -505,6 +510,7 @@
       <DependentUpon>PreferencesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\CameraExtensions.cs" />
+    <Compile Include="Views\Preview\InfoBubbleDetailedView.xaml.cs" />
     <Compile Include="Views\Preview\PreviewCompactView.xaml.cs">
       <DependentUpon>PreviewCompactView.xaml</DependentUpon>
     </Compile>
@@ -525,6 +531,9 @@
     </Compile>
     <Compile Include="Views\Preview\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Preview\InfoBubbleDetailedView.xaml.cs">
+      <DependentUpon>InfoBubbleDetailedView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Search\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
@@ -1530,6 +1539,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Preview\InfoBubbleDetailedView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\Search\LibraryView.xaml">
@@ -1830,6 +1843,9 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\Preview\InfoBubbleDetailedView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
