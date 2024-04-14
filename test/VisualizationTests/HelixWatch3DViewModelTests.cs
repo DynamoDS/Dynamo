@@ -1251,7 +1251,10 @@ namespace WpfVisualizationTests
 
             output.RenderPackagesUpdated += TestRenderPackageUpdate;
 
-            output.RequestVisualUpdateAsync(ViewModel.Model.Scheduler, ViewModel.Model.EngineController, new HelixRenderPackageFactory(), true);
+            var factory = new HelixRenderPackageFactory();
+            factory.TessellationParameters.UseRenderInstancing = true;
+
+            output.RequestVisualUpdateAsync(ViewModel.Model.Scheduler, ViewModel.Model.EngineController, factory, true);
         }
 
         private void TestRenderPackageUpdate(NodeModel nodeModel, RenderPackageCache renderPackages) {
