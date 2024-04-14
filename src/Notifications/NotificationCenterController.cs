@@ -140,6 +140,9 @@ namespace Dynamo.Notifications
 
             string setBottomButtonText = String.Format("window.setBottomButtonText('{0}');", Properties.Resources.NotificationsCenterBottomButtonText);
             InvokeJS(setBottomButtonText);
+
+            string setNoNotificationsTexts = String.Format("window.setNoNotificationsTexts('{{\"title\":\"{0}\", \"msg\":\"{1}\"}}');", Properties.Resources.NoNotificationsTitle, Properties.Resources.NoNotificationsMsg);
+            InvokeJS(setNoNotificationsTexts);
         }
 
         private void AddNotifications(List<NotificationItemModel> notifications)

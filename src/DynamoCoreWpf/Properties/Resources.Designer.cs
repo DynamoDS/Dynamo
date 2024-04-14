@@ -7382,6 +7382,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset Template Location.
+        /// </summary>
+        public static string PreferencesSettingResetTemplateLocationTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesSettingResetTemplateLocationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Backup location.
         /// </summary>
         public static string PreferencesSettingsBackupFailedMessage {
@@ -7409,11 +7418,56 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to update template location.
+        /// </summary>
+        public static string PreferencesSettingsTemplateFailedMessage {
+            get {
+                return ResourceManager.GetString("PreferencesSettingsTemplateFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Template Location.
+        /// </summary>
+        public static string PreferencesSettingsTemplateFailedTitle {
+            get {
+                return ResourceManager.GetString("PreferencesSettingsTemplateFailedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Folder for Templates.
+        /// </summary>
+        public static string PreferencesSettingsTemplateLocationDialogTitle {
+            get {
+                return ResourceManager.GetString("PreferencesSettingsTemplateLocationDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Templates Path.
+        /// </summary>
+        public static string PreferencesSettingTemplateLocationLabel {
+            get {
+                return ResourceManager.GetString("PreferencesSettingTemplateLocationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Backup Location.
         /// </summary>
         public static string PreferencesSettingUpdateBackupLocationTooltip {
             get {
                 return ResourceManager.GetString("PreferencesSettingUpdateBackupLocationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Template Location.
+        /// </summary>
+        public static string PreferencesSettingUpdateTemplateLocationTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesSettingUpdateTemplateLocationTooltip", resourceCulture);
             }
         }
         
@@ -7616,6 +7670,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewGeneralSettingsRun {
             get {
                 return ResourceManager.GetString("PreferencesViewGeneralSettingsRun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Templates.
+        /// </summary>
+        public static string PreferencesViewGeneralSettingsTemplate {
+            get {
+                return ResourceManager.GetString("PreferencesViewGeneralSettingsTemplate", resourceCulture);
             }
         }
         
@@ -7908,6 +7971,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Instancing (Beta).
+        /// </summary>
+        public static string PreferencesViewVisualSettingUseInstancing {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingUseInstancing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 0%.
         /// </summary>
         public static string PreferencesViewZoomScaling0Percent {
@@ -7994,6 +8066,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesWindowShowPreviewBubblesTooltip {
             get {
                 return ResourceManager.GetString("PreferencesWindowShowPreviewBubblesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, some symmetric geometry types such as cubes, rectangles, or spheres will render faster due to mutiple copies being drawn at once vs sequentially..
+        /// </summary>
+        public static string PreferencesWindowUseInstancingTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowUseInstancingTooltip", resourceCulture);
             }
         }
         
@@ -10234,7 +10315,8 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file..
+        ///   Looks up a localized string similar to Workspaces cannot be saved directly to the Templates folder. Please choose a different folder to save your file.
+        ///To make this file into a new template, save it to a different folder, then move it to the Templates folder..
         /// </summary>
         public static string WorkspaceSaveTemplateDirectoryBlockMsg {
             get {

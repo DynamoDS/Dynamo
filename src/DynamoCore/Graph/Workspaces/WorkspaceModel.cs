@@ -237,6 +237,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal bool ContainsLegacyTraceData { get; set; }
 
+        /// <summary>
+        /// Denotes if the current workspace was created from a template.
+        /// </summary>
+        internal bool IsTemplate { get; set; }
+
         internal bool ScaleFactorChanged = false;
 
         /// <summary>

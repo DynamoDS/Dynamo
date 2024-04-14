@@ -107,6 +107,12 @@ Dynamo.Configuration.GraphChecksumItem.Checksum.set -> void
 Dynamo.Configuration.GraphChecksumItem.GraphChecksumItem() -> void
 Dynamo.Configuration.GraphChecksumItem.GraphId.get -> string
 Dynamo.Configuration.GraphChecksumItem.GraphId.set -> void
+Dynamo.Configuration.GraphChecksumPair
+Dynamo.Configuration.GraphChecksumPair.Checksum.get -> System.Collections.Generic.List<string>
+Dynamo.Configuration.GraphChecksumPair.Checksum.set -> void
+Dynamo.Configuration.GraphChecksumPair.GraphChecksumPair() -> void
+Dynamo.Configuration.GraphChecksumPair.GraphId.get -> string
+Dynamo.Configuration.GraphChecksumPair.GraphId.set -> void
 Dynamo.Configuration.GroupStyleItem
 Dynamo.Configuration.GroupStyleItem.GroupStyleItem() -> void
 Dynamo.Configuration.PreferenceSettings
@@ -250,11 +256,15 @@ Dynamo.Configuration.PreferenceSettings.ShowRunPreview.set -> void
 Dynamo.Configuration.PreferenceSettings.ShowTabsAndSpacesInScriptEditor.get -> bool
 Dynamo.Configuration.PreferenceSettings.ShowTabsAndSpacesInScriptEditor.set -> void
 Dynamo.Configuration.PreferenceSettings.StaticFields() -> System.Collections.Generic.List<string>
+Dynamo.Configuration.PreferenceSettings.TemplateFilePath.get -> string
+Dynamo.Configuration.PreferenceSettings.TemplateFilePath.set -> void
 Dynamo.Configuration.PreferenceSettings.TrustedLocations.get -> System.Collections.Generic.List<string>
 Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.get -> bool
 Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.set -> void
 Dynamo.Configuration.PreferenceSettings.UseHostScaleUnits.get -> bool
 Dynamo.Configuration.PreferenceSettings.UseHostScaleUnits.set -> void
+Dynamo.Configuration.PreferenceSettings.UseRenderInstancing.get -> bool
+Dynamo.Configuration.PreferenceSettings.UseRenderInstancing.set -> void
 Dynamo.Configuration.PreferenceSettings.ViewExtensionSettings.get -> System.Collections.Generic.List<Dynamo.Configuration.ViewExtensionSettings>
 Dynamo.Configuration.PreferenceSettings.ViewExtensionSettings.set -> void
 Dynamo.Configuration.PreferenceSettings.WindowH.get -> double
@@ -1582,6 +1592,8 @@ Dynamo.Interfaces.IPreferences.ShowEdges.get -> bool
 Dynamo.Interfaces.IPreferences.ShowEdges.set -> void
 Dynamo.Interfaces.IPreferences.ShowPreviewBubbles.get -> bool
 Dynamo.Interfaces.IPreferences.ShowPreviewBubbles.set -> void
+Dynamo.Interfaces.IPreferences.TemplateFilePath.get -> string
+Dynamo.Interfaces.IPreferences.TemplateFilePath.set -> void
 Dynamo.Interfaces.IPreferences.WindowH.get -> double
 Dynamo.Interfaces.IPreferences.WindowH.set -> void
 Dynamo.Interfaces.IPreferences.WindowW.get -> double
@@ -1864,6 +1876,8 @@ Dynamo.Models.DynamoModel.ExtensionManager.get -> Dynamo.Extensions.IExtensionMa
 Dynamo.Models.DynamoModel.ForceRun() -> void
 Dynamo.Models.DynamoModel.ForceRunCancelCommand
 Dynamo.Models.DynamoModel.ForceRunCancelCommand.ForceRunCancelCommand(bool showErrors, bool cancelRun) -> void
+Dynamo.Models.DynamoModel.GraphChecksumList.get -> System.Collections.Generic.List<Dynamo.Configuration.GraphChecksumPair>
+Dynamo.Models.DynamoModel.GraphChecksumList.set -> void
 Dynamo.Models.DynamoModel.HostVersion.get -> string
 Dynamo.Models.DynamoModel.HostVersion.set -> void
 Dynamo.Models.DynamoModel.InsertFileCommand

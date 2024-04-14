@@ -56,7 +56,7 @@ jobs:
       - name: Publish Test Report
         id: test_report
         if: always()
-        uses: dorny/test-reporter@v1.8.0
+        uses: dorny/test-reporter@v1.9.0
         with:
           name: ${{ env.CHECK_NAME }}
           path: reports/report.xml

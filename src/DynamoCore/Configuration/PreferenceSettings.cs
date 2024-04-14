@@ -78,6 +78,7 @@ namespace Dynamo.Configuration
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
+        private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
 
         #region Constants
@@ -358,6 +359,12 @@ namespace Dynamo.Configuration
         public bool ShowEdges { get; set; }
 
         /// <summary>
+        /// Indicates whether background preview use instancing when rendering geometry.
+        /// be rendered.
+        /// </summary>
+        public bool UseRenderInstancing { get; set; }
+
+        /// <summary>
         /// Indicates whether show detailed or compact layout during search.
         /// </summary>
         public bool ShowDetailedLayout { get; set; }
@@ -444,6 +451,19 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// Template path
+        /// </summary>
+        public string TemplateFilePath
+        {
+            get { return templateFilePath; }
+            set
+            {
+                templateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateFilePath));
+            }
+        }
+
+        /// <summary>
         /// A list of backup file paths.
         /// </summary>
         public List<string> BackupFiles { get; set; }
@@ -472,6 +492,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Return a list of GraphChecksumItems
         /// </summary>
+        [Obsolete("This property is not needed anymore in the preference settings and can be removed in a future version of Dynamo.")]
         public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
 
         // This function is used to deserialize the trusted locations manually
@@ -921,6 +942,7 @@ namespace Dynamo.Configuration
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
             RenderPrecision = DefaultRenderPrecision;
             ShowEdges = false;
+            UseRenderInstancing = true;
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
@@ -931,6 +953,8 @@ namespace Dynamo.Configuration
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
             BackupLocation = string.Empty;
+
+            TemplateFilePath = string.Empty;
 
             LibraryZoomScale = 100;
             PythonScriptZoomScale = 100;

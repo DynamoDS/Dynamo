@@ -1190,6 +1190,9 @@
                 },
                 {
                   "path": "Core.Data.Remember"
+                },
+                {
+                  "path": "Core.Data.DefineData"
                 }
               ],
               "childElements": []
@@ -1469,9 +1472,22 @@
                 },
                 {
                   "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Mesh"
+                }
+              ],
+              "childElements": []
+            },
+            {
+              "text": "PanelSurface",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurface",
+                  "inclusive": false
                 },
                 {
-                  "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.Panel"
+                  "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition",
+                  "inclusive": true
                 }
               ],
               "childElements": []

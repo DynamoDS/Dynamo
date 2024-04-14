@@ -108,6 +108,8 @@ namespace Dynamo.Controls
             get { return preferencesWindow; }
         }
 
+        internal Dynamo.UI.Views.HomePage homePage;
+
         /// <summary>
         /// Keeps the default value of the Window's MinWidth to calculate it again later
         /// </summary>
@@ -1208,7 +1210,6 @@ namespace Dynamo.Controls
 
                 startPage = new StartPageViewModel(dynamoViewModel, isFirstRun);
                 startPageItemsControl.Items.Add(startPage);
-                homePage.DataContext = startPage;
             }
         }
 
@@ -1383,7 +1384,34 @@ namespace Dynamo.Controls
             {
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
+
+            // Load the new HomePage
+            if (IsNewAppHomeEnabled) LoadHomePage();
+
             loaded = true;
+        }
+
+        // Add the HomePage to the DynamoView once its loaded
+        private void LoadHomePage()
+        {
+            if (homePage == null && (startPage != null))
+            {
+                homePage = new UI.Views.HomePage();
+                homePage.DataContext = startPage;
+
+                var visibilityBinding = new System.Windows.Data.Binding
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DynamoView), 1),
+                    Path = new PropertyPath("DataContext.ShowStartPage"),
+                    Mode = BindingMode.OneWay,
+                    Converter = new BooleanToVisibilityConverter(),
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                };
+
+                BindingOperations.SetBinding(homePage, UIElement.VisibilityProperty, visibilityBinding);
+
+                this.newHomePageContainer.Children.Add(homePage);
+            }
         }
 
         /// <summary>
@@ -2021,12 +2049,22 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
 
-            this.homePage.Dispose();
+            if (homePage != null)
+            {
+                RemoveHomePage();
+            }
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
             this._pkgSearchVM?.Dispose();
             this._pkgVM?.Dispose();
+        }
+
+        // Remove the HomePage from the visual tree and dispose of its resources
+        private void RemoveHomePage()
+        {
+            this.newHomePageContainer.Children.Remove(homePage);
+            this.homePage.Dispose();
         }
 
         // the key press event is being intercepted before it can get to

@@ -117,7 +117,8 @@
                     Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="T"
                     Modifiers="Control"
-                    Command="{Binding Path=DataContext.ShowOpenTemplateDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.ShowOpenTemplateDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                    CommandParameter="Template"/>
         <KeyBinding Key="I"
                     Modifiers="Control+Shift"
                     Command="{Binding Path=DataContext.ShowInsertDialogAndInsertResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -183,9 +184,6 @@
         <MouseBinding Gesture="Shift+LeftDoubleClick"
                       Command="{Binding Path=DataContext.HomeSpaceViewModel.ShowInCanvasSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
-        <KeyBinding Key="T"
-                    Modifiers="Control"
-                    Command="{Binding Path=DataContext.ShowNewPresetsDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="F1"
                     Command="{Binding Path=DataContext.ShowNodeDocumentationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
@@ -1797,24 +1795,15 @@
                 </ItemsControl.Visibility>
             </ItemsControl>
             </Grid>
+        <!--Do not delete newHomePageContainer grid as it is hosting the HomePage-->
         <Grid x:Name="newHomePageContainer"
               Visibility="{Binding IsNewAppHomeEnabled, 
-                                    Converter={StaticResource BooleanToVisibilityConverter}, 
-                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                   Converter={StaticResource BooleanToVisibilityConverter}, 
+                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
               Grid.Row="2"
               Grid.RowSpan="4"
               Grid.Column="0"
-              Grid.ColumnSpan="5">
-            <uiviews:HomePage x:Name="homePage">
-                <uiviews:HomePage.Visibility>
-                    <Binding Path="DataContext.ShowStartPage"
-                             Mode="OneWay"
-                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                             Converter="{StaticResource BooleanToVisibilityConverter}"
-                             UpdateSourceTrigger="Explicit" />
-                </uiviews:HomePage.Visibility>
-            </uiviews:HomePage>
-        </Grid>
+              Grid.ColumnSpan="5"/>
 
         <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
     </Grid>

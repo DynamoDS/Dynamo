@@ -403,7 +403,7 @@
                                     </Grid>
                                 </Grid>
 
-                                <!--This Grid contains Expanders for Run, Default Geometry Scaling and Backup settings-->
+                                <!--This Grid contains Expanders for Run, Default Geometry Scaling, Backup and Templates settings-->
                                 <Grid Grid.Row="5"
                                   Margin="-3,0,1,20">
                                     <Grid HorizontalAlignment="Stretch">
@@ -411,7 +411,8 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
                                         <!--Run Settings Expander-->
                                         <Expander x:Name="RunSettingsExpander"                                      
                                         Style="{StaticResource MenuExpanderStyle}"
@@ -673,7 +674,73 @@
                                                 </Grid>
                                             </StackPanel>
                                         </Expander>
-                                    </Grid>
+                                        <!--Template Settings Expander-->
+                                        <Expander x:Name="TemplateSettingsExpander"                                      
+                                            Style="{StaticResource MenuExpanderStyle}"
+                                            Grid.Row="3" 
+                                            IsExpanded="{Binding PreferencesTabs[General].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=TemplateSettingsExpander}"
+                                            Header="{x:Static p:Resources.PreferencesViewGeneralSettingsTemplate}">
+                                            <StackPanel x:Name="TemplateSettingsPanel">
+                                                    <Grid HorizontalAlignment="Stretch">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+                                                        <Grid Grid.Row="0">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="Auto" />
+                                                            </Grid.RowDefinitions>
+                                                            <Label Content="{x:Static p:Resources.PreferencesSettingTemplateLocationLabel}" 
+                                                                VerticalAlignment="Center"
+                                                                Margin="-3,15,0,0"
+                                                                Grid.Row="0"
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                            <Grid Grid.Row="1">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                                                </Grid.ColumnDefinitions>
+                                                                <!--the backup location text-->
+                                                                <TextBlock x:Name="TemplateLocationTextBlock" Style="{StaticResource DarkTextBlock}" 
+                                                                Text="{Binding TemplateLocation}"
+                                                                Grid.Column="0"
+                                                                Margin="0,4,7,4"
+                                                                Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
+                                                                MinHeight="24"
+                                                                Padding="5,5,5,5"
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                                <Button
+                                                                 Grid.Column="1"
+                                                                 Margin="7,7,7,7"
+                                                                 x:Name="UpdateTemplateLocationButton"
+                                                                 Click="UpdateTemplateLocationButton_Click"
+                                                                 Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                                 Style="{StaticResource EditFolderButtonStyle}">
+                                                                    <Button.ToolTip>
+                                                                        <ToolTip Content="{x:Static p:Resources.PreferencesSettingUpdateTemplateLocationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                                    </Button.ToolTip>
+                                                                </Button>
+                                                                <!--the Reset backup location button-->
+                                                                <Button
+                                                                 Grid.Column="2"
+                                                                 Margin="7,7,7,7"
+                                                                 x:Name="ResetTemplateLocationButton"
+                                                                 Click="ResetTemplateLocationButton_Click"
+                                                                 Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                                 Style="{StaticResource ResetButtonStyle}"
+                                                                 IsEnabled="{Binding Path=CanResetTemplateLocation}">
+                                                                    <Button.ToolTip>
+                                                                        <ToolTip Content="{x:Static p:Resources.PreferencesSettingResetTemplateLocationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                                    </Button.ToolTip>
+                                                                </Button>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Expander>
+                                        </Grid>
                                 </Grid>
                             </Grid>
                         </ScrollViewer>
@@ -1384,10 +1451,44 @@
                                             </Image>
                                         </Label>
                                     </StackPanel>
-                                    
+
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
                                                 Grid.Row="3">
+                                        <ToggleButton Name="UserRenderInstancingToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=UseRenderInstancing}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewVisualSettingUseInstancing}" 
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                                    Name="UseRenderInstancingInfoLabel"
+                                                    VerticalAlignment="Center" 
+                                                    Height="26" 
+                                                    Width="53"
+                                                    Margin="0 3 0 0">
+                                            <Image
+                                                Margin="5,3,0,0"
+                                                Width="14"
+                                                Height="14"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource QuestionIcon}"
+                                                ToolTipService.ShowDuration="30000"> 
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowUseInstancingTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="4">
                                         <ToggleButton Name="CodeBlockNodeLineNumbersToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -1421,7 +1522,7 @@
 
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
-                                                Grid.Row="4">
+                                                Grid.Row="5">
                                         <ToggleButton Name="ShowPreviewBubblesToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
@@ -1455,7 +1556,7 @@
                                     
                                     <Grid x:Name="GraphicHelpersScale"
                                           Margin="0 12 0 5"
-                                          Grid.Row="5">
+                                          Grid.Row="6">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
