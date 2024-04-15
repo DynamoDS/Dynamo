@@ -220,7 +220,8 @@ namespace DynamoMLDataPipeline
 
             uploadBinaryRequest.AddHeader("Content-Type", ContentType.Binary);
 
-            uploadBinaryRequest.AddOrUpdateParameter(ContentType.Binary.ToString(), base64CompressedBuffer, ParameterType.RequestBody);
+            uploadBinaryRequest.AddOrUpdateParameter("text/txt", base64CompressedBuffer, ParameterType.RequestBody)
+
             var uploadBinaryResponse = fileUploadClient.ExecutePut(uploadBinaryRequest);
             if (uploadBinaryResponse.StatusCode != System.Net.HttpStatusCode.OK)
             {
