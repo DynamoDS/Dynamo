@@ -707,6 +707,8 @@ namespace Dynamo.Tests
             var valueWithoutIPAddress = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithIPAddressId, "InputValue");
             var valueWithoutDates = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithDatesId, "InputValue");
 
+            Console.WriteLine(string.Join(",", valueWhitEmail, valueWithoutWebPage, valueWithoutDirectory, valueWithoutDirectory2, valueWithoutCreditCards, valueWithoutSSNs, valueWithoutIPAddress, valueWithoutDates));
+
             Assert.IsTrue(PIIDetector.ContainsEmail((string)valueWhitEmail));
             Assert.IsTrue(PIIDetector.ContainsWebsite((string)valueWithWebPage));
             Assert.IsTrue(PIIDetector.ContainsDirectory((string)valueWithDirectory));
