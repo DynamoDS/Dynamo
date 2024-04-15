@@ -3903,7 +3903,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>_Template</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
-    <value>Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file.</value>
+    <value>Workspaces cannot be saved directly to the Templates folder. Please choose a different folder to save your file.
+To make this file into a new template, save it to a different folder, then move it to the Templates folder.</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockTitle" xml:space="preserve">
     <value>Invalid Save Path</value>
