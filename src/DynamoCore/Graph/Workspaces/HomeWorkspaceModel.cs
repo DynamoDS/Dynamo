@@ -691,6 +691,8 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
+            List<IDisposable> deferredInfos = [];
+
             var workspace = updateTask.TargetedWorkspace;
             foreach (var warning in warnings)
             {
@@ -698,7 +700,9 @@ namespace Dynamo.Graph.Workspaces
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
+
                 using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                using (Disposable.Create(() => { node.BlockInfoBubbleUpdates = true; }, () => { node.BlockInfoBubbleUpdates = false; }))
                 {
                     node.Warning(warning.Value); // Update node warning message.
                 }
@@ -712,6 +716,7 @@ namespace Dynamo.Graph.Workspaces
                 if (node == null)
                     continue;
                 using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                using (Disposable.Create(() => { node.BlockInfoBubbleUpdates = true; }, () => { node.BlockInfoBubbleUpdates = false; }))
                 {
                     node.Info(string.Join(Environment.NewLine, info.Value.Select(w => w.Message)));
                 }

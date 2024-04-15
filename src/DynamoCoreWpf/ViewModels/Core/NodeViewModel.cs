@@ -903,7 +903,6 @@ namespace Dynamo.ViewModels
             UpdateBubbleContent();
         }
 
-
         /// <summary>
         /// Updates whether the Warning Bar is visible or not and whether the node's
         /// Frozen/Info/Warning/Error overlay is displaying.
@@ -1275,6 +1274,15 @@ namespace Dynamo.ViewModels
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
+
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    WorkspaceViewModel.Errors.Add(ErrorBubble);
+                });
+            }
+
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
         }
@@ -1459,7 +1467,15 @@ namespace Dynamo.ViewModels
 
         public void UpdateBubbleContent()
         {
-            if (DynamoViewModel == null) return;
+            if (NodeModel.BlockInfoBubbleUpdates)
+            {
+                return;
+            }
+
+            if (DynamoViewModel == null)
+            {
+                return;
+            }
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning; 
             bool isNodeStateInfo = NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo;
@@ -1477,7 +1493,7 @@ namespace Dynamo.ViewModels
 
             if (ErrorBubble == null) BuildErrorBubble();
 
-            //if (!WorkspaceViewModel.Errors.Contains(ErrorBubble)) return;
+            if (!WorkspaceViewModel.Errors.Contains(ErrorBubble)) return;
 
             var topLeft = new Point(NodeModel.X, NodeModel.Y);
             var botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);

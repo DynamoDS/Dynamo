@@ -194,6 +194,8 @@ namespace Dynamo.Graph.Nodes
             NodeMessagesClearing?.Invoke(this);
         }
 
+        internal bool BlockInfoBubbleUpdates;
+
         /// <summary>
         /// Event triggered whenever the node re-executes to clear its info messages
         /// </summary>
