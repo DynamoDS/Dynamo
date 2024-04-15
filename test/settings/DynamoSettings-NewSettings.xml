@@ -41,7 +41,6 @@
   <BackupFiles>
     <string>C:\Users\user\Documents\dynamofile.dyn</string>
   </BackupFiles>
-  <TemplateFilePath>C:\ProgramData\Dynamo\Dynamo Core\templates\en-US</TemplateFilePath>
   <CustomPackageFolders>
     <string>%BuiltInPackages%</string>
     <string>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\2.16</string>

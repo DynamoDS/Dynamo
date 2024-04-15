@@ -84,7 +84,6 @@
     <None Remove="Charts\Controls\PieChartControl.xaml" />
     <None Remove="Charts\Controls\ScatterPlotControl.xaml" />
     <None Remove="Charts\Controls\XYLineChartControl.xaml" />
-    <None Remove="Controls\DefineDataControl.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\CoreNodeModelWpfResources.Designer.cs">

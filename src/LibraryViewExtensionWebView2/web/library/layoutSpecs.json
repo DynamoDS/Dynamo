@@ -1190,9 +1190,6 @@
                 },
                 {
                   "path": "Core.Data.Remember"
-                },
-                {
-                  "path": "Core.Data.DefineData"
                 }
               ],
               "childElements": []
