@@ -168,6 +168,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private static readonly float defaultDeadAlphaScale = 0.2f;
         private const float defaultLabelOffset = 0.025f;
 
+
+        private static readonly Color4Collection DefaultAxesColors = new Color4Collection
+        {
+            Color.Red, Color.Red,
+            Color.Blue, Color.Blue,
+            Color.Green, Color.Green
+        };
+
+        private static readonly Color4Collection TransparentAxesColors = new Color4Collection
+        {
+            Color.Transparent, Color.Transparent,
+            Color.Transparent, Color.Transparent,
+            Color.Transparent, Color.Transparent
+        };
+
         internal const string DefaultGridName = "Grid";
         internal const string DefaultAxesName = "Axes";
         internal const string DefaultLightName = "DirectionalLight";
@@ -1418,7 +1433,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // Create the headlight singleton and add it to the dictionary
-
             headLight = new DirectionalLight3D
             {
                 Color = System.Windows.Media.Color.FromRgb(230, 230, 230),
@@ -1441,7 +1455,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // Create the grid singleton and add it to the dictionary
-
             gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
@@ -1461,7 +1474,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // Create the axes singleton and add it to the dictionary
-
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
@@ -1508,33 +1520,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Axes = new LineGeometry3D();
             var axesPositions = new Vector3Collection();
             var axesIndices = new IntCollection();
-            var axesColors = new Color4Collection();
 
             // Draw the coordinate axes
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(50 * scale, 0, 0));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(Color.Red);
-            axesColors.Add(Color.Red);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(0, 5 * scale, 0));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(Color.Blue);
-            axesColors.Add(Color.Blue);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(0, 0, -50 * scale));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(Color.Green);
-            axesColors.Add(Color.Green);
 
             Axes.Positions = axesPositions;
             Axes.Indices = axesIndices;
-            Axes.Colors = axesColors;
+            Axes.Colors = DefaultAxesColors;            
         }
 
         private void SetGridVisibility()
@@ -1542,8 +1547,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var visibility = isGridVisible ? Visibility.Visible : Visibility.Hidden;
             //return if there is nothing to change
             if (gridModel3D.Visibility == visibility) return;
-            
+
+            // set axes colors and grid visibility based on grid visibility
+            Axes.Colors = isGridVisible ? DefaultAxesColors : TransparentAxesColors;
             gridModel3D.Visibility = visibility;
+
             OnRequestViewRefresh();
         }
 
