@@ -188,8 +188,6 @@ namespace DynamoMLDataPipeline
             // from the response - these will be consumed by the following API calls.
             ExchangeContainerId = exchangeRequestResponseBody["id"].Value;
 
-            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, ExchangeContainerId);
-
             var schemaNamespaceId = exchangeRequestResponseBody["components"]["data"]["insert"]["autodesk.data:exchange.source.default-1.0.0"]["source"]["String"]["id"].Value;
 
             // STEP 2: START A FULLFILLMENT ---------------------
@@ -230,9 +228,17 @@ namespace DynamoMLDataPipeline
             {
                 LogMessage.Info("Binary upload failed!");
             }
-            LogMessage.Info("Binary upload started!");
 
-            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, "BinarySize", base64CompressedBuffer.Length);
+            var analyticsInfo = new Dictionary<string, object>
+            {
+                { "CollectionId", CollectionId },
+                { "ExchangeContainerId", ExchangeContainerId },
+                { "CompressedDataSize", base64CompressedBuffer.Length }
+            };
+
+            Analytics.TrackTaskCommandEvent(Actions.Export.ToString(), Categories.DynamoMLDataPipelineOperations.ToString(), null, analyticsInfo);
+
+            LogMessage.Info("Binary upload started!");
 
             // STEP 4b: FINISH BINARY UPLOAD -------------------
             // Finish uploading binary assets: Let the system know that the binary assets have been uploaded and are ready for processing. 
@@ -282,8 +288,6 @@ namespace DynamoMLDataPipeline
 
             // CollectionId created for Dynamo
             CollectionId = ProductionCollectionID;
-
-            Analytics.TrackEvent(Actions.Export, Categories.DynamoMLDataPipelineOperations, CollectionId);
 
             var client = new RestClient(ProductionClientUrl);
 
