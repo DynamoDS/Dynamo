@@ -257,6 +257,8 @@ Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.get -> bool
 Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.set -> void
 Dynamo.Configuration.PreferenceSettings.UseHostScaleUnits.get -> bool
 Dynamo.Configuration.PreferenceSettings.UseHostScaleUnits.set -> void
+Dynamo.Configuration.PreferenceSettings.UseRenderInstancing.get -> bool
+Dynamo.Configuration.PreferenceSettings.UseRenderInstancing.set -> void
 Dynamo.Configuration.PreferenceSettings.ViewExtensionSettings.get -> System.Collections.Generic.List<Dynamo.Configuration.ViewExtensionSettings>
 Dynamo.Configuration.PreferenceSettings.ViewExtensionSettings.set -> void
 Dynamo.Configuration.PreferenceSettings.WindowH.get -> double
