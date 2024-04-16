@@ -3948,6 +3948,7 @@ Dynamo.Wpf.ViewModels.Watch3D.HelixWatch3DViewModel.Grid.get -> HelixToolkit.Sha
 Dynamo.Wpf.ViewModels.Watch3D.HelixWatch3DViewModel.Grid.set -> void
 Dynamo.Wpf.ViewModels.Watch3D.HelixWatch3DViewModel.HasRenderedGeometry.get -> bool
 Dynamo.Wpf.ViewModels.Watch3D.HelixWatch3DViewModel.HelixWatch3DViewModel(Dynamo.Graph.Nodes.NodeModel model, Dynamo.Wpf.ViewModels.Watch3D.Watch3DViewModelStartupParams parameters) -> void
+Dynamo.Wpf.ViewModels.Watch3D.HelixWatch3DViewModel.IsAxesVisible.get -> bool
 Dynamo.Wpf.ViewModels.Watch3D.HelixWatch3DViewModel.IsResizable.get -> bool
 Dynamo.Wpf.ViewModels.Watch3D.HelixWatch3DViewModel.IsResizable.set -> void
 Dynamo.Wpf.ViewModels.Watch3D.HelixWatch3DViewModel.LeftClickCommand.get -> System.Windows.Input.RoutedCommand

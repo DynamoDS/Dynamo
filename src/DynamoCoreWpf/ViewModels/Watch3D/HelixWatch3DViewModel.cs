@@ -168,15 +168,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private static readonly float defaultDeadAlphaScale = 0.2f;
         private const float defaultLabelOffset = 0.025f;
 
-
-        private static readonly Color4Collection DefaultAxesColors = new Color4Collection
+        /// <summary>
+        /// Color4Collections to represent the axes in drawn and hidden states
+        /// </summary>
+        private readonly Color4Collection DefaultAxesColors = new Color4Collection
         {
             Color.Red, Color.Red,
             Color.Blue, Color.Blue,
             Color.Green, Color.Green
         };
-
-        private static readonly Color4Collection TransparentAxesColors = new Color4Collection
+        private readonly Color4Collection TransparentAxesColors = new Color4Collection
         {
             Color.Transparent, Color.Transparent,
             Color.Transparent, Color.Transparent,
@@ -370,7 +371,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             set
             {
                 worldAxes = value;
-                RaisePropertyChanged("Axes");
+                RaisePropertyChanged(DefaultAxesName);
             }
         }
 
@@ -453,6 +454,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        public bool IsAxesVisible
+        {
+            get { return Axes.Colors == TransparentAxesColors ? false : true;  }
+        }
 
         /// <summary>
         /// Sets the scale of the Grid helper
