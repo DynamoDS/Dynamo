@@ -53,6 +53,36 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(homePage.RequestShowBackupFilesInFolder);
             Assert.IsNotNull(homePage.RequestShowTemplate);
         }
+
+        [Test]
+        public void HomePage_NewSettingsAreAddedCorrectly()
+        {
+            // Arrange
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            var preferences = startPage.DynamoViewModel.PreferenceSettings;
+            var homePage = new HomePage();
+
+            homePage.DataContext = startPage;
+
+            Assert.IsNull(preferences.HomePageSettings);
+
+            // Act
+            var pair1 = @"{""Name"": ""Alice""}";
+            homePage.SaveSettings(pair1);
+
+            // Assert 
+            Assert.IsNotNull(preferences.HomePageSettings);
+            Assert.AreEqual(preferences.HomePageSettings.Count, 1);
+
+            // Act
+            var pair2 = @"{""Number"": 12 }";
+            homePage.SaveSettings(pair2);
+
+            // Assert
+            Assert.AreEqual(preferences.HomePageSettings.Count, 2);
+        }
+
         #endregion
 
         #region integration tests
