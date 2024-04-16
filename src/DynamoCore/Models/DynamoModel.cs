@@ -155,11 +155,6 @@ namespace Dynamo.Models
         /// </summary>
         internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
 
-        /// <summary>
-        /// Return a list of GraphChecksumItems
-        /// </summary>
-        public List<GraphChecksumPair> GraphChecksumList { get; set; }
-
         #endregion
 
         #region static properties
@@ -992,7 +987,6 @@ namespace Dynamo.Models
                 LuceneUtility.DisposeWriter();
             }
 
-            GraphChecksumList = new List<GraphChecksumPair>();
             GraphChecksumDictionary = new Dictionary<string, List<string>>();
                  
             // This event should only be raised at the end of this method.

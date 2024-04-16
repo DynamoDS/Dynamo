@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace DynamoMLDataPipeline
 {
-    class BaseComponent : Dictionary<string, Dictionary<string, ObjectInfo>>
+    internal class BaseComponent : Dictionary<string, Dictionary<string, ObjectInfo>>
     {
         private string objectId = "autodesk.design:components.base-1.0.0";
         public BaseComponent(string name)
@@ -19,7 +19,7 @@ namespace DynamoMLDataPipeline
         public string ObjectId { get { return objectId; } }
     }
 
-    class ObjectInfo
+    internal class ObjectInfo
     {
         [JsonProperty("name")]
         public string Name { get; set; }
