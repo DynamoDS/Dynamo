@@ -169,7 +169,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private const float defaultLabelOffset = 0.025f;
 
         /// <summary>
-        /// Color4Collections to represent the axes in drawn and hidden states
+        /// Color4Collection to represent axes when drawn
         /// </summary>
         private readonly Color4Collection DefaultAxesColors = new Color4Collection
         {
@@ -177,6 +177,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Color.Blue, Color.Blue,
             Color.Green, Color.Green
         };
+
+        /// <summary>
+        /// Color4Collection to represent axes when hidden
+        /// </summary>
         private readonly Color4Collection TransparentAxesColors = new Color4Collection
         {
             Color.Transparent, Color.Transparent,
@@ -454,7 +458,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public bool IsAxesVisible
+        internal bool IsAxesVisible
         {
             get { return Axes.Colors == TransparentAxesColors ? false : true;  }
         }

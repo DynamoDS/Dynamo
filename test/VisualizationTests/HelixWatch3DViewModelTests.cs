@@ -762,9 +762,10 @@ namespace WpfVisualizationTests
             var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
             var grid = bPreviewVm.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
 
-            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");            
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
 
-            // Assert that grid and axes are drawn
+            // Ensure background grid and axes are enabled and check effects
+            bPreviewVm.IsGridVisible = true;
             Assert.IsTrue(grid.Visibility == Visibility.Visible, "Background grid has not been drawn");
             Assert.IsTrue(bPreviewVm.IsAxesVisible, "Axes have not been drawn");
 
