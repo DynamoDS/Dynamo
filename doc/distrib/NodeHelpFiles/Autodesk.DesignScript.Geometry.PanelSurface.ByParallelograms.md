@@ -3,4 +3,4 @@ Panels the input surface in parallelograms tiled vertically and horizontally. Ea
 ___
 ## Example File
 
-![X](./Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms_img.jpg)
+![ByParallelograms](./Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms_img.jpg)

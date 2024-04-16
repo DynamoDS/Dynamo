@@ -3,4 +3,4 @@ Panels the input surface in a tiling with one triangle, two squares, and one hex
 ___
 ## Example File
 
-![X](./Autodesk.DesignScript.Geometry.PanelSurface.ByRhombiTriHexagonals_img.jpg)
+![ByRhombiTriHexagonals](./Autodesk.DesignScript.Geometry.PanelSurface.ByRhombiTriHexagonals_img.jpg)

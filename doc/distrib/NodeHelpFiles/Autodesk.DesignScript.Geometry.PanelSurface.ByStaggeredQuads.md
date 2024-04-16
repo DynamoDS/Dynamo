@@ -3,4 +3,4 @@ Panels the input surface in a staggered square pattern. By default, the pattern 
 ___
 ## Example File
 
-![X](./Autodesk.DesignScript.Geometry.PanelSurface.ByStaggeredQuads_img.jpg)
+![ByStaggeredQuads](./Autodesk.DesignScript.Geometry.PanelSurface.ByStaggeredQuads_img.jpg)

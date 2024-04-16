@@ -3,4 +3,4 @@ Panels the input surface in a diamond-shaped pattern, with each diamond split ve
 ___
 ## Example File
 
-![X](./Autodesk.DesignScript.Geometry.PanelSurface.BySplitDiamonds_img.jpg)
+![BySplitDiamonds](./Autodesk.DesignScript.Geometry.PanelSurface.BySplitDiamonds_img.jpg)
