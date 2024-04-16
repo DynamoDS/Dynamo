@@ -3,4 +3,4 @@ Returns the number of vertices in the PanelSurface.
 ___
 ## Example File
 
-![X](./Autodesk.DesignScript.Geometry.PanelSurface.NumVertices_img.jpg)
+![NumVertices](./Autodesk.DesignScript.Geometry.PanelSurface.NumVertices_img.jpg)
