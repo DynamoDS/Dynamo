@@ -395,6 +395,21 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool UseHardwareAcceleration { get; set; }
 
+        /// <summary>
+        /// Persistence for Dynamo HomePage
+        /// </summary>
+        [XmlIgnore]
+        internal Dictionary<string, object> HomePageSettings { get; set; }
+
+        /// <summary>
+        /// A helper intermediary string to allow the serialization of the HomePageSettings dictionary
+        /// </summary>
+        public string HomePageSettingsSerialized
+        {
+            get => Newtonsoft.Json.JsonConvert.SerializeObject(HomePageSettings);   
+            set => HomePageSettings = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
+        }
+
         #endregion
 
         #region Dynamo application settings

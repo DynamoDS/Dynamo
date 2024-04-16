@@ -479,5 +479,27 @@ namespace Dynamo.Tests.Configuration
 
             Assert.IsTrue(allTheGroupStylesHaveAValidFontSize, $"All the GroupStyles have a valid Font size : {allTheGroupStylesHaveAValidFontSize}");
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSerializingHomePageSettings()
+        {
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "homePagePreference.xml");
+
+            PreferenceSettings settings = new PreferenceSettings();
+
+            // Assert defaults
+            Assert.AreEqual(settings.HomePageSettings, null);
+            Assert.AreEqual(settings.HomePageSettingsSerialized, "null");
+
+            settings.HomePageSettings = new Dictionary<string, object> { { "greeting", "Hello World" } };
+
+            // Save
+            settings.Save(tempPath);
+            settings = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(settings.HomePageSettings["greeting"], "Hello World");
+        }
     }
 }
