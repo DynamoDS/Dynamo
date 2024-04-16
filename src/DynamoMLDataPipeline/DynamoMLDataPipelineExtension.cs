@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
 using Dynamo.Extensions;
-using Dynamo.Logging;
 using Greg;
 
 namespace DynamoMLDataPipeline
 {
 
-    internal class DynamoMLDataPipelineExtension : IExtension, IExtensionSource
+    internal class DynamoMLDataPipelineExtension : IExtension
     {
         private ReadyParams ReadyParams;
-        private DynamoLogger logger;
 
         /// <summary>
         ///     Dynamo Package Manager Instance.
@@ -24,15 +20,20 @@ namespace DynamoMLDataPipeline
 
         public string Name { get { return "DynamoMLDataPipelineExtension"; } }
 
-        public IEnumerable<IExtension> RequestedExtensions => throw new NotImplementedException();
-
-        public event Func<string, IExtension> RequestLoadExtension;
-        public event Action<IExtension> RequestAddExtension;
-
         public void Startup(StartupParams sp)
         {
             DynamoMLDataPipeline = new DynamoMLDataPipeline();
-            DynamoMLDataPipeline.AuthTokenProvider = (IOAuth2AccessTokenProvider)sp.AuthProvider;
+            DynamoMLDataPipeline.DynamoVersion = sp.DynamoVersion;
+
+            if (sp.AuthProvider is IOAuth2AccessTokenProvider tokenProvider)
+            {
+                DynamoMLDataPipeline.AuthTokenProvider = tokenProvider;
+            }
+ 
+            if (sp.AuthProvider is IOAuth2UserIDProvider userIdProvider)
+            {
+                DynamoMLDataPipeline.AuthUserInfoProvider = userIdProvider;
+            }
         }
 
         public void Ready(ReadyParams sp)
@@ -42,12 +43,12 @@ namespace DynamoMLDataPipeline
 
         public void Shutdown()
         {
-            throw new NotImplementedException();
+           // do nothing.
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            // do nothing.
         }
     }
 }

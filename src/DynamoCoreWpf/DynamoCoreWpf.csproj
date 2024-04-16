@@ -170,7 +170,7 @@
       <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.4655" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
-    <PackageReference Include="Greg" Version="3.0.0.3175" />
+    <PackageReference Include="Greg" Version="3.0.1.4707" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="108.0.1" />
