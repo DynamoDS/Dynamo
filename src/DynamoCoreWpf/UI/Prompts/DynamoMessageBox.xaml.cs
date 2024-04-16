@@ -173,6 +173,40 @@ namespace Dynamo.UI.Prompts
         /// <summary>
         /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
         /// </summary>
+        /// <param name="owner">owning window of the messagebox</param>
+        /// <param name="messageBoxText">Content of the message</param>
+        /// <param name="caption">MessageBox title</param>
+        /// <param name="showRichTextBox">True if we will be using the RichTextBox instead of the usual one</param>
+        /// <param name="button">OK button shown in the MessageBox</param>
+        /// <param name="icon">Type of message: Warning, Error</param>
+        /// <returns></returns>
+        public static MessageBoxResult Show(Window owner, string messageBoxText, string caption, bool showRichTextBox, MessageBoxButton button,
+           MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+            if (owner != null && owner.IsLoaded)
+            {
+                dynamoMessageBox.Owner = owner;
+            }
+
+            if (showRichTextBox)
+            {
+                dynamoMessageBox.BodyTextBlock.Visibility = Visibility.Collapsed;
+                dynamoMessageBox.ContentRichTextBox.Visibility = Visibility.Visible;
+            }
+            dynamoMessageBox.ConfigureButtons(button);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
         /// <param name="owner">owner window</param>
         /// <param name="messageBoxText"></param>
         /// <param name="caption"></param>
