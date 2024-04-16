@@ -2382,8 +2382,6 @@ Dynamo.Wpf.Interfaces.LayoutSpecification.LayoutSpecification() -> void
 Dynamo.Wpf.Interfaces.LayoutSpecification.sections.get -> System.Collections.Generic.List<Dynamo.Wpf.Interfaces.LayoutSection>
 Dynamo.Wpf.Interfaces.LayoutSpecification.sections.set -> void
 Dynamo.Wpf.Interfaces.LayoutSpecification.ToJSONStream() -> System.IO.Stream
-Greg.IAuthProviderUserInfo
-Greg.IAuthProviderUserInfo.UserId.get -> string
 override Dynamo.Engine.FunctionDescriptor.Equals(object obj) -> bool
 override Dynamo.Engine.FunctionDescriptor.GetHashCode() -> int
 override Dynamo.Engine.FunctionGroup.Equals(object obj) -> bool
