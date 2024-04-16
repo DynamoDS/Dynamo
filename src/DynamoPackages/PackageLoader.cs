@@ -198,6 +198,8 @@ namespace Dynamo.PackageManager
             List<Assembly> failedNodeLibs = new List<Assembly>();
             try
             {
+                var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
+
                 List<Assembly> blockedAssemblies = new List<Assembly>();
                 // Try to load node libraries from all assemblies
                 foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
@@ -270,6 +272,18 @@ namespace Dynamo.PackageManager
                     LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
 
                 Log($"Loaded Package {package.Name} {package.VersionName} from {package.RootDirectory}");
+                try
+                {
+                    if (dynamoVersion.Major == 3 && Version.Parse(package.EngineVersion).Major < 3)
+                    {
+                        Log($@"{package.Name} {package.VersionName} has an engine version of {package.EngineVersion},
+                        it may not be compatible with this version of Dynamo due to .NET runtime changes. ");
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Log($"exception while trying to compare version info between package and dynamo {ex}");
+                }
                 PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
