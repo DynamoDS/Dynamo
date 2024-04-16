@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Greg;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -63,7 +64,7 @@ namespace DynamoMLDataPipeline
         // Id of the user sending the post request.
         private string GetUserId()
         {
-            return AuthUserInfoProvider?.UserId;
+            return AuthUserInfoProvider?.UserId ?? string.Empty;
         }
 
         // Authorization token needed for the restsharp post request in this pipeline.
@@ -160,9 +161,10 @@ namespace DynamoMLDataPipeline
         {
             // Read .dyn file as a string
             string sourceFileContent = File.ReadAllText(filePath);
+            string formattedSourceContent = PIIDetector.RemovePIIData(sourceFileContent);
 
             // Convert the string to a byte array (buffer)
-            byte[] stringBuffer = Encoding.UTF8.GetBytes(sourceFileContent);
+            byte[] stringBuffer = Encoding.UTF8.GetBytes(formattedSourceContent);
 
             // Compress to gzip and then convert to base64 to optimize size
             byte[] compressedBuffer = DataUtilities.Compress(stringBuffer);
