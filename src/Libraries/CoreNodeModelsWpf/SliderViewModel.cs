@@ -63,7 +63,8 @@ namespace CoreNodeModelsWpf
                 if (value.CompareTo(model.Min) == -1)
                     model.Min = value;
 
-                var stepValueString = model.Step.ToString();
+                double.TryParse(model.Step.ToString(), out double stepValue);
+                var stepValueString = stepValue.ToString(null, CultureInfo.InvariantCulture);
                 var decimalPoints = 0;
                 if (stepValueString.Contains('.'))
                 {
@@ -73,8 +74,8 @@ namespace CoreNodeModelsWpf
                 if (value is IFormattable formattableval)
                 {
                     var invariantString  = formattableval.ToString(null,CultureInfo.InvariantCulture);
-                    var sliderValue = Math.Round(decimal.Parse(invariantString), decimalPoints);
-                    model.UpdateValue(new Dynamo.Graph.UpdateValueParams(nameof(Value), sliderValue.ToString()));
+                    var sliderValue = Math.Round(decimal.Parse(invariantString, CultureInfo.InvariantCulture), decimalPoints);
+                    model.UpdateValue(new Dynamo.Graph.UpdateValueParams(nameof(Value), sliderValue.ToString(CultureInfo.InvariantCulture)));
                 }
                 else
                 {

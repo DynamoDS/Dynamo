@@ -140,7 +140,6 @@ namespace DynamoCoreWpfTests
         /// modify the value.
         /// </summary>
         [Test]
-        [Category("Failure")]
         public void SliderViewModel_ValueTest_Localized()
         {
             //change current thread culture to German.
