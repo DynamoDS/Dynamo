@@ -1,5 +1,5 @@
-using Dynamo.Core;
 using Dynamo.Extensions;
+using Greg;
 
 namespace DynamoMLDataPipeline
 {
@@ -23,7 +23,8 @@ namespace DynamoMLDataPipeline
         public void Startup(StartupParams sp)
         {
             DynamoMLDataPipeline = new DynamoMLDataPipeline();
-            DynamoMLDataPipeline.AuthProvider = (IDSDKManager)sp.AuthProvider;
+            DynamoMLDataPipeline.AuthTokenProvider = (IOAuth2AccessTokenProvider)sp.AuthProvider;
+            DynamoMLDataPipeline.AuthUserInfoProvider = (IOAuth2UserIDProvider)sp.AuthProvider;
         }
 
         public void Ready(ReadyParams sp)

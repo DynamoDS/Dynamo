@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Greg;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -51,23 +51,21 @@ namespace DynamoMLDataPipeline
 
         internal DynamoModel DynamoModel { get; set; }
 
-        internal static IDSDKManager AuthProvider { get; set; }
+        internal IOAuth2AccessTokenProvider AuthTokenProvider { get; set; }
+
+        internal IOAuth2UserIDProvider AuthUserInfoProvider { get; set; }
 
         // Id of the user sending the post request.
-        private static string UserId
+        private string GetUserId()
         {
-            get
-            {
-                return AuthProvider.UserId;
-            }
+            return AuthUserInfoProvider.UserId;
         }
 
         // Authorization token needed for the restsharp post request in this pipeline.
-        private static string GetAuthorizationToken()
+        private string GetAuthorizationToken()
         {
-            return AuthProvider.GetAccessToken();
+            return AuthTokenProvider.GetAccessToken();
         }
-
 
         internal static void AddHeadersToPostRequest(RestRequest request, string token)
         {
@@ -76,7 +74,7 @@ namespace DynamoMLDataPipeline
             request.AddHeader("Content-Type", "application/json");
         }
 
-        internal static string ConstructCreateAssetRequestBody(string schemaNamespaceId, string binaryId, string operation)
+        internal string ConstructCreateAssetRequestBody(string schemaNamespaceId, string binaryId, string operation)
         {
             // Define the custom parameter schemas
             var schemas = new List<Schema>();
@@ -93,7 +91,7 @@ namespace DynamoMLDataPipeline
             // Construct parameter component
             var parameterComponent = new ParameterComponent();
 
-            parameterComponent.AddParameterFromSchema(UserId, userIdSchema);
+            parameterComponent.AddParameterFromSchema(GetUserId(), userIdSchema);
             parameterComponent.AddParameterFromSchema(DynamoModel.HostAnalyticsInfo.HostName, hostSchema);
             parameterComponent.AddParameterFromSchema(DynamoModel.HostAnalyticsInfo.HostVersion?.ToString(), dynamoVersionSchema);
 
@@ -169,7 +167,7 @@ namespace DynamoMLDataPipeline
             return base64CompressedBuffer;
         }
 
-        static void SendToMLDataPipeline(string filePath, RestClient client, string token)
+        void SendToMLDataPipeline(string filePath, RestClient client, string token)
         {
             // STEP 1: CREATE A DATA EXCHANGE CONTAINER ---------------------            
             string exchangeBody = ConstructCreateExchangeRequestBody();

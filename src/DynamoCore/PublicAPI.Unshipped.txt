@@ -366,6 +366,7 @@ Dynamo.Core.IDSDKManager.LoginStateChanged -> System.Action<Greg.AuthProviders.L
 Dynamo.Core.IDSDKManager.Logout() -> void
 Dynamo.Core.IDSDKManager.RequestLogin -> System.Func<object, bool>
 Dynamo.Core.IDSDKManager.SignRequest(ref RestSharp.RestRequest m, RestSharp.RestClient client) -> void
+Dynamo.Core.IDSDKManager.UserId.get -> string
 Dynamo.Core.IDSDKManager.Username.get -> string
 Dynamo.Core.NotificationObject
 Dynamo.Core.NotificationObject.NotificationObject() -> void
@@ -2379,6 +2380,8 @@ Dynamo.Wpf.Interfaces.LayoutSpecification.LayoutSpecification() -> void
 Dynamo.Wpf.Interfaces.LayoutSpecification.sections.get -> System.Collections.Generic.List<Dynamo.Wpf.Interfaces.LayoutSection>
 Dynamo.Wpf.Interfaces.LayoutSpecification.sections.set -> void
 Dynamo.Wpf.Interfaces.LayoutSpecification.ToJSONStream() -> System.IO.Stream
+Greg.IAuthProviderUserInfo
+Greg.IAuthProviderUserInfo.UserId.get -> string
 override Dynamo.Engine.FunctionDescriptor.Equals(object obj) -> bool
 override Dynamo.Engine.FunctionDescriptor.GetHashCode() -> int
 override Dynamo.Engine.FunctionGroup.Equals(object obj) -> bool
