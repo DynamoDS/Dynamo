@@ -25,6 +25,7 @@ namespace DynamoMLDataPipeline
             DynamoMLDataPipeline = new DynamoMLDataPipeline();
             DynamoMLDataPipeline.AuthTokenProvider = (IOAuth2AccessTokenProvider)sp.AuthProvider;
             DynamoMLDataPipeline.AuthUserInfoProvider = (IOAuth2UserIDProvider)sp.AuthProvider;
+            DynamoMLDataPipeline.DynamoVersion = sp.DynamoVersion;
         }
 
         public void Ready(ReadyParams sp)

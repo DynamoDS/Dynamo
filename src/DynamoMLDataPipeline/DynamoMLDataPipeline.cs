@@ -51,9 +51,14 @@ namespace DynamoMLDataPipeline
 
         internal DynamoModel DynamoModel { get; set; }
 
+        // Authprovider to get the token.
         internal IOAuth2AccessTokenProvider AuthTokenProvider { get; set; }
 
+        // Authprovider to get user info.
         internal IOAuth2UserIDProvider AuthUserInfoProvider { get; set; }
+
+        // Points to the Dynamo version.
+        internal Version DynamoVersion { get; set; }
 
         // Id of the user sending the post request.
         private string GetUserId()
@@ -93,7 +98,7 @@ namespace DynamoMLDataPipeline
 
             parameterComponent.AddParameterFromSchema(GetUserId(), userIdSchema);
             parameterComponent.AddParameterFromSchema(DynamoModel.HostAnalyticsInfo.HostName, hostSchema);
-            parameterComponent.AddParameterFromSchema(DynamoModel.HostAnalyticsInfo.HostVersion?.ToString(), dynamoVersionSchema);
+            parameterComponent.AddParameterFromSchema(DynamoVersion.ToString(), dynamoVersionSchema);
 
             // Construct the base component
             var baseComponent = new BaseComponent("DynamoGraphLog");
@@ -109,16 +114,16 @@ namespace DynamoMLDataPipeline
             return bodyJSON;
         }
 
-        public static string ConstructCreateExchangeRequestBody()
+        public string ConstructCreateExchangeRequestBody()
         {
             // Instantiate attributes we want to pass to the data exchange
             // Note: we want to pass attributes to be able to query the data once collected
             // filtering on these attributes (query based on a custom attribute not currently
             // supported by the FDX API, but it may become available in the future)
-            var clientIdAttribute = new Attribute("clientId", "Dynamo");
-            var clientVersionAttribute = new Attribute("clientVersion", DynamoModel.HostAnalyticsInfo.HostVersion?.ToString());
+            var clientIdAttribute = new RequestAttribute("clientId", "Dynamo");
+            var clientVersionAttribute = new RequestAttribute("clientVersion", DynamoVersion.ToString());
 
-            var attributes = new List<Attribute>
+            var attributes = new List<RequestAttribute>
             {
                 clientIdAttribute,
                 clientVersionAttribute
