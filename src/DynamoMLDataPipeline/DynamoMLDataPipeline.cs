@@ -63,7 +63,7 @@ namespace DynamoMLDataPipeline
         // Id of the user sending the post request.
         private string GetUserId()
         {
-            return AuthUserInfoProvider.UserId;
+            return AuthUserInfoProvider?.UserId;
         }
 
         // Authorization token needed for the restsharp post request in this pipeline.
