@@ -229,17 +229,6 @@ namespace DynamoMLDataPipeline
                 LogMessage.Info("Binary upload failed!");
             }
 
-            var analyticsInfo = new Dictionary<string, object>
-            {
-                { "CollectionId", CollectionId },
-                { "ExchangeContainerId", ExchangeContainerId },
-                { "CompressedDataSize", base64CompressedBuffer.Length }
-            };
-
-            Analytics.TrackTaskCommandEvent(Actions.Export.ToString(), Categories.DynamoMLDataPipelineOperations.ToString(), null, analyticsInfo);
-
-            LogMessage.Info("Binary upload started!");
-
             // STEP 4b: FINISH BINARY UPLOAD -------------------
             // Finish uploading binary assets: Let the system know that the binary assets have been uploaded and are ready for processing. 
             // This call can be made for a single binary or a batch of 25 binaries.
@@ -278,6 +267,16 @@ namespace DynamoMLDataPipeline
 
             // STEP 6: END FULFILLMENT ---------------------
             EndFullFillment(client, CollectionId, ExchangeContainerId, fulfillmentId, token);
+
+            // Send Analytics information.
+            var analyticsInfo = new Dictionary<string, object>
+            {
+                { "CollectionId", CollectionId },
+                { "ExchangeContainerId", ExchangeContainerId },
+                { "CompressedDataSize", base64CompressedBuffer.Length }
+            };
+
+            Analytics.TrackTaskCommandEvent(Actions.Export.ToString(), Categories.DynamoMLDataPipelineOperations.ToString(), null, analyticsInfo);
         }
 
         public void SendWorkspaceLog(string filePath)
