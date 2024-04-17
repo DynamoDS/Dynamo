@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -115,6 +115,8 @@ namespace Dynamo.Nodes
             this.ViewModel.AnnotationModel.TextMaxWidth = formattedText.Width + margin;
         }
 
+
+        // ip comment: maybe use this logic for IsExpanded
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems == null || (e.AddedItems.Count <= 0))

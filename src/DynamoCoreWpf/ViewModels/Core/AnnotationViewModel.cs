@@ -262,8 +262,10 @@ namespace Dynamo.ViewModels
             get => annotationModel.IsExpanded;
             set
             {
-                // ip code:
-                // before we update the value we must record the current state of the group
+                // This change is triggered by the user interaction in the View.
+                // Before we updating the value in the Model and ViewModel
+                // we record the current state in the UndoRedoStack.
+                // This ensures that any modifications can be reverted by the user.
                 var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
                 using (undoRecorder.BeginActionGroup())
                 {
@@ -271,24 +273,9 @@ namespace Dynamo.ViewModels
                 }
 
                 annotationModel.IsExpanded = value;
-                InPorts.Clear();
-                OutPorts.Clear();
-                if (value)
-                {
-                    this.ShowGroupContents();
-                }
-                else
-                {
-                    this.SetGroupInputPorts();
-                    this.SetGroupOutPorts();
-                    this.CollapseGroupContents(true);
-                    RaisePropertyChanged(nameof(NodeContentCount));
-                }
-                WorkspaceViewModel.HasUnsavedChanges = true;
-                AddGroupToGroupCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged(nameof(IsExpanded));
-                RedrawConnectors();
-                ReportNodesPosition();
+
+                // Methods to collapse or expand the group based on the new value of IsExpanded.
+                ManageAnnotationMVExpansionAndCollapse();
             }
         }
 
@@ -1061,6 +1048,32 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// Handles the expansion or collapse of the annotation group in the view model.
+        /// </summary>
+        private void ManageAnnotationMVExpansionAndCollapse()
+        {
+            InPorts.Clear();
+            OutPorts.Clear();
+            if (annotationModel.IsExpanded)
+            {
+                this.ShowGroupContents();
+            }
+            else
+            {
+                this.SetGroupInputPorts();
+                this.SetGroupOutPorts();
+                this.CollapseGroupContents(true);
+                RaisePropertyChanged(nameof(NodeContentCount));
+            }
+            WorkspaceViewModel.HasUnsavedChanges = true;
+            AddGroupToGroupCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(IsExpanded));
+            RedrawConnectors();
+            ReportNodesPosition();
+        }
+
         private void UpdateFontSize(object parameter)
         {
             if (parameter == null) return;
@@ -1216,37 +1229,14 @@ namespace Dynamo.ViewModels
 
                 // ip code:
                 case nameof(IsExpanded):
-                    UpdateAnnotationAfterUndo();
+                    //UpdateAnnotationAfterUndo();
+                    ManageAnnotationMVExpansionAndCollapse();
                     //RaisePropertyChanged("IsExpanded");
                     break;
 
             }
         }
-
-        private void UpdateAnnotationAfterUndo()
-        //{
-        //    this.IsExpanded = this.annotationModel.IsExpanded;
-        //}
-        {
-            if (annotationModel.IsExpanded)
-            {
-                this.ShowGroupContents();
-            }
-
-            else
-            {
-                this.SetGroupInputPorts();
-                this.SetGroupOutPorts();
-                this.CollapseGroupContents(true);
-                RaisePropertyChanged(nameof(NodeContentCount));
-            }
-            WorkspaceViewModel.HasUnsavedChanges = true;
-            AddGroupToGroupCommand.RaiseCanExecuteChanged();
-            RaisePropertyChanged(nameof(IsExpanded));
-            RedrawConnectors();
-            ReportNodesPosition();
-        }
-
+                
         private void OnModelRemovedFromGroup(object sender, EventArgs e)
         {
             Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Node");
