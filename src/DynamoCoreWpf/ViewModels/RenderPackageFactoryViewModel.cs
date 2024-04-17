@@ -1,4 +1,4 @@
-﻿using Dynamo.Interfaces;
+using Dynamo.Interfaces;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Configuration;
@@ -23,6 +23,17 @@ namespace Dynamo.Wpf.ViewModels
                 if (factory.TessellationParameters.ShowEdges == value) return;
                 factory.TessellationParameters.ShowEdges = value;
                 RaisePropertyChanged("ShowEdges");
+            }
+        }
+
+        public bool UseRenderInstancing
+        {
+            get { return factory.TessellationParameters.UseRenderInstancing; }
+            set
+            {
+                if (factory.TessellationParameters.UseRenderInstancing == value) return;
+                factory.TessellationParameters.UseRenderInstancing = value;
+                RaisePropertyChanged("UseRenderInstancing");
             }
         }
 
@@ -51,7 +62,7 @@ namespace Dynamo.Wpf.ViewModels
             {
                 this.factory = new HelixRenderPackageFactory()
                 {
-                    TessellationParameters = { ShowEdges = ps.ShowEdges, MaxTessellationDivisions = ps.RenderPrecision }
+                    TessellationParameters = { ShowEdges = ps.ShowEdges, MaxTessellationDivisions = ps.RenderPrecision, UseRenderInstancing = ps.UseRenderInstancing }
                 };
             }
             else

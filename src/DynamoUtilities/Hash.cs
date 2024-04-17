@@ -99,6 +99,9 @@ namespace Dynamo.Utilities
             using var mySHA256 = SHA256.Create();
 
             byte[] bytes = mySHA256.ComputeHash(Encoding.UTF8.GetBytes(s));
+
+            mySHA256.Dispose();
+
             var sb = new StringBuilder();
 
             for (int i = 0; i < bytes.Length; i++)

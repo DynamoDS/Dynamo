@@ -12,7 +12,7 @@ namespace Dynamo.Core
     /// <summary>
     /// The class to provide auth APIs for IDSDK related methods.
     /// </summary>
-    public class IDSDKManager : IOAuth2AuthProvider, IOAuth2AccessTokenProvider, IDisposable
+    public class IDSDKManager : IOAuth2AuthProvider, IOAuth2AccessTokenProvider, IOAuth2UserIDProvider, IDisposable
     {
         /// <summary>
         /// Used by the auth provider to request authentication.
@@ -75,6 +75,18 @@ namespace Dynamo.Core
             {
                 var result = IDSDK_GetUserInfo();
                 return result != null ? result.UserName : String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Gets the userid of the logged in user.
+        /// </summary>
+        public string UserId
+        {
+            get
+            {
+                var result = IDSDK_GetUserInfo();
+                return result != null ? result.UserId : String.Empty;
             }
         }
 

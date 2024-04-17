@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace DynamoMLDataPipeline
 {
     // Schema for the parameters used in the request.
-    class StringParameterSchema : Schema
+    internal class StringParameterSchema : Schema
     {
         public StringParameterSchema(string value, string schemaNamespaceId, string schemaId)
         {
@@ -25,7 +25,7 @@ namespace DynamoMLDataPipeline
     }
 
 
-    class Schema
+    internal class Schema
     {
         [JsonProperty("constants")]
         public List<Constant> Constants { get; set; }
@@ -41,7 +41,7 @@ namespace DynamoMLDataPipeline
 
     }
 
-    class Constant
+    internal class Constant
     {
         public Constant(string value)
         {

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 namespace DynamoMLDataPipeline
 {
     // Attributes for the data request object.
-    class Attribute
+    internal class RequestAttribute
     {
         [JsonProperty("category")]
         public string Category { get; set; }
@@ -14,7 +14,7 @@ namespace DynamoMLDataPipeline
         [JsonProperty("type")]
         public string Type { get; set; }
 
-        public Attribute(string name, string value, string category = "application", string type = "String")
+        public RequestAttribute(string name, string value, string category = "application", string type = "String")
         {
             Category = category;
             Name = name;

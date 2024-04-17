@@ -107,12 +107,6 @@ Dynamo.Configuration.GraphChecksumItem.Checksum.set -> void
 Dynamo.Configuration.GraphChecksumItem.GraphChecksumItem() -> void
 Dynamo.Configuration.GraphChecksumItem.GraphId.get -> string
 Dynamo.Configuration.GraphChecksumItem.GraphId.set -> void
-Dynamo.Configuration.GraphChecksumPair
-Dynamo.Configuration.GraphChecksumPair.Checksum.get -> System.Collections.Generic.List<string>
-Dynamo.Configuration.GraphChecksumPair.Checksum.set -> void
-Dynamo.Configuration.GraphChecksumPair.GraphChecksumPair() -> void
-Dynamo.Configuration.GraphChecksumPair.GraphId.get -> string
-Dynamo.Configuration.GraphChecksumPair.GraphId.set -> void
 Dynamo.Configuration.GroupStyleItem
 Dynamo.Configuration.GroupStyleItem.GroupStyleItem() -> void
 Dynamo.Configuration.PreferenceSettings
@@ -263,6 +257,8 @@ Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.get -> bool
 Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.set -> void
 Dynamo.Configuration.PreferenceSettings.UseHostScaleUnits.get -> bool
 Dynamo.Configuration.PreferenceSettings.UseHostScaleUnits.set -> void
+Dynamo.Configuration.PreferenceSettings.UseRenderInstancing.get -> bool
+Dynamo.Configuration.PreferenceSettings.UseRenderInstancing.set -> void
 Dynamo.Configuration.PreferenceSettings.ViewExtensionSettings.get -> System.Collections.Generic.List<Dynamo.Configuration.ViewExtensionSettings>
 Dynamo.Configuration.PreferenceSettings.ViewExtensionSettings.set -> void
 Dynamo.Configuration.PreferenceSettings.WindowH.get -> double
@@ -372,6 +368,7 @@ Dynamo.Core.IDSDKManager.LoginStateChanged -> System.Action<Greg.AuthProviders.L
 Dynamo.Core.IDSDKManager.Logout() -> void
 Dynamo.Core.IDSDKManager.RequestLogin -> System.Func<object, bool>
 Dynamo.Core.IDSDKManager.SignRequest(ref RestSharp.RestRequest m, RestSharp.RestClient client) -> void
+Dynamo.Core.IDSDKManager.UserId.get -> string
 Dynamo.Core.IDSDKManager.Username.get -> string
 Dynamo.Core.NotificationObject
 Dynamo.Core.NotificationObject.NotificationObject() -> void
@@ -1874,8 +1871,6 @@ Dynamo.Models.DynamoModel.ExtensionManager.get -> Dynamo.Extensions.IExtensionMa
 Dynamo.Models.DynamoModel.ForceRun() -> void
 Dynamo.Models.DynamoModel.ForceRunCancelCommand
 Dynamo.Models.DynamoModel.ForceRunCancelCommand.ForceRunCancelCommand(bool showErrors, bool cancelRun) -> void
-Dynamo.Models.DynamoModel.GraphChecksumList.get -> System.Collections.Generic.List<Dynamo.Configuration.GraphChecksumPair>
-Dynamo.Models.DynamoModel.GraphChecksumList.set -> void
 Dynamo.Models.DynamoModel.HostVersion.get -> string
 Dynamo.Models.DynamoModel.HostVersion.set -> void
 Dynamo.Models.DynamoModel.InsertFileCommand

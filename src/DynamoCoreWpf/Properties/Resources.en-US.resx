@@ -1783,7 +1783,7 @@ Next assemblies were loaded several times:
     <value>Has no dependecies</value>
   </data>
   <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
-    <value>Package Uses Newer Version of {0}!</value>
+    <value>Package may not work in this version of {0}!</value>
   </data>
   <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
     <value>Package Warning</value>
@@ -3864,6 +3864,12 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="ElementBindingDesc" xml:space="preserve">
     <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
   </data>
+  <data name="PreferencesViewVisualSettingUseInstancing" xml:space="preserve">
+    <value>Use Instancing (Beta)</value>
+  </data>
+  <data name="PreferencesWindowUseInstancingTooltip" xml:space="preserve">
+    <value>When toggled on, some symmetric geometry types such as cubes, rectangles, or spheres will render faster due to mutiple copies being drawn at once vs sequentially.</value>
+  </data>
   <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
     <value>To access the Recommended Nodes feature, please read and accept Dynamo &gt; Agreements for Data Collection.</value>
   </data>
@@ -3916,7 +3922,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>_Template</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
-    <value>Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file.</value>
+    <value>Workspaces cannot be saved directly to the Templates folder. Please choose a different folder to save your file.
+To make this file into a new template, save it to a different folder, then move it to the Templates folder.</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockTitle" xml:space="preserve">
     <value>Invalid Save Path</value>
@@ -3962,5 +3969,13 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="DataInputNodeInformationTooltip" xml:space="preserve">
     <value>Toggle on if the input data contains a list.</value>
     <comment>Tool-tip for info questionmark icon.</comment>
+  <data name="MessagePackageOlderDynamo" xml:space="preserve">
+    <value>The package or one of its dependencies use an older version of {0} than you are currently using. Do you want to continue?</value>
+  </data>
+  <data name="PackageUseOlderDynamoMessageBoxTitle" xml:space="preserve">
+    <value>Package may not work in this version of Dynamo {0}!</value>
+  </data>
+  <data name="MessagePackOlderDynamoLink" xml:space="preserve">
+    <value>#Learn more=https://primer2.dynamobim.org/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8</value>
   </data>
 </root>

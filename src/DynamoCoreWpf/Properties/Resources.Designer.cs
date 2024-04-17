@@ -4607,7 +4607,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?.
+        ///   Looks up a localized string similar to This package or one of its dependencies were created for a newer version of Dynamo. It may not work in this version. Do you want to continue?.
         /// </summary>
         public static string MessagePackageNewerDynamo {
             get {
@@ -4621,6 +4621,15 @@ namespace Dynamo.Wpf.Properties {
         public static string MessagePackageNotFound {
             get {
                 return ResourceManager.GetString("MessagePackageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This package or one of its dependencies were created for a previous version of Dynamo. It may not work in this version. Do you want to continue?.
+        /// </summary>
+        public static string MessagePackageOlderDynamo {
+            get {
+                return ResourceManager.GetString("MessagePackageOlderDynamo", resourceCulture);
             }
         }
         
@@ -4657,6 +4666,15 @@ namespace Dynamo.Wpf.Properties {
         public static string MessagePackageVersionNotFound {
             get {
                 return ResourceManager.GetString("MessagePackageVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #Learn more=https://primer2.dynamobim.org/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8.
+        /// </summary>
+        public static string MessagePackOlderDynamoLink {
+            get {
+                return ResourceManager.GetString("MessagePackOlderDynamoLink", resourceCulture);
             }
         }
         
@@ -7130,11 +7148,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package Uses Newer Version of {0}!.
+        ///   Looks up a localized string similar to Package may not work in this version of {0}!.
         /// </summary>
         public static string PackageUseNewerDynamoMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageUseNewerDynamoMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package may not work in this version of {0}!.
+        /// </summary>
+        public static string PackageUseOlderDynamoMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("PackageUseOlderDynamoMessageBoxTitle", resourceCulture);
             }
         }
         
@@ -7980,6 +8007,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Instancing (Beta).
+        /// </summary>
+        public static string PreferencesViewVisualSettingUseInstancing {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingUseInstancing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 0%.
         /// </summary>
         public static string PreferencesViewZoomScaling0Percent {
@@ -8066,6 +8102,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesWindowShowPreviewBubblesTooltip {
             get {
                 return ResourceManager.GetString("PreferencesWindowShowPreviewBubblesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, some symmetric geometry types such as cubes, rectangles, or spheres will render faster due to mutiple copies being drawn at once vs sequentially..
+        /// </summary>
+        public static string PreferencesWindowUseInstancingTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesWindowUseInstancingTooltip", resourceCulture);
             }
         }
         
@@ -10306,7 +10351,8 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Workspaces cannot be saved to the Templates folder. Please choose a different folder to save your file..
+        ///   Looks up a localized string similar to Workspaces cannot be saved directly to the Templates folder. Please choose a different folder to save your file.
+        ///To make this file into a new template, save it to a different folder, then move it to the Templates folder..
         /// </summary>
         public static string WorkspaceSaveTemplateDirectoryBlockMsg {
             get {

@@ -359,6 +359,12 @@ namespace Dynamo.Configuration
         public bool ShowEdges { get; set; }
 
         /// <summary>
+        /// Indicates whether background preview use instancing when rendering geometry.
+        /// be rendered.
+        /// </summary>
+        public bool UseRenderInstancing { get; set; }
+
+        /// <summary>
         /// Indicates whether show detailed or compact layout during search.
         /// </summary>
         public bool ShowDetailedLayout { get; set; }
@@ -936,6 +942,7 @@ namespace Dynamo.Configuration
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
             RenderPrecision = DefaultRenderPrecision;
             ShowEdges = false;
+            UseRenderInstancing = true;
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
