@@ -69,6 +69,9 @@ namespace CoreNodeModels
             set
             {
                 isList = value;
+
+                if (IsAutoMode) { IsAutoMode = false; } // Lock the node on user interaction
+
                 OnNodeModified();
                 RaisePropertyChanged(nameof(IsList));
             }

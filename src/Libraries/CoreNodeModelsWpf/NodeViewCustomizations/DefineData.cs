@@ -19,10 +19,13 @@ namespace CoreNodeModelsWpf.Nodes
     /// </summary>
     public class DefineDataNodeViewCustomization : DropDownNodeViewCustomization, INodeViewCustomization<DefineData>
     {
+        private ComboBox dropdown;
+        private ToggleButton toggleButton;
+
         /// <summary>
         /// Customize the visual appearance of the DefineData node.
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">The DefineData model to customize</param>
         /// <param name="nodeView"></param>
         public void CustomizeView(DefineData model, NodeView nodeView)
         {
@@ -47,7 +50,7 @@ namespace CoreNodeModelsWpf.Nodes
             base.CustomizeView(model, nodeView);
 
             var style = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["NodeViewComboBox"];
-            var dropdown = (ComboBox)nodeView.inputGrid.Children[1];
+            dropdown = (ComboBox)nodeView.inputGrid.Children[1];
             dropdown.Style = style;
 
             formControl.BaseComboBox = dropdown;
@@ -57,6 +60,9 @@ namespace CoreNodeModelsWpf.Nodes
             dropdown.VerticalAlignment = VerticalAlignment.Top;
             dropdown.MinWidth = 220;
             dropdown.FontSize = 12;
+
+            // subscribe to the event inside the NodeModel to detect user interacting with the dropdown
+            dropdown.DropDownOpened += dropDown_DropDownOpened;
 
             // Create the Grid as the root visual for the item template
             var gridFactory = new FrameworkElementFactory(typeof(Grid));
@@ -131,7 +137,7 @@ namespace CoreNodeModelsWpf.Nodes
             // Add the padlock button
             var toggleButtonStyle = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["PadlockToggleButton"];
             var toggleButtonTooltipStyle = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["GenericToolTipLight"];
-            var toggleButton = new ToggleButton();
+            toggleButton = new ToggleButton();
             toggleButton.Style = toggleButtonStyle;
 
             Binding isToggleCheckedBinding = new Binding("IsAutoMode");
@@ -154,6 +160,19 @@ namespace CoreNodeModelsWpf.Nodes
             Grid.SetRow(toggleButton, 0); 
             Grid.SetColumn(toggleButton, 1); 
             nodeView.inputGrid.Children.Add(toggleButton);
+        }
+
+        public new void Dispose()
+        {
+            if (dropdown != null) dropdown.DropDownOpened -= dropDown_DropDownOpened;
+        }
+
+        private void dropDown_DropDownOpened(object sender, EventArgs e)
+        {
+            if (toggleButton != null && toggleButton.IsChecked == true)
+            {
+                toggleButton.IsChecked = false;
+            }
         }
 
         public class LevelToIndentConverter : IValueConverter
