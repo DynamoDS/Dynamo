@@ -6,11 +6,9 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
-using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -928,7 +926,7 @@ namespace Dynamo.ViewModels
 
             if (!collapseConnectors) return;
 
-            CollapseConnectors();            
+            CollapseConnectors();
 
             Analytics.TrackEvent(Actions.Collapsed, Categories.GroupOperations);
         }
@@ -1236,7 +1234,7 @@ namespace Dynamo.ViewModels
 
             }
         }
-                
+
         private void OnModelRemovedFromGroup(object sender, EventArgs e)
         {
             Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Node");

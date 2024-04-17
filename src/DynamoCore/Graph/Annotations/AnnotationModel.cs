@@ -366,10 +366,6 @@ namespace Dynamo.Graph.Annotations
             get { return isExpanded; }
             set
             {
-                // ip comment:
-                // this is called on undo!
-                // at the moment IsCollapsed is not called in the VM
-                // need to RaiseProperty changed from here?
                 isExpanded = value;
                 UpdateBoundaryFromSelection();
                 UpdateErrorAndWarningIconVisibility();
