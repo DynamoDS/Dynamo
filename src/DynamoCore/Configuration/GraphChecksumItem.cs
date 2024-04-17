@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Dynamo.Configuration
 {
@@ -12,15 +11,5 @@ namespace Dynamo.Configuration
         public string GraphId { get; set; }
 
         public string Checksum { get; set; }   
-    }
-
-    /// <summary>
-    /// Represents the stringified version of the nodes connections from a graph
-    /// </summary>
-    public class GraphChecksumPair
-    {
-        public string GraphId { get; set; }
-
-        public List<string> Checksum { get; set; }
     }
 }

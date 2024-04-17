@@ -4,11 +4,11 @@ using Newtonsoft.Json;
 
 namespace DynamoMLDataPipeline
 {
-    class ExchangeComponent
+    internal class ExchangeComponent
     {
         private readonly string type = "autodesk.data:exchange.space-1.0.0";
 
-        public ExchangeComponent(List<Attribute> attributes = null)
+        public ExchangeComponent(List<RequestAttribute> attributes = null)
         {
             Attributes = attributes;
             Components = new Dictionary<string, Contract>
@@ -23,10 +23,10 @@ namespace DynamoMLDataPipeline
         public Dictionary<string, Contract> Components { get; set; }
 
         [JsonProperty("attributes")]
-        public List<Attribute> Attributes { get; set; }
+        public List<RequestAttribute> Attributes { get; set; }
     }
 
-    class Contract : Dictionary<string, Dictionary<string, Dictionary<string, string>>>
+    internal class Contract : Dictionary<string, Dictionary<string, Dictionary<string, string>>>
     {
         private readonly string type = "autodesk.data:exchange.contract.dynamo-1.0.0";
 
