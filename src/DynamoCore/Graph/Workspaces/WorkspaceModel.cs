@@ -2081,6 +2081,8 @@ namespace Dynamo.Graph.Workspaces
             HasUnsavedChanges = true;
         }
 
+
+        // ip comment : this must be called ?
         internal void UpdateModelValue(IEnumerable<Guid> modelGuids, string propertyName, string value)
         {
             if (modelGuids == null || (!modelGuids.Any()))

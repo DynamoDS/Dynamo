@@ -6,9 +6,11 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -260,6 +262,14 @@ namespace Dynamo.ViewModels
             get => annotationModel.IsExpanded;
             set
             {
+                // ip code:
+                // before we update the value we must record the current state of the group
+                var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
+                using (undoRecorder.BeginActionGroup())
+                {
+                    undoRecorder.RecordModificationForUndo(annotationModel);
+                }
+
                 annotationModel.IsExpanded = value;
                 InPorts.Clear();
                 OutPorts.Clear();
@@ -931,7 +941,7 @@ namespace Dynamo.ViewModels
 
             if (!collapseConnectors) return;
 
-            CollapseConnectors();
+            CollapseConnectors();            
 
             Analytics.TrackEvent(Actions.Collapsed, Categories.GroupOperations);
         }
@@ -1203,7 +1213,38 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(AnnotationModel.Position));
                     UpdateProxyPortsPosition();
                     break;
+
+                // ip code:
+                case nameof(IsExpanded):
+                    UpdateAnnotationAfterUndo();
+                    //RaisePropertyChanged("IsExpanded");
+                    break;
+
             }
+        }
+
+        private void UpdateAnnotationAfterUndo()
+        //{
+        //    this.IsExpanded = this.annotationModel.IsExpanded;
+        //}
+        {
+            if (annotationModel.IsExpanded)
+            {
+                this.ShowGroupContents();
+            }
+
+            else
+            {
+                this.SetGroupInputPorts();
+                this.SetGroupOutPorts();
+                this.CollapseGroupContents(true);
+                RaisePropertyChanged(nameof(NodeContentCount));
+            }
+            WorkspaceViewModel.HasUnsavedChanges = true;
+            AddGroupToGroupCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(IsExpanded));
+            RedrawConnectors();
+            ReportNodesPosition();
         }
 
         private void OnModelRemovedFromGroup(object sender, EventArgs e)

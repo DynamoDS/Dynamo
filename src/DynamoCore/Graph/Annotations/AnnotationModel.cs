@@ -262,7 +262,6 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-
         private double textMaxWidth;
         /// <summary>
         /// Returns the maxWidth of text area of the group
@@ -367,6 +366,10 @@ namespace Dynamo.Graph.Annotations
             get { return isExpanded; }
             set
             {
+                // ip comment:
+                // this is called on undo!
+                // at the moment IsCollapsed is not called in the VM
+                // need to RaiseProperty changed from here?
                 isExpanded = value;
                 UpdateBoundaryFromSelection();
                 UpdateErrorAndWarningIconVisibility();
@@ -657,6 +660,9 @@ namespace Dynamo.Graph.Annotations
                 case nameof(AnnotationDescriptionText):
                     AnnotationDescriptionText = value;
                     break;
+                case nameof(IsExpanded):
+                    IsExpanded = Convert.ToBoolean(value);
+                    break;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -680,6 +686,7 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
             helper.SetAttribute(nameof(IsSelected), IsSelected);
+            helper.SetAttribute(nameof(IsExpanded), IsExpanded);
 
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
@@ -711,12 +718,15 @@ namespace Dynamo.Graph.Annotations
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
-            this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);            
+            this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);
+            this.IsExpanded = helper.ReadBoolean(nameof(IsExpanded), false);
 
             if (IsSelected)
                 DynamoSelection.Instance.Selection.Add(this);
             else
                 DynamoSelection.Instance.Selection.Remove(this);
+
+  
 
             //Deserialize Selected models
             if (element.HasChildNodes)
@@ -756,6 +766,9 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged(nameof(GroupStyleId));
             RaisePropertyChanged(nameof(AnnotationText));
             RaisePropertyChanged(nameof(Nodes));
+            // ip comment:
+            // this is called on Undo. Is VM listening?
+            RaisePropertyChanged(nameof(IsExpanded));
             this.ReportPosition();
         }
 
