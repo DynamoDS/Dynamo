@@ -839,6 +839,18 @@ namespace Dynamo.ViewModels
         {
             try
             {
+                if (!fatal)
+                {
+                    var localPkg =  Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p => p.LoadedAssemblies.FirstOrDefault(a => a.Name == ex.Source) != null);
+                    if (localPkg != null)
+                    {
+                        var crashDetails = new CrashErrorReportArgs(ex);
+                        Model?.Logger?.LogError($"Unhandled exception coming from package {localPkg.Name} was handled: {crashDetails.Details}");
+                        Analytics.TrackException(ex, true);
+                        return;
+                    }
+                }
+
                 DynamoModel.IsCrashing = true;
                 var crashData = new CrashErrorReportArgs(ex);
                 Model?.Logger?.LogError($"Unhandled exception: {crashData.Details} ");

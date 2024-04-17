@@ -164,16 +164,14 @@ namespace Dynamo.Wpf.Utilities
 
         internal static void ShowCrashWindow(object sender, CrashPromptArgs args)
         {
-            var viewModel = sender as DynamoViewModel;
-
-            if (CrashReportTool.ShowCrashErrorReportWindow(viewModel,
+            if (CrashReportTool.ShowCrashErrorReportWindow(sender,
                 (args is CrashErrorReportArgs cerArgs) ? cerArgs :
                 new CrashErrorReportArgs(args.Details)))
             {
                 return;
             }
             // Backup crash reporting dialog (in case ADSK CER is not found)
-            var prompt = new Nodes.Prompts.CrashPrompt(args, viewModel);
+            var prompt = new Nodes.Prompts.CrashPrompt(sender, args);
             prompt.ShowDialog();
         }
 
@@ -183,14 +181,15 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="viewModel">The Dynamo view model</param>
         /// <param name="args"></param>
         /// <returns>True if the CER tool process was successfully started. False otherwise</returns>
-        internal static bool ShowCrashErrorReportWindow(DynamoViewModel viewModel, CrashErrorReportArgs args)
+        private static bool ShowCrashErrorReportWindow(object sender, CrashErrorReportArgs args)
         {
             if (DynamoModel.FeatureFlags?.CheckFeatureFlag("CER_v2", false) == false)
             {
                 return false;
             }
 
-            DynamoModel model = viewModel?.Model;
+            DynamoViewModel viewModel = sender as DynamoViewModel;
+            DynamoModel model = viewModel != null ? viewModel.Model : sender as DynamoModel;
 
             string cerToolDir = !string.IsNullOrEmpty(model?.CERLocation) ?
                 model?.CERLocation : FindCERToolInInstallLocations();
