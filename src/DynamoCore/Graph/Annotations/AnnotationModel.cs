@@ -686,7 +686,7 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
             helper.SetAttribute(nameof(IsSelected), IsSelected);
-            helper.SetAttribute(nameof(IsExpanded), IsExpanded);
+            helper.SetAttribute(nameof(IsExpanded), this.IsExpanded);
 
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
@@ -766,8 +766,6 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged(nameof(GroupStyleId));
             RaisePropertyChanged(nameof(AnnotationText));
             RaisePropertyChanged(nameof(Nodes));
-            // ip comment:
-            // this is called on Undo. Is VM listening?
             RaisePropertyChanged(nameof(IsExpanded));
             this.ReportPosition();
         }

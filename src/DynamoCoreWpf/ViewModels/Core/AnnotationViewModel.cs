@@ -1050,12 +1050,16 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Handles the expansion or collapse of the annotation group in the view model.
+        /// Manages the expansion or collapse of the annotation group in the view model.
         /// </summary>
         private void ManageAnnotationMVExpansionAndCollapse()
         {
-            InPorts.Clear();
-            OutPorts.Clear();
+            if (InPorts.Any() || OutPorts.Any())
+            {
+                InPorts.Clear();
+                OutPorts.Clear();
+            }
+
             if (annotationModel.IsExpanded)
             {
                 this.ShowGroupContents();
@@ -1226,12 +1230,8 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(AnnotationModel.Position));
                     UpdateProxyPortsPosition();
                     break;
-
-                // ip code:
                 case nameof(IsExpanded):
-                    //UpdateAnnotationAfterUndo();
                     ManageAnnotationMVExpansionAndCollapse();
-                    //RaisePropertyChanged("IsExpanded");
                     break;
 
             }
