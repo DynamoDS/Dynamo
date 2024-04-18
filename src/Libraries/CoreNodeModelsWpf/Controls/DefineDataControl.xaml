@@ -20,7 +20,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel VerticalAlignment="Bottom" LastChildFill="False" Margin="0 0 0 -5">
-        <ToggleButton VerticalAlignment="Center"
+        <ToggleButton x:Name="listToggleBtn"
+                      VerticalAlignment="Center"
                       Width="30"
                       Height="15"
                       Margin="2,0,0,0"

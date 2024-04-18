@@ -69,9 +69,6 @@ namespace CoreNodeModels
             set
             {
                 isList = value;
-
-                if (IsAutoMode) { IsAutoMode = false; } // Lock the node on user interaction
-
                 OnNodeModified();
                 RaisePropertyChanged(nameof(IsList));
             }
@@ -83,7 +80,7 @@ namespace CoreNodeModels
         ///
         [JsonProperty]
         public string DisplayValue
-        {
+        {   
             get { return displayValue; }
             set
             {
@@ -108,10 +105,9 @@ namespace CoreNodeModels
             get { return playerValue; }
             set
             {
-                var valueToSet = value ?? "";
-                if (valueToSet != value)
+                if (Equals(this.playerValue, null) || !this.playerValue.Equals(value))
                 {
-                    playerValue = valueToSet;
+                    playerValue = value ?? "";
                     MarkNodeAsModified();
                 }
             }
@@ -217,6 +213,7 @@ namespace CoreNodeModels
             //Now we reset this value to empty string so that the next time a value is set from upstream nodes we can know that it is not coming from the player
             playerValue = "";
 
+            // If data is null
             if (data == null)
             {
                 if(IsAutoMode)
@@ -230,28 +227,33 @@ namespace CoreNodeModels
                 return;
             }
 
+            // If data is not null
             (bool IsValid, bool UpdateList, DataNodeDynamoType InputType) resultData = (ValueTuple<bool, bool, DataNodeDynamoType>)data;
 
-            if (IsAutoMode && resultData.UpdateList)
+            if (IsAutoMode)
             {
-                IsList = !IsList;
-            }
-
-            if (IsAutoMode && resultData.InputType != null)
-            {
-                if(!resultData.IsValid)
+                if (resultData.UpdateList)
                 {
-                    // Assign to the correct value, if the object was of supported type
-                    var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
-                    SelectedIndex = index;
+                    IsList = !IsList;
+                }
+
+                if (resultData.InputType != null)
+                {
+                    if (!resultData.IsValid)
+                    {
+                        // Assign to the correct value, if the object was of supported type
+                        var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
+                        SelectedIndex = index;
+                    }
+                    if (!DisplayValue.Equals(resultData.InputType.Name))
+                    {
+                        DisplayValue = resultData.InputType.Name;
+                    }
                 }
             }
-
-            if (resultData.InputType != null)
+            else
             {
-                // Assign the current type
-                if (!DisplayValue.Equals(resultData.InputType.Name))
-                    DisplayValue = resultData.InputType.Name;
+                DisplayValue = SelectedString;
             }
         }
 

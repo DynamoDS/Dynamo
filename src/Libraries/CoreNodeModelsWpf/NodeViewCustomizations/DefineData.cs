@@ -20,7 +20,9 @@ namespace CoreNodeModelsWpf.Nodes
     public class DefineDataNodeViewCustomization : DropDownNodeViewCustomization, INodeViewCustomization<DefineData>
     {
         private ComboBox dropdown;
-        private ToggleButton toggleButton;
+        private ToggleButton modeToggleButton;
+        private ToggleButton listToggleButton;
+        private DefineData _model;
 
         /// <summary>
         /// Customize the visual appearance of the DefineData node.
@@ -29,7 +31,11 @@ namespace CoreNodeModelsWpf.Nodes
         /// <param name="nodeView"></param>
         public void CustomizeView(DefineData model, NodeView nodeView)
         {
+            this._model = model;
+
             var formControl = new DefineDataControl(model);
+            listToggleButton = formControl.listToggleBtn;
+            listToggleButton.Click += listToggle_IsClicked;
 
             nodeView.inputGrid.Margin = new Thickness(5, 0, 5, 0);
             nodeView.inputGrid.RowDefinitions.Add(new RowDefinition());
@@ -63,6 +69,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             // subscribe to the event inside the NodeModel to detect user interacting with the dropdown
             dropdown.DropDownOpened += dropDown_DropDownOpened;
+            dropdown.DropDownClosed += dropDown_DropDownClosed;
 
             // Create the Grid as the root visual for the item template
             var gridFactory = new FrameworkElementFactory(typeof(Grid));
@@ -137,17 +144,17 @@ namespace CoreNodeModelsWpf.Nodes
             // Add the padlock button
             var toggleButtonStyle = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["PadlockToggleButton"];
             var toggleButtonTooltipStyle = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["GenericToolTipLight"];
-            toggleButton = new ToggleButton();
-            toggleButton.Style = toggleButtonStyle;
+            modeToggleButton = new ToggleButton();
+            modeToggleButton.Style = toggleButtonStyle;
 
             Binding isToggleCheckedBinding = new Binding("IsAutoMode");
             isToggleCheckedBinding.Mode = BindingMode.TwoWay; 
-            isToggleCheckedBinding.Source = model; 
-            toggleButton.SetBinding(ToggleButton.IsCheckedProperty, isToggleCheckedBinding);
+            isToggleCheckedBinding.Source = model;
+            modeToggleButton.SetBinding(ToggleButton.IsCheckedProperty, isToggleCheckedBinding);
 
-            toggleButton.Margin = new Thickness(5, 0, 0, 5); 
-            toggleButton.HorizontalAlignment = HorizontalAlignment.Right;
-            toggleButton.VerticalAlignment = VerticalAlignment.Center;
+            modeToggleButton.Margin = new Thickness(5, 0, 0, 5);
+            modeToggleButton.HorizontalAlignment = HorizontalAlignment.Right;
+            modeToggleButton.VerticalAlignment = VerticalAlignment.Center;
 
             var toggleButtonToolTip = new ToolTip
             {
@@ -155,23 +162,56 @@ namespace CoreNodeModelsWpf.Nodes
                 Style = toggleButtonTooltipStyle 
             };
 
-            toggleButton.ToolTip = toggleButtonToolTip;
+            modeToggleButton.ToolTip = toggleButtonToolTip;
 
-            Grid.SetRow(toggleButton, 0); 
-            Grid.SetColumn(toggleButton, 1); 
-            nodeView.inputGrid.Children.Add(toggleButton);
+            Grid.SetRow(modeToggleButton, 0); 
+            Grid.SetColumn(modeToggleButton, 1); 
+            nodeView.inputGrid.Children.Add(modeToggleButton);
         }
 
         public new void Dispose()
         {
-            if (dropdown != null) dropdown.DropDownOpened -= dropDown_DropDownOpened;
+            if (dropdown != null)
+            {
+                dropdown.DropDownOpened -= dropDown_DropDownOpened;
+                dropdown.DropDownClosed -= dropDown_DropDownClosed;
+            }
+
+            if (listToggleButton != null)
+            {
+                listToggleButton.Click -= listToggle_IsClicked;
+            }
         }
 
         private void dropDown_DropDownOpened(object sender, EventArgs e)
         {
-            if (toggleButton != null && toggleButton.IsChecked == true)
+            prevIndex = (sender as ComboBox).SelectedIndex;
+        }
+
+        private int prevIndex = 0;
+
+        private async void dropDown_DropDownClosed(object sender, EventArgs e)
+        {
+            var dropDown = sender as ComboBox;
+            var selection = dropDown.SelectedIndex;
+            var selectedValue = dropDown.SelectedValue as DynamoDropDownItem;
+
+            if (modeToggleButton != null && modeToggleButton.IsChecked == true && selection != prevIndex)
             {
-                toggleButton.IsChecked = false;
+                // Set the SelectedString directly, then lock the node
+                if (_model != null)
+                {
+                    _model.SelectedString = selectedValue.Name;
+                }
+                modeToggleButton.IsChecked = false;
+            }
+        }
+
+        private void listToggle_IsClicked(object sender, RoutedEventArgs e)
+        {
+            if (modeToggleButton != null && modeToggleButton.IsChecked == true)
+            {
+                modeToggleButton.IsChecked = false;
             }
         }
 
