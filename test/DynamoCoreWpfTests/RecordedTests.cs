@@ -51,7 +51,9 @@ namespace DynamoCoreWpfTests
 
         public override void Setup()
         {
-            base.Setup();
+            // Do not setup here, we setup in RunCommandsFromFile
+            //base.Setup();
+
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
             // We do not call "base.Init()" here because we want to be able 
@@ -156,57 +158,8 @@ namespace DynamoCoreWpfTests
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
-            if (this.ViewModel != null)
-            {
-                var message = "Multiple DynamoViewModel instances detected!";
-                throw new InvalidOperationException(message);
-            }
-
-            var geometryFactoryPath = string.Empty;
-            //preloadGeometry = true;
-            if (preloadGeometry && (preloader == null))
-            {
-                var assemblyPath = Assembly.GetExecutingAssembly().Location;
-                preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
-                preloader.Preload();
-
-                geometryFactoryPath = preloader.GeometryFactoryPath;
-                preloadGeometry = false;
-            }
-
-            TestPathResolver pathResolver = null;
-            var preloadedLibraries = new List<string>();
-            GetLibrariesToPreload(preloadedLibraries);
-
-            if (preloadedLibraries.Any())
-            {
-                // Only when any library needs preloading will a path resolver be 
-                // created, otherwise DynamoModel gets created without preloading 
-                // any library.
-                // 
-                pathResolver = new TestPathResolver();
-                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
-                {
-                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
-                }
-            }
-
-            var model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    StartInTestMode = true,
-                    PathResolver = pathResolver,
-                    GeometryFactoryPath = geometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Synchronous
-                });
-
-            // Create the DynamoViewModel to control the view
-            this.ViewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    CommandFilePath = commandFilePath,
-                    DynamoModel = model
-                });
+            CommandFilePath = commandFilePath;
+            base.Setup();
 
             ViewModel.HomeSpace.RunSettings.RunType = RunType.Automatic;
 
