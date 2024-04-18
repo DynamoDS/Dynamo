@@ -1784,7 +1784,7 @@ namespace Dynamo.Graph.Workspaces
             var selectedAnnotations = Annotations?.Where(s => s.IsSelected && !s.HasNestedGroups);
 
             // Remove nodes or notes selected which are already in the selected group
-            foreach(var group in selectedAnnotations)
+            foreach (var group in selectedAnnotations)
             {
                 selectedNodes = selectedNodes.Except(group.Nodes.OfType<NodeModel>());
                 selectedNotes = selectedNotes.Except(group.Nodes.OfType<NoteModel>());
@@ -2368,8 +2368,10 @@ namespace Dynamo.Graph.Workspaces
                 this,
                 new PointEventArgs(new Point2D(X, Y)));
 
+            Dictionary<Guid, NodeModel> nodeMap = Nodes.ToDictionary(x => x.GUID);
+
             // This function loads standard nodes
-            LoadNodes(workspaceViewInfo.NodeViews);
+            LoadNodes(workspaceViewInfo.NodeViews, ref nodeMap);
 
             // This function loads notes from the Notes array in the JSON format
             // NOTE: This is here to support early JSON graphs
@@ -2388,7 +2390,7 @@ namespace Dynamo.Graph.Workspaces
 
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
-            LoadAnnotations(workspaceViewInfo.Annotations);
+            LoadAnnotations(workspaceViewInfo.Annotations, ref nodeMap);
         }
 
         /// <summary>
@@ -2413,8 +2415,10 @@ namespace Dynamo.Graph.Workspaces
                 this,
                 new PointEventArgs(new Point2D(X, Y)));
 
+            Dictionary<Guid, NodeModel> nodeMap = Nodes.ToDictionary(x => x.GUID);
+
             // This function loads standard nodes
-            LoadNodes(workspaceViewInfo.NodeViews, offsetX, offsetY);
+            LoadNodes(workspaceViewInfo.NodeViews, ref nodeMap, offsetX, offsetY);
 
             // This function loads notes from the Notes array in the JSON format
             // NOTE: This is here to support early JSON graphs
@@ -2433,10 +2437,10 @@ namespace Dynamo.Graph.Workspaces
 
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
-            LoadAnnotations(workspaceViewInfo.Annotations);
+            LoadAnnotations(workspaceViewInfo.Annotations, ref nodeMap);
         }
 
-        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews, double offsetX = 0.0, double offsetY = 0.0)
+        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews, ref Dictionary<Guid, NodeModel> nodeMap, double offsetX = 0.0, double offsetY = 0.0)
         {
             if (nodeViews == null)
                 return;
@@ -2444,8 +2448,7 @@ namespace Dynamo.Graph.Workspaces
             foreach (ExtraNodeViewInfo nodeViewInfo in nodeViews)
             {
                 var guidValue = IdToGuidConverter(nodeViewInfo.Id);
-                var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
-                if (nodeModel != null)
+                if (nodeMap.TryGetValue(guidValue, out NodeModel nodeModel) && nodeModel != null)
                 {
                     if (offsetX == 0.0 && offsetY == 0.0)
                     {
@@ -2579,7 +2582,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews, ref Dictionary<Guid, NodeModel> nodeMap)
         {
             if (annotationViews == null) return;
 
@@ -2596,11 +2599,11 @@ namespace Dynamo.Graph.Workspaces
                     continue;
                 }
 
-                LoadAnnotation(annotationViewInfo);
+                LoadAnnotation(annotationViewInfo, ref nodeMap);
             }
         }
 
-        private void LoadAnnotation(ExtraAnnotationViewInfo annotationViewInfo)
+        private void LoadAnnotation(ExtraAnnotationViewInfo annotationViewInfo, ref Dictionary<Guid, NodeModel> nodeMap)
         {
             var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
 
@@ -2611,7 +2614,6 @@ namespace Dynamo.Graph.Workspaces
 
             // If count is zero, this is a note, not an annotation
             if (annotationViewInfo.Nodes.Count() == 0) return;
-
 
             var text = annotationViewInfo.Title;
 
@@ -2624,8 +2626,7 @@ namespace Dynamo.Graph.Workspaces
                     continue;
 
                 // NOTE: Some nodes may be annotations and not be found here
-                var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
-                if (nodeModel == null)
+                if (!nodeMap.TryGetValue(guidValue, out NodeModel nodeModel))
                     continue;
 
                 nodes.Add(nodeModel);

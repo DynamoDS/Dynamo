@@ -10,6 +10,7 @@ namespace DynamoUtilities
     /// <summary>
     /// Wrapper over System.Collections.ObjectModel.ObservableCollection that fires minimal notifications.
     /// This class supports batch operations that should defer CollectionChaned notifications.
+    /// Not thread safe.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class SmartObservableCollection<T> : ObservableCollection<T>

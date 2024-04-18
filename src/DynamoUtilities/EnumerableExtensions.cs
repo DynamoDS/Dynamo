@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
@@ -466,6 +467,40 @@ namespace Dynamo.Utilities
                 return attribute.Value;
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Returns true if a value of type ValueAs is found at key in the ConcurrentDictionary
+        /// Returns false otherwise. The output value 'valueAs' will be null in this case.
+        /// </summary>
+        public static bool TryGetValueAs<Key, Value, ValueAs>(this ConcurrentDictionary<Key, Value> dictionary, Key key, out ValueAs valueAs) where ValueAs : class
+        {
+            if (dictionary.TryGetValue(key, out Value value) &&
+                value is ValueAs valCoerced)
+            {
+                valueAs = valCoerced;
+                return true;
+            }
+
+            valueAs = null;
+            return false;
+        }
+
+
+        /// Returns true if a value of type ValueAs is found at key in the ConcurrentDictionary. The output 'valueAs' 
+        /// will contain the removed item.
+        /// Returns false otherwise. The output value 'valueAs' will be null in this case.
+        public static bool TryRemoveAs<Key, Value, ValueAs>(this ConcurrentDictionary<Key, Value> dictionary, Key key, out ValueAs valueAs) where ValueAs : class
+        {
+            if (dictionary.TryRemove(key, out Value value) &&
+                value is ValueAs valueCoerced)
+            {
+                valueAs = valueCoerced;
+                return true;
+            }
+
+            valueAs = null;
+            return false;
         }
     }
 }

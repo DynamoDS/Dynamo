@@ -481,18 +481,14 @@ namespace Dynamo.ViewModels
 
         public NodeViewModel Nodevm
         {
-            get
-            {
-                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
-            }
+            get;
+            private set;
         }
 
         public NodeViewModel NodeEnd
         {
-            get
-            {
-                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
-            }
+            get;
+            private set;
         }
 
         private PreviewState previewState = PreviewState.None;
@@ -994,6 +990,16 @@ namespace Dynamo.ViewModels
         {
             this.workspaceViewModel = workspace;
             model = connectorModel;
+
+            if (workspace.GetViewModel(model.Start.Owner.GUID, out NodeViewModel sNvm))
+            {
+                Nodevm = sNvm;
+            }
+            if (workspace.GetViewModel(model.End.Owner.GUID, out NodeViewModel eNvm))
+            {
+                NodeEnd = eNvm;
+            }
+
             IsHidden = model.IsHidden;
             MouseHoverOn = false;
             ZIndex = SetZIndex();
