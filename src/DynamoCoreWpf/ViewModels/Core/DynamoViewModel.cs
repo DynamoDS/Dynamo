@@ -758,7 +758,11 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
-            SearchDefaultNodeAutocompleteCandidates();
+            if(!Model.IsServiceMode)
+            {
+                SearchDefaultNodeAutocompleteCandidates();
+            }
+            
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
             workspaces.Add(homespaceViewModel);
             currentWorkspaceViewModel = homespaceViewModel;
