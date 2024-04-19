@@ -13,3 +13,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
 [assembly: InternalsVisibleTo("DSCoreNodesTests")]
+[assembly: InternalsVisibleTo("CoreNodeModels")]
+[assembly: InternalsVisibleTo("DynamoCoreTests")]
