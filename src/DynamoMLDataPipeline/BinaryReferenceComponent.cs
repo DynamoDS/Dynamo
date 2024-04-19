@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace DynamoMLDataPipeline
 {
-    class BinaryReferenceComponent : Dictionary<string, Dictionary<string, IPropertySet>>
+    internal class BinaryReferenceComponent : Dictionary<string, Dictionary<string, IPropertySet>>
     {
         private string objectId = "autodesk.data:binary.reference.component-1.0.0";
         public string ObjectId { get { return objectId; } }
@@ -17,7 +17,7 @@ namespace DynamoMLDataPipeline
         }
     }
 
-    class StringPropertySet : IPropertySet
+    internal class StringPropertySet : IPropertySet
     {
         [JsonProperty("id")]
         public string Id { get; set; }
@@ -31,7 +31,7 @@ namespace DynamoMLDataPipeline
         }
     }
 
-    class IntPropertySet : IPropertySet
+    internal class IntPropertySet : IPropertySet
     {
         [JsonProperty("end")]
         public int End { get; set; }
@@ -44,6 +44,6 @@ namespace DynamoMLDataPipeline
             Start = start;
         }
     }
-    
-    interface IPropertySet { }
+
+    internal interface IPropertySet { }
 }

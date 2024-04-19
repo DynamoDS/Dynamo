@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="CsvHelper" Version="30.0.1" />
-    <PackageReference Include="Greg" Version="2.5.0.5076" />
+    <PackageReference Include="Greg" Version="3.0.1.4707" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="106.12.0" />
   </ItemGroup>
