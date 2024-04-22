@@ -51,43 +51,28 @@ namespace DynamoCoreWpfTests
 
         public override void Setup()
         {
-            // Do not setup here, we setup in RunCommandsFromFile
-            //base.Setup();
+            base.Setup();
 
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
-            // We do not call "base.Init()" here because we want to be able 
-            // to create our own copy of Controller here with command file path.
-            // 
-            // base.Init();
         }
 
         public override void Cleanup()
         {
-            base.Cleanup();
-            Exit();
-        }
-
-        protected void Exit()
-        {
             commandCallback = null;
-            if (this.ViewModel != null)
+            // There are exceptions made to certain test cases where async evaluation 
+            // needs to be permitted. IsTestMode is marked as false for these test cases
+            // to emulate the real UI async scenario. Since the UI takes care of shutting down
+            // the Model in such a case, we need to make sure it is not shut down twice
+            // by checking for IsTestMode here as well
+            if (DynamoModel.IsTestMode)
             {
-                // There are exceptions made to certain test cases where async evaluation 
-                // needs to be permitted. IsTestMode is marked as false for these test cases
-                // to emulate the real UI async scenario. Since the UI takes care of shutting down
-                // the Model in such a case, we need to make sure it is not shut down twice
-                // by checking for IsTestMode here as well
-                if (DynamoModel.IsTestMode)
-                {
-                    var shutdownParams = new DynamoViewModel.ShutdownParams(
-                        shutdownHost: false, allowCancellation: false);
-                    ViewModel.PerformShutdownSequence(shutdownParams);
-                }
                 this.ViewModel = null;
             }
-
-            preloader = null; // Invalid preloader object for the test.
+            else
+            {
+                base.Cleanup();
+            }
         }
 
         #endregion
@@ -159,9 +144,10 @@ namespace DynamoCoreWpfTests
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
             CommandFilePath = commandFilePath;
-            base.Setup();
-
+ 
             ViewModel.HomeSpace.RunSettings.RunType = RunType.Automatic;
+
+            ViewModel.InitializeAutomationSettings(CommandFilePath);
 
             // Load all custom nodes if there is any specified for this test.
             if (this.customNodesToBeLoaded != null)
@@ -180,6 +166,7 @@ namespace DynamoCoreWpfTests
             RegisterCommandCallback(commandCallback);
 
             // Create the view.
+            // dynamoView will be closed by the ViewModel's automationSettings object.
             dynamoView = new DynamoView(this.ViewModel);
             dynamoView.ShowDialog();
 
@@ -2402,23 +2389,28 @@ namespace DynamoCoreWpfTests
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithoutNodeToCode.xml");
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
+        }
 
-            // Reset current test case
-            Exit();
-            Setup();
-
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("RegressionTests")]
+        public void TestCBNWithNodeToCode_2()
+        {
+            Assert.Inconclusive("Node To Code feature has been removed");
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithNodeToCode.xml");
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
+        }
 
-            // Reset current test case
-            Exit();
-            Setup();
-
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("RegressionTests")]
+        public void TestCBNWithNodeToCode_3()
+        {
+            Assert.Inconclusive("Node To Code feature has been removed");
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithNodeToCodeUndo.xml");
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
         }
+
 
         [Test, Apartment(ApartmentState.STA)]
         [Category("RegressionTests")]
@@ -2507,13 +2499,15 @@ namespace DynamoCoreWpfTests
             
             AssertValue("e_babc481696e6495c84897a650d1bfb25", 1);
             AssertValue("p_d4d53e201514434983e17cb5c533a3e0", 0);
-            
-            Exit();
-            Setup();
-            
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void DS_FunctionRedef01_2()
+        {
             // redefine function - test if the CBN reexecuted
             RunCommandsFromFile("Function_redef01a.xml");
-            
+
             AssertValue("e_babc481696e6495c84897a650d1bfb25", 3);
             AssertValue("p_d4d53e201514434983e17cb5c533a3e0", 0);
         }
@@ -2530,10 +2524,12 @@ namespace DynamoCoreWpfTests
 
             AssertValue("d_0ce2353ce5d6445f83b72db7e3861ce0", 1);
             AssertValue("p_c9827e41855647f68e9d6c600a2e45ee", 0);
+        }
 
-            Exit();
-            Setup();
-
+        [Test]
+        [Category("RegressionTests")]
+        public void DS_FunctionRedef02_2()
+        {
             // redefine function call - CBN with function definition is not expected to be executed
             RunCommandsFromFile("Function_redef02a.xml");
 
@@ -2553,9 +2549,12 @@ namespace DynamoCoreWpfTests
 
             AssertValue("c_f34e01e225e446349eb8e815e8ee580d", 0);
             AssertValue("d_f34e01e225e446349eb8e815e8ee580d", 1);
+        }
 
-            Exit();
-            Setup();
+        [Test]
+        [Category("RegressionTests")]
+        public void DS_FunctionRedef03_2()
+        {
 
             // redefine function call - CBN with function definition is not expected to be executed
             RunCommandsFromFile("Function_redef03a.xml");
@@ -2575,13 +2574,15 @@ namespace DynamoCoreWpfTests
 
             AssertValue("c_275d7a3d2b984f0e808d2aba03c6ff4f", 1);
             AssertValue("b_9b638b99d63145838b82662a60cdf6bc", 0);
-            
-            Exit();
-            Setup();
-            
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void DS_FunctionRedef04_2()
+        {
             // redefine function call - change type of argument
             RunCommandsFromFile("Function_redef04a.xml");
-            
+
             AssertValue("c_275d7a3d2b984f0e808d2aba03c6ff4f", new object[] { 1, 2, 3 });
             AssertValue("b_9b638b99d63145838b82662a60cdf6bc", 0);
         }
