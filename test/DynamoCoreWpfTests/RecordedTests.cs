@@ -67,10 +67,6 @@ namespace DynamoCoreWpfTests
             // by checking for IsTestMode here as well
             if (DynamoModel.IsTestMode)
             {
-                this.ViewModel = null;
-            }
-            else
-            {
                 base.Cleanup();
             }
         }
@@ -144,7 +140,7 @@ namespace DynamoCoreWpfTests
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
             CommandFilePath = commandFilePath;
- 
+
             ViewModel.HomeSpace.RunSettings.RunType = RunType.Automatic;
 
             ViewModel.InitializeAutomationSettings(CommandFilePath);
@@ -175,6 +171,12 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(this.ViewModel.Model.CurrentWorkspace);
             workspace = this.ViewModel.Model.CurrentWorkspace;
             workspaceViewModel = this.ViewModel.CurrentSpaceViewModel;
+
+            var automation = this.ViewModel.Automation;
+            if (automation != null)
+            {
+                automation.PlaybackStateChanged -= OnAutomationPlaybackStateChanged;
+            }
         }
 
         private void RegisterCommandCallback(CommandCallback commandCallback)
@@ -1796,7 +1798,8 @@ namespace DynamoCoreWpfTests
             // a code block node causes downstream addition node to result in "null"
             // instead of retaining its value of "16". Modifying the code block node
             // in this case should not have caused such issue.
-            // 
+            //
+            using (Disposable.Create(() => { DynamoModel.IsTestMode = true; }))
             RunCommandsFromFile("UpdatingCbnShouldCauseDownstreamExecution.xml", (commandTag) =>
             {
                 switch (commandTag)
@@ -3674,6 +3677,7 @@ namespace DynamoCoreWpfTests
         [Category("RegressionTests"), Category("Failure")]
         public void TestCancelExecution()
         {
+            using (Disposable.Create(() => { DynamoModel.IsTestMode = true; }))
             RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", (commandTag) =>
             {
                 // We need to run asynchronously for this test case as we need to 
@@ -3695,15 +3699,14 @@ namespace DynamoCoreWpfTests
                 {
                     AssertNullValues();
                 }
-         
             });
-            
         }
 
         [Test, Apartment(ApartmentState.STA)]
         [Category("Failure")]
         public void TestCancelExecutionWhileLoop()
         {
+            using (Disposable.Create(() => { DynamoModel.IsTestMode = true; }))
             RunCommandsFromFile("TestCancelExecutionWhileLoop.xml", (commandTag) =>
             {
                 // We need to run asynchronously for this test case as we need to 
