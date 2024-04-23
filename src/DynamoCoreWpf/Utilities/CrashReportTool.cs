@@ -178,18 +178,21 @@ namespace Dynamo.Wpf.Utilities
         /// <summary>
         /// Calls external CER tool (with UI)
         /// </summary>
-        /// <param name="viewModel">The Dynamo view model</param>
-        /// <param name="args"></param>
+        /// <param name="sender">Either a DynamoViewModel or a DynamoModel object</param>
+        /// <param name="args">Arguments consumed by the Crash report UI</param>
         /// <returns>True if the CER tool process was successfully started. False otherwise</returns>
         private static bool ShowCrashErrorReportWindow(object sender, CrashErrorReportArgs args)
         {
-            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("CER_v2", false) == false)
+            DynamoModel model = null;
+            var viewModel = sender as DynamoViewModel;
+            if (viewModel != null)
             {
-                return false;
+                model = viewModel.Model;
             }
-
-            DynamoViewModel viewModel = sender as DynamoViewModel;
-            DynamoModel model = viewModel != null ? viewModel.Model : sender as DynamoModel;
+            else if (sender is DynamoModel dm)
+            {
+                model = dm;
+            }
 
             string cerToolDir = !string.IsNullOrEmpty(model?.CERLocation) ?
                 model?.CERLocation : FindCERToolInInstallLocations();

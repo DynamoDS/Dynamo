@@ -53,12 +53,20 @@ namespace Dynamo.Nodes.Prompts
 
         internal CrashPrompt(object sender, CrashPromptArgs args)
         {
-            DynamoViewModel dynamoViewModel = sender as DynamoViewModel;
-            DynamoModel model = dynamoViewModel != null ? dynamoViewModel.Model : sender as DynamoModel;
+            DynamoModel model = null;
+            var dynamoViewModel = sender as DynamoViewModel;
+            if (dynamoViewModel != null)
+            {
+                model = dynamoViewModel.Model;
+            }
+            else if (sender is DynamoModel dm)
+            {
+                model = dm;
+            }
 
             InitializeComponent();
 
-            var packageLoader = dynamoViewModel?.Model?.GetPackageManagerExtension()?.PackageLoader;
+            var packageLoader = model?.GetPackageManagerExtension()?.PackageLoader;
             markdownPackages = Wpf.Utilities.CrashUtilities.PackagesToMakrdown(packageLoader);
 
             productName = dynamoViewModel?.BrandingResourceProvider.ProductName ?? Process.GetCurrentProcess().ProcessName;

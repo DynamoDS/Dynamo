@@ -974,6 +974,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
+            DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
@@ -3296,9 +3297,15 @@ namespace Dynamo.Models
         {
             Logger.Log(obj);
         }
+
         private void LogMessageWrapper(string m)
         {
             LogMessage(Dynamo.Logging.LogMessage.Info(m));
+        }
+
+        private void LogErrorMessageWrapper(string m)
+        {
+            LogMessage(Dynamo.Logging.LogMessage.Error(m));
         }
 
 #if DEBUG_LIBRARY

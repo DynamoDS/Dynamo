@@ -46,6 +46,7 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoMLDataPipeline;
+using DynamoServices;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
 using Newtonsoft.Json;
@@ -841,21 +842,36 @@ namespace Dynamo.ViewModels
             {
                 if (!fatal)
                 {
-                    var localPkg =  Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p => p.LoadedAssemblies.FirstOrDefault(a => a.Name == ex.Source) != null);
-                    if (localPkg != null)
+                    // Check if the exception might be coming from a loaded package assembly.
+                    var faultyPkg =  Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p =>
+                    {
+                        // Find the first assembly that was loaded fromm the package folder and has the same name as the exception source.
+                        return p.LoadedAssemblies.FirstOrDefault(a => a.WasLoadedFromPackage && (a.Name == ex.Source)) != null;
+                    });
+                    if (faultyPkg != null)
                     {
                         var crashDetails = new CrashErrorReportArgs(ex);
-                        Model?.Logger?.LogError($"Unhandled exception coming from package {localPkg.Name} was handled: {crashDetails.Details}");
-                        Analytics.TrackException(ex, true);
+                        DynamoConsoleLogger.OnLogErrorToDynamoConsole($"Unhandled exception coming from package {faultyPkg.Name} was handled: {crashDetails.Details}");
+                        Analytics.TrackException(ex, false);
+
+                        if (DynamoModel.IsTestMode)
+                        {
+                            throw ex;
+                        }
                         return;
                     }
                 }
 
                 DynamoModel.IsCrashing = true;
                 var crashData = new CrashErrorReportArgs(ex);
-                Model?.Logger?.LogError($"Unhandled exception: {crashData.Details} ");
+                DynamoConsoleLogger.OnLogErrorToDynamoConsole($"Unhandled exception: {crashData.Details} ");
                 Analytics.TrackException(ex, true);
                 Model?.OnRequestsCrashPrompt(crashData);
+
+                if (DynamoModel.IsTestMode)
+                {
+                    throw ex;
+                }
 
                 if (fatal)
                 {

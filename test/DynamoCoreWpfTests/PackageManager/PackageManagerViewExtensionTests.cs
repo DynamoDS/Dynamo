@@ -12,6 +12,8 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Scheduler;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
+using DynamoServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Moq;
@@ -314,7 +316,39 @@ namespace DynamoCoreWpfTests.PackageManager
             }
         }
 
+        [Test]
+        public void TestCrashInPackage()
+        {
+            var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension_Crash");
 
+            var currentDynamoModel = ViewModel.Model;
+        
+            var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
+
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+
+            int count = 0;
+            bool caughtExceptionFromPkg = false;
+            void DynamoConsoleLogger_LogErrorToDynamoConsole(string obj)
+            {
+                if (obj.Contains("Unhandled exception coming from package"))
+                {
+                    count++;
+                }
+                caughtExceptionFromPkg = obj.Contains($"Unhandled exception coming from package {pkg.Name}");
+            }
+
+            DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
+
+            loader.LoadPackages(new List<Package>() { pkg });
+
+            DispatcherUtil.DoEventsLoop(() => caughtExceptionFromPkg);
+
+            Assert.AreEqual(1, count);
+            Assert.IsTrue(caughtExceptionFromPkg);
+
+            DynamoConsoleLogger.LogErrorToDynamoConsole -= DynamoConsoleLogger_LogErrorToDynamoConsole;
+        }
 
         [OneTimeTearDown]
         /// <summary>

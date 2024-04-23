@@ -23,7 +23,10 @@ namespace Dynamo.PackageManager
     {
         public bool IsNodeLibrary { get; set; }
         public Assembly Assembly { get; set; }
-        public string LocalFilePath {get;set;} 
+        public string LocalFilePath {get;set;}
+        // WasLoadedFromPackage is a flag that represents if the Assembly was actually loaded from the package folder (value = true)
+        // or if the assembly was already loaded in the appdomain (value = false)
+        internal bool WasLoadedFromPackage { get; set; }
 
         public string Name
         {
@@ -358,8 +361,14 @@ namespace Dynamo.PackageManager
             // Use the pkg header to determine which assemblies to load and prevent multiple enumeration
             // In earlier packages, this field could be null, which is correctly handled by IsNodeLibrary
             var nodeLibraries = Header.node_libraries;
+
+            List<string> appDomainAssemblies = null;
+            var binFiles = new DirectoryInfo(BinaryDirectory).EnumerateFiles("*.dll");
+            if (binFiles.Any()) {
+                appDomainAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetName().Name).ToList();
+            }
             
-            foreach (var assemFile in new DirectoryInfo(BinaryDirectory).EnumerateFiles("*.dll"))
+            foreach (var assemFile in binFiles)
             {
                 Assembly assem;
                 //TODO when can we make this false. 3.0?
@@ -375,13 +384,16 @@ namespace Dynamo.PackageManager
                     var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
                     if (result)
                     {
+                        bool alreadyLoaded = appDomainAssemblies?.Contains(assemFile.Name) ?? false;
+
                         // IsNodeLibrary may fail, we store the warnings here and then show
                         IList<ILogMessage> warnings = new List<ILogMessage>();
 
                         assemblies.Add(new PackageAssembly()
                         {
                             Assembly = assem,
-                            IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
+                            IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings),
+                            WasLoadedFromPackage = !alreadyLoaded,
                         });
 
                         warnings.ToList().ForEach(this.Log);
