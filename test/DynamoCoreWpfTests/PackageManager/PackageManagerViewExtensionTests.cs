@@ -322,7 +322,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension_Crash");
 
             var currentDynamoModel = ViewModel.Model;
-        
+
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
             var pkg = loader.ScanPackageDirectory(pkgDir);
@@ -340,9 +340,15 @@ namespace DynamoCoreWpfTests.PackageManager
 
             DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
 
-            loader.LoadPackages(new List<Package>() { pkg });
-
-            DispatcherUtil.DoEventsLoop(() => caughtExceptionFromPkg);
+            // Test live conditions of exception handling
+            using (Disposable.Create(() => { DynamoModel.IsTestMode = false; }, () => { DynamoModel.IsTestMode = true; }))
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    loader.LoadPackages(new List<Package>() { pkg });
+                    DispatcherUtil.DoEventsLoop(() => caughtExceptionFromPkg);
+                });
+            }
 
             Assert.AreEqual(1, count);
             Assert.IsTrue(caughtExceptionFromPkg);
