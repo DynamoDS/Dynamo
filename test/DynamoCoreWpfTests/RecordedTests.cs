@@ -60,15 +60,7 @@ namespace DynamoCoreWpfTests
         public override void Cleanup()
         {
             commandCallback = null;
-            // There are exceptions made to certain test cases where async evaluation 
-            // needs to be permitted. IsTestMode is marked as false for these test cases
-            // to emulate the real UI async scenario. Since the UI takes care of shutting down
-            // the Model in such a case, we need to make sure it is not shut down twice
-            // by checking for IsTestMode here as well
-            if (DynamoModel.IsTestMode)
-            {
-                base.Cleanup();
-            }
+            base.Cleanup();
         }
 
         #endregion
