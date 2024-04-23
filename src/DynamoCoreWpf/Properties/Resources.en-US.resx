@@ -1354,7 +1354,7 @@ You can always redownload the package.</value>
     <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
   </data>
   <data name="MessagePackageNewerDynamo" xml:space="preserve">
-    <value>The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?</value>
+    <value>This package or one of its dependencies were created for a newer version of Dynamo. It may not work in this version. Do you want to continue?</value>
   </data>
   <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
     <value>You must select at least one custom node.</value>

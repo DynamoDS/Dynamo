@@ -885,7 +885,8 @@ namespace Dynamo.ViewModels
             lock (Nodes)
             {
                 nodeViewModel = Nodes.First(x => x.NodeLogic == node);
-                Errors.Remove(nodeViewModel.ErrorBubble);
+                if (nodeViewModel.ErrorBubble != null)
+                    Errors.Remove(nodeViewModel.ErrorBubble);
                 Nodes.Remove(nodeViewModel);
             }
             //unsub the events we attached below in NodeAdded.
@@ -904,8 +905,9 @@ namespace Dynamo.ViewModels
             {
                 Nodes.Add(nodeViewModel);
             }
-            Errors.Add(nodeViewModel.ErrorBubble);
-            
+            if (nodeViewModel.ErrorBubble != null)
+                Errors.Add(nodeViewModel.ErrorBubble);
+
             PostNodeChangeActions();
         }
 
