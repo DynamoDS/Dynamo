@@ -1426,6 +1426,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
+            DynamoConsoleLogger.LogErrorToDynamoConsole -= LogErrorMessageWrapper;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
