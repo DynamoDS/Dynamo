@@ -205,6 +205,11 @@ namespace Dynamo.UI.Views
             }
             catch (Exception ex)
             {
+                if (DynamoModel.IsTestMode)
+                {
+                    throw;
+                }
+
                 if (!DynamoModel.IsCrashing && !IsClosing)
                 {
                     CrashReportTool.ShowCrashWindow(viewModel, new CrashErrorReportArgs(ex));

@@ -839,6 +839,13 @@ namespace Dynamo.ViewModels
         {
             try
             {
+                if (DynamoModel.IsTestMode)
+                {
+                    var cd = new CrashErrorReportArgs(ex);
+                    Model?.Logger?.LogError($"Unhandled exception: {cd.Details} ");
+                    throw ex;
+                }
+
                 DynamoModel.IsCrashing = true;
                 var crashData = new CrashErrorReportArgs(ex);
                 Model?.Logger?.LogError($"Unhandled exception: {crashData.Details} ");
