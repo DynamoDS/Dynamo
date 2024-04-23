@@ -14,8 +14,6 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
-using System.Xml;
-using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -50,6 +48,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoMLDataPipeline;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
+using Newtonsoft.Json;
 using PythonNodeModels;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
@@ -70,6 +69,7 @@ namespace Dynamo.ViewModels
         private bool showStartPage = false;
         private PreferencesViewModel preferencesViewModel;
         private string dynamoMLDataPath = string.Empty;
+        private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json"; 
 
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
@@ -92,8 +92,6 @@ namespace Dynamo.ViewModels
         internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
 
         internal DynamoMLDataPipelineExtension MLDataPipelineExtension { get; set; }
-
-        internal static Dictionary<string, NodeSearchElementViewModel> DefaultAutocompleteCandidates = new Dictionary<string, NodeSearchElementViewModel>();
 
         /// <summary>
         /// Collection of Right SideBar tab items: view extensions and docked windows.
@@ -211,7 +209,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsMLDataIngestionPipelineinBeta", false) ?? false;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsMLDataIngestionPipelineinBeta", true) ?? true;
             }
         }
 
@@ -778,23 +776,23 @@ namespace Dynamo.ViewModels
 
             preferencesViewModel = new PreferencesViewModel(this);
 
-            dynamoMLDataPath = Path.Combine(Model.PathManager.UserDataDirectory, "DynamoMLDataPipeline.xml");
+            dynamoMLDataPath = Path.Combine(Model.PathManager.UserDataDirectory, dynamoMLDataFileName);
 
             if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
             {
                 model.State = DynamoModel.DynamoModelState.StartedUI;
 
                 // deserialize workspace checksum hashes that is used for Dynamo ML data pipeline.
-                var checksums = new List<GraphChecksumPair>();
-                var serializer = new XmlSerializer(Model.GraphChecksumList.GetType());
-
                 if (File.Exists(dynamoMLDataPath))
                 {
-                    using (var reader = XmlReader.Create(dynamoMLDataPath))
+                    try
                     {
-                        checksums = (List<GraphChecksumPair>)serializer.Deserialize(reader);
+                        Model.GraphChecksumDictionary = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(File.ReadAllText(dynamoMLDataPath));
                     }
-                    Model.GraphChecksumDictionary = checksums.ToDictionary(x => x.GraphId, x => x.Checksum);
+                    catch (Exception ex)
+                    {
+                        Model.Logger.Log($"Failed to deserialize {dynamoMLDataFileName} : {ex.Message}", LogLevel.File);
+                    }
                 }
             }
 
@@ -1088,7 +1086,9 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
-        private void InitializeAutomationSettings(string commandFilePath)
+        // InitializeAutomationSettings initializes the Dynamo automationSettings object.
+        // This method is meant to be accessed only within this class and within tests.
+        internal void InitializeAutomationSettings(string commandFilePath)
         {
             if (String.IsNullOrEmpty(commandFilePath) || !File.Exists(commandFilePath))
                 commandFilePath = null;
@@ -2275,7 +2275,6 @@ namespace Dynamo.ViewModels
             bool differentialChecksum = false;
             string graphId = Model.CurrentWorkspace.Guid.ToString();
 
-
             Model.GraphChecksumDictionary.TryGetValue(graphId, out List<string> checksums);
 
             // compare the current checksum with previous hash values.
@@ -2298,23 +2297,17 @@ namespace Dynamo.ViewModels
             // if the checksum is different from previous hashes, serialize this new info. 
             if (differentialChecksum)
             {
-                var graphChecksums = new List<GraphChecksumPair>();
-                foreach (KeyValuePair<string, List<string>> entry in Model.GraphChecksumDictionary)
+                try
                 {
-                    var item = new GraphChecksumPair
+                    using (StreamWriter file = File.CreateText(dynamoMLDataPath))
                     {
-                        GraphId = entry.Key,
-                        Checksum = entry.Value
-                    };
-
-                    graphChecksums.Add(item);
+                        JsonSerializer serializer = new JsonSerializer();
+                        serializer.Serialize(file, Model.GraphChecksumDictionary);
+                    }
                 }
-
-                var serializer = new XmlSerializer(Model.GraphChecksumList.GetType());
-                using (var writer = XmlWriter.Create(dynamoMLDataPath))
+                catch (Exception ex)
                 {
-                    Model.GraphChecksumList = graphChecksums;
-                    serializer.Serialize(writer, Model.GraphChecksumList);
+                    Model.Logger.Log("Failed to serialize " + dynamoMLDataFileName + "::" + ex.Message, LogLevel.File);
                 }
             }
 
@@ -2341,16 +2334,6 @@ namespace Dynamo.ViewModels
                 if (!isBackup && hasSaved)
                 {
                     AddToRecentFiles(path);
-
-                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash &&
-                         Model.CurrentWorkspace.IsValidForFDX && !IsMLDataIngestionPipelineinBeta && currentWorkspaceViewModel.Checksum != string.Empty)
-                    {
-                        if (HasDifferentialCheckSum())
-                        {
-                            Model.Logger.Log("This Workspace is shared to train the Dynamo Machine Learning model.");
-                            MLDataPipelineExtension.DynamoMLDataPipeline.DataExchange(path);
-                        }
-                    }
                 }                           
             }
             catch (Exception ex)
@@ -2948,6 +2931,32 @@ namespace Dynamo.ViewModels
 
         private void CloseHomeWorkspace(object parameter)
         {
+            // Upon closing a workspace, validate if the workspace is valid to be sent to the ML datapipeline and then send it.
+            if (!DynamoModel.IsTestMode && !HomeSpace.HasUnsavedChanges && (currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash)
+            {
+                if (!IsMLDataIngestionPipelineinBeta && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
+                {
+                    if (HasDifferentialCheckSum())
+                    {
+                        Model.Logger.Log("This Workspace is being shared to train the Dynamo Machine Learning model.", LogLevel.File);
+                        var workspacePath = model.CurrentWorkspace.FileName;
+
+                        Task.Run(() =>
+                        {
+                            try
+                            {
+                                MLDataPipelineExtension.DynamoMLDataPipeline.SendWorkspaceLog(workspacePath);
+                            }
+                            catch (Exception ex)
+                            {
+                                Model.Logger.Log("Failed to share this workspace with ML pipeline.", LogLevel.File);
+                                Model.Logger.Log(ex.StackTrace, LogLevel.File);
+                            }
+                        });
+                    }
+                }
+            }
+
             if (ClearHomeWorkspaceInternal())
             {
                 // If after closing the HOME workspace, and there are no other custom 

@@ -374,7 +374,6 @@ namespace Dynamo.ViewModels
             get
             {
                 List<string> nodeInfoConnections = new List<string>();
-                var connectors = Connectors;
 
                 foreach (var connector in Connectors)
                 {

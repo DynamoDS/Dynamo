@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace DynamoMLDataPipeline
 {
     // Schema and the assets for the data request body.
-    class UploadAssetsRequestBody
+    internal class UploadAssetsRequestBody
     {
         public UploadAssetsRequestBody(List<Schema> schemas, List<InstanceAsset> assets, string operation)
         {

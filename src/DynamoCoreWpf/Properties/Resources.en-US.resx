@@ -1787,7 +1787,7 @@ Next assemblies were loaded several times:
     <value>Has no dependecies</value>
   </data>
   <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
-    <value>Package Uses Newer Version of {0}!</value>
+    <value>Package may not work in this version of {0}!</value>
   </data>
   <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
     <value>Package Warning</value>
@@ -3965,5 +3965,14 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="DynamoXmlFileFormat" xml:space="preserve">
     <value>Dynamo 1.x file format</value>
+  </data>
+  <data name="MessagePackageOlderDynamo" xml:space="preserve">
+    <value>The package or one of its dependencies use an older version of {0} than you are currently using. Do you want to continue?</value>
+  </data>
+  <data name="PackageUseOlderDynamoMessageBoxTitle" xml:space="preserve">
+    <value>Package may not work in this version of Dynamo {0}!</value>
+  </data>
+  <data name="MessagePackOlderDynamoLink" xml:space="preserve">
+    <value>#Learn more=https://primer2.dynamobim.org/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8</value>
   </data>
 </root>
