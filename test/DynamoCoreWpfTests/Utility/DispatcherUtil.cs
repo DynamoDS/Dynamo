@@ -17,7 +17,7 @@ namespace DynamoCoreWpfTests.Utility
         public static void DoEvents()
         {
             var frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
+            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.SystemIdle,
                 new DispatcherOperationCallback(ExitFrame), frame);
             Dispatcher.PushFrame(frame);
         }
@@ -29,7 +29,7 @@ namespace DynamoCoreWpfTests.Utility
         /// <param name="check">When check returns true, the even loop is stopped.</param>
         public static void DoEventsLoop(Func<bool> check = null)
         {
-            const int max_count = 200;
+            const int max_count = 20;
 
             int count = 0;
             while (true)
@@ -44,7 +44,7 @@ namespace DynamoCoreWpfTests.Utility
                 }
 
                 DispatcherUtil.DoEvents();
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
                 count++;
             }
         }
