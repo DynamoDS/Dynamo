@@ -856,6 +856,7 @@ namespace Dynamo.ViewModels
 
                         if (DynamoModel.IsTestMode)
                         {
+                            // Rethrow the exception during testing.
                             throw ex;
                         }
                         return;
@@ -866,12 +867,14 @@ namespace Dynamo.ViewModels
                 var crashData = new CrashErrorReportArgs(ex);
                 DynamoConsoleLogger.OnLogErrorToDynamoConsole($"Unhandled exception: {crashData.Details} ");
                 Analytics.TrackException(ex, true);
-                Model?.OnRequestsCrashPrompt(crashData);
 
                 if (DynamoModel.IsTestMode)
                 {
+                    // Rethrow the exception during testing.
                     throw ex;
                 }
+
+                Model?.OnRequestsCrashPrompt(crashData);
 
                 if (fatal)
                 {
