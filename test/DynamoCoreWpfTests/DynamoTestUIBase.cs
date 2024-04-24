@@ -31,6 +31,10 @@ namespace DynamoCoreWpfTests
         protected DynamoViewModel ViewModel { get; set; }
         protected DynamoView View { get; set; }
         protected DynamoModel Model { get; set; }
+
+        // Use this flag to skip trying to execute all the dispatched operations during the test lifetime.
+        // This flag should only be used very sparingly
+        protected bool SkipDispatcherFlush = false;
         protected int DispatcherOpsCounter = 0;
 
         protected string ExecutingDirectory
@@ -40,7 +44,6 @@ namespace DynamoCoreWpfTests
 
         protected string TempFolder { get; private set; }
 
-        static List<int> names = [];
         [SetUp]
         public virtual void Start()
         {
@@ -87,7 +90,10 @@ namespace DynamoCoreWpfTests
 
             SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
-            Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
+            if (!SkipDispatcherFlush)
+            {
+                Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
+            }
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
@@ -103,11 +109,8 @@ namespace DynamoCoreWpfTests
         private void Hooks_OperationPosted(object sender, DispatcherHookEventArgs e)
         {
             e.Operation.Task.ContinueWith((t) => {
-                names.Remove(e.Operation.Task.Id);
                 Interlocked.Decrement(ref DispatcherOpsCounter);
             }, TaskScheduler.Default);
-
-            names.Add(e.Operation.Task.Id);
             Interlocked.Increment(ref DispatcherOpsCounter);
         }
 
@@ -129,9 +132,12 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
-            Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
+            if (!SkipDispatcherFlush)
+            {
+                Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
 
-            DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
+                DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
+            }
 
             //Ensure that we leave the workspace marked as
             //not having changes.

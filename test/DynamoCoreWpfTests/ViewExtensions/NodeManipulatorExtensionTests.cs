@@ -1,4 +1,4 @@
-﻿using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Manipulation;
 using Dynamo.Models;
@@ -27,6 +27,13 @@ namespace DynamoCoreWpfTests.ViewExtensions
     }
     public class NodeManipulatorExtensionTests : DynamoTestUIBase
     {
+        [SetUp]
+        public virtual void Start()
+        {
+            SkipDispatcherFlush = true;
+            base.Start();
+        }
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
