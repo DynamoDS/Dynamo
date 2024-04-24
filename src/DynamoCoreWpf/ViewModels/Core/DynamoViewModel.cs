@@ -93,6 +93,8 @@ namespace Dynamo.ViewModels
 
         internal DynamoMLDataPipelineExtension MLDataPipelineExtension { get; set; }
 
+        internal Dictionary<string, NodeSearchElementViewModel> DefaultAutocompleteCandidates;
+
         /// <summary>
         /// Collection of Right SideBar tab items: view extensions and docked windows.
         /// </summary>
@@ -695,6 +697,28 @@ namespace Dynamo.ViewModels
             return new DynamoViewModel(startConfiguration);
         }
 
+        private void SearchDefaultNodeAutocompleteCandidates()
+        {
+            var tempSearchViewModel = new SearchViewModel(this)
+            {
+                Visible = true
+            };
+            DefaultAutocompleteCandidates = new Dictionary<string, NodeSearchElementViewModel>();
+
+            // TODO: These are basic input types in Dynamo
+            // This should be only served as a temporary default case.
+            var queries = new List<string>() { "String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script" };
+            foreach (var query in queries)
+            {
+                var foundNode = tempSearchViewModel.Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
+                if (foundNode != null)
+                {
+                    DefaultAutocompleteCandidates.Add(foundNode.Name, foundNode);
+                }
+            }
+            tempSearchViewModel.Dispose();
+        }
+
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
             // CurrentDomain_UnhandledException - catches unhandled exceptions that are fatal to the current process. These exceptions cannot be handled and process termination is guaranteed
@@ -734,6 +758,11 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
+            if(!Model.IsServiceMode)
+            {
+                SearchDefaultNodeAutocompleteCandidates();
+            }
+            
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
             workspaces.Add(homespaceViewModel);
             currentWorkspaceViewModel = homespaceViewModel;
