@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -49,6 +50,7 @@ using DynamoMLDataPipeline;
 using DynamoServices;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
+using J2N.Text;
 using Newtonsoft.Json;
 using PythonNodeModels;
 using ISelectable = Dynamo.Selection.ISelectable;
@@ -840,14 +842,16 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                if (!fatal)
+                var exceptionAssembly = ex.TargetSite?.Module?.Assembly;
+                // Do not crash if the exception is coming from a 3d party package; 
+                if (!fatal && exceptionAssembly != null)
                 {
                     // Check if the exception might be coming from a loaded package assembly.
-                    var faultyPkg =  Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p =>
-                    {
-                        // Find the first assembly that was loaded fromm the package folder and has the same name as the exception source.
-                        return p.LoadedAssemblies.FirstOrDefault(a => a.WasLoadedFromPackage && (a.Name == ex.Source)) != null;
-                    });
+                    var faultyPkg = Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p =>
+                        {
+                            return exceptionAssembly.Location.StartsWith(p.RootDirectory, StringComparison.OrdinalIgnoreCase);
+                        }
+                    );
                     if (faultyPkg != null)
                     {
                         var crashDetails = new CrashErrorReportArgs(ex);
