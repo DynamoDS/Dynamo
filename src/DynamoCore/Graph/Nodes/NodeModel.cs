@@ -411,6 +411,10 @@ namespace Dynamo.Graph.Nodes
             get { return infos; }
         }
 
+        /// <summary>
+        /// BlockInfoBubbleUpdates is flag used to block InfoBubble updates during (or immediately after) graph execution.
+        /// </summary>
+        internal bool BlockInfoBubbleUpdates = false;
 
         /// <summary>
         /// A publicly accessible collector of all Info/Warning/Error data
