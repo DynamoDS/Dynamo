@@ -822,10 +822,18 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            // Try to handle the exception so that the host app can continue (in most cases).
-            // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases
-            // we might see 2 CER windows (the extra one from the host app) - CER tool might handle this in the future.
-            e.Handled = true;
+            if (DynamoModel.IsTestMode)
+            {
+                // Do not handle the exception in test mode.
+                // Let the test host handle it.
+            }
+            else
+            {
+                // Try to handle the exception so that the host app can continue (in most cases).
+                // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases
+                // we might see 2 CER windows (the extra one from the host app) - CER tool might handle this in the future.
+                e.Handled = true;
+            }
 
             CrashGracefully(e.Exception);
         }
@@ -857,12 +865,6 @@ namespace Dynamo.ViewModels
                         var crashDetails = new CrashErrorReportArgs(ex);
                         DynamoConsoleLogger.OnLogErrorToDynamoConsole($"Unhandled exception coming from package {faultyPkg.Name} was handled: {crashDetails.Details}");
                         Analytics.TrackException(ex, false);
-
-                        if (DynamoModel.IsTestMode)
-                        {
-                            // Rethrow the exception during testing.
-                            throw ex;
-                        }
                         return;
                     }
                 }
@@ -874,8 +876,8 @@ namespace Dynamo.ViewModels
 
                 if (DynamoModel.IsTestMode)
                 {
-                    // Rethrow the exception during testing.
-                    throw ex;
+                    // Do not show the crash UI during tests.
+                    return;
                 }
 
                 Model?.OnRequestsCrashPrompt(crashData);

@@ -339,16 +339,11 @@ namespace DynamoCoreWpfTests.PackageManager
             }
 
             DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
-
-            // Test live conditions of exception handling
-            using (Disposable.Create(() => { DynamoModel.IsTestMode = false; }, () => { DynamoModel.IsTestMode = true; }))
+            Assert.Throws<NotImplementedException>(() =>
             {
-                Assert.DoesNotThrow(() =>
-                {
-                    loader.LoadPackages(new List<Package>() { pkg });
-                    DispatcherUtil.DoEventsLoop(() => caughtExceptionFromPkg);
-                });
-            }
+                loader.LoadPackages(new List<Package>() { pkg });
+                DispatcherUtil.DoEventsLoop(() => caughtExceptionFromPkg);
+            });
 
             Assert.AreEqual(1, count);
             Assert.IsTrue(caughtExceptionFromPkg);
