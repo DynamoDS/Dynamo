@@ -1,26 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
 {
-    public class TibiTEst
-    {
-        public static List<string> GetAllStart(string filePath)
-        {
-            var allLines = File.ReadAllLines(filePath);
-            return allLines.Where(x => x.Contains("Start test:")).ToList();
-        }
-
-        public static List<string> GetAllEnd(string filePath)
-        {
-            var allLines = File.ReadAllLines(filePath);
-            return allLines.Where(x => x.Contains("Finished test:")).ToList();
-        }
-    }
-
     public class ArrayMember : IDisposable
     {
         public IList<int> X { get; set; }
