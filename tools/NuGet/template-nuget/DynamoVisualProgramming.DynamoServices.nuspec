@@ -15,7 +15,13 @@
         It also contains useful static events and event data for monitoring workspace and execution changes.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework="netstandard2.0" />
+            <group targetFramework="netstandard2.0">
+                <dependency id="System.Reflection.MetadataLoadContext" version="8.0.0" />
+            </group>
+            <!--when targeting .net8 metadataloadcontext's transitive deps can be loaded from the runtime-->
+            <group targetFramework="net8.0">
+                <dependency id="System.Reflection.MetadataLoadContext" version="8.0.0" exclude="build,analyzers,runtime" />
+            </group>
         </dependencies>
     </metadata>
     <files>

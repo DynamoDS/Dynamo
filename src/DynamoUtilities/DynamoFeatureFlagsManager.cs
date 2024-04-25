@@ -69,7 +69,7 @@ namespace DynamoUtilities
             try
             {
                 AllFlagsCache = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataFromCLI);
-                //invoke the flags retrieved event on the sync context which should be the main ui thread.
+                // Invoke the flags retrieved event on the sync context which should be the main ui thread (if in Dynamo with UI) or the default SyncContext (if in headless mode).
                 syncContext?.Send((_) =>
                 {
                     FlagsRetrieved?.Invoke();
