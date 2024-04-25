@@ -19,7 +19,7 @@ namespace PythonNodeModels.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -169,6 +169,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Convert indentation tabs to spaces....
+        /// </summary>
+        public static string PythonScriptEditorConvertTabsToSpacesButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorConvertTabsToSpacesButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select the Python version/engine to execute the script.
         /// </summary>
         public static string PythonScriptEditorEngineDropdownTooltip {
@@ -232,7 +241,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Revert the changes made to current Python node editor and close it..
+        ///   Looks up a localized string similar to Revert the changes made to current Python node editor..
         /// </summary>
         public static string PythonScriptEditorRevertButtonTooltip {
             get {
