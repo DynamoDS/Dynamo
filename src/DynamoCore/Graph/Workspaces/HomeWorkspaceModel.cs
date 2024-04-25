@@ -698,7 +698,11 @@ namespace Dynamo.Graph.Workspaces
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
+
+                // Block Infos updates during the many errors/warnings/notifications added here
+                // InfoBubbles will be updated on NodeViewModel's EvaluationCompleted handler.
                 using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                using (Disposable.Create(() => { node.BlockInfoBubbleUpdates = true; }, () => { node.BlockInfoBubbleUpdates = false; }))
                 {
                     node.Warning(warning.Value); // Update node warning message.
                 }
@@ -711,7 +715,11 @@ namespace Dynamo.Graph.Workspaces
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
+
+                // Block Infos updates during the many errors/warnings/notifications added here
+                // InfoBubbles will be updated on NodeViewModel's EvaluationCompleted handler.
                 using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                using (Disposable.Create(() => { node.BlockInfoBubbleUpdates = true; }, () => { node.BlockInfoBubbleUpdates = false; }))
                 {
                     node.Info(string.Join(Environment.NewLine, info.Value.Select(w => w.Message)));
                 }
