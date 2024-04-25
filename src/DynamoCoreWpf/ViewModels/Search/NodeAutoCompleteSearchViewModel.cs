@@ -160,7 +160,7 @@ namespace Dynamo.ViewModels
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
             // Off load some time consuming operation here
-            InitializeDefaultAutoCompleteCandidates();
+            DefaultResults = dynamoViewModel.DefaultAutocompleteCandidates.Values;
             ServiceVersion = string.Empty;
         }
 
@@ -177,23 +177,6 @@ namespace Dynamo.ViewModels
             FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
             FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
             searchElementsCache = new List<NodeSearchElementViewModel>();
-        }
-
-        private void InitializeDefaultAutoCompleteCandidates()
-        {
-            var candidates = new List<NodeSearchElementViewModel>();
-            // TODO: These are basic input types in Dynamo
-            // This should be only served as a temporary default case.
-            var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
-            foreach (var query in queries)
-            {
-                var foundNode = Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
-                if(foundNode != null)
-                {
-                    candidates.Add(foundNode);
-                }
-            }
-            DefaultResults = candidates;
         }
 
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()

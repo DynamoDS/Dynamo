@@ -17,7 +17,9 @@ namespace DynamoCoreWpfTests.Utility
         public static void DoEvents()
         {
             var frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
+
+            // Invoke with the lowest priority possible so that other tasks (with higher priority) can get a chance to finish.
+            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.SystemIdle,
                 new DispatcherOperationCallback(ExitFrame), frame);
             Dispatcher.PushFrame(frame);
         }
