@@ -3,4 +3,4 @@ Panels the input surface in a square grid, with each square split into two trian
 ___
 ## Example File
 
-![ByDiagonallySplitSquares](./Autodesk.DesignScript.Geometry.PanelSurface.ByDiagonallySplitSquares_img)
+![ByDiagonallySplitSquares](./Autodesk.DesignScript.Geometry.PanelSurface.ByDiagonallySplitSquares_img.jpg)
