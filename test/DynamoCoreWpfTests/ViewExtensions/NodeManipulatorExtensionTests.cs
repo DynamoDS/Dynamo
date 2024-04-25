@@ -30,6 +30,8 @@ namespace DynamoCoreWpfTests.ViewExtensions
         [SetUp]
         public virtual void Start()
         {
+            // Forcing the dispatcher to execute all of its tasks within these tests causes crashes in Helix.
+            // For now just skip it.
             SkipDispatcherFlush = true;
             base.Start();
         }
