@@ -345,20 +345,19 @@ namespace DynamoCoreWpfTests.PackageManager
             try
             {
                 loader.LoadPackages(new List<Package>() { pkg });
-
-                var loadedPkg = currentDynamoModel.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p =>
-                {
-                    return p.RootDirectory.EndsWith("SampleViewExtension_Crash", StringComparison.OrdinalIgnoreCase);
-                });
-
-                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loadedPkg.LoadState.State);
-
                 DispatcherUtil.DoEventsLoop(() => count > 0);
             }
             catch (NotImplementedException ex)
             {
                 expectedEx = ex;
             }
+
+            var loadedPkg = currentDynamoModel.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p =>
+            {
+                return p.RootDirectory.EndsWith("SampleViewExtension_Crash", StringComparison.OrdinalIgnoreCase);
+            });
+
+            Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loadedPkg.LoadState.State);
 
             Assert.IsNotNull(expectedEx);
             Assert.IsNotNull(expectedEx.TargetSite?.Module?.Assembly);
