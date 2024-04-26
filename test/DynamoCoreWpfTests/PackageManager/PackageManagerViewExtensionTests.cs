@@ -326,6 +326,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
             var pkg = loader.ScanPackageDirectory(pkgDir);
+            Assert.IsNotNull(pkg);
 
             int count = 0;
             void DynamoConsoleLogger_LogErrorToDynamoConsole(string obj)
@@ -339,12 +340,29 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.IsFalse(DynamoModel.IsCrashing);
 
             DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
-            Assert.Throws<NotImplementedException>(() =>
+
+            NotImplementedException expectedEx = null;
+            try
             {
                 loader.LoadPackages(new List<Package>() { pkg });
-                DispatcherUtil.DoEventsLoop(() => count > 0);
-            });
 
+                var loadedPkg = currentDynamoModel.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p =>
+                {
+                    return p.RootDirectory.EndsWith("SampleViewExtension_Crash", StringComparison.OrdinalIgnoreCase);
+                });
+
+                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loadedPkg.LoadState.State);
+
+                DispatcherUtil.DoEventsLoop(() => count > 0);
+            }
+            catch (NotImplementedException ex)
+            {
+                expectedEx = ex;
+            }
+
+            Assert.IsNotNull(expectedEx);
+            Assert.IsNotNull(expectedEx.TargetSite?.Module?.Assembly);
+            Assert.IsTrue(expectedEx.TargetSite?.Module?.Assembly.Location.StartsWith(pkg.RootDirectory, StringComparison.OrdinalIgnoreCase));
             Assert.IsFalse(DynamoModel.IsCrashing);
             Assert.AreEqual(1, count);
 

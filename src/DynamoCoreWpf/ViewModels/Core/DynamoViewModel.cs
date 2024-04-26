@@ -879,17 +879,20 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                Console.WriteLine($"CrashGracefully + {fatal}");
                 var exceptionAssembly = ex.TargetSite?.Module?.Assembly;
                 // Do not crash if the exception is coming from a 3d party package; 
                 if (!fatal && exceptionAssembly != null)
                 {
+                    Console.WriteLine($"exceptionAssembly + {exceptionAssembly.FullName}");
+
                     // Check if the exception might be coming from a loaded package assembly.
                     var faultyPkg = Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p =>
                         {
                             return exceptionAssembly.Location.StartsWith(p.RootDirectory, StringComparison.OrdinalIgnoreCase);
                         }
                     );
+
+                    Console.WriteLine($"FaultyPackage + {faultyPkg?.Name ?? "Not found"}");
                     if (faultyPkg != null)
                     {
                         var crashDetails = new CrashErrorReportArgs(ex);
@@ -897,6 +900,10 @@ namespace Dynamo.ViewModels
                         Analytics.TrackException(ex, false);
                         return;
                     }
+                }
+                else
+                {
+                    Console.WriteLine($"IsCrashing for real");
                 }
 
                 DynamoModel.IsCrashing = true;
