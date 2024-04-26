@@ -341,6 +341,10 @@ namespace DynamoCoreWpfTests.PackageManager
 
             DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
 
+            Model.Logger.LogError("Current ViewModel ID " + currentDynamoModel.GetHashCode());
+            Model.Logger.LogError("Current Model ID " + Model.GetHashCode());
+
+
             NotImplementedException expectedEx = null;
             try
             {

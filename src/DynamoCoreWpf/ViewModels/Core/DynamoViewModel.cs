@@ -879,6 +879,10 @@ namespace Dynamo.ViewModels
         {
             try
             {
+
+                Model.Logger.LogError("CrashGracefully Current ViewModel ID " + this.GetHashCode());
+                Model.Logger.LogError("CrashGracefully Current Model ID " + Model.GetHashCode());
+
                 var exceptionAssembly = ex.TargetSite?.Module?.Assembly;
                 // Do not crash if the exception is coming from a 3d party package; 
                 if (!fatal && exceptionAssembly != null)
