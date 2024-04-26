@@ -883,14 +883,16 @@ namespace Dynamo.ViewModels
                 // Do not crash if the exception is coming from a 3d party package; 
                 if (!fatal && exceptionAssembly != null)
                 {
-                    Console.WriteLine($"exceptionAssembly + {exceptionAssembly.FullName}");
+                    Console.WriteLine($"exceptionAssembly + {exceptionAssembly.Location}");
+
+                    foreach (var p in Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages)
+                    {
+                        Console.WriteLine(p.RootDirectory);
+                        Console.WriteLine($"Excepotion from {p.RootDirectory}  " + exceptionAssembly.Location.StartsWith(p.RootDirectory, StringComparison.OrdinalIgnoreCase));
+                    }
 
                     // Check if the exception might be coming from a loaded package assembly.
-                    var faultyPkg = Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p =>
-                        {
-                            return exceptionAssembly.Location.StartsWith(p.RootDirectory, StringComparison.OrdinalIgnoreCase);
-                        }
-                    );
+                    var faultyPkg = Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p => exceptionAssembly.Location.StartsWith(p.RootDirectory, StringComparison.OrdinalIgnoreCase));
 
                     Console.WriteLine($"FaultyPackage + {faultyPkg?.Name ?? "Not found"}");
                     if (faultyPkg != null)
