@@ -11,6 +11,7 @@ namespace Dynamo.Tests
         [SetUp]
         public override void Setup()
         {
+            base.Setup();
             Display.PrecisionFormat = "f4";
         }
 
@@ -758,12 +759,6 @@ namespace Dynamo.Tests
     }
     internal class ForgeUnitsTests : UnitTestBase
     {
-        [SetUp]
-        public override void Setup()
-        {
-
-        }
-
         const string milimeters = "autodesk.unit.unit:millimeters";
         const string meters = "autodesk.unit.unit:meters";
 

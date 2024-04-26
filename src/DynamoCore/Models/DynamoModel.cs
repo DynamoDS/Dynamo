@@ -723,7 +723,7 @@ namespace Dynamo.Models
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
                 //event based/async then just run this on main thread - ie get rid of the Task.Run()
-                var mainThreadSyncContext = new SynchronizationContext();
+                var mainThreadSyncContext = SynchronizationContext.Current ?? new SynchronizationContext();
                 Task.Run(() =>
                 {
                     try

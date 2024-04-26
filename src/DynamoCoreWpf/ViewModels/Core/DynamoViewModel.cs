@@ -1115,7 +1115,9 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
-        private void InitializeAutomationSettings(string commandFilePath)
+        // InitializeAutomationSettings initializes the Dynamo automationSettings object.
+        // This method is meant to be accessed only within this class and within tests.
+        internal void InitializeAutomationSettings(string commandFilePath)
         {
             if (String.IsNullOrEmpty(commandFilePath) || !File.Exists(commandFilePath))
                 commandFilePath = null;
