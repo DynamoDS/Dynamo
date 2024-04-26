@@ -830,6 +830,8 @@ namespace Dynamo.ViewModels
 
             FileTrustViewModel = new FileTrustWarningViewModel();
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
+
+            Model.Logger.LogError("DynamoViewModel created with ID " + this.GetHashCode());
         }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
@@ -3782,6 +3784,8 @@ namespace Dynamo.ViewModels
             // 'shutdownSequenceInitiated' is marked as true here indicating 
             // that the shutdown may not be stopped.
             shutdownSequenceInitiated = true;
+
+            Model.Logger.LogError("DynamoViewModel PerformShutdownSequence with ID " + this.GetHashCode());
 
             AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
             Dispatcher.CurrentDispatcher.UnhandledException -= CurrentDispatcher_UnhandledException;
