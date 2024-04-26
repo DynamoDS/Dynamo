@@ -888,6 +888,7 @@ namespace Dynamo.ViewModels
                     Console.WriteLine("PMExtensions.Count" + Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().Count());
                     Console.WriteLine("PMExtension " + Model.GetPackageManagerExtension());
                     Console.WriteLine("PMExtension.PackageLoader " + Model.GetPackageManagerExtension()?.PackageLoader);
+                    Console.WriteLine("PMExtension.PackageLoader.LocalPackages.Count " + Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages.Count());
 
                     foreach (var p in Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages)
                     {
