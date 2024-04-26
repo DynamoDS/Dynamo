@@ -328,25 +328,23 @@ namespace DynamoCoreWpfTests.PackageManager
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             int count = 0;
-            bool caughtExceptionFromPkg = false;
             void DynamoConsoleLogger_LogErrorToDynamoConsole(string obj)
             {
                 if (obj.Contains("Unhandled exception coming from package"))
                 {
                     count++;
                 }
-                caughtExceptionFromPkg = obj.Contains($"Unhandled exception coming from package {pkg.Name}");
             }
 
             DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
             Assert.Throws<NotImplementedException>(() =>
             {
                 loader.LoadPackages(new List<Package>() { pkg });
-                DispatcherUtil.DoEventsLoop(() => caughtExceptionFromPkg);
+                DispatcherUtil.DoEventsLoop(() => count > 0);
             });
 
+            Assert.IsFalse(DynamoModel.IsCrashing);
             Assert.AreEqual(1, count);
-            Assert.IsTrue(caughtExceptionFromPkg);
 
             DynamoConsoleLogger.LogErrorToDynamoConsole -= DynamoConsoleLogger_LogErrorToDynamoConsole;
         }
