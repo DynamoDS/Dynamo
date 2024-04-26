@@ -336,6 +336,8 @@ namespace DynamoCoreWpfTests.PackageManager
                 }
             }
 
+            Assert.IsFalse(DynamoModel.IsCrashing);
+
             DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
             Assert.Throws<NotImplementedException>(() =>
             {

@@ -879,6 +879,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
+                Console.WriteLine($"CrashGracefully + {fatal}");
                 var exceptionAssembly = ex.TargetSite?.Module?.Assembly;
                 // Do not crash if the exception is coming from a 3d party package; 
                 if (!fatal && exceptionAssembly != null)
