@@ -877,35 +877,25 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void CrashGracefully(Exception ex, bool fatal = false)
+        // CrashGracefully should only be used in the DynamoViewModel class or within tests.
+        internal void CrashGracefully(Exception ex, bool fatal = false)
         {
             try
             {
-
-                Model.Logger.LogError("CrashGracefully Current ViewModel ID " + this.GetHashCode());
-                Model.Logger.LogError("CrashGracefully Current Model ID " + Model.GetHashCode());
-
                 var exceptionAssembly = ex.TargetSite?.Module?.Assembly;
+                // TargetInvocationException is the exception that is thrown by methods invoked through reflection
+                // The inner exception contains the originating exception.
+                // https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/7.0/reflection-invoke-exceptions
+                if (ex is TargetInvocationException && ex.InnerException != null)
+                {
+                    exceptionAssembly = ex.InnerException?.TargetSite?.Module?.Assembly;
+                }
+                
                 // Do not crash if the exception is coming from a 3d party package; 
                 if (!fatal && exceptionAssembly != null)
                 {
-                    Console.WriteLine($"exceptionAssembly + {exceptionAssembly.Location}");
-
-                    Console.WriteLine("PMExtensions.Count" + Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().Count());
-                    Console.WriteLine("PMExtension " + Model.GetPackageManagerExtension());
-                    Console.WriteLine("PMExtension.PackageLoader " + Model.GetPackageManagerExtension()?.PackageLoader);
-                    Console.WriteLine("PMExtension.PackageLoader.LocalPackages.Count " + Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages.Count());
-
-                    foreach (var p in Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages)
-                    {
-                        Console.WriteLine(p.RootDirectory);
-                        Console.WriteLine($"Excepotion from {p.RootDirectory}  " + exceptionAssembly.Location.StartsWith(p.RootDirectory, StringComparison.OrdinalIgnoreCase));
-                    }
-
                     // Check if the exception might be coming from a loaded package assembly.
                     var faultyPkg = Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p => exceptionAssembly.Location.StartsWith(p.RootDirectory, StringComparison.OrdinalIgnoreCase));
-
-                    Console.WriteLine($"FaultyPackage + {faultyPkg?.Name ?? "Not found"}");
                     if (faultyPkg != null)
                     {
                         var crashDetails = new CrashErrorReportArgs(ex);
@@ -913,10 +903,6 @@ namespace Dynamo.ViewModels
                         Analytics.TrackException(ex, false);
                         return;
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"IsCrashing for real");
                 }
 
                 DynamoModel.IsCrashing = true;

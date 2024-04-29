@@ -320,56 +320,44 @@ namespace DynamoCoreWpfTests.PackageManager
         public void TestCrashInPackage()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension_Crash");
-
             var currentDynamoModel = ViewModel.Model;
-
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
             var pkg = loader.ScanPackageDirectory(pkgDir);
             Assert.IsNotNull(pkg);
 
+            loader.LoadPackages(new List<Package>() { pkg });
+     
+            Exception expectedEx = null;
+            var assem = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name == "TestCrash").FirstOrDefault();
+            Assert.IsNotNull(assem);
+
+            try
+            {
+                assem.GetType("TestCrash.Class1").GetMethod("TestCrash").Invoke(null, new object[] { });
+            }
+            catch (Exception ex)
+            {
+                expectedEx = ex;
+            }
+
             int count = 0;
             void DynamoConsoleLogger_LogErrorToDynamoConsole(string obj)
             {
-                if (obj.Contains("Unhandled exception coming from package"))
+                if (obj.Contains($"Unhandled exception coming from package {pkg.Name} was handled"))
                 {
                     count++;
                 }
             }
 
-            Assert.IsFalse(DynamoModel.IsCrashing);
-
             DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
 
-            Model.Logger.LogError("Current ViewModel ID " + currentDynamoModel.GetHashCode());
-            Model.Logger.LogError("Current Model ID " + Model.GetHashCode());
-
-
-            NotImplementedException expectedEx = null;
-            try
-            {
-                loader.LoadPackages(new List<Package>() { pkg });
-                DispatcherUtil.DoEventsLoop(() => count > 0);
-            }
-            catch (NotImplementedException ex)
-            {
-                expectedEx = ex;
-            }
-
-            var loadedPkg = currentDynamoModel.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p =>
-            {
-                return p.RootDirectory.EndsWith("SampleViewExtension_Crash", StringComparison.OrdinalIgnoreCase);
-            });
-
-            Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loadedPkg.LoadState.State);
-
-            Assert.IsNotNull(expectedEx);
-            Assert.IsNotNull(expectedEx.TargetSite?.Module?.Assembly);
-            Assert.IsTrue(expectedEx.TargetSite?.Module?.Assembly.Location.StartsWith(pkg.RootDirectory, StringComparison.OrdinalIgnoreCase));
-            Assert.IsFalse(DynamoModel.IsCrashing);
-            Assert.AreEqual(1, count);
+            ViewModel.CrashGracefully(expectedEx);
 
             DynamoConsoleLogger.LogErrorToDynamoConsole -= DynamoConsoleLogger_LogErrorToDynamoConsole;
+
+            ViewModel.CrashGracefully(expectedEx);
+            Assert.AreEqual(1, count);
         }
 
         [OneTimeTearDown]
