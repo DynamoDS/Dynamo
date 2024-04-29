@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,8 +47,10 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoMLDataPipeline;
+using DynamoServices;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
+using J2N.Text;
 using Newtonsoft.Json;
 using PythonNodeModels;
 using ISelectable = Dynamo.Selection.ISelectable;
@@ -848,10 +851,18 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            // Try to handle the exception so that the host app can continue (in most cases).
-            // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases
-            // we might see 2 CER windows (the extra one from the host app) - CER tool might handle this in the future.
-            e.Handled = true;
+            if (DynamoModel.IsTestMode)
+            {
+                // Do not handle the exception in test mode.
+                // Let the test host handle it.
+            }
+            else
+            {
+                // Try to handle the exception so that the host app can continue (in most cases).
+                // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases
+                // we might see 2 CER windows (the extra one from the host app) - CER tool might handle this in the future.
+                e.Handled = true;
+            }
 
             CrashGracefully(e.Exception);
         }
@@ -864,14 +875,45 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void CrashGracefully(Exception ex, bool fatal = false)
+        // CrashGracefully should only be used in the DynamoViewModel class or within tests.
+        internal void CrashGracefully(Exception ex, bool fatal = false)
         {
             try
             {
+                var exceptionAssembly = ex.TargetSite?.Module?.Assembly;
+                // TargetInvocationException is the exception that is thrown by methods invoked through reflection
+                // The inner exception contains the originating exception.
+                // https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/7.0/reflection-invoke-exceptions
+                if (ex is TargetInvocationException && ex.InnerException != null)
+                {
+                    exceptionAssembly = ex.InnerException?.TargetSite?.Module?.Assembly;
+                }
+                
+                // Do not crash if the exception is coming from a 3d party package; 
+                if (!fatal && exceptionAssembly != null)
+                {
+                    // Check if the exception might be coming from a loaded package assembly.
+                    var faultyPkg = Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p => exceptionAssembly.Location.StartsWith(p.RootDirectory, StringComparison.OrdinalIgnoreCase));
+                    if (faultyPkg != null)
+                    {
+                        var crashDetails = new CrashErrorReportArgs(ex);
+                        DynamoConsoleLogger.OnLogErrorToDynamoConsole($"Unhandled exception coming from package {faultyPkg.Name} was handled: {crashDetails.Details}");
+                        Analytics.TrackException(ex, false);
+                        return;
+                    }
+                }
+
                 DynamoModel.IsCrashing = true;
                 var crashData = new CrashErrorReportArgs(ex);
-                Model?.Logger?.LogError($"Unhandled exception: {crashData.Details} ");
+                DynamoConsoleLogger.OnLogErrorToDynamoConsole($"Unhandled exception: {crashData.Details} ");
                 Analytics.TrackException(ex, true);
+
+                if (DynamoModel.IsTestMode)
+                {
+                    // Do not show the crash UI during tests.
+                    return;
+                }
+
                 Model?.OnRequestsCrashPrompt(crashData);
 
                 if (fatal)
