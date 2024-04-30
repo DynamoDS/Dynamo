@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyCompany("Autodesk, Inc")]
 [assembly: AssemblyProduct("Dynamo")]
-[assembly: AssemblyCopyright("Copyright © Autodesk, Inc 2024")]
+[assembly: AssemblyCopyright("Copyright � Autodesk, Inc 2024")]
 [assembly: AssemblyTrademark("")]
 
 //In order to begin building localizable applications, set
