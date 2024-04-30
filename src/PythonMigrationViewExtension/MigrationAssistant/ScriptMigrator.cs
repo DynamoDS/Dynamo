@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using Python.Runtime;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Dynamo.PythonMigration.MigrationAssistant
 {
@@ -26,46 +27,43 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                 PythonEngine.BeginAllowThreads();
             }
 
-            IntPtr gs = PythonEngine.AcquireLock();
+            var gs = Py.GIL();
 
             try
             {
-                using (Py.GIL())
+                string output;
+                var asm = Assembly.GetExecutingAssembly();
+
+                using (var scope = Py.CreateScope())
                 {
-                    string output;
-                    var asm = Assembly.GetExecutingAssembly();
+                    scope.Set(INPUT_NAME, code.ToPython());
 
-                    using (PyScope scope = Py.CreateScope())
+                    var path = Path.GetDirectoryName(asm.Location);
+
+                    scope.Set(PATH_NAME, path.ToPython());
+                    scope.Exec(Get2To3MigrationScript(asm));
+
+                    output = scope.Contains(RETURN_NAME) ? scope.Get(RETURN_NAME).ToString() : string.Empty;
+                }
+
+                // If the code contains tabs, normalize the whitespaces. This is a Python 3 requirement
+                // that's not addressed by 2to3.
+                if (output.Contains("\t"))
+                {
+                    using (var scope = Py.CreateScope())
                     {
-                        scope.Set(INPUT_NAME, code.ToPython());
-
-                        var path = Path.GetDirectoryName(asm.Location);
-
-                        scope.Set(PATH_NAME, path.ToPython());
-                        scope.Exec(Get2To3MigrationScript(asm));
-
+                        scope.Set(INPUT_NAME, output.ToPython());
+                        scope.Exec(GetReindentationScript(asm));
                         output = scope.Contains(RETURN_NAME) ? scope.Get(RETURN_NAME).ToString() : string.Empty;
                     }
-
-                    // If the code contains tabs, normalize the whitespaces. This is a Python 3 requirement
-                    // that's not addressed by 2to3.
-                    if (output.Contains("\t"))
-                    {
-                        using (PyScope scope = Py.CreateScope())
-                        {
-                            scope.Set(INPUT_NAME, output.ToPython());
-                            scope.Exec(GetReindentationScript(asm));
-                            output = scope.Contains(RETURN_NAME) ? scope.Get(RETURN_NAME).ToString() : string.Empty;
-                        }
-                    }
-
-                    return output;
                 }
+
+                return output;
             }
 
             finally
             {
-                PythonEngine.ReleaseLock(gs);
+                gs.Dispose();
             }
         }
 

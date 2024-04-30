@@ -13,23 +13,6 @@
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    
-  </ItemGroup>
-  <ItemGroup>
-      <Reference Include="Python.Included, Version=2.5.2.7426, Culture=neutral, processorArchitecture=MSIL">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\..\extern\Python\Python.Included.dll</HintPath>
-    </Reference>
-      <Reference Include="Python.Included.SciPy, Version=2.5.2.7426, Culture=neutral, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\..\..\extern\Python\Python.Included.SciPy.dll</HintPath>
-      </Reference>
-    <Reference Include="Python.Runtime, Version=2.5.2.7426, Culture=neutral, processorArchitecture=MSIL">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
@@ -49,6 +32,20 @@
       <Name>DesignScriptBuiltin</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Python.Deployment">
+      <HintPath>..\..\..\extern\Python\Python.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Python.Included">
+      <HintPath>..\..\..\extern\Python\Python.Included.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Python.Runtime">
+      <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
