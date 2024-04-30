@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,15 +14,6 @@ namespace DSCPython.Encoders
             typeof(IDictionary<,>), typeof(Dictionary<,>),
             typeof(IDictionary), typeof(Hashtable)
         };
-
-        public bool CanDecode(PyObject objectType, Type targetType)
-        {
-            if (targetType.IsGenericType)
-            {
-                targetType = targetType.GetGenericTypeDefinition();
-            }
-            return decodableTypes.IndexOf(targetType) >= 0;
-        }
 
         public bool TryDecode<T>(PyObject pyObj, out T value)
         {
@@ -43,6 +34,15 @@ namespace DSCPython.Encoders
                 }
                 return true;
             }
+        }
+
+        bool IPyObjectDecoder.CanDecode(PyType objectType, Type targetType)
+        {
+            if (targetType.IsGenericType)
+            {
+                targetType = targetType.GetGenericTypeDefinition();
+            }
+            return decodableTypes.IndexOf(targetType) >= 0;
         }
     }
 }

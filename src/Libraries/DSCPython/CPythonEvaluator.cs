@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
 using Dynamo.Events;
@@ -10,6 +11,7 @@ using Dynamo.Logging;
 using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Session;
 using Dynamo.Utilities;
+using ProtoCore.Lang;
 using Python.Runtime;
 
 namespace DSCPython
@@ -70,15 +72,11 @@ namespace DSCPython
 
         public override string ToString()
         {
-            IntPtr gs = PythonEngine.AcquireLock();
+            var gs = Py.GIL();
             try
             {
-                using (Py.GIL())
-                {
-                    var scope = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
-                    var pyobj = scope.Get(PythonObjectID.ToString());
-                    return pyobj.ToString();
-                }
+                var pyobj = CPythonEvaluator.globalScope.Get(PythonObjectID.ToString());
+                return pyobj.ToString();
             }
             catch (Exception e)
             {
@@ -87,7 +85,7 @@ namespace DSCPython
             }
             finally
             {
-                PythonEngine.ReleaseLock(gs);
+                gs.Dispose();
             }
         }
 
@@ -111,14 +109,11 @@ namespace DSCPython
                 return;
             }
 
-            IntPtr gs = PythonEngine.AcquireLock();
+            var gs = Py.GIL();
             try
             {
-                using (Py.GIL())
-                {
-                    PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName).Remove(PythonObjectID.ToString());
-                    HandleCountMap.Remove(this);
-                }
+                CPythonEvaluator.globalScope.Remove(PythonObjectID.ToString());
+                HandleCountMap.Remove(this);
             }
             catch (Exception e)
             {
@@ -126,7 +121,7 @@ namespace DSCPython
             }
             finally
             {
-                PythonEngine.ReleaseLock(gs);
+                gs.Dispose();
             }
         }
     }
@@ -143,7 +138,7 @@ namespace DSCPython
         private const string NodeName = "__dynamonodename__";
         internal static readonly string globalScopeName = "global";
 
-        private static PyScope globalScope;
+        internal static PyModule globalScope;
         private static DynamoLogger dynamoLogger;
         internal static DynamoLogger DynamoLogger {
             get
@@ -188,8 +183,7 @@ namespace DSCPython
                 {
                 //the following is inspired by:
                 //https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
-                    var global = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
-                    global?.Exec(@"import sys
+                    CPythonEvaluator.globalScope?.Exec(@"import sys
 import importlib
 import importlib.util
 import os
@@ -270,7 +264,7 @@ for modname,mod in sys.modules.copy().items():
                         globalScope = CreateGlobalScope();
                     }
 
-                    using (PyScope scope = Py.CreateScope())
+                    using (PyModule scope = Py.CreateScope())
                     {
                         // Reset the 'sys.path' value to the default python paths on node evaluation. 
                         var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
@@ -335,15 +329,22 @@ for modname,mod in sys.modules.copy().items():
         {
             if (!isPythonInstalled)
             {
-                Python.Included.Installer.SetupPythonSync();
-                isPythonInstalled = true;
+                try
+                {
+                    Python.Included.Installer.SetupPython().Wait();
+                    isPythonInstalled = true;
+                }
+                catch (Exception e)
+                {
+                    dynamoLogger?.LogError(e.Message);
+                }
             }
         }
 
         /// <summary>
         /// Creates and initializes the global Python scope.
         /// </summary>
-        private static PyScope CreateGlobalScope()
+        private static PyModule CreateGlobalScope()
         {
             var scope = Py.CreateScope(globalScopeName);
             // Allows discoverability of modules by inspecting their attributes
@@ -362,7 +363,7 @@ clr.setPreload(True)
         /// <param name="scope">Python scope where execution will occur</param>
         /// <param name="bindingNames">List of binding names received for evaluation</param>
         /// <param name="bindingValues">List of binding values received for evaluation</param>
-        private static void ProcessAdditionalBindings(PyScope scope, IList bindingNames, IList bindingValues)
+        private static void ProcessAdditionalBindings(PyModule scope, IList bindingNames, IList bindingValues)
         {
             const string NodeNameInput = "Name";
             string nodeName;
@@ -437,12 +438,12 @@ sys.stdout = DynamoStdOut({0})
             }
 
             // Return the value of the trace back field (private)
-            var field = typeof(PythonException).GetField("_tb", BindingFlags.NonPublic | BindingFlags.Instance);
+            var field = pythonExc.Traceback;
             if (field == null)
             {
                 throw new NotSupportedException(Properties.Resources.InternalErrorTraceBackInfo);
             }
-            return field.GetValue(pythonExc).ToString();
+            return field.ToString();
         }
 
         #region Marshalling
@@ -482,8 +483,7 @@ sys.stdout = DynamoStdOut({0})
                     inputMarshaler.RegisterMarshaler(
                        delegate (DynamoCPythonHandle handle)
                        {
-                           var scope = PyScopeManager.Global.Get(globalScopeName);
-                           return scope.Get(handle.PythonObjectID.ToString());
+                           return CPythonEvaluator.globalScope.Get(handle.PythonObjectID.ToString());
                        });
                 }
                 return inputMarshaler;
@@ -540,8 +540,9 @@ sys.stdout = DynamoStdOut({0})
                                     return dict;
                                 }
                             }
+                   
                             // Other iterables should become lists, except for strings
-                            if (PyIter.IsIterable(pyObj) && !PyString.IsStringType(pyObj))
+                            if (pyObj.IsIterable() && !PyString.IsStringType(pyObj))
                             {
                                 using (var pyList = PyList.AsList(pyObj))
                                 {
@@ -554,15 +555,15 @@ sys.stdout = DynamoStdOut({0})
                                 }
                             }
                             // Special case for big long values: decode them as BigInteger
-                            if (PyLong.IsLongType(pyObj))
+                            if (PyInt.IsIntType(pyObj))
                             {
-                                using (var pyLong = PyLong.AsLong(pyObj))
+                                using (var pyLong = PyInt.AsInt(pyObj))
                                 {
                                     try
                                     {
                                         return pyLong.ToInt64();
                                     }
-                                    catch (PythonException exc) when (exc.Message.StartsWith("OverflowError"))
+                                    catch (PythonException exc) when (exc.Message.StartsWith("int too big"))
                                     {
                                         return pyLong.ToBigInteger();
                                     }
@@ -600,8 +601,7 @@ sys.stdout = DynamoStdOut({0})
 
         private static DynamoCPythonHandle GetDynamoCPythonHandle(PyObject pyObj)
         {
-            var globalScope = PyScopeManager.Global.Get(globalScopeName);
-            globalScope.Set(pyObj.Handle.ToString(), pyObj);
+            CPythonEvaluator.globalScope.Set(pyObj.Handle.ToString(), pyObj);
             return new DynamoCPythonHandle(pyObj.Handle);
         }
 
@@ -635,7 +635,7 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private void OnEvaluationBegin(PyScope scope,
+        private void OnEvaluationBegin(PyModule scope,
                                               string code,
                                               IList bindingValues)
         {
@@ -657,7 +657,7 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
         private void OnEvaluationEnd(bool isSuccessful,
-                                            PyScope scope,
+                                            PyModule scope,
                                             string code,
                                             IList bindingValues)
         {

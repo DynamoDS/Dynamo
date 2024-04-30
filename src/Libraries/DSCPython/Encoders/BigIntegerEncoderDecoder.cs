@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 using Python.Runtime;
 
@@ -6,11 +6,6 @@ namespace DSCPython.Encoders
 {
     internal class BigIntegerEncoderDecoder : IPyObjectEncoder, IPyObjectDecoder
     {
-        public bool CanDecode(PyObject objectType, Type targetType)
-        {
-            return targetType == typeof(BigInteger);
-        }
-
         public bool CanEncode(Type type)
         {
             return type == typeof(BigInteger);
@@ -18,13 +13,13 @@ namespace DSCPython.Encoders
 
         public bool TryDecode<T>(PyObject pyObj, out T value)
         {
-            if (!PyLong.IsLongType(pyObj))
+            if (!PyInt.IsIntType(pyObj))
             {
                 value = default;
                 return false;
             }
 
-            using (var pyLong = PyLong.AsLong(pyObj))
+            using (var pyLong = PyInt.AsInt(pyObj))
             {
                 value = (T)(object)pyLong.ToBigInteger();
                 return true;
@@ -33,7 +28,12 @@ namespace DSCPython.Encoders
 
         public PyObject TryEncode(object value)
         {
-            return new PyLong(value.ToString());
+            return new PyInt(value.ToString());
+        }
+
+        bool IPyObjectDecoder.CanDecode(PyType objectType, Type targetType)
+        {
+            return targetType == typeof(BigInteger);
         }
     }
 }

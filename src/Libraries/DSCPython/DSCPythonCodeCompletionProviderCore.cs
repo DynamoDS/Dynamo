@@ -1,4 +1,4 @@
-﻿using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Logging;
 using Dynamo.PythonServices;
 using Python.Runtime;
@@ -22,10 +22,11 @@ namespace DSCPython
         /// track of the state of the editor, allowing access to variable types and
         /// imported symbols.
         /// </summary>
-        private PyScope scope;
+        private PyModule scope;
 
         private string uniquePythonScopeName = "uniqueScope";
         private static string globalScopeName = "cPythonCompletionGlobal";
+        private static PyModule uniqueScope;
 
         // Dictionary basic of Python types to instances of those types
         private Dictionary<Type, PyObject> basicPyObjects;
@@ -34,31 +35,29 @@ namespace DSCPython
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
         /// </summary>
-        internal PyScope Scope
+        internal PyModule Scope
         {
             get { return scope; }
-            set { scope = (PyScope)value; }
+            set { scope = (PyModule)value; }
         }
 
-        private static PyScope GlobalScope;
+        private static PyModule GlobalScope;
 
-        private PyScope CreateUniquePythonScope()
+        private PyModule CreateUniquePythonScope()
         {
-            PyScopeManager.Global.TryGet(uniquePythonScopeName, out PyScope Scope);
-
-            if (Scope == null)
+            if (uniqueScope == null)
             {
-                Scope = Py.CreateScope(uniquePythonScopeName);
-                Scope.Exec(@"
+                uniqueScope = Py.CreateScope(uniquePythonScopeName);
+                uniqueScope.Exec(@"
 import clr
 import sys
 ");
             }
 
-            return Scope;
+            return uniqueScope;
         }
 
-        private static PyScope CreateGlobalScope()
+        private static PyModule CreateGlobalScope()
         {
             var scope = Py.CreateScope(globalScopeName);
             // Allows discoverability of modules by inspecting their attributes
