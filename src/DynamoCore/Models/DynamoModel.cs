@@ -155,11 +155,6 @@ namespace Dynamo.Models
         /// </summary>
         internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
 
-        /// <summary>
-        /// Return a list of GraphChecksumItems
-        /// </summary>
-        public List<GraphChecksumPair> GraphChecksumList { get; set; }
-
         #endregion
 
         #region static properties
@@ -728,7 +723,7 @@ namespace Dynamo.Models
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
                 //event based/async then just run this on main thread - ie get rid of the Task.Run()
-                var mainThreadSyncContext = new SynchronizationContext();
+                var mainThreadSyncContext = SynchronizationContext.Current ?? new SynchronizationContext();
                 Task.Run(() =>
                 {
                     try
@@ -979,6 +974,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
+            DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
@@ -992,7 +988,6 @@ namespace Dynamo.Models
                 LuceneUtility.DisposeWriter();
             }
 
-            GraphChecksumList = new List<GraphChecksumPair>();
             GraphChecksumDictionary = new Dictionary<string, List<string>>();
                  
             // This event should only be raised at the end of this method.
@@ -1431,6 +1426,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
+            DynamoConsoleLogger.LogErrorToDynamoConsole -= LogErrorMessageWrapper;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
@@ -3302,9 +3298,15 @@ namespace Dynamo.Models
         {
             Logger.Log(obj);
         }
+
         private void LogMessageWrapper(string m)
         {
             LogMessage(Dynamo.Logging.LogMessage.Info(m));
+        }
+
+        private void LogErrorMessageWrapper(string m)
+        {
+            LogMessage(Dynamo.Logging.LogMessage.Error(m));
         }
 
 #if DEBUG_LIBRARY
@@ -3546,17 +3548,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Displays file open error dialog if the file is of a future version than the currently installed version
+        /// Displays file open error dialog if the file is of a future version than the currently installed version.
         /// </summary>
         /// <param name="fullFilePath"></param>
         /// <param name="fileVersion"></param>
         /// <param name="currVersion"></param>
-        /// <returns> true if the file must be opened and false otherwise </returns>
+        /// <returns> true if the file must be opened and false otherwise. </returns>
         private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
-            var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
-
             string summary = Resources.FutureFileSummary;
             var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 

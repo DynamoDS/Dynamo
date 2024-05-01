@@ -24,7 +24,7 @@ jobs:
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
-        uses: microsoft/setup-msbuild@v1.3
+        uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
         run: |
           dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net8.0
@@ -64,7 +64,7 @@ jobs:
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
-        uses: microsoft/setup-msbuild@v1.3
+        uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
         run: |
           dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net8.0

@@ -103,7 +103,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if the number of nodes displayed in the extension is equal to current number of nodes
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void CorrectNumberNodeItemsTest()
         {
             var extensionManager = View.viewExtensionManager;
@@ -147,7 +147,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if using the IsFrozen filter yields correct results
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void FilterFrozenItemsTest()
         {
             var extensionManager = View.viewExtensionManager;
@@ -193,7 +193,7 @@ namespace DynamoCoreWpfTests
         /// Test if the number of Nodes containing Null or Empty List matches what is shown on the UI
         /// Marked as Failure until we can fix flakyness
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void ContainsEmptyListOrNullTest()
         {
             var extensionManager = View.viewExtensionManager;

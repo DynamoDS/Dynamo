@@ -102,12 +102,9 @@ namespace DynamoCoreWpfTests
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
             // Fire transition on dynamo main ui thread.
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.PreviewControl.BindToDataSource();
-                nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
-                nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
-            });
+            nodeView.PreviewControl.BindToDataSource();
+            nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+            nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
 
             DispatcherUtil.DoEvents();
             var watchTree = nodeView.PreviewControl.ChildOfType<WatchTree>();
@@ -124,12 +121,9 @@ namespace DynamoCoreWpfTests
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
             // Fire transition on dynamo main ui thread.
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.PreviewControl.BindToDataSource();
-                nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
-                nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
-            });
+            nodeView.PreviewControl.BindToDataSource();
+            nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+            nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
 
             DispatcherUtil.DoEvents();
             var watchTree = nodeView.PreviewControl.ChildOfType<WatchTree>();
@@ -145,11 +139,9 @@ namespace DynamoCoreWpfTests
             var nodeView = NodeViewWithGuid("1382aaf9-9432-4cf0-86ae-c586d311767e");
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.PreviewControl.BindToDataSource();
-                nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
-            });
+            nodeView.PreviewControl.BindToDataSource();
+            nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+
             DispatcherUtil.DoEvents();
             nodeView.ChildOfType<ICSharpCode.AvalonEdit.Editing.TextArea>().Focus();
 
