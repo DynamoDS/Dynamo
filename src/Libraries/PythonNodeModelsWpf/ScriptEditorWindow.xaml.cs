@@ -488,7 +488,7 @@ namespace PythonNodeModelsWpf
             if (NodeModel == null)
                 throw new NullReferenceException(nameof(NodeModel));
 
-            if (editText.Document != null)
+            if (editText.Document != null && !String.IsNullOrEmpty(editText.Document.Text))
             {
                 var convertedText = PythonIndentationStrategy.ConvertTabsToSpaces(editText.Document.Text);
                 editText.Document.Text = convertedText;
