@@ -1,4 +1,4 @@
-﻿using Dynamo.Scheduler;
+using Dynamo.Scheduler;
 using Dynamo.Wpf.ViewModels.Core;
 using NUnit.Framework;
 using System;
@@ -34,7 +34,7 @@ namespace DynamoCoreWpfTests
         /// 2. An error with the transpose built-in method when it received a combination of empty
         /// arrays and scalars, resulting in a crash.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void DeletingNodesShouldNotMakeTransposeFailCausingCrash()
         {
             TaskStateChangedEventHandler evaluationDidNotFailHandler =

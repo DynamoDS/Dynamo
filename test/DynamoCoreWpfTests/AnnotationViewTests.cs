@@ -56,7 +56,7 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public  void TestAnnotationMouseClickEvent()
         {
             Open(@"UI\GroupTest.dyn");
@@ -73,7 +73,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, DynamoSelection.Instance.Selection.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestAnnotationOnDummyNodes()
         {
             Open(@"UI\GroupDummyNodes.dyn");
@@ -90,7 +90,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1,modelCount);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void UngroupingCollapsedGroupWillUnCollapseAllGroupContent()
         {
             // Arrange

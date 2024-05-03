@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Controls;
@@ -13,7 +13,7 @@ namespace DynamoCoreWpfTests.Utility
         /// <summary>
         /// Checks that the Build method constructs the node context menu as expected.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void TestBuildContextMenu()
         {
             // Arrange
@@ -79,7 +79,7 @@ namespace DynamoCoreWpfTests.Utility
         /// Checks that the NodeContextMenuItemBuilder is able to load MenuItems which come from the
         /// NodeViewCustomization process. Builds one ContextMenu without custom items, and another with two of them.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void AddNodeViewCustomizationMenuItems()
         {
             // Arrange
@@ -135,7 +135,7 @@ namespace DynamoCoreWpfTests.Utility
         /// <summary>
         /// Tests the individual build methods that are part of the NodeContextMenuBuilder.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void TestBuildMethods()
         {
             // Act
@@ -179,7 +179,7 @@ namespace DynamoCoreWpfTests.Utility
         /// <summary>
         /// Tests that the AddContextMenuItem method adds the given MenuItem to the target ContextMenu.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void TestAddMenuItem()
         {
             // Arrange
@@ -200,7 +200,7 @@ namespace DynamoCoreWpfTests.Utility
         /// <summary>
         /// Tests that the AddContextMenuSeparator method adds a new Separator to the target ContextMenu.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void TestAddSeparator()
         {
             // Arrange

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using CoreNodeModels;
@@ -46,7 +46,7 @@ namespace DynamoCoreWpfTests
         /// public ConversionUnit SelectedToConversion
         /// private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ConverterViewModel_LengthInchesToCentimetersTest()
         {
             float inchesToCmFactor = (float)2.54;
@@ -85,7 +85,7 @@ namespace DynamoCoreWpfTests
         /// public bool IsSelectionFromBoxEnabled
         /// public string SelectionFromBoxToolTip
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ConverterViewModel_TooltipTest()
         {
             float inchesToCmFactor = (float)2.54;
@@ -128,7 +128,7 @@ namespace DynamoCoreWpfTests
         /// public List<ConversionUnit> SelectedFromConversionSource
         /// public List<ConversionUnit> SelectedToConversionSource
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ConverterViewModel_ItemsSourceCentimetersToMetersTest()
         {
             Open(@"core\library\converterNodeTest.dyn");

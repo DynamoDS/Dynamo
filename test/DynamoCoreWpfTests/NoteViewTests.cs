@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
@@ -26,7 +26,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void T01_ZIndex_Test_MouseDown()
         {
             // Reset zindex to start value.
@@ -47,7 +47,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(noteView.ViewModel.ZIndex, Dynamo.ViewModels.NoteViewModel.StaticZIndex);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void T02_ZIndex_Test_NoteGreaterThanNode()
         {
             //Reset ZIndex to start value for both NoteViewModel and NodeViewModel
@@ -70,7 +70,7 @@ namespace DynamoCoreWpfTests
             Assert.Greater(Dynamo.ViewModels.NoteViewModel.StaticZIndex, Dynamo.ViewModels.NodeViewModel.StaticZIndex);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void T03_Mousedown_NoteGreaterThanNode()
         {
             //Reset ZIndex to start value for both NoteViewModel and NodeViewModel
@@ -95,7 +95,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Check if you can pin node to note
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanPinNodeToNode()
         {
             // Open document and get node and note view
@@ -120,7 +120,7 @@ namespace DynamoCoreWpfTests
         /// check that if the note is selected
         /// the pinned node is selected as well
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanSelectPinnedNodeThroughNote()
         {
             // Open document and get node and note view
@@ -156,7 +156,7 @@ namespace DynamoCoreWpfTests
         /// check that the note is positioned 
         /// 12 pixels above node 
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void NoteIsPlacedAbovePinnedNode()
         {
             // Open document and get node and note view
@@ -184,7 +184,7 @@ namespace DynamoCoreWpfTests
         /// check that the note is positioned 
         /// 32 pixels above node
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void NoteIsPlacedAbovePinnedNodeInErrorState()
         {
             // Open document and get node and note view
@@ -215,7 +215,7 @@ namespace DynamoCoreWpfTests
         /// Makes sure that only when one node and note
         /// are selected the PinToNode command is enabled
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void PinToNodeCommandIsProperlyEnabled()
         {
             // Open document and get nodes and note views
@@ -253,7 +253,7 @@ namespace DynamoCoreWpfTests
         /// Check that workspace model is aware that changes were made 
         /// when a node is pinned to a note.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void HasUnsavedChangesWhenPinToNode()
         {
             // Open document and get node and note view
@@ -276,7 +276,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeAView.ViewModel.WorkspaceViewModel.HasUnsavedChanges);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void UndoPinNode()
         {
             // Open document and get node and note view

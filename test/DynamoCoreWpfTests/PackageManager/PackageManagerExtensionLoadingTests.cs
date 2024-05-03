@@ -36,14 +36,14 @@ namespace DynamoCoreWpfTests.PackageManager
             };
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PackageManagerLoadsAndAddsExtension()
         {
 
             Assert.That(Model.ExtensionManager.Extensions.Select(x => x.Name),
                 Is.EquivalentTo(new List<string> { "DynamoPackageManager", "DynamoMLDataPipelineExtension", "testExtension" }));
         }
-        [Test]
+        [TestOnSeparateThread]
         public void PackageManagerLoadsExtensionAndItWorks()
         {
 
@@ -53,7 +53,7 @@ namespace DynamoCoreWpfTests.PackageManager
             //assert the extension was keeping track of the node events in the workspace.
             Assert.AreEqual(1, (sampleExtension.nodes as List<NodeModel>).Count());
         }
-        [Test]
+        [TestOnSeparateThread]
         public void PackageManagerLoadsAndAddsViewExtension()
         {
             Assert.That(View.viewExtensionManager.ViewExtensions.OrderBy(x => x.Name).Select(x => x.Name),
@@ -77,7 +77,7 @@ namespace DynamoCoreWpfTests.PackageManager
             );
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PackageManagerLoadsViewExtensionAndItWorks()
         {
             dynamic sampleExtension = View.viewExtensionManager.ViewExtensions.Where(x => x.Name == "Sample View Extension").FirstOrDefault();

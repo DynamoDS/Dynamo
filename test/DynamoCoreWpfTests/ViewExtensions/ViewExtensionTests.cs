@@ -17,7 +17,7 @@ namespace DynamoCoreWpfTests
         private ExtensionsSideBarViewExtension extensionsSideBarViewExtension = new ExtensionsSideBarViewExtension();
         private ExtensionsSideBarViewExtension extensionsSideBarViewExtensionNew = new ExtensionsSideBarViewExtension();
 
-        [Test]
+        [TestOnSeparateThread]
         public void OnWorkspaceChangedExtensionIsNotified()
         {
             this.View.WindowState = WindowState.Maximized;
@@ -33,7 +33,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, viewExtension.Counter);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionWindowIsClosedWithDynamo()
         {
             var dummyExtension = new DummyViewExtension()
@@ -50,7 +50,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(dummyExtension.WindowClosed);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionsSideBarExtensionsTest()
         {
             RaiseLoadedEvent(this.View);
@@ -74,7 +74,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initialNum + 2, ViewModel.SideBarTabItems.Count); 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CloseViewExtensionTest()
         {
             RaiseLoadedEvent(this.View);
@@ -94,7 +94,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initialNum, ViewModel.SideBarTabItems.Count);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionSideBarIsUncollapsedOnActivation()
         {
             RaiseLoadedEvent(this.View);
@@ -117,7 +117,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(View.ExtensionsCollapsed);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionNotEnabledLoadingTest()
         {
             RaiseLoadedEvent(this.View);
@@ -132,7 +132,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNull(loader.Load(ext));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionFromManifestNotEnabledLoadingTest()
         {
             RaiseLoadedEvent(this.View);
@@ -143,7 +143,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNull(loader.Load(Path.Combine(GetTestDirectory(ExecutingDirectory), @"DynamoCoreWpfTests\ViewExtensions\Sample Manifests\Sample_ViewExtensionDefinition.xml")));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionUndockRedock()
         {
             RaiseLoadedEvent(this.View);
@@ -190,7 +190,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("Dummy", content.Text);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionUndockClose()
         {
             RaiseLoadedEvent(this.View);
@@ -231,7 +231,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, View.ExtensionWindows.Count);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionDockAndUndockWithRandomGUID()
         {
             RaiseLoadedEvent(this.View);
@@ -248,7 +248,7 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(() => View.UndockExtension(extensionsSideBarViewExtension.Name));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionCannotBeAddedAsBothWindowAndTab()
         {
             RaiseLoadedEvent(this.View);
@@ -277,7 +277,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(View.ExtensionsCollapsed);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExtensionLocationIsRemembered()
         {
             RaiseLoadedEvent(this.View);
@@ -355,7 +355,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if the number of nodes displayed in the extension is equal to current number of nodes
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void TestGraphEvaluationEvents()
         {
             RaiseLoadedEvent(this.View);

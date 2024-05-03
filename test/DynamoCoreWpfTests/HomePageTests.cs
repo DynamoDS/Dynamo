@@ -18,7 +18,7 @@ namespace DynamoCoreWpfTests
     internal class HomePageTests : DynamoTestUIBase
     {
         #region initialization tests
-        [Test]
+        [TestOnSeparateThread]
         public void GuidedTourItems_InitializationShouldContainExpectedItems()
         {
             // Arrange
@@ -34,7 +34,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackagesGuide.TrimStart('_'), homePage.GuidedTourItems[2].Name);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ActionDelegates_ShouldBeProperlySetAfterConstruction()
         {
             // Arrange
@@ -115,7 +115,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanClickRecentGraph()
         {
@@ -156,7 +156,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanClickSampleGraph()
         {
@@ -202,7 +202,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanClickTourGuide()
         {
@@ -237,7 +237,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ReceiveCorrectNumberOfRecentGrphs()
         {
@@ -267,7 +267,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ReceiveCorrectNumberOfSamples()
         {
@@ -304,7 +304,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ReceiveCorrectNumberOfTourGuides()
         {
@@ -325,7 +325,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ReceiveCorrectNumberOfCarouselVideos()
         {
@@ -346,7 +346,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
         
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanRunNewHomeWorkspaceCommandFromHomePage()
         {
@@ -384,7 +384,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanRunNewCustomNodeCommandFromHomePage()
         {
@@ -417,7 +417,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanOpenWorkspaceCommandFromHomePage()
         {
@@ -450,7 +450,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ShowTemplateCommandFromHomePage()
         {
@@ -484,7 +484,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ShowBackupFolderCommandFromHomePage()
         {
@@ -517,7 +517,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void ShowSampleFilesFolderCommandFromHomePage()
         {
@@ -548,7 +548,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Ignore("IsNewAppHomeEnabled flag is set to false")]
         public void CanOpenGraphOnDragAndDrop()
         {

@@ -52,7 +52,7 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void RestartBannerDefaultStateTest()
         {
             RaiseLoadedEvent(this.View);
@@ -72,7 +72,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [TestOnSeparateThread]
         public void DownloadSpecifiedVersionOfPackageTest()
         {
             RaiseLoadedEvent(this.View);
@@ -109,7 +109,7 @@ namespace DynamoCoreWpfTests
         /// This test is created to guard the clicking behavior on tab closing button
         /// and make sure it actually close the corresponding tab
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ClickingToCloseViewExtensionTabTest()
         {
             RaiseLoadedEvent(this.View);
@@ -128,7 +128,7 @@ namespace DynamoCoreWpfTests
         /// This test is created to guard the tab closing API - CloseExtensioninInSideBar()
         /// and make sure it actually close the corresponding tab
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void APItoCloseViewExtensionTabTest()
         {
             RaiseLoadedEvent(this.View);
@@ -146,7 +146,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// This test will verify that the Closed() will be triggered on the extension that is closed. 
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void OnViewExtensionClosedTest()
         {
             RaiseLoadedEvent(this.View);
@@ -174,7 +174,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// This test will make sure that the extension tab is closed upon closing the home workspace.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CloseViewExtensionTabOnClosingWorkspace()
         {
             RaiseLoadedEvent(this.View);
@@ -192,7 +192,7 @@ namespace DynamoCoreWpfTests
         /// This test is created to guard a crash happened that while dep viewer is loaded,
         /// opening a dyf directly and closing it to switch to an empty homeworkspace causing a crash
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void DependencyRegenCrashingDynamoTest()
         {
             this.View.WindowState = WindowState.Maximized;
@@ -218,7 +218,7 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(()=> viewExtension.DependencyRegen(homeWorkspaceModel));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void KeepInstalledVersionOfPackageTest()
         {
             RaiseLoadedEvent(this.View);
@@ -258,7 +258,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(package.Nodes.Select(n => n.ToString("N")), nodes);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void WillNotAddDupWorkspaceDependencyViewExtensionLoadTest()
         {
             RaiseLoadedEvent(this.View);
@@ -274,7 +274,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initialNum, ViewModel.SideBarTabItems.Count);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestPropertiesWithCodeInIt()
         {
             Assert.AreEqual(Resources.ExtensionName, viewExtension.Name);
@@ -282,7 +282,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("A6706BF5-11C2-458F-B7C8-B745A77EF7FD", viewExtension.UniqueId);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void VerifyDynamoLoadingOnOpeningWorkspaceWithMissingCustomNodes()
         {
             List<string> dependenciesList = new List<string>() { "MeshToolkit", "Clockwork for Dynamo 1.x", "Clockwork for Dynamo 2.x", "Dynamo Samples" };
@@ -299,7 +299,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void VerifyLocalDefinitions()
         {
             List<string> dependenciesList = new List<string>() { "RootNode.dyf"};
@@ -321,7 +321,7 @@ namespace DynamoCoreWpfTests
             Assert.Contains(dependencyInfo.Name, dependenciesList);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void VerifyExternalFileReferences()
         {
             List<string> dependenciesList = new List<string>() { "DynamoTest.xlsx", "Dynamo.png" };
@@ -340,7 +340,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void GetExternalFilesShouldBailIfGraphExecuting()
         {
             // Open test file to verify the external file references are not computed when RunEnabled is false. 

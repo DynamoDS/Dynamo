@@ -40,7 +40,7 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubbleVisible_MouseMoveOverNode()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -52,7 +52,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsCondensed);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubbleVisible_MouseMoveOverNode_InCustomWorkspace()
         {
             Open(@"core\custom_node_saving\Constant2.dyf");
@@ -64,7 +64,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubbleVisible_MouseMoveOutOfNode()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -93,7 +93,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_ListMargin()
         {
             OpenAndRun(@"core\DetailedPreviewMargin_Test.dyn");
@@ -112,7 +112,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(new System.Windows.Thickness(5, 0, 5, 5), watchTree.ChildOfType<VirtualizingPanel>().Margin);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_NumberMargin()
         {
             OpenAndRun(@"core\DetailedPreviewMargin_Test.dyn");
@@ -131,7 +131,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(new System.Windows.Thickness(-5, 0, 0, 0), watchTree.ChildOfType<VirtualizingPanel>().Margin);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_CloseWhenFocusInCodeBlock()
         {
             OpenAndRun(@"core\DetailedPreviewMargin_Test.dyn");
@@ -148,7 +148,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_NoCrashWithCodeBlock()
         {
             var code = new CodeBlockNodeModel(this.Model.LibraryServices);
@@ -170,7 +170,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_CodeBlockIsNotInFocus()
         {
             var code = new CodeBlockNodeModel(this.Model.LibraryServices);
@@ -212,7 +212,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsExpanded);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_IsExpandedChangedInWatchTree()
         {
             OpenAndRun(@"core\DetailedPreviewMargin_Test.dyn");
@@ -255,7 +255,7 @@ namespace DynamoCoreWpfTests
 
         #region Watch PreviewBubble
 
-        [Test]
+        [TestOnSeparateThread]
         public void Watch_PreviewAllowanceDisabled()
         {
             OpenAndRun(@"core\WatchPreviewBubble.dyn");
@@ -267,7 +267,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void Watch_DefaultSize()
         {
             OpenAndRun(@"core\WatchTree.dyn");
@@ -289,7 +289,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(rawEmptyWatchNode.Width, WatchTree.DefaultWidthSize);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void Watch_SingleValueSize()
         {
             OpenAndRun(@"core\WatchTree.dyn");
@@ -315,7 +315,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(rawSingleValueWatchNode.Width, (watchNodeValue.Length * rawSingleValueWatchNode.WidthPerCharacter) + rawSingleValueWatchNode.ExtratWidthSize);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void Watch_ListSize()
         {
             OpenAndRun(@"core\WatchTree.dyn");
@@ -353,7 +353,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(rawListWatchNode.Height, WatchTree.DefaultHeightSize);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void Watch_MaxWidthSize()
         {
             OpenAndRun(@"core\WatchTree.dyn");
@@ -385,7 +385,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(rawLongLinetWatchNode.MaxWidthSize + rawLongLinetWatchNode.ExtratWidthSize, rawLongLinetWatchNode.Width);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void Watch_ColorRange()
         {
             OpenAndRun(@"core\WatchTree.dyn");
@@ -411,7 +411,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(34, colorRangeWatchNodeModel.OutPorts[0].Height);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void Watch_MultilineString()
         {
             OpenAndRun(@"core\WatchTree.dyn");
@@ -439,7 +439,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(WatchTree.DefaultHeightSize, rawMultiLineStringtWatchNode.Height);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void Watch_Dictionary()
         {
             OpenAndRun(@"core\WatchTree.dyn");
@@ -467,7 +467,7 @@ namespace DynamoCoreWpfTests
 
         #endregion
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_HiddenDummyVerticalBoundaries()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -501,7 +501,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(ElementIsInContainerWithEpsilonCompare(nodeView.PreviewControl.HiddenDummy, nodeView, 10));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_ToggleShowPreviewBubbles()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -567,7 +567,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_ShowExpandedPreviewOnPinIconHover()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -591,7 +591,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(previewBubble.IsExpanded, "Expanded preview bubble should be shown");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_ShowExpandedPreview_MultiReturnNode()
         {
             Open(@"core\multireturnnode_preview.dyn");
@@ -615,7 +615,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(previewBubble.IsExpanded, "Expanded preview bubble should be shown");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_ShownForColorRange()
         {
             var colorRange = new ColorRange();
@@ -629,7 +629,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_AvoidDuplicatedWarningMessages()
         {
             Open(@"core\watch\WatchDuplicatedWarningMessages.dyn");
@@ -650,7 +650,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, nodeView.ViewModel.ErrorBubble.NodeMessages.Count);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_ShowsWarningOnCopyPastedCBN()
         {
             Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
@@ -677,7 +677,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_ShowsWarningOnNode2Code()
         {
             Open(@"core\watch\infobubble_warning_on_n2c.dyn");
@@ -697,7 +697,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(msgs[0].Message.Contains("You cannot define a variable more than once."));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_ShowsWarningOnDupVariableInCodeBlock()
         {
             Open(@"core\watch\cbn_dup_variable_open_file.dyn");
@@ -708,7 +708,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.ViewModel.ErrorBubble.NodeMessages[0].Message.Contains("You cannot define a variable more than once."));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_ShowsWarningOnObsoleteZeroTouchNode()
         {
             Open(@"core\watch\obsolete_zero_touch_node.dyn");
@@ -719,7 +719,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.ViewModel.ErrorBubble.NodeMessages[0].Message.Contains("Obsolete"));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_ShowsWarningErrorCBN()
         {
             Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
@@ -746,7 +746,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, errors.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_ShowsWarningError_CopyPastedCBN()
         {
             Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
@@ -794,7 +794,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, errors.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_ShowsError_CopyPastedCBN_UndoRedo()
         {
             Open(@"core\watch\ShowsWarningOnCopyPastedCBN.dyn");
@@ -848,7 +848,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, errors.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_ShowsWarningOnDummyNodes()
         {
             Open(@"core\watch\selectbycat.dyn");
@@ -865,7 +865,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InfoBubble_ShowsWarningOnDeprecatedNode()
         {
             Open(@"core\watch\obsolete_if_node.dyn");
@@ -879,7 +879,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Dynamo.ViewModels.InfoBubbleViewModel.Style.Warning, msgs[0].Style);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Category("Failure")]
         public void PreviewBubble_CopyToClipboard()
         {
