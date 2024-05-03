@@ -81,7 +81,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void PreviewBubbleHiiden_OnFrozenNode()
+        public void PreviewBubbleHidden_OnFrozenNode()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
@@ -526,6 +526,48 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void PreviewBubble_UnpinAllPreviewBubble()
+        {
+            Open(@"core\DetailedPreviewMargin_Test.dyn");
+
+            // List of GUIDs and corresponding NodeView instances
+            var guids = new List<string>
+            {
+                "1382aaf9-9432-4cf0-86ae-c586d311767e",
+                "81c94fd0-35a0-4680-8535-00aff41192d3",
+                "7828a9dd-88e6-49f4-9ed3-72e355f89bcc"
+            };            
+            var nodeViews = guids.Select(guid => NodeViewWithGuid(guid)).ToList();
+
+            // Pin each preview bubble
+            foreach (var nodeView in nodeViews)
+            {
+                var previewBubble = nodeView.PreviewControl;
+                previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+                previewBubble.bubbleTools.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+                // Simulate mouse enter events to trigger bubble visibility and pinning
+                RaiseMouseEnterOnNode(nodeView);
+                RaiseMouseEnterOnNode(previewBubble);
+                RaiseMouseEnterOnNode(previewBubble.bubbleTools);
+                RaiseLeftMouseClick(previewBubble.pinIconBorder);
+
+                // Assert the bubble is expanded and pinned
+                Assert.IsTrue(previewBubble.IsExpanded, "Expanded preview bubble should be shown");
+                Assert.IsTrue(previewBubble.StaysOpen, "Expanded preview bubble should be pinned");
+            }
+
+            // Execute command to unpin all preview bubbles
+            ViewModel.UnpinAllPreviewBubblesCommand.Execute(null);
+
+            // Assert all preview bubbles are unpinned
+            foreach (var nodeView in nodeViews)
+            {
+                Assert.IsTrue(!nodeView.PreviewControl.StaysOpen, "Expanded preview bubble should be unpinned");
+            }
+        }
+
+        [Test]
         public void PreviewBubble_ShowExpandedPreviewOnPinIconHover()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -910,6 +952,16 @@ namespace DynamoCoreWpfTests
             View.Dispatcher.Invoke(() =>
             {
                 nv.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseLeaveEvent });
+            });
+
+            DispatcherUtil.DoEvents();
+        }
+
+        private void RaiseLeftMouseClick(IInputElement nv)
+        {
+            View.Dispatcher.Invoke(() =>
+            {
+                nv.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) { RoutedEvent = Mouse.MouseDownEvent });
             });
 
             DispatcherUtil.DoEvents();

@@ -2974,6 +2974,16 @@ namespace Dynamo.ViewModels
             return this.CurrentSpaceViewModel.CanSelectAll(null);
         }
 
+        public void UnpinAllPreviewBubbles(object parameter)
+        {
+            this.CurrentSpaceViewModel.UnpinAllPreviewBubbles(null);
+        }
+
+        internal bool CanUnpinAllPreviewBubbles(object parameter)
+        {
+            return this.CurrentSpaceViewModel.CanUnpinAllPreviewBubbles(null);
+        }
+
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())

@@ -1722,6 +1722,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event ViewEventHandler UnpinAllPreviewBubblesTriggered;
+        /// <summary>
+        /// Triggers unpinning of all preview bubbles in the workspace
+        /// </summary>
+        /// <param name="o"></param>
+        internal void UnpinAllPreviewBubbles(object o)
+        {
+            RaisePropertyChanged("UnpinAllPreviewBubbles");
+
+            UnpinAllPreviewBubblesTriggered?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal bool CanUnpinAllPreviewBubbles(object o)
+        {
+            return true;
+        }
+
         /// <summary>
         /// Collapse a set of nodes and notes currently selected in workspace
         /// </summary>

@@ -582,6 +582,10 @@ Don't worry, you'll have the option to save your work.</value>
     <value>_Select All</value>
     <comment>Edit menu | Select all nodes</comment>
   </data>
+    <data name="DynamoViewEditMenuUnpinAllPreviewBubbles" xml:space="preserve">
+    <value>_Unpin All Preview Bubbles</value>
+    <comment>Edit menu | Unpin preview bubbles</comment>
+  </data>
   <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
     <value>_Select Neighbors</value>
   </data>

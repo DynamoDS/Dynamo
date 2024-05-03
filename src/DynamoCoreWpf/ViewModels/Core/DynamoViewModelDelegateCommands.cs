@@ -93,6 +93,7 @@ namespace Dynamo.ViewModels
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             OpenDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink);
             ShowNodeDocumentationCommand = new DelegateCommand(ShowNodeDocumentation, CanShowNodeDocumentation);
+            UnpinAllPreviewBubblesCommand = new DelegateCommand(UnpinAllPreviewBubbles, CanUnpinAllPreviewBubbles);
         }
         public DelegateCommand OpenFromJsonIfSavedCommand { get; set; }
         public DelegateCommand OpenFromJsonCommand { get; set; }
@@ -175,6 +176,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand OpenDocumentationLinkCommand { get; set; }
         public DelegateCommand ShowNodeDocumentationCommand { get; set; }
-        
+        public DelegateCommand UnpinAllPreviewBubblesCommand { get; set; }
     }
 }
