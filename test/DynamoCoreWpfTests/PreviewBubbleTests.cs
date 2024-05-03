@@ -81,7 +81,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void PreviewBubbleHiiden_OnFrozenNode()
+        public void PreviewBubbleHidden_OnFrozenNode()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");

@@ -186,6 +186,7 @@ namespace Dynamo.UI.Controls
         internal void UnpinPreviewBubble()
         {
             StaysOpen = false;
+            nodeViewModel.PreviewPinned = false;
             this.HidePreviewBubble();
         }
 
