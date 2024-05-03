@@ -80,7 +80,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubbleHidden_OnFrozenNode()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -525,7 +525,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreviewBubble_UnpinAllPreviewBubble()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
