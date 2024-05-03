@@ -1,0 +1,24 @@
+name: PR checker and updater for Jira missing stuff
+
+on:
+  pull_request:
+    types: ['opened', 'edited', 'reopened', 'synchronize']
+
+jobs:
+  title:
+    name: Missing Jira ticket check
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check for ticket
+        uses: neofinancial/ticket-check-action@v1
+
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ticketLink: 'https://jira.autodesk.com/browse/DYN-%ticketNumber%'
+          ticketPrefix: 'DYN-'
+          titleRegex: '^DYN-(?<ticketNumber>\d+)'
+          branchRegex: '^DYN-(?<ticketNumber>\d+)'
+          bodyRegex: 'DYN-(?<ticketNumber>\d+)'
+          bodyURLRegex: 'http(s?):\/\/(jira.autodesk.com)(\/browse)\/(DYN\-)(?<ticketNumber>\d+)'
