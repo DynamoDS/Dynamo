@@ -205,19 +205,24 @@ namespace DynamoCoreWpfTests
 
             OpenAndRun(@"pkgs\Dynamo Samples\extra\GraphNodeManagerTestGraph_NullsEmptyLists.dyn");
 
-            Utility.DispatcherUtil.DoEvents();
-
-            var view = viewExt.ManagerView;
-
-            var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
-
-            int nullNodesImageCount = GetImageCount(images, "Null");
-            int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
-
             var hwm = this.ViewModel.CurrentSpace;
 
             int nullNodesCount = hwm.Nodes.Count(ContainsAnyNulls);
             int emptyListNodesCount = hwm.Nodes.Count(ContainsAnyEmptyLists);
+
+            var view = viewExt.ManagerView;
+            var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
+
+            Utility.DispatcherUtil.DoEventsLoop(() =>
+            {
+                int nullNodesImageCount = GetImageCount(images, "Null");
+                int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
+
+                return (nullNodesImageCount == nullNodesCount) && (emptyListNodesImageCount == emptyListNodesCount);
+            });
+
+            int nullNodesImageCount = GetImageCount(images, "Null");
+            int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
 
             // Assert
             Assert.AreEqual(emptyListNodesCount, emptyListNodesImageCount);
