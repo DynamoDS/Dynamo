@@ -715,14 +715,12 @@ namespace Dynamo.Graph.Annotations
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
             this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);
-            this.IsExpanded = helper.ReadBoolean(nameof(IsExpanded), false);
+            this.IsExpanded = helper.ReadBoolean(nameof(IsExpanded), true);
 
             if (IsSelected)
                 DynamoSelection.Instance.Selection.Add(this);
             else
-                DynamoSelection.Instance.Selection.Remove(this);
-
-  
+                DynamoSelection.Instance.Selection.Remove(this);  
 
             //Deserialize Selected models
             if (element.HasChildNodes)
