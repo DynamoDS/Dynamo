@@ -388,8 +388,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-
-            InputSymbol = String.Empty;
+            //TODO localize
+            InputSymbol = new TypedParameter($"DefaultInputName", "var",-1,null).ToCommentNameString();
 
             ElementResolver = new ElementResolver();
         }
@@ -463,7 +463,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
 
                 OnNodeModified();
-                RaisePropertyChanged("InputSymbol");
+                RaisePropertyChanged(nameof(InputSymbol));
             }
         }
 
