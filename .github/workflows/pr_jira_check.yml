@@ -1,4 +1,4 @@
-name: PR checker and updater for Jira missing stuff
+name: Jira ticket check
 
 on:
   pull_request:
