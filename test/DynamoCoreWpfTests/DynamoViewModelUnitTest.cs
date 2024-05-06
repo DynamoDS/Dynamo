@@ -30,6 +30,7 @@ namespace Dynamo.Tests
     {
         protected DynamoViewModel ViewModel;
         protected Preloader preloader;
+        protected string CommandFilePath;
 
         protected override DynamoModel GetModel()
         {
@@ -131,6 +132,7 @@ namespace Dynamo.Tests
                 new DynamoViewModel.StartConfiguration()
                 {
                     DynamoModel = model,
+                    CommandFilePath = CommandFilePath,
                     Watch3DViewModel = new DefaultWatch3DViewModel(null, watch3DViewParams)
                 });
 

@@ -22,9 +22,10 @@
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-      <!--This command gets the latest build from the splash screen-->
+      <!--This command updates the npm registry configuration if necessary-->
       <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
-      <Exec Command="npm pack @dynamods/splash-screen@latest" />
+      <!--This command gets a specific splash screen build from npm-->
+      <Exec Command="npm pack @dynamods/splash-screen@1.0.19" />
   </Target>
 
     <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">      
@@ -33,11 +34,6 @@
             <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
         </ItemGroup>
 
-        <!--Reverse the order of the files to get the higher version-->
-        <ItemGroup>
-            <Reversed Include="@(TGZFiles-&gt;Reverse())" />
-        </ItemGroup>
-        
         <PropertyGroup>
             <Last>%(TGZFiles.Filename)</Last>
         </PropertyGroup>
@@ -56,19 +52,14 @@
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <!--This command updates the npm registry configuration if necessary-->
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
-        <!--Download the latest build of the Dynamo Home package-->
-        <Exec Command="npm pack @dynamods/dynamo-home@latest" />
+        <!--Download a specific build of the Dynamo Home package from npm-->
+        <Exec Command="npm pack @dynamods/dynamo-home@1.0.8" />
     </Target>
 
     <Target Name="ExtractTGZFileDynamoHome" DependsOnTargets="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <!--Locate the .tgz files for the Dynamo Home package-->
         <ItemGroup>
             <TGZFilesDynamoHome Include="./dynamods-dynamo-home-*.tgz" />
-        </ItemGroup>
-
-        <!--Reverse the order of the files to get the higher version-->
-        <ItemGroup>
-            <ReversedDynamoHome Include="@(TGZFilesDynamoHome-&gt;Reverse())" />
         </ItemGroup>
 
         <PropertyGroup>
@@ -176,16 +167,16 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.4074" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.4655" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
-    <PackageReference Include="Greg" Version="3.0.0.3175" />
+    <PackageReference Include="Greg" Version="3.0.1.4707" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	<PackageReference Include="RestSharp" Version="108.0.1" />
-	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-	<PackageReference Include="SharpDX" Version="4.2.0" />
-	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="RestSharp" Version="108.0.1" />
+    <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
+    <PackageReference Include="SharpDX" Version="4.2.0" />
+    <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
 	  <IncludeAssets>none</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0">

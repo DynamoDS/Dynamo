@@ -1,9 +1,8 @@
 
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Utilities
 {
@@ -119,13 +118,16 @@ namespace Dynamo.Utilities
         internal static string RemovePIIData(string data)
         {
             string result;
+
+            // ToDo: some of the regex patterns are interfering with other data in the json,
+            // so commenting them for now and will address those patterns later.
             result = Regex.Replace(data, emailPattern, "");
-            result = Regex.Replace(result, websitePattern, ""); 
             result = Regex.Replace(result, directoryPattern, "");
-            result = Regex.Replace(result, creditCardPattern, "");
             result = Regex.Replace(result, ssnPattern, "");
-            result = Regex.Replace(result, ipPattern, "");
             result = Regex.Replace(result, datePattern, "");
+            //result = Regex.Replace(result, websitePattern, "");
+            //result = Regex.Replace(result, creditCardPattern, "");
+            //result = Regex.Replace(result, ipPattern, "");
 
             return result;
         }

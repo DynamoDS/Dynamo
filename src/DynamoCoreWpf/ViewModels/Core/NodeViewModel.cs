@@ -1256,10 +1256,17 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void BuildErrorBubble()
         {
-            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(this)
+            if (ErrorBubble == null)
             {
-                IsCollapsed = this.IsCollapsed
-            };
+                ErrorBubble = new InfoBubbleViewModel(this)
+                {
+                    IsCollapsed = this.IsCollapsed,
+                    // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
+                    // the node as well and the ErrorBubble needs to display on top of these, the
+                    // ErrorBubble's ZIndex should be the node's ZIndex + 2.
+                    ZIndex = ZIndex + 2
+                };
+            }
 
             ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
@@ -1273,14 +1280,8 @@ namespace Dynamo.ViewModels
                     WorkspaceViewModel.Errors.Add(ErrorBubble);
                 });
             }
-            
-            // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
-            // the node as well and the ErrorBubble needs to display on top of these, the
-            // ErrorBubble's ZIndex should be the node's ZIndex + 2.
-            ErrorBubble.ZIndex = ZIndex + 2;
 
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
-            
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
         }
 
@@ -1464,7 +1465,15 @@ namespace Dynamo.ViewModels
 
         public void UpdateBubbleContent()
         {
-            if (DynamoViewModel == null) return;
+            if (NodeModel.BlockInfoBubbleUpdates)
+            {
+                return;
+            }
+
+            if (DynamoViewModel == null)
+            {
+                return;
+            }
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning; 
             bool isNodeStateInfo = NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo;

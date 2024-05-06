@@ -1,13 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Dynamo.Configuration;
-using Dynamo.Models;
-using NUnit.Framework;
 using System.Linq;
-using System;
-using Dynamo.Interfaces;
 using System.Reflection;
+using Dynamo.Configuration;
+using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Utilities;
+using NUnit.Framework;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -350,18 +350,6 @@ namespace Dynamo.Tests.Configuration
                     {
                         if (((List<DynamoPlayerFolderGroup>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
                             ((List<DynamoPlayerFolderGroup>)destinationPi.GetValue(defaultSettings, null)).Count)
-                        {
-                            propertiesWithSameValue.Add(destinationPi.Name);
-                        }
-                        else
-                        {
-                            propertiesWithDifferentValue.Add(destinationPi.Name);
-                        }
-                    }
-                    else if (destinationPi.PropertyType == typeof(List<GraphChecksumItem>))
-                    {
-                        if (((List<GraphChecksumItem>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
-                            ((List<GraphChecksumItem>)destinationPi.GetValue(defaultSettings, null)).Count)
                         {
                             propertiesWithSameValue.Add(destinationPi.Name);
                         }

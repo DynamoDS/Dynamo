@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace DynamoMLDataPipeline
 {
     // Parameters like host and user info for the request schema
-    class ParameterComponent: Dictionary<string, Dictionary<string, Parameter>>
+    internal class ParameterComponent: Dictionary<string, Dictionary<string, Parameter>>
     {
         private string objectId = "autodesk.design:components.parameter-1.0.0";
         public string ObjectId { get { return objectId; } }
@@ -24,7 +24,7 @@ namespace DynamoMLDataPipeline
         }
     }
 
-    class Parameter
+    internal class Parameter
     {
         [JsonProperty("parameterValue")]
         public Dictionary<String, Value> ValueEntry { get; set; }
@@ -37,7 +37,7 @@ namespace DynamoMLDataPipeline
         }
     }
 
-    class Value
+    internal class Value
     {
         [JsonProperty("value")]
         public dynamic ValueEntry { get; set; }

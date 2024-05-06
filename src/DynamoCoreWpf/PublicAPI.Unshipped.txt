@@ -1550,9 +1550,11 @@ Dynamo.UI.Views.AboutWindow.InstallNewUpdate.get -> bool
 Dynamo.UI.Views.GuidedTourItem
 Dynamo.UI.Views.GuidedTourItem.Description.get -> string
 Dynamo.UI.Views.GuidedTourItem.Description.set -> void
-Dynamo.UI.Views.GuidedTourItem.GuidedTourItem(string name, string description, string type) -> void
+Dynamo.UI.Views.GuidedTourItem.GuidedTourItem(string name, string description, string type, string thumbnail) -> void
 Dynamo.UI.Views.GuidedTourItem.Name.get -> string
 Dynamo.UI.Views.GuidedTourItem.Name.set -> void
+Dynamo.UI.Views.GuidedTourItem.Thumbnail.get -> string
+Dynamo.UI.Views.GuidedTourItem.Thumbnail.set -> void
 Dynamo.UI.Views.GuidedTourItem.Type.get -> string
 Dynamo.UI.Views.GuidedTourItem.Type.set -> void
 Dynamo.UI.Views.GuidedTourType
@@ -2024,6 +2026,9 @@ Dynamo.ViewModels.DynamoViewModel.ScaleFactorLog.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAll(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectNeighbors(object parameters) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectNeighborsCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectNeighborsCommand.set -> void
@@ -2642,7 +2647,7 @@ Dynamo.ViewModels.PreferencesViewModel.BackupIntervalInMinutes.set -> void
 Dynamo.ViewModels.PreferencesViewModel.BackupLocation.get -> string
 Dynamo.ViewModels.PreferencesViewModel.BackupLocation.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CanResetBackupLocation.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.CanResetBackupLocation.set -> void
+Dynamo.ViewModels.PreferencesViewModel.CanResetTemplateLocation.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CurrentWarningMessage.get -> string
@@ -2745,6 +2750,8 @@ Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.set -> void
+Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPreviewBubbles.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowPreviewBubbles.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowWhitespaceIsChecked.get -> bool
@@ -2753,6 +2760,8 @@ Dynamo.ViewModels.PreferencesViewModel.StaticSplashScreenEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.StaticSplashScreenEnabled.set -> void
 Dynamo.ViewModels.PreferencesViewModel.StyleItemsList.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Configuration.GroupStyleItem>
 Dynamo.ViewModels.PreferencesViewModel.StyleItemsList.set -> void
+Dynamo.ViewModels.PreferencesViewModel.TemplateLocation.get -> string
+Dynamo.ViewModels.PreferencesViewModel.TemplateLocation.set -> void
 Dynamo.ViewModels.PreferencesViewModel.TessellationDivisions.get -> int
 Dynamo.ViewModels.PreferencesViewModel.TessellationDivisions.set -> void
 Dynamo.ViewModels.PreferencesViewModel.TrustedPathsViewModel.get -> Dynamo.ViewModels.TrustedPathViewModel
@@ -3034,6 +3043,7 @@ Dynamo.ViewModels.WorkspaceViewModel.SetZoomCommand.get -> Dynamo.UI.Commands.De
 Dynamo.ViewModels.WorkspaceViewModel.ShowAllWiresCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowHideAllGeometryPreviewCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowInCanvasSearchCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.WorkspaceViewModel.UnpinAllPreviewBubblesTriggered -> Dynamo.ViewModels.ViewEventHandler
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.Watch3DFullscreenViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.WorkspaceElements.get -> System.Windows.Data.CompositeCollection
@@ -3047,6 +3057,7 @@ Dynamo.ViewModels.WorkspaceViewModel.Zoom.get -> double
 Dynamo.ViewModels.WorkspaceViewModel.Zoom.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.ZoomChanged -> Dynamo.ViewModels.WorkspaceViewModel.ZoomEventHandler
 Dynamo.ViewModels.WorkspaceViewModel.ZoomEventHandler
+Dynamo.ViewModels.WorkspaceViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.Views.GeometryScalingPopup
 Dynamo.Views.GeometryScalingPopup.GeometryScalingPopup(Dynamo.ViewModels.DynamoViewModel dynViewModel) -> void
 Dynamo.Views.GeometryScalingPopup.InitializeComponent() -> void
@@ -3071,6 +3082,7 @@ Dynamo.Views.WorkspaceView.Dispose() -> void
 Dynamo.Views.WorkspaceView.HideAllPopUp(object sender) -> void
 Dynamo.Views.WorkspaceView.InitializeComponent() -> void
 Dynamo.Views.WorkspaceView.ViewModel.get -> Dynamo.ViewModels.WorkspaceViewModel
+Dynamo.Views.WorkspaceView.vm_UnpinAllPreviewBubblesTriggered(object sender, System.EventArgs e) -> void
 Dynamo.Views.WorkspaceView.WorkspacePropertyEditClick(object sender, System.Windows.RoutedEventArgs routedEventArgs) -> void
 Dynamo.Views.WorkspaceView.WorkspaceView() -> void
 Dynamo.Wpf.AssemblyNodeViewCustomizations
@@ -3802,6 +3814,8 @@ Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.MaxTessellationDivisions.set
 Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.RenderPackageFactoryViewModel(Dynamo.Interfaces.IPreferences preferenceSettings) -> void
 Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.ShowEdges.get -> bool
 Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.ShowEdges.set -> void
+Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.UseRenderInstancing.get -> bool
+Dynamo.Wpf.ViewModels.RenderPackageFactoryViewModel.UseRenderInstancing.set -> void
 Dynamo.Wpf.ViewModels.RootNodeCategoryViewModel
 Dynamo.Wpf.ViewModels.RootNodeCategoryViewModel.RootNodeCategoryViewModel(string name) -> void
 Dynamo.Wpf.ViewModels.RootNodeCategoryViewModel.RootNodeCategoryViewModel(string name, System.Collections.Generic.IEnumerable<Dynamo.Wpf.ViewModels.NodeSearchElementViewModel> entries, System.Collections.Generic.IEnumerable<Dynamo.Wpf.ViewModels.NodeCategoryViewModel> subs) -> void
@@ -4272,6 +4286,7 @@ static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string cap
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string caption, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string caption, System.Windows.MessageBoxButton button) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon, string tooltip = "") -> System.Windows.MessageBoxResult
+static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionary.get -> System.Windows.ResourceDictionary
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionaryUri.get -> System.Uri
@@ -4514,6 +4529,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuOpenTemplate.get -> str
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuRecentFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSave.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSaveAs.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuUnpinAllPreviewBubbles.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpDictionary.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuDisplayStartPage.get -> string
@@ -4817,10 +4833,12 @@ static Dynamo.Wpf.Properties.Resources.MessagePackageContainPythonScript.get -> 
 static Dynamo.Wpf.Properties.Resources.MessagePackageDepsInBuiltinPackages.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePackageNewerDynamo.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePackageNotFound.get -> string
+static Dynamo.Wpf.Properties.Resources.MessagePackageOlderDynamo.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePackageTargetOtherHosts.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePackageTargetOtherHosts2.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePackageTargetOtherHostShort.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePackageVersionNotFound.get -> string
+static Dynamo.Wpf.Properties.Resources.MessagePackOlderDynamoLink.get -> string
 static Dynamo.Wpf.Properties.Resources.MessagePortNameInvalid.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageRemovePythonPort.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageSamePackageDiffVersInBuiltinPackages.get -> string
@@ -5093,6 +5111,7 @@ static Dynamo.Wpf.Properties.Resources.PackageUploadStateReady.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateUploaded.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateUploading.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUseNewerDynamoMessageBoxTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageUseOlderDynamoMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageViewContextMenuLoadText.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageViewContextMenuLoadTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageWarningMessageBoxTitle.get -> string
@@ -5121,10 +5140,16 @@ static Dynamo.Wpf.Properties.Resources.PreferencesSettingDefaultBackupLocation.g
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingHardwareAcceleration.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingMaxRecentFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingResetBackupLocationTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingResetTemplateLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupFailedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupFailedTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingsBackupLocationDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateFailedTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingsTemplateLocationDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingTemplateLocationLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateBackupLocationTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateTemplateLocationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnits.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnitsToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewAlreadyExistingStyleWarning.get -> string
@@ -5147,6 +5172,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewFontSizeLabel.get -> strin
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsBackup.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsGeoScaling.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsRun.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
@@ -5179,6 +5205,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingShowEdges.get
 static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingsIsolateSelectedGeo.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingsRenderPrecision.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingsTab.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewVisualSettingUseInstancing.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewZoomScaling0Percent.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewZoomScaling100Percent.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewZoomScaling25Percent.get -> string
@@ -5189,6 +5216,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesWindowIsolateSelectedGeoToolti
 static Dynamo.Wpf.Properties.Resources.PreferencesWindowShowCodeBlockNodeLineNumberTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesWindowShowEdgesTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesWindowShowPreviewBubblesTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesWindowUseInstancingTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferredConfidenceLevel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferredConfidenceLevelInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.PrePackagePublishMessage.get -> string
@@ -5469,6 +5497,7 @@ static Dynamo.Wpf.Utilities.CompactBubbleHandler.Process(ProtoCore.Mirror.Mirror
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
+static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.WebView2Utilities.ValidateWebView2RuntimeInstalled() -> bool

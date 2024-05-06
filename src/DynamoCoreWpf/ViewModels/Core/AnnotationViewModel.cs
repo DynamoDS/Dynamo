@@ -637,7 +637,7 @@ namespace Dynamo.ViewModels
 
             ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
 
-            // Add all grouped AnnotaionModels to the CutGeometryDictionary.
+            // Add all grouped AnnotationModels to the CutGeometryDictionary.
             // And raise ZIndex changed to make sure nested groups have
             // a higher zIndex than the parent.
             using (NestedGroupsGeometries.DeferCollectionReset())

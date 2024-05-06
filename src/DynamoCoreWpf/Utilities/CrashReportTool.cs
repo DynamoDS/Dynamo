@@ -164,33 +164,35 @@ namespace Dynamo.Wpf.Utilities
 
         internal static void ShowCrashWindow(object sender, CrashPromptArgs args)
         {
-            var viewModel = sender as DynamoViewModel;
-
-            if (CrashReportTool.ShowCrashErrorReportWindow(viewModel,
+            if (CrashReportTool.ShowCrashErrorReportWindow(sender,
                 (args is CrashErrorReportArgs cerArgs) ? cerArgs :
                 new CrashErrorReportArgs(args.Details)))
             {
                 return;
             }
             // Backup crash reporting dialog (in case ADSK CER is not found)
-            var prompt = new Nodes.Prompts.CrashPrompt(args, viewModel);
+            var prompt = new Nodes.Prompts.CrashPrompt(sender, args);
             prompt.ShowDialog();
         }
 
         /// <summary>
         /// Calls external CER tool (with UI)
         /// </summary>
-        /// <param name="viewModel">The Dynamo view model</param>
-        /// <param name="args"></param>
+        /// <param name="sender">Either a DynamoViewModel or a DynamoModel object</param>
+        /// <param name="args">Arguments consumed by the Crash report UI</param>
         /// <returns>True if the CER tool process was successfully started. False otherwise</returns>
-        internal static bool ShowCrashErrorReportWindow(DynamoViewModel viewModel, CrashErrorReportArgs args)
+        private static bool ShowCrashErrorReportWindow(object sender, CrashErrorReportArgs args)
         {
-            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("CER_v2", false) == false)
+            DynamoModel model = null;
+            var viewModel = sender as DynamoViewModel;
+            if (viewModel != null)
             {
-                return false;
+                model = viewModel.Model;
             }
-
-            DynamoModel model = viewModel?.Model;
+            else if (sender is DynamoModel dm)
+            {
+                model = dm;
+            }
 
             string cerToolDir = !string.IsNullOrEmpty(model?.CERLocation) ?
                 model?.CERLocation : FindCERToolInInstallLocations();

@@ -5,13 +5,13 @@ using Newtonsoft.Json;
 
 namespace DynamoMLDataPipeline
 {
-    class BaseBinaryAsset
+    internal class BaseBinaryAsset
     {
         [JsonProperty("id")]
         public string Id { get; set; }
     }
 
-    class UploadedBinaryAsset : BaseBinaryAsset
+    internal class UploadedBinaryAsset : BaseBinaryAsset
     {
         public UploadedBinaryAsset(string guid)
         {
@@ -19,7 +19,7 @@ namespace DynamoMLDataPipeline
         }
     }
 
-    class BinaryAsset : BaseBinaryAsset
+    internal class BinaryAsset : BaseBinaryAsset
     {
         public BinaryAsset()
         {
@@ -37,7 +37,7 @@ namespace DynamoMLDataPipeline
         public string Type { get; set; }
     }
 
-    class BinaryAssets
+    internal class BinaryAssets
     {
         [JsonProperty("binaries")]
         public List<BaseBinaryAsset> Binaries { get; set; }

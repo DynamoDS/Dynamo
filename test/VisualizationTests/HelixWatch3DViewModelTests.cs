@@ -17,7 +17,6 @@ using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -758,6 +757,30 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void HelixWatch3DViewModel_DisableGrid_AxesNotVisible()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            var grid = bPreviewVm.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
+
+            // Ensure background grid and axes are enabled and check effects
+            bPreviewVm.IsGridVisible = true;
+            Assert.IsTrue(grid.Visibility == Visibility.Visible, "Background grid has not been drawn");
+            Assert.IsTrue(bPreviewVm.IsAxesVisible, "Axes have not been drawn");
+
+            // Disable background grid and axes and check effects
+            bPreviewVm.IsGridVisible = false;          
+            Assert.IsTrue(grid.Visibility == Visibility.Hidden, "Background grid has not been hidden");
+            Assert.IsFalse(bPreviewVm.IsAxesVisible, "Axes have not been hidden");
+
+            // Re-enable background grid and axes and check effects
+            bPreviewVm.IsGridVisible = true;
+            Assert.IsTrue(grid.Visibility == Visibility.Visible, "Background grid has not been re-drawn");
+            Assert.IsTrue(bPreviewVm.IsAxesVisible, "Axes have not been re-drawn");
+        }
+
+        [Test]
         public void HelixWatch3DViewModel_ChangeBackgroundVisibility_CanNavigateButtonsAreCorrect()
         {
             var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
@@ -953,7 +976,7 @@ namespace WpfVisualizationTests
             var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == "Watch");
             var parentTreeViewItem = nodeView.ChildOfType<TreeViewItem>();
 
-            // Selcting a sphere object 70 different times to render new labels again.
+            // Selecting a sphere object 70 different times to render new labels again.
             for (int i = 0; i < 30; i++)
             {
 
@@ -1119,7 +1142,7 @@ namespace WpfVisualizationTests
             var nodes = nodeIds.Select(workspace.NodeFromWorkspace).ToList();
             Assert.IsFalse(nodes.Any(n => n == null)); // Nothing should be null.
 
-            // Ensure that visulations match our expectations
+            // Ensure that visualizations match our expectations
             // Initially, all nodes has shortest lacing strategy
             // 5 points for point0 node, 2 points for point1 and point2 node
             Assert.AreEqual(9, BackgroundPreviewGeometry.TotalPoints());
@@ -1251,7 +1274,10 @@ namespace WpfVisualizationTests
 
             output.RenderPackagesUpdated += TestRenderPackageUpdate;
 
-            output.RequestVisualUpdateAsync(ViewModel.Model.Scheduler, ViewModel.Model.EngineController, new HelixRenderPackageFactory(), true);
+            var factory = new HelixRenderPackageFactory();
+            factory.TessellationParameters.UseRenderInstancing = true;
+
+            output.RequestVisualUpdateAsync(ViewModel.Model.Scheduler, ViewModel.Model.EngineController, factory, true);
         }
 
         private void TestRenderPackageUpdate(NodeModel nodeModel, RenderPackageCache renderPackages) {
@@ -1291,7 +1317,7 @@ namespace WpfVisualizationTests
             }
 
             var treeViewItem = nodeView.ChildOfType<TreeViewItem>();
-            // find TreeViewItem by given index in multi-dimentional array
+            // find TreeViewItem by given index in multi-dimensional array
             foreach (var index in indexes)
             {
                 treeViewItem = treeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(index);

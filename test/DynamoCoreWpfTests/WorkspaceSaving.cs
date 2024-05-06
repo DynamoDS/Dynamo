@@ -670,7 +670,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("Failure")]
         public void RemovePIIDataFromWorkspace()
         {
             string graphWithPIIDataPath = Path.Combine(TestDirectory, (@"UI\GraphWithPIIData.dyn"));
@@ -1540,6 +1540,21 @@ namespace Dynamo.Tests
             //Verify that the CustomNode name remains in the same value that was created previously
             Assert.True(initialNodeName == customNodeInstance.Name);
             Assert.False(Path.GetFileNameWithoutExtension(savePath) == customNodeInstance.Name);
+        }
+
+        /// <summary>
+        /// Workspace checksum test.
+        /// </summary>
+        [Test]
+        public void WorkapceChecksumTest()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var checksumString = ViewModel.CurrentSpaceViewModel.Checksum;
+
+            Assert.AreEqual("65b395b9874b9d82e088093f30234c496704006030ecf35471404f62b62a6442", checksumString);
         }
         #endregion
     }

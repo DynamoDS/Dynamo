@@ -489,6 +489,136 @@
         </Setter>
         <Style.Triggers />
     </Style>
+
+
+    <!-- NodeView c ustomization styles --> 
+    <ControlTemplate x:Key="NodeViewComboBoxToggleButton" TargetType="ToggleButton">
+        <Grid>
+            <Border x:Name="Border"
+                    Background="#2a2a2a"
+                    BorderThickness="0"/>
+            <Path x:Name="Arrow"
+                  Margin="0 0 5 0"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center"
+                  Data="M 0 0 L 4 4 L 8 0 Z"
+                  Fill="#999" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="ToggleButton.IsMouseOver"
+                     Value="true">
+                <Setter TargetName="Arrow"
+                        Property="Fill"
+                        Value="#fff" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    
+    <Style x:Key="NodeViewComboBox" TargetType="{x:Type ComboBox}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+        <Setter Property="MinWidth" Value="40" />
+        <Setter Property="Padding" Value="5 0" />
+        <Setter Property="MinHeight" Value="20" />
+        <Setter Property="MaxHeight" Value="30" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="#C7C7C7" />
+        <Setter Property="ItemContainerStyle" Value="{DynamicResource PackageManagerComboBoxItemStyle}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <ToggleButton Name="ToggleButton"   
+                                      Grid.Column="2"
+                                      ClickMode="Press"
+                                      Focusable="false"
+                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Template="{DynamicResource NodeViewComboBoxToggleButton}" />
+                        <ContentPresenter Name="ContentSite"
+                                          Margin="5,3,12,3"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          IsHitTestVisible="False" />
+                        <TextBox x:Name="PART_EditableTextBox"
+                                 Margin="3,3,23,3"
+                                 Padding="10"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Background="#2a2a2a"
+                                 CaretBrush="#bbbbbb"
+                                 Focusable="True"
+                                 Foreground="#bbbbbb"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}"
+                                 Style="{x:Null}"
+                                 Template="{StaticResource ComboBoxTextBox}"
+                                 Visibility="Hidden" />
+                        <Popup Name="Popup"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               Placement="Bottom"
+                               PopupAnimation="Slide">
+                            <Grid Name="DropDown"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                  SnapsToDevicePixels="True">
+                                <Border x:Name="DropDownBorder"
+                                        Background="#2a2a2a"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0" />
+                                <ScrollViewer Margin="0,6,0,6"
+                                              SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True"
+                                                KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems"
+                                 Value="false">
+                            <Setter TargetName="DropDownBorder"
+                                    Property="MinHeight"
+                                    Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping"
+                                 Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll"
+                                    Value="false" />
+                        </Trigger>
+                        <Trigger SourceName="Popup"
+                                 Property="Popup.AllowsTransparency"
+                                 Value="true">
+                            <Setter TargetName="DropDownBorder"
+                                    Property="CornerRadius"
+                                    Value="0" />
+                            <Setter TargetName="DropDownBorder"
+                                    Property="Margin"
+                                    Value="0,0,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsEditable"
+                                 Value="true">
+                            <Setter Property="IsTabStop"
+                                    Value="false" />
+                            <Setter TargetName="PART_EditableTextBox"
+                                    Property="Visibility"
+                                    Value="Visible" />
+                            <Setter TargetName="ContentSite"
+                                    Property="Visibility"
+                                    Value="Hidden" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers />
+    </Style>
     <!-- End Package Manager Styles -->
     <Style x:Key="SComboBox_Update" TargetType="{x:Type ComboBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -4310,6 +4440,66 @@
         </Setter>
     </Style>
 
+    <!--  This is a Padlock toggle button  -->
+    <PathGeometry x:Key="PadlockIcon" Figures="M18 3C15.7909 3 14 4.79086 14 7V10H6C5.44772 10 5 10.4477 5 11V19C5 19.5523 5.44772 20 6 20H16C16.5523 20 17 19.5523 17 19V11C17 10.4477 16.5523 10 16 10H15V7C15 5.34315 16.3431 4 18 4C19.6569 4 21 5.34315 21 7V9H22V7C22 4.79086 20.2091 3 18 3ZM6 11H16V19H6L6 11Z"/>
+    <PathGeometry x:Key="PadlockLockedIcon" Figures="M11 4C8.79084 4 6.99998 5.79087 6.99999 8.00001L7 10H6C5.44772 10 5 10.4477 5 11V19C5 19.5523 5.44772 20 6 20H16C16.5523 20 17 19.5523 17 19V11C17 10.4477 16.5523 10 16 10H15V7.99999C15 5.79086 13.2091 4 11 4ZM14 10V7.99999C14 6.34314 12.6568 5 11 5C9.34313 5 7.99998 6.34315 7.99999 8L8 10H14ZM6 11H16V19H6L6 11Z"/>
+    <Style x:Key="PadlockToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid x:Name="mainGrid">
+                        <Border Background="Transparent" Name="_borderOn">
+                            <Viewbox Width="24"
+                                     Height="24"
+                                     VerticalAlignment="Center"
+                                     Margin="2 0 0 0">
+                                <Path x:Name="_toggleOn"
+                                      Fill="#999999"
+                                      Data="{StaticResource PadlockIcon}"
+                                      StrokeThickness="0"
+                                      Stroke="#999999">
+                                </Path>
+                            </Viewbox>
+                        </Border>
+                        <Border Background="Transparent" Name="_borderOff">
+                            <Viewbox Width="22"
+                                     Height="22"
+                                     VerticalAlignment="Center"
+                                     Margin="0 0 4 1">
+                                <Path x:Name="_toggleOff"
+                                      Fill="#999999"
+                                      Data="{StaticResource PadlockLockedIcon}"
+                                      StrokeThickness="0"
+                                      Stroke="#999999">
+                                </Path>
+                            </Viewbox>
+                        </Border>
+                    </Grid>
+
+                    <!--  triggers toggle visual appearance  -->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="_borderOff" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="_borderOn" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="_borderOff" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="_borderOn" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="_toggleOn" Property="Fill" Value="#6AC0E7" />
+                            <Setter TargetName="_toggleOff" Property="Fill" Value="#6AC0E7" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="mainGrid" Property="OpacityMask" Value="{StaticResource SemiTransparent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <!--  This is a Toogle button shown in the Preferences Window for the General tab, when is checked shows a Blue button  -->
     <Style x:Key="EllipseToggleButton1" TargetType="{x:Type ToggleButton}">
         <Setter Property="Template">

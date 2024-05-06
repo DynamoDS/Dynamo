@@ -1,10 +1,13 @@
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
+using Microsoft.Win32;
 
 namespace Dynamo.UI
 {
@@ -99,12 +102,95 @@ namespace Dynamo.UI
 
             return DialogResult.OK;
         }
+        /// <summary>
+        /// The method is used to get the last accessed path by the user
+        /// </summary>
+        /// <returns>The last accessed path by the user, can be null</returns>
+        internal string GetLastAccessedPath()
+        {
+            return ApplicationGetLastOpenSavePath(Path.GetFileName(Environment.ProcessPath));
+        }
+        /// <summary>
+        /// Fetches last accessed location from Windows registry
+        /// Solution taken from : https://stackoverflow.com/a/61583119
+        /// </summary>
+        private string ApplicationGetLastOpenSavePath(string executableName)
+        {
+            if (string.IsNullOrEmpty(executableName)) return null;
+            string lastVisitedPath = string.Empty;
+            try
+            {
+                var lastVisitedKey = Registry.CurrentUser.OpenSubKey(
+                    @"Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU", false);
+
+                string[] values = lastVisitedKey.GetValueNames();
+                foreach (string value in values)
+                {
+                    if (value == "MRUListEx") continue;
+                    var keyValue = (byte[])lastVisitedKey.GetValue(value);
+
+                    string appName = Encoding.Unicode.GetString(keyValue, 0, executableName.Length * 2);
+                    if (!appName.Equals(executableName)) continue;
+
+                    int offset = executableName.Length * 2 + "\0\0".Length;  // clearly null terminated :)
+                    lastVisitedPath = GetPathFromIDList(keyValue, offset);
+                    break;
+                }
+            }
+            catch (Exception)
+            {
+                //let the method return empty string in case of exception
+            }
+            return lastVisitedPath;
+        }
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         public static extern int SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath, IntPtr pbc, ref Guid riid, [MarshalAs(UnmanagedType.Interface)] out object ppv);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern IntPtr GetActiveWindow();
+
+        private string GetPathFromIDList(byte[] idList, int offset)
+        {
+            try
+            {
+                int buffer = 520;  // 520 = MAXPATH * 2
+                var sb = new StringBuilder(buffer);
+
+                IntPtr ptr = Marshal.AllocHGlobal(idList.Length);
+                Marshal.Copy(idList, offset, ptr, idList.Length - offset);
+
+                // or -> bool result = SHGetPathFromIDListW(ptr, sb);
+                bool result = SHGetPathFromIDListEx(ptr, sb, buffer, GPFIDL_FLAGS.GPFIDL_UNCPRINTER);
+                Marshal.FreeHGlobal(ptr);
+                return result ? sb.ToString() : string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        [DllImport("shell32.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
+        internal static extern bool SHGetPathFromIDListW(
+            IntPtr pidl,
+            [MarshalAs(UnmanagedType.LPTStr)]
+    StringBuilder pszPath);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        internal static extern bool SHGetPathFromIDListEx(
+            IntPtr pidl,
+            [MarshalAs(UnmanagedType.LPTStr)]
+    [In,Out] StringBuilder pszPath,
+            int cchPath,
+            GPFIDL_FLAGS uOpts);
+
+        internal enum GPFIDL_FLAGS : uint
+        {
+            GPFIDL_DEFAULT = 0x0000,
+            GPFIDL_ALTNAME = 0x0001,
+            GPFIDL_UNCPRINTER = 0x0002
+        }
     }
 
     public class DynamoFolderBrowserDialog

@@ -44,6 +44,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
 using ProtoCore.Runtime;
+using static Dynamo.Core.PathManager;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
@@ -148,6 +149,12 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Return a dictionary of GraphChecksumItems.
+        /// Key will be the workspace guid and its value will be a list of saved checksums(sha256 hash) for that workspace.
+        /// </summary>
+        internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
+
         #endregion
 
         #region static properties
@@ -161,8 +168,8 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Flag to indicate that there is no UI on this process, and things
-        /// like the update manager and the analytics collection should be
-        /// disabled.
+        /// like the node index process, update manager and the analytics collection 
+        /// should be disabled.
         /// </summary>
         public static bool IsHeadless { get; set; }
 
@@ -716,7 +723,7 @@ namespace Dynamo.Models
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
                 //event based/async then just run this on main thread - ie get rid of the Task.Run()
-                var mainThreadSyncContext = new SynchronizationContext();
+                var mainThreadSyncContext = SynchronizationContext.Current ?? new SynchronizationContext();
                 Task.Run(() =>
                 {
                     try
@@ -967,6 +974,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
+            DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
@@ -979,6 +987,9 @@ namespace Dynamo.Models
             {
                 LuceneUtility.DisposeWriter();
             }
+
+            GraphChecksumDictionary = new Dictionary<string, List<string>>();
+                 
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
         }
@@ -1415,6 +1426,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
+            DynamoConsoleLogger.LogErrorToDynamoConsole -= LogErrorMessageWrapper;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
@@ -1738,29 +1750,71 @@ namespace Dynamo.Models
             {
                 ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
                 PreferenceSettings.InitializeNamespacesToExcludeFromLibrary();
-
-                if (string.IsNullOrEmpty(PreferenceSettings.BackupLocation))
-                {
-                    PreferenceSettings.BackupLocation = pathManager.DefaultBackupDirectory;
-                }
-
-                UpdateBackupLocation(PreferenceSettings.BackupLocation);
+                InitializePreferenceLocations();
             }
         }
 
-        internal bool UpdateBackupLocation(string selectedBackupLocation)
+        private void InitializePreferenceLocations()
         {
-            return pathManager.UpdateBackupLocation(selectedBackupLocation);
+            if (string.IsNullOrEmpty(PreferenceSettings.BackupLocation))
+            {
+                PreferenceSettings.BackupLocation = pathManager.DefaultBackupDirectory;
+            }
+            if (string.IsNullOrEmpty(PreferenceSettings.TemplateFilePath))
+            {
+                PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
+            }
+
+            UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
+            UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
+        }
+        internal bool UpdatePreferenceItemLocation(PreferenceItem item, string newLocation)
+        {
+            if (string.IsNullOrEmpty(newLocation)) return false;
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    PreferenceSettings.BackupLocation = newLocation;
+                    break;
+                case PreferenceItem.Templates:
+                    PreferenceSettings.TemplateFilePath = newLocation;
+                    break;
+                default:
+                    break;
+            }
+            return pathManager.UpdatePreferenceItemPath(item, newLocation);
+        }
+        internal bool IsDefaultPreferenceItemLocation(PreferenceItem item)
+        {
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    return PreferenceSettings.BackupLocation.Equals(pathManager.DefaultBackupDirectory);
+                case PreferenceItem.Templates:
+                    return PreferenceSettings.TemplateFilePath.Equals(pathManager.DefaultTemplatesDirectory);
+                default:
+                    return false;
+            }
         }
 
-        internal bool IsDefaultBackupLocation()
+        internal string DefaultPreferenceItemLocation(PreferenceItem item)
         {
-            return PreferenceSettings.BackupLocation.Equals(pathManager.DefaultBackupDirectory);
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    return pathManager.DefaultBackupDirectory;
+                case PreferenceItem.Templates:
+                    return pathManager.DefaultTemplatesDirectory;
+                default:
+                    return string.Empty;
+            }
         }
-
-        internal string DefaultBackupLocation()
+        internal string ResetPreferenceItemLocation(PreferenceItem item)
         {
-            return pathManager.DefaultBackupDirectory;
+            var loc = DefaultPreferenceItemLocation(item);
+            UpdatePreferenceItemLocation(item, loc);
+
+            return loc;
         }
 
         /// <summary>
@@ -2341,6 +2395,7 @@ namespace Dynamo.Models
             workspace.FileName = string.IsNullOrEmpty(filePath) || isTemplate? string.Empty : filePath;
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
+            workspace.IsTemplate = isTemplate;
             
             if (!IsTestMode && !IsHeadless)
             {
@@ -3243,9 +3298,15 @@ namespace Dynamo.Models
         {
             Logger.Log(obj);
         }
+
         private void LogMessageWrapper(string m)
         {
             LogMessage(Dynamo.Logging.LogMessage.Info(m));
+        }
+
+        private void LogErrorMessageWrapper(string m)
+        {
+            LogMessage(Dynamo.Logging.LogMessage.Error(m));
         }
 
 #if DEBUG_LIBRARY
@@ -3487,17 +3548,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Displays file open error dialog if the file is of a future version than the currently installed version
+        /// Displays file open error dialog if the file is of a future version than the currently installed version.
         /// </summary>
         /// <param name="fullFilePath"></param>
         /// <param name="fileVersion"></param>
         /// <param name="currVersion"></param>
-        /// <returns> true if the file must be opened and false otherwise </returns>
+        /// <returns> true if the file must be opened and false otherwise. </returns>
         private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
-            var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
-
             string summary = Resources.FutureFileSummary;
             var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace DynamoMLDataPipeline
 {
 
-    class InstanceAsset
+    internal class InstanceAsset
     {
         public InstanceAsset(ParameterComponent parameterComponent, BaseComponent baseComponent, BinaryReferenceComponent binaryRefComponent, string operation)
         {
