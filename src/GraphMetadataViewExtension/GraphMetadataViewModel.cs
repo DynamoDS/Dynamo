@@ -130,12 +130,23 @@ namespace Dynamo.GraphMetadata
 
         private void OnCurrentWorkspaceChanged(Graph.Workspaces.IWorkspaceModel obj)
         {
+            //This event is triggered when a new workspace is opened or when the current workspace is cleared.
+            //This event manages state of the workspace properties (ie GraphDescription, GraphAuthor, HelpLink, Thumbnail)
+            //as well as the custom properties in the extension which do not live in the workspace model.
+
+            //Todo review if the workspace properties should be managed in the Workspace model.
+            //Do to the fact that Dynamo oftens leaves the workspace objs in memory and resets their properties when you open a new workspace
+            //the management of state is not straightforward. However it may make more sense to update those properteis with the clearing logic.
+
+            //Handle the case of a custom workspace model opening
             if (!(obj is HomeWorkspaceModel hwm))
             {
                 extension.Closed();
                 return;
             }
 
+            //Handle workspace change cases in UI.  First is a new workspace or template opening
+            //In this case the properties should be cleared
             if (!hwm.IsTemplate && string.IsNullOrEmpty(hwm.FileName) )
             {
                 GraphDescription = string.Empty;
@@ -143,6 +154,14 @@ namespace Dynamo.GraphMetadata
                 HelpLink = null;
                 Thumbnail = null;
             }
+            //Second is switching between an open workspace and open custom node and no state changes are required.
+            //This case can also be true if you close an open workspace while focused on a custom node.
+            //However in that scenario the first case will be triggered first due to empty filename.
+            else if(hwm == currentWorkspace)
+            {
+                return;
+            }
+            //Third is a new workspace opening from a saved file
             else
             {
                 currentWorkspace = hwm;
@@ -152,6 +171,7 @@ namespace Dynamo.GraphMetadata
                 RaisePropertyChanged(nameof(Thumbnail));
             }
 
+            //Clear custom properties for cases one and two.
             CustomProperties.Clear();
         }
 
