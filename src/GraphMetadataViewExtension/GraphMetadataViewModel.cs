@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Media.Imaging;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
@@ -236,8 +237,19 @@ namespace Dynamo.GraphMetadata
 
         private void AddCustomPropertyExecute(object obj)
         {
-            var propName = Properties.Resources.CustomPropertyControl_CustomPropertyDefault + " " + (CustomProperties.Count + 1);
+            int increment = CustomProperties.Count + 1;
+            string propName = DefaultPropertyName(increment);
+
+            //Ensure the property name is unique
+            while (CustomProperties.Any(x => x.PropertyName == propName))
+            {
+                increment++;
+                propName = DefaultPropertyName(increment);
+            }
+
             AddCustomProperty(propName, string.Empty);
+
+            string DefaultPropertyName(int number) => Properties.Resources.CustomPropertyControl_CustomPropertyDefault + " " + number;
         }
 
         internal void AddCustomProperty(string propertyName, string propertyValue, bool markChange = true)
