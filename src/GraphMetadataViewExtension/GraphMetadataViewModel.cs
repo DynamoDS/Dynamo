@@ -129,14 +129,15 @@ namespace Dynamo.GraphMetadata
             InitializeCommands();
         }
 
+        /// <summary>
+        /// This event is triggered when a new workspace is opened or when the current workspace is cleared.
+        /// This event manages state of the workspace properties (ie GraphDescription, GraphAuthor, HelpLink, Thumbnail)
+        /// as well as the custom properties in the extension which do not live in the workspace model.
+        /// </summary>
         private void OnCurrentWorkspaceChanged(Graph.Workspaces.IWorkspaceModel obj)
         {
-            //This event is triggered when a new workspace is opened or when the current workspace is cleared.
-            //This event manages state of the workspace properties (ie GraphDescription, GraphAuthor, HelpLink, Thumbnail)
-            //as well as the custom properties in the extension which do not live in the workspace model.
-
             //Todo review if the workspace properties should be managed in the Workspace model.
-            //Do to the fact that Dynamo oftens leaves the workspace objs in memory and resets their properties when you open a new workspace
+            //Due to the fact that Dynamo often leaves the workspace objs in memory and resets their properties when you open a new workspace,
             //the management of state is not straightforward. However it may make more sense to update those properteis with the clearing logic.
 
             //Handle the case of a custom workspace model opening
