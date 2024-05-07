@@ -1428,6 +1428,8 @@ namespace Dynamo.Tests
         {
             var input = new Symbol();
             Assert.NotNull(input.Parameter.Name);
+            Assert.IsNotEmpty(input.Parameter.Name);
+            Assert.AreEqual("input",input.Parameter.Name);
         }
     }
 }
