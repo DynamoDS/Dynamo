@@ -8,7 +8,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.GraphMetadata.Controls;
 using Dynamo.Linting;
 using Dynamo.UI.Commands;
-using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.GraphMetadata
@@ -115,10 +114,9 @@ namespace Dynamo.GraphMetadata
             this.linterManager = viewLoadedParams.StartupParams.LinterManager;
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
-            // using this as CurrentWorkspaceChanged wont trigger if you:
-            // Close a saved workspace and open a New homeworkspace..
-            // This means that properties defined in the previous opened workspace will still be showed in the extension.
-            // CurrentWorkspaceCleared will trigger everytime a graph is closed which allows us to reset the properties. 
+            // Using this as CurrentWorkspaceChanged won't trigger if you close a saved workspace and open a new homeworkspace.
+            // This means that properties defined in the previous opened workspace will still be shown in the extension.
+            // CurrentWorkspaceCleared will trigger every time a graph is closed which allows us to reset the properties. 
             this.viewLoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceChanged;
             if (linterManager != null)
             {
@@ -137,11 +135,11 @@ namespace Dynamo.GraphMetadata
         private void OnCurrentWorkspaceChanged(Graph.Workspaces.IWorkspaceModel obj)
         {
             //Todo review if the workspace properties should be managed in the Workspace model.
-            //Due to the fact that Dynamo often leaves the workspace objs in memory and resets their properties when you open a new workspace,
-            //the management of state is not straightforward. However it may make more sense to update those properteis with the clearing logic.
+            //Due to the fact that Dynamo often leaves the workspace objects in memory and resets their properties when you open a new workspace,
+            //the management of state is not straightforward. However it may make more sense to update those properties with the clearing logic.
 
             //Handle the case of a custom workspace model opening
-            if (!(obj is HomeWorkspaceModel hwm))
+            if (obj is not HomeWorkspaceModel hwm)
             {
                 extension.Closed();
                 return;
@@ -239,18 +237,15 @@ namespace Dynamo.GraphMetadata
         private void AddCustomPropertyExecute(object obj)
         {
             int increment = CustomProperties.Count + 1;
-            string propName = DefaultPropertyName(increment);
-
-            //Ensure the property name is unique
-            while (CustomProperties.Any(x => x.PropertyName == propName))
+            string propName;
+            do
             {
+                propName = Properties.Resources.CustomPropertyControl_CustomPropertyDefault + " " + increment;
                 increment++;
-                propName = DefaultPropertyName(increment);
             }
+            while (CustomProperties.Any(x => x.PropertyName == propName));
 
             AddCustomProperty(propName, string.Empty);
-
-            string DefaultPropertyName(int number) => Properties.Resources.CustomPropertyControl_CustomPropertyDefault + " " + number;
         }
 
         internal void AddCustomProperty(string propertyName, string propertyValue, bool markChange = true)
