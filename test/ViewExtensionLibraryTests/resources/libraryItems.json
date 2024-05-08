@@ -5934,7 +5934,7 @@
             "contextData": "DefineData",
             "parameters": null,
             "itemType": "query",
-            "keywords": "Data.DefineData, Input/Output, definedata"
+            "keywords": "Data.DefineData, Input, Output, definedata"
         }
     ]
 }

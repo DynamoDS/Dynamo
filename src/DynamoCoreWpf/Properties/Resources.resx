@@ -3951,11 +3951,11 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="DataInputNodeModeLockTooltip" xml:space="preserve">
     <value>When locked, this node only accepts the selected data type as input. When unlocked, the input can be any supported data type.</value>
-    <comment>Tool-tip for the padlock toggle button controlling auto/manual mode.</comment>
+    <comment>Tool-tip for the padlock button controlling auto/manual mode.</comment>
   </data>
   <data name="DataInputNodeInformationTooltip" xml:space="preserve">
     <value>Toggle on if the input data contains a list.</value>
-    <comment>Tool-tip for info questionmark icon.</comment>
+    <comment>Tool-tip for info questionmark icon next to the List toggle control.</comment>
   </data>
   <data name="MessagePackageOlderDynamo" xml:space="preserve">
     <value>This package or one of its dependencies were created for a previous version of Dynamo. It may not work in this version. Do you want to continue?</value>
