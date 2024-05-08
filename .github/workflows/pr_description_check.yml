@@ -22,7 +22,7 @@ jobs:
     - name: Extract Release Notes
       id: extract_notes
       run: |
-        release_notes=$(grep -oP '(?s)(?<=Release Notes)\s*([\s\S]*?)\s*(?=###)' pr_description.txt)
+        release_notes=$(grep -oP '(?s)(?<=### Release Notes)\s*([\s\S]*?)\s*(?=###)' pr_description.txt)
         echo "$release_notes" > release_notes.txt
         cat release_notes.txt
       
