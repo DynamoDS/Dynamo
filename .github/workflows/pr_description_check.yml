@@ -1,0 +1,51 @@
+name: PR description checker
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+
+jobs:
+  check_release_notes:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      
+    - name: Extract Description
+      id: extract_description
+      run: |
+        echo "${{ github.event.pull_request.body }}" > pr_description.txt
+        sed -i ':a;N;$!ba;s/\n/ /g' pr_description.txt
+        cat pr_description.txt
+      
+    - name: Extract Release Notes
+      id: extract_notes
+      run: |
+        release_notes=$(grep -oP '(?s)(?<=### Release Notes)\s*([\s\S]*?)\s*(?=###)' pr_description.txt)
+        echo "$release_notes" > release_notes.txt
+        cat release_notes.txt
+      
+    - name: Validate Release Notes
+      id: validate_notes
+      run: |
+        release_notes=$(cat release_notes.txt)
+        if [[ "$release_notes" == *"(FILL ME IN)"* ]]; then
+          echo "Error: Release notes must be filled in."
+          echo "Author: Please check if the text in Release Notes is the default text."
+          exit 1
+        elif [[ "$release_notes" == *"N/A"* ]]; then
+          echo "Release notes are not applicable for this pull request."
+          echo "Reviewer: Please check if this pull request have non-applicable Release notes."
+          exit 0
+        else
+          word_count=$(wc -w <<< "$release_notes")
+          if [ $word_count -ge 6 ]; then
+            echo "Release notes have at least 6 words."
+            exit 0
+          else
+            echo "Error: Release notes must have at least 6 words."
+            echo "Author: Please add more context of your changes."
+            exit 1
+          fi
+        fi
