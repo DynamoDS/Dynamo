@@ -211,10 +211,12 @@ namespace DynamoCoreWpfTests
             int emptyListNodesCount = hwm.Nodes.Count(ContainsAnyEmptyLists);
 
             var view = viewExt.ManagerView;
-            var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
 
+            IEnumerable<Image> images = [];
             Utility.DispatcherUtil.DoEventsLoop(() =>
             {
+                images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
+
                 int nullNodesImageCount = GetImageCount(images, "Null");
                 int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
 
