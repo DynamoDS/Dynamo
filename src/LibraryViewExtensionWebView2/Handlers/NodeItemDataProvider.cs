@@ -27,6 +27,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
         public string itemType { get; set; }
         public string description { get; set; }
         public string keywords { get; set; }
+        /// <summary>
+        /// controls if a type is shown in the library in the homeworkspace context.
+        /// </summary>
+        public bool hiddenInWorkspaceContext { get; set; }
     }
 
     class LoadedTypeData<T> where T : LoadedTypeItem
@@ -41,6 +45,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
     {
         protected NodeSearchModel model;
         private IconResourceProvider iconProvider;
+        readonly string[] typesToHideInHomeWorkspaces = { "Core.Input.Input", "Core.Input.Output" };
         /// <summary>
         /// Constructor
         /// </summary>
@@ -169,8 +174,12 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 description = element.Description,
                 keywords = element.SearchKeywords.Any()
                         ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
-                        : string.Empty
+                        : string.Empty,
             };
+            if (typesToHideInHomeWorkspaces.Contains(element.FullName))
+            {
+                item.hiddenInWorkspaceContext = true;
+            }
 
             //If this element is not a custom node then we are done. The icon url for custom node is different
             if (!element.ElementType.HasFlag(ElementTypes.CustomNode)) return item;
