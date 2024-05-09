@@ -315,6 +315,22 @@
                         </Button.Resources>
                     </Button>
                     <Button Style="{StaticResource IconButton}"
+                            Name="ConvertTabsToSpacesButton"
+                            Click="OnConvertTabsToSpacesClicked"
+                            ToolTipService.ShowOnDisabled="True"
+                            ToolTipService.IsEnabled="True"
+                            IsEnabled="True">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorConvertTabsToSpacesButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/tabs.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/tabs_hover.png" />
+                        </Button.Resources>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}"
                             Name="MoreInfoButton"
                             Click="OnMoreInfoClicked">
                         <Button.ToolTip>

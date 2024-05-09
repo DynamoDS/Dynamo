@@ -2834,6 +2834,7 @@ static Dynamo.Properties.Resources.IncorrectlyFormattedNodeLibraryWarning.get ->
 static Dynamo.Properties.Resources.IncorrectVersionToOpenFile.get -> string
 static Dynamo.Properties.Resources.InputLabel.get -> string
 static Dynamo.Properties.Resources.InputNodeDescription.get -> string
+static Dynamo.Properties.Resources.InputNodeRenameHint.get -> string
 static Dynamo.Properties.Resources.InputNodeSearchTags.get -> string
 static Dynamo.Properties.Resources.InputPortAlternativeName.get -> string
 static Dynamo.Properties.Resources.InsertDialogBoxText.get -> string

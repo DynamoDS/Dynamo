@@ -260,25 +260,20 @@ namespace Dynamo.ViewModels
             get => annotationModel.IsExpanded;
             set
             {
+                // This change is triggered by the user interaction in the View.
+                // Before we updating the value in the Model and ViewModel
+                // we record the current state in the UndoRedoStack.
+                // This ensures that any modifications can be reverted by the user.
+                var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
+                using (undoRecorder.BeginActionGroup())
+                {
+                    undoRecorder.RecordModificationForUndo(annotationModel);
+                }
+
                 annotationModel.IsExpanded = value;
-                InPorts.Clear();
-                OutPorts.Clear();
-                if (value)
-                {
-                    this.ShowGroupContents();
-                }
-                else
-                {
-                    this.SetGroupInputPorts();
-                    this.SetGroupOutPorts();
-                    this.CollapseGroupContents(true);
-                    RaisePropertyChanged(nameof(NodeContentCount));
-                }
-                WorkspaceViewModel.HasUnsavedChanges = true;
-                AddGroupToGroupCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged(nameof(IsExpanded));
-                RedrawConnectors();
-                ReportNodesPosition();
+
+                // Methods to collapse or expand the group based on the new value of IsExpanded.
+                ManageAnnotationMVExpansionAndCollapse();
             }
         }
 
@@ -1051,6 +1046,36 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// Manages the expansion or collapse of the annotation group in the view model.
+        /// </summary>
+        private void ManageAnnotationMVExpansionAndCollapse()
+        {
+            if (InPorts.Any() || OutPorts.Any())
+            {
+                InPorts.Clear();
+                OutPorts.Clear();
+            }
+
+            if (annotationModel.IsExpanded)
+            {
+                this.ShowGroupContents();
+            }
+            else
+            {
+                this.SetGroupInputPorts();
+                this.SetGroupOutPorts();
+                this.CollapseGroupContents(true);
+                RaisePropertyChanged(nameof(NodeContentCount));
+            }
+            WorkspaceViewModel.HasUnsavedChanges = true;
+            AddGroupToGroupCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(IsExpanded));
+            RedrawConnectors();
+            ReportNodesPosition();
+        }
+
         private void UpdateFontSize(object parameter)
         {
             if (parameter == null) return;
@@ -1203,6 +1228,10 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(AnnotationModel.Position));
                     UpdateProxyPortsPosition();
                     break;
+                case nameof(IsExpanded):
+                    ManageAnnotationMVExpansionAndCollapse();
+                    break;
+
             }
         }
 
