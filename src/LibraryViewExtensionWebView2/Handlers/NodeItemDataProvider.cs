@@ -45,7 +45,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
     {
         protected NodeSearchModel model;
         private IconResourceProvider iconProvider;
-        readonly string[] typesToHideInHomeWorkspaces = { "Core.Input.Input", "Core.Input.Output" };
+        readonly string[] typesToHideInHomeWorkspaces = {
+            typeof(Graph.Nodes.CustomNodes.Symbol).ToString(),
+            typeof(Graph.Nodes.CustomNodes.Output).ToString() };
         /// <summary>
         /// Constructor
         /// </summary>
@@ -176,7 +178,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                         ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
                         : string.Empty,
             };
-            if (typesToHideInHomeWorkspaces.Contains(element.FullName))
+            if (typesToHideInHomeWorkspaces.Contains(element.CreationName))
             {
                 item.hiddenInWorkspaceContext = true;
             }
