@@ -625,6 +625,15 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(true)]
         public static object GetItemAtIndex(IList list, int index)
         {
+            if (index<0)
+            {
+                index = list.Count + index;
+            }
+
+            if (index >= list.Count || index < 0)
+            {
+                throw new IndexOutOfRangeException();
+            }
             return list[index];
         }
 
