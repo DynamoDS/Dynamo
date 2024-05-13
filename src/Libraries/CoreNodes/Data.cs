@@ -194,8 +194,8 @@ namespace DSCore
         {
             var settings = new JsonSerializerSettings()
             {
-                Converters = new JsonConverter[]
-                {
+                Converters =
+                [
                     new DictConverter(),
                     new DesignScriptGeometryConverter(),
                     new ColorConveter(),
@@ -203,18 +203,15 @@ namespace DSCore
 #if _WINDOWS
                     new PNGImageConverter(),
 #endif
-                }
+                ]
             };
 
-            StringBuilder sb = new StringBuilder(256);
-            using (var writer = new StringWriter(sb, CultureInfo.InvariantCulture))
-            {
-                using (var jsonWriter = new MaxDepthJsonTextWriter(writer))
-                {
-                    JsonSerializer.Create(settings).Serialize(jsonWriter, values);
-                }
-                return writer.ToString();
-            }
+            StringBuilder sb = new(256);
+            using StringWriter writer = new(sb, CultureInfo.InvariantCulture);
+            using MaxDepthJsonTextWriter jsonWriter = new(writer);
+            JsonSerializer.Create(settings).Serialize(jsonWriter, values);
+            
+            return writer.ToString();
         }
 
         /// <summary>
@@ -537,7 +534,7 @@ namespace DSCore
         /// <summary>
         /// A class representing a DataType supported by Dynamo
         /// </summary>
-        public class DataNodeDynamoType
+        internal class DataNodeDynamoType
         {
             /// <summary>
             /// The underlying Type
@@ -588,62 +585,54 @@ namespace DSCore
         /// </summary>
         static Data()
         {
-            var typeList = new List<DataNodeDynamoType>();
-            typeList.Add(new DataNodeDynamoType(typeof(bool)));
-            typeList.Add(new DataNodeDynamoType(typeof(BoundingBox)));
-            typeList.Add(new DataNodeDynamoType(typeof(CoordinateSystem)));
-
-            // Subtypes of Curve
-            var crv = new DataNodeDynamoType(typeof(Curve), 0, false, null, null);
-            typeList.Add(crv);
-            typeList.Add(new DataNodeDynamoType(typeof(Arc), 1, false, null, crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Circle), 1, false, null, crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Ellipse), 1, false, null, crv));
-            typeList.Add(new DataNodeDynamoType(typeof(EllipseArc), 1, false, null, crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Helix), 1, false, null, crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Line), 1, false, null, crv));
-            typeList.Add(new DataNodeDynamoType(typeof(NurbsCurve), 1, false, null, crv));
-
-            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1, false, null, crv);
+            var curve = new DataNodeDynamoType(typeof(Curve), 0, false, null, null);
+            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1, false, null, curve);
             var polygon = new DataNodeDynamoType(typeof(Polygon), 2, false, null, polyCurve);  // polygon is subtype of polyCurve
             var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3, true, null, polyCurve);    // rectangle is subtype of polygon
-
-            typeList.Add(polyCurve);
-            typeList.Add(polygon);
-            typeList.Add(rectangle);
-            typeList.Add(new DataNodeDynamoType(typeof(System.DateTime)));
-            typeList.Add(new DataNodeDynamoType(typeof(double), "Number"));
-            typeList.Add(new DataNodeDynamoType(typeof(long), "Integer"));
-            typeList.Add(new DataNodeDynamoType(typeof(Location)));
-            typeList.Add(new DataNodeDynamoType(typeof(Mesh)));
-            typeList.Add(new DataNodeDynamoType(typeof(Plane)));
-            typeList.Add(new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Point)));
-
-            // Subtypes of Solid
             var solid = new DataNodeDynamoType(typeof(Solid), 0, false, null, null);
             var cone = new DataNodeDynamoType(typeof(Cone), 1, false, null, solid);    // cone is subtype of solid
             var cylinder = new DataNodeDynamoType(typeof(Cylinder), 2, false, null, cone); // cylinder is subtype of cone 
             var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1, false, null, solid);    // cuboid is subtype of solid
             var sphere = new DataNodeDynamoType(typeof(Sphere), 1, true, null, solid);    // sphere is subtype of solid
 
-            typeList.Add(solid);
-            typeList.Add(cone);
-            typeList.Add(cylinder);
-            typeList.Add(cuboid);
-            typeList.Add(sphere);
-            typeList.Add(new DataNodeDynamoType(typeof(string)));
-
-            // Subtypes of Surface
             var surface = new DataNodeDynamoType(typeof(Surface), 0, false, null, null);
-            var nurbsSrf = new DataNodeDynamoType(typeof(NurbsSurface), 1, false, null, surface);    // nurbsSrf is subtype of surface
-            var polySrf = new DataNodeDynamoType(typeof(PolySurface), 1, true, null, surface); // polySrf is subtype of surface
 
-            typeList.Add(surface);
-            typeList.Add(nurbsSrf);
-            typeList.Add(polySrf);
-            typeList.Add(new DataNodeDynamoType(typeof(System.TimeSpan)));
-            typeList.Add(new DataNodeDynamoType(typeof(UV)));
-            typeList.Add(new DataNodeDynamoType(typeof(Vector)));
+            var typeList = new List<DataNodeDynamoType>
+            {
+                new(typeof(bool)),
+                new(typeof(BoundingBox)),
+                new(typeof(CoordinateSystem)),
+                curve,
+                new(typeof(Arc), 1, false, null, curve),
+                new(typeof(Circle), 1, false, null, curve),
+                new(typeof(Ellipse), 1, false, null, curve),
+                new(typeof(EllipseArc), 1, false, null, curve),
+                new(typeof(Helix), 1, false, null, curve),
+                new(typeof(Line), 1, false, null, curve),
+                new(typeof(NurbsCurve), 1, false, null, curve),
+                polyCurve,
+                polygon,
+                rectangle,
+                new(typeof(System.DateTime)),
+                new(typeof(double), "Number"),
+                new(typeof(long), "Integer"),
+                new(typeof(Location)),
+                new(typeof(Mesh)),
+                new(typeof(Plane)),
+                new(typeof(Autodesk.DesignScript.Geometry.Point)),
+                solid,
+                cone,
+                cylinder,
+                cuboid,
+                sphere,
+                new(typeof(string)),
+                surface,
+                new(typeof(NurbsSurface), 1, false, null, surface),
+                new(typeof(PolySurface), 1, true, null, surface),
+                new(typeof(System.TimeSpan)),
+                new(typeof(UV)),
+                new(typeof(Vector))
+            };
 
             DataNodeDynamoTypeList = new ReadOnlyCollection<DataNodeDynamoType>(typeList);
         }
@@ -657,8 +646,7 @@ namespace DSCore
         /// <param name="isList">If the input is of type `ArrayList`</param>
         /// <param name="isAutoMode">If the node is in Auto mode</param>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
+        internal static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
             string typeString, bool isList, bool isAutoMode, string playerValue)
         {
             if (inputValue == null)
@@ -700,18 +688,14 @@ namespace DSCore
             {
                 // If running in AutoMode, then we would propagate the actual Type and List value and validate against them
                 // List logic
-                bool updateList = false;
-
-                var assertList = inputValue is ArrayList;
-                if (assertList != isList)
-                {
-                    updateList = true;
-                }
+                var arrayList = inputValue as ArrayList;
+                bool assertList = arrayList is not null;
+                bool updateList = assertList != isList;
 
                 // Type logic - we try to 'guess' the type of the object
                 if (type == null || !IsSupportedDataNodeDynamoType(inputValue, type.Type, assertList))
                 {
-                    var valueType = assertList ? FindCommonAncestor(inputValue) : inputValue.GetType();
+                    var valueType = assertList ? FindCommonAncestor(arrayList) : inputValue.GetType();
                     if (valueType == null)
                     {
                         // We couldn't find a common ancestor - list containing unsupported or incompatible data types
@@ -720,7 +704,7 @@ namespace DSCore
                             incompatibleDataTypes));
                     }
                     var inputType = DataNodeDynamoTypeList.FirstOrDefault(x => x.Type == valueType, null);
-                    if(inputType == null)
+                    if (inputType == null)
                     {
                         // We couldn't find a Dynamo data type that fits, so we throw
                         throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage,
@@ -775,13 +759,10 @@ namespace DSCore
         /// <summary>
         /// A function to help find the type in case an ArrayList of objects was passed in AutoMode
         /// </summary>
-        /// <param name="inputValue">The input value, expected to be of type ArrayList</param>
+        /// <param name="list">The input value, expected to be of type ArrayList</param>
         /// <returns></returns>
-        private static Type FindCommonAncestor(object inputValue)
+        private static Type FindCommonAncestor(ArrayList list)
         {
-            if (inputValue is not ArrayList) return null;   // this should not happen
-            var list = inputValue as ArrayList;
-
             if (list.Count == 1)
                 return list[0].GetType(); // Only one node, so it's the "common" ancestor
 
@@ -879,7 +860,7 @@ namespace DSCore
         /// <returns></returns>
         private static List<DataNodeDynamoType> GetListFromTypes(ArrayList list)
         {
-            List<DataNodeDynamoType> typeList = new List<DataNodeDynamoType>();
+            List<DataNodeDynamoType> typeList = [];
             foreach (var item in list)
             {
                 var matchingType = DataNodeDynamoTypeList.FirstOrDefault(x => x.Type == item.GetType());
@@ -892,22 +873,17 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Check if the input object is a single value or an ArrayList
+        /// Check if the input object is a single value or a single-level ArrayList.
         /// </summary>
         /// <param name="obj">The input object to evaluate</param>
         /// <returns></returns>
         private static bool IsSingleValueOrSingleLevelArrayList(object obj)
         {
-            if (obj == null) return true;
-
-            // Check if the object is a string, since strings are IEnumerable but usually considered single values
-            if (obj is string) return true;
-
             if (obj is ArrayList arrayList)
             {
                 foreach (var item in arrayList)
                 {
-                    if (item is IEnumerable && !(item is string))
+                    if (item is IEnumerable && item is not string)
                     {
                         return false;
                     }
@@ -915,7 +891,8 @@ namespace DSCore
                 return true;
             }
 
-            if (obj is IEnumerable) return false;
+            // Check if the object is a string, since strings are IEnumerable but usually considered single values
+            if (obj is IEnumerable && obj is not string) return false;
 
             return true;
         }
@@ -943,7 +920,7 @@ namespace DSCore
             }
             else
             {
-                if (!(inputValue is ArrayList arrayList)) return false;
+                if (inputValue is not ArrayList arrayList) return false;
 
                 foreach (var item in arrayList) 
                 {
