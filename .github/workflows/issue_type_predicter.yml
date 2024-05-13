@@ -76,14 +76,14 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '3.1.0'
+          dotnet-version: '8.0'
 
       # Build the solution IssuesTypePredicter.sln (this contains two VS2019 ML.NET projects)
       - name: Build Issues Type Predicter
         if: env.analysis_response == 'Valid'
         run: |
           dotnet build ./IssuesTypePredicter/IssuesTypePredicter.sln --configuration Release
-          cp ./IssuesTypePredicter/IssuesTypePredicterML.ConsoleApp/bin/Release/netcoreapp3.1/MLModel.zip .
+          cp ./IssuesTypePredicter/IssuesTypePredicterML.ConsoleApp/bin/Release/net8.0/MLModel.zip .
 
       # Execute the IssuesTypePredicter program and pass 'issue_json_string' as a parameter
       - name: Run Issues Type Predicter
