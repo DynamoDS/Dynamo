@@ -193,6 +193,7 @@ namespace DynamoCoreWpfTests
         /// Test if the number of Nodes containing Null or Empty List matches what is shown on the UI
         /// Marked as Failure until we can fix flakyness
         /// </summary>
+        //TODO https://jira.autodesk.com/browse/DYN-6973
         [Category("Failure")]
         [Test]
         public void ContainsEmptyListOrNullTest()
