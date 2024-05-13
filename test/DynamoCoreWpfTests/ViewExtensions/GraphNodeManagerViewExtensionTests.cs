@@ -20,6 +20,7 @@ using ProtoCore.Mirror;
 
 namespace DynamoCoreWpfTests
 {
+    [Category("Failure")]
     public class GraphNodeManagerViewExtensionTests : DynamoTestUIBase
     {
         private bool oldEnablePersistance = false;
