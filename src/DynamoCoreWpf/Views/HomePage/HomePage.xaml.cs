@@ -66,11 +66,12 @@ namespace Dynamo.UI.Views
             InitializeComponent();
             InitializeGuideTourItems();
 
-            dynWebView = new DynamoWebView2();
+            dynWebView = new DynamoWebView2
+            {
+                Margin = new System.Windows.Thickness(0),  // Set margin to zero
+                ZoomFactor = 1.0  // Set zoom factor (optional)
+            };
 
-            dynWebView.Margin = new System.Windows.Thickness(0);  // Set margin to zero
-            dynWebView.ZoomFactor = 1.0;  // Set zoom factor (optional)
-                
             HostGrid.Children.Add(dynWebView);
 
             // Bind event handlers
@@ -127,7 +128,7 @@ namespace Dynamo.UI.Views
         /// This is used before DynamoModel initialization specifically to get user data dir
         /// </summary>
         /// <returns></returns>
-        private string GetUserDirectory()
+        private static string GetUserDirectory()
         {
             var version = AssemblyHelper.GetDynamoVersion();
 
@@ -541,6 +542,7 @@ namespace Dynamo.UI.Views
         public void OpenFile(string path)
         {
             RequestOpenFile(path);
+            Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations);
         }
         [DynamoJSInvokable]
         public void StartGuidedTour(string path)
@@ -551,16 +553,19 @@ namespace Dynamo.UI.Views
         public void NewWorkspace()
         {
             RequestNewWorkspace();
+            Logging.Analytics.TrackEvent(Logging.Actions.New, Logging.Categories.DynamoHomeOperations, "Workspace");
         }
         [DynamoJSInvokable]
         public void OpenWorkspace()
         {
             RequestOpenWorkspace();
+            Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations);
         }
         [DynamoJSInvokable]
         public void NewCustomNodeWorkspace()
         {
             RequestNewCustomNodeWorkspace();
+            Logging.Analytics.TrackEvent(Logging.Actions.New, Logging.Categories.DynamoHomeOperations, "Custom Node Workspace");
         }
         [DynamoJSInvokable]
         public void ShowSampleFilesInFolder()

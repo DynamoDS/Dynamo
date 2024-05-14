@@ -9,6 +9,9 @@ namespace Dynamo.Logging
     /// </summary>
     public enum Categories
     {
+        /// XXXOperations usually means actions from Dynamo users
+        /// v.s. XXX usually means actions from the Dynamo component itself
+
         /// <summary>
         /// Events Category related to application lifecycle
         /// </summary>
@@ -142,7 +145,12 @@ namespace Dynamo.Logging
         /// <summary>
         /// Events Category related to DynamoMLDataPipeline
         /// </summary>
-        DynamoMLDataPipelineOperations
+        DynamoMLDataPipelineOperations,
+
+        /// <summary>
+        /// Events Category related to DynamoHome
+        /// </summary>
+        DynamoHomeOperations
     }
 
     /// <summary>
