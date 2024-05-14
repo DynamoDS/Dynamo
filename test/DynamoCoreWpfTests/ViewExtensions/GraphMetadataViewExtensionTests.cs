@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
 {
     public class GraphMetadataViewExtensionTests : DynamoTestUIBase
     {
-        [Test]
+        [TestOnSeparateThread]
         public void SettingPropertiesInExtensionUpdatesWorkspace()
         {
             // Arrange
@@ -68,7 +68,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             Assert.IsTrue(hwm.Thumbnail == thumbnailB64);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CustomPropertiesGetsAddedToExtensionDataOnSave()
         {
             // Arrange
@@ -101,7 +101,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
         }
 
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExistingGraphWithCustomPropertiesWillBeAddedToExtension()
         {
             // Arrange
@@ -134,7 +134,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             Assert.That(propertiesExt.viewModel.CustomProperties[2].PropertyValue == expectedCP3Value);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ExistingGraphOpenModifiedAndClosedWillSetAndClearModifiedFlag()
         {
             var extensionManager = View.viewExtensionManager;

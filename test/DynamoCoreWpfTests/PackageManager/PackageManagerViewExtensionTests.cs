@@ -149,20 +149,20 @@ namespace DynamoCoreWpfTests.PackageManager
             return returnList.ToArray();
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PackageManagerLoadsRuntimeGeneratedExtension()
         {
             Assert.IsTrue(View.viewExtensionManager.ViewExtensions.Select(x => x.Name).Contains("Test View Extension"));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PackageManagerViewExtensionHasCorrectNumberOfRequestedExtensions()
         {
             var pkgViewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             Assert.AreEqual(pkgViewExtension.RequestedExtensions.Count(), 1);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void LateLoadedViewExtensionsHaveMethodsCalled()
         {
             var pkgviewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
@@ -221,7 +221,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void StartUpAndLoadedAreCalledOnceOnViewExtensionsInPackges()
         {
             //this extension is compiled at testTime and injected into test package folder.
@@ -231,7 +231,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(1, testExtension.loadedCount);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PackageManagerViewExtesion_TriesToLoadLayoutSpecForBuiltInPackages()
         {
             //check that the packageManagerViewExtension requested the test layout spec to be applied.
@@ -254,7 +254,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(Path.Combine(BuiltinPackagesTestDir, "SignedPackage2", "extra", "layoutspecs.json"), packageManagerViewExtension.RequestedLayoutSpecPaths.FirstOrDefault());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost_AtExtensionLoad()
         {
             var count = 0;
@@ -287,7 +287,7 @@ namespace DynamoCoreWpfTests.PackageManager
             }
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost_AtLatePackageLoad()
         {
             var count = 0;
@@ -316,7 +316,7 @@ namespace DynamoCoreWpfTests.PackageManager
             }
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestCrashInPackage()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension_Crash");

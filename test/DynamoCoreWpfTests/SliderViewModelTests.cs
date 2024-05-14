@@ -48,7 +48,7 @@ namespace DynamoCoreWpfTests
         ///  public T Min
         ///  public T Step
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void SliderViewModel_PropertiesTest()
         {
             Open(@"core\library\NumberSliderNodeTest.dyn");
@@ -100,7 +100,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// This test method will validate the "public T Value" property in SliderViewModel.cs
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void SliderViewModel_ValueTest()
         {
             Open(@"core\library\NumberSliderNodeTest.dyn");
@@ -139,7 +139,7 @@ namespace DynamoCoreWpfTests
         /// This test will validate that setting the string in a , dec seperator culture does not
         /// modify the value.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void SliderViewModel_ValueTest_Localized()
         {
             //change current thread culture to German.

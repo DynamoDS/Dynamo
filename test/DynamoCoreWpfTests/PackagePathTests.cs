@@ -56,7 +56,7 @@ namespace DynamoCoreWpfTests
         internal string BuiltInPackagesTestDir { get { return Path.Combine(TestDirectory, "builtinpackages testdir", "Packages"); } }
 
         #region PackagePathViewModelTests
-        [Test]
+        [TestOnSeparateThread]
         public void CannotDeletePathIfThereIsOnlyOne()
         {
             var setting = new PreferenceSettings
@@ -71,7 +71,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(vm.DeletePathCommand.CanExecute(null));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ReorderingPathsTest()
         {
             var setting = new PreferenceSettings
@@ -103,7 +103,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(@"C:\", vm.RootLocations[2]);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CannotDeleteBuiltinPackagesPath()
         {
             var setting = new PreferenceSettings
@@ -119,7 +119,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(vm.DeletePathCommand.CanExecute(1));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CannotUpdateBuiltinPackagesPath()
         {
             var setting = new PreferenceSettings
@@ -134,7 +134,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(vm.UpdatePathCommand.CanExecute(0));
             Assert.IsTrue(vm.UpdatePathCommand.CanExecute(1));
         }
-        [Test]
+        [TestOnSeparateThread]
         public void CannotDeleteProgramDataPath()
         {
             var setting = new PreferenceSettings
@@ -150,7 +150,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(vm.DeletePathCommand.CanExecute(1));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CannotUpdateProgramDataPath()
         {
             var setting = new PreferenceSettings
@@ -166,7 +166,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(vm.UpdatePathCommand.CanExecute(1));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void AddRemovePathsTest()
         {
             var setting = new PreferenceSettings()
@@ -192,7 +192,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(@"C:\", vm.RootLocations[0]);
             Assert.AreEqual(@"D:\", vm.RootLocations[1]);
         }
-        [Test]
+        [TestOnSeparateThread]
         public void AddPackagePathsTest()
         {
             var setting = new PreferenceSettings()
@@ -214,7 +214,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1,GetPreviewValue("07d62dd8-b2f3-40a8-a761-013d93300444"));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InstalledPackagesContainsCorrectNumberOfPackages()
         {
             var setting = new PreferenceSettings()
@@ -250,7 +250,7 @@ namespace DynamoCoreWpfTests
             vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void RemoveAddPackagePathChangesInstalledPackageState()
         {
             var setting = new PreferenceSettings()
@@ -294,7 +294,7 @@ namespace DynamoCoreWpfTests
             vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void EnableCustomPackagePathsLoadsPackagesOnClosingPreferences()
         {
             var setting = new PreferenceSettings()
@@ -329,7 +329,7 @@ namespace DynamoCoreWpfTests
             vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PathEnabledConverterCustomPaths()
         {
             var setting = new PreferenceSettings()
@@ -351,7 +351,7 @@ namespace DynamoCoreWpfTests
             Assert.True((bool)x.Convert(new object[] { vm, path }, null, null, null));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PathEnabledConverterBltinpackagesPath()
         {
             var setting = new PreferenceSettings()
@@ -374,7 +374,7 @@ namespace DynamoCoreWpfTests
             Assert.False((bool)x.Convert(new object[] { vm, @"Z:\" }, null, null, null));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void IfPathsAreUnchangedPackagesAreNotReloaded()
         {
             var count = 0;
@@ -419,7 +419,7 @@ namespace DynamoCoreWpfTests
             vm.packageLoader.PackagesLoaded -= Loader_PackagesLoaded;
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PathsAddedToCustomPacakgePathPreferences_SurvivePreferenceDialogOpenClose()
         {
             //add a new path to the package paths
@@ -482,7 +482,7 @@ namespace DynamoCoreWpfTests
             };
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void IfProgramDataPathIsFirstDefaultPackagePathIsStillAppData()
         {
             var setting = Model.PreferenceSettings;

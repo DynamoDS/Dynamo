@@ -1,4 +1,4 @@
-﻿using Dynamo.NodeAutoComplete;
+using Dynamo.NodeAutoComplete;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests.ViewExtensions
@@ -7,7 +7,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
     {
         private NodeAutoCompleteViewExtension viewExtension = new NodeAutoCompleteViewExtension();
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestPropertiesWithCodeInit()
         {
             Assert.AreEqual("Node Auto Complete", viewExtension.Name);

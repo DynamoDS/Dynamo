@@ -40,7 +40,7 @@ namespace DynamoCoreWpfTests
             libraries.Add("FFITarget.dll");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void FooterNotificationControlTest()
         {
             // Arrange
@@ -95,7 +95,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual((items[1] as FooterNotificationItem).NotificationCount, 0);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void OpeningWorkspaceWithTclsrustWarning()
         {
             // Open workspace with test mode as false, to verify trust warning.
@@ -112,7 +112,7 @@ namespace DynamoCoreWpfTests
             DynamoModel.IsTestMode = true;
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ElementBinding_SaveAs()
         {
             var prebindingPathInTestDir = @"core\callsite\trace_test-prebinding.dyn";
@@ -155,7 +155,7 @@ namespace DynamoCoreWpfTests
             File.Delete(saveAsPath);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestToastNotificationClosingBehavior()
         {
             var preferencesWindow = new PreferencesView(View);

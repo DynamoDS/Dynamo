@@ -42,7 +42,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void GizmoWarningTest()
         {
             RaiseLoadedEvent(this.View);
@@ -71,7 +71,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             Assert.IsTrue(pntNode.Infos.Any(x => x.Message.Equals("TestPersistentWarning") && x.State == ElementState.PersistentWarning));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeManipulatorUnselectedNodeTest()
         {
             RaiseLoadedEvent(this.View);

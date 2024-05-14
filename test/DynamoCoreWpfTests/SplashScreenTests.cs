@@ -17,7 +17,7 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     class SplashScreenViewTests: DynamoTestUIBase
     {
-        [Test]
+        [TestOnSeparateThread]
         public void SplashScreen_ClosePersistSetsPrefs()
         {
             var ss = new Dynamo.UI.Views.SplashScreen();
@@ -63,7 +63,7 @@ namespace DynamoCoreWpfTests
             TestUtilities.WebView2Tag = string.Empty;
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void SplashScreen_CloseExplicitPropIsCorrect1()
         {
             var ss = new Dynamo.UI.Views.SplashScreen();
@@ -73,7 +73,7 @@ namespace DynamoCoreWpfTests
             ss.CloseWindow();
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void SplashScreen_CloseExplicitPropIsCorrect2()
         {
             var ss = new Dynamo.UI.Views.SplashScreen();
@@ -82,14 +82,14 @@ namespace DynamoCoreWpfTests
             ss.CloseWindow();
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void SplashScreen_CloseExplicitPropIsCorrect3()
         {
             var ss = new Dynamo.UI.Views.SplashScreen();
             ss.CloseWindow();
             Assert.IsTrue(ss.CloseWasExplicit);
         }
-        [Test]
+        [TestOnSeparateThread]
         //note that this test sends a windows close message directly to the window
         //but skips the JS interop that users rely on to close the window - so that is not tested by this test.
         public void SplashScreen_MultipleCloseMessages()

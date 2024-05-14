@@ -48,7 +48,7 @@ namespace DynamoCoreWpfTests
             measurementInputBase = new MeasurementInputBaseConcrete();
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void MigrateLengthFromFeetToMetersTest()
         {
             var testDocument = new XmlDocument();
@@ -66,7 +66,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(oneFeetInMeters, systemDouble.Attributes[0].Value);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void SerializeCoreTest()
         {
             //Loads a value to check
@@ -83,7 +83,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("20", attributeValue);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void UpdateValueCoreTest()
         {
             measurementInputBase.Value = 20;
@@ -94,7 +94,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(result);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PreferenceSettings_PropertyChanged()
         {
             Open(@"UI\UnitsUITests.dyn");
@@ -108,7 +108,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(node.IsModified);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ForgeUnitsLoadsDefaultsCorrectly()
         {
             Open(@"core\units\default_unit_dropdowns.dyn");
@@ -133,7 +133,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(-1, node5.SelectedIndex);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ForgeUnitsEqualityInDynamoListOps()
         {
             Open(@"core\units\unit_dropdowns2.dyn");
@@ -149,7 +149,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ForgeUnitDropdownsLoadWithGoodData()
         {
             Open(@"core\units\unit_dropdowns.dyn");
@@ -178,7 +178,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         //This test loads a modified .dyn to assert the behavior of units/dropdown nodes when schema data changes. 
         public void ForgeUnitDropdownsLoadWithMalformedData()
         {
@@ -210,7 +210,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ForgeUnitDropdownsLoadWithDifferentSchemaVersions()
         {
             Open(@"core\units\unit_dropdown_different_schema_version.dyn");
@@ -227,7 +227,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         //This test loads a modified .dyn to assert the behavior of units/dropdown nodes when schema data is completely missing. 
         public void ForgeUnitDropdownsLoadWithNoSchemas()
         {
@@ -266,7 +266,7 @@ namespace DynamoCoreWpfTests
             DynamoUnits.Utilities.Initialize();
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ForgeUnitConversionsReactCorrectly_ToInteractions()
         {
             Open(@"core\units\unit_dropdown_different_schema_version.dyn");

@@ -1,4 +1,4 @@
-﻿using Dynamo.Wpf.Views;
+using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using System;
@@ -13,7 +13,7 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     public class SecTabUITests: DynamoTestUIBase
     {
-        [Test]
+        [TestOnSeparateThread]
         public void TestDisableTrustWarningToggle()
         {
             var preferencesWindow = new PreferencesView(View);

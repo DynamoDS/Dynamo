@@ -81,7 +81,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if the Extension loads correctly
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ViewExtensionOpenTest()
         {
             var extensionManager = View.viewExtensionManager;
@@ -103,7 +103,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if the number of nodes displayed in the extension is equal to current number of nodes
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CorrectNumberNodeItemsTest()
         {
             var extensionManager = View.viewExtensionManager;
@@ -147,7 +147,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if using the IsFrozen filter yields correct results
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void FilterFrozenItemsTest()
         {
             var extensionManager = View.viewExtensionManager;
@@ -193,7 +193,7 @@ namespace DynamoCoreWpfTests
         /// Test if the number of Nodes containing Null or Empty List matches what is shown on the UI
         /// Marked as Failure until we can fix flakyness
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ContainsEmptyListOrNullTest()
         {
             var extensionManager = View.viewExtensionManager;
@@ -233,7 +233,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if the Extension loads correctly when remembered
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ViewExtensionOpensWithDynamoWhenRememberedTest()
         {
             ViewModel.PreferenceSettings.EnablePersistExtensions = true;
@@ -265,7 +265,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if the Extension does not open when closed in the last session, and remember setting was enabled.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ViewExtensionDoesNotOpensWithDynamoWhenClosedTest()
         {
             ViewModel.PreferenceSettings.EnablePersistExtensions = true;
@@ -301,7 +301,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if the Extension loads correctly when remembered
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ViewExtensionDoesNotOpenWhenNotRememberedTest()
         {
             ViewModel.PreferenceSettings.EnablePersistExtensions = false;

@@ -45,7 +45,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ZIndex_Test_MouseDown()
         {
             // Reset zindex to start value.
@@ -67,7 +67,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeView.ViewModel.ZIndex, Dynamo.ViewModels.NodeViewModel.StaticZIndex);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ZIndex_Test_MouseEnter_Leave()
         {
             // Reset zindex to start value.
@@ -108,7 +108,7 @@ namespace DynamoCoreWpfTests
             };
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ZIndex_NodeAsMemberOfGroup()
         {
             // Reset zindex to start value.
@@ -158,7 +158,7 @@ namespace DynamoCoreWpfTests
             };
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodesHaveCorrectLocationsIndpendentOfCulture()
         {
             string openPath = @"core\nodeLocationTest.dyn";
@@ -189,7 +189,7 @@ namespace DynamoCoreWpfTests
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void SettingNodeAsInputOrOutputMarksGraphAsModified()
         {
             Open(@"core\isInput_isOutput\IsInput.dyn");
@@ -244,7 +244,7 @@ namespace DynamoCoreWpfTests
             File.Delete(tempPath);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void SettingOriginalNodeName()
         {
             Open(@"core\originalNodeNameTests\originalNodeName.dyn");
@@ -267,7 +267,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CheckDummyNodeName()
         {
             Open(@"core\originalNodeNameTests\originalNodeName.dyn");
@@ -282,7 +282,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CheckNotLoadedCustomNodeOriginalName()
         {
             // Custom node inside is not loaded this case so that renamed tag will be disabled
@@ -299,7 +299,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CheckLoadedCustomNodeOriginalName()
         {
             // Opening the dyf first will make sure the custom node is loaded
@@ -318,7 +318,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModel.OriginalName, expectedNewOriginalName);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void SettingOriginalNodeNameOnCustomNode()
         {
             Open(@"core\originalNodeNameTests\originalNodeNameCustomNode.dyn");
@@ -341,7 +341,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InputPortType_NodeModelNode_AreCorrect()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -357,7 +357,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("System.Drawing.Bitmap", type);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Category("RegressionTests")]
         public void GettingNodeNameDoesNotTriggerPropertyChangeCycle()
         {
@@ -383,7 +383,7 @@ namespace DynamoCoreWpfTests
         /// Check if elements are correctly displayed/collapsed on zoom level change 
         /// Current zoom level is 0.4 (hard-coded in multiple Converters
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ZoomChangeVisibilityTest()
         {
             // Arrange
@@ -406,7 +406,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);  
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ZoomWarningFileFromPathTest()
         {
             // Arrange
@@ -442,7 +442,7 @@ namespace DynamoCoreWpfTests
         /// Tests the GetWarningColor method to ensure that the node's WarningBar displays
         /// the proper colors when a node is displaying Info/Warning/Error messages.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void WarningColorReflectsElementState()
         {
             // Arrange
@@ -477,7 +477,7 @@ namespace DynamoCoreWpfTests
         /// Assert node color border to check if colors correspond
         /// to the correct node state for PreviewOff/Frozen/Info/Warning/Error states
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ZoomNodeColorReflectElementState()
         {
             // Arrange
@@ -535,7 +535,7 @@ namespace DynamoCoreWpfTests
         /// Assert node color border to check if colors correspond
         /// to the correct node state for PreviewOff/Frozen/Info/Warning/Error states
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ZoomNodeGlyphStatesCheck()
         {
             // Arrange
@@ -571,7 +571,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModelWarningWarningFrozenHidden.ImgGlyphThreeSource.Split('/').Last(), "alert-64px.png");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestPortColors_NodeModel()
         {
             Open(@"UI\color_range_ports.dyn");
@@ -622,7 +622,7 @@ namespace DynamoCoreWpfTests
             Assert.True((doutPorts[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestPortDefaultValueMarket_Visibility()
         {
             Open(@"UI\outport_valuemarker_portDefaultValueMarkerVisible.dyn");
@@ -640,7 +640,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(outPort_Without_Function.ValueMarkerWidth, outPort_Without_Function.ValueMarkerWidthWithoutFunction);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestSelectNeighborPins()
         {
             // Open and run the workspace

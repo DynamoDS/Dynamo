@@ -57,7 +57,7 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(watchView);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void StringInputHasTextboxAndCorrectValue()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -67,7 +67,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("\"ok\"", element.Text);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void BoolSelectorHasRadioButtonsAndProperlySetValues()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -81,7 +81,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(true, elements.Skip(1).First().IsChecked);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void DoubleInputHasTextBoxAndCorrectValue()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -92,7 +92,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("12.000", element.Text);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void DoubleSliderHasSliderAndCorrectValues()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -103,7 +103,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1.0, element.slider.Value, 1e-6);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void doubleInputNodeWillNotAcceptRangeSyntax()
         {
             var number = new DoubleInput();
@@ -118,7 +118,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void doubleInputNodeWillNotAcceptIds()
         {
             var number = new DoubleInput();
@@ -135,7 +135,7 @@ namespace DynamoCoreWpfTests
 
         //these tests live here as they have a dependency on CoreNodesWpf which
         //is only accessible at test time after it is loaded via Dynamo 
-        [Test]
+        [TestOnSeparateThread]
         [Category("UnitTests")]
         public static void validateNumericFailsOnNonNumericInputs()
         {
@@ -152,7 +152,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(numericalRule.Validate("a", CultureInfo.InvariantCulture).IsValid);
 
         }
-        [Test]
+        [TestOnSeparateThread]
         [Category("UnitTests")]
         public static void validateNumericPassesOnNumericInputs()
         {
@@ -168,7 +168,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [TestOnSeparateThread]
         public void IntegerSliderHasSliderAndCorrectValues()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -179,7 +179,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(41, element.slider.Value, 1e-6);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void FilenameHasButton()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -190,7 +190,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, eles.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void DirectoryHasButton()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -202,7 +202,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, eles.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void LengthFromStringHasTextBoxWithCorrectValue()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -218,7 +218,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [TestOnSeparateThread]
         public void VolumeFromStringHasTextBoxWithCorrectValue()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -229,7 +229,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("0.000m³", ele.Text);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void AreaFromStringHasTextBoxWithCorrectValue()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -240,7 +240,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("0.000m²", ele.Text);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PythonNodeHasButtonsAndCorrectNumberOfInputs()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -254,7 +254,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void PythonStringNodeHasButtonsAndCorrectNumberOfInputs()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -268,7 +268,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(8, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void WatchIsEmptyWhenLoaded()
         {
             Open(@"UI\WatchUINodes.dyn");
@@ -318,7 +318,7 @@ namespace DynamoCoreWpfTests
             Assert.Greater(img.ActualHeight, 10);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CustomNodeIsCustomized()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -329,7 +329,7 @@ namespace DynamoCoreWpfTests
             Assert.True(nodeView.customNodeBorder0.Visibility == Visibility.Visible);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void DSVarArgFunctionNodeHasButtons()
         {
             Open(@"UI\VariableInputNodes.dyn");
@@ -359,7 +359,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestColorRangeNodeOnMultipleFilesWithoutClosing()
         {
             Open(@"UI\UIColorRange.dyn");
@@ -378,7 +378,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(image.Source);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InvalidInputShouldNotCrashColorRangeNode()
         {
             Open(@"UI\ColorRangeInvalidInputCrash.dyn");
@@ -392,7 +392,7 @@ namespace DynamoCoreWpfTests
                 Model.CurrentWorkspace.Guid, guid, "Code", "5.6"));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ArrayExprShouldNotCrashColorRangeNode()
         {
             var guid = System.Guid.Parse("c90f5c20-8c63-4708-bd1a-289647bae471");
@@ -405,7 +405,7 @@ namespace DynamoCoreWpfTests
             Assert.Pass(); // We should reach here safely without exception.
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void InvalidValueShouldNotCrashColorRangeNode()
         {
             var guid0 = Guid.Parse("1a245b04-ad9e-4b9c-8301-730afbd4e6fc");
@@ -468,7 +468,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(8, items.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void TestEditReadOnlyCustomNodeProperty()
         {
             // Open a read-only custom node
@@ -493,7 +493,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void INodeViewCustomizationCheckUsingReflectionIsCorrect()
         {
             var dyncorewpfAssem = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name == "DynamoCoreWpf").FirstOrDefault();

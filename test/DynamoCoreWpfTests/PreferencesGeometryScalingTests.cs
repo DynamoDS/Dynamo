@@ -32,7 +32,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// The test validates that when RunType=Automatic and the MarkNodesAsModifiedAndRequestRun() method is called the graph execution is kicked off
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void PreferencesGeoScaling_RunGraph_Automatic()
         {
             var dynamoViewModel = (View.DataContext as DynamoViewModel);
@@ -74,7 +74,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// The test validates that when RunType=Manual and the MarkNodesAsModifiedAndRequestRun() method is called the graph execution is NOT kicked off
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void PreferencesGeoScaling_RunGraph_Manual_Mode()
         {
             //The GeometryScalingCodeBlock.dyn contains a CodeBlock with a large number that needs ScaleFactor > Medium

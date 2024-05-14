@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace ViewExtensionLibraryTests
             libraries.Add("DSCPython.dll");
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Category("UnitTests"), Category("Failure")]
         public void CreatingNodeCustomNodeDefinitionOrUpdatingItShouldRaiseUpdate()
         {
@@ -96,7 +96,7 @@ namespace ViewExtensionLibraryTests
 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         [Category("UnitTests"), Category("Failure")]
         public void InstantiatingLazyLoadedCustomNodeShouldNotRaiseUpdate()
         {

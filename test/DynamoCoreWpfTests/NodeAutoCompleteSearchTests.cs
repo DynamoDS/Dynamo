@@ -63,7 +63,7 @@ namespace DynamoCoreWpfTests
             Model.AddZeroTouchNodesToSearch(Model.LibraryServices.GetAllFunctionGroups());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_CanAutoCompleteInCustomNodeWorkspace()
         {
             Open(@"pkgs\EvenOdd2\dyf\EvenOdd.dyf");
@@ -96,7 +96,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_CanAutoCompleteOnCustomNodes()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
@@ -122,7 +122,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(8, searchViewModel.FilteredResults.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_CanAutoCompleteOnCustomNodesOutPort()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
@@ -148,7 +148,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(10, searchViewModel.FilteredResults.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_CanAutoCompleteOnCustomNodesOutPort_WithSpaceInPortName()
         {
             var outputNode = new Dynamo.Graph.Nodes.CustomNodes.Output();
@@ -168,7 +168,7 @@ namespace DynamoCoreWpfTests
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(58, searchViewModel.FilteredResults.Count());
         }
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_CanAutoCompleteOnCustomNodesOutPort_WithWhiteSpaceStartingPortName()
         {
             var outputNode = new Dynamo.Graph.Nodes.CustomNodes.Output();
@@ -189,7 +189,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(58, searchViewModel.FilteredResults.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_InputPortZeroTouchNode_AreCorrect()
         {
             Open(@"UI\ffitarget_inputport_suggestion.dyn");
@@ -234,7 +234,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_InputPortZeroTouchNodeForProperty_AreCorrect()
         {
             Open(@"UI\ffitarget_property_inputport_suggestion.dyn");
@@ -263,7 +263,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(expectedNodes.SequenceEqual(suggestedNodes));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_GeometryNodes_SortedBy_NodeGroup_CreateActionQuery()
         {
             var type1 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("DummyPoint.DirectionTo")).FirstOrDefault(); //returns a dummyPoint.
@@ -281,7 +281,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(SearchElementGroup.Query, suggestions.LastOrDefault().Group);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_InputPortBuiltInNode_AreCorrect()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
@@ -306,7 +306,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, suggestions.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_OutputPortBuiltInNode_AreCorrect()
         {
             Open(@"UI\builtin_outputport_suggestion.dyn");
@@ -329,7 +329,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(58, suggestions.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_MultipleOutputPortCBN_AreCorrect()
         {
             Open(@"UI\builtin_outputport_CBNsuggestion.dyn");
@@ -352,7 +352,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(outPorts[2].PortModel.Index, connector.ConnectorModel.Start.Index);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSearchElementComparerSortsBasedOnTypeDistance()
         {
             var core = Model.LibraryServices.LibraryManagementCore;
@@ -365,7 +365,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(-1, comparer.Compare(type1, type2));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSearchElementComparerSortsBasedOnTypeDistance_NonExact()
         {
             var core = Model.LibraryServices.LibraryManagementCore;
@@ -378,7 +378,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, comparer.Compare(type1, type2));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSearchElementComparerSortsBasedOnTypeDistance_MultiReturnNodeModel()
         {
             var core = Model.LibraryServices.LibraryManagementCore;
@@ -394,7 +394,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(-1, comparer.Compare(type1, type2));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSearchElementComparerSortsBasedOnTypeDistance_MultiReturnNodeModelEqual()
         {
             var core = Model.LibraryServices.LibraryManagementCore;
@@ -410,7 +410,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, comparer.Compare(type1, type2));
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestionsAreSortedBasedOnGroupAndAlphabetically()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
@@ -444,7 +444,7 @@ namespace DynamoCoreWpfTests
             
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_DefaultSuggestions()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
@@ -474,7 +474,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("String", searchViewModel.FilteredResults.FirstOrDefault().Name);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void SearchNodeAutocompletionSuggestions()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
@@ -500,7 +500,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(5 , searchViewModel.FilteredResults.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CloseNodeAutocompleteWhenParentNodeDeleted()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
@@ -531,7 +531,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NodeSuggestions_SkippedSuggestions()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
@@ -561,7 +561,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("Number Slider", searchViewModel.FilteredResults.FirstOrDefault().Name);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void NoMLAutocompleteRecommendations()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");

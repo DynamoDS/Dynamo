@@ -50,7 +50,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Validates that the GroupStyles in the PreferencesView match the ones in the AnnotationView
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void TestDefaultGroupStyles_PreferencesView()
         {
             int defaultGroupStylesCounter = 4;
@@ -79,7 +79,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Add a new GroupStyle and validates that the GroupStyles in the PreferencesView match the ones in the AnnotationView
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void TestAddGroupStyle_ContextMenu()
         {
             int currentGroupStylesCounter = 5;
@@ -121,7 +121,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CustomColorPicker_PrePopulateDefaultColors()
         {
             Open(@"UI\GroupTest.dyn");

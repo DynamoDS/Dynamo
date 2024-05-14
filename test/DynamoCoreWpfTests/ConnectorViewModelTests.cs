@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Dynamo.Selection;
 using NUnit.Framework;
 using static Dynamo.Models.DynamoModel;
@@ -17,7 +17,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Check to see if a connector is visible after pre 2.13 graph open
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ConnectorVisibilityForLegacyGraphTest()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -31,7 +31,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Check to see a connector is visible after xml graph open
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void ConnectorVisibilityForLegacyXMLGraphTest()
         {
             var filePath = @"UI/UI_visual_test.dyn";
@@ -50,7 +50,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Check to see a pin can be added to a connector
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanPinConnector()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -80,7 +80,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Check to see a pin can be removed from a connector
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanUnPinFromConnector()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -107,7 +107,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Check to see if can select connected nodes.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanSelectConnectedNodes()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -122,7 +122,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Check to see if can break connection.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanBreakConnection()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -138,7 +138,7 @@ namespace DynamoCoreWpfTests
         /// a command that toggles between 'IsVisible' and '!IsVisible'. So this test
         /// verifies that this works as expected.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanHideConnector()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -153,7 +153,7 @@ namespace DynamoCoreWpfTests
         /// Check to see if can unhide connector. 'HideConnection' toggles the visibility
         /// of the wire, so calling it twice should unhide the connector.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanUnhideConnector()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -170,7 +170,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Can place WatchNode where specified along a connector
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanPlaceWatchNode()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -192,7 +192,7 @@ namespace DynamoCoreWpfTests
         /// Assert that a watch node is placed on the correct connector,
         /// and that it rewires new wires to the correct startind/ending ports.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void PlaceWatchNodeAndRewireCorrectly()
         {
             Open(@"UI/WatchNodePlacement.dyn");
@@ -244,7 +244,7 @@ namespace DynamoCoreWpfTests
         /// This occurs when a watch node is placed. New connectors are created and the old pin 
         /// locations are used to place new pins where the old ones were.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void PinPlacedOnCorrectWireToWatchNode()
         {
             Open(@"UI/WatchNodePlacement.dyn");
@@ -293,7 +293,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Can undo 'placepin' command.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanUndoPin()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -318,7 +318,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Can undo 'Unpin' command
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanUndoUnpin()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -347,7 +347,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Can undo 'delete pin' command.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanUndoDeletePin()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -376,7 +376,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Can undo 'drag pin'.
         /// </summary>
-        [Test]
+        [TestOnSeparateThread]
         public void CanUndoDragPin()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -431,7 +431,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initialY, connectorPin.CenterY);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void CanUndoPlaceWatchNode()
         {
             Open(@"UI/WatchNodePlacement.dyn");

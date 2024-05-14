@@ -12,7 +12,7 @@ namespace DynamoCoreWpfTests
 {
     public class ConnectorContextMenuTests: DynamoTestUIBase
     {
-        [Test]
+        [TestOnSeparateThread]
         public void ConstructingContextMenuTest()
         {
             Open(@"UI/ConnectorContextMenuTestFile.dyn");
@@ -32,7 +32,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(connectorViewModel.MousePosition, contextMenuViewModel.CurrentPosition);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void SetContextMenuToNullAfterUseTest()
         {
             Open(@"UI/ConnectorContextMenuTestFile.dyn");
@@ -46,7 +46,7 @@ namespace DynamoCoreWpfTests
             //Assert property on ConnectorViewModel is set to null.
             Assert.IsNull(connectorViewModel.ConnectorContextMenuViewModel);
         }
-        [Test]
+        [TestOnSeparateThread]
         public void BreakConnectionFromContextMenuTest()
         {
             Open(@"UI/ConnectorContextMenuTestFile.dyn");
@@ -63,7 +63,7 @@ namespace DynamoCoreWpfTests
             //Assert that the only connector in the model has been destroyed.
             Assert.AreEqual(connectorCount-1, updatedConnectorCount);
         }
-        [Test]
+        [TestOnSeparateThread]
         public void SelectedConnectedFromContextMenuTest()
         {
             Open(@"UI/ConnectorContextMenuTestFile.dyn");
@@ -78,7 +78,7 @@ namespace DynamoCoreWpfTests
             //Assert that the selection of the two adjacent nodes is accurate.
             Assert.AreEqual(DynamoSelection.Instance.Selection.Count, initialSelectedCount + 2);
         }
-        [Test]
+        [TestOnSeparateThread]
         public void HideConnectorFromContextMenuTest()
         {
             Open(@"UI/ConnectorContextMenuTestFile.dyn");
@@ -94,7 +94,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [TestOnSeparateThread]
         public void AreNodeConnectionsInMenu()
         {
             // Mock a WorkspaceView
@@ -107,7 +107,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(contextMenu.Items.Count, 2);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void ShowAllConnectorFromWorkspaceContextMenuTest()
         {
             Open(@"UI/ConnectorShowHideAllWires.dyn");
@@ -134,7 +134,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(4, hiddenConnectors.Count());
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void GoToStartNodeTest()
         {
             Open(@"UI/ConnectorContextMenuTestFile.dyn");
@@ -149,7 +149,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(connectorViewModel.ConnectorModel.Start.Owner.IsSelected, true);
         }
 
-        [Test]
+        [TestOnSeparateThread]
         public void GoToEndNodeTest()
         {
             Open(@"UI/ConnectorContextMenuTestFile.dyn");

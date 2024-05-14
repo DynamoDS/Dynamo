@@ -20,10 +20,40 @@ using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
 using DynamoUtilities;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
+using NUnit.Framework.Internal;
+using NUnit.Framework.Internal.Commands;
 using TestServices;
 
 namespace DynamoCoreWpfTests
 {
+    internal class IsolatedTestCommand(TestCommand innerCommand) : DelegatingTestCommand(innerCommand)
+    {
+        public override TestResult Execute(TestExecutionContext context)
+        {
+            var t = new Thread(() =>
+            {
+                context.CurrentResult = innerCommand.Execute(context);
+                Dispatcher.CurrentDispatcher?.InvokeShutdown();
+            });
+
+            t.SetApartmentState(ApartmentState.STA);
+
+            t.Start();
+            t.Join();
+            return context.CurrentResult;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    internal class TestOnSeparateThreadAttribute : TestAttribute, IWrapSetUpTearDown
+    {
+        public TestCommand Wrap(TestCommand command)
+        {
+            return new IsolatedTestCommand(command);
+        }
+    }
+
     public class DynamoTestUIBase
     {
         protected Preloader preloader;
@@ -49,6 +79,8 @@ namespace DynamoCoreWpfTests
         {
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
             TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
+
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
@@ -87,8 +119,6 @@ namespace DynamoCoreWpfTests
             //create the view
             View = new DynamoView(ViewModel);
             View.Show();
-
-            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
             if (!SkipDispatcherFlush)
             {
