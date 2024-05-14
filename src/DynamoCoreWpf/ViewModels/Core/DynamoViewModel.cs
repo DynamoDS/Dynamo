@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,8 +47,10 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoMLDataPipeline;
+using DynamoServices;
 using DynamoUtilities;
 using ICSharpCode.AvalonEdit;
+using J2N.Text;
 using Newtonsoft.Json;
 using PythonNodeModels;
 using ISelectable = Dynamo.Selection.ISelectable;
@@ -92,6 +95,8 @@ namespace Dynamo.ViewModels
         internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
 
         internal DynamoMLDataPipelineExtension MLDataPipelineExtension { get; set; }
+
+        internal Dictionary<string, NodeSearchElementViewModel> DefaultAutocompleteCandidates;
 
         /// <summary>
         /// Collection of Right SideBar tab items: view extensions and docked windows.
@@ -695,6 +700,28 @@ namespace Dynamo.ViewModels
             return new DynamoViewModel(startConfiguration);
         }
 
+        private void SearchDefaultNodeAutocompleteCandidates()
+        {
+            var tempSearchViewModel = new SearchViewModel(this)
+            {
+                Visible = true
+            };
+            DefaultAutocompleteCandidates = new Dictionary<string, NodeSearchElementViewModel>();
+
+            // TODO: These are basic input types in Dynamo
+            // This should be only served as a temporary default case.
+            var queries = new List<string>() { "String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script" };
+            foreach (var query in queries)
+            {
+                var foundNode = tempSearchViewModel.Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
+                if (foundNode != null)
+                {
+                    DefaultAutocompleteCandidates.Add(foundNode.Name, foundNode);
+                }
+            }
+            tempSearchViewModel.Dispose();
+        }
+
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
             // CurrentDomain_UnhandledException - catches unhandled exceptions that are fatal to the current process. These exceptions cannot be handled and process termination is guaranteed
@@ -734,6 +761,11 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
+            if(!Model.IsServiceMode)
+            {
+                SearchDefaultNodeAutocompleteCandidates();
+            }
+            
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
             workspaces.Add(homespaceViewModel);
             currentWorkspaceViewModel = homespaceViewModel;
@@ -819,10 +851,18 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            // Try to handle the exception so that the host app can continue (in most cases).
-            // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases
-            // we might see 2 CER windows (the extra one from the host app) - CER tool might handle this in the future.
-            e.Handled = true;
+            if (DynamoModel.IsTestMode)
+            {
+                // Do not handle the exception in test mode.
+                // Let the test host handle it.
+            }
+            else
+            {
+                // Try to handle the exception so that the host app can continue (in most cases).
+                // In some cases Dynamo code might still crash after this handler kicks in. In these edge cases
+                // we might see 2 CER windows (the extra one from the host app) - CER tool might handle this in the future.
+                e.Handled = true;
+            }
 
             CrashGracefully(e.Exception);
         }
@@ -835,14 +875,45 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void CrashGracefully(Exception ex, bool fatal = false)
+        // CrashGracefully should only be used in the DynamoViewModel class or within tests.
+        internal void CrashGracefully(Exception ex, bool fatal = false)
         {
             try
             {
+                var exceptionAssembly = ex.TargetSite?.Module?.Assembly;
+                // TargetInvocationException is the exception that is thrown by methods invoked through reflection
+                // The inner exception contains the originating exception.
+                // https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/7.0/reflection-invoke-exceptions
+                if (ex is TargetInvocationException && ex.InnerException != null)
+                {
+                    exceptionAssembly = ex.InnerException?.TargetSite?.Module?.Assembly;
+                }
+                
+                // Do not crash if the exception is coming from a 3d party package; 
+                if (!fatal && exceptionAssembly != null)
+                {
+                    // Check if the exception might be coming from a loaded package assembly.
+                    var faultyPkg = Model.GetPackageManagerExtension()?.PackageLoader?.LocalPackages?.FirstOrDefault(p => exceptionAssembly.Location.StartsWith(p.RootDirectory, StringComparison.OrdinalIgnoreCase));
+                    if (faultyPkg != null)
+                    {
+                        var crashDetails = new CrashErrorReportArgs(ex);
+                        DynamoConsoleLogger.OnLogErrorToDynamoConsole($"Unhandled exception coming from package {faultyPkg.Name} was handled: {crashDetails.Details}");
+                        Analytics.TrackException(ex, false);
+                        return;
+                    }
+                }
+
                 DynamoModel.IsCrashing = true;
                 var crashData = new CrashErrorReportArgs(ex);
-                Model?.Logger?.LogError($"Unhandled exception: {crashData.Details} ");
+                DynamoConsoleLogger.OnLogErrorToDynamoConsole($"Unhandled exception: {crashData.Details} ");
                 Analytics.TrackException(ex, true);
+
+                if (DynamoModel.IsTestMode)
+                {
+                    // Do not show the crash UI during tests.
+                    return;
+                }
+
                 Model?.OnRequestsCrashPrompt(crashData);
 
                 if (fatal)
@@ -1086,7 +1157,9 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
-        private void InitializeAutomationSettings(string commandFilePath)
+        // InitializeAutomationSettings initializes the Dynamo automationSettings object.
+        // This method is meant to be accessed only within this class and within tests.
+        internal void InitializeAutomationSettings(string commandFilePath)
         {
             if (String.IsNullOrEmpty(commandFilePath) || !File.Exists(commandFilePath))
                 commandFilePath = null;
@@ -2899,6 +2972,16 @@ namespace Dynamo.ViewModels
         internal bool CanSelectAll(object parameter)
         {
             return this.CurrentSpaceViewModel.CanSelectAll(null);
+        }
+
+        public void UnpinAllPreviewBubbles(object parameter)
+        {
+            this.CurrentSpaceViewModel.UnpinAllPreviewBubbles(null);
+        }
+
+        internal bool CanUnpinAllPreviewBubbles(object parameter)
+        {
+            return this.CurrentSpaceViewModel.CanUnpinAllPreviewBubbles(null);
         }
 
         public void MakeNewHomeWorkspace(object parameter)

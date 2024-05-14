@@ -993,6 +993,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to default input name, rename me!.
+        /// </summary>
+        public static string InputNodeRenameHint {
+            get {
+                return ResourceManager.GetString("InputNodeRenameHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to variable;argument;parameter.
         /// </summary>
         public static string InputNodeSearchTags {

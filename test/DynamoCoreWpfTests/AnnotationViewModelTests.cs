@@ -705,7 +705,44 @@ namespace DynamoCoreWpfTests
             annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
             Assert.IsNotNull(annotation);
             Assert.AreEqual(1, annotation.Nodes.Count());
+        }
 
+        /// <summary>
+        /// Tests the Undo functionality for group collapse/expand and rename actions
+        /// </summary>
+        [Test]
+        [Category("DynamoUI")]
+        public void UndoGroupCollapseAndRenameShouldRestorePreviousStates()
+        {
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            string newName = "A1B2C3";
+            var workspaceVm = ViewModel.CurrentSpaceViewModel;
+            var groupVm = workspaceVm.Annotations.First();
+            groupVm.IsExpanded = true;
+
+            // Assert that initial conditions are met
+            Assert.IsNotNull(groupVm, "Expected an initial group to be present");
+            Assert.IsTrue(groupVm.IsExpanded, "Group should be expanded");
+            Assert.IsFalse(groupVm.AnnotationText.Equals(newName));
+
+            // Rename and collapse the group
+            groupVm.AnnotationText = newName;
+            groupVm.IsExpanded = false;
+
+            // Assert initial action
+            Assert.IsFalse(groupVm.IsExpanded, "Group should be collapsed");
+            Assert.AreEqual(newName, groupVm.AnnotationText, "Group should be renamed");
+
+            // Undo collapse
+            ViewModel.UndoCommand.Execute(null);
+            Assert.IsTrue(groupVm.IsExpanded, "Group should be expanded after undo");
+            Assert.AreEqual(newName, groupVm.AnnotationText, "Name should remain renamed after undo");
+
+            // Undo rename
+            ViewModel.UndoCommand.Execute(null);
+            Assert.IsTrue(groupVm.IsExpanded, "Group should remain expanded after second undo");
+            Assert.AreNotEqual(newName, groupVm.AnnotationText, "Group name should revert to original");
         }
 
         [Test]

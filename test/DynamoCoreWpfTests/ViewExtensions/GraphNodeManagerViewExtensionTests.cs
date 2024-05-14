@@ -20,6 +20,7 @@ using ProtoCore.Mirror;
 
 namespace DynamoCoreWpfTests
 {
+    [Category("Failure")]
     public class GraphNodeManagerViewExtensionTests : DynamoTestUIBase
     {
         private bool oldEnablePersistance = false;
@@ -103,7 +104,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if the number of nodes displayed in the extension is equal to current number of nodes
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void CorrectNumberNodeItemsTest()
         {
             var extensionManager = View.viewExtensionManager;
@@ -147,7 +148,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// Test if using the IsFrozen filter yields correct results
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void FilterFrozenItemsTest()
         {
             var extensionManager = View.viewExtensionManager;
@@ -193,7 +194,9 @@ namespace DynamoCoreWpfTests
         /// Test if the number of Nodes containing Null or Empty List matches what is shown on the UI
         /// Marked as Failure until we can fix flakyness
         /// </summary>
-        [Test, Category("Failure")]
+        //TODO https://jira.autodesk.com/browse/DYN-6973
+        [Category("Failure")]
+        [Test]
         public void ContainsEmptyListOrNullTest()
         {
             var extensionManager = View.viewExtensionManager;
@@ -205,19 +208,24 @@ namespace DynamoCoreWpfTests
 
             OpenAndRun(@"pkgs\Dynamo Samples\extra\GraphNodeManagerTestGraph_NullsEmptyLists.dyn");
 
-            Utility.DispatcherUtil.DoEvents();
-
-            var view = viewExt.ManagerView;
-
-            var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
-
-            int nullNodesImageCount = GetImageCount(images, "Null");
-            int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
-
             var hwm = this.ViewModel.CurrentSpace;
 
             int nullNodesCount = hwm.Nodes.Count(ContainsAnyNulls);
             int emptyListNodesCount = hwm.Nodes.Count(ContainsAnyEmptyLists);
+
+            var view = viewExt.ManagerView;
+            var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
+
+            Utility.DispatcherUtil.DoEventsLoop(() =>
+            {
+                int nullNodesImageCount = GetImageCount(images, "Null");
+                int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
+
+                return (nullNodesImageCount == nullNodesCount) && (emptyListNodesImageCount == emptyListNodesCount);
+            });
+
+            int nullNodesImageCount = GetImageCount(images, "Null");
+            int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
 
             // Assert
             Assert.AreEqual(emptyListNodesCount, emptyListNodesImageCount);

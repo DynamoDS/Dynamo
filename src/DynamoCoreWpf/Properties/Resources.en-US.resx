@@ -582,6 +582,10 @@ Don't worry, you'll have the option to save your work.</value>
     <value>_Select All</value>
     <comment>Edit menu | Select all nodes</comment>
   </data>
+    <data name="DynamoViewEditMenuUnpinAllPreviewBubbles" xml:space="preserve">
+    <value>_Unpin All Preview Bubbles</value>
+    <comment>Edit menu | Unpin preview bubbles</comment>
+  </data>
   <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
     <value>_Select Neighbors</value>
   </data>
@@ -1350,7 +1354,7 @@ You can always redownload the package.</value>
     <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
   </data>
   <data name="MessagePackageNewerDynamo" xml:space="preserve">
-    <value>The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?</value>
+    <value>This package or one of its dependencies were created for a newer version of Dynamo. It may not work in this version. Do you want to continue?</value>
   </data>
   <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
     <value>You must select at least one custom node.</value>
@@ -3963,10 +3967,10 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Dynamo 1.x file format</value>
   </data>
   <data name="MessagePackageOlderDynamo" xml:space="preserve">
-    <value>The package or one of its dependencies use an older version of {0} than you are currently using. Do you want to continue?</value>
+    <value>This package or one of its dependencies were created for a previous version of Dynamo. It may not work in this version. Do you want to continue?</value>
   </data>
   <data name="PackageUseOlderDynamoMessageBoxTitle" xml:space="preserve">
-    <value>Package may not work in this version of Dynamo {0}!</value>
+    <value>Package may not work in this version of {0}!</value>
   </data>
   <data name="MessagePackOlderDynamoLink" xml:space="preserve">
     <value>#Learn more=https://primer2.dynamobim.org/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8</value>

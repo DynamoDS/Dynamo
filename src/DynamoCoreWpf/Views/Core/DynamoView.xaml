@@ -86,7 +86,9 @@
         <KeyBinding Key="A"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.SelectAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
-
+        <KeyBinding Key="K"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.UnpinAllPreviewBubblesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="D"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -448,6 +450,10 @@
                                   Command="{Binding SelectAllCommand}"
                                   Name="selectAll"
                                   InputGestureText="Ctrl + A" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuUnpinAllPreviewBubbles}"
+                                  Command="{Binding UnpinAllPreviewBubblesCommand}"
+                                  Name="unpinPB"
+                                  InputGestureText="Ctrl + K"/>                        
                         <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeleteSelected}"
                                   Command="{Binding DeleteCommand}"
                                   Name="deleteSelected"

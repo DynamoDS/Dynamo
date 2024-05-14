@@ -885,7 +885,8 @@ namespace Dynamo.ViewModels
             lock (Nodes)
             {
                 nodeViewModel = Nodes.First(x => x.NodeLogic == node);
-                Errors.Remove(nodeViewModel.ErrorBubble);
+                if (nodeViewModel.ErrorBubble != null)
+                    Errors.Remove(nodeViewModel.ErrorBubble);
                 Nodes.Remove(nodeViewModel);
             }
             //unsub the events we attached below in NodeAdded.
@@ -904,8 +905,9 @@ namespace Dynamo.ViewModels
             {
                 Nodes.Add(nodeViewModel);
             }
-            Errors.Add(nodeViewModel.ErrorBubble);
-            
+            if (nodeViewModel.ErrorBubble != null)
+                Errors.Add(nodeViewModel.ErrorBubble);
+
             PostNodeChangeActions();
         }
 
@@ -1718,6 +1720,23 @@ namespace Dynamo.ViewModels
 
                 }
             }
+        }
+
+        public event ViewEventHandler UnpinAllPreviewBubblesTriggered;
+        /// <summary>
+        /// Triggers unpinning of all preview bubbles in the workspace
+        /// </summary>
+        /// <param name="o"></param>
+        internal void UnpinAllPreviewBubbles(object o)
+        {
+            RaisePropertyChanged("UnpinAllPreviewBubbles");
+
+            UnpinAllPreviewBubblesTriggered?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal bool CanUnpinAllPreviewBubbles(object o)
+        {
+            return true;
         }
 
         /// <summary>

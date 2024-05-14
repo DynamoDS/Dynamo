@@ -2026,6 +2026,9 @@ Dynamo.ViewModels.DynamoViewModel.ScaleFactorLog.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAll(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectNeighbors(object parameters) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectNeighborsCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectNeighborsCommand.set -> void
@@ -3040,6 +3043,7 @@ Dynamo.ViewModels.WorkspaceViewModel.SetZoomCommand.get -> Dynamo.UI.Commands.De
 Dynamo.ViewModels.WorkspaceViewModel.ShowAllWiresCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowHideAllGeometryPreviewCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowInCanvasSearchCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.WorkspaceViewModel.UnpinAllPreviewBubblesTriggered -> Dynamo.ViewModels.ViewEventHandler
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.Watch3DFullscreenViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.WorkspaceElements.get -> System.Windows.Data.CompositeCollection
@@ -3053,6 +3057,7 @@ Dynamo.ViewModels.WorkspaceViewModel.Zoom.get -> double
 Dynamo.ViewModels.WorkspaceViewModel.Zoom.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.ZoomChanged -> Dynamo.ViewModels.WorkspaceViewModel.ZoomEventHandler
 Dynamo.ViewModels.WorkspaceViewModel.ZoomEventHandler
+Dynamo.ViewModels.WorkspaceViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.Views.GeometryScalingPopup
 Dynamo.Views.GeometryScalingPopup.GeometryScalingPopup(Dynamo.ViewModels.DynamoViewModel dynViewModel) -> void
 Dynamo.Views.GeometryScalingPopup.InitializeComponent() -> void
@@ -3077,6 +3082,7 @@ Dynamo.Views.WorkspaceView.Dispose() -> void
 Dynamo.Views.WorkspaceView.HideAllPopUp(object sender) -> void
 Dynamo.Views.WorkspaceView.InitializeComponent() -> void
 Dynamo.Views.WorkspaceView.ViewModel.get -> Dynamo.ViewModels.WorkspaceViewModel
+Dynamo.Views.WorkspaceView.vm_UnpinAllPreviewBubblesTriggered(object sender, System.EventArgs e) -> void
 Dynamo.Views.WorkspaceView.WorkspacePropertyEditClick(object sender, System.Windows.RoutedEventArgs routedEventArgs) -> void
 Dynamo.Views.WorkspaceView.WorkspaceView() -> void
 Dynamo.Wpf.AssemblyNodeViewCustomizations
@@ -4523,6 +4529,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuOpenTemplate.get -> str
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuRecentFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSave.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSaveAs.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuUnpinAllPreviewBubbles.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpDictionary.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuDisplayStartPage.get -> string

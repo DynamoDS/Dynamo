@@ -914,4 +914,7 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="LegacyTraceDataWarning" xml:space="preserve">
     <value>This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding data will be saved in the new format the next time you run and save this workspace.</value>
   </data>
+  <data name="InputNodeRenameHint" xml:space="preserve">
+    <value>default input name, rename me!</value>
+  </data>
 </root>

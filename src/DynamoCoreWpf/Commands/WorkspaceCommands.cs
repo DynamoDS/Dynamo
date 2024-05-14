@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
@@ -30,6 +30,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand hideAllPopupCommand;
         private DelegateCommand showAllWiresCommand;
         private DelegateCommand hideAllWiresCommand;
+        private DelegateCommand unpinAllPreviewBubblesCommand;
 
         #endregion
 
@@ -273,6 +274,20 @@ namespace Dynamo.ViewModels
                     hideAllWiresCommand = new DelegateCommand(HideAllWires, CanHideAllWires);
 
                 return hideAllWiresCommand;
+            }
+        }
+
+        /// <summary>
+        /// View Command to hide all currently pinned preview bubbles within the workspace
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand UnpinAllPreviewBubblesCommand
+        {
+            get
+            {
+                if (unpinAllPreviewBubblesCommand == null)
+                    unpinAllPreviewBubblesCommand = new DelegateCommand(UnpinAllPreviewBubbles, CanUnpinAllPreviewBubbles);
+                return unpinAllPreviewBubblesCommand;
             }
         }
         #endregion
