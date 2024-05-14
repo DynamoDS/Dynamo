@@ -35,8 +35,6 @@ namespace Dynamo.UI.Views
         private static readonly string fontUrl = $"http://{virtualFolderName}/ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderPath = Path.Combine(Path.GetTempPath(), virtualFolderName);
 
-        private string fontFilePath;
-
         private StartPageViewModel startPage;
 
         /// <summary>
@@ -60,6 +58,9 @@ namespace Dynamo.UI.Views
         /// A helper tool to let us test flows without relying on side-effects
         /// </summary>
         internal static Action<string> TestHook { get; set; }
+
+        internal AsyncMethodState initState = AsyncMethodState.NotStarted;
+        private DirectoryInfo userDataFolder;
 
         public HomePage()
         {   
@@ -146,14 +147,17 @@ namespace Dynamo.UI.Views
             PathHelper.CreateFolderIfNotExist(userDataDir.ToString());
             var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
+            userDataFolder = CreateUniqueUserDataFolder(webBrowserUserDataFolder.FullName);
+
             dynWebView.CreationProperties = new CoreWebView2CreationProperties
             {
-                UserDataFolder = webBrowserUserDataFolder.FullName
+                UserDataFolder = userDataFolder.FullName
             };
 
             //ContentRendered ensures that the webview2 component is visible.
             try
             {
+                initState = AsyncMethodState.Started;
                 await dynWebView.Initialize();
 
                 // Set WebView2 settings
@@ -197,6 +201,8 @@ namespace Dynamo.UI.Views
                                         RequestShowSampleFilesInFolder,
                                         RequestShowBackupFilesInFolder,
                                         RequestShowTemplate));
+
+                initState = AsyncMethodState.Done;
             }
             catch (ObjectDisposedException ex)
             {
@@ -478,17 +484,49 @@ namespace Dynamo.UI.Views
 
         #endregion
 
+        #region Helper Functions
+        /// <summary>
+        /// Create unique subfolder to allocate webView2 resources
+        /// </summary>
+        /// <param name="baseDir"></param>
+        /// <returns></returns>
+        private DirectoryInfo CreateUniqueUserDataFolder(string baseDir)
+        {
+            Directory.CreateDirectory(baseDir);
+
+            var uniqueSubfolderName = Guid.NewGuid().ToString();
+            var uniquePath = Path.Combine(baseDir, uniqueSubfolderName);
+            Directory.CreateDirectory(uniquePath);
+
+            return new DirectoryInfo(uniquePath);
+        }
+        #endregion
+
         #region Dispose
         public void Dispose()
         {
             DataContextChanged -= OnDataContextChanged;
-            if(startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
 
-            this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
-
-            if (File.Exists(fontFilePath))
+            if (startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            if (this.dynWebView != null)
             {
-                File.Delete(fontFilePath);
+                if (userDataFolder != null && Directory.Exists(userDataFolder.FullName))
+                {
+                    // Try shutting down the browser with Dispose, and wait for process to exit
+                    try
+                    {
+                        var webViewProcessId = Convert.ToInt32(this.dynWebView.CoreWebView2.BrowserProcessId);
+                        var webViewProcess = Process.GetProcessById(webViewProcessId);
+
+                        this.dynWebView.Dispose();
+                        webViewProcess.WaitForExit(3000);
+
+                        Directory.Delete(userDataFolder.FullName, true);
+                    }
+                    catch {
+                    }
+                }
+
             }
         }
         #endregion

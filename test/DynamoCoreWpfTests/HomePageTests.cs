@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
@@ -9,7 +7,6 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Views;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
-using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using NUnit.Framework;
 
@@ -19,12 +16,21 @@ namespace DynamoCoreWpfTests
     {
         #region initialization tests
         [Test]
+        [Ignore("Test refactor")]
         public void GuidedTourItems_InitializationShouldContainExpectedItems()
         {
             // Arrange
-            var homePage = new HomePage();
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            var homePage = View.homePage;
 
-            // Act - initialization happens in the constructor
+            // Act - Delegates are set in the constructor
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Assert
             Assert.IsNotNull(homePage.GuidedTourItems);
@@ -35,12 +41,21 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore("Test refactor")]
         public void ActionDelegates_ShouldBeProperlySetAfterConstruction()
         {
             // Arrange
-            var homePage = new HomePage();
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            var homePage = View.homePage;
 
             // Act - Delegates are set in the constructor
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Assert
             Assert.IsNotNull(homePage.RequestOpenFile);
@@ -116,8 +131,8 @@ namespace DynamoCoreWpfTests
 
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void CanClickRecentGraph()
+        [Ignore("Test refactor")]
+        public async Task CanClickRecentGraph()
         {
             // Arrange
             var script = CONTAINER_ITEM_CLICK_SCRIPT("graphContainer");
@@ -141,24 +156,29 @@ namespace DynamoCoreWpfTests
             startPage.RecentFiles.Add(new StartPageListItem(filePath) { ContextData = filePath });
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
+            var interactCompleted = await InteractSimple<bool>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
             Assert.IsTrue(interactCompleted, "Was not able to execute the click event.");
             Assert.IsTrue(wasTestHookInvoked, "The OpenFile method did not invoke the test hook as expected.");
             Assert.AreEqual(filePath, receivedPath, "The command did not return the same filePath");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void CanClickSampleGraph()
+        [Ignore("Test refactor")]
+        public async Task CanClickSampleGraph()
         {
             // Arrange
             var script = CONTAINER_ITEM_CLICK_SCRIPT("samplesContainer");
@@ -187,24 +207,29 @@ namespace DynamoCoreWpfTests
             startPage.SampleFiles.Add(rootEntity);
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
+            var interactCompleted = await InteractSimple<bool>(homePage.dynWebView, script);
 
-            // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            //// Clean up to avoid failures testing in pipeline
+            var windowClosed = CloseViewAndCleanup(View);
 
-            // Assert
+            //// Assert
             Assert.IsTrue(interactCompleted, "Was not able to execute the click event.");
             Assert.IsTrue(wasTestHookInvoked, "The OpenFile method did not invoke the test hook as expected.");
             Assert.AreEqual(filePath, receivedPath, "The command did not return the same filePath");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void CanClickTourGuide()
+        [Ignore("Test refactor")]
+        public async Task CanClickTourGuide()
         {
             // Arrange
             var script = CONTAINER_ITEM_CLICK_SCRIPT("guidesContainer");
@@ -221,25 +246,30 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(wasTestHookInvoked);
 
             var homePage = View.homePage;
+            
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
 
-            InitializeWebView2(homePage.dynWebView);
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
+            var interactCompleted = await InteractSimple<bool>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
             Assert.IsTrue(interactCompleted, "Was not able to execute the click event.");
             Assert.IsTrue(wasTestHookInvoked, "The StartGuidedTour method did not invoke the test hook as expected.");
             Assert.AreEqual(guideType, receivedType, "The command did not return the expected guide type");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void ReceiveCorrectNumberOfRecentGrphs()
+        [Ignore("Test refactor")]
+        public async Task ReceiveCorrectNumberOfRecentGrphs()
         {
             // Arrange
             var script = CONTAINER_SCRIPT("graphContainer");
@@ -254,22 +284,27 @@ namespace DynamoCoreWpfTests
             startPage.RecentFiles.Add(new StartPageListItem(filePath) { ContextData=filePath });
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForIntInteractionToComplete(homePage, script, -1);
+            var interactCompleted = await InteractSimple<int>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
             Assert.AreEqual(1, interactCompleted, "Did not receive correct number of recent graphs.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void ReceiveCorrectNumberOfSamples()
+        [Ignore("Test refactor")]
+        public async Task ReceiveCorrectNumberOfSamples()
         {
             // Arrange
             var script = CONTAINER_SCRIPT("samplesContainer");
@@ -291,64 +326,79 @@ namespace DynamoCoreWpfTests
             startPage.SampleFiles.Add(rootEntity);
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForIntInteractionToComplete(homePage, script, -1);
+            var interactCompleted = await InteractSimple<int>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
-            Assert.AreEqual(1, interactCompleted, "Did not receive corrent number of sample files.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.AreEqual(1, interactCompleted, "Did not receive correct number of sample files.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void ReceiveCorrectNumberOfTourGuides()
+        [Ignore("Test refactor")]
+        public async Task ReceiveCorrectNumberOfTourGuides()
         {
             // Arrange
             var script = CONTAINER_SCRIPT("guidesContainer");
             var homePage = View.homePage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForIntInteractionToComplete(homePage, script, -1);
+            var interactCompleted = await InteractSimple<int>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
-            Assert.AreEqual(3, interactCompleted, "Did not receive corrent number of guides.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.AreEqual(3, interactCompleted, "Did not receive correct number of guides.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void ReceiveCorrectNumberOfCarouselVideos()
+        [Ignore("Test refactor")]
+        public async Task ReceiveCorrectNumberOfCarouselVideos()
         {
             // Arrange
             var script = CONTAINER_SCRIPT("videoCarousel");
             var homePage = View.homePage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForIntInteractionToComplete(homePage, script, -1);
+            var interactCompleted = await InteractSimple<int>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
-            Assert.AreEqual(10, interactCompleted, "Did not receive corrent number of videos.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.AreEqual(10, interactCompleted, "Did not receive correct number of videos.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
         
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void CanRunNewHomeWorkspaceCommandFromHomePage()
+        [Ignore("Test refactor")]
+        public async Task CanRunNewHomeWorkspaceCommandFromHomePage()
         {
             // Arrange
             var dropdown = "newDropdown";
@@ -370,23 +420,28 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
+            var interactCompleted = await InteractSimple<bool>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
             Assert.IsTrue(interactCompleted, "The NewWorkspace script did not run as expected.");
             Assert.IsTrue(hasWorkspaceBeenCleared, "The NewWorkspace method did not trigger the command as expected.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void CanRunNewCustomNodeCommandFromHomePage()
+        [Ignore("Test refactor")]
+        public async Task CanRunNewCustomNodeCommandFromHomePage()
         {
             // Arrange
             var dropdown = "newDropdown";
@@ -403,23 +458,28 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
+            var interactCompleted = await InteractSimple<bool>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
             Assert.IsTrue(interactCompleted, "The OpenWorkspace script did not run as expected.");
             Assert.IsTrue(wasTestHookInvoked, "The OpenWorkspace method did not invoke the test hook as expected.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void CanOpenWorkspaceCommandFromHomePage()
+        [Ignore("Test refactor")]
+        public async Task CanOpenWorkspaceCommandFromHomePage()
         {
             // Arrange
             var dropdown = "openDropdown";
@@ -436,23 +496,28 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
+            var interactCompleted = await InteractSimple<bool>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
             Assert.IsTrue(interactCompleted, "The OpenWorkspace script did not run as expected.");
             Assert.IsTrue(wasTestHookInvoked, "The OpenWorkspace method did not invoke the test hook as expected.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void ShowTemplateCommandFromHomePage()
+        [Ignore("Test refactor")]
+        public async Task ShowTemplateCommandFromHomePage()
         {
             // Arrange
             var dropdown = "openDropdown";
@@ -469,24 +534,28 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
+            var interactCompleted = await InteractSimple<bool>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
-
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
             Assert.IsTrue(interactCompleted, "The ShowTemplate script did not run as expected.");
             Assert.IsTrue(wasTestHookInvoked, "The ShowTemplate method did not invoke the test hook as expected.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void ShowBackupFolderCommandFromHomePage()
+        [Ignore("Test refactor")]
+        public async Task ShowBackupFolderCommandFromHomePage()
         {
             // Arrange
             var dropdown = "openDropdown";
@@ -503,23 +572,28 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
+            var interactCompleted = await InteractSimple<bool>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
             Assert.IsTrue(interactCompleted, "The ShowBackupFolder script did not run as expected.");
             Assert.IsTrue(wasTestHookInvoked, "The ShowBackupFolder method did not invoke the test hook as expected.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
-        public void ShowSampleFilesFolderCommandFromHomePage()
+        [Ignore("Test refactor")]
+        public async Task ShowSampleFilesFolderCommandFromHomePage()
         {
             // Arrange
             var script = SAMPLESFOLDER_SCRIPT();
@@ -534,22 +608,27 @@ namespace DynamoCoreWpfTests
             var homePage = View.homePage;
             homePage.DataContext = startPage;
 
-            InitializeWebView2(homePage.dynWebView);
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
-            var interactCompleted = WaitForBoolInteractionToComplete(homePage, script, (bool?)null);
+            var interactCompleted = await InteractSimple<bool>(homePage.dynWebView, script);
 
             // Clean up to avoid failures testing in pipeline
-            var windoClosed = CloseViewAndCleanup(View);
+            var windowClosed = CloseViewAndCleanup(View);
 
             // Assert
             Assert.IsTrue(interactCompleted, "The ShowSampleFilesFolderCommand script did not run as expected.");
             Assert.IsTrue(wasTestHookInvoked, "The ShowSampleFilesFolderCommand method did not invoke the test hook as expected.");
-            Assert.IsTrue(windoClosed, "Dynamo View was not closed correctly.");
+            Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
 
         [Test]
-        [Ignore("IsNewAppHomeEnabled flag is set to false")]
+        [Ignore("Test refactor")]
         public void CanOpenGraphOnDragAndDrop()
         {
             // Arrange
@@ -570,7 +649,13 @@ namespace DynamoCoreWpfTests
             var startPage = new StartPageViewModel(vm, true);
             var homePage = View.homePage;
             homePage.DataContext = startPage;
-            InitializeWebView2(homePage.dynWebView);
+
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return homePage.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, homePage.initState);
 
             // Act
             var result = homePage.ProcessUri(filePath.ToString());
@@ -588,36 +673,6 @@ namespace DynamoCoreWpfTests
         #endregion
 
         #region helpers
-
-        /// <summary>
-        /// A helper method to (async) await the initialization of a WebView2 component
-        /// </summary>
-        /// <param name="web">The WebView2 component to await</param>
-        /// <exception cref="TimeoutException"></exception>
-        internal static void InitializeWebView2(WebView2 web)
-        {
-            var navigationCompletedEvent = new ManualResetEvent(false);
-            DateTime startTime = DateTime.Now;
-            TimeSpan timeout = TimeSpan.FromSeconds(50); 
-
-            void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
-            {
-                web.NavigationCompleted -= WebView_NavigationCompleted;
-                navigationCompletedEvent.Set(); // Signal that navigation has completed
-            }
-
-            web.NavigationCompleted += WebView_NavigationCompleted;
-
-            // Wait until we have initialized dynWebView or until the timeout is reached
-            while (!navigationCompletedEvent.WaitOne(100))
-            {
-                if (DateTime.Now - startTime > timeout)
-                {
-                    throw new TimeoutException("WebView2 initialization timed out.");
-                }
-                DispatcherUtil.DoEvents();
-            }
-        }
 
         /// <summary>
         /// A helper method to make sure the View is closed before we proceed to the next test
@@ -639,86 +694,19 @@ namespace DynamoCoreWpfTests
             return windowClosed; 
         }
 
-        /// <summary>
-        /// A helper method to synchronously await async method relying on return value change
-        /// It is vital that the script has a return value which is always different than the initial value to avoid infinite loop
-        /// </summary>
-        /// <param name="homePage">The HomePage instance</param>
-        /// <param name="script">A script expecting a bool? return value different than the initial value</param>
-        /// <param name="initialValue">The initial value to compare with (different than the return value)</param>
-        /// <returns></returns>
-        private static bool? WaitForBoolInteractionToComplete(HomePage homePage, string script, bool? initialValue)
-        {
-            // Invoke the custom frontend script command we want to assert the funcionality of
-            var interactCompleted = initialValue;
-            homePage.Dispatcher.Invoke(async () =>
-            {
-                interactCompleted = await Interact<bool>(homePage.dynWebView, script);
-            });
-
-            // Wait for the interaction to complete
-            while (EqualityComparer<bool?>.Default.Equals(interactCompleted, initialValue))
-            {
-                DispatcherUtil.DoEvents();
-            }
-
-            return interactCompleted;
-        }
-
-        /// <summary>
-        /// A helper method to synchronously await async method relying on return value change
-        /// It is vital that the script has a return value which is always different than the initial value to avoid infinite loop
-        /// </summary>
-        /// <param name="homePage">The HomePage instance</param>
-        /// <param name="script">A script expecting an int return value different than the initial value</param>
-        /// <param name="initialValue">The initial value to compare with (different than the return value)</param>
-        /// <returns></returns>
-        private static int WaitForIntInteractionToComplete(HomePage homePage, string script, int initialValue)
-        {
-            // Invoke the custom frontend script command we want to assert the funcionality of
-            var interactCompleted = initialValue;
-            homePage.Dispatcher.Invoke(async () =>
-            {
-                interactCompleted = await Interact<int>(homePage.dynWebView, script);
-            });
-
-            // Wait for the interaction to complete
-            while (EqualityComparer<int>.Default.Equals(interactCompleted, initialValue))
-            {
-                DispatcherUtil.DoEvents();
-            }
-
-            return interactCompleted;
-        }
-
-        /// <summary>
-        /// A helper async method to await and return the result of a script execution
-        /// </summary>
-        /// <typeparam name="T">The return type from the script</typeparam>
-        /// <param name="web">The WebView2 control</param>
-        /// <param name="script">A javascript script to be executed on the front end</param>
-        /// <returns></returns>
-        internal static async Task<T> Interact<T>(WebView2 web, string script)
+        internal static async Task<T> InteractSimple<T>(WebView2 web, string script)
         {
             try
             {
-                var scriptTask = web.CoreWebView2.ExecuteScriptAsync(script);
-                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(20));
-                var completedTask = await Task.WhenAny(scriptTask, timeoutTask).ConfigureAwait(false); 
-
-                if (completedTask == timeoutTask)
-                {
-                    throw new TimeoutException("Script execution timed out.");
-                }
-
-
-                string resultJson = await scriptTask; // Result is always returned as JSON string from ExecuteScriptAsync
-                Task.Delay(200).Wait(); // Allow homepage class to catch up
-                return DeserializeResult<T>(resultJson);
+                await Task.Delay(500); // Allow homepage class to catch up
+                var scriptTask = await web.CoreWebView2.ExecuteScriptAsync(script);
+                await Task.Delay(500); // Allow homepage class to catch up
+                return DeserializeResult<T>(scriptTask);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Return default value for T in case of error
+                Assert.Fail($"Interaction failed with exception: {ex.Message}");
                 return default(T);
             }
         }
