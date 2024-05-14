@@ -12,11 +12,11 @@
             Built targeting linux. </description>
         <copyright>Copyright Autodesk 2023</copyright>
  <dependencies>
-            <group targetFramework="net6.0">
+            <group targetFramework="$TargetFramework$">
             </group>
         </dependencies>
     </metadata>
     <files>
-        <file src="**" target="lib\net6.0\" exclude="en-US\fallback_docs\*"/>
+        <file src="**" target="lib\$TargetFramework$\" exclude="en-US\fallback_docs\*"/>
     </files>
 </package>
