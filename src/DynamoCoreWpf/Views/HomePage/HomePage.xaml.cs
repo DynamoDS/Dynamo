@@ -252,6 +252,10 @@ namespace Dynamo.UI.Views
             var recentFiles = startPage.RecentFiles;
             if (recentFiles == null || !recentFiles.Any()) { return; }
 
+            // Subscribe to the DynamoViewModel refresh file changed event in order to refresh the Recent File metadata
+            // There is no way to track if the metadata has changed specifically, so we refresh in any change to the recent files 
+            startPage.DynamoViewModel.RecentFiles.CollectionChanged += RecentFiles_CollectionChanged;
+
             LoadGraphs(recentFiles);
                 
             var userLocale = CultureInfo.CurrentCulture.Name;
@@ -260,6 +264,11 @@ namespace Dynamo.UI.Views
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");
             }
+        }
+
+        private void RecentFiles_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            LoadGraphs(startPage.RecentFiles);  
         }
 
         #region FrontEnd Initialization Calls
@@ -482,7 +491,11 @@ namespace Dynamo.UI.Views
         public void Dispose()
         {
             DataContextChanged -= OnDataContextChanged;
-            if(startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            if (startPage != null)
+            {
+                startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+                startPage.DynamoViewModel.RecentFiles.CollectionChanged -= RecentFiles_CollectionChanged;
+            }
 
             this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
 
