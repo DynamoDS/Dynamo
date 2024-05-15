@@ -53,6 +53,7 @@ namespace Dynamo.UI.Views
         internal Action RequestShowSampleFilesInFolder;
         internal Action RequestShowBackupFilesInFolder;
         internal Action RequestShowTemplate;
+        internal Action<string> RequestSaveSettings;
 
         internal List<GuidedTourItem> GuidedTourItems;
 
@@ -83,6 +84,7 @@ namespace Dynamo.UI.Views
             RequestShowBackupFilesInFolder = ShowBackupFilesInFolder;
             RequestShowTemplate = ShowTemplate;
             RequestApplicationLoaded = ApplicationLoaded;
+            RequestSaveSettings = SaveSettings;
 
             DataContextChanged += OnDataContextChanged;
 
@@ -196,7 +198,8 @@ namespace Dynamo.UI.Views
                                         RequestShowGuidedTour,
                                         RequestShowSampleFilesInFolder,
                                         RequestShowBackupFilesInFolder,
-                                        RequestShowTemplate));
+                                        RequestShowTemplate,
+                                        RequestSaveSettings));
             }
             catch (ObjectDisposedException ex)
             {
@@ -241,29 +244,14 @@ namespace Dynamo.UI.Views
             return false;
         }
 
-        internal async void LoadingDone()   
+        internal void LoadingDone()   
         {
-            SendGuidesData();
-
             if (startPage == null) { return; }
 
+            SendGuidesData();
             SendSamplesData();
-
-            var recentFiles = startPage.RecentFiles;
-            if (recentFiles == null || !recentFiles.Any()) { return; }
-
-            // Subscribe to the DynamoViewModel refresh file changed event in order to refresh the Recent File metadata
-            // There is no way to track if the metadata has changed specifically, so we refresh in any change to the recent files 
-            startPage.DynamoViewModel.RecentFiles.CollectionChanged += RecentFiles_CollectionChanged;
-
-            LoadGraphs(recentFiles);
-                
-            var userLocale = CultureInfo.CurrentCulture.Name;
-                
-            if (dynWebView?.CoreWebView2 != null)
-            {
-                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");
-            }
+            SendRecentGraphsData();
+            SetLocale();
         }
 
         private void RecentFiles_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -301,6 +289,37 @@ namespace Dynamo.UI.Views
             }
         }
 
+        private async void SendRecentGraphsData()
+        {
+            // Send user preferences
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                if (startPage.DynamoViewModel.PreferenceSettings.HomePageSettings != null)
+                {
+                    var settingsJson = Newtonsoft.Json.JsonConvert.SerializeObject(startPage.DynamoViewModel.PreferenceSettings.HomePageSettings);
+                    settingsJson = System.Web.HttpUtility.JavaScriptStringEncode(settingsJson);
+
+                    await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setHomePageSettings('{settingsJson}');");
+                }
+            }
+
+            // Load recent files
+            var recentFiles = startPage.RecentFiles;
+            if (recentFiles != null && recentFiles.Any())
+            {
+                LoadGraphs(recentFiles);
+            }
+        }
+
+        private async void SetLocale()
+        {
+            var userLocale = CultureInfo.CurrentCulture.Name;
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setLocale('{userLocale}');");
+            }
+        }
 
         /// <summary>
         /// Sends guided tour data to react app
@@ -414,6 +433,34 @@ namespace Dynamo.UI.Views
             ShowGuidedTour(path);
         }
 
+        internal void SaveSettings(string settingsJson)
+        {
+            if (!string.IsNullOrEmpty(settingsJson) && this.startPage != null)
+            {
+                var settingsDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(settingsJson);
+
+                // If the HomePageSettings have not been previously created, initialize it now
+                if (startPage.DynamoViewModel.PreferenceSettings.HomePageSettings == null)
+                {
+                    startPage.DynamoViewModel.PreferenceSettings.HomePageSettings = new Dictionary<string, object>();
+                }    
+
+                // Change existing values, or add new ones
+                foreach (var setting in settingsDict)
+                {
+                    if (startPage.DynamoViewModel.PreferenceSettings.HomePageSettings.ContainsKey(setting.Key)
+                        && startPage.DynamoViewModel.PreferenceSettings.HomePageSettings[setting.Key] != setting.Value)
+                    {
+                        startPage.DynamoViewModel.PreferenceSettings.HomePageSettings[setting.Key] = setting.Value;
+                    }
+                    else
+                    {
+                        startPage.DynamoViewModel.PreferenceSettings.HomePageSettings.Add(setting.Key, setting.Value);
+                    }
+                }
+            }
+        }
+            
         internal void NewWorkspace()
         {
             this.startPage?.DynamoViewModel?.NewHomeWorkspaceCommand.Execute(null);
@@ -528,6 +575,7 @@ namespace Dynamo.UI.Views
         readonly Action RequestShowSampleFilesInFolder;
         readonly Action RequestShowBackupFilesInFolder;
         readonly Action RequestShowTemplate;
+        readonly Action<string> RequestSaveSettings;
 
         public ScriptHomeObject(Action<string> requestOpenFile,
             Action requestNewWorkspace,
@@ -537,7 +585,8 @@ namespace Dynamo.UI.Views
             Action<string> requestShowGuidedTour,
             Action requestShowSampleFilesInFolder,
             Action requestShowBackupFilesInFolder,
-            Action requestShowTemplate)
+            Action requestShowTemplate,
+            Action<string> requestSaveSettings)
         {
             RequestOpenFile = requestOpenFile;
             RequestNewWorkspace = requestNewWorkspace;
@@ -548,7 +597,7 @@ namespace Dynamo.UI.Views
             RequestShowSampleFilesInFolder = requestShowSampleFilesInFolder;
             RequestShowBackupFilesInFolder = requestShowBackupFilesInFolder;
             RequestShowTemplate = requestShowTemplate;
-
+            RequestSaveSettings = requestSaveSettings;
         }
         [DynamoJSInvokable]
         public void OpenFile(string path)
@@ -596,7 +645,11 @@ namespace Dynamo.UI.Views
         {
             RequestApplicationLoaded();
         }
-
+        [DynamoJSInvokable]
+        public void SaveSettings(string settings)
+        {
+            RequestSaveSettings(settings);
+        }
     }
 
     public enum GuidedTourType

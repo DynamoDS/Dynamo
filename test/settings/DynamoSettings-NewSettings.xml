@@ -32,6 +32,7 @@
   <WindowW>1936</WindowW>
   <WindowH>1056</WindowH>
   <UseHardwareAcceleration>false</UseHardwareAcceleration>
+  <HomePageSettingsSerialized>{"recentPageViewMode":"grid","samplesViewMode":"list"}</HomePageSettingsSerialized>
   <NumberFormat>f4</NumberFormat>
   <MaxNumRecentFiles>12</MaxNumRecentFiles>
   <RecentFiles>

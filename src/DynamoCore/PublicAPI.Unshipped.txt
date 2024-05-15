@@ -1,4 +1,4 @@
-﻿abstract Dynamo.Extensions.LinterExtensionBase.Name.get -> string
+abstract Dynamo.Extensions.LinterExtensionBase.Name.get -> string
 abstract Dynamo.Extensions.LinterExtensionBase.Shutdown() -> void
 abstract Dynamo.Extensions.LinterExtensionBase.UniqueId.get -> string
 abstract Dynamo.Graph.ModelBase.DeserializeCore(System.Xml.XmlElement nodeElement, Dynamo.Graph.SaveContext context) -> void
@@ -171,6 +171,8 @@ Dynamo.Configuration.PreferenceSettings.HideAutocompleteMethodOptions.get -> boo
 Dynamo.Configuration.PreferenceSettings.HideAutocompleteMethodOptions.set -> void
 Dynamo.Configuration.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel.get -> bool
 Dynamo.Configuration.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel.set -> void
+Dynamo.Configuration.PreferenceSettings.HomePageSettingsSerialized.get -> string
+Dynamo.Configuration.PreferenceSettings.HomePageSettingsSerialized.set -> void
 Dynamo.Configuration.PreferenceSettings.IronPythonResolveTargetVersion.get -> string
 Dynamo.Configuration.PreferenceSettings.IronPythonResolveTargetVersion.set -> void
 Dynamo.Configuration.PreferenceSettings.IsADPAnalyticsReportingApproved.get -> bool

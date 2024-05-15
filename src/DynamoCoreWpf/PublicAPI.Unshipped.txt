@@ -1576,7 +1576,8 @@ Dynamo.UI.Views.ScriptHomeObject.NewCustomNodeWorkspace() -> void
 Dynamo.UI.Views.ScriptHomeObject.NewWorkspace() -> void
 Dynamo.UI.Views.ScriptHomeObject.OpenFile(string path) -> void
 Dynamo.UI.Views.ScriptHomeObject.OpenWorkspace() -> void
-Dynamo.UI.Views.ScriptHomeObject.ScriptHomeObject(System.Action<string> requestOpenFile, System.Action requestNewWorkspace, System.Action requestOpenWorkspace, System.Action requestNewCustomNodeWorkspace, System.Action requestApplicationLoaded, System.Action<string> requestShowGuidedTour, System.Action requestShowSampleFilesInFolder, System.Action requestShowBackupFilesInFolder, System.Action requestShowTemplate) -> void
+Dynamo.UI.Views.ScriptHomeObject.SaveSettings(string settings) -> void
+Dynamo.UI.Views.ScriptHomeObject.ScriptHomeObject(System.Action<string> requestOpenFile, System.Action requestNewWorkspace, System.Action requestOpenWorkspace, System.Action requestNewCustomNodeWorkspace, System.Action requestApplicationLoaded, System.Action<string> requestShowGuidedTour, System.Action requestShowSampleFilesInFolder, System.Action requestShowBackupFilesInFolder, System.Action requestShowTemplate, System.Action<string> requestSaveSettings) -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowBackupFilesInFolder() -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowSampleFilesInFolder() -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowTempalte() -> void
