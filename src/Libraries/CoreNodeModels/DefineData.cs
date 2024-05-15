@@ -49,7 +49,7 @@ namespace CoreNodeModels
         [JsonProperty]
         public bool IsAutoMode
         {
-            get { return isAutoMode; }
+            get => isAutoMode;
             set
             {
                 isAutoMode = value;
@@ -65,7 +65,7 @@ namespace CoreNodeModels
         [JsonProperty]
         public bool IsList
         {
-            get { return isList; }
+            get => isList;
             set
             {
                 isList = value;
@@ -80,8 +80,8 @@ namespace CoreNodeModels
         ///
         [JsonProperty]
         public string DisplayValue
-        {   
-            get { return displayValue; }
+        {
+            get => displayValue;
             set
             {
                 if (displayValue != value)
@@ -94,10 +94,7 @@ namespace CoreNodeModels
 
 
         [JsonIgnore]
-        public override bool IsInputNode
-        {
-            get { return true; }
-        }
+        public override bool IsInputNode => true;
 
         [JsonIgnore]
         public string PlayerValue
@@ -142,7 +139,6 @@ namespace CoreNodeModels
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-       
         }
 
         protected override void OnBuilt()
@@ -170,7 +166,7 @@ namespace CoreNodeModels
             // the expected datatype
             // if the input is an ArrayList or not
             var function = new Func<object, string, bool, bool, string, Dictionary<string, object>>(IsSupportedDataNodeType);
-            var funtionInputs = new List<AssociativeNode> {
+            var functionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
                 AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
                 AstFactory.BuildBooleanNode(IsList),
@@ -178,45 +174,44 @@ namespace CoreNodeModels
                 AstFactory.BuildStringNode(PlayerValue)
             };
 
-            var functionCall = AstFactory.BuildFunctionCall(function, funtionInputs);
+            var functionCall = AstFactory.BuildFunctionCall(function, functionInputs);
             var functionCallIdentifier = AstFactory.BuildIdentifier(GUID + "_func");
 
             resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier, functionCall));
 
             //Next add the first key value pair to the output port
-            var getFirstKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
-                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode(">") });
+            var getFirstKey = AstFactory.BuildFunctionCall(
+                BuiltinDictionaryTypeName,
+                BuiltinDictionaryGet,
+                [functionCallIdentifier, AstFactory.BuildStringNode(">")]);
 
             resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), getFirstKey));
 
             //Second get the key value pair to pass to the databridge callback
-            var getSecondKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
-                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode("Validation") });
+            var getSecondKey = AstFactory.BuildFunctionCall(
+                BuiltinDictionaryTypeName,
+                BuiltinDictionaryGet,
+                [functionCallIdentifier, AstFactory.BuildStringNode("Validation")]);
 
             resultAst.Add(AstFactory.BuildAssignment(
-                    AstFactory.BuildIdentifier(GUID + "_db"),
-                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), getSecondKey)));
+                AstFactory.BuildIdentifier(GUID + "_db"),
+                DataBridge.GenerateBridgeDataAst(GUID.ToString(), getSecondKey)));
 
             return resultAst;
         }
 
 
-        /// <summary>
-        /// Not sure at the moment how relevant is the databridge for this node type 
-        /// </summary>
-        /// <param name="data"></param>
         private void DataBridgeCallback(object data)
         {
-            //Todo If the playerValue is not empty string then we can chanage the UI to reflect the value is coming from the player
+            //Todo If the playerValue is not empty string then we can change the UI to reflect the value is coming from the player
             //Todo if the function call throws we don't get back to DatabridgeCallback.  Not sure if we need to handle this case
 
             //Now we reset this value to empty string so that the next time a value is set from upstream nodes we can know that it is not coming from the player
             playerValue = "";
 
-            // If data is null
             if (data == null)
             {
-                if(IsAutoMode)
+                if (IsAutoMode)
                 {
                     DisplayValue = Properties.Resources.DefineDataDisplayValueMessage;
                 }
@@ -228,26 +223,26 @@ namespace CoreNodeModels
             }
 
             // If data is not null
-            (bool IsValid, bool UpdateList, DataNodeDynamoType InputType) resultData = (ValueTuple<bool, bool, DataNodeDynamoType>)data;
+            (bool IsValid, bool UpdateList, DataNodeDynamoType InputType) = (ValueTuple<bool, bool, DataNodeDynamoType>)data;
 
             if (IsAutoMode)
             {
-                if (resultData.UpdateList)
+                if (UpdateList)
                 {
                     IsList = !IsList;
                 }
 
-                if (resultData.InputType != null)
+                if (InputType != null)
                 {
-                    if (!resultData.IsValid)
+                    if (!IsValid)
                     {
                         // Assign to the correct value, if the object was of supported type
-                        var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
+                        var index = Items.IndexOf(Items.First(i => i.Name.Equals(InputType.Name)));
                         SelectedIndex = index;
                     }
-                    if (!DisplayValue.Equals(resultData.InputType.Name))
+                    if (!DisplayValue.Equals(InputType.Name))
                     {
-                        DisplayValue = resultData.InputType.Name;
+                        DisplayValue = InputType.Name;
                     }
                 }
             }
@@ -278,7 +273,7 @@ namespace CoreNodeModels
         [OnSerializing]
         private void OnSerializing(StreamingContext context)
         {
-            serializedItems = Items.ToList();
+            serializedItems = [.. Items];
         }
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)

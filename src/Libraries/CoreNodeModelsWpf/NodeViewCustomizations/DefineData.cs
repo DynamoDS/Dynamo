@@ -17,7 +17,7 @@ namespace CoreNodeModelsWpf.Nodes
     /// <summary>
     /// View customizer for DefineData node model.
     /// </summary>
-    public class DefineDataNodeViewCustomization : DropDownNodeViewCustomization, INodeViewCustomization<DefineData>
+    internal class DefineDataNodeViewCustomization : DropDownNodeViewCustomization, INodeViewCustomization<DefineData>
     {
         private ComboBox dropdown;
         private ToggleButton modeToggleButton;

@@ -534,36 +534,28 @@ namespace DSCore
         /// <summary>
         /// A class representing a DataType supported by Dynamo
         /// </summary>
-        internal class DataNodeDynamoType
+        internal class DataNodeDynamoType(Type type, string name = null)
         {
             /// <summary>
             /// The underlying Type
             /// </summary>
-            public Type Type { get; private set; }
+            public Type Type { get; private set; } = type;
             /// <summary>
             /// An optional Name to override the Type name (`Number` instead of `long`)
             /// </summary>
-            public string Name { get; private set; }
+            public string Name { get; private set; } = name ?? type.Name;
             /// <summary>
             /// The hierarchical level to be displayed in the UI
             /// </summary>
-            public int Level { get; private set; }
+            public int Level { get; private set; } = 0;
             /// <summary>
             /// If the type is a last child of a hierarchy (for UI purposes)
             /// </summary>
-            public bool IsLastChild { get; private set; }
+            public bool IsLastChild { get; private set; } = false;
             /// <summary>
             /// The parent of the Type, if any
             /// </summary>
             public DataNodeDynamoType Parent { get; private set; }
-
-            public DataNodeDynamoType(Type type, string name = null)
-            {
-                Type = type;
-                Name = name ?? type.Name;
-                Level = 0;
-                IsLastChild = false;
-            }
 
             public DataNodeDynamoType(Type type, int level, bool isLastChild = false, string name = null, DataNodeDynamoType parent = null)
             : this(type, name)
@@ -646,7 +638,8 @@ namespace DSCore
         /// <param name="isList">If the input is of type `ArrayList`</param>
         /// <param name="isAutoMode">If the node is in Auto mode</param>
         /// <returns></returns>
-        internal static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
+        [IsVisibleInDynamoLibrary(false)]
+        public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
             string typeString, bool isList, bool isAutoMode, string playerValue)
         {
             if (inputValue == null)
