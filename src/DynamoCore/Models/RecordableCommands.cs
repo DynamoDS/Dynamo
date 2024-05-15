@@ -1003,10 +1003,16 @@ namespace Dynamo.Models
 
             internal override void TrackAnalytics()
             {
-                Dynamo.Logging.Analytics.TrackEvent(
-                    Logging.Actions.Create,
-                    Logging.Categories.NodeOperations,
-                    (Node != null) ? Node.GetOriginalName() : Name ?? "");
+                // For custom nodes, Node is null until the node has been created
+                // Including the custom node cases should not be encouraged since
+                // GetOriginalName() will return the Guid of custom node
+                if (Node != null)
+                {
+                    Logging.Analytics.TrackEvent(
+                        Logging.Actions.Create,
+                        Logging.Categories.NodeOperations,
+                        Node.GetOriginalName() ?? string.Empty);
+                }
             }
 
             #endregion
