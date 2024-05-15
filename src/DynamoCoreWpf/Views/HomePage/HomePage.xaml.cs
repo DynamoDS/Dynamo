@@ -254,6 +254,11 @@ namespace Dynamo.UI.Views
             SetLocale();
         }
 
+        private void RecentFiles_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            LoadGraphs(startPage.RecentFiles);  
+        }
+
         #region FrontEnd Initialization Calls
         /// <summary>
         /// Sends graph data to react app
@@ -533,7 +538,11 @@ namespace Dynamo.UI.Views
         public void Dispose()
         {
             DataContextChanged -= OnDataContextChanged;
-            if(startPage != null) startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            if (startPage != null)
+            {
+                startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+                startPage.DynamoViewModel.RecentFiles.CollectionChanged -= RecentFiles_CollectionChanged;
+            }
 
             this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
 

@@ -664,4 +664,16 @@ In Generative Design workflows, this node should be used to control and block th
   <data name="GateSearchTags" xml:space="preserve">
     <value>gate;stop;data</value>
   </data>
+  <data name="DefineDataDescription" xml:space="preserve">
+    <value>Validates the data type of an input and returns it</value>
+  </data>
+  <data name="DefineDataInputTooltip" xml:space="preserve">
+    <value>Input data to be validated. Refer to drop-down for list of allowed types</value>
+  </data>
+  <data name="DefineDataOutputTooltip" xml:space="preserve">
+    <value>Validated data</value>
+  </data>
+  <data name="DefineDataDisplayValueMessage" xml:space="preserve">
+    <value>Select Types</value>
+  </data>
 </root>

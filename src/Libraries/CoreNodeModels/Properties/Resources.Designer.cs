@@ -295,6 +295,42 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Validates the data type of an input and returns it.
+        /// </summary>
+        public static string DefineDataDescription {
+            get {
+                return ResourceManager.GetString("DefineDataDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Data Type.
+        /// </summary>
+        public static string DefineDataDisplayValueMessage {
+            get {
+                return ResourceManager.GetString("DefineDataDisplayValueMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input data to be validated. Refer to drop-down for list of allowed types.
+        /// </summary>
+        public static string DefineDataInputTooltip {
+            get {
+                return ResourceManager.GetString("DefineDataInputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validated data.
+        /// </summary>
+        public static string DefineDataOutputTooltip {
+            get {
+                return ResourceManager.GetString("DefineDataOutputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a directory object from the given path.
         /// </summary>
         public static string DirectoryFromPathDescription {
