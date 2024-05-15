@@ -1,30 +1,23 @@
 ## In Depth
 
-The Define Data Node is designed to work as in input node, while validating the data type of the incoming data (type can be 'string', 'point', 'boolean' or any data type that is currently supported by Dynamo. For the full list of supported data types, expand the Dropdown menu of the node). It uses upstream nodes to set default values to make setting the type data easier as well as making the graphs functional when the nodes are used.
+The Define Data node validates the data type of incoming data. It can be used to ensure local data is of the desired type and is also designed to be used as an input or output node, declaring the type of data a graph expects or provides. The node supports a selection of commonly used Dynamo data types, for example 'String', 'Point', or 'Boolean'. The full list of supported data types is available in the drop-down menu of the node.
 
-The node has 4 inputs:
-- the node '**>**' Input - can be connected to any downstream node to validate the input of
-- the **Dropdown** menu
-- the '**List**' toggle 
-- the '**Lock**' toggle
+### Behavior
+The node validates the data coming in from the input port based on the setting of the drop-down menu and the **List** toggle (see below for details). If the validation is successful, the output of the node is the same as the input. If the validation is not successful, the node will enter a warning state with a null output.
 
-The node has two distinct modes in terms of behaviour - the 'Manua' and 'Auto' mode. This are defined by the state of the 'Lock' toggle - locked is for 'Manual', whereas unlocked is for 'Auto' mode. 
+The node has four inputs:
+- The "**>**" input - Connect to an upstream node to validate the type of its data.
+- The **drop-down** menu - Shows the expected data type. When the form is unlocked, set a data type for validation. When the form is locked, the data type is chosen automatically based on incoming data. Data is valid if its type matches the shown type exactly or if its type is a child of the shown type (e.g. If the drop-down is set to "Curve", objects of type "Rectangle", "Line", etc. are valid).
+- The **List** toggle - When on, the node expects incoming data to be a single flat list containing items of a valid data type (see above). When off, the node expects a single item of a valid data type.
+- The **Lock** toggle - When off/unlocked, the drop-down menu and the **List** toggle controls accept user input to set the type of data expected. When on/locked, the node will validate* the incoming data, disable the controls, and set their value based on the data connected to the node's input port.
 
-### Manual mode
-
-Set the **Lock** to locked position. The user sets the type of data explicitly by interacting with the **Dropdown** and **List** toggle. The node validates the data. If the validation is successful, the output of the node is the same as the input. If the validation is not successful, the node will enter a **Warning** state with a null output.
-
-### Auto mode
-
-Set the **Lock** to unlocked position. The downstream data is being automaticall validated. If the type of data is valid*, the node will automatically adjust the **Dropdown** and **List** toggles to match the input  data type. If the validation process is successful, the output of the node is the same as the input. If the validation process is not successful, the node will enter a **Warning** state with a null output.
-
-* data validity - the data is recognized by Dynamo (any of the **Dropdown** menu values) and the data is either a single objet or a List of homogeneous values, or a List of values that belong to the same hierarchical tree.
-
-In the example below, the first group of 'DefineData' nodes is in 'Manual' 'single value' mode - the node correctly validates the Number input provided, while rejecting the String input. The second group showscases a node in 'Auto' mode - the node automatically adjusts the 'Dropdown' and 'List' toggles to the desired inputs - in this case, list of integers.
+### Use as an input node
+When set as an input ("Is Input" in the node's context menu) the node can optionally use upstream nodes to set the default value for the input. A run of the graph will cache the Define Data node's value for use when running the graph externally, for example with the Engine Node.
 
 ---
 
 ## Example File
+In the example below, the first group of "DefineData" nodes have an unlocked UI. The node correctly validates the Number input provided while rejecting the String input. The second group contains a node with locked UI. The node automatically adjusts the drop-down and the **List** toggle to match the input, in this case a list of integers.
 
 ![Define_Data](./CoreNodeModels.DefineData_img.jpg)
     

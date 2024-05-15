@@ -665,7 +665,7 @@ In Generative Design workflows, this node should be used to control and block th
     <value>gate;stop;data</value>
   </data>
   <data name="DefineDataDescription" xml:space="preserve">
-    <value>Validates and returns data from a currently or previously connected node</value>
+    <value>Validates the data type of an input and returns it</value>
   </data>
   <data name="DefineDataInputTooltip" xml:space="preserve">
     <value>Input data to be validated. Refer to drop-down for list of allowed types</value>

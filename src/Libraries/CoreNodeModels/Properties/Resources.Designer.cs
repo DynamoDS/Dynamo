@@ -295,7 +295,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Validates and returns data from a currently or previously connected node.
+        ///   Looks up a localized string similar to Validates the data type of an input and returns it.
         /// </summary>
         public static string DefineDataDescription {
             get {
@@ -304,7 +304,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Types.
+        ///   Looks up a localized string similar to Select Data Type.
         /// </summary>
         public static string DefineDataDisplayValueMessage {
             get {
