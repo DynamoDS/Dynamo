@@ -630,16 +630,18 @@ namespace DSCore
         }
 
         /// <summary>
-        /// This is the function used by AST
+        /// This is the function used by AST to evaluate the Define Data node.
         /// Handles some of the the node logic while performing the validation
         /// </summary>
         /// <param name="inputValue">Upstream input value</param>
-        /// <param name="typeString">The Type as string (it would be better to pass an object of type 'Type' for direct type comparison)</param>
+        /// <param name="typeString">The Type as string (Todo: it would be better to pass an object of type 'Type' for direct type comparison)</param>
         /// <param name="isList">If the input is of type `ArrayList`</param>
         /// <param name="isAutoMode">If the node is in Auto mode</param>
+        /// <param name="playerValue">The value injected into the node by Dynamo Player, if any.</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
+        [Obsolete("This method must be public for the Define Data node to function but is not intended as external API. The method's signature may change in the future.")]
+        public static Dictionary<string, object> EvaluateDefineDataNode([ArbitraryDimensionArrayImport] object inputValue,
             string typeString, bool isList, bool isAutoMode, string playerValue)
         {
             if (inputValue == null)

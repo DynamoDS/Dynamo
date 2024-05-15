@@ -165,7 +165,7 @@ namespace CoreNodeModels
             // the object to be (type) evaluated
             // the expected datatype
             // if the input is an ArrayList or not
-            var function = new Func<object, string, bool, bool, string, Dictionary<string, object>>(IsSupportedDataNodeType);
+            var function = new Func<object, string, bool, bool, string, Dictionary<string, object>>(EvaluateDefineDataNode);
             var functionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
                 AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
