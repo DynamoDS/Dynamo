@@ -231,12 +231,14 @@ namespace Dynamo.UI.Views
                 if (filePath.EndsWith(".dyn") || filePath.EndsWith(".dyf"))
                 {
                     OpenFile(filePath);
+                    Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Workspace");
                     return true;
                 }
             }
             else
             {
                 Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true });
+                Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Hyper Link: "+ uri);
             }
 
             return false;
@@ -413,7 +415,7 @@ namespace Dynamo.UI.Views
             }
 
             ShowGuidedTour(path);
-            Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.DynamoHomeOperations, "Guided Tour");
+            Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.DynamoHomeOperations, "Guided Tour: " + path);
 
         }
 
@@ -432,7 +434,7 @@ namespace Dynamo.UI.Views
             }
 
             this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultCommand.Execute(null);
-            Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations);
+            Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Workspace");
         }
 
         internal void NewCustomNodeWorkspace()
