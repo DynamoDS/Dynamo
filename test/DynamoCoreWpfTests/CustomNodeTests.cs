@@ -1,6 +1,7 @@
+using System;
 using System.IO;
 using System.Linq;
-using System.Windows.Annotations;
+using CoreNodeModels;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -93,6 +94,22 @@ namespace DynamoCoreWpfTests
             var maingroup = customNodeWorkspace.Annotations.First(x => x.AnnotationText.Equals("Test"));
             Assert.AreEqual(2, maingroup.Nodes.OfType<AnnotationModel>().Count()); // 2 groups inside the main group
             Assert.AreEqual(1, maingroup.Nodes.OfType<NoteModel>().Count()); // 1 note inside the main group
+        }
+
+        [Test]
+        public void TestDataInputInitializationTest()
+        {
+            var node = new DefineData();
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(node, false);
+
+            var supportedDynamoTypesList = DSCore.Data.DataNodeDynamoTypeList;
+
+            // Assert - default node values
+            Assert.AreEqual(node.SelectedString, supportedDynamoTypesList.First().Name);
+            Assert.AreEqual(node.DisplayValue, CoreNodeModels.Properties.Resources.DefineDataDisplayValueMessage);
+            Assert.AreEqual(node.PlayerValue, string.Empty);
+            Assert.IsFalse(node.IsAutoMode);
+            Assert.IsFalse(node.IsList);
         }
     }
 }
