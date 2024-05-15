@@ -404,6 +404,8 @@ namespace Dynamo.UI.Views
             }
 
             ShowGuidedTour(path);
+            Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.DynamoHomeOperations, "Guided Tour");
+
         }
 
         internal void NewWorkspace()
@@ -448,6 +450,8 @@ namespace Dynamo.UI.Views
             Process.Start(new ProcessStartInfo("explorer.exe", "/select,"
                 + this.startPage.SampleFolderPath)
             { UseShellExecute = true });
+            Logging.Analytics.TrackEvent(Logging.Actions.Show, Logging.Categories.DynamoHomeOperations, "Sample Files");
+
         }
 
         internal void ShowBackupFilesInFolder()
@@ -479,7 +483,9 @@ namespace Dynamo.UI.Views
 
         internal void ApplicationLoaded()
         {
-            LoadingDone();  
+            LoadingDone();
+            Logging.Analytics.TrackEvent(Logging.Actions.Load, Logging.Categories.DynamoHomeOperations);
+
         }
 
         #endregion
