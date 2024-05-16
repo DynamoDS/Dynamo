@@ -67,11 +67,12 @@ namespace Dynamo.UI.Views
             InitializeComponent();
             InitializeGuideTourItems();
 
-            dynWebView = new DynamoWebView2();
+            dynWebView = new DynamoWebView2
+            {
+                Margin = new System.Windows.Thickness(0),  // Set margin to zero
+                ZoomFactor = 1.0  // Set zoom factor (optional)
+            };
 
-            dynWebView.Margin = new System.Windows.Thickness(0);  // Set margin to zero
-            dynWebView.ZoomFactor = 1.0;  // Set zoom factor (optional)
-                
             HostGrid.Children.Add(dynWebView);
 
             // Bind event handlers
@@ -82,7 +83,7 @@ namespace Dynamo.UI.Views
             RequestNewCustomNodeWorkspace = NewCustomNodeWorkspace;
             RequestShowSampleFilesInFolder = ShowSampleFilesInFolder;
             RequestShowBackupFilesInFolder = ShowBackupFilesInFolder;
-            RequestShowTemplate = ShowTemplate;
+            RequestShowTemplate = OpenTemplate;
             RequestApplicationLoaded = ApplicationLoaded;
             RequestSaveSettings = SaveSettings;
 
@@ -129,7 +130,7 @@ namespace Dynamo.UI.Views
         /// This is used before DynamoModel initialization specifically to get user data dir
         /// </summary>
         /// <returns></returns>
-        private string GetUserDirectory()
+        private static string GetUserDirectory()
         {
             var version = AssemblyHelper.GetDynamoVersion();
 
@@ -233,12 +234,14 @@ namespace Dynamo.UI.Views
                 if (filePath.EndsWith(".dyn") || filePath.EndsWith(".dyf"))
                 {
                     OpenFile(filePath);
+                    Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Workspace");
                     return true;
                 }
             }
             else
             {
                 Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true });
+                Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Hyper Link: "+ uri);
             }
 
             return false;
@@ -431,6 +434,8 @@ namespace Dynamo.UI.Views
             }
 
             ShowGuidedTour(path);
+            Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.DynamoHomeOperations, "Guided Tour: " + path);
+
         }
 
         internal void SaveSettings(string settingsJson)
@@ -464,6 +469,7 @@ namespace Dynamo.UI.Views
         internal void NewWorkspace()
         {
             this.startPage?.DynamoViewModel?.NewHomeWorkspaceCommand.Execute(null);
+            Logging.Analytics.TrackEvent(Logging.Actions.New, Logging.Categories.DynamoHomeOperations, "Workspace");
         }
 
         internal void OpenWorkspace()
@@ -475,6 +481,7 @@ namespace Dynamo.UI.Views
             }
 
             this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultCommand.Execute(null);
+            Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Workspace");
         }
 
         internal void NewCustomNodeWorkspace()
@@ -486,6 +493,7 @@ namespace Dynamo.UI.Views
             }
 
             this.startPage?.DynamoViewModel?.ShowNewFunctionDialogCommand.Execute(null);
+            Logging.Analytics.TrackEvent(Logging.Actions.New, Logging.Categories.DynamoHomeOperations, "Custom Node Workspace");
         }
 
         internal void ShowSampleFilesInFolder()
@@ -500,6 +508,8 @@ namespace Dynamo.UI.Views
             Process.Start(new ProcessStartInfo("explorer.exe", "/select,"
                 + this.startPage.SampleFolderPath)
             { UseShellExecute = true });
+            Logging.Analytics.TrackEvent(Logging.Actions.Show, Logging.Categories.DynamoHomeOperations, "Sample Files");
+
         }
 
         internal void ShowBackupFilesInFolder()
@@ -513,9 +523,10 @@ namespace Dynamo.UI.Views
 
             Process.Start(new ProcessStartInfo("explorer.exe", this.startPage.DynamoViewModel.Model.PathManager.BackupDirectory)
             { UseShellExecute = true });
+            Logging.Analytics.TrackEvent(Logging.Actions.Show, Logging.Categories.DynamoHomeOperations, "Backup Files");
         }
 
-        internal void ShowTemplate()
+        internal void OpenTemplate()
         {
             if (DynamoModel.IsTestMode)
             {
@@ -524,12 +535,15 @@ namespace Dynamo.UI.Views
             }
 
             // Equivalent to CommandParameter="Template"
-            this.startPage?.DynamoViewModel?.ShowOpenTemplateDialogCommand.Execute("Template"); 
+            this.startPage?.DynamoViewModel?.ShowOpenTemplateDialogCommand.Execute("Template");
+            Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Template");
         }
 
         internal void ApplicationLoaded()
         {
-            LoadingDone();  
+            LoadingDone();
+            Logging.Analytics.TrackEvent(Logging.Actions.Load, Logging.Categories.DynamoHomeOperations);
+
         }
 
         #endregion
