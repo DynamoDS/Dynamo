@@ -362,7 +362,7 @@ namespace Dynamo.Wpf.ViewModels
         {
             if (Clicked != null)
             {
-                // Try to create the node based on the search element (in-Canvas search or library)
+                // Try to create the node based on the search element from in-Canvas search
                 // The node creation can fail if the node constructor dependencies are not found or other reasons.
                 // This is a best effort to create the node and log the error both in console and toast notification if it fails.
                 try
