@@ -5027,6 +5027,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to create node: .
+        /// </summary>
+        public static string NodeInCanvasSearchCreationError {
+            get {
+                return ResourceManager.GetString("NodeInCanvasSearchCreationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dismisses the info messages on this node. Utilize when you want to design in graph failures, or the info message will not be relevant during graph execution..
         /// </summary>
         public static string NodeInfoDismissButtonToolTip {
