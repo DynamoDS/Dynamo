@@ -61,7 +61,7 @@ namespace ProtoCore.DSASM.Mirror
 
             if (val.IsDouble)
             {
-                return val.DoubleValue.ToString("F6");
+                return val.DoubleValue.ToString("F17");
             }
 
             if (val.IsNull)
