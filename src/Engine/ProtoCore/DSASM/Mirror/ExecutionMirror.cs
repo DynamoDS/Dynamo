@@ -61,7 +61,32 @@ namespace ProtoCore.DSASM.Mirror
 
             if (val.IsDouble)
             {
-                return val.DoubleValue.ToString("F17");
+                bool hasDecimals = false;
+                int counter = 0;
+                int precision;
+
+                double nextDoubleValue = val.DoubleValue;
+                var nexDoubleValueString = nextDoubleValue.ToString();
+                if (nexDoubleValueString.Contains(".") || nexDoubleValueString.Contains(","))
+                {
+                    while (!hasDecimals)
+                    {
+                        //This line behaves weird after more than 6 decimals
+                        nextDoubleValue = nextDoubleValue * 10;
+                        counter++;
+                        if (nextDoubleValue % 1 == 0)
+                            hasDecimals = true;
+                    }
+                    precision = counter;
+                }
+                else
+                {
+                    //Means that we don't have a double value with decimals
+                    precision = 0;
+                }
+
+                //I've noticed that when having more than 6 decimals after the point .NET (CLR) behaves weird so the counter will be 16
+                return val.DoubleValue.ToString("F"+precision.ToString());
             }
 
             if (val.IsNull)
