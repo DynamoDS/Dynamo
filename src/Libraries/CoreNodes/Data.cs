@@ -532,7 +532,7 @@ namespace DSCore
         internal static DynamoLogger dynamoLogger = ExecutionEvents.ActiveSession?.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
         #endregion
 
-        #region Input Output Node
+        #region DefineData Node
 
         /// <summary>
         /// A class representing a DataType supported by Dynamo
@@ -548,7 +548,15 @@ namespace DSCore
             /// </summary>
             public string Name { get; private set; }
             /// <summary>
-            /// The parent of the DataType, if inheriting (to be removed in later updates)
+            /// The hierarchical level to be displayed in the UI
+            /// </summary>
+            public int Level { get; private set; }
+            /// <summary>
+            /// If the type is a last child of a hierarchy (for UI purposes)
+            /// </summary>
+            public bool IsLastChild { get; private set; }
+            /// <summary>
+            /// The parent of the Type, if any
             /// </summary>
             public DataNodeDynamoType Parent { get; private set; }
 
@@ -556,11 +564,15 @@ namespace DSCore
             {
                 Type = type;
                 Name = name ?? type.Name;
+                Level = 0;
+                IsLastChild = false;
             }
 
-            public DataNodeDynamoType(Type type, DataNodeDynamoType parent, string name = null)
+            public DataNodeDynamoType(Type type, int level, bool isLastChild = false, string name = null, DataNodeDynamoType parent = null)
             : this(type, name)
             {
+                Level = level;
+                IsLastChild = isLastChild;
                 Parent = parent;
             }
         }
@@ -582,19 +594,19 @@ namespace DSCore
             typeList.Add(new DataNodeDynamoType(typeof(CoordinateSystem)));
 
             // Subtypes of Curve
-            var crv = new DataNodeDynamoType(typeof(Curve));
+            var crv = new DataNodeDynamoType(typeof(Curve), 0, false, null, null);
             typeList.Add(crv);
-            typeList.Add(new DataNodeDynamoType(typeof(Arc), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Circle), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Ellipse), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(EllipseArc), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Helix), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(Line), crv));
-            typeList.Add(new DataNodeDynamoType(typeof(NurbsCurve), crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Arc), 1, false, null, crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Circle), 1, false, null, crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Ellipse), 1, false, null, crv));
+            typeList.Add(new DataNodeDynamoType(typeof(EllipseArc), 1, false, null, crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Helix), 1, false, null, crv));
+            typeList.Add(new DataNodeDynamoType(typeof(Line), 1, false, null, crv));
+            typeList.Add(new DataNodeDynamoType(typeof(NurbsCurve), 1, false, null, crv));
 
-            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), crv);
-            var polygon = new DataNodeDynamoType(typeof(Polygon), polyCurve);  // polygon is subtype of polyCurve
-            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), polygon);    // rectangle is subtype of polygon
+            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1, false, null, crv);
+            var polygon = new DataNodeDynamoType(typeof(Polygon), 2, false, null, polyCurve);  // polygon is subtype of polyCurve
+            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3, true, null, polyCurve);    // rectangle is subtype of polygon
 
             typeList.Add(polyCurve);
             typeList.Add(polygon);
@@ -608,11 +620,11 @@ namespace DSCore
             typeList.Add(new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Point)));
 
             // Subtypes of Solid
-            var solid = new DataNodeDynamoType(typeof(Solid));
-            var cone = new DataNodeDynamoType(typeof(Cone), solid);    // cone is subtype of solid
-            var cylinder = new DataNodeDynamoType(typeof(Cylinder), cone); // cylinder is subtype of cone 
-            var cuboid = new DataNodeDynamoType(typeof(Cuboid), solid);    // cuboid is subtype of solid
-            var sphere = new DataNodeDynamoType(typeof(Sphere), solid);    // sphere is subtype of solid
+            var solid = new DataNodeDynamoType(typeof(Solid), 0, false, null, null);
+            var cone = new DataNodeDynamoType(typeof(Cone), 1, false, null, solid);    // cone is subtype of solid
+            var cylinder = new DataNodeDynamoType(typeof(Cylinder), 2, false, null, cone); // cylinder is subtype of cone 
+            var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1, false, null, solid);    // cuboid is subtype of solid
+            var sphere = new DataNodeDynamoType(typeof(Sphere), 1, true, null, solid);    // sphere is subtype of solid
 
             typeList.Add(solid);
             typeList.Add(cone);
@@ -622,9 +634,9 @@ namespace DSCore
             typeList.Add(new DataNodeDynamoType(typeof(string)));
 
             // Subtypes of Surface
-            var surface = new DataNodeDynamoType(typeof(Surface));
-            var nurbsSrf = new DataNodeDynamoType(typeof(NurbsSurface), surface);    // nurbsSrf is subtype of surface
-            var polySrf = new DataNodeDynamoType(typeof(PolySurface), surface); // polySrf is subtype of surface
+            var surface = new DataNodeDynamoType(typeof(Surface), 0, false, null, null);
+            var nurbsSrf = new DataNodeDynamoType(typeof(NurbsSurface), 1, false, null, surface);    // nurbsSrf is subtype of surface
+            var polySrf = new DataNodeDynamoType(typeof(PolySurface), 1, true, null, surface); // polySrf is subtype of surface
 
             typeList.Add(surface);
             typeList.Add(nurbsSrf);
@@ -646,13 +658,42 @@ namespace DSCore
         /// <param name="isAutoMode">If the node is in Auto mode</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        internal static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
-            string typeString, bool isList, bool isAutoMode)
+        public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
+            string typeString, bool isList, bool isAutoMode, string playerValue)
         {
-            if(inputValue == null) { return null; }
+            if (inputValue == null)
+            {
+                // Don't raise a warning if the node is unused
+                return new Dictionary<string, object>
+                {
+                    { ">", inputValue },
+                    { "Validation", null }
+                };
+            }
+
+            if (!IsSingleValueOrSingleLevelArrayList(inputValue))
+            {
+                throw new NotSupportedException(Properties.Resources.DefineDataSupportedInputValueExceptionMessage);
+            }
+
+            // If the playerValue is not empty, then we assume it was set by the player.
+            // In that case, we need to parse it to get the actual value replace the inputValue.
+            if (!string.IsNullOrEmpty(playerValue))
+            {
+                try
+                {
+                    inputValue = ParseJSON(playerValue);
+                }
+                catch (Exception ex)    
+                {
+                    dynamoLogger?.Log("A Player value failed to deserialize with this exception: " + ex.Message);
+                    throw new NotSupportedException(Properties.Resources.Exception_Deserialize_Unsupported_Cache);
+                }
+            }
 
             object result;  // Tuple<IsValid: bool, UpdateList: bool, InputType: DataNodeDynamoType>
 
+            // Currently working around passing the type as a string from the node - can be developed further to pass directly the type value
             var type = DataNodeDynamoTypeList.First(x => x.Type.ToString().Equals(typeString));
 
             if (isAutoMode)
@@ -667,11 +708,24 @@ namespace DSCore
                     updateList = true;
                 }
 
-                // Type logic
+                // Type logic - we try to 'guess' the type of the object
                 if (type == null || !IsSupportedDataNodeDynamoType(inputValue, type.Type, assertList))
                 {
-                    var valueType = assertList ? (inputValue as ArrayList)[0].GetType() : inputValue.GetType();
+                    var valueType = assertList ? FindCommonAncestor(inputValue) : inputValue.GetType();
+                    if (valueType == null)
+                    {
+                        // We couldn't find a common ancestor - list containing unsupported or incompatible data types
+                        var incompatibleDataTypes = ConcatenateUniqueDataTypes(inputValue);
+                        throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage,
+                            incompatibleDataTypes));
+                    }
                     var inputType = DataNodeDynamoTypeList.FirstOrDefault(x => x.Type == valueType, null);
+                    if(inputType == null)
+                    {
+                        // We couldn't find a Dynamo data type that fits, so we throw
+                        throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage,
+                            valueType.Name));
+                    }
                     result = (IsValid: false, UpdateList: updateList, InputType: inputType);
                 }
                 else
@@ -689,6 +743,11 @@ namespace DSCore
             {
                 // If we are in 'Manual mode' then we just validate and throw as needed
                 var isSupportedType = IsSupportedDataNodeDynamoType(inputValue, type.Type, isList);
+                if (!isSupportedType)
+                {
+                    throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnexpectedInputExceptionMessage, type.Type.FullName,
+                        inputValue.GetType().FullName));
+                }
                 result = (IsValid: isSupportedType, UpdateList: false, InputType: type);
 
                 return new Dictionary<string, object>
@@ -697,6 +756,168 @@ namespace DSCore
                     { "Validation", result }
                 };
             }
+        }
+
+        private static string ConcatenateUniqueDataTypes(object inputValue)
+        {
+            if (inputValue is not ArrayList) return string.Empty;
+
+            var list = inputValue as ArrayList;
+            var dataTypeList = GetListFromTypes(list);
+
+            var resultString = string.Join(", ", dataTypeList
+                .GroupBy(x => x.Type)
+                .Select(g => g.First().Name));
+
+            return resultString;
+        }
+
+        /// <summary>
+        /// A function to help find the type in case an ArrayList of objects was passed in AutoMode
+        /// </summary>
+        /// <param name="inputValue">The input value, expected to be of type ArrayList</param>
+        /// <returns></returns>
+        private static Type FindCommonAncestor(object inputValue)
+        {
+            if (inputValue is not ArrayList) return null;   // this should not happen
+            var list = inputValue as ArrayList;
+
+            if (list.Count == 1)
+                return list[0].GetType(); // Only one node, so it's the "common" ancestor
+
+            var dataTypeList = GetListFromTypes(list);
+
+            return FindClosestCommonAncestor(dataTypeList)?.Type;
+        }
+
+        /// <summary>
+        /// A helper function returning the lowest-level node from a list of DataNodeDynamoType nodes
+        /// </summary>
+        /// <param name="nodes">The list of DataNodeDynamoType to evaluate</param>
+        /// <returns></returns>
+        private static DataNodeDynamoType LikelyAncestor(List<DataNodeDynamoType> nodes)
+        {
+            var minLevel = nodes.Min(x => x.Level);
+            if(minLevel == 0)
+            {
+                return nodes.First(x => x.Level == 0);  // Already at the root ancestor
+            }
+
+            var uniqueNodes = nodes
+                .Where(x =>  x.Level == minLevel)
+                .GroupBy(x => x.Type)
+                .Select(g => g.First())
+                .ToList();
+
+            // If we have more than one type of node of the highest level, then recursively find the likely ancestor
+            if (uniqueNodes.Count > 1)
+            {
+                return LikelyAncestor(uniqueNodes.Select(x => x.Parent).ToList());
+            }
+
+            // The lowest-level node type
+            return uniqueNodes.First();
+        }
+
+        /// <summary>
+        /// A helper function to try to determine a common ancestor in a list of data types
+        /// </summary>
+        /// <param name="nodes">The list of DataType nodes to evaluate</param>
+        /// <returns></returns>
+        private static DataNodeDynamoType FindClosestCommonAncestor(List<DataNodeDynamoType> nodes)
+        {
+            if (nodes == null || nodes.Count == 0) return null; // No nodes to process
+
+            // Shortcut for homogeneity
+            if (nodes.All(node => node.Type == nodes[0].Type))
+            {
+                return nodes[0];
+            }
+
+            // Try to predict the likely ancestor as the single lowest-level node type
+            var likelyAncestor = LikelyAncestor(nodes);
+
+            var uniqueLevelNodes = nodes
+                .GroupBy(x => x.Level)
+                .Select(g => g.First())
+                .ToList();
+
+            foreach (var node in uniqueLevelNodes)
+            {
+                if (node.Type == likelyAncestor.Type) continue;
+                likelyAncestor = FindCommonAncestorBetweenTwoNodes(node, likelyAncestor);
+
+                if (likelyAncestor == null) break; 
+            }
+
+            return likelyAncestor;
+        }
+
+        /// <summary>
+        /// Recursive function to try and find a common ancestor between two dynamo types
+        /// Climbs up the hierarchical tree of the likelyAncestor until it 
+        /// </summary>
+        /// <param name="node">Check if this node is derived from the likely ancestor</param>
+        /// <param name="likelyAncestor">The likely ancestor that the node should be deriving from</param>
+        /// <returns></returns>
+        private static DataNodeDynamoType FindCommonAncestorBetweenTwoNodes(DataNodeDynamoType node, DataNodeDynamoType likelyAncestor)
+        {
+            if (!IsDerivedFrom(node.Type, likelyAncestor.Type))
+            {
+                if(likelyAncestor.Level == 0) return null;  // we have reached the top of the hierarchical tree, but we haven't found common ancestor
+
+                return FindCommonAncestorBetweenTwoNodes(node, likelyAncestor.Parent);
+            }
+
+            return likelyAncestor; 
+        }
+
+        /// <summary>
+        /// Return a list of DataNodeDynamoTypes from an ArrayList of objects
+        /// </summary>
+        /// <param name="list">The ArrayList of objects to reformat</param>
+        /// <returns></returns>
+        private static List<DataNodeDynamoType> GetListFromTypes(ArrayList list)
+        {
+            List<DataNodeDynamoType> typeList = new List<DataNodeDynamoType>();
+            foreach (var item in list)
+            {
+                var matchingType = DataNodeDynamoTypeList.FirstOrDefault(x => x.Type == item.GetType());
+                if (matchingType != null)
+                {
+                    typeList.Add(matchingType);
+                }
+            }
+            return typeList;
+        }
+
+        /// <summary>
+        /// Check if the input object is a single value or an ArrayList
+        /// </summary>
+        /// <param name="obj">The input object to evaluate</param>
+        /// <returns></returns>
+        private static bool IsSingleValueOrSingleLevelArrayList(object obj)
+        {
+            if (obj == null) return true;
+
+            // Check if the object is a string, since strings are IEnumerable but usually considered single values
+            if (obj is string) return true;
+
+            if (obj is ArrayList arrayList)
+            {
+                foreach (var item in arrayList)
+                {
+                    if (item is IEnumerable && !(item is string))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            if (obj is IEnumerable) return false;
+
+            return true;
         }
 
         /// <summary>
@@ -724,7 +945,7 @@ namespace DSCore
             {
                 if (!(inputValue is ArrayList arrayList)) return false;
 
-                foreach (var item in arrayList)
+                foreach (var item in arrayList) 
                 {
                     if (!IsItemOfType(item, type))
                     {
@@ -744,6 +965,14 @@ namespace DSCore
         /// <param name="dataType">The DataType to check against</param>
         /// <returns>A true or false result based on the check validation</returns>
         private static bool IsItemOfType(object item, Type dataType) => dataType.IsInstanceOfType(item);
+
+        /// <summary>
+        /// This method checks if a type is derived from a base type
+        /// </summary>
+        /// <param name="derivedType">The type we want to assert</param>
+        /// <param name="baseType">The base type we compare with</param>
+        /// <returns></returns>
+        private static bool IsDerivedFrom(Type derivedType, Type baseType) => baseType.IsAssignableFrom(derivedType) && derivedType != baseType;
 
         #endregion
     }
