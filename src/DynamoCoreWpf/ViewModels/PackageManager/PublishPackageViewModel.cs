@@ -2655,11 +2655,12 @@ namespace Dynamo.PackageManager
                 var duplicateFiles = files.GroupBy(x => Path.GetFileName(x))
                     .Where(x => x.Count() > 1)
                     .ToList();
-                if (duplicateFiles.Count() > 0)
+                if (duplicateFiles.Count > 0)
                 {
                     if (!DynamoModel.IsTestMode)
                     {
-                        MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, string.Format("{0} Duplicate file(s) found.\nFiles with same name will be overwritten in the final package, to avoid it, either rename or discard the duplicate files or enable Retain Folder Structure option.", duplicateFiles.Count()), "Duplicate Files", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        var DialogOptions = new Dictionary<Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags, bool>() { { Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags.Scrollable, true } };
+                        MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, string.Format(Resources.DuplicateFilesInPublishWarningMessage.Replace("\\n", Environment.NewLine), duplicateFiles.Count, string.Join("\n", duplicateFiles.Select(x => x.Key).ToList())), Resources.DuplicateFilesInPublishWarningTitle, DialogOptions, MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
             }

@@ -582,7 +582,7 @@ Don't worry, you'll have the option to save your work.</value>
     <value>_Select All</value>
     <comment>Edit menu | Select all nodes</comment>
   </data>
-    <data name="DynamoViewEditMenuUnpinAllPreviewBubbles" xml:space="preserve">
+  <data name="DynamoViewEditMenuUnpinAllPreviewBubbles" xml:space="preserve">
     <value>_Unpin All Preview Bubbles</value>
     <comment>Edit menu | Unpin preview bubbles</comment>
   </data>
@@ -3974,5 +3974,11 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="MessagePackOlderDynamoLink" xml:space="preserve">
     <value>#Learn more=https://primer2.dynamobim.org/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8</value>
+  </data>
+  <data name="DuplicateFilesInPublishWarningMessage" xml:space="preserve">
+    <value>Files with same name will be overwritten in the final package. To avoid this, rename or discard the duplicate files, or enable the Retain Folder Structure option.\n\n{0} duplicate file(s) found:\n{1}</value>
+  </data>
+  <data name="DuplicateFilesInPublishWarningTitle" xml:space="preserve">
+    <value>Duplicate Files</value>
   </data>
 </root>
