@@ -171,8 +171,8 @@ Dynamo.Configuration.PreferenceSettings.HideAutocompleteMethodOptions.get -> boo
 Dynamo.Configuration.PreferenceSettings.HideAutocompleteMethodOptions.set -> void
 Dynamo.Configuration.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel.get -> bool
 Dynamo.Configuration.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel.set -> void
-Dynamo.Configuration.PreferenceSettings.HomePageSettingsSerialized.get -> string
-Dynamo.Configuration.PreferenceSettings.HomePageSettingsSerialized.set -> void
+Dynamo.Configuration.PreferenceSettings.HomePageSettings.get -> System.Collections.Generic.List<string>
+Dynamo.Configuration.PreferenceSettings.HomePageSettings.set -> void
 Dynamo.Configuration.PreferenceSettings.IronPythonResolveTargetVersion.get -> string
 Dynamo.Configuration.PreferenceSettings.IronPythonResolveTargetVersion.set -> void
 Dynamo.Configuration.PreferenceSettings.IsADPAnalyticsReportingApproved.get -> bool

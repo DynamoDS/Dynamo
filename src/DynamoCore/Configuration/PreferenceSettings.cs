@@ -397,19 +397,8 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Persistence for Dynamo HomePage
-        /// </summary>
-        [XmlIgnore]
-        internal Dictionary<string, object> HomePageSettings { get; set; }
-
-        /// <summary>
-        /// A helper intermediary string to allow the serialization of the HomePageSettings dictionary
-        /// </summary>
-        public string HomePageSettingsSerialized
-        {
-            get => Newtonsoft.Json.JsonConvert.SerializeObject(HomePageSettings);   
-            set => HomePageSettings = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
-        }
-
+        /// </summary>  
+        public List<string> HomePageSettings { get; set; }
         #endregion
 
         #region Dynamo application settings
@@ -997,6 +986,7 @@ namespace Dynamo.Configuration
             backupLocation = string.Empty;
             GraphChecksumItemsList = new List<GraphChecksumItem>();
             isMLAutocompleteTOUApproved = true;
+            HomePageSettings = new List<string>();
         }
 
         /// <summary>
@@ -1114,7 +1104,7 @@ namespace Dynamo.Configuration
                     return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
-
+                
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);

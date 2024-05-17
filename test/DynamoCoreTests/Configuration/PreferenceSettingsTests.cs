@@ -490,16 +490,15 @@ namespace Dynamo.Tests.Configuration
             PreferenceSettings settings = new PreferenceSettings();
 
             // Assert defaults
-            Assert.AreEqual(settings.HomePageSettings, null);
-            Assert.AreEqual(settings.HomePageSettingsSerialized, "null");
+            Assert.IsEmpty(settings.HomePageSettings);
 
-            settings.HomePageSettings = new Dictionary<string, object> { { "greeting", "Hello World" } };
+            settings.HomePageSettings = new List<string> { { String.Concat("greeting", "Hello World") } };
 
             // Save
             settings.Save(tempPath);
             settings = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(settings.HomePageSettings["greeting"], "Hello World");
+            Assert.IsTrue(settings.HomePageSettings.Contains(String.Concat("greeting", "Hello World")));
         }
     }
 }

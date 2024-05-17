@@ -65,7 +65,7 @@ namespace DynamoCoreWpfTests
 
             homePage.DataContext = startPage;
 
-            Assert.IsNull(preferences.HomePageSettings);
+            Assert.IsEmpty(preferences.HomePageSettings);
 
             // Act
             var pair1 = @"{""Name"": ""Alice""}";
