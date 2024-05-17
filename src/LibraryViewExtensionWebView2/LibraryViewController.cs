@@ -358,10 +358,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             LibraryView view = new LibraryView(model);
 
             var lib_min_template = "LIBPLACEHOLDER";
-            var libHTMLURI = "Dynamo.LibraryViewExtensionWebView2.web.library.library.html";
+            var libHTMLURI = "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS.library.html";
             var stream = LoadResource(libHTMLURI);
 
-            var libMinURI = "Dynamo.LibraryViewExtensionWebView2.web.library.build.librarie.min.js";
+            var libMinURI = "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS.build.librarie.min.js";
             var libminstream = LoadResource(libMinURI);
             var libminstring = "LIBJS";
             var libraryHTMLPage = "LIBRARY HTML WAS NOT FOUND";
@@ -658,11 +658,11 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="customization"></param>
         private void InitializeResourceProviders(DynamoModel model, LibraryViewCustomization customization)
         {
-            var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionWebView2.web.library");
+            var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS");
             iconProvider = new IconResourceProvider(model.PathManager, dllProvider, customization);
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
-            layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json");
+            layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS.layoutSpecs.json");
         }
 
         private void DynamoSliderValueChanged(object sender, EventArgs e)
