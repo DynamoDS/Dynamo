@@ -75,7 +75,8 @@ namespace Dynamo.Extensions
                 if (item.Name == "AssemblyPath")
                 {
                     // Usually the extension configs are written on a Windows system, so we only need to make them compatible with linux
-                    path = Path.Combine(path, item.InnerText.Replace('\\', Path.DirectorySeparatorChar));
+                    string assemblyRelativePath = OSHelper.IsWindows() ? item.InnerText : item.InnerText.Replace('\\', Path.DirectorySeparatorChar);
+                    path = Path.Combine(path, assemblyRelativePath);
                     definition.AssemblyPath = path;
                 }
                 else if (item.Name == "TypeName")
