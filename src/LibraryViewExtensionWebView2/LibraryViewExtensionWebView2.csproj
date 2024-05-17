@@ -14,12 +14,38 @@
       <Deterministic>true</Deterministic>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
+  
+  <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+        <!--This command updates the npm registry configuration if necessary-->
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
+        <!--This command gets a specific build of the notifcation center from npm-->
+        <Exec Command="npm pack @dynamods/librariejs@1.0.4" />
+    </Target>
+
+    <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild">
+        <!--Locates the .tgz files-->
+        <ItemGroup>
+            <TGZFiles Include="./dynamods-librariejs-*.tgz" />
+        </ItemGroup>
+
+        <!--Gets the last one-->
+        <PropertyGroup>
+            <Last>%(TGZFiles.Filename)</Last>
+        </PropertyGroup>
+
+        <!--Extracts the file to /package-->
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=web/library"></Exec>
+
+        <!--Deletes the tgz file-->
+        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
+    </Target>
+
   <ItemGroup>
     <None Remove="Library_ViewExtensionDefinition.xml" />
     <None Remove="Views\LibraryView.xaml" />
     <None Remove="web\library\layoutSpecs.json" />
-    <None Remove="web\library\librarie.min.js" />
     <None Remove="web\library\library.html" />
+    <None Remove="web\library\build\librarie.min.js" />
     <None Remove="web\library\loadedTypes.json" />
     <None Remove="web\library\resources\ArtifaktElement-Bold.woff" />
     <None Remove="web\library\resources\ArtifaktElement-Regular.woff" />
@@ -100,8 +126,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="web\library\layoutSpecs.json" />
-    <EmbeddedResource Include="web\library\librarie.min.js" />
     <EmbeddedResource Include="web\library\library.html" />
+    <EmbeddedResource Include="web\library\build\librarie.min.js" />
     <EmbeddedResource Include="web\library\resources\ArtifaktElement-Bold.woff" />
     <EmbeddedResource Include="web\library\resources\ArtifaktElement-Regular.woff" />
     <EmbeddedResource Include="web\library\resources\Autodesk.DesignScript.Geometry.Arc.png" />

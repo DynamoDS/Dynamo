@@ -259,7 +259,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 minifiedURL = $"{magicstringprod}\"{minifiedURL}\"";
             }
-            var searchString = minifiedURL.Replace(magicstringprod, @"./dist").Replace("\"", "");
+            var searchString = minifiedURL.Replace(magicstringprod, @"./dist/").Replace("\"", "");
             var base64 = iconProvider.GetResourceAsString(searchString, out ext);
             if (string.IsNullOrEmpty(base64))
             {
@@ -287,23 +287,23 @@ namespace Dynamo.LibraryViewExtensionWebView2
         //list of resources which have paths embedded directly into the source.
         private readonly Tuple<string, bool>[] dynamicResourcePaths = new Tuple<string, bool>[]
         {
-           Tuple.Create("/resources/ArtifaktElement-Bold.woff",true),
-           Tuple.Create("/resources/ArtifaktElement-Regular.woff",true),
-           Tuple.Create("/resources/bin.svg",true),
-           Tuple.Create("/resources/default-icon.svg",true),
-           Tuple.Create("/resources/library-action.svg",true),
-           Tuple.Create("/resources/library-create.svg",true),
-           Tuple.Create("/resources/library-query.svg",true),
-           Tuple.Create("/resources/indent-arrow-category-down.svg",true),
-           Tuple.Create("/resources/indent-arrow-category-right.svg",true),
-           Tuple.Create("/resources/indent-arrow-down.svg",true),
-           Tuple.Create("/resources/indent-arrow-right.svg",true),
-           Tuple.Create("/resources/plus-symbol.svg",true),
-           Tuple.Create("/resources/search-detailed.svg",true),
-           Tuple.Create("/resources/search-filter.svg",true),
-           Tuple.Create("/resources/search-filter-selected.svg",true),
-           Tuple.Create("/resources/search-icon.svg",true),
-           Tuple.Create("/resources/search-icon-clear.svg",true)
+           Tuple.Create("resources/ArtifaktElement-Bold.woff",true),
+           Tuple.Create("resources/ArtifaktElement-Regular.woff",true),
+           Tuple.Create("resources/bin.svg",true),
+           Tuple.Create("resources/default-icon.svg",true),
+           Tuple.Create("resources/library-action.svg",true),
+           Tuple.Create("resources/library-create.svg",true),
+           Tuple.Create("resources/library-query.svg",true),
+           Tuple.Create("resources/indent-arrow-category-down.svg",true),
+           Tuple.Create("resources/indent-arrow-category-right.svg",true),
+           Tuple.Create("resources/indent-arrow-down.svg",true),
+           Tuple.Create("resources/indent-arrow-right.svg",true),
+           Tuple.Create("resources/plus-symbol.svg",true),
+           Tuple.Create("resources/search-detailed.svg",true),
+           Tuple.Create("resources/search-filter.svg",true),
+           Tuple.Create("resources/search-filter-selected.svg",true),
+           Tuple.Create("resources/search-icon.svg",true),
+           Tuple.Create("resources/search-icon-clear.svg",true)
         };
 
         async void InitializeAsync()
@@ -361,7 +361,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             var libHTMLURI = "Dynamo.LibraryViewExtensionWebView2.web.library.library.html";
             var stream = LoadResource(libHTMLURI);
 
-            var libMinURI = "Dynamo.LibraryViewExtensionWebView2.web.library.librarie.min.js";
+            var libMinURI = "Dynamo.LibraryViewExtensionWebView2.web.library.build.librarie.min.js";
             var libminstream = LoadResource(libMinURI);
             var libminstring = "LIBJS";
             var libraryHTMLPage = "LIBRARY HTML WAS NOT FOUND";
