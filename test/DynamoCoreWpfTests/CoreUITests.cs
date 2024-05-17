@@ -729,8 +729,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void TestImportDefaultScaleFactor()
         {
-            string settingDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory), "settings");
-            string newSettingslFilePath = Path.Combine(settingDirectory, "DynamoSettings-NewSettings.xml");
+            string newSettingslFilePath = Path.Combine(TempFolder, "DynamoSettings-NewSettings.xml");
 
             var defaultSettings = new PreferenceSettings();
             defaultSettings.DefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor((int)GeometryScaleSize.ExtraLarge);

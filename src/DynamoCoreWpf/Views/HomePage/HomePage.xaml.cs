@@ -299,7 +299,8 @@ namespace Dynamo.UI.Views
             {
                 if (startPage.DynamoViewModel.PreferenceSettings.HomePageSettings != null)
                 {
-                    var settingsJson = Newtonsoft.Json.JsonConvert.SerializeObject(startPage.DynamoViewModel.PreferenceSettings.HomePageSettings);
+                    var dict = GetDictFromListStrings(startPage.DynamoViewModel.PreferenceSettings.HomePageSettings);
+                    var settingsJson = Newtonsoft.Json.JsonConvert.SerializeObject(dict);
                     settingsJson = System.Web.HttpUtility.JavaScriptStringEncode(settingsJson);
 
                     await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setHomePageSettings('{settingsJson}');");
@@ -442,30 +443,62 @@ namespace Dynamo.UI.Views
         {
             if (!string.IsNullOrEmpty(settingsJson) && this.startPage != null)
             {
-                var settingsDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(settingsJson);
+                var settingsDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(settingsJson);
 
                 // If the HomePageSettings have not been previously created, initialize it now
                 if (startPage.DynamoViewModel.PreferenceSettings.HomePageSettings == null)
                 {
-                    startPage.DynamoViewModel.PreferenceSettings.HomePageSettings = new Dictionary<string, object>();
-                }    
+                    startPage.DynamoViewModel.PreferenceSettings.HomePageSettings = new List<string>();
+                }
+
+                var dict = GetDictFromListStrings(startPage.DynamoViewModel.PreferenceSettings.HomePageSettings);
 
                 // Change existing values, or add new ones
                 foreach (var setting in settingsDict)
                 {
-                    if (startPage.DynamoViewModel.PreferenceSettings.HomePageSettings.ContainsKey(setting.Key)
-                        && startPage.DynamoViewModel.PreferenceSettings.HomePageSettings[setting.Key] != setting.Value)
+                    if (dict.ContainsKey(setting.Key))
                     {
-                        startPage.DynamoViewModel.PreferenceSettings.HomePageSettings[setting.Key] = setting.Value;
+                        if (dict[setting.Key] == setting.Value) continue;
+                        dict[setting.Key] = setting.Value;
                     }
                     else
                     {
-                        startPage.DynamoViewModel.PreferenceSettings.HomePageSettings.Add(setting.Key, setting.Value);
-                    }
+                        dict.Add(setting.Key, setting.Value);
+                    }   
                 }
+
+                SetListStringsFromDict(dict, startPage.DynamoViewModel.PreferenceSettings.HomePageSettings);
             }
         }
-            
+
+        private void SetListStringsFromDict(Dictionary<string, string> dict, List<string> homePageSettings)
+        {
+            homePageSettings.Clear();
+            foreach (var kvp in dict)
+            {
+                homePageSettings.Add($"{kvp.Key}:{kvp.Value}");
+            }
+        }
+
+        private Dictionary<string, string> GetDictFromListStrings(List<string> homePageSettings)
+        {
+            var dict = new Dictionary<string, string>();
+            if (!homePageSettings.Any()) return dict;
+
+            try
+            {
+                dict = homePageSettings.Select(item => item.Split(':'))
+                                       .Where(parts => parts.Length == 2)
+                                       .ToDictionary(parts => parts[0], parts => parts[1]);
+            }
+            catch(Exception ex)
+            {
+                this.startPage.DynamoViewModel.Model.Logger.Log("Failed to load HomePageSettings: " + ex.Message);
+            }
+
+            return dict;
+        }
+
         internal void NewWorkspace()
         {
             this.startPage?.DynamoViewModel?.NewHomeWorkspaceCommand.Execute(null);
