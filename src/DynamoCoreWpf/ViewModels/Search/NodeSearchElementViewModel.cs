@@ -370,9 +370,9 @@ namespace Dynamo.Wpf.ViewModels
                     var nodeModel = Model.CreateNode();
                     Clicked(nodeModel, Position);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    searchViewModel.dynamoViewModel.Model.Logger.Log("Failed to create node from search element: " + Model.Name);
+                    searchViewModel.dynamoViewModel.Model.Logger.Log("Failed to create node from search element: " + Model.Name + "\n" + ex.Message);
                     searchViewModel.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeInCanvasSearchCreationError + Model.Name, true);
                 }
             }
