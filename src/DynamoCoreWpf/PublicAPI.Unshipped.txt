@@ -4878,6 +4878,7 @@ static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeDescription.get -> stri
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeInput.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeOutput.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeType.get -> string
+static Dynamo.Wpf.Properties.Resources.NodeInCanvasSearchCreationError.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeInfoDismissButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeInformationalStateDismiss.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeInformationalStateDismissAll.get -> string
