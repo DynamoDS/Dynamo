@@ -28,7 +28,7 @@ namespace CoreNodeModels
     public class DefineData : DSDropDownBase
     {
         private List<DynamoDropDownItem> serializedItems;
-        private bool isAutoMode;
+        private bool isAutoMode = true; // default start with auto-detect 'on'
         private bool isList;
         private string playerValue = "";
         private string displayValue = Properties.Resources.DefineDataDisplayValueMessage;

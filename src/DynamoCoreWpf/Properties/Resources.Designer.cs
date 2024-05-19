@@ -1206,6 +1206,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-detect type.
+        /// </summary>
+        public static string DataInputAutoDetectTypeLabel {
+            get {
+                return ResourceManager.GetString("DataInputAutoDetectTypeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List.
+        /// </summary>
+        public static string DataInputListLabel {
+            get {
+                return ResourceManager.GetString("DataInputListLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Toggle on if the input data contains a list..
         /// </summary>
         public static string DataInputNodeInformationTooltip {
@@ -1220,6 +1238,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DataInputNodeModeLockTooltip {
             get {
                 return ResourceManager.GetString("DataInputNodeModeLockTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string DataInputTypeLabel {
+            get {
+                return ResourceManager.GetString("DataInputTypeLabel", resourceCulture);
             }
         }
         

@@ -3961,6 +3961,15 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Toggle on if the input data contains a list.</value>
     <comment>Tool-tip for info questionmark icon next to the List toggle control.</comment>
   </data>
+  <data name="DataInputAutoDetectTypeLabel" xml:space="preserve">
+    <value>Auto-detect type</value>
+  </data>
+  <data name="DataInputTypeLabel" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DataInputListLabel" xml:space="preserve">
+    <value>List</value>
+  </data>
   <data name="MessagePackageOlderDynamo" xml:space="preserve">
     <value>This package or one of its dependencies were created for a previous version of Dynamo. It may not work in this version. Do you want to continue?</value>
   </data>

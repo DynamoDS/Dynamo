@@ -45,6 +45,10 @@ Dynamo.Controls.BinaryRadioButtonCheckedConverter
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.BinaryRadioButtonCheckedConverter() -> void
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.BooleanNegationConverter
+Dynamo.Controls.BooleanNegationConverter.BooleanNegationConverter() -> void
+Dynamo.Controls.BooleanNegationConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.BooleanNegationConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BooleanToBrushConverter
 Dynamo.Controls.BooleanToBrushConverter.BooleanToBrushConverter() -> void
 Dynamo.Controls.BooleanToBrushConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object

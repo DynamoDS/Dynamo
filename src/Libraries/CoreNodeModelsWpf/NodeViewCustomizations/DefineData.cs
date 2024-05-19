@@ -10,7 +10,6 @@ using CoreNodeModels;
 using CoreNodeModelsWpf.Controls;
 using Dynamo.Controls;
 using Dynamo.Wpf;
-using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -22,14 +21,16 @@ namespace CoreNodeModelsWpf.Nodes
         private ComboBox dropdown;
         private ToggleButton modeToggleButton;
         private ToggleButton listToggleButton;
+        private TextBox selectedItemDisplay;
         private DefineData _model;
+        private int prevIndex = 0;
 
         /// <summary>
         /// Customize the visual appearance of the DefineData node.
         /// </summary>
         /// <param name="model">The DefineData model to customize</param>
         /// <param name="nodeView"></param>
-        public void CustomizeView(DefineData model, NodeView nodeView)
+        public void CustomizeView(DefineData model, NodeView nodeView)  
         {
             this._model = model;
 
@@ -45,7 +46,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             Grid.SetRow(formControl, 1);
             Grid.SetColumn(formControl, 0);
-            Grid.SetColumnSpan(formControl, 2); 
+            Grid.SetColumnSpan(formControl, 2);
             nodeView.inputGrid.Children.Add(formControl);
             nodeView.SnapsToDevicePixels = true;
             nodeView.UseLayoutRounding = true;
@@ -57,15 +58,32 @@ namespace CoreNodeModelsWpf.Nodes
 
             var style = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["NodeViewComboBox"];
             dropdown = (ComboBox)nodeView.inputGrid.Children[1];
-            dropdown.Style = style;
 
-            formControl.BaseComboBox = dropdown;
+            // Remove dropdown from its current position
+            nodeView.inputGrid.Children.Remove(dropdown);
+
+            dropdown.Style = style;
 
             // Add margin to the dropdown to show the expander
             dropdown.Margin = new Thickness(0, 0, 0, 5);
             dropdown.VerticalAlignment = VerticalAlignment.Top;
             dropdown.MinWidth = 220;
             dropdown.FontSize = 12;
+
+            // Move the ComboBox to the placeholder
+            var placeholder = formControl.FindName("ComboBoxPlaceholder") as ComboBox;
+            if (placeholder != null)
+            {
+                var parentGrid = placeholder.Parent as Grid;
+                int row = Grid.GetRow(placeholder);
+                int column = Grid.GetColumn(placeholder);
+                parentGrid.Children.Remove(placeholder);
+
+                Grid.SetRow(dropdown, row);
+                Grid.SetColumn(dropdown, column);
+                dropdown.Visibility = Visibility.Visible;
+                parentGrid.Children.Add(dropdown);
+            }
 
             // subscribe to the event inside the NodeModel to detect user interacting with the dropdown
             dropdown.DropDownOpened += dropDown_DropDownOpened;
@@ -77,10 +95,10 @@ namespace CoreNodeModelsWpf.Nodes
             gridFactory.AppendChild(col);
 
             var pathFactory = new FrameworkElementFactory(typeof(Path));
-            pathFactory.SetValue(Path.StrokeProperty, Brushes.White); 
+            pathFactory.SetValue(Path.StrokeProperty, Brushes.White);
             pathFactory.SetValue(Path.UseLayoutRoundingProperty, true);
             pathFactory.SetValue(Path.SnapsToDevicePixelsProperty, true);
-            pathFactory.SetValue(Path.StrokeThicknessProperty, 0.5); 
+            pathFactory.SetValue(Path.StrokeThicknessProperty, 0.5);
             pathFactory.SetValue(Path.StrokeDashArrayProperty, new DoubleCollection(new double[] { 4, 5 }));
             pathFactory.SetValue(Path.MarginProperty, new Thickness(0, -5, 0, -5));
             pathFactory.SetBinding(Path.VisibilityProperty, new Binding("Item.Level") { Converter = new LevelToVisibilityConverter() });
@@ -97,7 +115,7 @@ namespace CoreNodeModelsWpf.Nodes
             FrameworkElementFactory textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
             textBlockFactory.SetBinding(TextBlock.TextProperty, new Binding("Name"));
             textBlockFactory.SetBinding(TextBlock.MarginProperty, new Binding("Item.Level") { Converter = new LevelToIndentConverter() });
-            textBlockFactory.SetValue(Grid.ColumnProperty, 0); 
+            textBlockFactory.SetValue(Grid.ColumnProperty, 0);
 
             // Add line and TextBlock to the Grid
             gridFactory.AppendChild(textBlockFactory);
@@ -107,66 +125,55 @@ namespace CoreNodeModelsWpf.Nodes
             itemTemplate.Seal();
             dropdown.ItemTemplate = itemTemplate;
 
-            Grid.SetRow(dropdown, 0);
-            Grid.SetColumn(dropdown, 0);
+            // Hide the combobox if the control is disabled (otherwise sees through the masking textBlock)
+            dropdown.SetBinding(Path.VisibilityProperty, new Binding("IsAutoMode") { Converter = new BoolToVisibilityConverter() });
 
-            // Mask over the dropdown to display the selected value without the indentation
-            var selectedItemDisplay = new TextBox
+            // Mask over the combobox to display the selected value without the indentation/or the default text
+            selectedItemDisplay = new TextBox
             {
                 IsReadOnly = true,
                 Focusable = false,
                 IsHitTestVisible = false,
                 Margin = new Thickness(0, 0, 0, 0),
-                Padding = new Thickness(2, -1, 0, 0),
+                Padding = new Thickness(4, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Top,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Width = 160,
+                MinWidth = 220, // initial value only, will change on enabled/disabled (crops the combobox arrow otherwise)
                 Height = 30,
                 FontSize = 12,
                 Background = new SolidColorBrush(Color.FromRgb(42, 42, 42)),
                 BorderBrush = Brushes.Transparent,
                 Foreground = new SolidColorBrush(Color.FromRgb(199, 199, 199)),
-            };  
-    
+            };
+
             var selectedItemBinding = new Binding("DisplayValue")
             {
-                Source = model, 
+                Source = model,
                 Mode = BindingMode.OneWay
             };
             selectedItemDisplay.SetBinding(TextBox.TextProperty, selectedItemBinding);
 
-            Grid.SetRow(selectedItemDisplay, 0); 
-            Grid.SetColumn(selectedItemDisplay, 0);
 
-            nodeView.inputGrid.Children.Add(selectedItemDisplay);
-
-            // Add the padlock button
-            var toggleButtonStyle = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["PadlockToggleButton"];
-            var toggleButtonTooltipStyle = (Style)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["GenericToolTipLight"];
-            modeToggleButton = new ToggleButton();
-            modeToggleButton.Style = toggleButtonStyle;
-
-            Binding isToggleCheckedBinding = new Binding("IsAutoMode");
-            isToggleCheckedBinding.Mode = BindingMode.TwoWay; 
-            isToggleCheckedBinding.Source = model;
-            modeToggleButton.SetBinding(ToggleButton.IsCheckedProperty, isToggleCheckedBinding);
-
-            modeToggleButton.Margin = new Thickness(5, 0, 0, 5);
-            modeToggleButton.HorizontalAlignment = HorizontalAlignment.Right;
-            modeToggleButton.VerticalAlignment = VerticalAlignment.Center;
-
-            var toggleButtonToolTip = new ToolTip
+            // Move the ComboBox to the placeholder
+            var placeholderText = formControl.FindName("TextPlaceholder") as TextBox;
+            if (placeholderText != null)
             {
-                Content = Res.ResourceManager.GetString(nameof(Res.DataInputNodeModeLockTooltip), CultureInfo.InvariantCulture),
-                Style = toggleButtonTooltipStyle 
-            };
+                var parentGrid = placeholderText.Parent as Grid;
+                int row = Grid.GetRow(placeholderText);
+                int column = Grid.GetColumn(placeholderText);
+                parentGrid.Children.Remove(placeholderText);
 
-            modeToggleButton.ToolTip = toggleButtonToolTip;
+                Grid.SetRow(selectedItemDisplay, row);
+                Grid.SetColumn(selectedItemDisplay, column);
+                selectedItemDisplay.Visibility = Visibility.Visible;
+                parentGrid.Children.Add(selectedItemDisplay);
 
-            Grid.SetRow(modeToggleButton, 0); 
-            Grid.SetColumn(modeToggleButton, 1); 
-            nodeView.inputGrid.Children.Add(modeToggleButton);
+                Panel.SetZIndex(selectedItemDisplay, 2);
+                Panel.SetZIndex(dropdown, 1);
+            }
+
+            selectedItemDisplay.IsEnabledChanged += selectedItemDisplay_IsEnabledChanged;
         }
 
         public new void Dispose()
@@ -175,6 +182,11 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 dropdown.DropDownOpened -= dropDown_DropDownOpened;
                 dropdown.DropDownClosed -= dropDown_DropDownClosed;
+            }
+
+            if (selectedItemDisplay != null)
+            {
+                selectedItemDisplay.IsEnabledChanged -= selectedItemDisplay_IsEnabledChanged;
             }
 
             if (listToggleButton != null)
@@ -188,9 +200,7 @@ namespace CoreNodeModelsWpf.Nodes
             prevIndex = (sender as ComboBox).SelectedIndex;
         }
 
-        private int prevIndex = 0;
-
-        private async void dropDown_DropDownClosed(object sender, EventArgs e)
+        private void dropDown_DropDownClosed(object sender, EventArgs e)
         {
             var dropDown = sender as ComboBox;
             var selection = dropDown.SelectedIndex;
@@ -204,6 +214,14 @@ namespace CoreNodeModelsWpf.Nodes
                     _model.SelectedString = selectedValue.Name;
                 }
                 modeToggleButton.IsChecked = false;
+            }
+        }
+
+        private void selectedItemDisplay_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                textBox.MinWidth = textBox.IsEnabled ? 200 : 220;
             }
         }
 
