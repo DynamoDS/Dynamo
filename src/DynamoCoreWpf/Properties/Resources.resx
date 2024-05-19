@@ -3953,6 +3953,14 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="DynamoXmlFileFormat" xml:space="preserve">
     <value>Dynamo 1.x file format</value>
   </data>
+  <data name="DataInputNodeModeLockTooltip" xml:space="preserve">
+    <value>When locked, this node only accepts the selected data type as input. When unlocked, the input can be any supported data type.</value>
+    <comment>Tool-tip for the padlock button controlling auto/manual mode.</comment>
+  </data>
+  <data name="DataInputNodeInformationTooltip" xml:space="preserve">
+    <value>Toggle on if the input data contains a list.</value>
+    <comment>Tool-tip for info questionmark icon next to the List toggle control.</comment>
+  </data>
   <data name="MessagePackageOlderDynamo" xml:space="preserve">
     <value>This package or one of its dependencies were created for a previous version of Dynamo. It may not work in this version. Do you want to continue?</value>
   </data>
@@ -3967,5 +3975,8 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="DuplicateFilesInPublishWarningTitle" xml:space="preserve">
     <value>Duplicate Files</value>
+  </data>
+  <data name="NodeInCanvasSearchCreationError" xml:space="preserve">
+    <value>Failed to create node: </value>
   </data>
 </root>

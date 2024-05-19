@@ -183,7 +183,6 @@
             }, replaceImageDelayTime);
         }
 
- 
         function refreshLibraryView(libraryController) {
             window.chrome.webview.postMessage("RefreshLibrary");
         }
@@ -194,9 +193,6 @@
         var libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
 
         refreshLibraryView(libController);
-
-        //initial state
-        libController.setHostContext("home")
 
         var searchCallback = null;
         function completeSearch(searchLoadedTypes){
