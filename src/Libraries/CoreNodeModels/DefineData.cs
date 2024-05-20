@@ -27,7 +27,6 @@ namespace CoreNodeModels
     [AlsoKnownAs("Data.DefineData")]
     public class DefineData : DSDropDownBase
     {
-        private List<DynamoDropDownItem> serializedItems;
         private bool isAutoMode;
         private bool isList;
         private string playerValue = "";
@@ -268,12 +267,6 @@ namespace CoreNodeModels
             SelectedIndex = 0;
 
             return SelectionState.Restore;
-        }
-
-        [OnSerializing]
-        private void OnSerializing(StreamingContext context)
-        {
-            serializedItems = [.. Items];
         }
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
