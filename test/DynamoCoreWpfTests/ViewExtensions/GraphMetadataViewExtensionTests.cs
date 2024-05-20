@@ -159,10 +159,10 @@ namespace DynamoCoreWpfTests.ViewExtensions
 
             ViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoModel.SwitchTabCommand swithCommand =
+                DynamoModel.SwitchTabCommand switchCommand =
                     new DynamoModel.SwitchTabCommand(0);
 
-                ViewModel.ExecuteCommand(swithCommand);
+                ViewModel.ExecuteCommand(switchCommand);
             }));
 
             Model.Logger.Log(ViewModel.CurrentSpace.Name);
