@@ -2649,6 +2649,22 @@ namespace Dynamo.PackageManager
                 return;
 
             var files = GetAllFiles().ToList();
+            if (!RetainFolderStructureOverride)
+            {
+                //Look for duplicate filenames to alert user
+                var duplicateFiles = files.GroupBy(x => Path.GetFileName(x))
+                    .Where(x => x.Count() > 1)
+                    .ToList();
+                if (duplicateFiles.Count > 0)
+                {
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        var DialogOptions = new Dictionary<Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags, bool>() { { Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags.Scrollable, true } };
+                        MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, string.Format(Resources.DuplicateFilesInPublishWarningMessage.Replace("\\n", Environment.NewLine), duplicateFiles.Count, string.Join("\n", duplicateFiles.Select(x => x.Key).ToList())), Resources.DuplicateFilesInPublishWarningTitle, DialogOptions, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+            }
+
             files = files.GroupBy(file => Path.GetFileName(file), StringComparer.OrdinalIgnoreCase)
                          .Select(group => group.First()) 
                          .ToList();

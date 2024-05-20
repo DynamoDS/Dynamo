@@ -1514,6 +1514,8 @@ Dynamo.UI.IViewModelView<T>.ViewModel.get -> T
 Dynamo.UI.Prompts.DynamoMessageBox
 Dynamo.UI.Prompts.DynamoMessageBox.BodyText.get -> string
 Dynamo.UI.Prompts.DynamoMessageBox.BodyText.set -> void
+Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags
+Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags.Scrollable = 0 -> Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags
 Dynamo.UI.Prompts.DynamoMessageBox.DialogResult.get -> bool?
 Dynamo.UI.Prompts.DynamoMessageBox.DialogResult.set -> void
 Dynamo.UI.Prompts.DynamoMessageBox.DynamoMessageBox() -> void
@@ -1576,7 +1578,8 @@ Dynamo.UI.Views.ScriptHomeObject.NewCustomNodeWorkspace() -> void
 Dynamo.UI.Views.ScriptHomeObject.NewWorkspace() -> void
 Dynamo.UI.Views.ScriptHomeObject.OpenFile(string path) -> void
 Dynamo.UI.Views.ScriptHomeObject.OpenWorkspace() -> void
-Dynamo.UI.Views.ScriptHomeObject.ScriptHomeObject(System.Action<string> requestOpenFile, System.Action requestNewWorkspace, System.Action requestOpenWorkspace, System.Action requestNewCustomNodeWorkspace, System.Action requestApplicationLoaded, System.Action<string> requestShowGuidedTour, System.Action requestShowSampleFilesInFolder, System.Action requestShowBackupFilesInFolder, System.Action requestShowTemplate) -> void
+Dynamo.UI.Views.ScriptHomeObject.SaveSettings(string settings) -> void
+Dynamo.UI.Views.ScriptHomeObject.ScriptHomeObject(System.Action<string> requestOpenFile, System.Action requestNewWorkspace, System.Action requestOpenWorkspace, System.Action requestNewCustomNodeWorkspace, System.Action requestApplicationLoaded, System.Action<string> requestShowGuidedTour, System.Action requestShowSampleFilesInFolder, System.Action requestShowBackupFilesInFolder, System.Action requestShowTemplate, System.Action<string> requestSaveSettings) -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowBackupFilesInFolder() -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowSampleFilesInFolder() -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowTempalte() -> void
@@ -4287,6 +4290,7 @@ static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string cap
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string caption, System.Windows.MessageBoxButton button) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon, string tooltip = "") -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
+static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Collections.Generic.Dictionary<Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags, bool> flags, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionary.get -> System.Windows.ResourceDictionary
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionaryUri.get -> System.Uri
@@ -4472,6 +4476,8 @@ static Dynamo.Wpf.Properties.Resources.DisablePackageInstallIconTooltip.get -> s
 static Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupCaption.get -> string
 static Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.DownloadWarningMessageBoxTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoShowFileTrustWarning.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoUpdateAvailableToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewCancelButtonTooltip.get -> string
@@ -4877,6 +4883,7 @@ static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeDescription.get -> stri
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeInput.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeOutput.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeType.get -> string
+static Dynamo.Wpf.Properties.Resources.NodeInCanvasSearchCreationError.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeInfoDismissButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeInformationalStateDismiss.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeInformationalStateDismissAll.get -> string
@@ -5500,6 +5507,7 @@ static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, boo
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
+static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, System.Collections.Generic.Dictionary<Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags, bool> flags, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(System.Windows.Window owner, string msg, string title, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.WebView2Utilities.ValidateWebView2RuntimeInstalled() -> bool
