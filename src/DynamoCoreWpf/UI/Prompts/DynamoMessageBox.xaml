@@ -140,6 +140,7 @@
                 <!--  Body Text  -->
                 <TextBlock Name="BodyTextBlock"
                    Margin="20"
+                   Grid.Row="1"
                    VerticalAlignment="Center"
                    DockPanel.Dock="Left"
                    FontFamily="{StaticResource ArtifaktElementRegular}"
