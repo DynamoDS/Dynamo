@@ -293,8 +293,15 @@ namespace Dynamo.Models
 
         private void AddSelectionAndRecordUndo(ModelBase model)
         {
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase>() { model }, CurrentWorkspace.UndoRecorder);
-            DynamoSelection.Instance.Selection.AddUnique(model);
+            try
+            {
+                WorkspaceModel.RecordModelsForModification(new List<ModelBase>() { model }, CurrentWorkspace.UndoRecorder);
+                DynamoSelection.Instance.Selection.AddUnique(model);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("Failed to add model(s) to selection." + "\n" + ex.Message);
+            }
         }
 
         private void ClearSelectionAndRecordUndo()
