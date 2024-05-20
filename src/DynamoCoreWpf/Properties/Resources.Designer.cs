@@ -1334,6 +1334,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Files with same name will be overwritten in the final package. To avoid this, rename or discard the duplicate files, or enable the Retain Folder Structure option.\n\n{0} duplicate file(s) found:\n{1}.
+        /// </summary>
+        public static string DuplicateFilesInPublishWarningMessage {
+            get {
+                return ResourceManager.GetString("DuplicateFilesInPublishWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate Files.
+        /// </summary>
+        public static string DuplicateFilesInPublishWarningTitle {
+            get {
+                return ResourceManager.GetString("DuplicateFilesInPublishWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show File Trust Warning.
         /// </summary>
         public static string DynamoShowFileTrustWarning {
