@@ -10,13 +10,14 @@ The node has one input:
 -   The "**>**" input - Connect to an upstream node to validate the type of its data.
     Additionally, the node offers three user controls:
 -   The **Auto-detect type** toggle - When toggled on, the node analyzes the incoming data, and if the data is of a supported type, the node sets the Type and List controls' values based on the type of the incoming data. The Type drop-down menu and the List toggle are disabled and will automatically update based on the input node.
+  
     When Auto-detect type is toggled off, you can specify a data type by using the Type menu and List toggle. If the incoming data does not match what you've specified, the node will enter a warning state with a null output.
 -   The **Type** drop-down menu - Sets the expected data type. When the control is enabled (**Auto-detect type** toggle is off), set a data type for validation. When the control is disabled (**Auto-detect type** toggle is on), the data type is set automatically based on incoming data. Data is valid if its type matches the shown type exactly or if its type is a child of the shown type (for example, if the Type drop-down is set to "Curve", objects of type "Rectangle", "Line", etc. are valid).
 -   The **List** toggle - When on, the node expects incoming data to be a single flat list containing items of a valid data type (see above). When off, the node expects a single item of a valid data type.
 
 ### Use as an input node
 
-## When set as an input ("Is Input" in the node's context menu), the node can optionally use upstream nodes to set the default value for the input. A run of the graph will cache the Define Data node's value for use when running the graph externally, for example with the Engine node.
+When set as an input ("Is Input" in the node's context menu), the node can optionally use upstream nodes to set the default value for the input. A run of the graph will cache the Define Data node's value for use when running the graph externally, for example with the Engine node.
 
 ## Example File
 
