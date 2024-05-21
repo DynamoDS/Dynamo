@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphMetadata;
 using Dynamo.GraphMetadata.Controls;
+using Dynamo.Models;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests.ViewExtensions
@@ -29,15 +30,15 @@ namespace DynamoCoreWpfTests.ViewExtensions
             var extensionManager = View.viewExtensionManager;
 
             var propertiesExt = extensionManager.ViewExtensions
-                .FirstOrDefault(x => x as GraphMetadataViewExtension != null )
+                .FirstOrDefault(x => x as GraphMetadataViewExtension != null)
                 as GraphMetadataViewExtension;
 
             var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
 
             // Act
-            var graphDescriptionBefore = hwm.Description; 
-            var graphAuthorBefore = hwm.Author; 
-            var graphHelpLinkBefore = hwm.GraphDocumentationURL; 
+            var graphDescriptionBefore = hwm.Description;
+            var graphAuthorBefore = hwm.Author;
+            var graphHelpLinkBefore = hwm.GraphDocumentationURL;
             var graphThumbnailBefore = hwm.Thumbnail;
 
             propertiesExt.viewModel.GraphDescription = graphDescription;
@@ -107,7 +108,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             // Arrange
             var expectedCP1Key = "My prop 1";
             var expectedCP2Key = "My prop 2";
-            var expectedCP3Key = "Custom Property 3";
+            var expectedCP3Key = "Custom Property 4";
 
             var expectedCP1Value = "My value 1";
             var expectedCP2Value = "My Value 2";
@@ -125,6 +126,48 @@ namespace DynamoCoreWpfTests.ViewExtensions
             // Assert
             Assert.IsFalse(ViewModel.HomeSpace.HasUnsavedChanges);
             Assert.IsTrue(customPropertiesBeforeOpen == 0);
+            Assert.That(propertiesExt.viewModel.CustomProperties.Count == 3);
+            Assert.That(propertiesExt.viewModel.CustomProperties[0].PropertyName == expectedCP1Key);
+            Assert.That(propertiesExt.viewModel.CustomProperties[0].PropertyValue == expectedCP1Value);
+            Assert.That(propertiesExt.viewModel.CustomProperties[1].PropertyName == expectedCP2Key);
+            Assert.That(propertiesExt.viewModel.CustomProperties[1].PropertyValue == expectedCP2Value);
+            Assert.That(propertiesExt.viewModel.CustomProperties[2].PropertyName == expectedCP3Key);
+            Assert.That(propertiesExt.viewModel.CustomProperties[2].PropertyValue == expectedCP3Value);
+        }
+
+        [Test]
+        public void ExistingGraphWithCustomPropertiesKeepsPropertiesWhenCustomNodesAreOpened()
+        {
+            // Arrange
+            var expectedCP1Key = "My prop 1";
+            var expectedCP2Key = "My prop 2";
+            var expectedCP3Key = "Custom Property 4";
+
+            var expectedCP1Value = "My value 1";
+            var expectedCP2Value = "My Value 2";
+            var expectedCP3Value = "";
+
+            // Act
+            var extensionManager = View.viewExtensionManager;
+            var propertiesExt = extensionManager.ViewExtensions
+                .FirstOrDefault(x => x as GraphMetadataViewExtension != null)
+                as GraphMetadataViewExtension;
+
+            Open(@"core\CustompropertyTest.dyn");
+
+            Open(@"core\CustomNodes\add.dyf");
+
+            ViewModel.UIDispatcher.Invoke(new Action(() =>
+            {
+                DynamoModel.SwitchTabCommand switchCommand =
+                    new DynamoModel.SwitchTabCommand(0);
+
+                ViewModel.ExecuteCommand(switchCommand);
+            }));
+
+            Model.Logger.Log(ViewModel.CurrentSpace.Name);
+
+            // Assert
             Assert.That(propertiesExt.viewModel.CustomProperties.Count == 3);
             Assert.That(propertiesExt.viewModel.CustomProperties[0].PropertyName == expectedCP1Key);
             Assert.That(propertiesExt.viewModel.CustomProperties[0].PropertyValue == expectedCP1Value);
@@ -156,6 +199,24 @@ namespace DynamoCoreWpfTests.ViewExtensions
             ViewModel.MakeNewHomeWorkspace(null);
 
             Assert.IsFalse(ViewModel.HomeSpace.HasUnsavedChanges);
+        }
+
+        [Test]
+        public void AddingNewPropertiesHaveUniquePropertyNames()
+        {
+            var extensionManager = View.viewExtensionManager;
+            var propertiesExt = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x as GraphMetadataViewExtension != null)
+                as GraphMetadataViewExtension;
+
+            var customPropertiesBeforeOpen = propertiesExt.viewModel.CustomProperties.Count;
+            Open(@"core\CustompropertyTest.dyn");
+
+            propertiesExt.viewModel.AddCustomPropertyCommand.Execute(null);
+
+            Assert.That(propertiesExt.viewModel.CustomProperties.Count == 4);
+            Assert.That(propertiesExt.viewModel.CustomProperties[3].PropertyName == "Custom Property 5");
+            Assert.That(propertiesExt.viewModel.CustomProperties[3].PropertyValue == "");
         }
     }
 }

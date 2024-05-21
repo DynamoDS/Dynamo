@@ -12,6 +12,7 @@ namespace Dynamo.Wpf.Utilities
             MessageBoxResult Show(string msg, string title, MessageBoxButton button, MessageBoxImage img);
             MessageBoxResult Show(string msg, string title, bool showRichTextBox, MessageBoxButton button, MessageBoxImage img);
             MessageBoxResult Show(Window owner, string msg, string title, bool showRichTextBox, MessageBoxButton button, MessageBoxImage img);
+            MessageBoxResult Show(Window owner, string msg, string title, Dictionary<DynamoMessageBox.DialogFlags, bool> flags, MessageBoxButton button, MessageBoxImage img);
             MessageBoxResult Show(Window owner,string msg, string title, MessageBoxButton button, MessageBoxImage img);
             MessageBoxResult Show(Window owner, string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img);
             MessageBoxResult Show(string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img);
@@ -33,6 +34,10 @@ namespace Dynamo.Wpf.Utilities
             MessageBoxResult IMessageBox.Show(Window owner, string msg, string title, bool showRichTextBox, MessageBoxButton button, MessageBoxImage img)
             {
                 return DynamoMessageBox.Show(owner,msg, title, showRichTextBox, button, img);
+            }
+            MessageBoxResult IMessageBox.Show(Window owner, string msg, string title, Dictionary<DynamoMessageBox.DialogFlags, bool> flags, MessageBoxButton button, MessageBoxImage img)
+            {
+                return DynamoMessageBox.Show(owner, msg, title, flags, button, img);
             }
 
             public MessageBoxResult Show(Window owner, string msg, string title, MessageBoxButton button, MessageBoxImage img)
@@ -67,6 +72,10 @@ namespace Dynamo.Wpf.Utilities
         public static MessageBoxResult Show(Window owner, string msg, string title, bool showRichTextBox, MessageBoxButton button, MessageBoxImage img)
         {
             return (msg_box ?? (msg_box = new DefaultMessageBox())).Show(owner,msg, title, showRichTextBox, button, img);
+        }
+        public static MessageBoxResult Show(Window owner, string msg, string title, Dictionary<DynamoMessageBox.DialogFlags, bool> flags, MessageBoxButton button, MessageBoxImage img)
+        {
+            return (msg_box ?? (msg_box = new DefaultMessageBox())).Show(owner, msg, title, flags, button, img);
         }
         public static MessageBoxResult Show(Window owner,string msg, string title, MessageBoxButton button, MessageBoxImage img)
         {
