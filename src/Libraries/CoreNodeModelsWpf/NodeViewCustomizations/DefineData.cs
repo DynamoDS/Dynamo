@@ -139,14 +139,14 @@ namespace CoreNodeModelsWpf.Nodes
                 VerticalAlignment = VerticalAlignment.Top,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                MinWidth = 220, // initial value only, will change on enabled/disabled (crops the combobox arrow otherwise)
+                MinWidth = model.IsAutoMode ? 220 :  240, // initial value only, will change on enabled/disabled (crops the combobox arrow otherwise)
                 Height = 30,
                 FontSize = 12,
                 Background = new SolidColorBrush(Color.FromRgb(42, 42, 42)),
                 BorderBrush = Brushes.Transparent,
                 Foreground = new SolidColorBrush(Color.FromRgb(199, 199, 199)),
             };
-
+                
             var selectedItemBinding = new Binding("DisplayValue")
             {
                 Source = model,

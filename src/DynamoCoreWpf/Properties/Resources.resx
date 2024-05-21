@@ -3961,6 +3961,9 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Toggle on if the input data contains a list.</value>
     <comment>Tool-tip for info questionmark icon next to the List toggle control.</comment>
   </data>
+  <data name="DataInputAutoDetectTypeTooltip" xml:space="preserve">
+    <value>Toggle on to allow Define Data to automatically detect the data type of the input node. Toggle off to set the desired data type yourself</value>
+  </data>
   <data name="DataInputAutoDetectTypeLabel" xml:space="preserve">
     <value>Auto-detect type</value>
   </data>

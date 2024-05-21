@@ -1215,6 +1215,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Toggle on to allow Define Data to automatically detect the data type of the input node. Toggle off to set the desired data type yourself.
+        /// </summary>
+        public static string DataInputAutoDetectTypeTooltip {
+            get {
+                return ResourceManager.GetString("DataInputAutoDetectTypeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List.
         /// </summary>
         public static string DataInputListLabel {

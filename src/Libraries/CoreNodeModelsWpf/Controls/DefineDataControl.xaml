@@ -47,7 +47,7 @@
                     </Path>
                 </Viewbox>
                 <Canvas.ToolTip>
-                    <ToolTip Content="{x:Static p:Resources.DataInputNodeInformationTooltip}"
+                    <ToolTip Content="{x:Static p:Resources.DataInputAutoDetectTypeTooltip}"
                              Style="{StaticResource GenericToolTipLight}"/>
                 </Canvas.ToolTip>
             </Canvas>
