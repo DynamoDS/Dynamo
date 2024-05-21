@@ -251,7 +251,7 @@ namespace WpfVisualizationTests
             ViewModel.OpenCommand.Execute(openPath);
 
             var listGUID = "0cbb9f47-5a28-4898-8d28-575cb15c4455";  // List inputs are 'Line' and 'Rectangle', we expect a 'Curve' as DisplayValue
-            var errorListGUID = "39edfbf6-a83b-4815-9bb0-2d7ebcff39f3"; // List inputs are 'Line', 'Rectangle' and 5 (integer), we expect a 'Select Types' as DisplayValue
+            var errorListGUID = "39edfbf6-a83b-4815-9bb0-2d7ebcff39f3"; // List inputs are 'Line', 'Rectangle' and 5 (integer), we expect a '' as DisplayValue
 
             var listNode = Model.CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == listGUID) as DefineData;
             var errorListNode = Model.CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == errorListGUID) as DefineData;
