@@ -183,13 +183,13 @@ namespace CoreNodeModels
 
             resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier, functionCall));
 
-            //Next add the first key value pair to the output port
+            // Next add the first key value pair to the output port
             var getFirstKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
                 new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode(">") });
 
             resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), getFirstKey));
 
-            //Second get the key value pair to pass to the databridge callback
+            // Second get the key value pair to pass to the databridge callback
             var getSecondKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
                 new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode("Validation") });
 
@@ -219,7 +219,6 @@ namespace CoreNodeModels
                 if(IsAutoMode)
                 {
                     DisplayValue = string.Empty; // show blank if we are in locked mode (as we cannot interact with the node)
-                    //DisplayValue = Properties.Resources.DefineDataDisplayValueMessage;
                 }
                 else
                 {
