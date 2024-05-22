@@ -125,9 +125,8 @@ namespace Dynamo.Utilities
             result = Regex.Replace(result, directoryPattern, "");
             result = Regex.Replace(result, ssnPattern, "");
             result = Regex.Replace(result, datePattern, "");
-            //result = Regex.Replace(result, websitePattern, "");
-            //result = Regex.Replace(result, creditCardPattern, "");
-            //result = Regex.Replace(result, ipPattern, "");
+            result = Regex.Replace(result, ipPattern, "");
+            result = Regex.Replace(result, creditCardPattern, "");
 
             return result;
         }

@@ -161,7 +161,16 @@ namespace DynamoMLDataPipeline
         {
             // Read .dyn file as a string
             string sourceFileContent = File.ReadAllText(filePath);
-            string formattedSourceContent = PIIDetector.RemovePIIData(sourceFileContent);
+
+            JObject jsonObject = JObject.Parse(sourceFileContent);
+
+            Tuple<JObject, bool> jsonResult = PIIDetector.RemovePIIData(jsonObject);
+
+            string formattedSourceContent = jsonObject.ToString();
+            if (jsonResult.Item2)
+            {
+                formattedSourceContent = jsonResult.Item1.ToString();
+            }
 
             // Convert the string to a byte array (buffer)
             byte[] stringBuffer = Encoding.UTF8.GetBytes(formattedSourceContent);
