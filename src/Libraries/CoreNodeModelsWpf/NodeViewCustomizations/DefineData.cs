@@ -161,7 +161,6 @@ namespace CoreNodeModelsWpf.Nodes
             };
             selectedItemDisplay.SetBinding(TextBox.WidthProperty, widthBinding);
 
-
             // Move the ComboBox to the placeholder
             var placeholderText = formControl.FindName("TextPlaceholder") as TextBox;
             if (placeholderText != null)
@@ -189,6 +188,11 @@ namespace CoreNodeModelsWpf.Nodes
                 dropdown.DropDownClosed -= dropDown_DropDownClosed;
             }
 
+            if (selectedItemDisplay != null)
+            {
+                selectedItemDisplay.IsEnabledChanged -= selectedItemDisplay_IsEnabledChanged;
+            }
+
             if (listToggleButton != null)
             {
                 listToggleButton.Click -= listToggle_IsClicked;
@@ -214,6 +218,14 @@ namespace CoreNodeModelsWpf.Nodes
                     _model.SelectedString = selectedValue.Name;
                 }
                 modeToggleButton.IsChecked = false;
+            }
+        }
+
+        private void selectedItemDisplay_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                textBox.MinWidth = textBox.IsEnabled ? 200 : 220;
             }
         }
 
