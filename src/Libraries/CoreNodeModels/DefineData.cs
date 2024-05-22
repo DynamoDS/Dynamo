@@ -30,7 +30,6 @@ namespace CoreNodeModels
         private List<DynamoDropDownItem> serializedItems;
         private bool isAutoMode = true; // default start with auto-detect 'on'
         private bool isList;
-        private string playerValue = "";
         private string displayValue = Properties.Resources.DefineDataDisplayValueMessage;
 
         /// <summary>
@@ -99,16 +98,23 @@ namespace CoreNodeModels
             get { return true; }
         }
 
-        [JsonIgnore]
-        public string PlayerValue
+
+        private string value = "";
+
+        [JsonProperty("InputValue")]
+        public virtual string Value
         {
-            get { return playerValue; }
+            get
+            {
+                return value;
+            }
             set
             {
-                if (Equals(this.playerValue, null) || !this.playerValue.Equals(value))
+                if (Equals(this.value, null) || !this.value.Equals(value))
                 {
-                    playerValue = value ?? "";
+                    this.value = value ?? "";
                     MarkNodeAsModified();
+                    RaisePropertyChanged(nameof(Value));
                 }
             }
         }
@@ -170,15 +176,15 @@ namespace CoreNodeModels
             // the expected datatype
             // if the input is an ArrayList or not
             var function = new Func<object, string, bool, bool, string, Dictionary<string, object>>(DSCore.Data.IsSupportedDataNodeType);
-            var funtionInputs = new List<AssociativeNode> {
+            var functionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
                 AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
                 AstFactory.BuildBooleanNode(IsList),
                 AstFactory.BuildBooleanNode(IsAutoMode),
-                AstFactory.BuildStringNode(PlayerValue)
+                AstFactory.BuildStringNode(Value)
             };
 
-            var functionCall = AstFactory.BuildFunctionCall(function, funtionInputs);
+            var functionCall = AstFactory.BuildFunctionCall(function, functionInputs);
             var functionCallIdentifier = AstFactory.BuildIdentifier(GUID + "_func");
 
             resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier, functionCall));
@@ -211,7 +217,7 @@ namespace CoreNodeModels
             //Todo if the function call throws we don't get back to DatabridgeCallback.  Not sure if we need to handle this case
 
             //Now we reset this value to empty string so that the next time a value is set from upstream nodes we can know that it is not coming from the player
-            playerValue = "";
+            value = "";
 
             // If data is null
             if (data == null)
@@ -289,7 +295,7 @@ namespace CoreNodeModels
             switch (name)
             {
                 case "Value":
-                    PlayerValue = value;
+                    Value = value;
                     return true; // UpdateValueCore handled.
             }
 
