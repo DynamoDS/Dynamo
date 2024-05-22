@@ -1251,10 +1251,21 @@ namespace Dynamo.ViewModels
         {
             using (NestedGroupsGeometries.DeferCollectionReset())
             {
-                ViewModelBases
-                    .OfType<AnnotationViewModel>()
-                    .ToList()
-                    .ForEach(x => UpdateGroupCutGeometry(x));
+                ViewModelBases = null;
+
+                if (ViewModelBases != null)
+                {        
+                    ViewModelBases
+                        .OfType<AnnotationViewModel>()
+                        .ToList()
+                        .ForEach(x => UpdateGroupCutGeometry(x));
+                }
+                else
+                {
+                    var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
+                    WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);               
+                }
+
             }
         }
 
