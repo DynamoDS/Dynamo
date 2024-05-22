@@ -27,7 +27,7 @@ namespace CoreNodeModels
     [AlsoKnownAs("Data.DefineData")]
     public class DefineData : DSDropDownBase
     {
-        private bool isAutoMode;
+        private bool isAutoMode = true; // default start with auto-detect 'on'
         private bool isList;
         private string playerValue = "";
         private string displayValue = Properties.Resources.DefineDataDisplayValueMessage;
@@ -212,7 +212,8 @@ namespace CoreNodeModels
             {
                 if (IsAutoMode)
                 {
-                    DisplayValue = Properties.Resources.DefineDataDisplayValueMessage;
+                    DisplayValue = string.Empty; // show blank if we are in locked mode (as we cannot interact with the node)
+                    //DisplayValue = Properties.Resources.DefineDataDisplayValueMessage;
                 }
                 else
                 {
