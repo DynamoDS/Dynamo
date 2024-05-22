@@ -165,7 +165,7 @@ namespace DynamoMLDataPipeline
             //Parsing the workspace info into a JSON object.
             JObject jsonObject = JObject.Parse(sourceFileContent);
 
-            // RemovePIIData will remove the sensitive data from specific parts of JSON structure(like the Views, Annotiations and code block info)
+            // RemovePIIData will remove the sensitive data from specific parts of JSON structure(like the Views, Annotiations, string nodes and code block info)
             Tuple<JObject, bool> jsonResult = PIIDetector.RemovePIIData(jsonObject);
 
             string formattedSourceContent = jsonObject.ToString();
