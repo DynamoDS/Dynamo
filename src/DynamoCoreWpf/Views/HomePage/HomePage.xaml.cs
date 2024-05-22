@@ -313,6 +313,8 @@ namespace Dynamo.UI.Views
             {
                 LoadGraphs(recentFiles);
             }
+
+            startPage.DynamoViewModel.RecentFiles.CollectionChanged += RecentFiles_CollectionChanged;
         }
 
         private async void SetLocale()
