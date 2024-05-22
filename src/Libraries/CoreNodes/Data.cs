@@ -649,6 +649,23 @@ namespace DSCore
         }
 
         /// <summary>
+        /// A helper function to safely extract a dictionary value
+        /// </summary>
+        /// <param name="dict">The dictionary to extract the value from</param>
+        /// <param name="key">The key of the key/value pair</param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static object SafeExtractDictionaryValue(Dictionary<string, object> dict, string key)
+        {
+            if (dict?.TryGetValue(key, out var value) == true)
+            {
+                return value;
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// This is the function used by AST
         /// Handles some of the the node logic while performing the validation
         /// </summary>
@@ -656,11 +673,13 @@ namespace DSCore
         /// <param name="typeString">The Type as string (it would be better to pass an object of type 'Type' for direct type comparison)</param>
         /// <param name="isList">If the input is of type `ArrayList`</param>
         /// <param name="isAutoMode">If the node is in Auto mode</param>
+        /// <param name="playerValue">The value coming from Dynamo Player</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static Dictionary<string, object> IsSupportedDataNodeType([ArbitraryDimensionArrayImport] object inputValue,
             string typeString, bool isList, bool isAutoMode, string playerValue)
         {
+
             if (inputValue == null)
             {
                 // Don't raise a warning if the node is unused
@@ -673,7 +692,8 @@ namespace DSCore
 
             if (!IsSingleValueOrSingleLevelArrayList(inputValue))
             {
-                throw new NotSupportedException(Properties.Resources.DefineDataSupportedInputValueExceptionMessage);
+                var warning = Properties.Resources.DefineDataSupportedInputValueExceptionMessage;
+                return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
             }
 
             // If the playerValue is not empty, then we assume it was set by the player.
@@ -687,11 +707,11 @@ namespace DSCore
                 catch (Exception ex)    
                 {
                     dynamoLogger?.Log("A Player value failed to deserialize with this exception: " + ex.Message);
-                    throw new NotSupportedException(Properties.Resources.Exception_Deserialize_Unsupported_Cache);
+
+                    var warning = Properties.Resources.Exception_Deserialize_Unsupported_Cache;
+                    return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
                 }
             }
-
-            object result;  // Tuple<IsValid: bool, UpdateList: bool, InputType: DataNodeDynamoType>
 
             // Currently working around passing the type as a string from the node - can be developed further to pass directly the type value
             var type = DataNodeDynamoTypeList.First(x => x.Type.ToString().Equals(typeString));
@@ -699,7 +719,6 @@ namespace DSCore
             if (isAutoMode)
             {
                 // If running in AutoMode, then we would propagate the actual Type and List value and validate against them
-                // List logic
                 bool updateList = false;
 
                 var assertList = inputValue is ArrayList;
@@ -716,28 +735,23 @@ namespace DSCore
                     {
                         // We couldn't find a common ancestor - list containing unsupported or incompatible data types
                         var incompatibleDataTypes = ConcatenateUniqueDataTypes(inputValue);
-                        throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage,
-                            incompatibleDataTypes));
+                        var warning = string.Format(Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage, incompatibleDataTypes);
+                        return DefineDataResult(inputValue, false, updateList, DataNodeDynamoTypeList.First(), warning);
                     }
                     var inputType = DataNodeDynamoTypeList.FirstOrDefault(x => x.Type == valueType, null);
-                    if(inputType == null)
+                    if (inputType == null)
                     {
                         // We couldn't find a Dynamo data type that fits, so we throw
-                        throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage,
-                            valueType.Name));
+                        var warning = string.Format(Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage, valueType.Name);
+                        return DefineDataResult(inputValue, false, updateList, inputType, warning);
+                       
                     }
-                    result = (IsValid: false, UpdateList: updateList, InputType: inputType);
+                    return DefineDataResult(inputValue, false, updateList, inputType, string.Empty);
                 }
                 else
                 {
-                    result = (IsValid: true, UpdateList: updateList, InputType: type);
+                    return DefineDataResult(inputValue, true, updateList, type, string.Empty);
                 }
-
-                return new Dictionary<string, object>
-                {
-                    { ">", inputValue },
-                    { "Validation", result }
-                };
             }
             else
             {
@@ -745,17 +759,54 @@ namespace DSCore
                 var isSupportedType = IsSupportedDataNodeDynamoType(inputValue, type.Type, isList);
                 if (!isSupportedType)
                 {
-                    throw new ArgumentException(string.Format(Properties.Resources.DefineDataUnexpectedInputExceptionMessage, type.Type.FullName,
-                        inputValue.GetType().FullName));
+                    var expectedType = GetStringTypeFromInput(type, isList);
+                    var currentType = GetStringTypeFromInput(inputValue);
+                    var warning = string.Format(Properties.Resources.DefineDataUnexpectedInputExceptionMessage, expectedType, currentType);
+                    return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
                 }
-                result = (IsValid: isSupportedType, UpdateList: false, InputType: type);
 
-                return new Dictionary<string, object>
-                {
-                    { ">", inputValue },
-                    { "Validation", result }
-                };
+                return DefineDataResult(inputValue, isSupportedType, false, type, string.Empty);
+                
             }
+        }
+
+        private static string GetStringTypeFromInput(object inputValue)
+        {
+            if (inputValue == null) return string.Empty;
+            try
+            {
+                if (inputValue is ArrayList || inputValue is IEnumerable)
+                {
+                    var values = ConcatenateUniqueDataTypes(inputValue);
+                    return $"List of {values}";
+                }
+               
+                return inputValue.GetType().FullName;
+            }
+            catch (Exception) { return string.Empty; }
+        }
+
+        private static string GetStringTypeFromInput(DataNodeDynamoType type, bool isList)
+        {
+            if (type == null) return string.Empty;
+
+            var typeFullName = type.Type.FullName;  
+            return isList ? $"List of {typeFullName}" : typeFullName;
+        }
+
+        private static Dictionary<string, object> DefineDataResult(object inputValue, bool isSupportedType, bool updateList, DataNodeDynamoType type, string warning)
+        {
+            if(warning != string.Empty)
+            {
+                throw new Exception(warning);
+            }
+
+            var result = (IsValid: isSupportedType, UpdateList: updateList, InputType: type);
+            return new Dictionary<string, object>
+            {
+                { ">", inputValue },
+                { "Validation", result }
+            };
         }
 
         private static string ConcatenateUniqueDataTypes(object inputValue)
@@ -837,15 +888,12 @@ namespace DSCore
             // Try to predict the likely ancestor as the single lowest-level node type
             var likelyAncestor = LikelyAncestor(nodes);
 
-            var uniqueLevelNodes = nodes
-                .GroupBy(x => x.Level)
-                .Select(g => g.First())
-                .ToList();
-
-            foreach (var node in uniqueLevelNodes)
+            foreach (var node in nodes)
             {
-                if (node.Type == likelyAncestor.Type) continue;
-                likelyAncestor = FindCommonAncestorBetweenTwoNodes(node, likelyAncestor);
+                if (node.Type == likelyAncestor.Type) continue; // skip self
+
+                // if at least one node type is not related to the likely ancestor, bail
+                likelyAncestor = FindCommonAncestorBetweenTwoNodes(node, likelyAncestor); 
 
                 if (likelyAncestor == null) break; 
             }
