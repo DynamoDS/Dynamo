@@ -139,7 +139,7 @@ namespace CoreNodeModelsWpf.Nodes
                 VerticalAlignment = VerticalAlignment.Top,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                MinWidth = model.IsAutoMode ? 220 :  240, // initial value only, will change on enabled/disabled (crops the combobox arrow otherwise)
+                MinWidth = 200,
                 Height = 30,
                 FontSize = 12,
                 Background = new SolidColorBrush(Color.FromRgb(42, 42, 42)),
@@ -154,6 +154,12 @@ namespace CoreNodeModelsWpf.Nodes
             };
             selectedItemDisplay.SetBinding(TextBox.TextProperty, selectedItemBinding);
 
+            var widthBinding = new Binding("IsEnabled")
+            {
+                Source = selectedItemDisplay,
+                Converter = new BooleanToWidthConverter()
+            };
+            selectedItemDisplay.SetBinding(TextBox.WidthProperty, widthBinding);
 
             // Move the ComboBox to the placeholder
             var placeholderText = formControl.FindName("TextPlaceholder") as TextBox;
@@ -172,8 +178,6 @@ namespace CoreNodeModelsWpf.Nodes
                 Panel.SetZIndex(selectedItemDisplay, 2);
                 Panel.SetZIndex(dropdown, 1);
             }
-
-            selectedItemDisplay.IsEnabledChanged += selectedItemDisplay_IsEnabledChanged;
         }
 
         public new void Dispose()
@@ -305,6 +309,20 @@ namespace CoreNodeModelsWpf.Nodes
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class BooleanToWidthConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                bool isEnabled = (bool)value;
+                return isEnabled ? 200 : 220;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
                 throw new NotImplementedException();
             }

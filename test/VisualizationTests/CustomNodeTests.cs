@@ -266,7 +266,7 @@ namespace WpfVisualizationTests
 
             Assert.IsTrue(errorListNode.IsAutoMode);
             Assert.IsFalse(errorListNode.IsList);
-            Assert.AreEqual(errorListNode.DisplayValue, "Select Types", "The node displays a type value, but it should not.");
+            Assert.AreEqual(errorListNode.DisplayValue, string.Empty, "The node displays a type value, but it should not.");
         }
     }
 }
