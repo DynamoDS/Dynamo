@@ -139,7 +139,7 @@ namespace CoreNodeModelsWpf.Nodes
                 VerticalAlignment = VerticalAlignment.Top,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                MinWidth = model.IsAutoMode ? 220 :  240, // initial value only, will change on enabled/disabled (crops the combobox arrow otherwise)
+                MinWidth = 200,
                 Height = 30,
                 FontSize = 12,
                 Background = new SolidColorBrush(Color.FromRgb(42, 42, 42)),
@@ -153,6 +153,13 @@ namespace CoreNodeModelsWpf.Nodes
                 Mode = BindingMode.OneWay
             };
             selectedItemDisplay.SetBinding(TextBox.TextProperty, selectedItemBinding);
+
+            var widthBinding = new Binding("IsEnabled")
+            {
+                Source = selectedItemDisplay,
+                Converter = new BooleanToWidthConverter()
+            };
+            selectedItemDisplay.SetBinding(TextBox.WidthProperty, widthBinding);
 
 
             // Move the ComboBox to the placeholder
@@ -172,8 +179,6 @@ namespace CoreNodeModelsWpf.Nodes
                 Panel.SetZIndex(selectedItemDisplay, 2);
                 Panel.SetZIndex(dropdown, 1);
             }
-
-            selectedItemDisplay.IsEnabledChanged += selectedItemDisplay_IsEnabledChanged;
         }
 
         public new void Dispose()
@@ -182,11 +187,6 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 dropdown.DropDownOpened -= dropDown_DropDownOpened;
                 dropdown.DropDownClosed -= dropDown_DropDownClosed;
-            }
-
-            if (selectedItemDisplay != null)
-            {
-                selectedItemDisplay.IsEnabledChanged -= selectedItemDisplay_IsEnabledChanged;
             }
 
             if (listToggleButton != null)
@@ -214,14 +214,6 @@ namespace CoreNodeModelsWpf.Nodes
                     _model.SelectedString = selectedValue.Name;
                 }
                 modeToggleButton.IsChecked = false;
-            }
-        }
-
-        private void selectedItemDisplay_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (sender is TextBox textBox)
-            {
-                textBox.MinWidth = textBox.IsEnabled ? 200 : 220;
             }
         }
 
@@ -305,6 +297,20 @@ namespace CoreNodeModelsWpf.Nodes
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class BooleanToWidthConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                bool isEnabled = (bool)value;
+                return isEnabled ? 200 : 220;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
                 throw new NotImplementedException();
             }
