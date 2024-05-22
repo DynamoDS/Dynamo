@@ -45,6 +45,10 @@ Dynamo.Controls.BinaryRadioButtonCheckedConverter
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.BinaryRadioButtonCheckedConverter() -> void
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BinaryRadioButtonCheckedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.BooleanNegationConverter
+Dynamo.Controls.BooleanNegationConverter.BooleanNegationConverter() -> void
+Dynamo.Controls.BooleanNegationConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.BooleanNegationConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BooleanToBrushConverter
 Dynamo.Controls.BooleanToBrushConverter.BooleanToBrushConverter() -> void
 Dynamo.Controls.BooleanToBrushConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -4462,8 +4466,12 @@ static Dynamo.Wpf.Properties.Resources.CustomNodePropertyWindowName.get -> strin
 static Dynamo.Wpf.Properties.Resources.CustomNodePropertyWindowNameHint.get -> string
 static Dynamo.Wpf.Properties.Resources.CustomNodePropertyWindowTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.CustomNodeTypeShortString.get -> string
+static Dynamo.Wpf.Properties.Resources.DataInputAutoDetectTypeLabel.get -> string
+static Dynamo.Wpf.Properties.Resources.DataInputAutoDetectTypeTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.DataInputListLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.DataInputNodeInformationTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.DataInputNodeModeLockTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.DataInputTypeLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.DefaultPythonEngineNone.get -> string
 static Dynamo.Wpf.Properties.Resources.DeleteFailureMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.DeprecatingPackageMessageBoxTitle.get -> string
