@@ -1206,6 +1206,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-detect type.
+        /// </summary>
+        public static string DataInputAutoDetectTypeLabel {
+            get {
+                return ResourceManager.GetString("DataInputAutoDetectTypeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle on to allow Define Data to automatically detect the data type of the input node. Toggle off to set the desired data type yourself.
+        /// </summary>
+        public static string DataInputAutoDetectTypeTooltip {
+            get {
+                return ResourceManager.GetString("DataInputAutoDetectTypeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List.
+        /// </summary>
+        public static string DataInputListLabel {
+            get {
+                return ResourceManager.GetString("DataInputListLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Toggle on if the input data contains a list..
         /// </summary>
         public static string DataInputNodeInformationTooltip {
@@ -1220,6 +1247,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DataInputNodeModeLockTooltip {
             get {
                 return ResourceManager.GetString("DataInputNodeModeLockTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string DataInputTypeLabel {
+            get {
+                return ResourceManager.GetString("DataInputTypeLabel", resourceCulture);
             }
         }
         
