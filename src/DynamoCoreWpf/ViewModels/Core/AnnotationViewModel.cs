@@ -1251,8 +1251,6 @@ namespace Dynamo.ViewModels
         {
             using (NestedGroupsGeometries.DeferCollectionReset())
             {
-                ViewModelBases = null;
-
                 if (ViewModelBases != null)
                 {        
                     ViewModelBases
@@ -1260,12 +1258,6 @@ namespace Dynamo.ViewModels
                         .ToList()
                         .ForEach(x => UpdateGroupCutGeometry(x));
                 }
-                else
-                {
-                    var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
-                    WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);               
-                }
-
             }
         }
 
