@@ -126,8 +126,6 @@ namespace CoreNodeModels
         {
             PropertyChanged += OnPropertyChanged;
 
-            //Items.Add(new DynamoDropDownItem("Select a type", null));
-
             foreach (var dataType in Data.DataNodeDynamoTypeList)
             {
                 var displayName = dataType.Name;
@@ -164,11 +162,8 @@ namespace CoreNodeModels
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
-        private static readonly string BuiltinDictionaryTypeName = typeof(DesignScript.Builtin.Dictionary).FullName;
-        private static readonly string BuiltinDictionaryGet = nameof(DesignScript.Builtin.Dictionary.ValueAtKey);
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {
+        {   
             var resultAst = new List<AssociativeNode>();
 
             // function call inputs - reference to the function, and the function arguments coming from the inputs
@@ -190,14 +185,15 @@ namespace CoreNodeModels
             resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier, functionCall));
 
             // Next add the first key value pair to the output port
-            var getFirstKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
-                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode(">") });
+            var safeExtractDictionaryValue = new Func<Dictionary<string, object>, string, object>(DSCore.Data.SafeExtractDictionaryValue);
+            var getFirstKey = AstFactory.BuildFunctionCall(safeExtractDictionaryValue,
+                [functionCallIdentifier, AstFactory.BuildStringNode(">")]);
 
             resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), getFirstKey));
 
             // Second get the key value pair to pass to the databridge callback
-            var getSecondKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
-                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode("Validation") });
+            var getSecondKey = AstFactory.BuildFunctionCall(safeExtractDictionaryValue,
+                [functionCallIdentifier, AstFactory.BuildStringNode("Validation")]);
 
             resultAst.Add(AstFactory.BuildAssignment(
                     AstFactory.BuildIdentifier(GUID + "_db"),
@@ -207,10 +203,6 @@ namespace CoreNodeModels
         }
 
 
-        /// <summary>
-        /// Not sure at the moment how relevant is the databridge for this node type 
-        /// </summary>
-        /// <param name="data"></param>
         private void DataBridgeCallback(object data)
         {
             //Todo If the playerValue is not empty string then we can chanage the UI to reflect the value is coming from the player

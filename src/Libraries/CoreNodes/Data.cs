@@ -649,6 +649,23 @@ namespace DSCore
         }
 
         /// <summary>
+        /// A helper function to safely extract a dictionary value
+        /// </summary>
+        /// <param name="dict">The dictionary to extract the value from</param>
+        /// <param name="key">The key of the key/value pair</param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static object SafeExtractDictionaryValue(Dictionary<string, object> dict, string key)
+        {
+            if (dict?.TryGetValue(key, out var value) == true)
+            {
+                return value;
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// This is the function used by AST
         /// Handles some of the the node logic while performing the validation
         /// </summary>
