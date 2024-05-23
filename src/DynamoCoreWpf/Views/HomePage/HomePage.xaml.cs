@@ -57,6 +57,8 @@ namespace Dynamo.UI.Views
 
         internal List<GuidedTourItem> GuidedTourItems;
 
+        private bool _disposed = false;
+
         /// <summary>
         /// A helper tool to let us test flows without relying on side-effects
         /// </summary>
@@ -90,8 +92,7 @@ namespace Dynamo.UI.Views
             DataContextChanged += OnDataContextChanged;
 
         }
-
-
+            
         private void InitializeGuideTourItems()
         {
             GuidedTourItems = new List<GuidedTourItem>
@@ -312,6 +313,11 @@ namespace Dynamo.UI.Views
             if (recentFiles != null && recentFiles.Any())
             {
                 LoadGraphs(recentFiles);
+            }
+
+            if (startPage.DynamoViewModel != null && startPage.DynamoViewModel.RecentFiles != null)
+            {
+                startPage.DynamoViewModel.RecentFiles.CollectionChanged += RecentFiles_CollectionChanged;
             }
         }
 
@@ -582,20 +588,53 @@ namespace Dynamo.UI.Views
         #endregion
 
         #region Dispose
+        /// <summary>
+        /// Public implementation of Dispose pattern callable by consumers (as per Microsoft documentation)
+        /// https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose
+        /// </summary>
         public void Dispose()
         {
-            DataContextChanged -= OnDataContextChanged;
-            if (startPage != null)
-            {
-                startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
-                startPage.DynamoViewModel.RecentFiles.CollectionChanged -= RecentFiles_CollectionChanged;
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-            this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
-
-            if (File.Exists(fontFilePath))
+        /// <summary>
+        /// Protected implementation of Dispose pattern
+        /// </summary>
+        /// <param name="disposing">To be called by the finalizer if necessary</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
             {
-                File.Delete(fontFilePath);
+                if (disposing)
+                {
+                    // Unsubscribe from events
+                    DataContextChanged -= OnDataContextChanged;
+                    if (startPage != null)
+                    {
+                        if (startPage.DynamoViewModel != null)
+                        {
+                            startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+                            if (startPage.DynamoViewModel.RecentFiles != null)
+                            {
+                                startPage.DynamoViewModel.RecentFiles.CollectionChanged -= RecentFiles_CollectionChanged;
+                            }
+                        }
+                    }
+
+                    if (this.dynWebView != null && this.dynWebView.CoreWebView2 != null)
+                    {
+                        this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
+                    }
+
+                    // Delete font file if it exists
+                    if (File.Exists(fontFilePath))
+                    {
+                        File.Delete(fontFilePath);
+                    }
+                }
+
+                _disposed = true;
             }
         }
         #endregion
