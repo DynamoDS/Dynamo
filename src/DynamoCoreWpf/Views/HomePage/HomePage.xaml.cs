@@ -588,12 +588,20 @@ namespace Dynamo.UI.Views
         #endregion
 
         #region Dispose
+        /// <summary>
+        /// Public implementation of Dispose pattern callable by consumers (as per Microsoft documentation)
+        /// https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Protected implementation of Dispose pattern
+        /// </summary>
+        /// <param name="disposing">To be called by the finalizer if necessary</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -626,15 +634,9 @@ namespace Dynamo.UI.Views
                     }
                 }
 
-                // Free unmanaged resources
                 _disposed = true;
             }
         }
-
-        //~HomePage()
-        //{
-        //    Dispose(false);
-        //}
         #endregion
 
         #region Guide Images

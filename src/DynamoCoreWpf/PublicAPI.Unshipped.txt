@@ -1573,7 +1573,6 @@ Dynamo.UI.Views.HomePage
 Dynamo.UI.Views.HomePage.Dispose() -> void
 Dynamo.UI.Views.HomePage.HomePage() -> void
 Dynamo.UI.Views.HomePage.InitializeComponent() -> void
-Dynamo.UI.Views.HomePage.~HomePage() -> void
 Dynamo.UI.Views.LibraryView
 Dynamo.UI.Views.LibraryView.InitializeComponent() -> void
 Dynamo.UI.Views.LibraryView.LibraryView() -> void
