@@ -269,6 +269,41 @@ namespace Dynamo.UI.Prompts
         /// <summary>
         /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
         /// </summary>
+        /// <param name="owner">owning window of the messagebox</param>
+        /// <param name="messageBoxText">Content of the message</param>
+        /// <param name="caption">MessageBox title</param>
+        /// <param name="flags">Provide a list of flags that can be used to customize the dialog box, e.g Scrollable</param>
+        /// <param name="button">Type of button shown in the MessageBox: Ok, OkCancel; etc</param>
+        /// <param name="icon">Type of message: Warning, Error</param>
+        /// <returns></returns>
+        public static MessageBoxResult Show(Window owner, string messageBoxText, string caption, Dictionary<DialogFlags, bool> flags, MessageBoxButton button,
+           MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+            if (owner != null && owner.IsLoaded)
+            {
+                dynamoMessageBox.Owner = owner;
+            }
+
+            if (flags.TryGetValue(DialogFlags.Scrollable, out bool scrollable) && scrollable)
+            {
+                dynamoMessageBox.BodyTextBlock.Visibility = Visibility.Collapsed;
+                dynamoMessageBox.ScrollableBodyTextBlock.Visibility = Visibility.Visible;
+            }
+            dynamoMessageBox.ConfigureButtons(button);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
         /// <param name="messageBoxText"></param>
         /// <param name="caption"></param>
         /// <param name="button"></param>
