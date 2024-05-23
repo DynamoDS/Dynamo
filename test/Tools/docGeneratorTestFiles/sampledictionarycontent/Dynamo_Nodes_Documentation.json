@@ -4358,7 +4358,7 @@
      "Name": "DefineData",
      "imageFile": ["DefineData"],
      "dynFile": ["DefineData"],
-     "folderPath": "ImportExport/Data/Action",
+     "folderPath": "Input/Object/Action",
      "inDepth": "Validates and returns data from a currently or previously connected node."
 }
 ]
