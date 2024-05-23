@@ -27,7 +27,6 @@ namespace CoreNodeModels
     [AlsoKnownAs("Data.DefineData")]
     public class DefineData : DSDropDownBase
     {
-        private List<DynamoDropDownItem> serializedItems;
         private bool isAutoMode = true; // default start with auto-detect 'on'
         private bool isList;
         private string displayValue = Properties.Resources.DefineDataDisplayValueMessage;
@@ -48,7 +47,7 @@ namespace CoreNodeModels
         [JsonProperty]
         public bool IsAutoMode
         {
-            get { return isAutoMode; }
+            get => isAutoMode;
             set
             {
                 isAutoMode = value;
@@ -64,7 +63,7 @@ namespace CoreNodeModels
         [JsonProperty]
         public bool IsList
         {
-            get { return isList; }
+            get => isList;
             set
             {
                 isList = value;
@@ -79,8 +78,8 @@ namespace CoreNodeModels
         ///
         [JsonProperty]
         public string DisplayValue
-        {   
-            get { return displayValue; }
+        {
+            get => displayValue;
             set
             {
                 if (displayValue != value)
@@ -93,10 +92,7 @@ namespace CoreNodeModels
 
 
         [JsonIgnore]
-        public override bool IsInputNode
-        {
-            get { return true; }
-        }
+        public override bool IsInputNode => true;
 
 
         private string value = "";
@@ -146,7 +142,6 @@ namespace CoreNodeModels
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-       
         }
 
         protected override void OnBuilt()
@@ -170,7 +165,7 @@ namespace CoreNodeModels
             // the object to be (type) evaluated
             // the expected datatype
             // if the input is an ArrayList or not
-            var function = new Func<object, string, bool, bool, string, Dictionary<string, object>>(DSCore.Data.IsSupportedDataNodeType);
+            var function = new Func<object, string, bool, bool, string, Dictionary<string, object>>(EvaluateDefineDataNode);
             var functionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
                 AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
@@ -196,8 +191,8 @@ namespace CoreNodeModels
                 [functionCallIdentifier, AstFactory.BuildStringNode("Validation")]);
 
             resultAst.Add(AstFactory.BuildAssignment(
-                    AstFactory.BuildIdentifier(GUID + "_db"),
-                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), getSecondKey)));
+                AstFactory.BuildIdentifier(GUID + "_db"),
+                DataBridge.GenerateBridgeDataAst(GUID.ToString(), getSecondKey)));
 
             return resultAst;
         }
@@ -205,16 +200,15 @@ namespace CoreNodeModels
 
         private void DataBridgeCallback(object data)
         {
-            //Todo If the playerValue is not empty string then we can chanage the UI to reflect the value is coming from the player
+            //Todo If the playerValue is not empty string then we can change the UI to reflect the value is coming from the player
             //Todo if the function call throws we don't get back to DatabridgeCallback.  Not sure if we need to handle this case
 
             //Now we reset this value to empty string so that the next time a value is set from upstream nodes we can know that it is not coming from the player
             value = "";
 
-            // If data is null
             if (data == null)
             {
-                if(IsAutoMode)
+                if (IsAutoMode)
                 {
                     DisplayValue = string.Empty; // show blank if we are in locked mode (as we cannot interact with the node)
                 }
@@ -226,26 +220,26 @@ namespace CoreNodeModels
             }
 
             // If data is not null
-            (bool IsValid, bool UpdateList, DataNodeDynamoType InputType) resultData = (ValueTuple<bool, bool, DataNodeDynamoType>)data;
+            (bool IsValid, bool UpdateList, DataNodeDynamoType InputType) = (ValueTuple<bool, bool, DataNodeDynamoType>)data;
 
             if (IsAutoMode)
             {
-                if (resultData.UpdateList)
+                if (UpdateList)
                 {
                     IsList = !IsList;
                 }
 
-                if (resultData.InputType != null)
+                if (InputType != null)
                 {
-                    if (!resultData.IsValid)
+                    if (!IsValid)
                     {
                         // Assign to the correct value, if the object was of supported type
-                        var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
+                        var index = Items.IndexOf(Items.First(i => i.Name.Equals(InputType.Name)));
                         SelectedIndex = index;
                     }
-                    if (!DisplayValue.Equals(resultData.InputType.Name))
+                    if (!DisplayValue.Equals(InputType.Name))
                     {
-                        DisplayValue = resultData.InputType.Name;
+                        DisplayValue = InputType.Name;
                     }
                 }
             }
@@ -271,12 +265,6 @@ namespace CoreNodeModels
             SelectedIndex = 0;
 
             return SelectionState.Restore;
-        }
-
-        [OnSerializing]
-        private void OnSerializing(StreamingContext context)
-        {
-            serializedItems = Items.ToList();
         }
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
