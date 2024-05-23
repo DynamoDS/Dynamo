@@ -631,10 +631,10 @@ namespace Dynamo.UI.Views
             }
         }
 
-        ~HomePage()
-        {
-            Dispose(false);
-        }
+        //~HomePage()
+        //{
+        //    Dispose(false);
+        //}
         #endregion
 
         #region Guide Images
