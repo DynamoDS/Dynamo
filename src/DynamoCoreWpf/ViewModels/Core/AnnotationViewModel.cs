@@ -1251,10 +1251,13 @@ namespace Dynamo.ViewModels
         {
             using (NestedGroupsGeometries.DeferCollectionReset())
             {
-                ViewModelBases
-                    .OfType<AnnotationViewModel>()
-                    .ToList()
-                    .ForEach(x => UpdateGroupCutGeometry(x));
+                if (ViewModelBases != null)
+                {        
+                    ViewModelBases
+                        .OfType<AnnotationViewModel>()
+                        .ToList()
+                        .ForEach(x => UpdateGroupCutGeometry(x));
+                }
             }
         }
 
