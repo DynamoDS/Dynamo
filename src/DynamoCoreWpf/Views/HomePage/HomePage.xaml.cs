@@ -626,7 +626,7 @@ namespace Dynamo.UI.Views
                     }
                 }
 
-                // Free any unmanaged resources here
+                // Free unmanaged resources
                 _disposed = true;
             }
         }

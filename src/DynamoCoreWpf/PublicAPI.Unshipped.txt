@@ -1573,6 +1573,7 @@ Dynamo.UI.Views.HomePage
 Dynamo.UI.Views.HomePage.Dispose() -> void
 Dynamo.UI.Views.HomePage.HomePage() -> void
 Dynamo.UI.Views.HomePage.InitializeComponent() -> void
+Dynamo.UI.Views.HomePage.~HomePage() -> void
 Dynamo.UI.Views.LibraryView
 Dynamo.UI.Views.LibraryView.InitializeComponent() -> void
 Dynamo.UI.Views.LibraryView.LibraryView() -> void
@@ -5624,6 +5625,7 @@ virtual Dynamo.UI.Controls.UseLevelSpinner.OnDecrease() -> void
 virtual Dynamo.UI.Controls.UseLevelSpinner.OnIncrease() -> void
 virtual Dynamo.UI.Controls.UseLevelSpinner.OnLevelChanged(System.Windows.RoutedPropertyChangedEventArgs<int> args) -> void
 virtual Dynamo.UI.Prompts.DynamoMessageBox.OnPropertyChanged(string propertyName = null) -> void
+virtual Dynamo.UI.Views.HomePage.Dispose(bool disposing) -> void
 virtual Dynamo.ViewModels.ConnectorAnchorViewModel.OnRequestDispose(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorContextMenuViewModel.OnRequestDispose(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestRedraw(object sender, System.EventArgs e) -> void
