@@ -19,7 +19,7 @@
         <!--This command updates the npm registry configuration if necessary-->
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
         <!--This command gets a specific build of the notifcation center from npm-->
-        <Exec Command="npm pack @dynamods/librariejs@1.0.4" />
+        <Exec Command="npm pack @dynamods/librariejs@1.0.5" />
     </Target>
 
     <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild">
