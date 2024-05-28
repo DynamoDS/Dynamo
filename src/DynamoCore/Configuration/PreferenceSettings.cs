@@ -395,6 +395,10 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool UseHardwareAcceleration { get; set; }
 
+        /// <summary>
+        /// Persistence for Dynamo HomePage
+        /// </summary>  
+        public List<string> HomePageSettings { get; set; }
         #endregion
 
         #region Dynamo application settings
@@ -982,6 +986,7 @@ namespace Dynamo.Configuration
             backupLocation = string.Empty;
             GraphChecksumItemsList = new List<GraphChecksumItem>();
             isMLAutocompleteTOUApproved = true;
+            HomePageSettings = new List<string>();
         }
 
         /// <summary>
@@ -1099,7 +1104,7 @@ namespace Dynamo.Configuration
                     return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
-
+                
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);

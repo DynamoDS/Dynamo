@@ -1206,6 +1206,60 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-detect type.
+        /// </summary>
+        public static string DataInputAutoDetectTypeLabel {
+            get {
+                return ResourceManager.GetString("DataInputAutoDetectTypeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle on to allow Define Data to automatically detect the data type of the input node. Toggle off to set the desired data type yourself.
+        /// </summary>
+        public static string DataInputAutoDetectTypeTooltip {
+            get {
+                return ResourceManager.GetString("DataInputAutoDetectTypeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List.
+        /// </summary>
+        public static string DataInputListLabel {
+            get {
+                return ResourceManager.GetString("DataInputListLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle on if the input data contains a list..
+        /// </summary>
+        public static string DataInputNodeInformationTooltip {
+            get {
+                return ResourceManager.GetString("DataInputNodeInformationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When locked, this node only accepts the selected data type as input. When unlocked, the input can be any supported data type..
+        /// </summary>
+        public static string DataInputNodeModeLockTooltip {
+            get {
+                return ResourceManager.GetString("DataInputNodeModeLockTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string DataInputTypeLabel {
+            get {
+                return ResourceManager.GetString("DataInputTypeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use System Default.
         /// </summary>
         public static string DefaultPythonEngineNone {
@@ -1312,6 +1366,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DownloadWarningMessageBoxTitle {
             get {
                 return ResourceManager.GetString("DownloadWarningMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files with same name will be overwritten in the final package. To avoid this, rename or discard the duplicate files, or enable the Retain Folder Structure option.\n\n{0} duplicate file(s) found:\n{1}.
+        /// </summary>
+        public static string DuplicateFilesInPublishWarningMessage {
+            get {
+                return ResourceManager.GetString("DuplicateFilesInPublishWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate Files.
+        /// </summary>
+        public static string DuplicateFilesInPublishWarningTitle {
+            get {
+                return ResourceManager.GetString("DuplicateFilesInPublishWarningTitle", resourceCulture);
             }
         }
         
@@ -5005,6 +5077,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeHelpWindowNodeType {
             get {
                 return ResourceManager.GetString("NodeHelpWindowNodeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to create node: .
+        /// </summary>
+        public static string NodeInCanvasSearchCreationError {
+            get {
+                return ResourceManager.GetString("NodeInCanvasSearchCreationError", resourceCulture);
             }
         }
         

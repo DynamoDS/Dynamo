@@ -139,8 +139,19 @@
 
                 <!--  Body Text  -->
                 <TextBlock Name="BodyTextBlock"
-                           Grid.Row="1"
-                           Margin="20"
+                   Margin="20"
+                   Grid.Row="1"
+                   VerticalAlignment="Center"
+                   DockPanel.Dock="Left"
+                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                   FontSize="14px"
+                   Foreground="#3C3C3C"
+                   Text="{Binding BodyText, UpdateSourceTrigger=PropertyChanged}"
+                   TextWrapping="Wrap" />
+                <!-- Body text in scrollable text box -->
+                <ScrollViewer Name="ScrollableBodyTextBlock" VerticalScrollBarVisibility="Auto"
+                              Margin="20" MaxHeight="250" Grid.Row="1" Visibility="Collapsed">
+                    <TextBlock 
                            VerticalAlignment="Center"
                            DockPanel.Dock="Left"
                            FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -148,6 +159,8 @@
                            Foreground="#3C3C3C"
                            Text="{Binding BodyText, UpdateSourceTrigger=PropertyChanged}"
                            TextWrapping="Wrap" />
+                </ScrollViewer>
+                <!-- Body text in custom rich text box, mostly used in guided tours -->
                 <localui:CustomRichTextBox x:Name="ContentRichTextBox" 
                                            IsDocumentEnabled="True"
                                            Visibility="Collapsed"

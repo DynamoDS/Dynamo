@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using DSCore;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
@@ -14,17 +15,21 @@ using static DSCore.Data;
 namespace CoreNodeModels
 {
     [NodeName("DefineData")]
-    [NodeDescription(nameof(Properties.Resources.RememberDescription), typeof(Properties.Resources))]
+    [NodeDescription(nameof(Properties.Resources.DefineDataDescription), typeof(Properties.Resources))]
     [NodeCategory("Core.Data")]
+    [InPortNames(">")]
+    [InPortTypes("var[]..[]")]
+    [InPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.DefineDataInputTooltip))]
     [OutPortNames(">")]
     [OutPortTypes("var[]..[]")]
-    [OutPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.RememberOuputToolTip))]
+    [OutPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.DefineDataOutputTooltip))]
     [IsDesignScriptCompatible]
+    [AlsoKnownAs("Data.DefineData")]
     public class DefineData : DSDropDownBase
     {
-        private List<DynamoDropDownItem> serializedItems;
-        private bool isAutoMode;
+        private bool isAutoMode = true; // default start with auto-detect 'on'
         private bool isList;
+        private string displayValue = Properties.Resources.DefineDataDisplayValueMessage;
 
         /// <summary>
         /// The IsAutoMode property enables the node to automatically validate and process input data.
@@ -42,10 +47,11 @@ namespace CoreNodeModels
         [JsonProperty]
         public bool IsAutoMode
         {
-            get { return isAutoMode; }
+            get => isAutoMode;
             set
             {
                 isAutoMode = value;
+                OnNodeModified();
                 RaisePropertyChanged(nameof(IsAutoMode));
             }
         }
@@ -57,30 +63,54 @@ namespace CoreNodeModels
         [JsonProperty]
         public bool IsList
         {
-            get { return isList; }
+            get => isList;
             set
             {
                 isList = value;
+                OnNodeModified();
                 RaisePropertyChanged(nameof(IsList));
             }
         }
 
         /// <summary>
-        /// Copy of <see cref="DSDropDownBase.Items"/> to be serialized./>
+        /// This is a mediator property handling the displayed value on the dropdown
         /// </summary>
+        ///
         [JsonProperty]
-        protected List<DynamoDropDownItem> SerializedItems
+        public string DisplayValue
         {
-            get => serializedItems;
+            get => displayValue;
             set
             {
-                serializedItems = value;
-
-                Items.Clear();
-
-                foreach (DynamoDropDownItem item in serializedItems)
+                if (displayValue != value)
                 {
-                    Items.Add(item);
+                    displayValue = value;
+                    RaisePropertyChanged(nameof(DisplayValue));
+                }
+            }
+        }
+
+
+        [JsonIgnore]
+        public override bool IsInputNode => true;
+
+
+        private string value = "";
+
+        [JsonProperty("InputValue")]
+        public virtual string Value
+        {
+            get
+            {
+                return value;
+            }
+            set
+            {
+                if (Equals(this.value, null) || !this.value.Equals(value))
+                {
+                    this.value = value ?? "";
+                    MarkNodeAsModified();
+                    RaisePropertyChanged(nameof(Value));
                 }
             }
         }
@@ -90,14 +120,7 @@ namespace CoreNodeModels
         /// </summary>
         public DefineData() : base(">")
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Properties.Resources.WatchPortDataInputToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.WatchPortDataResultToolTip)));
-
-            RegisterAllPorts();
-
             PropertyChanged += OnPropertyChanged;
-
-            //Items.Add(new DynamoDropDownItem("Select a type", null));
 
             foreach (var dataType in Data.DataNodeDynamoTypeList)
             {
@@ -113,12 +136,12 @@ namespace CoreNodeModels
         [JsonConstructor]
         private DefineData(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(">", inPorts, outPorts)
         {
+            RegisterAllPorts();
             PropertyChanged += OnPropertyChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-       
         }
 
         protected override void OnBuilt()
@@ -134,88 +157,129 @@ namespace CoreNodeModels
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
-        private static readonly string BuiltinDictionaryTypeName = typeof(DesignScript.Builtin.Dictionary).FullName;
-        private static readonly string BuiltinDictionaryGet = nameof(DesignScript.Builtin.Dictionary.ValueAtKey);
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {
+        {   
             var resultAst = new List<AssociativeNode>();
 
             // function call inputs - reference to the function, and the function arguments coming from the inputs
             // the object to be (type) evaluated
             // the expected datatype
             // if the input is an ArrayList or not
-            var function = new Func<object, string, bool, bool, Dictionary<string, object>>(DSCore.Data.IsSupportedDataNodeType);
-            var funtionInputs = new List<AssociativeNode> {
+            var function = new Func<object, string, bool, bool, string, Dictionary<string, object>>(EvaluateDefineDataNode);
+            var functionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
                 AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
                 AstFactory.BuildBooleanNode(IsList),
-                AstFactory.BuildBooleanNode(IsAutoMode)
+                AstFactory.BuildBooleanNode(IsAutoMode),
+                AstFactory.BuildStringNode(Value)
             };
 
-
-            var functionCall = AstFactory.BuildFunctionCall(function, funtionInputs);
+            var functionCall = AstFactory.BuildFunctionCall(function, functionInputs);
             var functionCallIdentifier = AstFactory.BuildIdentifier(GUID + "_func");
 
             resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier, functionCall));
 
-            //Next add the first key value pair to the output port
-            var getFirstKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
-                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode(">") });
+            // Next add the first key value pair to the output port
+            var safeExtractDictionaryValue = new Func<Dictionary<string, object>, string, object>(DSCore.Data.SafeExtractDictionaryValue);
+            var getFirstKey = AstFactory.BuildFunctionCall(safeExtractDictionaryValue,
+                [functionCallIdentifier, AstFactory.BuildStringNode(">")]);
 
             resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), getFirstKey));
 
-            //Second get the key value pair to pass to the databridge callback
-            var getSecondKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
-                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode("Validation") });
+            // Second get the key value pair to pass to the databridge callback
+            var getSecondKey = AstFactory.BuildFunctionCall(safeExtractDictionaryValue,
+                [functionCallIdentifier, AstFactory.BuildStringNode("Validation")]);
 
             resultAst.Add(AstFactory.BuildAssignment(
-                    AstFactory.BuildIdentifier(GUID + "_db"),
-                    DataBridge.GenerateBridgeDataAst(GUID.ToString(), getSecondKey)));
+                AstFactory.BuildIdentifier(GUID + "_db"),
+                DataBridge.GenerateBridgeDataAst(GUID.ToString(), getSecondKey)));
 
             return resultAst;
         }
 
 
-        /// <summary>
-        /// Not sure at the moment how relevant is the databridge for this node type 
-        /// </summary>
-        /// <param name="data"></param>
         private void DataBridgeCallback(object data)
         {
-            if (data == null) return;
+            //Todo If the playerValue is not empty string then we can change the UI to reflect the value is coming from the player
+            //Todo if the function call throws we don't get back to DatabridgeCallback.  Not sure if we need to handle this case
 
-            (bool IsValid, bool UpdateList, DataNodeDynamoType InputType) resultData = (ValueTuple<bool, bool, DataNodeDynamoType>)data;
+            //Now we reset this value to empty string so that the next time a value is set from upstream nodes we can know that it is not coming from the player
+            value = "";
 
-            if (IsAutoMode && resultData.UpdateList)
-            {
-                IsList = !IsList;
-            }
-
-            if (!resultData.IsValid)
+            if (data == null)
             {
                 if (IsAutoMode)
                 {
-                    // Assign to the correct value, if the object was of supported type
-                    if (resultData.InputType != null)
+                    DisplayValue = string.Empty; // show blank if we are in locked mode (as we cannot interact with the node)
+                }
+                else
+                {
+                    DisplayValue = SelectedString;
+                }
+                return;
+            }
+
+            // If data is not null
+            (bool IsValid, bool UpdateList, DataNodeDynamoType InputType) = (ValueTuple<bool, bool, DataNodeDynamoType>)data;
+
+            if (IsAutoMode)
+            {
+                if (UpdateList)
+                {
+                    IsList = !IsList;
+                }
+
+                if (InputType != null)
+                {
+                    if (!IsValid)
                     {
-                        var index = Items.IndexOf(Items.First(i => i.Name.Equals(resultData.InputType.Name)));
+                        // Assign to the correct value, if the object was of supported type
+                        var index = Items.IndexOf(Items.First(i => i.Name.Equals(InputType.Name)));
                         SelectedIndex = index;
                     }
+                    if (!DisplayValue.Equals(InputType.Name))
+                    {
+                        DisplayValue = InputType.Name;
+                    }
                 }
+            }
+            else
+            {
+                DisplayValue = SelectedString;
             }
         }
 
 
         protected override SelectionState PopulateItemsCore(string currentSelection)
         {
+            Items.Clear();
+
+            foreach (var dataType in Data.DataNodeDynamoTypeList)
+            {
+                var displayName = dataType.Name;
+                var value = dataType;
+
+                Items.Add(new DynamoDropDownItem(displayName, value));
+            }
+
+            SelectedIndex = 0;
+
             return SelectionState.Restore;
         }
 
-        [OnSerializing]
-        private void OnSerializing(StreamingContext context)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
-            serializedItems = Items.ToList();
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
+            switch (name)
+            {
+                case "Value":
+                    Value = value;
+                    return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(updateValueParams);
         }
     }
 }

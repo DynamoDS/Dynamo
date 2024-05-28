@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -221,5 +221,17 @@
   </data>
   <data name="WriteImageObsolete" xml:space="preserve">
     <value>Use Image.WriteToFile node instead</value>
+  </data>
+  <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
+    <value>This node expected a {0} input but received a {1} input. Please provide the expected input, or pick a new type in the node’s drop-down menu.</value>
+  </data>
+  <data name="DefineDataUnsupportedCombinationOfDataTypesExceptionMessage" xml:space="preserve">
+    <value>This node does not support the combination of data types in the current input list {0}. Ensure the input list contains items of the same data type, or a mix of types with a common parent type</value>
+  </data>
+  <data name="DefineDataUnsupportedDataTypeExceptionMessage" xml:space="preserve">
+    <value>This node does not support the current input data type ({0}). View the supported data types in the drop-down menu.</value>
+  </data>
+  <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
+    <value>Input must be a single value or a non-nested list.</value>
   </data>
 </root>
