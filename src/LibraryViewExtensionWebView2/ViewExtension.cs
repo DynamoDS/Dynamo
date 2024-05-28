@@ -9,6 +9,12 @@ namespace Dynamo.LibraryViewExtensionWebView2
 {
     public class LibraryViewExtensionWebView2 : IViewExtension
     {
+        /// <summary>
+        /// Possible hosting contexts for the library. These represent
+        /// Dynamo home and custom workspaces.
+        /// </summary>
+        private enum HostingContextType { home,custom, none};
+
         private ViewLoadedParams viewParams;
         private LibraryViewCustomization customization = new LibraryViewCustomization();
         private LibraryViewController controller;
@@ -45,8 +51,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             var type = workspace switch
             {
-                HomeWorkspaceModel _ => "home",
-                CustomNodeWorkspaceModel _ => "custom"
+                HomeWorkspaceModel _ => HostingContextType.home.ToString(),
+                CustomNodeWorkspaceModel _ => HostingContextType.custom.ToString()
             };
             controller.UpdateContext(type);
         }
