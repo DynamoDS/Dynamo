@@ -630,6 +630,7 @@ namespace DSCore
                 index = list.Count + index;
             }
 
+            // When calculated index is more than list count or still negative, throw exception
             if (index >= list.Count || index < 0)
             {
                 throw new IndexOutOfRangeException();

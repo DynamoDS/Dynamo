@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 using List = DSCore.List;
 
@@ -498,6 +499,35 @@ namespace DSCoreNodesTests
         public static void GetFromList()
         {
             Assert.AreEqual(2, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, 2));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetNegtiveIndexItemFromList()
+        {
+            Assert.AreEqual(3, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, -1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetNegtiveIndexItemFromListCouldThrow()
+        {
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                // -7 as index argument will cause exception.
+                List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, -7);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetPositiveIndexItemFromListCouldThrow()
+        {
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                // 7 as index argument will cause exception.
+                List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, 7);
+            });
         }
 
         [Test]
