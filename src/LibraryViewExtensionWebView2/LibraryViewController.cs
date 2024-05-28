@@ -760,6 +760,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         internal void UpdateContext(string type)
         {
             ExecuteScriptFunctionAsync(browser,"libController.setHostContext", type);
+            ExecuteScriptFunctionAsync(browser, "replaceImages");
         }
     }
 }
