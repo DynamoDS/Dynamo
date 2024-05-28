@@ -199,11 +199,7 @@ namespace Dynamo.UI.Prompts
                 MessageBoxButton = button,
                 MessageBoxImage = icon
             };
-            if (owner != null && owner.IsLoaded)
-            {
-                dynamoMessageBox.Owner = owner;
-            }
-
+            SetOwnerWindow(owner, dynamoMessageBox);
             if (showRichTextBox)
             {
                 dynamoMessageBox.BodyTextBlock.Visibility = Visibility.Collapsed;
@@ -233,12 +229,7 @@ namespace Dynamo.UI.Prompts
                 MessageBoxButton = button,
                 MessageBoxImage = icon
             };
-
-            if (owner != null && owner.IsLoaded)
-            {
-                dynamoMessageBox.Owner = owner;
-            }
-
+            SetOwnerWindow(owner, dynamoMessageBox);
             dynamoMessageBox.ConfigureButtons(button);
             dynamoMessageBox.ShowDialog();
             return dynamoMessageBox.CustomDialogResult;
@@ -264,11 +255,7 @@ namespace Dynamo.UI.Prompts
                 MessageBoxButton = button,
                 MessageBoxImage = icon
             };
-            if (owner != null && owner.IsLoaded)
-            {
-                dynamoMessageBox.Owner = owner;
-            }
-
+            SetOwnerWindow(owner, dynamoMessageBox);
             if (flags.TryGetValue(DialogFlags.Scrollable, out bool scrollable) && scrollable)
             {
                 dynamoMessageBox.BodyTextBlock.Visibility = Visibility.Collapsed;
@@ -361,15 +348,30 @@ namespace Dynamo.UI.Prompts
                 MessageBoxButton = button,
                 MessageBoxImage = icon
             };
-
-            if (owner != null && owner.IsLoaded)
-            {
-                dynamoMessageBox.Owner = owner;
-            }
-
+            SetOwnerWindow(owner, dynamoMessageBox);
             dynamoMessageBox.ConfigureButtons(button, buttonNames);
             dynamoMessageBox.ShowDialog();
             return dynamoMessageBox.CustomDialogResult;
+        }
+
+        /// <summary>
+        /// Set the owner window of the message box and prevent any exceptions that may occur
+        /// </summary>
+        /// <param name="owner">Owner Window</param>
+        /// <param name="dynamoMessageBox">New message box</param>
+        internal static void SetOwnerWindow(Window owner, DynamoMessageBox dynamoMessageBox)
+        {
+            if (owner != null && owner.IsLoaded)
+            {
+                try
+                {
+                    dynamoMessageBox.Owner = owner;
+                }
+                catch (Exception)
+                {
+                    // In this case, we will not set the owner window
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

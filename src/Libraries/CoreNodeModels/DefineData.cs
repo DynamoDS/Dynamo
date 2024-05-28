@@ -30,7 +30,6 @@ namespace CoreNodeModels
         private List<DynamoDropDownItem> serializedItems;
         private bool isAutoMode = true; // default start with auto-detect 'on'
         private bool isList;
-        private string playerValue = "";
         private string displayValue = Properties.Resources.DefineDataDisplayValueMessage;
 
         /// <summary>
@@ -99,16 +98,23 @@ namespace CoreNodeModels
             get { return true; }
         }
 
-        [JsonIgnore]
-        public string PlayerValue
+
+        private string value = "";
+
+        [JsonProperty("InputValue")]
+        public virtual string Value
         {
-            get { return playerValue; }
+            get
+            {
+                return value;
+            }
             set
             {
-                if (Equals(this.playerValue, null) || !this.playerValue.Equals(value))
+                if (Equals(this.value, null) || !this.value.Equals(value))
                 {
-                    playerValue = value ?? "";
+                    this.value = value ?? "";
                     MarkNodeAsModified();
+                    RaisePropertyChanged(nameof(Value));
                 }
             }
         }
@@ -119,8 +125,6 @@ namespace CoreNodeModels
         public DefineData() : base(">")
         {
             PropertyChanged += OnPropertyChanged;
-
-            //Items.Add(new DynamoDropDownItem("Select a type", null));
 
             foreach (var dataType in Data.DataNodeDynamoTypeList)
             {
@@ -158,11 +162,8 @@ namespace CoreNodeModels
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
-        private static readonly string BuiltinDictionaryTypeName = typeof(DesignScript.Builtin.Dictionary).FullName;
-        private static readonly string BuiltinDictionaryGet = nameof(DesignScript.Builtin.Dictionary.ValueAtKey);
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {
+        {   
             var resultAst = new List<AssociativeNode>();
 
             // function call inputs - reference to the function, and the function arguments coming from the inputs
@@ -170,28 +171,29 @@ namespace CoreNodeModels
             // the expected datatype
             // if the input is an ArrayList or not
             var function = new Func<object, string, bool, bool, string, Dictionary<string, object>>(DSCore.Data.IsSupportedDataNodeType);
-            var funtionInputs = new List<AssociativeNode> {
+            var functionInputs = new List<AssociativeNode> {
                 inputAstNodes[0],
                 AstFactory.BuildStringNode((Items[SelectedIndex].Item as Data.DataNodeDynamoType).Type.ToString()),
                 AstFactory.BuildBooleanNode(IsList),
                 AstFactory.BuildBooleanNode(IsAutoMode),
-                AstFactory.BuildStringNode(PlayerValue)
+                AstFactory.BuildStringNode(Value)
             };
 
-            var functionCall = AstFactory.BuildFunctionCall(function, funtionInputs);
+            var functionCall = AstFactory.BuildFunctionCall(function, functionInputs);
             var functionCallIdentifier = AstFactory.BuildIdentifier(GUID + "_func");
 
             resultAst.Add(AstFactory.BuildAssignment(functionCallIdentifier, functionCall));
 
-            //Next add the first key value pair to the output port
-            var getFirstKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
-                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode(">") });
+            // Next add the first key value pair to the output port
+            var safeExtractDictionaryValue = new Func<Dictionary<string, object>, string, object>(DSCore.Data.SafeExtractDictionaryValue);
+            var getFirstKey = AstFactory.BuildFunctionCall(safeExtractDictionaryValue,
+                [functionCallIdentifier, AstFactory.BuildStringNode(">")]);
 
             resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), getFirstKey));
 
-            //Second get the key value pair to pass to the databridge callback
-            var getSecondKey = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
-                new List<AssociativeNode> { functionCallIdentifier, AstFactory.BuildStringNode("Validation") });
+            // Second get the key value pair to pass to the databridge callback
+            var getSecondKey = AstFactory.BuildFunctionCall(safeExtractDictionaryValue,
+                [functionCallIdentifier, AstFactory.BuildStringNode("Validation")]);
 
             resultAst.Add(AstFactory.BuildAssignment(
                     AstFactory.BuildIdentifier(GUID + "_db"),
@@ -201,17 +203,13 @@ namespace CoreNodeModels
         }
 
 
-        /// <summary>
-        /// Not sure at the moment how relevant is the databridge for this node type 
-        /// </summary>
-        /// <param name="data"></param>
         private void DataBridgeCallback(object data)
         {
             //Todo If the playerValue is not empty string then we can chanage the UI to reflect the value is coming from the player
             //Todo if the function call throws we don't get back to DatabridgeCallback.  Not sure if we need to handle this case
 
             //Now we reset this value to empty string so that the next time a value is set from upstream nodes we can know that it is not coming from the player
-            playerValue = "";
+            value = "";
 
             // If data is null
             if (data == null)
@@ -219,7 +217,6 @@ namespace CoreNodeModels
                 if(IsAutoMode)
                 {
                     DisplayValue = string.Empty; // show blank if we are in locked mode (as we cannot interact with the node)
-                    //DisplayValue = Properties.Resources.DefineDataDisplayValueMessage;
                 }
                 else
                 {
@@ -290,7 +287,7 @@ namespace CoreNodeModels
             switch (name)
             {
                 case "Value":
-                    PlayerValue = value;
+                    Value = value;
                     return true; // UpdateValueCore handled.
             }
 

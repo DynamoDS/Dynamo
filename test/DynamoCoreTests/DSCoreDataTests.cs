@@ -577,7 +577,6 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        [Ignore("Temp ignore, fixed in the follow-up PR")]
         public void IsNotSupportedNullInput()
         {
             object nullInput = null;
@@ -596,7 +595,6 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        [Ignore("Temp ignore, fixed in the follow-up PR")]
         public void IsSupportedPrimitiveDataType()
         {
             var vString = "input string";
@@ -897,6 +895,56 @@ namespace Dynamo.Tests
 
             validate = DSCore.Data.IsSupportedDataNodeDynamoType(ivSurfaceInheritanceList, typeof(Surface), true);
             Assert.AreEqual(false, validate, "Shouldn't validate DataTypes inheriting from Surface with Cylindar, Cuboid and Sphere in the list.");
+        }
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void ThrowsCorrectErrorTypes()
+        {
+            // Arrange
+            var booleanString = typeof(bool).ToString();
+
+
+            // Unsupported IEnumerable input
+            var listInput = new List<dynamic>
+            {
+                "test",
+                10,
+                false
+            };
+            var ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(listInput, booleanString, true, true, ""));
+            Assert.That(ex.Message.Equals(DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage));
+
+
+            // Heterogenous list of mismatched types (no common ancestor)
+            var arrayListInput = new ArrayList()
+            {
+                "test",
+                10,
+                false
+            };
+            ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(arrayListInput, booleanString, true, true, ""));
+            Assert.That(ex.Message.Split("{")[0].StartsWith(DSCore.Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage.Split("{")[0]));
+
+
+            // Wrong DynamoPlayer input
+            var input = "Test";
+            var dynamoPlayerInput = Color.Red.ToString();
+            ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(input, booleanString, true, true, dynamoPlayerInput));
+            Assert.That(ex.Message.Equals(DSCore.Properties.Resources.Exception_Deserialize_Unsupported_Cache));
+
+
+            // Invalid input 
+            var invalidTypeInput = Color.Red;
+            ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(invalidTypeInput, booleanString, true, true, ""));
+            Assert.That(ex.Message.Split("{")[0].StartsWith(DSCore.Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage.Split("{")[0]));
+
+
+            // Detect type - unexpected input
+            var detectTypeInput = 1;
+            ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(detectTypeInput, booleanString, false, false, ""));
+            Assert.That(ex.Message.Split("{")[0].StartsWith(DSCore.Properties.Resources.DefineDataUnexpectedInputExceptionMessage.Split("{")[0]));
         }
     }
 }
