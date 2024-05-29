@@ -206,18 +206,6 @@ namespace Dynamo.ViewModels
             get { return model.CurrentWorkspace; }
         }
 
-        [Obsolete("This flag is not needed anymore and can be removed.")]
-        /// <summary>
-        /// Controls if the the ML data ingestion pipeline is beta from feature flag
-        /// </summary>
-        internal bool IsMLDataIngestionPipelineinBeta
-        {
-            get
-            {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsMLDataIngestionPipelineinBeta", true) ?? true;
-            }
-        }
-
         /// <summary>
         /// Controls if the the ML data ingestion pipeline is beta from feature flag
         /// </summary>
