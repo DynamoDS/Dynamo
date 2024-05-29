@@ -753,5 +753,14 @@ namespace Dynamo.LibraryViewExtensionWebView2
             script += ");";
             return await webView2.ExecuteScriptAsync(script);
         }
+        /// <summary>
+        /// Gives the library UI information on Dynamo's current context.
+        /// </summary>
+        /// <param name="type"></param>
+        internal void UpdateContext(string type)
+        {
+            ExecuteScriptFunctionAsync(browser,"libController.setHostContext", type);
+            ExecuteScriptFunctionAsync(browser, "replaceImages");
+        }
     }
 }
