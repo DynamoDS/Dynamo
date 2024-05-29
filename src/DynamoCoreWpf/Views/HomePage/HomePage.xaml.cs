@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -260,7 +259,8 @@ namespace Dynamo.UI.Views
 
         private void RecentFiles_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            LoadGraphs(startPage.RecentFiles);  
+            var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
+            LoadGraphs(recentFiles);  
         }
 
         #region FrontEnd Initialization Calls
@@ -268,8 +268,9 @@ namespace Dynamo.UI.Views
         /// Sends graph data to react app
         /// </summary>
         /// <param name="data"></param>
-        private async void LoadGraphs(ObservableCollection<StartPageListItem> data)
+        private async void LoadGraphs(List<StartPageListItem> data)
         {
+            if (data == null) { return; }
             string jsonData = JsonSerializer.Serialize(data);
 
             if (dynWebView?.CoreWebView2 != null)
@@ -309,7 +310,7 @@ namespace Dynamo.UI.Views
             }
 
             // Load recent files
-            var recentFiles = startPage.RecentFiles;
+            var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
             if (recentFiles != null && recentFiles.Any())
             {
                 LoadGraphs(recentFiles);
