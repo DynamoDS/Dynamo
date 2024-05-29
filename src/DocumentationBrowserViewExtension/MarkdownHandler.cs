@@ -91,13 +91,9 @@ namespace Dynamo.DocumentationBrowser
         {
             var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace, packageName);
 
-            string mdString;
+            string mdString = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(mdFilePath) ||
-                !File.Exists(mdFilePath))
-                mdString = ResourceUtilities.LoadContentFromResources(NODE_ANNOTATION_NOT_FOUND, GetType().Assembly);
-
-            else
+            if (!string.IsNullOrWhiteSpace(mdFilePath) && File.Exists(mdFilePath))
             {
                 // Doing this to avoid 'System.ObjectDisposedException'
                 // https://docs.microsoft.com/en-us/visualstudio/code-quality/ca2202?view=vs-2019
