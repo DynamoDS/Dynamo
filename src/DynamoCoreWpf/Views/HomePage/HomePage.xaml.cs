@@ -259,7 +259,7 @@ namespace Dynamo.UI.Views
 
         private void RecentFiles_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            var recentFiles = startPage.RecentFiles.DistinctBy(x => x.ContextData).ToList();
+            var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
             LoadGraphs(recentFiles);  
         }
 
@@ -270,6 +270,7 @@ namespace Dynamo.UI.Views
         /// <param name="data"></param>
         private async void LoadGraphs(List<StartPageListItem> data)
         {
+            if (data == null) { return; }
             string jsonData = JsonSerializer.Serialize(data);
 
             if (dynWebView?.CoreWebView2 != null)
@@ -309,7 +310,7 @@ namespace Dynamo.UI.Views
             }
 
             // Load recent files
-            var recentFiles = startPage.RecentFiles.DistinctBy(x => x.ContextData).ToList();
+            var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
             if (recentFiles != null && recentFiles.Any())
             {
                 LoadGraphs(recentFiles);
