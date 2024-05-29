@@ -8,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -210,11 +209,11 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Controls if the the ML data ingestion pipeline is beta from feature flag
         /// </summary>
-        internal bool IsMLDataIngestionPipelineinBeta
+        internal bool IsDNADataIngestionPipelineinBeta
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsMLDataIngestionPipelineinBeta", true) ?? true;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNADataIngestionPipelineinBeta", true) ?? true;
             }
         }
 
@@ -3005,7 +3004,7 @@ namespace Dynamo.ViewModels
             // Upon closing a workspace, validate if the workspace is valid to be sent to the ML datapipeline and then send it.
             if (!DynamoModel.IsTestMode && !HomeSpace.HasUnsavedChanges && (currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash)
             {
-                if (!IsMLDataIngestionPipelineinBeta && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
+                if (!IsDNADataIngestionPipelineinBeta && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
                 {
                     if (HasDifferentialCheckSum())
                     {
