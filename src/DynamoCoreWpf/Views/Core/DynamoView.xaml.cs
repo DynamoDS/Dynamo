@@ -2675,7 +2675,7 @@ namespace Dynamo.Controls
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNewAppHomeEnabled", false) ?? false;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDynamoAppHomeEnabled", false) ?? false;
             }
         }
 
