@@ -12,6 +12,7 @@ namespace GeometryUIWpf
     [IsVisibleInDynamoLibrary(true)]
     [NodeName("PanelSurfaceBoundaryConditions")]
     [NodeCategory("Geometry.PanelSurface")]
+    [OutPortNames(">")]
     [IsDesignScriptCompatible]
     public class PanelSurfaceBoundaryConditionDropDown : EnumBase<PanelSurfaceBoundaryCondition>
     {
@@ -35,15 +36,15 @@ namespace GeometryUIWpf
             if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
                 return new[] { AstFactory.BuildNullNode() };
 
-            var unitID =
+            var selection =
                 AstFactory.BuildStringNode(Items[SelectedIndex].Name);
 
-            var node = AstFactory.BuildFunctionCall(
+            var func = AstFactory.BuildFunctionCall(
              new Func<string, PanelSurfaceBoundaryCondition>(BoundaryConditionHelper.BoundaryConditionFromString),
-             new List<AssociativeNode> { unitID });
+             new List<AssociativeNode> { selection });
 
             // Assign the selected name to an actual enumeration value
-            var assign = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node);
+            var assign = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), func);
 
             // Return the enumeration value
             return new List<AssociativeNode> { assign };
