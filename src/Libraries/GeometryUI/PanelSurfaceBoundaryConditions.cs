@@ -13,7 +13,7 @@ using System.Linq;
 namespace GeometryUI
 {
     [IsVisibleInDynamoLibrary(true)]
-    [NodeName("PanelSurface.BoundaryConditions")]
+    [NodeName("PanelSurfaceBoundaryCondition")]
     [NodeCategory("Geometry.PanelSurface")]
     [NodeDescription("PanelSurfaceBoundaryConditionDropDownDesc", typeof(Properties.Resources))]
     [OutPortNames(">")]

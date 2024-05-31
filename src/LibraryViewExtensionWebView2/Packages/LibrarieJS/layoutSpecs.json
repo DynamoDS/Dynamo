@@ -1477,24 +1477,31 @@
               "childElements": []
             },
             {
-              "text": "PanelSurface",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurface",
-                  "inclusive": false
-                },
-                {
-                    "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition",
-                    "inclusive": true
-                },
-                {
-                    "path": "Geometry.PanelSurface.PanelSurface.BoundaryConditions",
-                    "inclusive": true
-                }
-              ],
-              "childElements": []
+                "text": "PanelSurface",
+                "iconUrl": "",
+                "elementType": "group",
+                "include": [
+                    {
+                        "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurface",
+                        "inclusive": false
+                    },
+                    {
+                        "path": "Geometry.PanelSurface.PanelSurfaceBoundaryCondition"
+                    }
+                ],
+                "childElements": [
+                    {
+                        "text": "BoundaryCondition",
+                        "iconUrl": "",
+                        "elementType": "group",
+                        "include": [
+                            {
+                                "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition",
+                                "inclusive": true
+                            }
+                        ]
+                    }
+                ]
             },
             {
               "text": "Modifiers",
