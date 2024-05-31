@@ -2,7 +2,7 @@
   "Uuid": "90d9c13b-c20a-44c8-bce9-d40cf1e8628b",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Autodesk.DesignScript.Geometry.PanelSurface.ByCrossSplitSquares - Copy",
+  "Name": "GeometryUIWpf.PanelSurfaceBoundaryConditionDropDown",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -246,17 +246,17 @@
       "Description": "Panels the input surface in a hexagonal tiling pattern.\n\nPanelSurface.ByHexagons (surface: Surface, numU: int, numV: int, boundaryCondition: PanelSurfaceBoundaryCondition = Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.get_Keep()): PanelSurface"
     },
     {
-      "ConcreteType": "GeometryUIWpf.PanelSurfaceBoundaryConditionDropDown, GeometryUIWpf",
+      "ConcreteType": "GeometryUI.PanelSurfaceBoundaryConditionDropDown, GeometryUI",
       "SelectedIndex": 2,
       "SelectedString": "RemoveVertices",
-      "Id": "b1f6fb9d2abe4cb58b26ef7cdece10c8",
+      "Id": "9cdc6fad46344068987209b166cd17de",
       "NodeType": "ExtensionNode",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "bb9f2eb0a6cc4451b7c11b8847dd83fc",
-          "Name": "Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition",
-          "Description": "The selected Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition",
+          "Id": "1b2c88b17c4f46a688ce85f1e8496ff1",
+          "Name": ">",
+          "Description": "The selected >",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -264,7 +264,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "No description available"
+      "Description": "A drop down node that allow easy access to PanelSurface BoundaryCondition possible values"
     }
   ],
   "Connectors": [
@@ -311,9 +311,9 @@
       "IsHidden": "False"
     },
     {
-      "Start": "bb9f2eb0a6cc4451b7c11b8847dd83fc",
+      "Start": "1b2c88b17c4f46a688ce85f1e8496ff1",
       "End": "a0513eb7fe334bfeb47b3a5e122bb395",
-      "Id": "f00af19e754d43c3a0c0c1b7187bf2fe",
+      "Id": "4088d873fda14e1eb5bddeca75ecfb22",
       "IsHidden": "False"
     }
   ],
@@ -349,7 +349,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.3.0.5155",
+      "Version": "3.3.0.5160",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -438,14 +438,14 @@
         "Y": 465.5277018425075
       },
       {
-        "Id": "b1f6fb9d2abe4cb58b26ef7cdece10c8",
-        "Name": "PanelSurface.BoundaryConditions",
+        "Id": "9cdc6fad46344068987209b166cd17de",
+        "Name": "PanelSurfaceBoundaryCondition",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 1255.0191669613923,
-        "Y": 862.7908614851165
+        "X": 1259.726138816386,
+        "Y": 838.952009122057
       }
     ],
     "Annotations": [
@@ -484,17 +484,17 @@
           "bfaf5361aae1456cb07930e997a2c643",
           "ea874a0512454e4195d303b6e30265b3",
           "ebd5826e6681418c8818c5306f824425",
-          "b1f6fb9d2abe4cb58b26ef7cdece10c8"
+          "9cdc6fad46344068987209b166cd17de"
         ],
         "HasNestedGroups": false,
-        "Left": 1245.0191669613923,
+        "Left": 1249.726138816386,
         "Top": 392.3277018425075,
-        "Width": 924.5912890051759,
-        "Height": 602.663159642609,
+        "Width": 919.8843171501821,
+        "Height": 578.8243072795495,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 465.5277018425075,
-        "InitialHeight": 555.2744448272348,
+        "InitialHeight": 542.263159642609,
         "TextblockHeight": 63.2,
         "Background": "#FFB9F9E1"
       },
@@ -521,8 +521,8 @@
         "Background": "#FFFFC999"
       }
     ],
-    "X": -18.121064863195215,
-    "Y": 198.88268165252697,
+    "X": 231.47893513680492,
+    "Y": 182.48268165252688,
     "Zoom": 0.4411006604673005
   }
 }
