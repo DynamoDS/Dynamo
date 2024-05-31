@@ -3,19 +3,31 @@ using Autodesk.DesignScript.Runtime;
 using CoreNodeModels;
 using DSCore;
 using Dynamo.Graph.Nodes;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GeometryUIWpf
 {
     [IsVisibleInDynamoLibrary(true)]
-    [NodeName("PanelSurfaceBoundaryConditions")]
+    [NodeName("PanelSurface.BoundaryConditions")]
     [NodeCategory("Geometry.PanelSurface")]
     [OutPortNames(">")]
+    [OutPortTypes(nameof(PanelSurfaceBoundaryCondition))]
+    [OutPortDescriptions("PanelSurface BoundaryCondition enum value")]
     [IsDesignScriptCompatible]
-    public class PanelSurfaceBoundaryConditionDropDown : EnumBase<PanelSurfaceBoundaryCondition>
+    public class PanelSurfaceBoundaryConditionDropDown : DSDropDownBase
     {
+        public PanelSurfaceBoundaryConditionDropDown(): base(">") {
+            SelectedIndex = (int)PanelSurfaceBoundaryCondition.Keep;
+        }
+
+        [JsonConstructor]
+        protected PanelSurfaceBoundaryConditionDropDown(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(">", inPorts, outPorts) { }
+
         /// <summary>
         /// Overrides the default behavior to serialize internal enumeration id 
         /// instead of the name of the enum constant.
@@ -25,6 +37,18 @@ namespace GeometryUIWpf
         protected override string GetSelectedStringFromItem(DynamoDropDownItem item)
         {
             return item == null ? string.Empty : item.Item.ToString();
+        }
+
+        protected override SelectionState PopulateItemsCore(string currentSelection)
+        {
+            Items.Clear();
+            foreach (var constant in Enum.GetValues(typeof(PanelSurfaceBoundaryCondition)))
+            {
+                Items.Add(new DynamoDropDownItem(constant.ToString(), constant));
+            }
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection();
+            return SelectionState.Restore;
         }
 
         /// <summary>
