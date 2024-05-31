@@ -10,11 +10,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GeometryUIWpf
+namespace GeometryUI
 {
     [IsVisibleInDynamoLibrary(true)]
     [NodeName("PanelSurface.BoundaryConditions")]
     [NodeCategory("Geometry.PanelSurface")]
+    [NodeDescription("PanelSurfaceBoundaryConditionDropDownDesc", typeof(Properties.Resources))]
     [OutPortNames(">")]
     [OutPortTypes(nameof(PanelSurfaceBoundaryCondition))]
     [OutPortDescriptions("PanelSurface BoundaryCondition enum value")]
