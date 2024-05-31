@@ -519,6 +519,9 @@
                 },
                 {
                   "path": "DSCoreNodes.DSCore.Object.Type"
+                },
+                {
+                  "path": "Core.Data.DefineData"
                 }
               ],
               "childElements": []
@@ -1190,9 +1193,6 @@
                 },
                 {
                   "path": "Core.Data.Remember"
-                },
-                {
-                  "path": "Core.Data.DefineData"
                 }
               ],
               "childElements": []

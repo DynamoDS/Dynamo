@@ -913,7 +913,7 @@ namespace Dynamo.Tests
                 10,
                 false
             };
-            var ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(listInput, booleanString, true, true, ""));
+            var ex = Assert.Throws<Exception>(() => DSCore.Data.EvaluateDefineDataNode(listInput, booleanString, true, true, ""));
             Assert.That(ex.Message.Equals(DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage));
 
 
@@ -924,26 +924,26 @@ namespace Dynamo.Tests
                 10,
                 false
             };
-            ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(arrayListInput, booleanString, true, true, ""));
+            ex = Assert.Throws<Exception>(() => DSCore.Data.EvaluateDefineDataNode(arrayListInput, booleanString, true, true, ""));
             Assert.That(ex.Message.Split("{")[0].StartsWith(DSCore.Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage.Split("{")[0]));
 
 
             // Wrong DynamoPlayer input
             var input = "Test";
             var dynamoPlayerInput = Color.Red.ToString();
-            ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(input, booleanString, true, true, dynamoPlayerInput));
+            ex = Assert.Throws<Exception>(() => DSCore.Data.EvaluateDefineDataNode(input, booleanString, true, true, dynamoPlayerInput));
             Assert.That(ex.Message.Equals(DSCore.Properties.Resources.Exception_Deserialize_Unsupported_Cache));
 
 
             // Invalid input 
             var invalidTypeInput = Color.Red;
-            ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(invalidTypeInput, booleanString, true, true, ""));
+            ex = Assert.Throws<Exception>(() => DSCore.Data.EvaluateDefineDataNode(invalidTypeInput, booleanString, true, true, ""));
             Assert.That(ex.Message.Split("{")[0].StartsWith(DSCore.Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage.Split("{")[0]));
 
 
             // Detect type - unexpected input
             var detectTypeInput = 1;
-            ex = Assert.Throws<Exception>(() => DSCore.Data.IsSupportedDataNodeType(detectTypeInput, booleanString, false, false, ""));
+            ex = Assert.Throws<Exception>(() => DSCore.Data.EvaluateDefineDataNode(detectTypeInput, booleanString, false, false, ""));
             Assert.That(ex.Message.Split("{")[0].StartsWith(DSCore.Properties.Resources.DefineDataUnexpectedInputExceptionMessage.Split("{")[0]));
         }
     }

@@ -110,3 +110,4 @@ dynamods-splash-screen-*.tgz
 /src/Notifications/dynamods-notifications-center-*.tgz
 /src/DynamoCoreWpf/.npmrc
 /src/Notifications/.npmrc
+src/LibraryViewExtensionWebView2/.npmrc
