@@ -16,13 +16,13 @@ namespace GeometryUI
     [NodeName("PanelSurfaceBoundaryCondition")]
     [NodeCategory("Geometry.PanelSurface")]
     [NodeDescription("PanelSurfaceBoundaryConditionDropDownDesc", typeof(Properties.Resources))]
-    [OutPortNames(">")]
+    [OutPortNames("PanelSurfaceBoundaryCondition")]
     [OutPortTypes(nameof(PanelSurfaceBoundaryCondition))]
     [OutPortDescriptions("PanelSurface BoundaryCondition enum value")]
     [IsDesignScriptCompatible]
     public class PanelSurfaceBoundaryConditionDropDown : DSDropDownBase
     {
-        public PanelSurfaceBoundaryConditionDropDown(): base(">") {
+        public PanelSurfaceBoundaryConditionDropDown(): base("PanelSurfaceBoundaryCondition") {
             SelectedIndex = (int)PanelSurfaceBoundaryCondition.Keep;
         }
 
