@@ -57,7 +57,6 @@ namespace GeometryUI
         /// </summary>
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            //Some of the legacy categories which were not working before will now be out of index.
             if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
                 return new[] { AstFactory.BuildNullNode() };
 
