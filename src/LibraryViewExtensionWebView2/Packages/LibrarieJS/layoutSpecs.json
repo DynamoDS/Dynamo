@@ -1484,9 +1484,6 @@
                     {
                         "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurface",
                         "inclusive": false
-                    },
-                    {
-                        "path": "Geometry.PanelSurface.PanelSurfaceBoundaryCondition"
                     }
                 ],
                 "childElements": [
@@ -1498,6 +1495,9 @@
                             {
                                 "path": "ProtoGeometry.Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition",
                                 "inclusive": true
+                            },
+                            {
+                                "path": "Geometry.PanelSurface.Select Boundary Condition"
                             }
                         ]
                     }
