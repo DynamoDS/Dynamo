@@ -10,7 +10,6 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     internal class MarkdownHandler : IDisposable
     {
-        private const string NODE_ANNOTATION_NOT_FOUND = "Dynamo.DocumentationBrowser.Docs.NodeAnnotationNotFound.md";
         private readonly Md2Html converter = new Md2Html();
 
         /// <summary>
@@ -39,51 +38,6 @@ namespace Dynamo.DocumentationBrowser
         }
 
         /// <summary>
-        /// Converts a markdown string into Html.
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="nodeNamespace"></param>
-        internal void ParseToHtml(ref StringWriter writer, string nodeNamespace, string packageName)
-        {
-            if (writer is null)
-                throw new ArgumentNullException(nameof(writer));
-
-            var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace, packageName);
-
-            string mdString;
-
-            if (string.IsNullOrWhiteSpace(mdFilePath) ||
-                !File.Exists(mdFilePath))
-                mdString = DocumentationBrowserUtils.GetContentFromEmbeddedResource(NODE_ANNOTATION_NOT_FOUND);
-
-            else
-            {
-                // Doing this to avoid 'System.ObjectDisposedException'
-                // https://docs.microsoft.com/en-us/visualstudio/code-quality/ca2202?view=vs-2019
-                Stream stream = null;
-                try
-                {
-                    stream = File.Open(mdFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        stream = null;
-                        mdString = reader.ReadToEnd();
-                    }
-                }
-                finally
-                {
-                    stream?.Dispose();
-                }
-
-                if (string.IsNullOrWhiteSpace(mdString))
-                    return;
-            }
-
-            var html = converter.ParseMd2Html(mdString, mdFilePath);
-            writer.WriteLine(html);
-        }
-
-        /// <summary>
         /// Converts a markdown string into Html string.
         /// </summary>
         /// <param name="nodeNamespace"></param>
@@ -91,13 +45,9 @@ namespace Dynamo.DocumentationBrowser
         {
             var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace, packageName);
 
-            string mdString;
+            string mdString = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(mdFilePath) ||
-                !File.Exists(mdFilePath))
-                mdString = ResourceUtilities.LoadContentFromResources(NODE_ANNOTATION_NOT_FOUND, GetType().Assembly);
-
-            else
+            if (!string.IsNullOrWhiteSpace(mdFilePath) && File.Exists(mdFilePath))
             {
                 // Doing this to avoid 'System.ObjectDisposedException'
                 // https://docs.microsoft.com/en-us/visualstudio/code-quality/ca2202?view=vs-2019
