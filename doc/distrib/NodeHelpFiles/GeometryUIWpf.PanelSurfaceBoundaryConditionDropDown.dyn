@@ -249,14 +249,14 @@
       "ConcreteType": "GeometryUI.PanelSurfaceBoundaryConditionDropDown, GeometryUI",
       "SelectedIndex": 2,
       "SelectedString": "RemoveVertices",
-      "Id": "9cdc6fad46344068987209b166cd17de",
+      "Id": "efdf924306e64407bfaa8542ca4d30f5",
       "NodeType": "ExtensionNode",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "1b2c88b17c4f46a688ce85f1e8496ff1",
+          "Id": "1ee7a6a16b9c4238b4e62ef6fd6bbccb",
           "Name": "PanelSurfaceBoundaryCondition",
-          "Description": "PanelSurface BoundaryCondition enum value",
+          "Description": "The selected PanelSurfaceBoundaryCondition",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -311,9 +311,9 @@
       "IsHidden": "False"
     },
     {
-      "Start": "1b2c88b17c4f46a688ce85f1e8496ff1",
+      "Start": "1ee7a6a16b9c4238b4e62ef6fd6bbccb",
       "End": "a0513eb7fe334bfeb47b3a5e122bb395",
-      "Id": "4088d873fda14e1eb5bddeca75ecfb22",
+      "Id": "2388aa83cbb14f58a3a5377d1b8e2704",
       "IsHidden": "False"
     }
   ],
@@ -438,14 +438,14 @@
         "Y": 653.2096983367132
       },
       {
-        "Id": "9cdc6fad46344068987209b166cd17de",
-        "Name": "PanelSurfaceBoundaryCondition",
+        "Id": "efdf924306e64407bfaa8542ca4d30f5",
+        "Name": "Select Boundary Condition",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 1285.6821596081377,
-        "Y": 1026.6340056162628
+        "X": 1393.0051189025364,
+        "Y": 991.2416255257913
       }
     ],
     "Annotations": [
@@ -484,13 +484,13 @@
           "bfaf5361aae1456cb07930e997a2c643",
           "ea874a0512454e4195d303b6e30265b3",
           "ebd5826e6681418c8818c5306f824425",
-          "9cdc6fad46344068987209b166cd17de"
+          "efdf924306e64407bfaa8542ca4d30f5"
         ],
         "HasNestedGroups": false,
-        "Left": 1275.6821596081377,
+        "Left": 1383.0051189025364,
         "Top": 580.0096983367132,
-        "Width": 919.8843171501821,
-        "Height": 578.8243072795497,
+        "Width": 812.5613578557834,
+        "Height": 543.4319271890781,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 653.2096983367132,
@@ -521,8 +521,8 @@
         "Background": "#FFFFC999"
       }
     ],
-    "X": -64.26117684849555,
-    "Y": -36.43606924115994,
-    "Zoom": 0.5829925104412027
+    "X": -84.69040597938215,
+    "Y": -25.564268693791234,
+    "Zoom": 0.5911880063935343
   }
 }
