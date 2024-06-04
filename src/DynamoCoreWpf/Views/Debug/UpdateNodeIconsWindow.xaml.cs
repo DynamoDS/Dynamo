@@ -374,7 +374,27 @@ namespace Dynamo.Wpf.Views.Debug
             var oldElement = resxItems.Where(x => x.Attribute("name").Value.ToLower().Equals((iconName + "." + iconSuffix).ToLower())).FirstOrDefault();
             if (oldElement != null)
             {
-                data = oldElement.Descendants("value").FirstOrDefault().Value;
+                string resXValue = oldElement.Descendants("value").FirstOrDefault().Value;
+                //This validation is for an edge case in which the resource contains a path to the image instead of the base64 value
+                if (resXValue.ToLower().Contains(".png") || resXValue.ToLower().Contains(".jpg"))
+                {
+                    var imageName = resXValue.Split(";")[0];
+                    var imageFullPath = Path.Combine(Path.GetDirectoryName(path), imageName);
+                    if(File.Exists(imageFullPath))
+                    {
+                        byte[] imageBytes = File.ReadAllBytes(imageFullPath);
+                        data = Convert.ToBase64String(imageBytes);
+                    }
+                    else
+                    {
+                        data = null;
+                        return false;
+                    }                  
+                }
+                else
+                {
+                    data = resXValue;
+                }             
                 return true;
             }
             data = null;
