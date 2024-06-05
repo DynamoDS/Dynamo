@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 
 namespace Dynamo.DocumentationBrowser
@@ -68,6 +69,12 @@ namespace Dynamo.DocumentationBrowser
 
                 if (string.IsNullOrWhiteSpace(mdString))
                     return string.Empty;
+            }
+            else
+            {
+                var nodeName = string.IsNullOrEmpty(packageName) ? nodeNamespace : "Package:" + packageName + " " + nodeNamespace;
+                //if in-depth documentatiuon is not available, do not show any additional message, but log it for analytics
+                Analytics.TrackEvent(Actions.MissingDocumentation, Categories.NodeContextMenuOperations, nodeName);
             }
 
             var html = converter.ParseMd2Html(mdString, mdFilePath);
