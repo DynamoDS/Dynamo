@@ -1562,7 +1562,6 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
                                         <StackPanel Margin="0,0,0,5"
@@ -1591,11 +1590,33 @@
                                                     </Image.ToolTip>
                                                 </Image>
                                             </Label>
-                                        </StackPanel>                           
-                                        
+                                        </StackPanel>                                                            
+
+                                        <ComboBox Grid.Row="1" 
+                                              Width="213"
+                                              HorizontalAlignment="Left"
+                                              ItemsSource="{Binding Path=UnitList}"
+                                              SelectedItem="{Binding Path=SelectedUnits}"
+                                              Style="{StaticResource NoBordersComboBoxStyle}"
+                                              IsEnabled="{Binding EnableManualScaleOverrides}">
+                                        </ComboBox>
+                                        <TextBlock Grid.Row="1"
+                                                    x:Name="HostUnitsTextBlock"
+                                                    Padding="2"
+                                                    Margin="0 2"
+                                                    Width="190"
+                                                    FontWeight="Regular"
+                                                    HorizontalAlignment="Left"
+                                                    Text="{Binding HostGenericScaleUnits}"
+                                                    Foreground="#888888"
+                                                    Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                    Visibility="{Binding EnableManualScaleOverrides, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                        </TextBlock>
+
+                                        <!-- Use Revit scale toggle (only visible in DynamoRevit) -->
                                         <StackPanel Orientation="Horizontal" 
-                                            Margin="0,6,0,8" 
-                                            Grid.Row="1"
+                                            Margin="0,8,0,8" 
+                                            Grid.Row="2"
                                             Visibility="{Binding IsDynamoRevit, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <ToggleButton Name="UseHostScaleUnitsToggle"
                                                     Width="{StaticResource ToggleButtonWidth}"
@@ -1626,28 +1647,7 @@
                                                     </Image.ToolTip>
                                                 </Image>
                                             </Label>
-                                        </StackPanel>                                        
-
-                                        <ComboBox Grid.Row="3" 
-                                              Width="213"
-                                              HorizontalAlignment="Left"
-                                              ItemsSource="{Binding Path=UnitList}"
-                                              SelectedItem="{Binding Path=SelectedUnits}"
-                                              Style="{StaticResource NoBordersComboBoxStyle}"
-                                              IsEnabled="{Binding EnableManualScaleOverrides}">
-                                        </ComboBox>
-                                        <TextBlock Grid.Row="3"
-                                                    x:Name="HostUnitsTextBlock"
-                                                    Padding="2"
-                                                    Margin="0 2"
-                                                    Width="190"
-                                                    FontWeight="Regular"
-                                                    HorizontalAlignment="Left"
-                                                    Text="{Binding HostGenericScaleUnits}"
-                                                    Foreground="#888888"
-                                                    Background="{StaticResource PreferencesWindowBackgroundColor}"
-                                                    Visibility="{Binding EnableManualScaleOverrides, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                        </TextBlock>
+                                        </StackPanel>   
 
                                     </Grid>
 
