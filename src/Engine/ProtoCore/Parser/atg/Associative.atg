@@ -102,7 +102,13 @@ Hydrogen<out Node codeBlockNode>
 .
 
 Import_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
-=  SYNC
+=   (.
+        if (core.IsParsingCodeBlockNode)
+        {
+            core.BuildStatus.LogSemanticError(Resources.ImportStatementNotSupported);
+        }
+    .)
+    SYNC
     (. 
        string moduleName = "", typeName = "", alias = "";
     .)
