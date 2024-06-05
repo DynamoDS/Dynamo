@@ -1562,7 +1562,6 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
                                         <StackPanel Margin="0,0,0,5"
@@ -1616,7 +1615,7 @@
 
                                         <!-- Use Revit scale toggle (only visible in DynamoRevit) -->
                                         <StackPanel Orientation="Horizontal" 
-                                            Margin="0,6,0,8" 
+                                            Margin="0,8,0,8" 
                                             Grid.Row="2"
                                             Visibility="{Binding IsDynamoRevit, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <ToggleButton Name="UseHostScaleUnitsToggle"
