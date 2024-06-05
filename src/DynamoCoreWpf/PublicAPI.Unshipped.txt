@@ -4306,6 +4306,8 @@ static Dynamo.UI.SharedDictionaryManager.DynamoConvertersDictionary.get -> Syste
 static Dynamo.UI.SharedDictionaryManager.DynamoConvertersDictionaryUri.get -> System.Uri
 static Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary.get -> System.Windows.ResourceDictionary
 static Dynamo.UI.SharedDictionaryManager.DynamoModernDictionaryUri.get -> System.Uri
+static Dynamo.UI.SharedDictionaryManager.CustomBrowserControlDictionary.get -> System.Windows.ResourceDictionary
+static Dynamo.UI.SharedDictionaryManager.CustomBrowserControlDictionaryUri.get -> System.Uri
 static Dynamo.UI.SharedDictionaryManager.DynamoTextDictionary.get -> System.Windows.ResourceDictionary
 static Dynamo.UI.SharedDictionaryManager.DynamoTextDictionaryUri.get -> System.Uri
 static Dynamo.UI.SharedDictionaryManager.InPortsDictionary.get -> System.Windows.ResourceDictionary
