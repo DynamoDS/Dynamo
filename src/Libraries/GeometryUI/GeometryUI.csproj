@@ -17,7 +17,7 @@
 	 </ReferenceCopyLocalPaths>
 	</ItemDefinitionGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.4655" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5206" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +41,7 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\CoreNodeModels\CoreNodeModels.csproj" />
     <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
       <Project>{c5adc05b-34e8-47bf-8e78-9c7bf96418c2}</Project>
       <Name>DynamoConversions</Name>
