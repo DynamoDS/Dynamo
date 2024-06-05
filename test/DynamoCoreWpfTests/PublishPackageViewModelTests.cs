@@ -300,5 +300,34 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(d2.ChildItems.First().ChildItems.Count == 0);
             Assert.IsTrue(d3.ChildItems.First().ChildItems.Count == 0);
         }
+
+        [Test]
+        public void EnsureMultipleVersionsOfAssembly_CannotBeLoaded()
+        {
+            var vm = new PublishPackageViewModel(ViewModel);
+            ViewModel.OnRequestPackagePublishDialog(vm);
+
+            //arrange the first assembly version
+            string packagedirectory = Path.Combine(TestDirectory, "pkgs\\PackageManager\\1.0");
+            var version_1 = Directory.GetFiles(packagedirectory);
+            var firstAssembly = version_1.First();
+
+            //add the first assembly version file
+            vm.AddFile(firstAssembly);
+
+            //assert that we have successfully added the assembly
+            Assert.AreEqual(vm.Assemblies.Count, 1);
+
+            //arrange the second assembly version
+            packagedirectory = Path.Combine(TestDirectory, "pkgs\\PackageManager\\2.0");
+            var version_2 = Directory.GetFiles(packagedirectory);
+            var secondAssembly = version_2.First();
+
+            //now add the second assembly version file
+            vm.AddFile(secondAssembly);
+
+            //TODO: assert - do we expect to see 1 or 2 here?
+            Assert.AreEqual(vm.Assemblies.Count, 1);
+        }
     }
 }

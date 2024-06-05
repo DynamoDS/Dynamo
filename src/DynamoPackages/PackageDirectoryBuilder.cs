@@ -64,6 +64,14 @@ namespace Dynamo.PackageManager
             return rootDir;
         }
 
+        /// <summary>
+        ///     Attempts to recreate the file/folder structure from an existing data
+        /// </summary>
+        /// <param name="package">The package to be formed</param>
+        /// <param name="packagesDirectory">The parent directory (the published folder or the default packages directory)</param>
+        /// <param name="contentFiles">The collection of files to be moved</param>
+        /// <param name="markdownFiles">Separately provided markdown files</param>
+        /// <returns></returns>
         public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
         {
             
