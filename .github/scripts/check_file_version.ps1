@@ -68,12 +68,19 @@ $excludedFiles = @(
     "Units.dll",
     "Webview2Loader.dll"
 )
+$noVersion = @()
+$wrongVersion = @()
 
 $dynamoSandbox = Join-Path -Path $path -ChildPath "DynamoSandbox.exe"
 if (Test-Path $dynamoSandbox) {
     $fileVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($dynamoSandbox).FileVersion
-    $dynamoVersion = [System.Version]::Parse($fileVersion)
-    Write-Host "ℹ️ DynamoSandbox.exe - $dynamoVersion`n"
+    try {
+        $dynamoVersion = [System.Version]::Parse($fileVersion)
+        Write-Host "ℹ️ DynamoSandbox.exe - $dynamoVersion`n"
+    } catch {
+        Write-Host "❌ Failed to get the version of DynamoSandbox.exe"
+        exit 1
+    }
 } else {
     Write-Host "⚠️ DynamoSandbox.exe was not found"
     exit 1
@@ -82,18 +89,30 @@ if (Test-Path $dynamoSandbox) {
 $files = Get-ChildItem -Path $path -Include $includedFiles -Exclude $excludedFiles -Recurse -File
 foreach ($file in $files) {
     $name = $file.Name
-    $fullName = $file.FullName
     try {
         $fileVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($file).FileVersion
         $version = [System.Version]::Parse($fileVersion)
         if ($version -eq $dynamoVersion) {
             Write-Host "✅ $name - $version"
         } else {
-            Write-Host "❌ $name - $version doesn't match the expected version: $dynamoVersion.`n$fullName`n"
-            exit 1
+            Write-Host "❌ $name - $version"
+            $wrongVersion += $file
         }
     } catch {
-        Write-Host "❌ $name - Failed to get the version. `n$fullName`n"
-        exit 1
+        Write-Host "❌ $name"
+        $noVersion += $file
     }
+}
+
+if ($noVersion.Count -gt 0 -Or $wrongVersion.Count -gt 0) {
+    if ($noVersion.Count -gt 0) {
+        Write-Host "`n`e[4mThe following file(s) don't have version information`e[24m"
+        $noVersion | ForEach-Object { Write-Host ❌ $_.Name - $_.FullName }
+    }
+
+    if ($wrongVersion.Count -gt 0) {
+        Write-Host "`n`e[4mThe following file(s) don't have the expected version: $dynamoVersion`e[24m"
+        $wrongVersion | ForEach-Object { Write-Host ❌ $_.Name - $_.FullName - (Get-Item $_).VersionInfo.FileVersion }
+    }
+    exit 1
 }
