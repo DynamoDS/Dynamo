@@ -414,6 +414,11 @@ namespace Dynamo.Logging
         ViewDocumentation,
 
         /// <summary>
+        /// When the in-depth node help documentation is un-available
+        /// </summary>
+        MissingDocumentation,
+
+        /// <summary>
         /// Cancel operation, e.g. cancel adding a new group style 
         /// </summary>
         Cancel,

@@ -209,17 +209,11 @@ namespace Dynamo.Logging
         {
             lock (this.guardMutex)
             {
-                // In test mode, write the logs only to std out. 
-                if (testMode && !cliMode)
+                // In test mode or service mode, write the logs only to std out. 
+                if ((testMode && !cliMode) || serviceMode)
                 {
                     Console.WriteLine(string.Format("{0} : {1}", DateTime.UtcNow.ToString("u"), message));
                     return;
-                }
-
-                if (serviceMode && (level == LogLevel.Console || level == LogLevel.File))
-                {
-                    Console.WriteLine("LogLevel switched to ConsoleOnly in service mode");
-                    level = LogLevel.ConsoleOnly;
                 }
 
                 switch (level)
