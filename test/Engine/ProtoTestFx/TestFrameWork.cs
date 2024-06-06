@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using NUnit.Framework;
+using ProtoCore;
 using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
@@ -14,6 +15,7 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoFFI;
 using ProtoScript.Runners;
+using Type = System.Type;
 
 namespace ProtoTestFx.TD
 {
@@ -906,7 +908,17 @@ namespace ProtoTestFx.TD
 
         public static Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
+            //var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
+            var cbn = ProtoCore.Utils.ParserUtils.ParseWithCore(code, testCore).CodeBlockNode;
+            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
+            subtree.DeltaComputation = false;
+            return subtree;
+        }
+
+        public static Subtree CreateSubTreeFromCode(Core core, Guid guid, string code)
+        {
+            //var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
+            var cbn = ProtoCore.Utils.ParserUtils.ParseWithCore(code, core).CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             subtree.DeltaComputation = false;
             return subtree;

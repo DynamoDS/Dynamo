@@ -1,4 +1,4 @@
-﻿using DynamoServices;
+using DynamoServices;
 using NUnit.Framework;
 using ProtoScript.Runners;
 using ProtoTestFx.TD;
@@ -60,7 +60,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(astLiveRunner.Core, guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
@@ -117,7 +117,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(astLiveRunner.Core, guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
@@ -161,7 +161,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(astLiveRunner.Core, guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
@@ -224,7 +224,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(astLiveRunner.Core, guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
@@ -280,7 +280,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(astLiveRunner.Core, guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
@@ -323,7 +323,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 // Simulate a new new CBN
                 Guid guid2 = System.Guid.NewGuid();
                 added = new List<Subtree>();
-                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..2;"));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(astLiveRunner.Core, guid2, "x = 1..2;"));
 
 
                 syncData = new GraphSyncData(null, added, null);
@@ -347,7 +347,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             {
                 Guid guid2 = System.Guid.NewGuid();
                 List<Subtree> added = new List<Subtree>();
-                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, newCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(astLiveRunner.Core, guid2, newCode));
 
 
                 GraphSyncData syncData = new GraphSyncData(null, added, null);
