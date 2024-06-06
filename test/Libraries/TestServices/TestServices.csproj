@@ -11,6 +11,7 @@
   </PropertyGroup>
   <ItemGroup>         
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5206" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5226" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
   </ItemGroup>
   <ItemGroup>

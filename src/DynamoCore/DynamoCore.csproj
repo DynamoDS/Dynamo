@@ -33,6 +33,7 @@
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.8" />
     <PackageReference Include="Greg" Version="3.0.1.4707" />
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5206" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5226" GeneratePathProperty="true" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
     <PackageReference Include="RestSharp" Version="108.0.1" CopyXML="true" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
