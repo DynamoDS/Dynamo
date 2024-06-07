@@ -334,7 +334,8 @@ namespace Dynamo.Applications
                 PathResolver = CreatePathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance,
-                NoNetworkMode = noNetworkMode
+                NoNetworkMode = noNetworkMode,
+                IsHeadless = CLImode
             };
             var model = DynamoModel.Start(config);
             return model;
