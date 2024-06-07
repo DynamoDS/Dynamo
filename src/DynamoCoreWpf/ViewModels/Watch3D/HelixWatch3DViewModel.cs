@@ -2113,14 +2113,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="l">line object</param>
         private static void RemoveLineGeometryByRange(List<(int start, int end)> verticesRange, LineGeometry3D l)
         {
-            //First sort the range data
+            //First sort the range data so that we remove the range from the end to the start.
             verticesRange.Sort();
             verticesRange.Reverse();
 
             //track removed vertices to renumber indices index
             var totalRemoved = 0;
-            
+
+            //Determine first removed indice index within the range of indices.
+            var lowestVerticeInRanges = verticesRange.Min(x => x.start);
+            var lowestRemovedIndicesIndex = l.Indices.IndexOf(lowestVerticeInRanges);
+
             //Remove already generated line geometry from render package
+
             foreach (var range in verticesRange)
             {
                 var i = range.start;
@@ -2134,7 +2139,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 l.Indices.RemoveRange(firstIndicesIndex, indicesCount);
             }
 
-            for (int i = 0; i < l.Indices.Count; i++)
+            //Reset the Indices values for the indices that were after the removed region
+
+            var lowestRemovedIndice = verticesRange.Min(x => x.start);
+            for (int i = lowestRemovedIndicesIndex; i < l.Indices.Count; i++)
             {
                 l.Indices[i] -= totalRemoved;
             }
