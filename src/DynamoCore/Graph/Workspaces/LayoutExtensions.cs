@@ -7,8 +7,12 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Selection;
 
+#if !MINIMAL_SERVICE
+
 namespace Dynamo.Graph.Workspaces
 {
+
+    
     /// <summary>
     /// Layout class contains methods for organizing graphs.
     /// </summary>
@@ -622,3 +626,4 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 }
+#endif

@@ -146,4 +146,8 @@
           </PropertyGroup>
       </Otherwise>
   </Choose>
+    <!--When we build the DynamoCore solution define a constant for conditional compilation-->
+    <PropertyGroup Condition="'$(SolutionName)'=='DynamoCore'">
+    <DefineConstants>$(DefineConstants);MINIMAL_SERVICE</DefineConstants>
+    </PropertyGroup>
 </Project>
