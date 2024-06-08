@@ -2117,34 +2117,24 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             verticesRange.Sort();
             verticesRange.Reverse();
 
-            //track removed vertices to renumber indices index
-            var totalRemoved = 0;
-
-            //Determine first removed indice index within the range of indices.
-            var lowestVerticeInRanges = verticesRange.Min(x => x.start);
-            var lowestRemovedIndicesIndex = l.Indices.IndexOf(lowestVerticeInRanges);
-
             //Remove already generated line geometry from render package
 
             foreach (var range in verticesRange)
             {
                 var i = range.start;
-                var c = range.end - range.start + 1;
-                l.Positions.RemoveRange(i, c);
-                l.Colors.RemoveRange(i, c);
-                totalRemoved += c;
+                var count = range.end - range.start + 1;
+                l.Positions.RemoveRange(i, count);
+                l.Colors.RemoveRange(i, count);
 
                 var firstIndicesIndex = l.Indices.IndexOf(range.start);
                 var indicesCount = l.Indices.IndexOf(range.end) - firstIndicesIndex + 1;
                 l.Indices.RemoveRange(firstIndicesIndex, indicesCount);
-            }
 
-            //Reset the Indices values for the indices that were after the removed region
-
-            var lowestRemovedIndice = verticesRange.Min(x => x.start);
-            for (int i = lowestRemovedIndicesIndex; i < l.Indices.Count; i++)
-            {
-                l.Indices[i] -= totalRemoved;
+                //Reset the Indices values for the indices that were after the removed region
+                for (int j = firstIndicesIndex; j < l.Indices.Count; j++)
+                {
+                    l.Indices[j] -= count;
+                }
             }
         }
 
