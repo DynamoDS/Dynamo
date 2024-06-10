@@ -1,6 +1,4 @@
-#if !MINIMAL_SERVICE
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -337,6 +335,7 @@ namespace DynamoUtilitiesTests
 
             return lookUp.Object;
         }
+
         private static InstalledProductLookUp SetUpProductLookUp(Dictionary<string, Tuple<int,int,int,int>> products,
             Dictionary<string, Tuple<int, int, int, int>> locations)
         {
@@ -376,4 +375,3 @@ namespace DynamoUtilitiesTests
         }
     }
 }
-#endif

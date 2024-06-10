@@ -10,7 +10,7 @@
     <AssemblyName>DynamoUtilitiesTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-      <PackageReference Include="Moq" Version="4.18.4" />
+      <PackageReference Include="Moq" Version="4.18.4"/>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
       <PackageReference Include="NUnit" Version="3.13.3" />
       <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
@@ -20,6 +20,10 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Tools\DynamoInstallDetective\DynamoInstallDetective.csproj">
+      <Project>{98692887-b389-4f73-a71a-9fc516738dab}</Project>
+      <Name>DynamoInstallDetective</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
