@@ -1474,6 +1474,27 @@ X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
         }
 
         [Test]
+        public void StandardCurvesAndInstancedCurvesAndAreAddedToBackGroundPreviewForWhenTesselatedFromOneNodeExample1()
+        {
+            ViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = true;
+
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("MixedListOfInstancedAndStandardCurves.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            //this graph displays a 3 lines.
+            Assert.AreEqual(3, BackgroundPreviewGeometry.TotalCurvesMinusInstances());
+
+            //this graph displays 2 rectangle instances.
+            Assert.AreEqual(2, BackgroundPreviewGeometry.TotalLineInstancesToRender());
+
+            Assert.AreEqual(false, BackgroundPreviewGeometry.AnyLargerIndicesThanVertexCount());
+
+            Assert.AreEqual(false, BackgroundPreviewGeometry.AnyNegativeIndices());
+        }
+
+        [Test]
         public void Watch3dNodeDisposal_DoesNotBreakBackGroundPreview()
         {
            OpenVisualizationTest("FirstRunWatch3D.dyn");
@@ -1596,6 +1617,45 @@ X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
             return lines.Any()
                 ? lines.SelectMany(g => ((LineGeometryModel3D)g).Geometry.Positions).Count()/2
                 : 0;
+        }
+
+        public static int TotalCurvesMinusInstances(this IEnumerable<Element3D> dictionary)
+        {
+            var lines = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name) && ((LineGeometryModel3D)g).Instances == null).ToArray();
+
+            return lines.Any()
+                ? lines.SelectMany(g => ((LineGeometryModel3D)g).Geometry.Positions).Count() / 2
+                : 0;
+        }
+
+        public static bool AnyNegativeIndices(this IEnumerable<Element3D> dictionary)
+        {
+            var lines = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name) && ((LineGeometryModel3D)g).Instances == null).ToArray();
+
+            foreach(var line in lines)
+            {
+                var indices = ((LineGeometryModel3D)line).Geometry.Indices;
+                if (indices.Any(i => i < 0))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool AnyLargerIndicesThanVertexCount(this IEnumerable<Element3D> dictionary)
+        {
+            var lines = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name) && ((LineGeometryModel3D)g).Instances == null).ToArray();
+
+            foreach (var line in lines)
+            {
+                var max = ((LineGeometryModel3D)line).Geometry.Positions.Count();
+
+                var indices = ((LineGeometryModel3D)line).Geometry.Indices;
+                if (indices.Any(i => i > max))
+                    return true;
+            }
+
+            return false;
         }
 
         public static int TotalText(this IEnumerable<Element3D> dictionary)
