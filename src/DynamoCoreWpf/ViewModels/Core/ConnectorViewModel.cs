@@ -1419,7 +1419,7 @@ namespace Dynamo.ViewModels
             {
                 RedrawBezierManyPoints();
             }
-            else if (this.ConnectorModel.End != null)
+            else if (this.ConnectorModel?.End != null)
             {
                 this.Redraw(this.ConnectorModel.End.Center);
             }
