@@ -2,22 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Text;
+using System.Windows.Media;
+using System.Windows.Shapes;
+using System.Windows.Threading;
+using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
-using Dynamo.Utilities;
-using Dynamo.UI.Commands;
-
-using Point = System.Windows.Point;
 using Dynamo.Selection;
-using System.ComponentModel;
-using System.Text;
-using System.Windows.Threading;
-using System.Windows.Shapes;
-using System.Windows.Media;
-using Dynamo.Graph;
+using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Models;
+using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
@@ -1417,11 +1415,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void Redraw()
         {
-            if (this.ConnectorModel.End != null && ConnectorPinViewCollection.Count > 0)
+            if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
             {
                 RedrawBezierManyPoints();
             }
-            else if (this.ConnectorModel.End != null)
+            else if (this.ConnectorModel?.End != null)
             {
                 this.Redraw(this.ConnectorModel.End.Center);
             }
