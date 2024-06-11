@@ -384,26 +384,21 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
             try
             {
-                 this.browser.NavigateToString(libraryHTMLPage);
+                this.browser.NavigateToString(libraryHTMLPage);
+                SetLibraryFontSize();
+                SetTooltipText();
+                browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100d;
+                browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
+                browser.KeyDown += Browser_KeyDown;
+
+                // Hosts an object that will expose the properties and methods to be called from the javascript side
+                browser.CoreWebView2.AddHostObjectToScript("scriptObject",
+                    new ScriptObject(OnCopyToClipboard, OnPasteFromClipboard));
             }
             catch (Exception ex)
             {
                 string msg = ex.Message;
             }
-
-            SetLibraryFontSize();
-            SetTooltipText();
-            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent            
-            double zoomFactor = ((double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100d);
-
-            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
-            browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100;
-            browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
-            browser.KeyDown += Browser_KeyDown;
-
-            // Hosts an object that will expose the properties and methods to be called from the javascript side
-            browser.CoreWebView2.AddHostObjectToScript("scriptObject",
-                new ScriptObject(OnCopyToClipboard, OnPasteFromClipboard));
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
