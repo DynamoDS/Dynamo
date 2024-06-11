@@ -218,15 +218,6 @@ namespace Dynamo.Notifications
             e.Handled = true;
         }
 
-        /// <summary>
-        /// Convenience method for logging to Dynamo Console.
-        /// </summary>
-        /// <param name="meessage"></param>
-        internal void LogToDynamoConsole(string message)
-        {
-            this.dynamoViewModel?.Model?.Logger?.Log(message);
-        }
-
         private void WebView_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
         {
             if (!e.IsSuccess)
