@@ -24,7 +24,7 @@ jobs:
         with:
           github-token: ${{ secrets.DYNAMO_ACTIONS_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
-          name: build
+          name: DynamoSandbox
           path: build
       - name: Check file version
         run: ${{ github.workspace }}\.github\scripts\check_file_version.ps1 ${{ github.workspace }}\build
