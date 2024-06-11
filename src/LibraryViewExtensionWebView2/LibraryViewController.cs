@@ -354,6 +354,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
         private void Browser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
         {
+            if (!e.IsSuccess)
+            {
+                if (e.InitializationException != null)
+                {
+                    LogToDynamoConsole(e.InitializationException.Message);
+                }
+                LogToDynamoConsole("LibraryViewExtension CoreWebView2 initialization failed.");
+                return;
+            }
+
             LibraryViewModel model = new LibraryViewModel();
             LibraryView view = new LibraryView(model);
 
@@ -397,7 +407,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
             catch (Exception ex)
             {
-                string msg = ex.Message;
+                LogToDynamoConsole("LibraryViewExtension CoreWebView2 initialization failed: " + ex.Message);
             }
         }
 
@@ -694,7 +704,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="meessage"></param>
         internal void LogToDynamoConsole(string message)
         {
-            this.dynamoViewModel.Model.Logger.Log(message);
+            this.dynamoViewModel?.Model?.Logger?.Log(message);
         }
 
         public void Dispose()
