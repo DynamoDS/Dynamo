@@ -1917,9 +1917,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         //
                         //Example: One Render package with a line, a rectangle (via instance transform) and another line
                         //
-                        //Positions [P0,P1,P3,P3,P4,P5,P6,P7,P8] (line 1 (2 Positions), rectangle (5 Positions), line 2 (2 Positions))
+                        //Positions [P0,P1,P2,P3,P4,P5,P6,P7,P8] (line 1 (2 Positions), rectangle (5 Positions), line 2 (2 Positions))
                         //Colors    [C0,C1,C2,C3,C4,C5,C6,C7,C8] (line 1 (2 Colors), rectangle (5 Colors), line 2 (2 Colors))
-                        //Indices [0,1,2,3,3,4,4,5,5,5,6,7,8] -> [(line 1) 1,2, (rectangle) 2,3,3,4,4,5,5,5,6 (line 2) 7,8]
+                        //Indices [0,1,2,3,3,4,4,5,5,6,7,8] -> [(line 1) 1,2, (rectangle) 2,3,3,4,4,5,5,6 (line 2) 7,8]
                         //
                         //Note, the Indices array is always bound by the number of Positions. Values in Indices[] should not be less than 0 and should be less than count of Positions.
                         //
@@ -1933,7 +1933,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             //For each range of line vertices associated with an instance we will add the line data and instances to the scene
                             //From the example above we would want to gather the data for the rectangle.
                             //
-                            //For Positions [P0,P1,P3,P3,P4,P5,P6,P7,P8]
+                            //For Positions [P0,P1,P2,P3,P4,P5,P6,P7,P8]
                             //we know from LineVertexRangesAssociatedWithInstancing that the rectangle is associated with vertices 2-6
                             //We get the startIndex which is 2 and the count which is 6-2+1 = 5
                             var j = 0;
@@ -1971,12 +1971,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             //From the example above we would want to gather the data for the two lines. RemoveLineGeometryByRange will remove the rectangle data.
                             //
                             //Start Point:
-                            //Positions [P0,P1,P3,P3,P4,P5,P6,P7,P8] (line 1 (2 Positions), rectangle (5 Positions), line 2 (2 Positions))
+                            //Positions [P0,P1,P2,P3,P4,P5,P6,P7,P8] (line 1 (2 Positions), rectangle (5 Positions), line 2 (2 Positions))
                             //Colors    [C0,C1,C2,C3,C4,C5,C6,C7,C8] (line 1 (2 Colors), rectangle (5 Colors), line 2 (2 Colors))
                             //Indices [0,1,2,3,3,4,4,5,5,6,7,8] -> [(line 1) 1,2, (rectangle) 2,3,3,4,4,5,5,6 (line 2) 7,8]
                             //
                             //End State to pass to AddLineData
-                            //Positions [P0,P1,P3,P3] (line 1 (2 Positions), line 2 (2 Positions))
+                            //Positions [P0,P1,P2,P3] (line 1 (2 Positions), line 2 (2 Positions))
                             //Colors    [C0,C1,C2,C3] (line 1 (2 Colors), line 2 (2 Colors))
                             //Indices [0,1,2,3] -> [(line 1) 1,2, (line 2) 3,4]
                             if (lineVertexRangesToRemove.Any())
@@ -2205,14 +2205,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             //Example with data from a line, a rectangle, and another line.  In this case the data would look like this:
             //
-            //Positions [P0,P1,P3,P3,P4,P5,P6,P7,P8] (line 1 (2 Positions), rectangle (5 Positions), line 2 (2 Positions))
+            //Positions [P0,P1,P2,P3,P4,P5,P6,P7,P8] (line 1 (2 Positions), rectangle (5 Positions), line 2 (2 Positions))
             //Colors    [C0,C1,C2,C3,C4,C5,C6,C7,C8] (line 1 (2 Colors), rectangle (5 Colors), line 2 (2 Colors))
             //Indices [0,1,2,3,3,4,4,5,5,6,7,8] -> [(line 1) 1,2, (rectangle) 2,3,3,4,4,5,5,6 (line 2) 7,8]
             //
             //In this example we want to remove the rectangle so the verticeRange would be [(2,6)]
             //
             //End State to pass to AddLineData
-            //Positions [P0,P1,P3,P3] (line 1 (2 Positions), line 2 (2 Positions))
+            //Positions [P0,P1,P2,P3] (line 1 (2 Positions), line 2 (2 Positions))
             //Colors    [C0,C1,C2,C3] (line 1 (2 Colors), line 2 (2 Colors))
             //Indices [0,1,2,3] -> [(line 1) 1,2, (line 2) 3,4]
             //
@@ -2237,7 +2237,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 //Now we need determine the first index and count of the range to remove in indices
                 //This is found via lookup by value associated with Position indexes.
-                //In the example, for Indices [0,1,2,3,3,4,4,5,5,5,6,7,8] we would find the firstIndicesIndex = 2 (ie first time we see 2)
+                //In the example, for Indices [0,1,2,3,3,4,4,5,5,6,7,8] we would find the firstIndicesIndex = 2 (ie first time we see 2)
                 //For indicesCount = 8 -> first time we see 6 is the 10 index -> 10-2+1 = 8
                 var firstIndicesIndex = l.Indices.IndexOf(range.start);
                 var indicesCount = l.Indices.IndexOf(range.end) - firstIndicesIndex + 1;
@@ -2247,7 +2247,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 //Last step is to normalize the indices array so that it is correct for the remaining data.
                 //from the example above the data now looks like this:
                 //
-                //Positions [P0,P1,P3,P3] (line 1 (2 Positions), line 2 (2 Positions))
+                //Positions [P0,P1,P2,P3] (line 1 (2 Positions), line 2 (2 Positions))
                 //Colors    [C0,C1,C2,C3] (line 1 (2 Colors), line 2 (2 Colors))
                 //Indices [0,1,7,8] -> [(line 1) 1,2, (line 2) 7,8]
                 //
