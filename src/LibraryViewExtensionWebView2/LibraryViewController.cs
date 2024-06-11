@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using CoreNodeModels.Properties;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
@@ -704,7 +705,14 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="meessage"></param>
         internal void LogToDynamoConsole(string message)
         {
-            this.dynamoViewModel?.Model?.Logger?.Log(message);
+            if (DynamoModel.IsTestMode)
+            {
+                System.Console.WriteLine(message);
+            }
+            else
+            {
+                this.dynamoViewModel?.Model?.Logger?.Log(message);
+            }
         }
 
         public void Dispose()

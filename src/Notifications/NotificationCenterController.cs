@@ -233,9 +233,9 @@ namespace Dynamo.Notifications
             {
                 if (e.InitializationException != null)
                 {
-                    LogToDynamoConsole(e.InitializationException.Message);
+                    Log(e.InitializationException.Message);
                 }
-                LogToDynamoConsole("NotificationCenter CoreWebView2 initialization failed.");
+                Log("NotificationCenter CoreWebView2 initialization failed.");
                 return;
             }
 
@@ -274,7 +274,7 @@ namespace Dynamo.Notifications
                 }
                 catch (Exception ex)
                 {
-                    LogToDynamoConsole("NotificationCenter CoreWebView2 initialization failed: " + ex.Message);
+                    Log("NotificationCenter CoreWebView2 initialization failed: " + ex.Message);
                 }
             }
         }
