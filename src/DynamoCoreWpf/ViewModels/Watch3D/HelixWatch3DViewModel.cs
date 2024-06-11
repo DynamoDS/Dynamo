@@ -946,6 +946,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 var description = Resources.RenderingMemoryOutageDescription;
                 (dynamoModel as DynamoModel).Report3DPreviewOutage(summary, description);
             }
+            catch (InstancingRenderFailureException)
+            {
+                //Notify the user of an issue impacting the background preview but do not disable the background preview.
+                string title = Resources.PartialRenderFailureTitle;
+                string summary = Resources.InstancingRenderFailureSummary;
+                var description = Resources.InstancingRenderFailureDescription;
+
+                const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+                var args = new TaskDialogEventArgs(
+                   new Uri(imageUri, UriKind.Relative),
+                   title, summary, description);
+
+                (dynamoModel as DynamoModel).OnRequestTaskDialog(null, args);
+            }
 #if DEBUG
             // Defer stopping the timer until after the rendering has occurred
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
@@ -2088,6 +2102,29 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             rp.Transform, rp.RequiresPerVertexColoration);
                     }
                 }
+
+                //Pass failure to the calling function try catch.
+                if (instancingRenderFailure)
+                {
+                    throw new InstancingRenderFailureException();
+                }
+            }
+        }
+
+        internal class InstancingRenderFailureException : Exception
+        {
+            public InstancingRenderFailureException()
+            {
+            }
+
+            public InstancingRenderFailureException(string message)
+                : base(message)
+            {
+            }
+
+            public InstancingRenderFailureException(string message, Exception inner)
+                : base(message, inner)
+            {
             }
         }
 
