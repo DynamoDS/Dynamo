@@ -1804,6 +1804,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
 
+            //Track if there is a failure processing data related to instancing
+            var instancingRenderFailure = false;
+
             lock (element3DDictionaryMutex)
             {
                 //TODO add try/catch
@@ -1968,10 +1971,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                                 var lCopy = CloneLineGeometry(l);
 
                                 //We Process the copy to remove the line data associated with instance geometry that has already been added to the scene.
-                                RemoveLineGeometryByRange(lineVertexRangesToRemove, lCopy);
+                                var success = RemoveLineGeometryByRange(lineVertexRangesToRemove, lCopy);
 
                                 //We add the remaining line data to the scene.
-                                AddLineData(id, lCopy, 0, lCopy.Positions.Count, drawDead, baseId, rp.Transform, rp.IsSelected, rp.Mesh.Positions.Any());
+                                if (success)
+                                {
+                                    AddLineData(id, lCopy, 0, lCopy.Positions.Count, drawDead, baseId, rp.Transform, rp.IsSelected, rp.Mesh.Positions.Any());
+                                }
+                                else
+                                {
+                                    instancingRenderFailure = true;
+                                }
                             }
                             else
                             {
@@ -2151,7 +2161,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         /// <param name="verticesRange">List of vertices ranges to remove</param>
         /// <param name="l">line object</param>
-        private static void RemoveLineGeometryByRange(List<(int start, int end)> verticesRange, LineGeometry3D l)
+        private static bool RemoveLineGeometryByRange(List<(int start, int end)> verticesRange, LineGeometry3D l)
         {
             //This function is designed to remove data from the Line geometry for a specific range of vertices.
             //This function processes the Positions, Color and Indices arrays of the LineGeometry3D object.
@@ -2214,11 +2224,24 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 //Indices [0,1,7-5,8-5] -> [0,1,2,3]
 
                 //Reset the Indices values for the indices that were after the removed region
+                var positionCount = l.Positions.Count;
                 for (int j = firstIndicesIndex; j < l.Indices.Count; j++)
                 {
-                    l.Indices[j] -= count;
+                    var value = l.Indices[j];
+                    value -= count;
+
+                    //assert value is within the bounds of the positions array
+                    //exit if this is not the case
+                    if (value < 0 || value >= positionCount)
+                    {
+                        return false;
+                    }
+
+                    l.Indices[j] = value;
                 }
             }
+
+            return true;
         }
 
         /// <summary>
