@@ -958,6 +958,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                    new Uri(imageUri, UriKind.Relative),
                    title, summary, description);
 
+                //Show the dialog to inform the user
                 (dynamoModel as DynamoModel).OnRequestTaskDialog(null, args);
             }
 #if DEBUG
