@@ -218,8 +218,27 @@ namespace Dynamo.Notifications
             e.Handled = true;
         }
 
+        /// <summary>
+        /// Convenience method for logging to Dynamo Console.
+        /// </summary>
+        /// <param name="meessage"></param>
+        internal void LogToDynamoConsole(string message)
+        {
+            this.dynamoViewModel?.Model?.Logger?.Log(message);
+        }
+
         private void WebView_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
         {
+            if (!e.IsSuccess)
+            {
+                if (e.InitializationException != null)
+                {
+                    LogToDynamoConsole(e.InitializationException.Message);
+                }
+                LogToDynamoConsole("NotificationCenter CoreWebView2 initialization failed.");
+                return;
+            }
+
             var assembly = Assembly.GetExecutingAssembly();
             string htmlString = string.Empty;
 
@@ -241,15 +260,22 @@ namespace Dynamo.Notifications
                 // More initialization options
                 // Context menu disabled
                 notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
-                // Opening hyper-links using default system browser instead of WebView2 tab window
-                notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
-                notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
-                // Hosts an object that will expose the properties and methods to be called from the javascript side
-                notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
-                    new ScriptObject(OnMarkAllAsRead, OnNotificationPopupUpdated));
-
                 notificationUIPopup.webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
                 notificationUIPopup.webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
+                // Opening hyper-links using default system browser instead of WebView2 tab window
+                notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
+
+                try
+                {
+                    notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+                    // Hosts an object that will expose the properties and methods to be called from the javascript side
+                    notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
+                        new ScriptObject(OnMarkAllAsRead, OnNotificationPopupUpdated));
+                }
+                catch (Exception ex)
+                {
+                    LogToDynamoConsole("NotificationCenter CoreWebView2 initialization failed: " + ex.Message);
+                }
             }
         }
 
