@@ -1977,8 +1977,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             //Indices [0,1,2,3,3,4,4,5,5,6,7,8] -> [(line 1) 1,2, (rectangle) 2,3,3,4,4,5,5,6 (line 2) 7,8]
                             //
                             //End State to pass to AddLineData
-                            //Positions [P0,P1,P2,P3] (line 1 (2 Positions), line 2 (2 Positions))
-                            //Colors    [C0,C1,C2,C3] (line 1 (2 Colors), line 2 (2 Colors))
+                            //Positions [P0,P1,P7,P8] (line 1 (2 Positions), line 2 (2 Positions))
+                            //Colors    [C0,C1,C7,C8] (line 1 (2 Colors), line 2 (2 Colors))
                             //Indices [0,1,2,3] -> [(line 1) 1,2, (line 2) 3,4]
                             if (lineVertexRangesToRemove.Any())
                             {
@@ -2213,8 +2213,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             //In this example we want to remove the rectangle so the verticeRange would be [(2,6)]
             //
             //End State to pass to AddLineData
-            //Positions [P0,P1,P2,P3] (line 1 (2 Positions), line 2 (2 Positions))
-            //Colors    [C0,C1,C2,C3] (line 1 (2 Colors), line 2 (2 Colors))
+            //Positions [P0,P1,P7,P8] (line 1 (2 Positions), line 2 (2 Positions))
+            //Colors    [C0,C1,C7,C8] (line 1 (2 Colors), line 2 (2 Colors))
             //Indices [0,1,2,3] -> [(line 1) 1,2, (line 2) 3,4]
             //
             //Note that while the Position and Color arrays are simple range remove operations, The Indices require both a remove and a normalization operation.
@@ -2248,8 +2248,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 //Last step is to normalize the indices array so that it is correct for the remaining data.
                 //from the example above the data now looks like this:
                 //
-                //Positions [P0,P1,P2,P3] (line 1 (2 Positions), line 2 (2 Positions))
-                //Colors    [C0,C1,C2,C3] (line 1 (2 Colors), line 2 (2 Colors))
+                //Positions [P0,P1,P7,P8] (line 1 (2 Positions), line 2 (2 Positions))
+                //Colors    [C0,C1,C7,C8] (line 1 (2 Colors), line 2 (2 Colors))
                 //Indices [0,1,7,8] -> [(line 1) 1,2, (line 2) 7,8]
                 //
                 //The Indices array values are incorrect as they point to vertices that no longer exist in the Position Array.
