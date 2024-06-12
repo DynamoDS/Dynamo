@@ -2032,7 +2032,10 @@ namespace Dynamo.PackageManager
                 CustomNodeDefinitions.Remove(CustomNodeDefinitions
                     .First(x => x.DisplayName == fileName));
 
-                CustomDyfFilepaths.Remove(fileName + ".dyf");
+                var keyToRemove = CustomDyfFilepaths.Keys
+                                    .FirstOrDefault(k => Path.GetFileNameWithoutExtension(k) == fileName);
+
+                if(keyToRemove != null) CustomDyfFilepaths.Remove(keyToRemove);
             }
             else
             {
@@ -2735,12 +2738,12 @@ namespace Dynamo.PackageManager
                     var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(docDir, fileName)));
                     docItemPreview.AddChildRecursively(doc);
                 }
-                else if (file.EndsWith(".dyf"))
+                else if (file.ToLower().EndsWith(".dyf"))
                 {
                     var dyfPreview = new PackageItemRootViewModel(fileName, Path.Combine(dyfDir, fileName));
                     dyfItemPreview.AddChildRecursively(dyfPreview);
                 }
-                else if (file.EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
+                else if (file.ToLower().EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
                 {
                     // Assemblies carry the information if they are NodeLibrary or not  
                     if(Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName))))
