@@ -76,13 +76,13 @@ if (Test-Path $dynamoSandbox) {
     $fileVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($dynamoSandbox).FileVersion
     try {
         $dynamoVersion = [System.Version]::Parse($fileVersion)
-        Write-Host "ℹ️ DynamoSandbox.exe - $dynamoVersion`n"
+        Write-Output "::notice::ℹ️ DynamoSandbox.exe - $dynamoVersion`n"
     } catch {
-        Write-Host "❌ Failed to get the version of DynamoSandbox.exe"
+        Write-Output "::error::❌ Failed to get the version of DynamoSandbox.exe"
         exit 1
     }
 } else {
-    Write-Host "⚠️ DynamoSandbox.exe was not found"
+    Write-Output "::error::⚠️ DynamoSandbox.exe was not found"
     exit 1
 }
 
@@ -107,12 +107,20 @@ foreach ($file in $files) {
 if ($noVersion.Count -gt 0 -Or $wrongVersion.Count -gt 0) {
     if ($noVersion.Count -gt 0) {
         Write-Host "`n`e[4mThe following file(s) don't have version information`e[24m"
-        $noVersion | ForEach-Object { Write-Host ❌ $_.Name - $_.FullName }
+        $title = "Missing version information"
+        foreach ($file in $noVersion) {
+            $message = "$($file.Name) - $($file.FullName)"
+            Write-Output "::error title=$title::$message"
+        }
     }
 
     if ($wrongVersion.Count -gt 0) {
         Write-Host "`n`e[4mThe following file(s) don't have the expected version: $dynamoVersion`e[24m"
-        $wrongVersion | ForEach-Object { Write-Host ❌ $_.Name - $_.FullName - (Get-Item $_).VersionInfo.FileVersion }
+        $title = "Unexpected version information"
+        foreach ($file in $wrongVersion) {
+            $message = "$($file.Name) - $($file.FullName) - $($(Get-Item $file).VersionInfo.FileVersion)"
+            Write-Output "::error title=$title::$message"
+        }
     }
     exit 1
 }
