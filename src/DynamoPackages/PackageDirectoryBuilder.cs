@@ -312,11 +312,11 @@ namespace Dynamo.PackageManager
                 {
                     targetFolder = docDirPath;
                 }
-                else if (file.EndsWith(".dyf"))
+                else if (file.ToLower().EndsWith(".dyf"))
                 {
                     targetFolder = dyfDirPath;
                 }
-                else if (file.EndsWith(".dll") || IsXmlDocFile(file, files) || IsDynamoCustomizationFile(file, files))
+                else if (file.ToLower().EndsWith(".dll") || IsXmlDocFile(file, files) || IsDynamoCustomizationFile(file, files))
                 {
                     targetFolder = binDirPath;
                 }

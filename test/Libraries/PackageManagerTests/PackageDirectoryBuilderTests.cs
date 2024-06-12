@@ -472,8 +472,8 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void CopyFilesIntoPackageDirectory_DoesNotMoveFilesAlreadyWithinDirectory()
         {
-            var files = new[] { @"C:\foo/dyf\file1.dyf", @"C:\\foo\dyf\file2.dyf", @"C:\\foo\dyf\file3.dyf",
-                @"C:\foo/bin\file1.dll", @"C:\\foo\bin\file2.dll", @"C:\\foo\bin\file3.dll",
+            var files = new[] { @"C:\foo/dyf\file1.dyf", @"C:\\foo\dyf\file2.DYF", @"C:\\foo\dyf\file3.dyf",
+                @"C:\foo/bin\file1.dll", @"C:\\foo\bin\file2.DLL", @"C:\\foo\bin\file3.dll",
                 @"C:\foo/extra\file1.pdf", @"C:\\foo\extra\file2.rvt", @"C:\\foo\extra\file3.poo", @"C:\\foo\doc\file1.md", @"C:\\foo\doc\file2.png" };
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn), (dn) => true);
