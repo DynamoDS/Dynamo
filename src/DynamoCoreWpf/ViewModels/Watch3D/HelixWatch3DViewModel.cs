@@ -197,6 +197,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private const string PointsKey = ":points";
         private const string LinesKey = ":lines";
         private const string MeshKey = ":mesh";
+        private const string InstanceKey = "_instance";
         private const string TextKey = ":text";
 
         private const int FrameUpdateSkipCount = 200;
@@ -1937,14 +1938,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             //For Positions [P0,P1,P2,P3,P4,P5,P6,P7,P8]
                             //we know from LineVertexRangesAssociatedWithInstancing that the rectangle is associated with vertices 2-6
                             //We get the startIndex which is 2 and the count which is 6-2+1 = 5
-                            var j = 0;
                             foreach (var item in rp.LineVertexRangesAssociatedWithInstancing)
                             {
                                 //Gather the data required for calling AddLineData
                                 var range = item.Value;
                                 var startIndex = range.Item1; //Start line vertex index
                                 var count = range.Item2 - range.Item1 + 1; //Count of line vertices
-                                var uniqueId = baseId + ":" + j + LinesKey + "_instance";
+                                //uniqueId is built with the renderPackage baseID and the base tessellation guid which is unique per type of geometry (ie rectangle vs circle)
+                                var uniqueId = baseId + ":" + item.Key.ToString() + LinesKey + InstanceKey;
 
                                 //Get all the associated instances for this range of line vertices
                                 List<Matrix> instances;
@@ -1956,7 +1957,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                                 //Track cumulative total of line vertices added.
                                 //We use this to determine if all the line data in the array has already been processed as a shortcut.
                                 processedLineVertexCount += count;
-                                j++;
                             }
 
                             //Add ranges of line geometry to exclude for regions already generated related to instancing.
@@ -2056,13 +2056,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (rp.MeshVertexRangesAssociatedWithInstancing.Any())
                     {
                         //For each range of mesh vertices add the mesh data and instances to the scene
-                        var j = 0;
                         foreach (var item in rp.MeshVertexRangesAssociatedWithInstancing)
                         {
                             var range = item.Value;
                             var startIndex = range.start; //Start mesh vertex index
                             var count = range.end - range.start + 1; //Count of mesh vertices
-                            var uniqueId = baseId + ":" + j + MeshKey + "_instance";
+                            //uniqueId is built with the renderPackage baseID and the base tessellation guid which is unique per type of geometry (ie cube vs sphere)
+                            var uniqueId = baseId + ":" + item.Key.ToString() + MeshKey + InstanceKey;
 
                             List<Matrix> instances;
                             if (rp.instanceTransforms.TryGetValue(item.Key, out instances))
@@ -2073,7 +2073,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                             //Track cumulative total of mesh vertices added.
                             processedMeshVertexCount += count;
-                            j++;
                         }
 
                         //If all the mesh regions had instance data then we are done with mesh data and this Renderpackage.
@@ -2327,6 +2326,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (Element3DDictionary.TryGetValue(id, out element3D))
             {
                 meshGeometry3D = element3D as DynamoGeometryModel3D;
+
+                //If the base instance already exists then we only need to add the new instances transforms
+                if (id.Contains(InstanceKey))
+                {
+                    if (instances != null)
+                    {
+                        foreach (var item in instances)
+                        {
+                            meshGeometry3D.Instances.Add(item);
+                        }
+                    }
+
+                    return;
+                }
             }
             else
             {
@@ -2417,6 +2430,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (Element3DDictionary.ContainsKey(id))
             {
                 lineGeometry3D = Element3DDictionary[id] as LineGeometryModel3D;
+
+                //If the base instance already exists then we only need to add the new instances transforms
+                if (id.Contains(InstanceKey))
+                {
+                    if (instances != null)
+                    {
+                        foreach (var item in instances)
+                        {
+                            lineGeometry3D.Instances.Add(item);
+                        }
+                    }
+
+                    return;
+                }
             }
             else
             {
