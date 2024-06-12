@@ -1495,6 +1495,20 @@ X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
         }
 
         [Test]
+        public void InstanceGeometryWithinCodeBlock()
+        {
+            ViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = true;
+
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("InstancingWithinCodeBlock.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            //this graph displays 2 rectangle instances.
+            Assert.AreEqual(2, BackgroundPreviewGeometry.TotalLineInstancesToRender());
+        }
+
+        [Test]
         public void Watch3dNodeDisposal_DoesNotBreakBackGroundPreview()
         {
            OpenVisualizationTest("FirstRunWatch3D.dyn");
