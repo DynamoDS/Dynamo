@@ -40,7 +40,7 @@ jobs:
             Write-Output "::error title=File Not Found::DynamoCLI.exe was not found!"
           }
       - name: Check File Version
-        run: ${{ github.workspace }}\.github\scripts\check_file_version.ps1 ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
+        run: ${{ github.workspace }}\Dynamo\.github\scripts\check_file_version.ps1 ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
