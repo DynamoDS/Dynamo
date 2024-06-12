@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5206" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5226" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

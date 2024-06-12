@@ -19,7 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5206" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5226" />
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
