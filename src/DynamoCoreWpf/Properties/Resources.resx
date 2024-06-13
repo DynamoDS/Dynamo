@@ -3994,10 +3994,7 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="InstancingRenderFailureDescription" xml:space="preserve">
     <value>Please disable Use Instancing in the Display Settings section of Visual Settings.</value>
   </data>
-  <data name="InstancingRenderFailureSummary" xml:space="preserve">
-    <value>Dynamo has had an issue displaying some geometry to the background preview</value>
-  </data>
   <data name="PartialRenderFailureTitle" xml:space="preserve">
-    <value>3D Preview had an issue</value>
+    <value>Background Preview had an issue</value>
   </data>
 </root>

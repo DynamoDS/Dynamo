@@ -44,6 +44,7 @@ using MeshBuilder = HelixToolkit.SharpDX.Core.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.SharpDX.Core.MeshGeometry3D;
 using TextInfo = HelixToolkit.SharpDX.Core.TextInfo;
 using Dynamo.Configuration;
+using Dynamo.UI.Prompts;
 
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
@@ -950,17 +951,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             catch (InstancingRenderFailureException)
             {
                 //Notify the user of an issue impacting the background preview but do not disable the background preview.
-                string title = Resources.PartialRenderFailureTitle;
-                string summary = Resources.InstancingRenderFailureSummary;
+                var title = Resources.PartialRenderFailureTitle;
                 var description = Resources.InstancingRenderFailureDescription;
 
-                const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
-                var args = new TaskDialogEventArgs(
-                   new Uri(imageUri, UriKind.Relative),
-                   title, summary, description);
-
-                //Show the dialog to inform the user
-                (dynamoModel as DynamoModel).OnRequestTaskDialog(null, args);
+                var result = DynamoMessageBox.Show(description, title, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 #if DEBUG
             // Defer stopping the timer until after the rendering has occurred

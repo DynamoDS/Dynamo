@@ -4083,15 +4083,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo has had an issue displaying some geometry to the background preview.
-        /// </summary>
-        public static string InstancingRenderFailureSummary {
-            get {
-                return ResourceManager.GetString("InstancingRenderFailureSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _Interactive Guides.
         /// </summary>
         public static string InteractiveGuides {
@@ -7292,7 +7283,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 3D Preview had an issue.
+        ///   Looks up a localized string similar to Background Preview had an issue.
         /// </summary>
         public static string PartialRenderFailureTitle {
             get {
