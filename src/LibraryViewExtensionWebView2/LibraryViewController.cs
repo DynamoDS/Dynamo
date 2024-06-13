@@ -485,9 +485,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
             if(fontSize != libraryFontSize)
             {
-                var result = await ExecuteScriptFunctionAsync(browser, "setLibraryFontSize", fontSize);
-                if(result != null)
-                    libraryFontSize = fontSize;
+                try
+                {
+                    var result = await ExecuteScriptFunctionAsync(browser, "setLibraryFontSize", fontSize);
+                    if (result != null)
+                        libraryFontSize = fontSize;
+                }
+                catch (Exception ex)
+                {
+                    LogToDynamoConsole("Error setting the font size: " + ex.Message);
+                }
             }
         }
 
@@ -495,7 +502,14 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             var jsonTooltipText = new { create = Resources.TooltipTextCreate, action = Resources.TooltipTextAction, query = Resources.TooltipTextQuery };
             var jsonString = JsonConvert.SerializeObject(jsonTooltipText);
-            var result = await ExecuteScriptFunctionAsync(browser, "setTooltipText", jsonString);
+            try
+            {
+                var result = await ExecuteScriptFunctionAsync(browser, "setTooltipText", jsonString);
+            }
+            catch (Exception ex)
+            {
+                LogToDynamoConsole("Error setting the tooltip text: " + ex.Message);
+            }
         }
 
         #region Tooltip
@@ -772,7 +786,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="type"></param>
         internal void UpdateContext(string type)
         {
-            ExecuteScriptFunctionAsync(browser,"libController.setHostContext", type);
+            ExecuteScriptFunctionAsync(browser, "libController.setHostContext", type);
             ExecuteScriptFunctionAsync(browser, "replaceImages");
         }
     }

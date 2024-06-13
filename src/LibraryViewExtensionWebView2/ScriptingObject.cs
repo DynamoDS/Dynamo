@@ -101,7 +101,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                     var searchStream = controller.searchResultDataProvider.GetResource(data, out extension);
                     var searchReader = new StreamReader(searchStream);
                     var results = searchReader.ReadToEnd();
-                    //send back results to libjs
+                    //send back results to librarie.js
                     LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeSearch", results);
                     searchReader.Dispose();
                 }
