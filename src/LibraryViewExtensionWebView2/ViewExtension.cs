@@ -38,9 +38,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
+            viewParams = viewLoadedParams;
             if (!DynamoModel.IsTestMode)
             {
-                viewParams = viewLoadedParams;
                 controller = new LibraryViewController(viewLoadedParams.DynamoWindow, viewLoadedParams.CommandExecutive, customization);
                 (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
             }
