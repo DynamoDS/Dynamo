@@ -44,7 +44,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 controller = new LibraryViewController(viewLoadedParams.DynamoWindow, viewLoadedParams.CommandExecutive, customization);
                 (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
             }
-            viewLoadedParams.CurrentWorkspaceChanged += ViewParams_CurrentWorkspaceChanged;
+            viewParams.CurrentWorkspaceChanged += ViewParams_CurrentWorkspaceChanged;
         }
 
         private void ViewParams_CurrentWorkspaceChanged(IWorkspaceModel workspace)
