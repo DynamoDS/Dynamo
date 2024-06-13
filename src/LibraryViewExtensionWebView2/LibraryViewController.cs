@@ -786,22 +786,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="type"></param>
         internal void UpdateContext(string type)
         {
-            try
-            {
-                ExecuteScriptFunctionAsync(browser, "libController.setHostContext", type);
-            }
-            catch (Exception ex)
-            {
-                LogToDynamoConsole("Error setting the host context: " + ex.Message);
-            }
-            try
-            {
-                ExecuteScriptFunctionAsync(browser, "replaceImages");
-            }
-            catch (Exception ex)
-            {
-                LogToDynamoConsole("Error replacing images: " + ex.Message);
-            }
+            ExecuteScriptFunctionAsync(browser, "libController.setHostContext", type);
+            ExecuteScriptFunctionAsync(browser, "replaceImages");
         }
     }
 }

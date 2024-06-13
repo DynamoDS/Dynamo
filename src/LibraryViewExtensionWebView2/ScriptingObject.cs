@@ -102,14 +102,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                     var searchReader = new StreamReader(searchStream);
                     var results = searchReader.ReadToEnd();
                     //send back results to librarie.js
-                    try
-                    {
-                        LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeSearch", results);
-                    }
-                    catch(Exception e)
-                    {
-                        this.controller.LogToDynamoConsole($"Error while sending search results to javascript{Environment.NewLine}{e.Message}");
-                    }
+                    LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeSearch", results);
                     searchReader.Dispose();
                 }
                 //When the html <div> that contains the sample package is clicked then we will be moved to the next Step in the Guide
