@@ -1,7 +1,7 @@
 $pkgname=$args[0]
 $pkgver=$args[1]
 
-If (-Not (Test-Path .\Packages\$pkgname)) {
+If ((-Not (Test-Path .\Packages\$pkgname)) -Or (-Not (Test-Path .\Packages\$pkgname\package.json))) {
 	echo true
 	return
 }
