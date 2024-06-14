@@ -37,8 +37,10 @@ jobs:
           if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\AnyCPU\Release\DynamoCLI.exe") {
             Write-Output "DynamoCLI.exe exists!"
           } else {
-            Write-Error "DynamoCLI.exe was not found!"
+            Write-Output "::error title=File Not Found::DynamoCLI.exe was not found!"
           }
+      - name: Check File Version
+        run: ${{ github.workspace }}\Dynamo\.github\scripts\check_file_version.ps1 ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
