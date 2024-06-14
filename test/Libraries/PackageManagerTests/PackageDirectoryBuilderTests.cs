@@ -499,5 +499,30 @@ namespace Dynamo.PackageManager.Tests
 
         #endregion
 
+        #region DeleteDyfFilesDuringBuild
+        [Test]
+        public void BuildPackageDirectory_DeletesOriginalDyfFiles()
+        {
+            // This tests asserts that the initial custom definition files will be deleted in the build process 
+            var files = new[] { @"C:\pkg\file1.dyf", @"C:\pkg\file2.DYF" };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+
+            var fs = new RecordedFileSystem((fn) => files.Contains(fn));
+
+            var pr = new Mock<IPathRemapper>();
+            var db = new PackageDirectoryBuilder(fs, pr.Object);
+
+            var pkgsDir = @"C:\dynamopackages";
+
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+
+            var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
+
+            Assert.AreEqual(files.Length, fs.CopiedFiles.Count());
+            Assert.AreEqual(files.Length, fs.DeletedFiles.Count());
+        }
+
+        #endregion
+
     }
 }

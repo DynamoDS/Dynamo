@@ -135,7 +135,7 @@ namespace Dynamo.PackageManager
         private void RemoveRetainDyfFiles(IEnumerable<string> filePaths, List<string> dyfFiles)
         {
             var dyfsToRemove = filePaths
-                .Where(x => x.EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != Path.GetDirectoryName(dyfFiles.First(f => Path.GetFileName(f).Equals(Path.GetFileName(x)))));
+                .Where(x => x.ToLower().EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != Path.GetDirectoryName(dyfFiles.First(f => Path.GetFileName(f).Equals(Path.GetFileName(x)))));
 
             foreach (var dyf in dyfsToRemove)
             {
@@ -146,7 +146,7 @@ namespace Dynamo.PackageManager
         private void RemoveDyfFiles(IEnumerable<string> filePaths, IDirectoryInfo dyfDir)
         {
             var dyfsToRemove = filePaths
-                .Where(x => x.EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != dyfDir.FullName);
+                .Where(x => x.ToLower().EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != dyfDir.FullName);
 
             foreach (var dyf in dyfsToRemove)
             {
@@ -264,7 +264,7 @@ namespace Dynamo.PackageManager
 
                     fileSystem.CopyFile(file, destPath);
 
-                    if (file.EndsWith(".dyf"))
+                    if (file.ToLower().EndsWith(".dyf"))
                     {
                         dyfFiles.Add(destPath);
                     }
