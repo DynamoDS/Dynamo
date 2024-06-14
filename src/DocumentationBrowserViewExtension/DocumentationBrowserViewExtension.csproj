@@ -97,9 +97,6 @@
     <EmbeddedResource Include="Docs\MarkdownStyling.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Docs\NodeAnnotationNotFound.md" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Docs\syntaxHighlight.html" />
   </ItemGroup>
   <ItemGroup>

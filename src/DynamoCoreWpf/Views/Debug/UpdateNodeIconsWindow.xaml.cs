@@ -374,7 +374,27 @@ namespace Dynamo.Wpf.Views.Debug
             var oldElement = resxItems.Where(x => x.Attribute("name").Value.ToLower().Equals((iconName + "." + iconSuffix).ToLower())).FirstOrDefault();
             if (oldElement != null)
             {
-                data = oldElement.Descendants("value").FirstOrDefault().Value;
+                string resXValue = oldElement.Descendants("value").FirstOrDefault().Value;
+                //This validation is for an edge case in which the resource contains a path to the image instead of the base64 value
+                if (resXValue.ToLower().Contains(".png") || resXValue.ToLower().Contains(".jpg"))
+                {
+                    var imageName = resXValue.Split(";")[0];
+                    var imageFullPath = Path.Combine(Path.GetDirectoryName(path), imageName);
+                    if(File.Exists(imageFullPath))
+                    {
+                        byte[] imageBytes = File.ReadAllBytes(imageFullPath);
+                        data = Convert.ToBase64String(imageBytes);
+                    }
+                    else
+                    {
+                        data = null;
+                        return false;
+                    }                  
+                }
+                else
+                {
+                    data = resXValue;
+                }             
                 return true;
             }
             data = null;
@@ -430,6 +450,16 @@ namespace Dynamo.Wpf.Views.Debug
                     var oldElement = resxItems.Where(x => x.Attribute("name").Value.ToLower().Equals((item.IconName + "." + item.IconSuffix).ToLower())).FirstOrDefault();
                     if (oldElement != null)
                     {
+                        var currentElementValue = oldElement.Descendants("value").FirstOrDefault().Value;
+                        if (currentElementValue.ToLower().Contains(".png") || currentElementValue.ToLower().Contains(".jpg"))
+                        {
+                            //If the resx file is referencing a png image then we need to update/add the type and mimetype attributes
+                            XAttribute attRemove = oldElement.Attribute("type");
+                            attRemove.Remove();
+                            oldElement.SetAttributeValue("type", "System.Drawing.Bitmap, System.Drawing");
+                            oldElement.SetAttributeValue("mimetype", "application/x-microsoft.net.object.bytearray.base64");
+                        }
+
                         oldElement.Descendants("value").FirstOrDefault().Value = IndentBase64String(item.Icon_Base64String);
                         resx.Save(item.IconResxFile);
                         WritetoLogFile(logFile, "Updated: " + item.NewIconPath);

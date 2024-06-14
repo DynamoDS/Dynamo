@@ -19,7 +19,7 @@
     <Compile Remove="GeometryColor.cs" />
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5155" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5226" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
@@ -63,12 +63,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\DSCore.Data.StringifyJSON.Small.png" />
-    <None Include="Resources\DSCore.Data.StringifyJSON.Large.png" />
-    <None Include="Resources\DSCore.Data.ParseJSON.Small.png" />
-    <None Include="Resources\DSCore.Data.ParseJSON.Large.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">

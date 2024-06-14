@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using CoreNodeModels.Properties;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
@@ -354,6 +355,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
         private void Browser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
         {
+            if (!e.IsSuccess)
+            {
+                if (e.InitializationException != null)
+                {
+                    LogToDynamoConsole(e.InitializationException.Message);
+                }
+                LogToDynamoConsole("LibraryViewExtension CoreWebView2 initialization failed.");
+                return;
+            }
+
             LibraryViewModel model = new LibraryViewModel();
             LibraryView view = new LibraryView(model);
 
@@ -384,26 +395,21 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
             try
             {
-                 this.browser.NavigateToString(libraryHTMLPage);
+                this.browser.NavigateToString(libraryHTMLPage);
+                SetLibraryFontSize();
+                SetTooltipText();
+                browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100d;
+                browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
+                browser.KeyDown += Browser_KeyDown;
+
+                // Hosts an object that will expose the properties and methods to be called from the javascript side
+                browser.CoreWebView2.AddHostObjectToScript("scriptObject",
+                    new ScriptObject(OnCopyToClipboard, OnPasteFromClipboard));
             }
             catch (Exception ex)
             {
-                string msg = ex.Message;
+                LogToDynamoConsole("LibraryViewExtension CoreWebView2 initialization failed: " + ex.Message);
             }
-
-            SetLibraryFontSize();
-            SetTooltipText();
-            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent            
-            double zoomFactor = ((double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100d);
-
-            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
-            browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100;
-            browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
-            browser.KeyDown += Browser_KeyDown;
-
-            // Hosts an object that will expose the properties and methods to be called from the javascript side
-            browser.CoreWebView2.AddHostObjectToScript("scriptObject",
-                new ScriptObject(OnCopyToClipboard, OnPasteFromClipboard));
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -479,9 +485,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
             if(fontSize != libraryFontSize)
             {
-                var result = await ExecuteScriptFunctionAsync(browser, "setLibraryFontSize", fontSize);
-                if(result != null)
-                    libraryFontSize = fontSize;
+                try
+                {
+                    var result = await ExecuteScriptFunctionAsync(browser, "setLibraryFontSize", fontSize);
+                    if (result != null)
+                        libraryFontSize = fontSize;
+                }
+                catch (Exception ex)
+                {
+                    LogToDynamoConsole("Error setting the font size: " + ex.Message);
+                }
             }
         }
 
@@ -489,7 +502,14 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             var jsonTooltipText = new { create = Resources.TooltipTextCreate, action = Resources.TooltipTextAction, query = Resources.TooltipTextQuery };
             var jsonString = JsonConvert.SerializeObject(jsonTooltipText);
-            var result = await ExecuteScriptFunctionAsync(browser, "setTooltipText", jsonString);
+            try
+            {
+                var result = await ExecuteScriptFunctionAsync(browser, "setTooltipText", jsonString);
+            }
+            catch (Exception ex)
+            {
+                LogToDynamoConsole("Error setting the tooltip text: " + ex.Message);
+            }
         }
 
         #region Tooltip
@@ -699,7 +719,14 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="meessage"></param>
         internal void LogToDynamoConsole(string message)
         {
-            this.dynamoViewModel.Model.Logger.Log(message);
+            if (DynamoModel.IsTestMode)
+            {
+                System.Console.WriteLine(message);
+            }
+            else
+            {
+                this.dynamoViewModel?.Model?.Logger?.Log(message);
+            }
         }
 
         public void Dispose()
@@ -759,7 +786,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="type"></param>
         internal void UpdateContext(string type)
         {
-            ExecuteScriptFunctionAsync(browser,"libController.setHostContext", type);
+            ExecuteScriptFunctionAsync(browser, "libController.setHostContext", type);
             ExecuteScriptFunctionAsync(browser, "replaceImages");
         }
     }

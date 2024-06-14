@@ -148,6 +148,9 @@
   <data name="ImportToSATUnitsDesc" xml:space="preserve">
     <value>Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
   </data>
+  <data name="PanelSurfaceBoundaryConditionDropDownDesc" xml:space="preserve">
+    <value>A drop down node that allow easy access to PanelSurface BoundaryCondition possible values</value>
+  </data>
   <data name="SABSATGeoDesc" xml:space="preserve">
     <value>Loaded geometry</value>
   </data>

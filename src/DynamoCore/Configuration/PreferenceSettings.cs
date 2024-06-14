@@ -1087,7 +1087,7 @@ namespace Dynamo.Configuration
             PreferenceSettings settings = null;
 
             if(string.IsNullOrEmpty(content))
-                return new PreferenceSettings();
+                return new PreferenceSettings() { isCreatedFromValidFile = false };
 
             try
             {

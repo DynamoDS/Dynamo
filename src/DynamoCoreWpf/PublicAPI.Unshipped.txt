@@ -4784,6 +4784,7 @@ static Dynamo.Wpf.Properties.Resources.InstalledPackageViewNodeLibrariesLabel.ge
 static Dynamo.Wpf.Properties.Resources.InstalledPackageViewPendingInstallButton.get -> string
 static Dynamo.Wpf.Properties.Resources.InstalledPackageViewTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.InstallMessageCaption.get -> string
+static Dynamo.Wpf.Properties.Resources.InstancingRenderFailureDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.InteractiveGuides.get -> string
 static Dynamo.Wpf.Properties.Resources.InvalidDraggingOperationMessgae.get -> string
 static Dynamo.Wpf.Properties.Resources.InvalidLoginUrl.get -> string
@@ -5133,6 +5134,7 @@ static Dynamo.Wpf.Properties.Resources.PackageViewContextMenuLoadText.get -> str
 static Dynamo.Wpf.Properties.Resources.PackageViewContextMenuLoadTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageWarningMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageWebsiteLabel.get -> string
+static Dynamo.Wpf.Properties.Resources.PartialRenderFailureTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.Periodic.get -> string
 static Dynamo.Wpf.Properties.Resources.PersistentVisualStatusOfLinterIssues.get -> string
 static Dynamo.Wpf.Properties.Resources.PortPropertiesPromptDescriptionTooltip.get -> string
