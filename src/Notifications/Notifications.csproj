@@ -27,7 +27,7 @@
         <!--This command updates the npm registry configuration if necessary-->
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1"  Condition="$(ShouldInstall)"/>
         <!--This command gets a specific build of the notifcation center from npm-->
-        <Exec Command="npm pack @dynamods/notifications-center@0.0.29"  Condition="$(ShouldInstall)"/>
+        <Exec Command="npm pack @dynamods/notifications-center@$(PackageVersion)"  Condition="$(ShouldInstall)"/>
     </Target>
 
     <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
