@@ -37,6 +37,7 @@ jobs:
             Write-Output "DynamoCLI.exe exists!"
           } else {
             Write-Error "DynamoCLI.exe was not found!"
+          }
   build_linux_runtime_on_windows:
     name: Build DynamoCore linux runtime on windows
     runs-on: windows-latest
@@ -67,6 +68,7 @@ jobs:
             Write-Error "DynamoCLI was not found!"
           }
   build_linux_runtime_on_linux:
+    name: Build DynamoCore linux runtime on linux
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Dynamo Repo
