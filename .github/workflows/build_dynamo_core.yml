@@ -1,0 +1,95 @@
+name: Build DynamoCore.sln
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build_windows_runtime:
+    name: Build DynamoCore windows runtime
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v4
+        with:
+          path: Dynamo
+          repository: DynamoDS/Dynamo
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Disable problem matcher
+        run: Write-Output "::remove-matcher owner=csc::"
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v2
+      - name: Install dependencies for windows runtime
+        run: |
+          dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release --runtime=win-x64
+      - name: Build DynamoCore with MSBuild for Windows
+        run: |
+          msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release
+      - name: Look for DynamoCLI.exe
+        run: |
+          Write-Output "***Locating DynamoCLI.exe!***"
+          if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\AnyCPU\Release\DynamoCLI.exe") {
+            Write-Output "DynamoCLI.exe exists!"
+          } else {
+            Write-Error "DynamoCLI.exe was not found!"
+  build_linux_runtime_on_windows:
+    name: Build DynamoCore linux runtime on windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v4
+        with:
+          path: Dynamo
+          repository: DynamoDS/Dynamo
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Disable problem matcher
+        run: Write-Output "::remove-matcher owner=csc::"
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v2
+      - name: Install dependencies for linux runtime
+        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -p:Platform=NET_Linux --runtime=linux-x64
+      - name: Build DynamoCore with MSBuild for Linux
+        run: msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release /p:Platform=NET_Linux
+      - name: Look for DynamoCLI
+        run: |
+          Write-Output "***Locating DynamoCLI for Linux!***"
+          if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\NET_Linux\Release\DynamoCLI") {
+            Write-Output "DynamoCLI exists!"
+          } else {
+            Write-Error "DynamoCLI was not found!"
+          }
+  build_linux_runtime_on_linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Dynamo Repo
+        uses: actions/checkout@v4
+        with:
+          path: Dynamo
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Disable problem matcher
+        run: echo "::remove-matcher owner=csc::"
+      - name: Install dependencies for linux runtime
+        run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -p:Platform=NET_Linux --runtime=linux-x64
+      - name: Build DynamoCore with dotnet for Linux
+        run: dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -c Release /p:Platform=NET_Linux
+      - name: Look for DynamoCLI.exe
+        run: |
+          echo "***Locating DynamoCLI for Linux!***"
+          cd "${{ github.workspace }}/Dynamo/bin/NET_Linux/Release"
+          test "./DynamoCLI.exe" && echo "DynamoCLI exists!"
+      - name: Run smoke tests
+        run: |
+          cd "${{ github.workspace }}/Dynamo/bin/NET_Linux/Release"
+          # TODO unfortunately dotnet does not find any tests in this assembly.
+          # dotnet test DynamoCoreTests.dll --filter "TestCategory~UnitTest"
