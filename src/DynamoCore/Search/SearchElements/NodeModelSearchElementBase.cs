@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
@@ -34,6 +35,10 @@ namespace Dynamo.Search.SearchElements
             ElementType = ElementTypes.ZeroTouch;
             if(typeLoadData.IsPackageMember)
                 ElementType |= ElementTypes.Packaged;
+            if(typeLoadData.Assembly.Location.Contains(PathManager.BuiltinPackagesDirectory))
+            {
+                ElementType |= ElementTypes.BuiltIn;
+            }
         }
     }
 }
