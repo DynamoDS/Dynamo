@@ -4,14 +4,12 @@
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI"
         Title="{x:Static p:Resources.CustomNodePropertyWindowTitle}"
-        Width="450"
         WindowStartupLocation="CenterOwner"
-        WindowStyle="None">
-    <Window.Background>
-        <SolidColorBrush Opacity="0" />
-    </Window.Background>
-    <Window.AllowsTransparency>True</Window.AllowsTransparency>
-
+        Width="450"
+        Height="540"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="Transparent">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

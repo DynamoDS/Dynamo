@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Dynamo.Controls;
-using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 
@@ -19,9 +18,6 @@ namespace Dynamo.Nodes
         {
             InitializeComponent();
 
-            Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
             nameBox.Focus();
 
             var sortedCats = categories.ToList();
@@ -31,7 +27,10 @@ namespace Dynamo.Nodes
             {
                 categoryBox.Items.Add(item);
             }
+
+            this.ContentRendered += FunctionNamePrompt_ContentRendered;
         }
+       
 
         void OK_Click(object sender, RoutedEventArgs e)
         {
@@ -119,5 +118,28 @@ namespace Dynamo.Nodes
                 ErrorUnderline.Visibility = Visibility.Collapsed;
             }
         }
+
+        #region Recenter Window 
+        private void FunctionNamePrompt_ContentRendered(object sender, EventArgs e)
+        {
+            CenterWindow();
+        }
+
+        private void CenterWindow()
+        {
+            if (Owner != null)
+            {
+                this.Left = Owner.Left + (Owner.Width - this.ActualWidth) / 2;
+                this.Top = Owner.Top + (Owner.Height - this.ActualHeight) / 2;
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            this.ContentRendered -= FunctionNamePrompt_ContentRendered;
+
+            base.OnClosed(e);
+        }
+        #endregion
     }
 }
