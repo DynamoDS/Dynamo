@@ -2150,14 +2150,14 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
                 }
             }
-            else // use the samples directory, if it exists
+            else if (string.IsNullOrEmpty(LastSavedLocation)) //If there is no last saved location, use the samples directory(if it exists) 
             {
                 Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
                 string location = Path.GetDirectoryName(dynamoAssembly.Location);
                 string UICulture = CultureInfo.CurrentUICulture.Name;
                 string path = Path.Combine(location, "samples", UICulture);
 
-                if (string.IsNullOrEmpty(LastSavedLocation) && Directory.Exists(path))
+                if (Directory.Exists(path))
                 {
                     _fileDialog.InitialDirectory = path;
                 }
