@@ -2157,7 +2157,7 @@ namespace Dynamo.ViewModels
                 string UICulture = CultureInfo.CurrentUICulture.Name;
                 string path = Path.Combine(location, "samples", UICulture);
 
-                if (Directory.Exists(path))
+                if (string.IsNullOrEmpty(LastSavedLocation) && Directory.Exists(path))
                 {
                     _fileDialog.InitialDirectory = path;
                 }
