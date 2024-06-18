@@ -1427,6 +1427,7 @@ Dynamo.UI.Controls.SampleFileEntry.Children.get -> System.Collections.Generic.IE
 Dynamo.UI.Controls.SampleFileEntry.FileName.get -> string
 Dynamo.UI.Controls.SampleFileEntry.FilePath.get -> string
 Dynamo.UI.Controls.SampleFileEntry.SampleFileEntry(string name, string path) -> void
+Dynamo.UI.Controls.SampleFileEntry.SampleFileEntry(string name, string path, string thumbnail, string author, string description, string dateModified) -> void
 Dynamo.UI.Controls.ShortcutBarItem
 Dynamo.UI.Controls.ShortcutBarItem.ImgDisabledSource.get -> string
 Dynamo.UI.Controls.ShortcutBarItem.ImgDisabledSource.set -> void
@@ -1465,6 +1466,9 @@ Dynamo.UI.Controls.StartPageListItem.DateModified.set -> void
 Dynamo.UI.Controls.StartPageListItem.Description.get -> string
 Dynamo.UI.Controls.StartPageListItem.Icon.get -> System.Windows.Media.ImageSource
 Dynamo.UI.Controls.StartPageListItem.IconVisibility.get -> System.Windows.Visibility
+Dynamo.UI.Controls.StartPageListItem.LoadBitmapImage(string iconPath) -> System.Windows.Media.Imaging.BitmapImage
+Dynamo.UI.Controls.StartPageListItem.StartPageListItem(string caption) -> void
+Dynamo.UI.Controls.StartPageListItem.StartPageListItem(string caption, string iconPath) -> void
 Dynamo.UI.Controls.StartPageListItem.SubScript.get -> string
 Dynamo.UI.Controls.StartPageListItem.SubScript.set -> void
 Dynamo.UI.Controls.StartPageListItem.Thumbnail.get -> string
