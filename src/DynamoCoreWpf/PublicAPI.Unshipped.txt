@@ -4141,7 +4141,6 @@ override Dynamo.Controls.ZoomBorder.Child.set -> void
 override Dynamo.Nodes.DynamoTextBox.OnLostFocus(System.Windows.RoutedEventArgs e) -> void
 override Dynamo.Nodes.DynamoTextBox.OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e) -> void
 override Dynamo.Nodes.DynamoTextBox.OnTextChanged(System.Windows.Controls.TextChangedEventArgs e) -> void
-override Dynamo.Nodes.FunctionNamePrompt.OnClosed(System.EventArgs e) -> void
 override Dynamo.Nodes.StringTextBox.OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e) -> void
 override Dynamo.PackageManager.UI.PackageItemInternalViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
 override Dynamo.PackageManager.UI.PackageItemInternalViewModel.Items.set -> void
