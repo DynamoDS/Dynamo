@@ -61,7 +61,6 @@
         <!--This command updates the npm registry configuration if necessary-->
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
         <!--Download a specific build of the Dynamo Home package from npm-->
-        <Exec Command="npm pack @dynamods/dynamo-home@1.0.14" />
         <Exec Command="npm pack @dynamods/dynamo-home@1.0.15"  Condition="$(ShouldInstall)"/>
     </Target>
 
