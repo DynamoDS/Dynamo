@@ -1726,8 +1726,6 @@ namespace Dynamo.Controls
                 categoryBox = { Text = e.Category },
                 DescriptionInput = { Text = e.Description },
                 nameBox = { Text = e.Name },
-                Owner = this,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
 
             if (e.CanEditName)
