@@ -617,6 +617,23 @@ namespace DynamoCoreWpfTests
         }
         #endregion
 
+        [Test]
+        public void TestDeserializeDynamoGraphProperties()
+        {
+            // Arrange
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\Home.dyn");
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+
+            // Act
+            var properties = startPage.GetFileProperties(filePath);
+
+            // Assert
+            Assert.AreEqual(properties.description, "Test description");
+            Assert.AreEqual(properties.author, "John Doe");
+            Assert.IsFalse(string.IsNullOrEmpty(properties.thumbnail));
+        }
+
         #region helpers
 
         /// <summary>

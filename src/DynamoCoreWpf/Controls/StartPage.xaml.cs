@@ -57,12 +57,12 @@ namespace Dynamo.UI.Controls
             ExternalUrl
         }
 
-        internal StartPageListItem(string caption)
+        protected internal StartPageListItem(string caption)
         {
             this.Caption = caption;
         }
 
-        internal StartPageListItem(string caption, string iconPath)
+        protected internal StartPageListItem(string caption, string iconPath)
         {
             this.Caption = caption;
             this.icon = LoadBitmapImage(iconPath);
@@ -95,7 +95,7 @@ namespace Dynamo.UI.Controls
 
         #region Private Class Helper Methods
 
-        private BitmapImage LoadBitmapImage(string iconPath)
+        protected BitmapImage LoadBitmapImage(string iconPath)
         {
             var format = @"pack://application:,,,/DynamoCoreWpf;component/UI/Images/StartPage/{0}";
             iconPath = string.Format(format, iconPath);
@@ -127,8 +127,8 @@ namespace Dynamo.UI.Controls
             this.isFirstRun = isFirstRun;
 
             this.recentFiles = new ObservableCollection<StartPageListItem>();
-            sampleFiles = new ObservableCollection<SampleFileEntry>();
-            backupFiles = new ObservableCollection<StartPageListItem>();
+            this.sampleFiles = new ObservableCollection<SampleFileEntry>();
+            this.backupFiles = new ObservableCollection<StartPageListItem>();
 
 
             #region File Operations
@@ -214,6 +214,7 @@ namespace Dynamo.UI.Controls
             RefreshBackupFileList(dvm.Model.PreferenceSettings.BackupFiles);
             dvm.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
+
         internal void WalkDirectoryTree(System.IO.DirectoryInfo root, SampleFileEntry rootProperty)
         {
             try
@@ -248,14 +249,24 @@ namespace Dynamo.UI.Controls
                         {
                             sampleFolderPath = Path.GetDirectoryName(file.FullName);
                         }
+
                         // Add each file under the root directory property list.
-                        rootProperty.AddChildSampleFile(new SampleFileEntry(file.Name, file.FullName));
+                        var properties = GetFileProperties(file.FullName);
+
+                        rootProperty.AddChildSampleFile(new SampleFileEntry(
+                            file.Name,
+                            file.FullName,
+                            properties.thumbnail,
+                            properties.author,
+                            properties.description,
+                            properties.date));
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Perhaps some permission problems?
+                DynamoViewModel.Model.Logger.Log("Error loading sample file: " + ex.StackTrace);
             }
         }
 
@@ -386,22 +397,17 @@ namespace Dynamo.UI.Controls
                     var caption = Path.GetFileNameWithoutExtension(filePath);
 
                     // deserializes the file only once
-                    var jsonObject = DeserializeJsonFile(filePath); 
-                    var description = jsonObject != null ? GetGraphDescription(jsonObject) : string.Empty;
-                    var thumbnail = jsonObject != null ? GetGraphThumbnail(jsonObject) : string.Empty;
-                    var author = jsonObject != null ? GetGraphAuthor(jsonObject) : Resources.DynamoXmlFileFormat;
-
-                    var date = DynamoUtilities.PathHelper.GetDateModified(filePath);
+                    var properties = GetFileProperties(filePath);
 
                     files.Add(new StartPageListItem(caption)
                     {
                         ContextData = filePath,
                         ToolTip = filePath,
                         SubScript = subScript,
-                        Description = description,
-                        Thumbnail = thumbnail,
-                        Author = author,
-                        DateModified = date,
+                        Description = properties.description,
+                        Thumbnail = properties.thumbnail,
+                        Author = properties.author,
+                        DateModified = properties.date,
                         ClickAction = StartPageListItem.Action.FilePath,
 
                     }); 
@@ -497,6 +503,33 @@ namespace Dynamo.UI.Controls
         private void HandleExternalUrl(StartPageListItem item)
         {
             System.Diagnostics.Process.Start(new ProcessStartInfo(item.ContextData) { UseShellExecute = true });
+        }
+
+        /// <summary>
+        /// Attempts to deserialize a dynamo graph file and extract metadata from it
+        /// </summary>
+        /// <param name="filePath">The file path to the dynamo file</param>
+        /// <returns></returns>
+        internal (string description, string thumbnail, string author, string date) GetFileProperties(string filePath)
+        {
+            if (!filePath.ToLower().EndsWith(".dyn") && !filePath.ToLower().EndsWith(".dyf")) return (null, null, null, null);
+
+            try
+            {
+                var jsonObject = DeserializeJsonFile(filePath);
+                var description = jsonObject != null ? GetGraphDescription(jsonObject) : string.Empty;
+                var thumbnail = jsonObject != null ? GetGraphThumbnail(jsonObject) : string.Empty;
+                var author = jsonObject != null ? GetGraphAuthor(jsonObject) : Resources.DynamoXmlFileFormat;
+                var date = DynamoUtilities.PathHelper.GetDateModified(filePath);
+
+                return (description, thumbnail, author, date);
+            }
+            catch (Exception ex)
+            {
+                DynamoViewModel.Model.Logger.Log("Error deserializing dynamo graph file: " + ex.StackTrace);
+                return (null, null, null, null);
+            }
+
         }
 
         #endregion
@@ -623,15 +656,28 @@ namespace Dynamo.UI.Controls
         #endregion
     }
 
-    public class SampleFileEntry
+    public class SampleFileEntry : StartPageListItem
     {
         List<SampleFileEntry> childSampleFiles = null;
 
         public SampleFileEntry(string name, string path)
+            : base(name)
         {
             this.FileName = name;
             this.FilePath = path;
         }
+
+        public SampleFileEntry(string name, string path, string thumbnail, string author, string description, string dateModified)
+            : base(name)
+        {
+            this.FileName = name;
+            this.FilePath = path;
+            this.Thumbnail = thumbnail;
+            this.Author = author;
+            this.Description = description;
+            this.DateModified = dateModified;
+        }
+
         public void AddChildSampleFile(SampleFileEntry childSampleFile)
         {
             if (null == childSampleFiles)
