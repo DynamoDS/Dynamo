@@ -50,10 +50,19 @@
 
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
+        <PropertyGroup>
+            <PackageVersion>1.0.15</PackageVersion>
+            <PackageName>DynamoHome</PackageName>
+        </PropertyGroup>
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
+            <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+        </Exec>
+        <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high"></Message>
         <!--This command updates the npm registry configuration if necessary-->
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
         <!--Download a specific build of the Dynamo Home package from npm-->
         <Exec Command="npm pack @dynamods/dynamo-home@1.0.14" />
+        <Exec Command="npm pack @dynamods/dynamo-home@1.0.15"  Condition="$(ShouldInstall)"/>
     </Target>
 
     <Target Name="ExtractTGZFileDynamoHome" DependsOnTargets="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
