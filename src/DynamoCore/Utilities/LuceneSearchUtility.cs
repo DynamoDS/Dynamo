@@ -295,6 +295,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="fields">All fields to be searched in.</param>
         /// <param name="SearchTerm">Search key to be searched for.</param>
+        /// <param name="IsPackageContext">Set this to true if the search context is packages instead of nodes.</param>
         /// <returns></returns>
         internal string CreateSearchQuery(string[] fields, string SearchTerm, bool IsPackageContext = false)
         {
