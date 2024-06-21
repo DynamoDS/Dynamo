@@ -179,7 +179,6 @@ namespace Dynamo.ViewModels
             try
             {
                 portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
-                this.DynamoViewModel.Model.Logger.Log("test connection");
             }
             catch(Exception ex)
             {
@@ -207,7 +206,7 @@ namespace Dynamo.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    this.DynamoViewModel.Model.Logger.Log(ex.Message);
                 }
             }
         }
