@@ -214,10 +214,11 @@ namespace Dynamo.Utilities
             var description = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Description), string.Empty, Field.Store.YES);
             var keywords = new TextField(nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
             var hosts = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Hosts), string.Empty, Field.Store.YES);
+            var author = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Author), string.Empty, Field.Store.YES);
 
             var d = new Document()
             {
-               name, description, keywords, hosts
+               name, description, keywords, hosts, author
             };
             return d;
         }
@@ -294,8 +295,9 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="fields">All fields to be searched in.</param>
         /// <param name="SearchTerm">Search key to be searched for.</param>
+        /// <param name="IsPackageContext">Set this to true if the search context is packages instead of nodes.</param>
         /// <returns></returns>
-        internal string CreateSearchQuery(string[] fields, string SearchTerm)
+        internal string CreateSearchQuery(string[] fields, string SearchTerm, bool IsPackageContext = false)
         {
             //By Default the search will be normal
             SearchType searchType = SearchType.Normal;
@@ -314,12 +316,13 @@ namespace Dynamo.Utilities
             var booleanQuery = new BooleanQuery();
             string searchTerm = QueryParser.Escape(SearchTerm);
 
-            if (searchTerm.Contains('.'))
-                searchType = SearchType.ByCategory;
-            else if (searchTerm.Contains(' '))
-                hasEmptySpaces = true;
-            else
-                searchType = SearchType.Normal;
+            if (!IsPackageContext)
+            {
+                if (searchTerm.Contains('.'))
+                    searchType = SearchType.ByCategory;
+                else if (searchTerm.Contains(' '))
+                    hasEmptySpaces = true;
+            }
 
             var trimmedSearchTerm = hasEmptySpaces == true ? searchTerm.Replace(" ", "") : searchTerm;
 

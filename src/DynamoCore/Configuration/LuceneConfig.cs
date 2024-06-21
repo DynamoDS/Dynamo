@@ -185,7 +185,12 @@ namespace Dynamo.Configuration
             /// <summary>
             /// Node Input Parameters as string (there are nodes with same name and category but different parameters)
             /// </summary>
-            Parameters
+            Parameters,
+
+            /// <summary>
+            /// Package author name
+            /// </summary>
+            Author
         }
 
         /// <summary>
@@ -208,6 +213,7 @@ namespace Dynamo.Configuration
         public static string[] PackageIndexFields = { nameof(NodeFieldsEnum.Name),
                                                       nameof(NodeFieldsEnum.Description),
                                                       nameof(NodeFieldsEnum.SearchKeywords),
-                                                      nameof(NodeFieldsEnum.Hosts)};
+                                                      nameof(NodeFieldsEnum.Hosts),
+                                                      nameof(NodeFieldsEnum.Author)};
     }
 }
