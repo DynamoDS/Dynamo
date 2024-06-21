@@ -174,8 +174,17 @@ namespace Dynamo.ViewModels
         {
             bool isInPort = portType == PortType.Input;
 
-            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
-            PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+            if (Model.GetModelInternal(nodeId) is not NodeModel node) return;
+            PortModel portModel;
+            try
+            {
+                portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+            }
+            catch(Exception ex)
+            {
+                this.DynamoViewModel.Model.Logger.Log("Failed to make connection: " + ex.Message);
+                return;
+            }
 
             // Test if port already has a connection, if so grab it and begin connecting 
             // to somewhere else (we don't allow the grabbing of the start connector).
@@ -197,7 +206,7 @@ namespace Dynamo.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    this.DynamoViewModel.Model.Logger.Log(ex.Message);
                 }
             }
         }
