@@ -179,10 +179,11 @@ namespace Dynamo.ViewModels
             try
             {
                 portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+                this.DynamoViewModel.Model.Logger.Log("test connection");
             }
             catch(Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Failed to make connection: " + ex.Message);
+                this.DynamoViewModel.Model.Logger.Log("Failed to make connection: " + ex.Message);
                 return;
             }
 
