@@ -14,13 +14,13 @@ using NUnit.Framework;
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
-    public class PublishPackageViewModelTests: DynamoViewModelUnitTest
+    public class PublishPackageViewModelTests : DynamoViewModelUnitTest
     {
 
         [Test]
         public void AddingDyfRaisesCanExecuteChangeOnDelegateCommand()
         {
-            
+
             var vm = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(vm);
 
@@ -54,12 +54,12 @@ namespace DynamoCoreWpfTests
             string dyfpath = Path.Combine(first, "dyf");
             var customnodes = Directory.GetFiles(dyfpath);
             var firstnode = customnodes.First();
-            
+
             OpenModel(firstnode);
 
             //add a preset so that customnode has changes that are unsaved
             GetModel().CurrentWorkspace.AddPreset("a useless preset", "some thing that will modify the definition",
-                new List<Guid>(){GetModel().CurrentWorkspace.Nodes.First().GUID});
+                new List<Guid>() { GetModel().CurrentWorkspace.Nodes.First().GUID });
 
             Assert.IsTrue(GetModel().CurrentWorkspace.HasUnsavedChanges);
 
@@ -72,7 +72,7 @@ namespace DynamoCoreWpfTests
 
             vm.PublishLocallyCommand.Execute();
             //assert that we have not uploaded the file or indicated that we have
-            Assert.AreNotEqual(vm.UploadState,PackageUploadHandle.State.Uploaded);
+            Assert.AreNotEqual(vm.UploadState, PackageUploadHandle.State.Uploaded);
             Console.WriteLine(vm.ErrorString);
 
         }
@@ -81,7 +81,7 @@ namespace DynamoCoreWpfTests
         public void CanPublishLateInitializedJsonCustomNode()
         {
 
-            string nodePath = Path.Combine(TestDirectory,"core","CustomNodes", "jsonCustomNode.dyf");
+            string nodePath = Path.Combine(TestDirectory, "core", "CustomNodes", "jsonCustomNode.dyf");
 
             //add this customNode to the package without opening it.
             var vm = new PublishPackageViewModel(this.ViewModel);
@@ -92,7 +92,7 @@ namespace DynamoCoreWpfTests
             //- this will check the customNode has no unsaved changes.
 
             Assert.AreEqual(1, vm.CustomNodeDefinitions.Count);
-            Assert.DoesNotThrow(() => {vm.GetAllFiles();});
+            Assert.DoesNotThrow(() => { vm.GetAllFiles(); });
             Assert.AreEqual(nodePath, vm.GetAllFiles().First());
 
         }
@@ -118,7 +118,7 @@ namespace DynamoCoreWpfTests
             {
                 vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, false);
             });
-            
+
             Assert.AreEqual(1, vm.AdditionalFiles.Count);
             Assert.AreEqual(0, vm.Assemblies.Count);
 
@@ -184,7 +184,7 @@ namespace DynamoCoreWpfTests
 
             //arrange node libraries
             var assem = vm.Assemblies.FirstOrDefault().Assembly;
-            var nodeLibraryNames = (IEnumerable<string>) new [] { assem.FullName };
+            var nodeLibraryNames = (IEnumerable<string>)new[] { assem.FullName };
 
             //act
             var pa = PublishPackageViewModel.GetPackageAssembly(nodeLibraryNames, assem);
@@ -212,7 +212,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].IsPackageMember);
 
             //now lets publish this node as a local package.
-            var newPkgVm = new PublishPackageViewModel(ViewModel) { CustomNodeDefinitions = new List<CustomNodeDefinition>(){ cnworkspace.CustomNodeDefinition } };
+            var newPkgVm = new PublishPackageViewModel(ViewModel) { CustomNodeDefinitions = new List<CustomNodeDefinition>() { cnworkspace.CustomNodeDefinition } };
             newPkgVm.Name = "PublishingACustomNodeSetsPackageInfoCorrectly";
             newPkgVm.MajorVersion = "0";
             newPkgVm.MinorVersion = "0";
@@ -220,11 +220,11 @@ namespace DynamoCoreWpfTests
             newPkgVm.PublishLocallyCommand.Execute();
 
             Assert.IsTrue(GetModel().GetPackageManagerExtension().PackageLoader.LocalPackages.Any
-                (x => x.Name == "PublishingACustomNodeSetsPackageInfoCorrectly" && x.LoadState.State == PackageLoadState.StateTypes.Loaded && x.LoadedCustomNodes.Count ==1));
+                (x => x.Name == "PublishingACustomNodeSetsPackageInfoCorrectly" && x.LoadState.State == PackageLoadState.StateTypes.Loaded && x.LoadedCustomNodes.Count == 1));
 
 
-            Assert.AreEqual(new PackageInfo("PublishingACustomNodeSetsPackageInfoCorrectly", new Version(0,0,1))
-                ,GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].PackageInfo);
+            Assert.AreEqual(new PackageInfo("PublishingACustomNodeSetsPackageInfoCorrectly", new Version(0, 0, 1))
+                , GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].PackageInfo);
             Assert.IsFalse(GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].IsPackageMember);
 
         }
@@ -329,5 +329,166 @@ namespace DynamoCoreWpfTests
             //TODO: assert - do we expect to see 1 or 2 here?
             Assert.AreEqual(vm.Assemblies.Count, 1);
         }
+
+
+        #region CreateContentsRelationships
+
+        [Test]
+        public void CreatesCorrectRelationships_ControlTest()
+        {
+            var vm = new PublishPackageViewModel(ViewModel);
+            var items = new Dictionary<string, PackageItemRootViewModel>();
+            var files = new[] { new FileInfo(@"C:\pkg\file1.dyn"), new FileInfo(@"C:\pkg\file2.DYN") };
+
+            foreach (var file in files)
+            {
+                var item = new PackageItemRootViewModel(file);
+                if (String.IsNullOrEmpty(item.DirectoryName)) continue;
+                if (!items.ContainsKey(item.DirectoryName))
+                {
+                    var root = new PackageItemRootViewModel(item.DirectoryName);
+
+                    root.ChildItems.Add(item);
+                    items[item.DirectoryName] = root;
+                }
+                else
+                {
+                    items[item.DirectoryName].ChildItems.Add(item);
+                }
+            }
+
+            List<PackageItemRootViewModel> result = vm.BindParentToChild(items);
+
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(2, result.First().ChildItems.Count);
+        }
+
+
+        [Test]
+        public void CreatesCorrectRelationships_UncommonRootsTest()
+        {
+            var vm = new PublishPackageViewModel(ViewModel);
+            var items = new Dictionary<string, PackageItemRootViewModel>();
+            var files = new[] { new FileInfo(@"D:\pkg\file1.dyn"), new FileInfo(@"C:\pkg\file2.DYN") };
+
+            foreach (var file in files)
+            {
+                var item = new PackageItemRootViewModel(file);
+                if (String.IsNullOrEmpty(item.DirectoryName)) continue;
+                if (!items.ContainsKey(item.DirectoryName))
+                {
+                    var root = new PackageItemRootViewModel(item.DirectoryName);
+
+                    root.ChildItems.Add(item);
+                    items[item.DirectoryName] = root;
+                }
+                else
+                {
+                    items[item.DirectoryName].ChildItems.Add(item);
+                }
+            }
+
+            var result = vm.BindParentToChild(items);
+
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(1, result.First().ChildItems.Count);
+        }
+
+        [Test]
+        public void FindCommonPaths_SingleRoot()
+        {
+            var vm = new PublishPackageViewModel(ViewModel);
+            var paths = new string[]
+            {
+                "C:\\Users\\Alice\\Documents\\Report.docx",
+                "C:\\Users\\Alice\\Documents\\Resume.pdf",
+                "C:\\Users\\Alice\\Documents\\Presentation.pptx"
+            };
+
+            var commonPaths = vm.GetCommonPaths(paths);
+
+            Assert.AreEqual(1, commonPaths.Count);
+            Assert.AreEqual("C:\\Users\\Alice\\Documents", commonPaths.First());
+
+        }
+
+        [Test]
+        public void FindCommonPaths_MultipleRootsSingleFiles()
+        {
+            var vm = new PublishPackageViewModel(ViewModel);
+            var paths = new string[]
+            {
+                "C:\\Users\\Alice\\Documents\\Report.docx",
+                "D:\\Users\\Alice\\Documents\\Presentation.pptx"
+            };
+
+            var commonPaths = vm.GetCommonPaths(paths);
+
+            Assert.AreEqual(2, commonPaths.Count);
+            Assert.AreEqual("C:\\Users\\Alice\\Documents", commonPaths[0]);
+            Assert.AreEqual("D:\\Users\\Alice\\Documents", commonPaths[1]);
+
+        }
+
+
+        [Test]
+        public void FindCommonPaths_MultipleRootsMultipleFiles()
+        {
+            var vm = new PublishPackageViewModel(ViewModel);
+            var paths = new string[]
+            {
+                "C:\\Users\\Alice\\Documents\\Report.docx",
+                "C:\\Users\\Alice\\Documents\\Subfolder\\Resume.pdf",
+                "D:\\Users\\Alice\\Documents\\Presentation.pptx"
+            };
+
+            var commonPaths = vm.GetCommonPaths(paths);
+
+            Assert.AreEqual(2, commonPaths.Count);
+            Assert.AreEqual("C:\\Users\\Alice\\Documents", commonPaths[0]);
+            Assert.AreEqual("D:\\Users\\Alice\\Documents", commonPaths[1]);
+        }
+
+
+
+        [Test]
+        public void FindCommonPaths_MultipleRoots()
+        {
+            var vm = new PublishPackageViewModel(ViewModel);
+            var paths = new string[]
+            {
+                "C:\\Users\\Alice\\Documents\\Report.docx",
+                "D:\\Users\\Alice\\Documents\\Resume.pdf",
+                "E:\\Users\\Alice\\Documents\\Presentation.pptx"
+            };
+
+            var commonPaths = vm.GetCommonPaths(paths);
+
+            Assert.AreEqual(3, commonPaths.Count);
+            Assert.AreEqual("C:\\Users\\Alice\\Documents", commonPaths[0]);
+            Assert.AreEqual("D:\\Users\\Alice\\Documents", commonPaths[1]);
+            Assert.AreEqual("E:\\Users\\Alice\\Documents", commonPaths[2]);
+        }
+
+
+        [Test]
+        public void FindCommonPaths_BaseRoot()
+        {
+            var vm = new PublishPackageViewModel(ViewModel);
+            var paths = new string[]
+            {
+                "C:\\Report.docx",
+                "C:\\Users\\Alice\\Documents\\Subfolder\\Resume.pdf",
+            };
+
+            var commonPaths = vm.GetCommonPaths(paths);
+
+            Assert.AreEqual(1, commonPaths.Count);
+            Assert.AreEqual("C:\\", commonPaths[0]);
+        }
+
+
+        #endregion
+
     }
 }

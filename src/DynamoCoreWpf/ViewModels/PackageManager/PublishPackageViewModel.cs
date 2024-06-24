@@ -1051,7 +1051,12 @@ namespace Dynamo.PackageManager
             }                    
         }
 
-        private List<PackageItemRootViewModel> BindParentToChild(Dictionary<string, PackageItemRootViewModel> items)
+        /// <summary>
+        /// Attempts to recreate the file/folder content structure 
+        /// </summary>
+        /// <param name="items">A dictionary of the content items</param>
+        /// <returns></returns>
+        internal List<PackageItemRootViewModel> BindParentToChild(Dictionary<string, PackageItemRootViewModel> items)
         {
             foreach (var parent in items)
             {
@@ -1081,25 +1086,61 @@ namespace Dynamo.PackageManager
         {
             var rootItems = items.Values.Where(x => !x.isChild).ToList();
             if (!rootItems.Any()) return rootItems;
-            var packageSourceDir = CurrentPackageDirectory ??= GetLongestCommonPrefix(items.Keys.ToArray());
 
-            var root = new PackageItemRootViewModel(packageSourceDir);
-            var updatedItems = new List<PackageItemRootViewModel>();
-            //check each root item and create any missing connections
+            var roots = new List<PackageItemRootViewModel>();
+
+            if (CurrentPackageDirectory != null)
+            {
+                roots.Add(new PackageItemRootViewModel(CurrentPackageDirectory));
+            }
+            else
+            {
+                var commonPaths = GetCommonPaths(items.Keys.ToArray());
+                if (commonPaths == null) return null;
+
+                // Add a new root item for each common path found
+                commonPaths.ForEach(p => roots.Add(new PackageItemRootViewModel(p)));
+            }
+
+            // Check each root item and create any missing connections
             foreach (var item in rootItems)
             {
+                bool itemAssigned = false;
                 var itemDir = new DirectoryInfo(item.DirectoryName);
-                if (!itemDir.Parent.FullName.Equals(packageSourceDir))
+
+                foreach (var root in roots)
                 {
-                    root.AddChildRecursively(item);
+                    var rootDir = new DirectoryInfo(root.DirectoryName);
+
+                    if (itemDir.FullName.StartsWith(rootDir.FullName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (itemDir.Parent.FullName.Equals(rootDir.FullName))
+                        {
+                            root.ChildItems.Add(item);
+                        }
+                        else
+                        {
+                            root.AddChildRecursively(item);
+                        }
+                        itemAssigned = true;
+                        break;
+                    }
                 }
-                else
+
+                // If the item does not belong to any existing root, create a new root for it
+                if (!itemAssigned)
                 {
-                    root.ChildItems.Add(item);
+                    var newRoot = new PackageItemRootViewModel(item.DirectoryName);
+                    newRoot.ChildItems.Add(item);
+                    roots.Add(newRoot);
                 }
             }
-            return root.ChildItems.ToList();
-        }   
+
+            // Collect all child items from all roots
+            var allChildItems = roots.SelectMany(r => r.ChildItems).ToList();
+
+            return allChildItems;
+        }
 
         /// <summary>
         /// Test if path2 is subpath of path1
@@ -1131,22 +1172,56 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Utility method to get the common file path, this may fail for files with the same partial name.
         /// </summary>
-        /// <param name="s">A collection of filepaths</param>
+        /// <param name="paths">A collection of file paths</param>
         /// <returns></returns>
-        internal string GetLongestCommonPrefix(string[] s)
+        internal List<string> GetCommonPaths(string[] paths)
         {
-            int k = s[0].Length;
-            for (int i = 1; i < s.Length; i++)
+            if (paths == null || paths.Length == 0)
+                return new List<string>();
+
+            // Group paths by their root (drive letter)
+            var groupedPaths = paths.GroupBy(p => Path.GetPathRoot(p)).ToList();
+            List<string> commonPaths = new List<string>();
+
+            foreach (var group in groupedPaths)
             {
-                k = Math.Min(k, s[i].Length);
-                for (int j = 0; j < k; j++)
-                    if (s[i][j] != s[0][j])
+                var pathArray = group.ToArray();
+                if (pathArray.Length == 1)
+                {
+                    commonPaths.Add(Path.GetDirectoryName(pathArray[0]));
+                    continue;
+                }
+
+                var k = pathArray[0].Length;
+                for (var i = 1; i < pathArray.Length; i++)
+                {
+                    k = Math.Min(k, pathArray[i].Length);
+                    for (var j = 0; j < k; j++)
                     {
-                        k = j;
-                        break;
+                        if (pathArray[i][j] != pathArray[0][j])
+                        {
+                            k = j;
+                            break;
+                        }
                     }
+                }
+
+                var commonPrefix = pathArray[0].Substring(0, k);
+                var commonDir = Path.GetDirectoryName(commonPrefix);
+
+                if (string.IsNullOrEmpty(commonDir))
+                {
+                    // Special case for the root directory
+                    commonDir = Path.GetPathRoot(commonPrefix);
+                }
+
+                if (!string.IsNullOrEmpty(commonDir))
+                {
+                    commonPaths.Add(commonDir);
+                }
             }
-            return Path.GetDirectoryName(s[0].Substring(0, k));
+
+            return commonPaths.Distinct().ToList();
         }
 
         /// <summary>
