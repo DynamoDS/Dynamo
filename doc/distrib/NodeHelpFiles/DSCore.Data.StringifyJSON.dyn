@@ -1,0 +1,261 @@
+{
+  "Uuid": "a19b2b4a-e4e6-43ab-9b41-f8d218bff28f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Data.StringifyJSON",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DesignScript.Builtin.Dictionary.ByKeysValues@string[],var[]..[]",
+      "Id": "08f18916a7274fd2a3e8753422a18e1a",
+      "Inputs": [
+        {
+          "Id": "15888aa5c92f4333b62381dc53a7943c",
+          "Name": "keys",
+          "Description": "Keys of dictionary\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "42754d17caba405f91710b253359e15a",
+          "Name": "values",
+          "Description": "Values of dictionary\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "87b8a691c8c3405aa89ab3d99bdee921",
+          "Name": "dictionary",
+          "Description": "Dictionary from keys and values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a Dictionary with the supplied keys and values. The number of entries is the shorter of keys or values.\n\nDictionary.ByKeysValues (keys: string[], values: var[]..[]): Dictionary"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"A\"..\"D\";\n0..3;",
+      "Id": "16349b6e899c4961b645729302c1feee",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "530cd82e9aaa40cab0aa11f7245e0fb6",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dc60e8406abe4289b8c27a81c73d84c3",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Data.StringifyJSON@var[]..[]",
+      "Id": "ceed8248f93f4a86bfa249c89dd13ddd",
+      "Inputs": [
+        {
+          "Id": "8da1bd44f34a4e189c4f1afb1784d3aa",
+          "Name": "values",
+          "Description": "A List of values\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f869adbd6b19402cab5d19af05682d69",
+          "Name": "json",
+          "Description": "A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Stringify converts an arbitrary value or a list of arbitrary values to JSON. Replication can be used to apply the operation over a list, producing a list of JSON strings.\n\nData.StringifyJSON (values: var[]..[]): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "20b9b006868043fa9ab6447d34bb8014",
+      "Inputs": [
+        {
+          "Id": "466a71719ebc456d9bdc61a7431926f0",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "92acce7c82484473ad6afe0e50b00def",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "87b8a691c8c3405aa89ab3d99bdee921",
+      "End": "8da1bd44f34a4e189c4f1afb1784d3aa",
+      "Id": "5c7fb247548744779a017f1597421a93",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "530cd82e9aaa40cab0aa11f7245e0fb6",
+      "End": "15888aa5c92f4333b62381dc53a7943c",
+      "Id": "5c842cd89ac24619ae8a0995c359da5b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dc60e8406abe4289b8c27a81c73d84c3",
+      "End": "42754d17caba405f91710b253359e15a",
+      "Id": "15250526e77c426a9da27e2b78595eea",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f869adbd6b19402cab5d19af05682d69",
+      "End": "466a71719ebc456d9bdc61a7431926f0",
+      "Id": "db18b1f8bc994b5596fa71c15accc03c",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Dictionary.ByKeysValues",
+        "ShowGeometry": true,
+        "Id": "08f18916a7274fd2a3e8753422a18e1a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 651.2,
+        "Y": 248.8
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "16349b6e899c4961b645729302c1feee",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 396.8,
+        "Y": 248.8
+      },
+      {
+        "Name": "Data.StringifyJSON",
+        "ShowGeometry": true,
+        "Id": "ceed8248f93f4a86bfa249c89dd13ddd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1008.8,
+        "Y": 248.8
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "20b9b006868043fa9ab6447d34bb8014",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1326.4,
+        "Y": 248.79999999999998
+      }
+    ],
+    "Annotations": [],
+    "X": -247.20000000000005,
+    "Y": -50.400000000000034,
+    "Zoom": 1.0
+  }
+}
