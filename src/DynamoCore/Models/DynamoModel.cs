@@ -3341,6 +3341,17 @@ namespace Dynamo.Models
             {
                 return null;
             }
+            var namespaces = PreferenceSettings.NamespacesToExcludeFromLibrary;
+            if (namespaces.Any(ns =>
+                {
+                    var namespc = ns.Split(":").LastOrDefault();
+
+                    return namespc != null && namespc.Contains(typeLoadData.Category);
+                }))
+            {
+                return null;
+            }
+
             var node = new NodeModelSearchElement(typeLoadData);
             SearchModel?.Add(node);
             return node;

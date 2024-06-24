@@ -593,6 +593,7 @@ namespace Dynamo.PackageManager
 
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Author), package.Maintainers);
 
             if (package.Keywords.Length > 0)
             {
@@ -1457,7 +1458,7 @@ namespace Dynamo.PackageManager
                     FuzzyMinSim = LuceneConfig.MinimumSimilarity
                 };
 
-                Query query = parser.Parse(LuceneUtility.CreateSearchQuery(LuceneConfig.PackageIndexFields, searchTerm));
+                Query query = parser.Parse(LuceneUtility.CreateSearchQuery(LuceneConfig.PackageIndexFields, searchTerm, true));
 
                 //indicate we want the first 50 results
                 TopDocs topDocs = LuceneUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);

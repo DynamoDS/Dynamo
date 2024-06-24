@@ -22,13 +22,21 @@
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+      <PropertyGroup>
+          <PackageVersion>1.0.19</PackageVersion>
+          <PackageName>SplashScreen</PackageName>
+      </PropertyGroup>
+      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
+          <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+      </Exec>
+      <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high" />
       <!--This command updates the npm registry configuration if necessary-->
-      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
+      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" Condition="$(ShouldInstall)"/>
       <!--This command gets a specific splash screen build from npm-->
-      <Exec Command="npm pack @dynamods/splash-screen@1.0.19" />
+      <Exec Command="npm pack @dynamods/splash-screen@$(PackageVersion)"  Condition="$(ShouldInstall)"/>
   </Target>
 
-    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">      
+    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">      
         <!--Locates the .tgz files-->
         <ItemGroup>
             <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
@@ -50,13 +58,21 @@
 
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
+        <PropertyGroup>
+            <PackageVersion>1.0.15</PackageVersion>
+            <PackageName>DynamoHome</PackageName>
+        </PropertyGroup>
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
+            <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+        </Exec>
+        <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high"></Message>
         <!--This command updates the npm registry configuration if necessary-->
-        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1"  Condition="$(ShouldInstall)"/>
         <!--Download a specific build of the Dynamo Home package from npm-->
-        <Exec Command="npm pack @dynamods/dynamo-home@1.0.14" />
+        <Exec Command="npm pack @dynamods/dynamo-home@1.0.15"  Condition="$(ShouldInstall)"/>
     </Target>
 
-    <Target Name="ExtractTGZFileDynamoHome" DependsOnTargets="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
+    <Target Name="ExtractTGZFileDynamoHome" DependsOnTargets="NpmRunBuildHomePage" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
         <!--Locate the .tgz files for the Dynamo Home package-->
         <ItemGroup>
             <TGZFilesDynamoHome Include="./dynamods-dynamo-home-*.tgz" />
@@ -167,7 +183,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5226" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5365" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.1.4707" />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,14 +26,21 @@ namespace Dynamo.UI.Controls
             double x = 0, y = 0;
             foreach (UIElement child in this.Children)
             {
-                var portVm = generator.ItemFromContainer(child) as PortViewModel;
-                var lineIndex = portVm.PortModel.LineIndex;
-                var multiplier = ((lineIndex == -1) ? itemIndex : lineIndex);
-                var portHeight = portVm.PortModel.Height;
+                try
+                {
+                    var portVm = generator.ItemFromContainer(child) as PortViewModel;
+                    var lineIndex = portVm.PortModel.LineIndex;
+                    var multiplier = ((lineIndex == -1) ? itemIndex : lineIndex);
+                    var portHeight = portVm.PortModel.Height;
 
-                y = multiplier * portHeight;
-                child.Arrange(new Rect(x, y, arrangeSize.Width, portHeight));
-                itemIndex = itemIndex + 1;
+                    y = multiplier * portHeight;
+                    child.Arrange(new Rect(x, y, arrangeSize.Width, portHeight));
+                    itemIndex = itemIndex + 1;
+                }
+                catch (Exception ex)
+                {
+                    Analytics.TrackException(ex, true);
+                }
             }
 
             return base.ArrangeOverride(arrangeSize);
