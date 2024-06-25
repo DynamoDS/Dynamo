@@ -240,10 +240,7 @@ namespace Dynamo.PythonServices
                     throw new Exception($"Could not get a valid PythonEngine instance by calling the {eType.Name}.{PythonEvaluatorSingletonInstance} method");
                 }
 
-                // Fails when called in REvit context with
-                // The assembly 'Python.Runtime, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5000fea6cba702dd' has already loaded been loaded into this MetadataLoadContext.
-                // TODO: figure out what is going on
-                //VerifyEngineReferences(assembly,dotNetRuntimePaths.Concat(dynCorePaths));
+                VerifyEngineReferences(assembly,dotNetRuntimePaths.Concat(dynCorePaths));
 
                 if (GetEngine(engine.Name) == null)
                 {
