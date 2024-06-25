@@ -331,6 +331,7 @@ for modname,mod in sys.modules.copy().items():
             {
                 try
                 {
+                    Python.Runtime.Runtime.PythonDLL = Python.Included.Installer.PYTHON_VERSION + ".dll";
                     Python.Included.Installer.SetupPython().Wait();
                     isPythonInstalled = true;
                 }
