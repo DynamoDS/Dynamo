@@ -2894,6 +2894,8 @@ static Dynamo.Properties.Resources.OutputPortAlternativeName.get -> string
 static Dynamo.Properties.Resources.PackageEmpty.get -> string
 static Dynamo.Properties.Resources.PackageLoadFailureForBlockedAssembly.get -> string
 static Dynamo.Properties.Resources.PackageManagerPackageAlreadyExists.get -> string
+static Dynamo.Properties.Resources.PackageManagerPackagePreviewCounter.get -> string
+static Dynamo.Properties.Resources.PackageManagerPackageSelectCounter.get -> string
 static Dynamo.Properties.Resources.PackageManagerUserIsNotAMaintainer.get -> string
 static Dynamo.Properties.Resources.PackageStateError.get -> string
 static Dynamo.Properties.Resources.PackageStateErrorTooltip.get -> string

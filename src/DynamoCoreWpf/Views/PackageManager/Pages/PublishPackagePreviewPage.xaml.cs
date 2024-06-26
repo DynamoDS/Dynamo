@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
+
 namespace Dynamo.PackageManager.UI
 {
     /// <summary>
@@ -57,7 +58,8 @@ namespace Dynamo.PackageManager.UI
                 }
 
                 //set the counter text
-                FilesAndFoldersCounterPreview = $"{contentFileCount} files and {contentFolderCount} folders will be created.";
+                var counterText = string.Format(Properties.Resources.PackageManagerPackagePreviewCounter, contentFileCount, contentFolderCount - 1);
+                FilesAndFoldersCounterPreview = counterText;
             };
         }
 

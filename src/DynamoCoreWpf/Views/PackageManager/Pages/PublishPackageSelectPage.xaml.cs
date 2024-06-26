@@ -88,7 +88,8 @@ namespace Dynamo.PackageManager.UI
                 }
 
                 //set the counter text
-                FilesAndFoldersCounterPreview = $"{contentFileCount} files and {contentFolderCount} folders loaded.";
+                var counterText = string.Format(Properties.Resources.PackageManagerPackageSelectCounter, contentFileCount, contentFolderCount - 1);
+                FilesAndFoldersCounterPreview = counterText;
             };
         }
 
