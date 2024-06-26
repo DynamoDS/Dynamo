@@ -11,7 +11,7 @@ namespace Dynamo.PackageManager
     public interface IPackageDirectoryBuilder
     {
         IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownfiles);
-        IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles);
+        IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles);
     }
 
     /// <summary>
@@ -69,25 +69,26 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="package">The package to be formed</param>
         /// <param name="packagesDirectory">The parent directory (the published folder or the default packages directory)</param>
+        /// <param name="roots">All possible root folders for this collection of contentFiles</param>
         /// <param name="contentFiles">The collection of files to be moved</param>
         /// <param name="markdownFiles">Separately provided markdown files</param>
         /// <returns></returns>
-        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
+        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
         {
             
             var rootPath = Path.Combine(packagesDirectory, package.Name);
             var rootDir = fileSystem.TryCreateDirectory(rootPath);
-            var sourcePackageDir = package.RootDirectory;
             package.RootDirectory = rootDir.FullName;
 
             var dyfFiles = new List<string>();
 
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
-            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, sourcePackageDir, rootDir, out dyfFiles);
+            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, roots, rootDir, out dyfFiles);
             RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
-            
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
-            WritePackageHeader(package, rootDir);
+
+            // TODO: should we skip that step? Should the user handle pkg.json creation?
+            WritePackageHeader(package, rootDir, true);
 
             return rootDir;
         }
@@ -114,7 +115,6 @@ namespace Dynamo.PackageManager
         {
             foreach (var func in filePaths.Where(x => x.EndsWith(".dyf")))
             {
-                //var remapLocation = dyfFiles.First(x => Path.GetDirectoryName(x).Equals(Path.GetDirectoryName(func)));
                 var remapLocation = dyfFiles.First(x =>
                 {
                     var p1 = Path.GetFileName(Path.GetDirectoryName(x));
@@ -204,7 +204,7 @@ namespace Dynamo.PackageManager
             docDir = Path.Combine(root, DocumentationDirectoryName);
         }
 
-        private void WritePackageHeader(Package package, IDirectoryInfo rootDir)
+        private void WritePackageHeader(Package package, IDirectoryInfo rootDir, bool keepPkgJson = false)
         {
             var pkgHeader = PackageUploadBuilder.NewRequestBody(package);
 
@@ -215,13 +215,21 @@ namespace Dynamo.PackageManager
             var headerPath = Path.Combine(rootDir.FullName, PackageJsonName);
             if (fileSystem.FileExists(headerPath))
             {
+                // If the user has provided a Package Json file, should we keep it?
+                // The check below would go off if there already is a pkg.json in the root folder and we have explicitly set the keepPkgJson to true
+                // This will work with retain folder structure and in single-folder scenarios where the root folder contains a pkg.json
+                if (keepPkgJson) return; 
                 fileSystem.DeleteFile(headerPath);
             }
 
             fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 
-        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles, string sourcePackageDir, IDirectoryInfo rootDir, out List<string> dyfFiles)
+        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles,
+                                                            IEnumerable<string> markdownFiles,
+                                                            IEnumerable<string> roots,
+                                                            IDirectoryInfo rootDir,
+                                                            out List<string> dyfFiles)
         {
             dyfFiles = new List<string>();
 
@@ -235,7 +243,21 @@ namespace Dynamo.PackageManager
                         continue;
                     }
 
-                    var relativePath = file.Substring(sourcePackageDir.Length);
+                    string relativePath = "";
+
+                    foreach (var root in roots)
+                    {
+                        if (file.StartsWith(root))
+                        {
+                            relativePath = file.Substring(root.Length);
+                            // If we have more than 1 root, than we need to nest into a new root folder
+                            // If we don't, and in order to preserve 1-to-1 folder structure, we remove the original root and replace with the package name
+                            if(roots.Count() == 1 && contentFiles.Any(f => f.Count() == 1))
+                            {
+                                relativePath = RemoveFirstFolder(relativePath);
+                            }
+                        }
+                    }
 
                     // Ensure the relative path starts with a directory separator.
                     if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
@@ -247,10 +269,11 @@ namespace Dynamo.PackageManager
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
                     // We are already creating the pkg.json file ourselves, so skip it, also skip if we are copying the file to itself.
-                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
-                    {
-                        continue;
-                    }
+                    // Should we stop creating the pkg.json on behalf of the user? If they are using this feature, they probably want to handle this as well
+                    //if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
+                    //{
+                    //    continue;
+                    //}
 
                     if (fileSystem.FileExists(destPath))
                     {
@@ -270,6 +293,9 @@ namespace Dynamo.PackageManager
                     }
                 }
             }
+
+
+
             // All files under Markdown directory do not apply to the rule above,
             // because they may fall into extra folder instead of docs folder,
             // currently there is on obvious way to filter them properly only based on path string.
@@ -285,6 +311,15 @@ namespace Dynamo.PackageManager
 
                 fileSystem.CopyFile(file, destPath);
             }
+        }
+
+        private static string RemoveFirstFolder(string path)
+        {
+            var parts = path.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length > 1) return "\\" + String.Join("\\", parts, 1, parts.Length - 1);
+           
+            return "\\" + parts[0];
         }
 
         internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IEnumerable<string> markdownFiles,
