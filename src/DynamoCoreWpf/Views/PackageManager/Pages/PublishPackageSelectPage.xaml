@@ -11,7 +11,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       UseLayoutRounding="True"
-      x:Name="PublishPackagePage"
+      x:Name="SelectPackagePage"
       Title="PublishPackageSelectPage">
     <Page.Resources>
         <ResourceDictionary>
@@ -179,7 +179,7 @@
                                            VerticalAlignment="Center">
                                     <CheckBox IsThreeState="False"
                                               VerticalAlignment="Center"
-                                              DataContext="{Binding ElementName=PublishPackagePage}"
+                                              DataContext="{Binding ElementName=SelectPackagePage}"
                                               IsChecked="{Binding 
                                                                   Path=AllItemsSelected,
                                                                   UpdateSourceTrigger=PropertyChanged,
@@ -211,7 +211,7 @@
 
                                     <StackPanel DockPanel.Dock="Right"
                                                 Orientation="Horizontal"
-                                                Visibility="{Binding ElementName=PublishPackagePage,
+                                                Visibility="{Binding ElementName=SelectPackagePage,
                                                                      Path=ItemSelection.Count,
                                                                      UpdateSourceTrigger=PropertyChanged,
                                                                      Converter={StaticResource ZeroToVisibilityCollapsedConverter}}">                                      
@@ -253,7 +253,7 @@
                                                    FontSize="14">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0} selected">
-                                                    <Binding ElementName="PublishPackagePage"
+                                                    <Binding ElementName="SelectPackagePage"
                                                              Path="ItemSelection.Count" />
                                                 </MultiBinding>
                                             </TextBlock.Text>
@@ -367,10 +367,10 @@
                 <Setter Property="EnableRowVirtualization" Value="False" />
             </Style>
             <!--#endregion-->
-            
+
         </ResourceDictionary>
     </Page.Resources>
-    
+        
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -387,7 +387,18 @@
                    Grid.ColumnSpan="2"
                    Margin="5 5 20 5"
                    VerticalAlignment="Top"
-                   HorizontalAlignment="Right">
+                   HorizontalAlignment="Stretch">
+
+            <!-- Info text -->
+            <TextBlock
+                DockPanel.Dock="Left"
+                HorizontalAlignment="Left"
+                FontFamily="{StaticResource ArtifaktElementRegular}"
+                FontSize="10"
+                Foreground="#F5F5F5"
+                DataContext="{Binding ElementName=SelectPackagePage}"
+                Text="{Binding FilesAndFoldersCounterPreview, UpdateSourceTrigger=PropertyChanged}"/>
+            
             <!--  Add Directory  -->
             <Button Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
                     Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
@@ -428,6 +439,7 @@
             <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
                     Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
                     DockPanel.Dock="Right"
+                    HorizontalAlignment="Right"
                     TabIndex="15"
                     Margin="0 2 10 0"
                     Background="{StaticResource PrimaryCharcoal300Brush}"
