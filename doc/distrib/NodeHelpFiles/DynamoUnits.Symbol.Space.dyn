@@ -1,8 +1,8 @@
 {
-  "Uuid": "e5e49851-5c96-4926-a9ea-a2aeba05dc13",
+  "Uuid": "bfb65933-209b-4c95-8497-822d872575ae",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "DSCore.Math.RandomList",
+  "Name": "Symbol.Space",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -10,16 +10,47 @@
   "Outputs": [],
   "Nodes": [
     {
-      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
-      "NumberType": "Double",
-      "Id": "11a8f159cc4141629db4a1e70d860258",
-      "NodeType": "NumberInputNode",
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Symbol.Space",
+      "Id": "750ba17f874640f1bd8722d138f97305",
+      "Inputs": [
+        {
+          "Id": "82fee04ef0df4aeea1c9be550877098b",
+          "Name": "symbol",
+          "Description": "DynamoUnits.Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "31a4666e96344bf5877793c4ed66a2f8",
+          "Name": "bool",
+          "Description": "Space between unit and symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Gets a boolean indicating if there is typically a space between the unit value and symbol.\n\nSymbol.Space: bool"
+    },
+    {
+      "ConcreteType": "UnitsUI.Symbols, UnitsUI",
+      "SelectedIndex": 36,
+      "SelectedString": "Square centimeters: cm^2",
+      "NodeType": "ExtensionNode",
+      "Id": "adebed93146449af895af6a8bf1f784a",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "cf38608bc23d4ac99b2e5fa9e21c6280",
-          "Name": "",
-          "Description": "Double",
+          "Id": "1f868b8776454ff48965f412a9def52e",
+          "Name": "Symbol",
+          "Description": "The selected Symbol",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -27,48 +58,15 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
-      "InputValue": 350.0
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "d345c472860644e58ded6052e6fe9500",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "f0382b1db51647ef8402e0da5463d3d6",
-          "Name": "amount",
-          "Description": "Amount of random numbers the result list will contain.\n\nint",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "ff287ba222954652b917d8985e0c7a57",
-          "Name": "number",
-          "Description": "List of random numbers between 0 and 1.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "DSCore.Math.RandomList@int",
-      "Replication": "Auto",
-      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+      "Description": "Select a Symbol type"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "WatchWidth": 234.0,
-      "WatchHeight": 244.0,
-      "Id": "61dd300db9884ef4bf30f821791dc3be",
       "NodeType": "ExtensionNode",
+      "Id": "9b10b17298c94757be835dabaaebe90b",
       "Inputs": [
         {
-          "Id": "216ce60c14ae4285ba14d0351fd4b33c",
+          "Id": "15a3669b9f4b4ae497c2ee7d82ffc844",
           "Name": "",
           "Description": "Node to show output from",
           "UsingDefaultValue": false,
@@ -79,7 +77,7 @@
       ],
       "Outputs": [
         {
-          "Id": "63b3076e4a4641f6b98010ee3ea92142",
+          "Id": "23833b573fdc489a8045efb8095c6397",
           "Name": "",
           "Description": "Node output",
           "UsingDefaultValue": false,
@@ -89,20 +87,20 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualize the node's output"
     }
   ],
   "Connectors": [
     {
-      "Start": "cf38608bc23d4ac99b2e5fa9e21c6280",
-      "End": "f0382b1db51647ef8402e0da5463d3d6",
-      "Id": "d5814ad03cba494ca3a29fb2325873e8",
+      "Start": "31a4666e96344bf5877793c4ed66a2f8",
+      "End": "15a3669b9f4b4ae497c2ee7d82ffc844",
+      "Id": "877ebbf9a6e94830b8955b4cf2c79839",
       "IsHidden": "False"
     },
     {
-      "Start": "ff287ba222954652b917d8985e0c7a57",
-      "End": "216ce60c14ae4285ba14d0351fd4b33c",
-      "Id": "4525ae071aba411bbc57e6aff776df5e",
+      "Start": "1f868b8776454ff48965f412a9def52e",
+      "End": "82fee04ef0df4aeea1c9be550877098b",
+      "Id": "625880c078cf4fbd8a6044ac4867363f",
       "IsHidden": "False"
     }
   ],
@@ -114,13 +112,13 @@
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
       "Name": "Properties",
-      "Version": "2.18",
+      "Version": "2.13",
       "Data": {}
     },
     {
       "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
       "Name": "Generative Design",
-      "Version": "1.2",
+      "Version": "2.0",
       "Data": {}
     }
   ],
@@ -137,12 +135,12 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.19.0.5742",
-      "RunType": "Manual",
+      "Version": "2.13.1.3887",
+      "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -156,39 +154,39 @@
     "ConnectorPins": [],
     "NodeViews": [
       {
-        "Id": "11a8f159cc4141629db4a1e70d860258",
-        "Name": "Number",
+        "Name": "Symbol.Space",
+        "ShowGeometry": true,
+        "Id": "750ba17f874640f1bd8722d138f97305",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 617.0,
-        "Y": 439.0
+        "X": 543.19999999999993,
+        "Y": 338.79999999999995
       },
       {
-        "Id": "d345c472860644e58ded6052e6fe9500",
-        "Name": "Math.RandomList",
+        "Name": "Symbols",
+        "ShowGeometry": true,
+        "Id": "adebed93146449af895af6a8bf1f784a",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 845.0,
-        "Y": 437.0
+        "X": 145.59999999999991,
+        "Y": 338.79999999999995
       },
       {
-        "Id": "61dd300db9884ef4bf30f821791dc3be",
         "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "9b10b17298c94757be835dabaaebe90b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "ShowGeometry": true,
-        "X": 1151.0,
-        "Y": 436.0
+        "X": 836.0,
+        "Y": 338.79999999999995
       }
     ],
     "Annotations": [],
-    "X": -346.15758885693833,
-    "Y": -170.98680023763819,
-    "Zoom": 0.96546970479948491
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
   }
 }
