@@ -19,6 +19,6 @@
     <files>
               <file src="**"
               target="lib\$TargetFramework$\"
-              exclude="en-US\fallback_docs\*;NodeHelpSharedDocs\*;Open Source Licenses\*;samples\** "/>
+              exclude="**\*.pdb;**\*.txt;**\*.rtf;en-US\fallback_docs\*;NodeHelpSharedDocs\*;Open Source Licenses\*;samples\** "/>
     </files>
 </package>
