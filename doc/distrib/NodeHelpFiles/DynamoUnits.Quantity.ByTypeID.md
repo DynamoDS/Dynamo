@@ -3,4 +3,4 @@ Quantity.ByTypeID retrieves a quantity given the type of measurement being input
 ___
 ## Example File
 
-![Quantity.ByTypeID](./DynamoUnits.Quantity.ByTypeID)
+![Quantity.ByTypeID](./DynamoUnits.Quantity.ByTypeID_img.png)

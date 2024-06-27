@@ -4074,6 +4074,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please disable Use Instancing in the Display Settings section of Visual Settings..
+        /// </summary>
+        public static string InstancingRenderFailureDescription {
+            get {
+                return ResourceManager.GetString("InstancingRenderFailureDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Interactive Guides.
         /// </summary>
         public static string InteractiveGuides {
@@ -7270,6 +7279,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageWebsiteLabel {
             get {
                 return ResourceManager.GetString("PackageWebsiteLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background Preview had an issue.
+        /// </summary>
+        public static string PartialRenderFailureTitle {
+            get {
+                return ResourceManager.GetString("PartialRenderFailureTitle", resourceCulture);
             }
         }
         

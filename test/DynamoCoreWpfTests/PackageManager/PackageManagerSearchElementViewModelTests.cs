@@ -537,8 +537,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
             packageManagerSearchViewModel.NonHostFilter[3].FilterCommand.Execute(string.Empty);
             Assert.IsFalse(packageManagerSearchViewModel.NonHostFilter[4].OnChecked);
         }
-		
-		/// <summary>
+
+        /// <summary>
         /// This unit test will validate that we can search packages in different languages and they will be found.
         /// </summary>
         [Test]
@@ -549,6 +549,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             string packageVersionNumber = "1.0.0.0";
             string packageCreatedDateString = "2016 - 12 - 02T13:13:20.135000 + 00:00";
             string formItFilterName = "FormIt";
+            var packageMaintainer = new User(){ username = "DynamoTest", _id = "90-63-17" };
 
             //Packages list
             List<string> packagesNameDifferentLanguages = new List<string> { "paquete", "упаковка", "包裹" };
@@ -579,6 +580,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
                     name = package,
                     versions = new List<PackageVersion> { tmpPackageVersion },
                     host_dependencies = new List<string> { formItFilterName },
+                    maintainers = new List<User> { packageMaintainer },
                 }), false);
                 packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
             }

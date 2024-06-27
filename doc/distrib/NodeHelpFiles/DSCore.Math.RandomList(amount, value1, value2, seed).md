@@ -4,4 +4,4 @@ Math.RandomList(amount,value1,value2,seed) produces a random list with the given
 ___
 ## Example File
 
-![Math.RandomList](./DSCore.Math.RandomList(amount, value1, value2, seed)_img.png)
+![Math.RandomList](./DSCore.Math.RandomList%28amount%2C%20value1%2C%20value2%2C%20seed%29_img.png)
