@@ -1082,7 +1082,8 @@ namespace Dynamo.PackageManager
         {
             var rootItems = items.Values.Where(x => !x.isChild).ToList();
             if (!rootItems.Any()) return rootItems;
-            var packageSourceDir = CurrentPackageDirectory ??= GetLongestCommonPrefix(items.Keys.ToArray());
+            var packageSourceDir = GetLongestCommonPrefix(items.Keys.ToArray());
+            CurrentPackageDirectory = packageSourceDir;
 
             var root = new PackageItemRootViewModel(packageSourceDir);
             var updatedItems = new List<PackageItemRootViewModel>();
