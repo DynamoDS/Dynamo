@@ -2205,7 +2205,6 @@ namespace Dynamo.PackageManager
                 var result = PackageLoader.TryLoadFrom(filename, out Assembly assem);
                 if (result)
                 {
-                    // TODO: 
                     var assemName = assem.GetName().Name;
 
                     // The user has attempted to load an existing dll from another path. This is not allowed 
