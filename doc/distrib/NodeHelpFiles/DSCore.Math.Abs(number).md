@@ -3,4 +3,4 @@ Math.Abs finds the absolute value of a given number. An absolute value is the no
 ___
 ## Example File
 
-![Math.Abs](./DSCore.Math.Abs_img.png)
+![Math.Abs](./DSCore.Math.Abs(number)_img.png)
