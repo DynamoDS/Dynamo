@@ -87,8 +87,7 @@ namespace Dynamo.PackageManager
             RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
 
-            // TODO: should we skip that step? Should the user handle pkg.json creation?
-            WritePackageHeader(package, rootDir, true);
+            WritePackageHeader(package, rootDir);
 
             return rootDir;
         }
@@ -204,7 +203,7 @@ namespace Dynamo.PackageManager
             docDir = Path.Combine(root, DocumentationDirectoryName);
         }
 
-        private void WritePackageHeader(Package package, IDirectoryInfo rootDir, bool keepPkgJson = false)
+        private void WritePackageHeader(Package package, IDirectoryInfo rootDir)
         {
             var pkgHeader = PackageUploadBuilder.NewRequestBody(package);
 
@@ -215,10 +214,6 @@ namespace Dynamo.PackageManager
             var headerPath = Path.Combine(rootDir.FullName, PackageJsonName);
             if (fileSystem.FileExists(headerPath))
             {
-                // If the user has provided a Package Json file, should we keep it?
-                // The check below would go off if there already is a pkg.json in the root folder and we have explicitly set the keepPkgJson to true
-                // This will work with retain folder structure and in single-folder scenarios where the root folder contains a pkg.json
-                if (keepPkgJson) return; 
                 fileSystem.DeleteFile(headerPath);
             }
 
