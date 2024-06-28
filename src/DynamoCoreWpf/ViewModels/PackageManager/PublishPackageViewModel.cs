@@ -2781,6 +2781,9 @@ namespace Dynamo.PackageManager
             var rootItem = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
             foreach(var item in PackageContents)
             {
+                // Skip 'bare' custom nodes, they will be represented by their CustomNodePreview counterparts
+                if(item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
+
                 item.isChild = true;
                 rootItem.AddChildren(item);
             }
