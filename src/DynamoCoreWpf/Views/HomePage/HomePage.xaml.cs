@@ -520,7 +520,7 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultCommand.Execute(null);
+            this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultAsync(null);
             Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Workspace");
         }
 

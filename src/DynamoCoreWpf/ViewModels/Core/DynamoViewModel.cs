@@ -2185,6 +2185,13 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal async void ShowOpenDialogAndOpenResultAsync(object parameter)
+        {
+            await Task.Yield();
+
+            ShowOpenDialogAndOpenResult(parameter);
+        }
+
         private void SetDefaultInitialDirectory(DynamoOpenFileDialog _fileDialog)
         {
             try
