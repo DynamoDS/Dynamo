@@ -1501,6 +1501,7 @@ namespace Dynamo.PackageManager
         internal static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg, bool retainFolderStructure)
         {
             var defs = new List<CustomNodeDefinition>();
+            var defPreviews = new Dictionary<string, string>();
 
             foreach (var x in pkg.LoadedCustomNodes)
             {
@@ -1511,6 +1512,7 @@ namespace Dynamo.PackageManager
                     out def))
                 {
                     defs.Add(def);
+                    defPreviews[x.Name] = x.Path;
                 }
             }
 
@@ -1520,6 +1522,7 @@ namespace Dynamo.PackageManager
                 Description = pkg.Description,
                 Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : string.Empty,
                 CustomNodeDefinitions = defs,
+                CustomDyfFilepaths = defPreviews,
                 Name = pkg.Name,
                 RepositoryUrl = pkg.RepositoryUrl ?? string.Empty,
                 SiteUrl = pkg.SiteUrl ?? string.Empty,
