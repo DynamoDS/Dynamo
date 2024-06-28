@@ -520,7 +520,7 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultAsync(null);
+            this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultAsyncCommand.Execute(null);
             Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Workspace");
         }
 
@@ -575,7 +575,7 @@ namespace Dynamo.UI.Views
             }
 
             // Equivalent to CommandParameter="Template"
-            this.startPage?.DynamoViewModel?.ShowOpenTemplateDialogCommand.Execute("Template");
+            this.startPage?.DynamoViewModel?.ShowOpenTemplateDialogAsyncCommand.Execute("Template");
             Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Template");
         }
 

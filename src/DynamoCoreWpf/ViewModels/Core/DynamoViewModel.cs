@@ -2185,7 +2185,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal async void ShowOpenDialogAndOpenResultAsync(object parameter)
+        private async void ShowOpenDialogAndOpenResultAsync(object parameter)
         {
             await Task.Yield();
 
