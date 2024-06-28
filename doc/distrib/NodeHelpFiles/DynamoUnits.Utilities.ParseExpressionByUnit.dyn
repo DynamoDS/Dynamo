@@ -1,0 +1,237 @@
+{
+  "Uuid": "a19b2b4a-e4e6-43ab-9b41-f8d218bff28f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Utilities.ParseExpressionByUnit",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "1' 4\" + 10m + 107mm",
+      "Id": "01fc8b961e29498c9f49a5abae3d0d76",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "28728f32e36141e2976f9c86b025e77c",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "e8ef257e0794485eb7661870fd68ab52",
+      "Inputs": [
+        {
+          "Id": "623445624adf4fbe9dcb911ac93e41b7",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1ae8d39b8445400f87620a433daa863e",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Utilities.ParseExpressionByUnit@DynamoUnits.Unit,string",
+      "Id": "975e7a770eb748a2b127ef849bfd5b8b",
+      "Inputs": [
+        {
+          "Id": "cb419821aeec485da23dad44bc8b7f57",
+          "Name": "targetUnit",
+          "Description": "Unit system to target\n\nUnit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "15dd1e3d01da4f35849b7b57c9f1a097",
+          "Name": "expression",
+          "Description": "String to convert to a value\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "68a9b40218d84c0c9ea64acfa99a7f70",
+          "Name": "double",
+          "Description": "Converted value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Parses a string containing values with units and math functions to a unit value. For example, \"1ft + 2.54cm + 3in\" could be converted to 14in\n\nUtilities.ParseExpressionByUnit (targetUnit: Unit, expression: string): double"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsUI",
+      "SelectedIndex": 74,
+      "SelectedString": "Feet",
+      "NodeType": "ExtensionNode",
+      "Id": "797fe62056ed43a2a0133afc39050f63",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1dff1908f70c48e9aa74fb598ef6ef80",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "28728f32e36141e2976f9c86b025e77c",
+      "End": "15dd1e3d01da4f35849b7b57c9f1a097",
+      "Id": "73c9c12a4f37481fb7398bc4fcdc3fd8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "68a9b40218d84c0c9ea64acfa99a7f70",
+      "End": "623445624adf4fbe9dcb911ac93e41b7",
+      "Id": "c546a5b5c7194996a5a4b110ee416e0b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1dff1908f70c48e9aa74fb598ef6ef80",
+      "End": "cb419821aeec485da23dad44bc8b7f57",
+      "Id": "7712f87bf8234811ae4a740688c3f133",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "01fc8b961e29498c9f49a5abae3d0d76",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 393.93781886500665,
+        "Y": 356.05869866052717
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "e8ef257e0794485eb7661870fd68ab52",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1108.3378188650067,
+        "Y": 265.05869866052717
+      },
+      {
+        "Name": "Utilities.ParseExpressionByUnit",
+        "ShowGeometry": true,
+        "Id": "975e7a770eb748a2b127ef849bfd5b8b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 697.93781886500665,
+        "Y": 265.05869866052717
+      },
+      {
+        "Name": "Units",
+        "ShowGeometry": true,
+        "Id": "797fe62056ed43a2a0133afc39050f63",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 393.93781886500665,
+        "Y": 208.05869866052711
+      }
+    ],
+    "Annotations": [],
+    "X": -321.24981704964335,
+    "Y": -131.61172790214459,
+    "Zoom": 1.13758205229474
+  }
+}

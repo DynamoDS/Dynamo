@@ -3,4 +3,4 @@ Math.Random(value1,value2,seed) creates a random number between two values. This
 ___
 ## Example File
 
-![Math.Random2](./DSCore.Math.Random(value1, value2, seed)_img.png)
+![Math.Random2](./DSCore.Math.Random%28value1%2C%20value2%2C%20seed%29_img.png)
