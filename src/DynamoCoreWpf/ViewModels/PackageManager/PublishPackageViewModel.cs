@@ -2205,7 +2205,6 @@ namespace Dynamo.PackageManager
                 var result = PackageLoader.TryLoadFrom(filename, out Assembly assem);
                 if (result)
                 {
-                    // TODO: 
                     var assemName = assem.GetName().Name;
 
                     // The user has attempted to load an existing dll from another path. This is not allowed 
@@ -2743,6 +2742,7 @@ namespace Dynamo.PackageManager
                 }
             }
 
+            // Removes duplicate file names, retaining  only the first encounter file path for each unique file name
             files = files.GroupBy(file => Path.GetFileName(file), StringComparer.OrdinalIgnoreCase)
                          .Select(group => group.First()) 
                          .ToList();

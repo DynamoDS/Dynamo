@@ -235,7 +235,8 @@ namespace Dynamo.PackageManager
                         continue;
                     }
 
-                    var relativePath = file.Substring(sourcePackageDir.Length);
+                    // TODO: This will be properly fixed in the next PR
+                    var relativePath = sourcePackageDir != null ? file.Substring(sourcePackageDir.Length) : Path.GetFileName(file);
 
                     // Ensure the relative path starts with a directory separator.
                     if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
