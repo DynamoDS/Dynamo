@@ -47,7 +47,7 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DesignScriptBuiltinImages.resx" OutputResources="$(ProjectDir)DesignScriptBuiltinImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DesignScriptBuiltinImages.resources" OutputAssembly="$(OutDir)DesignScriptBuiltin.customization.dll" Version="%(AssemblyInfo.Version)" />

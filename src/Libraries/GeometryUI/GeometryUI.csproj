@@ -70,7 +70,7 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="GegenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+  <Target Name="GegenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)GeometryUIImages.resx" OutputResources="$(ProjectDir)GeometryUIImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)GeometryUIImages.resources" OutputAssembly="$(OutDir)GeometryUI.customization.dll" Version="%(AssemblyInfo.Version)" />
