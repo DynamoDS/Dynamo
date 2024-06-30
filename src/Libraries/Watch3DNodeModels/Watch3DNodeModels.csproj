@@ -64,7 +64,7 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" $(RuntimeIdentifier.Contains('win')) ">
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)Watch3DNodeModelsImages.resx" OutputResources="$(ProjectDir)Watch3DNodeModelsImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)Watch3DNodeModelsImages.resources" OutputAssembly="$(OutDir)Watch3DNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />

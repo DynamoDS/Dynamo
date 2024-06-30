@@ -42,7 +42,7 @@
     <Copy SourceFiles="$(PkgForgeUnits_NET)\lib\net6.0\ForgeUnitsManaged.dll" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(PkgForgeUnits_NET)\runtimes\win10-x64\native\Units.dll" DestinationFolder="$(OutputPath)" />
   </Target>
-  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" $(RuntimeIdentifier.Contains('win')) ">
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoUnitsImages.resx" OutputResources="$(ProjectDir)DynamoUnitsImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" Version="%(AssemblyInfo.Version)" />

@@ -77,7 +77,7 @@
   <Target Name="CopyFiles" BeforeTargets="ResolveSateliteResDeps">
     <Copy SourceFiles="$(ProjectDir)DSCoreNodes_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
-  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" $(RuntimeIdentifier.Contains('win')) ">
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DSCoreNodesImages.resx" OutputResources="$(ProjectDir)DSCoreNodesImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DSCoreNodesImages.resources" OutputAssembly="$(OutDir)DSCoreNodes.customization.dll" Version="%(AssemblyInfo.Version)" />
