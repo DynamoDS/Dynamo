@@ -123,11 +123,11 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Gets maintainers for a specific package
+        /// Get the package Header which contains all the relevant information to the Package
         /// </summary>
         /// <param name="packageInfo"></param>
         /// <returns></returns>
-        internal PackageHeader GetPackageMaintainers(IPackageInfo packageInfo)
+        internal PackageHeader GetPackageHeader(IPackageInfo packageInfo)
         {
             var header = FailFunc.TryExecute(() =>
             {
@@ -314,7 +314,7 @@ namespace Dynamo.PackageManager
                 return value;
             }
             var pkg = new PackageInfo(package.Name, new Version(package.VersionName));
-            var mnt = GetPackageMaintainers(pkg);
+            var mnt = GetPackageHeader(pkg);
             value = (mnt != null) && (mnt.maintainers.Any(maintainer => maintainer.username.Equals(username)));
             this.packageMaintainers[package.Name] = value;
             return value;

@@ -182,7 +182,7 @@ namespace Dynamo.ViewModels
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
-            DeprecateCommand = new DelegateCommand(Deprecate, IsOwner);
+            DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
             GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, () => true);
 
@@ -408,6 +408,14 @@ namespace Dynamo.ViewModels
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
         }
 
+        private bool CanDeprecate()
+        {
+            var packageInfo = new PackageInfo(Model.Name, Version.Parse(Model.VersionName));
+            var packageHeader = this.packageManagerClient.GetPackageHeader(packageInfo);
+
+            return IsOwner() && !packageHeader.deprecated;
+        }
+
         private void Undeprecate()
         {
             var res = MessageBoxService.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
@@ -419,8 +427,10 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            if (!CanPublish) return false;
-            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
+            var packageInfo = new PackageInfo(Model.Name, Version.Parse(Model.VersionName));
+            var packageHeader = this.packageManagerClient.GetPackageHeader(packageInfo);
+
+            return IsOwner() && packageHeader.deprecated;
         }
 
         private void PublishNewPackageVersion()
