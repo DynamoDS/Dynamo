@@ -20,7 +20,9 @@ namespace Dynamo.Tests.Logging
 
         int eventCounter=0;
         string log = string.Empty;
+
         [Test]
+        [Category("FailureDynCore")]
         public void FeatureFlagsShouldReturnRealDataAfterCache()
         {
             var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
@@ -29,13 +31,16 @@ namespace Dynamo.Tests.Logging
         }
 
         [Test]
+        [Category("FailureDynCore")]
         public void FeatureFlagsShouldReturnDefaultDataBeforeCache()
         {
             var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
             Assert.False(testflagsManager.CheckFeatureFlag<bool>("TestFlag1", false));
 
         }
+
         [Test]
+        [Category("FailureDynCore")]
         public void FeatureFlagsShouldReturnValidStringData()
         {
             var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
@@ -45,6 +50,7 @@ namespace Dynamo.Tests.Logging
         }
 
         [Test]
+        [Category("FailureDynCore")]
         public void FeatureFlagsShouldTriggerEventAfterCacheFlags()
         {
             var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
@@ -54,7 +60,9 @@ namespace Dynamo.Tests.Logging
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= DynamoFeatureFlagsManager_FlagsRetrieved;
             Assert.AreEqual(1, eventCounter);
         }
+
         [Test]
+        [Category("FailureDynCore")]
         public void FeatureFlagsShouldMessageLoggedShouldContainAllLogs()
         {
             var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
@@ -73,6 +81,7 @@ namespace Dynamo.Tests.Logging
         }
         //TODO(DYN-6464) Revisit this and log more when the logger is not easily overwhelmed.
         [Test]
+        [Category("FailureDynCore")]
         public void FeatureFlagsShouldMessageLoggedShouldOnlyContainNullFlagErrorOnce()
         {
             var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
@@ -84,8 +93,10 @@ namespace Dynamo.Tests.Logging
             var matches = Regex.Matches(log, "wait longer for the cache").Count;
             Assert.AreEqual(1,matches);
         }
+
         //TODO(DYN-6464) Revisit this and log more when the logger is not easily overwhelmed.
         [Test]
+        [Category("FailureDynCore")]
         public void FeatureFlagsShouldMessageLoggedShouldOnlyContainMissingFlagErrorOnce()
         {
             var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
@@ -98,7 +109,9 @@ namespace Dynamo.Tests.Logging
             var matches = Regex.Matches(log, "failed to get value").Count;
             Assert.AreEqual(1, matches);
         }
+
         [Test]
+        [Category("FailureDynCore")]
         public void FeatureFlagsThrowsIfCheckIngNonSupportedType()
         {
             var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
