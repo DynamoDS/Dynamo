@@ -2067,6 +2067,10 @@ Dynamo.ViewModels.DynamoViewModel.ShowOpenDialogAndOpenResultCommand.get -> Dyna
 Dynamo.ViewModels.DynamoViewModel.ShowOpenDialogAndOpenResultCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.ShowOpenTemplateDialogCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.ShowOpenTemplateDialogCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowOpenDialogAndOpenResultAsyncCommand.get  -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ShowOpenDialogAndOpenResultAsyncCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowOpenTemplateDialogAsyncCommand.get  -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ShowOpenTemplateDialogAsyncCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.ShowPackageManagerCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.ShowPackageManagerCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.ShowPackageManagerSearchCommand.get -> Dynamo.UI.Commands.DelegateCommand
