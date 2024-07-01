@@ -198,7 +198,7 @@ namespace CoreNodeModels
         public override string ToString()
         {
             return SelectionResults.Any()
-                ? string.Format("{0} : {1}", Prefix, FormatSelectionText(SelectionResults))
+                ? string.Format("{0}: {1}", Prefix, FormatSelectionText(SelectionResults))
                 : Resources.SelectionNodeNothingSelected;
         }
 
@@ -236,9 +236,19 @@ namespace CoreNodeModels
 
         protected virtual string FormatSelectionText<T>(IEnumerable<T> elements)
         {
-            return elements.Any()
-                ? System.String.Join(" ", SelectionResults.Take(20).Select(x=>x.ToString()))
-                : "";
+            if (elements.Any())
+            {
+                string text = string.Join(", ", SelectionResults.Take(20).Select(x => x.ToString()));
+
+                if (elements.Count() > 20)
+                {
+                    text += "...";
+                }
+
+                return text;
+            }
+
+            return string.Empty;
         }
 
         #endregion
