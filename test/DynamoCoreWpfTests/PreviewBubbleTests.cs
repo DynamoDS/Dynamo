@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,6 +8,7 @@ using System.Windows.Input;
 using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
@@ -913,6 +915,23 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.AreEqual(singleItemTreeExpected, clipboardContent);
+        }
+
+        [Test]
+        public void GeometryScalingInfoBubble()
+        {
+            Open(@"UI\GeometryScalingInfoBubble.dyn");
+            var workspace = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            Debug.Assert(workspace != null, nameof(workspace) + " != null");
+            workspace.Run();
+
+            List<NodeModel> errorNodes = ViewModel.Model.CurrentWorkspace.Nodes.ToList().FindAll(n => n.State == ElementState.Error);
+            List<NodeModel> warningNodes = ViewModel.Model.CurrentWorkspace.Nodes.ToList().FindAll(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
+            List<NodeModel> infoNodes = ViewModel.Model.CurrentWorkspace.Nodes.ToList().FindAll(n => n.State == ElementState.Info);
+
+            Assert.AreEqual(0, errorNodes.Count);
+            Assert.AreEqual(0, warningNodes.Count);
+            Assert.AreEqual(1, infoNodes.Count);
         }
 
         private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container, int offset)
