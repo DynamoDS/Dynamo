@@ -57,7 +57,7 @@ namespace Dynamo.PackageManager
             WritePackageHeader(package, rootDir);
             RemoveUnselectedFiles(contentFiles, rootDir);
             CopyFilesIntoPackageDirectory(contentFiles, markdownFiles, dyfDir, binDir, extraDir, docDir);
-            //RemoveDyfFiles(contentFiles, dyfDir); 
+            RemoveDyfFiles(contentFiles, dyfDir); 
 
             RemapCustomNodeFilePaths(contentFiles, dyfDir.FullName);
 
@@ -76,7 +76,7 @@ namespace Dynamo.PackageManager
 
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, sourcePackageDir, rootDir, out dyfFiles);
-            //RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
+            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
             
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
             WritePackageHeader(package, rootDir);
