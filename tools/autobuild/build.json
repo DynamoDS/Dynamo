@@ -2,8 +2,8 @@
   "product_id": "DYN",
   "release_id": "3.2.0",
   "master_id": "Win64",
-  "build_id": "3.2.1",
-  "name": "3.2.1",
-  "build_milestone": "Update 1",
+  "build_id": "3.2.2",
+  "name": "3.2.2",
+  "build_milestone": "Update 2",
   "description":"Build"
 }
