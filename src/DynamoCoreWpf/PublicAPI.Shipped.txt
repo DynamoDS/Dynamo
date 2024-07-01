@@ -1,1 +1,4 @@
-﻿
+﻿Dynamo.ViewModels.DynamoViewModel.ShowOpenDialogAndOpenResultAsyncCommand.get  -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ShowOpenDialogAndOpenResultAsyncCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowOpenTemplateDialogAsyncCommand.get  -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ShowOpenTemplateDialogAsyncCommand.set -> void
