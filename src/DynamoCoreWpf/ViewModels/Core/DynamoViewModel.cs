@@ -2187,9 +2187,7 @@ namespace Dynamo.ViewModels
 
         private async void ShowOpenDialogAndOpenResultAsync(object parameter)
         {
-            await Task.Yield();
-
-            ShowOpenDialogAndOpenResult(parameter);
+            UIDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, () => ShowOpenDialogAndOpenResult(parameter));
         }
 
         private void SetDefaultInitialDirectory(DynamoOpenFileDialog _fileDialog)
