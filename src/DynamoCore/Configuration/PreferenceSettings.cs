@@ -1064,6 +1064,7 @@ namespace Dynamo.Configuration
                             namespaces[index] = "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface";
                         }
                     }
+
                     fs.Close(); // Release file lock
                 }
             }
