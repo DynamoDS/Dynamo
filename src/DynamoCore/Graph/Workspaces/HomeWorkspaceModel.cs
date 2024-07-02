@@ -708,6 +708,9 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
+            // All nodes that have runtime warnings or infos
+            HashSet<Guid> nodesWithInfos = [.. warnings.Keys];
+
             // Update node info message.
             foreach (var info in updateTask.RuntimeInfos)
             {
@@ -715,6 +718,8 @@ namespace Dynamo.Graph.Workspaces
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
+
+                nodesWithInfos.Add(guid);
 
                 // Block Infos updates during the many errors/warnings/notifications added here
                 // InfoBubbles will be updated on NodeViewModel's EvaluationCompleted handler.
@@ -735,8 +740,8 @@ namespace Dynamo.Graph.Workspaces
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true,warnings.Keys,null)
-                : new EvaluationCompletedEventArgs(true, warnings.Keys, task.Exception);
+                ? new EvaluationCompletedEventArgs(true, nodesWithInfos, null)
+                : new EvaluationCompletedEventArgs(true, nodesWithInfos, task.Exception);
 
             EvaluationCount ++;
 
