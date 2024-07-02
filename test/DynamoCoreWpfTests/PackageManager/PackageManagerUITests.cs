@@ -2441,7 +2441,7 @@ namespace DynamoCoreWpfTests.PackageManager
             // Assert
             Assert.DoesNotThrow(() =>
             {
-                m.NewPackageVersionRetainUpload(package, publishPath, updatedFiles, Enumerable.Empty<string>(), handle);
+                m.NewPackageVersionRetainUpload(package, publishPath, Enumerable.Empty<string>(), updatedFiles, Enumerable.Empty<string>(), handle);
             });
             Assert.AreNotEqual(PackageUploadHandle.State.Error, handle.UploadState);
 

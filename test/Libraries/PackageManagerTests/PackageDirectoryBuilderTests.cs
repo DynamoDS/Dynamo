@@ -47,8 +47,9 @@ namespace Dynamo.PackageManager.Tests
             var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
 
             var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
 
-            db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
             Assert.AreEqual(1, fs.DirectoriesCreated.Count());
             Assert.AreEqual(2, fs.CopiedFiles.Count());
@@ -92,8 +93,9 @@ namespace Dynamo.PackageManager.Tests
             var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
 
             var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
 
-            db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
             var rootDir = Path.Combine(pkgsDir, pkg.Name);
 
@@ -133,9 +135,10 @@ namespace Dynamo.PackageManager.Tests
             var db = new PackageDirectoryBuilder(fs, pr.Object);
 
             var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
 
             // where the magic happens...
-            db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
             var rootDir = Path.Combine(pkgsDir, pkg.Name);
 
@@ -192,8 +195,10 @@ namespace Dynamo.PackageManager.Tests
             var db = new PackageDirectoryBuilder(fs, pr.Object);
 
             var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
 
-            db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+            // where the magic happens...
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
             var dyfDir1 = Path.Combine(pkgsDir, pkg.Name, Path.GetFileName(Path.GetDirectoryName(files[0].First())), Path.GetFileName(files[0].First()));
             var dyfDir2 = Path.Combine(pkgsDir, pkg.Name, Path.GetFileName(Path.GetDirectoryName(files[1].First())), Path.GetFileName(files[1].First()));
@@ -244,8 +249,9 @@ namespace Dynamo.PackageManager.Tests
             var db = new PackageDirectoryBuilder(fs, pr.Object);
 
             var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
 
-            db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
             var rootDir = Path.Combine(pkgsDir, pkg.Name);
 
@@ -290,8 +296,9 @@ namespace Dynamo.PackageManager.Tests
             var db = new PackageDirectoryBuilder(fs, pr.Object);
 
             var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
 
-            db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
             var dyfDir1 = Path.Combine(pkgsDir, pkg.Name, Path.GetFileName(Path.GetDirectoryName(files[0].First())));
             var dyfDir2 = Path.Combine(pkgsDir, pkg.Name, Path.GetFileName(Path.GetDirectoryName(files[1].First())));
@@ -343,8 +350,9 @@ namespace Dynamo.PackageManager.Tests
             var db = new PackageDirectoryBuilder(fs, pr.Object);
 
             var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
 
-            db.BuildRetainDirectory(pkg, pkgsDir, files, markdownFiles);
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
             var mdDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.DocumentationDirectoryName);
 
@@ -394,8 +402,9 @@ namespace Dynamo.PackageManager.Tests
             var db = new PackageDirectoryBuilder(fs, pr.Object);
 
             var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
 
-            db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
             // The original files are moved
 
@@ -455,7 +464,9 @@ namespace Dynamo.PackageManager.Tests
 
             var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
             var pkgsDir = @"C:\dynamopackages";
-            db.BuildRetainDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+            var roots = new List<string> { @"C:\pkg\" };
+
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
 
             Assert.AreEqual(1, fs.DirectoriesCreated.Count());
@@ -472,8 +483,8 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void CopyFilesIntoPackageDirectory_DoesNotMoveFilesAlreadyWithinDirectory()
         {
-            var files = new[] { @"C:\foo/dyf\file1.dyf", @"C:\\foo\dyf\file2.dyf", @"C:\\foo\dyf\file3.dyf",
-                @"C:\foo/bin\file1.dll", @"C:\\foo\bin\file2.dll", @"C:\\foo\bin\file3.dll",
+            var files = new[] { @"C:\foo/dyf\file1.dyf", @"C:\\foo\dyf\file2.DYF", @"C:\\foo\dyf\file3.dyf",
+                @"C:\foo/bin\file1.dll", @"C:\\foo\bin\file2.DLL", @"C:\\foo\bin\file3.dll",
                 @"C:\foo/extra\file1.pdf", @"C:\\foo\extra\file2.rvt", @"C:\\foo\extra\file3.poo", @"C:\\foo\doc\file1.md", @"C:\\foo\doc\file2.png" };
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn), (dn) => true);
@@ -495,6 +506,31 @@ namespace Dynamo.PackageManager.Tests
 
             // no files should be copied, they are all already within their intended directory
             Assert.IsEmpty(fs.CopiedFiles);
+        }
+
+        #endregion
+
+        #region DeleteDyfFilesDuringBuild
+        [Test]
+        public void BuildPackageDirectory_DeletesOriginalDyfFiles()
+        {
+            // This tests asserts that the initial custom definition files will be deleted in the build process 
+            var files = new[] { @"C:\pkg\file1.dyf", @"C:\pkg\file2.DYF" };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+
+            var fs = new RecordedFileSystem((fn) => files.Contains(fn));
+
+            var pr = new Mock<IPathRemapper>();
+            var db = new PackageDirectoryBuilder(fs, pr.Object);
+
+            var pkgsDir = @"C:\dynamopackages";
+
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+
+            var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
+
+            Assert.AreEqual(files.Length, fs.CopiedFiles.Count());
+            Assert.AreEqual(files.Length, fs.DeletedFiles.Count());
         }
 
         #endregion

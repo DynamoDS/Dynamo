@@ -8,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
@@ -896,8 +895,9 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// The root directory of the package
         /// </summary>
-        private string CurrentPackageDirectory { get; set; }
+        private IEnumerable<string> CurrentPackageRootDirectories { get; set; }
         private static MetadataLoadContext sharedMetaDataLoadContext = null;
+
         /// <summary>
         /// A shared MetaDataLoadContext that is used for assembly inspection during package publishing.
         /// This member is shared so the behavior is similar to the ReflectionOnlyLoadContext this is replacing.
@@ -1052,7 +1052,12 @@ namespace Dynamo.PackageManager
             }                    
         }
 
-        private List<PackageItemRootViewModel> BindParentToChild(Dictionary<string, PackageItemRootViewModel> items)
+        /// <summary>
+        /// Attempts to recreate the file/folder content structure 
+        /// </summary>
+        /// <param name="items">A dictionary of the content items</param>
+        /// <returns></returns>
+        internal List<PackageItemRootViewModel> BindParentToChild(Dictionary<string, PackageItemRootViewModel> items)
         {
             foreach (var parent in items)
             {
@@ -1069,38 +1074,70 @@ namespace Dynamo.PackageManager
             }
 
             // Only add the folder items, they contain the files
-            var updatedItems = GetRootItems(items);
+            var updatedItems = OrganizePackageRootItems(items);
             return updatedItems;
         }
 
         /// <summary>
-        /// Gets the list PackageItemRootViewModel items which will be at the root directory of the package with all the child items.
+        /// Organizes package items into root items based on common paths and hierarchical structure.
+        /// This includes determining root items, establishing parent-child relationships, and collecting all child items.
         /// </summary>
-        /// <param name="items"></param>
-        /// <returns></returns>
-        private List<PackageItemRootViewModel> GetRootItems(Dictionary<string, PackageItemRootViewModel> items)
+        /// <param name="items">A dictionary of package item keys and their corresponding PackageItemRootViewModel objects.</param>
+        /// <returns>A list of PackageItemRootViewModel items representing the organized root items and their child items.</returns>
+        private List<PackageItemRootViewModel> OrganizePackageRootItems(Dictionary<string, PackageItemRootViewModel> items)
         {
             var rootItems = items.Values.Where(x => !x.isChild).ToList();
             if (!rootItems.Any()) return rootItems;
-            var packageSourceDir = CurrentPackageDirectory ??= GetLongestCommonPrefix(items.Keys.ToArray());
 
-            var root = new PackageItemRootViewModel(packageSourceDir);
-            var updatedItems = new List<PackageItemRootViewModel>();
-            //check each root item and create any missing connections
+            var roots = new List<PackageItemRootViewModel>();
+                      
+            var commonPaths = GetCommonPaths(items.Keys.ToArray());
+            if (commonPaths == null) return null;
+
+            CurrentPackageRootDirectories = commonPaths;
+
+            // Add a new root item for each common path found
+            commonPaths.ForEach(p => roots.Add(new PackageItemRootViewModel(p)));
+
+            // Check each root item and create any missing connections
             foreach (var item in rootItems)
             {
+                bool itemAssigned = false;
                 var itemDir = new DirectoryInfo(item.DirectoryName);
-                if (!itemDir.Parent.FullName.Equals(packageSourceDir))
+
+                foreach (var root in roots)
                 {
-                    root.AddChildRecursively(item);
+                    var rootDir = new DirectoryInfo(root.DirectoryName);
+
+                    if (itemDir.FullName.StartsWith(rootDir.FullName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (itemDir.Parent.FullName.Equals(rootDir.FullName))
+                        {
+                            root.ChildItems.Add(item);
+                        }
+                        else
+                        {
+                            root.AddChildRecursively(item);
+                        }
+                        itemAssigned = true;
+                        break;
+                    }
                 }
-                else
+
+                // If the item does not belong to any existing root, create a new root for it
+                if (!itemAssigned)
                 {
-                    root.ChildItems.Add(item);
+                    var newRoot = new PackageItemRootViewModel(item.DirectoryName);
+                    newRoot.ChildItems.Add(item);
+                    roots.Add(newRoot);
                 }
             }
-            return root.ChildItems.ToList();
-        }   
+
+            // Collect all child items from all roots
+            var allChildItems = roots.SelectMany(r => r.ChildItems).ToList();
+
+            return allChildItems;
+        }
 
         /// <summary>
         /// Test if path2 is subpath of path1
@@ -1132,22 +1169,56 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Utility method to get the common file path, this may fail for files with the same partial name.
         /// </summary>
-        /// <param name="s">A collection of filepaths</param>
+        /// <param name="paths">A collection of file paths</param>
         /// <returns></returns>
-        internal string GetLongestCommonPrefix(string[] s)
+        internal List<string> GetCommonPaths(string[] paths)
         {
-            int k = s[0].Length;
-            for (int i = 1; i < s.Length; i++)
+            if (paths == null || paths.Length == 0)
+                return new List<string>();
+
+            // Group paths by their root (drive letter)
+            var groupedPaths = paths.GroupBy(p => Path.GetPathRoot(p)).ToList();
+            List<string> commonPaths = new List<string>();
+
+            foreach (var group in groupedPaths)
             {
-                k = Math.Min(k, s[i].Length);
-                for (int j = 0; j < k; j++)
-                    if (s[i][j] != s[0][j])
+                var pathArray = group.ToArray();
+                if (pathArray.Length == 1)
+                {
+                    commonPaths.Add(Path.GetDirectoryName(pathArray[0]));
+                    continue;
+                }
+
+                var k = pathArray[0].Length;
+                for (var i = 1; i < pathArray.Length; i++)
+                {
+                    k = Math.Min(k, pathArray[i].Length);
+                    for (var j = 0; j < k; j++)
                     {
-                        k = j;
-                        break;
+                        if (pathArray[i][j] != pathArray[0][j])
+                        {
+                            k = j;
+                            break;
+                        }
                     }
+                }
+
+                var commonPrefix = pathArray[0].Substring(0, k);
+                var commonDir = Path.GetDirectoryName(commonPrefix);
+
+                if (string.IsNullOrEmpty(commonDir))
+                {
+                    // Special case for the root directory
+                    commonDir = Path.GetPathRoot(commonPrefix);
+                }
+
+                if (!string.IsNullOrEmpty(commonDir))
+                {
+                    commonPaths.Add(commonDir);
+                }
             }
-            return Path.GetDirectoryName(s[0].Substring(0, k));
+
+            return commonPaths.Distinct().ToList();
         }
 
         /// <summary>
@@ -1430,6 +1501,7 @@ namespace Dynamo.PackageManager
         internal static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg, bool retainFolderStructure)
         {
             var defs = new List<CustomNodeDefinition>();
+            var defPreviews = new Dictionary<string, string>();
 
             foreach (var x in pkg.LoadedCustomNodes)
             {
@@ -1440,6 +1512,7 @@ namespace Dynamo.PackageManager
                     out def))
                 {
                     defs.Add(def);
+                    defPreviews[x.Name] = x.Path;
                 }
             }
 
@@ -1449,6 +1522,7 @@ namespace Dynamo.PackageManager
                 Description = pkg.Description,
                 Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : string.Empty,
                 CustomNodeDefinitions = defs,
+                CustomDyfFilepaths = defPreviews,
                 Name = pkg.Name,
                 RepositoryUrl = pkg.RepositoryUrl ?? string.Empty,
                 SiteUrl = pkg.SiteUrl ?? string.Empty,
@@ -1458,7 +1532,7 @@ namespace Dynamo.PackageManager
                 CopyrightHolder = pkg.CopyrightHolder,
                 CopyrightYear = pkg.CopyrightYear,
                 IsPublishFromLocalPackage = true,
-                CurrentPackageDirectory = pkg.RootDirectory,
+                CurrentPackageRootDirectories = new List<string> { pkg.RootDirectory },
                 //default retain folder structure to true when publishing a new version from local.
                 RetainFolderStructureOverride = retainFolderStructure
             };
@@ -1897,7 +1971,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Combines adding files from single file prompt and files in folders propt
+        /// Combines adding files from single file prompt and files in folders prompt
         /// </summary>
         /// <param name="filePaths"></param>
         internal void AddAllFilesAfterSelection(List<string> filePaths, string rootFolder = null)
@@ -2033,7 +2107,10 @@ namespace Dynamo.PackageManager
                 CustomNodeDefinitions.Remove(CustomNodeDefinitions
                     .First(x => x.DisplayName == fileName));
 
-                CustomDyfFilepaths.Remove(fileName + ".dyf");
+                var keyToRemove = CustomDyfFilepaths.Keys
+                                    .FirstOrDefault(k => Path.GetFileNameWithoutExtension(k) == fileName);
+
+                if(keyToRemove != null) CustomDyfFilepaths.Remove(keyToRemove);
             }
             else
             {
@@ -2193,7 +2270,7 @@ namespace Dynamo.PackageManager
             {
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, RetainFolderStructureOverride ? updatedFiles : contentFiles, MarkdownFiles, IsNewVersion, RetainFolderStructureOverride);
+                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, RetainFolderStructureOverride ? updatedFiles : contentFiles, MarkdownFiles, IsNewVersion, CurrentPackageRootDirectories, RetainFolderStructureOverride);
 
                 // start upload
                 Uploading = true;
@@ -2288,11 +2365,13 @@ namespace Dynamo.PackageManager
                     var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
                         DynamoModel.IsTestMode);
                     var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
-                    if (string.IsNullOrEmpty(Package.RootDirectory))
-                    {
-                        Package.RootDirectory = CurrentPackageDirectory;
-                    }
-                    builder.BuildRetainDirectory(Package, publishPath, updatedFiles, MarkdownFiles);
+
+                    //if (string.IsNullOrEmpty(Package.RootDirectory))
+                    //{
+                    //    Package.RootDirectory = CurrentPackageRootDirectories;
+                    //}
+
+                    builder.BuildRetainDirectory(Package, publishPath, CurrentPackageRootDirectories, updatedFiles, MarkdownFiles);
                     UploadState = PackageUploadHandle.State.Uploaded;
                 }
                 else
@@ -2692,11 +2771,11 @@ namespace Dynamo.PackageManager
         {
             if (!PackageContents.Any()) return null;
             if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1) {
-                // If there is only one root item, nest it under the new root package folder
+                // If there is only one root item, this root item becomes the new folder
                 var item = PackageContents.First(x => x.DependencyType.Equals(DependencyType.Folder));
                 
                 item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
-                item.AddChildren(new List<PackageItemRootViewModel> { PackageContents.First() } );
+                item.AddChildren( PackageContents.First().ChildItems.ToList() );
 
                 return item;
             }
@@ -2705,6 +2784,9 @@ namespace Dynamo.PackageManager
             var rootItem = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
             foreach(var item in PackageContents)
             {
+                // Skip 'bare' custom nodes, they will be represented by their CustomNodePreview counterparts
+                if(item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
+
                 item.isChild = true;
                 rootItem.AddChildren(item);
             }
@@ -2735,12 +2817,12 @@ namespace Dynamo.PackageManager
                     var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(docDir, fileName)));
                     docItemPreview.AddChildRecursively(doc);
                 }
-                else if (file.EndsWith(".dyf"))
+                else if (file.ToLower().EndsWith(".dyf"))
                 {
                     var dyfPreview = new PackageItemRootViewModel(fileName, Path.Combine(dyfDir, fileName));
                     dyfItemPreview.AddChildRecursively(dyfPreview);
                 }
-                else if (file.EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
+                else if (file.ToLower().EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
                 {
                     // Assemblies carry the information if they are NodeLibrary or not  
                     if(Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName))))
