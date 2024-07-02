@@ -742,6 +742,12 @@ Parameter name: {0}</value>
     <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
     <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
   </data>
+  <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
+    <value>{0} files and {1} folders will be created.</value>
+  </data>
+  <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
+    <value>{0} files and {1} folders loaded.</value>
+  </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored.</value>
   </data>

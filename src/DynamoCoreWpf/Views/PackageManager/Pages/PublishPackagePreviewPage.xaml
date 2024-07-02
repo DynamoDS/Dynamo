@@ -11,6 +11,7 @@
       xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
       d:DesignHeight="450" d:DesignWidth="800"
       UseLayoutRounding="True"
+      x:Name="PreviewPackagePage"
       Title="PublishPackagePreviewPage">
     <Page.Resources>
         <ResourceDictionary>
@@ -316,13 +317,24 @@
             <RowDefinition Height="28px" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+  
+
+        <!-- Info text -->
+        <TextBlock
+            Margin="5 5 20 5"
+            HorizontalAlignment="Left"
+            FontFamily="{StaticResource ArtifaktElementRegular}"
+            FontSize="10"
+            Foreground="#F5F5F5"
+            DataContext="{Binding ElementName=PreviewPackagePage}"
+            Text="{Binding FilesAndFoldersCounterPreview, UpdateSourceTrigger=PropertyChanged}"/>
 
         <local:CustomBrowserControl x:Name="customBrowserControl"
-                                    Grid.Column="0"
-                                    Grid.Row="1"
-                                    Loaded="customBrowserControl_Loaded"
-                                    Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                                    DisableRemove="True"/>
+                                Grid.Column="0"
+                                Grid.Row="1"
+                                Loaded="customBrowserControl_Loaded"
+                                Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                DisableRemove="True"/>
 
         <!--Files-->
         <DataGrid x:Name="rootContentsDataGrid"
