@@ -327,7 +327,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>());
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -347,7 +347,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>());
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -363,7 +363,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>());
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }
@@ -382,7 +382,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), true, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), true, handle, Enumerable.Empty<string>());
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }
@@ -409,7 +409,7 @@ namespace Dynamo.PackageManager.Tests
             var listOfEmptyEnumerables = Enumerable.Range(1, 5)
                                                    .Select(_ => Enumerable.Empty<string>());
 
-            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, true);
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>(), true);
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -431,7 +431,7 @@ namespace Dynamo.PackageManager.Tests
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
             var listOfEmptyEnumerables = Enumerable.Range(1, 5)
                                                    .Select(_ => Enumerable.Empty<string>());
-            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, true);
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>(), true);
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -449,7 +449,7 @@ namespace Dynamo.PackageManager.Tests
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
             var listOfEmptyEnumerables = Enumerable.Range(1, 5)
                                                    .Select(_ => Enumerable.Empty<string>());
-            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, true);
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>(), true);
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }
@@ -470,7 +470,7 @@ namespace Dynamo.PackageManager.Tests
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
             var listOfEmptyEnumerables = Enumerable.Range(1, 5)
                                                    .Select(_ => Enumerable.Empty<string>());
-            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), true, handle, true);
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), true, handle, Enumerable.Empty<string>(), true);
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }
