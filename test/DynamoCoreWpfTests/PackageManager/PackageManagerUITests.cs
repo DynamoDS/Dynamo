@@ -2218,7 +2218,7 @@ namespace DynamoCoreWpfTests.PackageManager
             // This makes sense as we don't want to try to establish 'common parent' for folders that maybe too far apart in a tree structure
             rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
             Assert.AreEqual(1, rootFolder.Count());
-            Assert.AreEqual(4, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());
+            Assert.AreEqual(3, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());  // the 'doc' folder + the 2 files inside of it
 
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(rootFolder.First()));
             Assert.IsFalse(vm.PackageContents.Any());
@@ -2321,8 +2321,8 @@ namespace DynamoCoreWpfTests.PackageManager
             var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
 
             // Assert
-            Assert.AreEqual(createdFiles.Count(), previewFiles.Count() + 1);
-            Assert.AreEqual(1, createdFolders.Count(), previewFolders.Count());  // One subfolder was created
+            Assert.AreEqual(createdFiles.Count(), previewFiles.Count());
+            Assert.AreEqual(0, createdFolders.Count());  // When single root, no nested folders should be created
 
             // Clean up
             Directory.Delete(publishPath, true);
@@ -2361,8 +2361,8 @@ namespace DynamoCoreWpfTests.PackageManager
             var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
 
             // Assert
-            Assert.AreEqual(createdFiles.Count(), previewFiles.Count() + 1);
-            Assert.AreEqual(1, createdFolders.Count(), previewFolders.Count());  // One subfolder was created
+            Assert.AreEqual(createdFiles.Count(), previewFiles.Count());
+            Assert.AreEqual(0, createdFolders.Count()); // When single root, no nested folders should be created
 
             // Clean up
             Directory.Delete(publishPath, true);

@@ -472,8 +472,8 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void CopyFilesIntoPackageDirectory_DoesNotMoveFilesAlreadyWithinDirectory()
         {
-            var files = new[] { @"C:\foo/dyf\file1.dyf", @"C:\\foo\dyf\file2.dyf", @"C:\\foo\dyf\file3.dyf",
-                @"C:\foo/bin\file1.dll", @"C:\\foo\bin\file2.dll", @"C:\\foo\bin\file3.dll",
+            var files = new[] { @"C:\foo/dyf\file1.dyf", @"C:\\foo\dyf\file2.DYF", @"C:\\foo\dyf\file3.dyf",
+                @"C:\foo/bin\file1.dll", @"C:\\foo\bin\file2.DLL", @"C:\\foo\bin\file3.dll",
                 @"C:\foo/extra\file1.pdf", @"C:\\foo\extra\file2.rvt", @"C:\\foo\extra\file3.poo", @"C:\\foo\doc\file1.md", @"C:\\foo\doc\file2.png" };
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn), (dn) => true);
@@ -495,6 +495,31 @@ namespace Dynamo.PackageManager.Tests
 
             // no files should be copied, they are all already within their intended directory
             Assert.IsEmpty(fs.CopiedFiles);
+        }
+
+        #endregion
+
+        #region DeleteDyfFilesDuringBuild
+        [Test]
+        public void BuildPackageDirectory_DeletesOriginalDyfFiles()
+        {
+            // This tests asserts that the initial custom definition files will be deleted in the build process 
+            var files = new[] { @"C:\pkg\file1.dyf", @"C:\pkg\file2.DYF" };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+
+            var fs = new RecordedFileSystem((fn) => files.Contains(fn));
+
+            var pr = new Mock<IPathRemapper>();
+            var db = new PackageDirectoryBuilder(fs, pr.Object);
+
+            var pkgsDir = @"C:\dynamopackages";
+
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+
+            var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
+
+            Assert.AreEqual(files.Length, fs.CopiedFiles.Count());
+            Assert.AreEqual(files.Length, fs.DeletedFiles.Count());
         }
 
         #endregion
