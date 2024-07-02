@@ -308,7 +308,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
            Tuple.Create("resources/search-icon-clear.svg",true)
         };
 
-        async void InitializeAsync()
+        async Task InitializeAsync()
         {
             if (initState == AsyncMethodState.NotStarted)
             {
@@ -482,7 +482,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         }
 
         //Changes the size of the font's library depending of the screen height
-        private async void SetLibraryFontSize()
+        private async Task SetLibraryFontSize()
         {
             //Gets the height of the primary monitor
             var height = SystemParameters.PrimaryScreenHeight;
@@ -506,7 +506,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
         }
 
-        private async void SetTooltipText()
+        private async Task SetTooltipText()
         {
             var jsonTooltipText = new { create = Resources.TooltipTextCreate, action = Resources.TooltipTextAction, query = Resources.TooltipTextQuery };
             var jsonString = JsonConvert.SerializeObject(jsonTooltipText);

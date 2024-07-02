@@ -20,6 +20,7 @@ using Microsoft.Web.WebView2.Wpf;
 using Dynamo.Utilities;
 using Dynamo.Configuration;
 using Dynamo.Models;
+using System.Threading.Tasks;
 
 namespace Dynamo.Notifications
 {
@@ -107,7 +108,7 @@ namespace Dynamo.Notifications
             }   
         }
 
-        private async void InitializeBrowserAsync(object sender, RoutedEventArgs e)
+        private void InitializeBrowserAsync(object sender, RoutedEventArgs e)
         {
             if (webBrowserUserDataFolder != null)
             {
@@ -119,16 +120,15 @@ namespace Dynamo.Notifications
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
 
-            try
+            initState = AsyncMethodState.Started;
+            notificationUIPopup.webView.Initialize(Log).ContinueWith((t) =>
             {
-                initState = AsyncMethodState.Started;
-                await notificationUIPopup.webView.Initialize(Log);
+                if (t.Exception != null)
+                {
+                    Log(t.Exception.Message);
+                }
                 initState = AsyncMethodState.Done;
-            }
-            catch(ObjectDisposedException ex)
-            {
-                Log(ex.Message);
-            }
+            });
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -319,7 +319,7 @@ namespace Dynamo.Notifications
             }
         }
 
-        private async void InvokeJS(string script)
+        private async Task InvokeJS(string script)
         {
             await notificationUIPopup.webView.CoreWebView2.ExecuteScriptAsync(script);
         }

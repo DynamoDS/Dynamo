@@ -72,7 +72,7 @@ namespace Dynamo.Logging
     /// </summary>
     internal class DynamoAnalyticsClient : IAnalyticsClient, IDisposable
     {
-        private readonly ManualResetEventSlim serviceInitialized = new ManualResetEventSlim(false);
+        private Task serviceInitialized;
         private readonly object trackEventLockObj = new object();
 
         /// <summary>
@@ -161,9 +161,8 @@ namespace Dynamo.Logging
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product, new UserInfo(Session.UserId), hostInfo, TimeSpan.FromMinutes(30));                
             }
-
-            serviceInitialized.Set();
         }
+
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
@@ -173,7 +172,7 @@ namespace Dynamo.Logging
             // Start Analytics service regardless of optin status.
             // Each track event will be enabled/disabled based on the corresponding optin status.
             // Ex. ADP will manage optin status internally
-            Task.Run(() => StartInternal());
+            serviceInitialized = Task.Run(() => StartInternal());
 
             TrackPreference("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
         }

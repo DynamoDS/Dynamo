@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
 using Autodesk.DesignScript.Runtime;
@@ -336,10 +337,20 @@ namespace Dynamo.UI.Views
                             String.Format("{0}.{1}", version.Major, version.Minor));
         }
 
-        protected override async void OnContentRendered(EventArgs e)
+        protected override void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
 
+            InitializeWebview2().ContinueWith((t) => {
+                if (t.Exception != null)
+                {
+                    Console.WriteLine(t.Exception.Message);
+                }
+            });
+        }
+
+        private async Task InitializeWebview2()
+        {
             string htmlString = string.Empty;
             string jsonString = string.Empty;
 
@@ -396,7 +407,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        internal async void SetBarProperties(string version, string loadingDescription, float barSize)
+        internal async Task SetBarProperties(string version, string loadingDescription, float barSize)
         {
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
             totalLoadingTime += elapsedTime;
@@ -407,7 +418,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        internal async void SetLoadingDone()
+        internal async Task SetLoadingDone()
         {
             if (webView?.CoreWebView2 != null)
             {
@@ -421,7 +432,7 @@ namespace Dynamo.UI.Views
         /// Set the import status on splash screen.
         /// </summary>
         /// <param name="importStatus"></param>
-        internal async void SetImportStatus(ImportStatus importStatus)
+        internal async Task SetImportStatus(ImportStatus importStatus)
         {
             string importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettings;
             string errorDescription = string.Empty;
@@ -452,7 +463,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Set the login status on splash screen.
         /// </summary>
-        internal async void SetSignInStatus(bool status)
+        internal async Task SetSignInStatus(bool status)
         {
             if (webView?.CoreWebView2 != null)
             {
@@ -464,7 +475,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Handle the login status changes on splash screen.
         /// </summary>
-        internal async void HandleSignInStatusChange(bool status)
+        internal async Task HandleSignInStatusChange(bool status)
         {
             if (webView?.CoreWebView2 != null)
             {
@@ -476,7 +487,7 @@ namespace Dynamo.UI.Views
         /// Enable or disable the SignIn button on splash screen.
         /// </summary>
         /// <param name="enabled"></param>
-        internal async void SetSignInEnable(bool enabled)
+        internal async Task SetSignInEnable(bool enabled)
         {
             if (webView?.CoreWebView2 != null)
             {
@@ -486,7 +497,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Setup the values for all labels on splash screen using resources
         /// </summary>
-        internal async void SetLabels()
+        internal async Task SetLabels()
         {
             if (webView.CoreWebView2 != null)
             {
