@@ -1353,9 +1353,7 @@ namespace Dynamo.PackageManager
 
             // Filter based on user preference
             // A package has dependencies if the number of direct_dependency_ids is more than 1
-            var initialResults = LastSync?.Select(x => new PackageManagerSearchElementViewModel(x,
-                                                   PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
-                                                   CanInstallPackage(x.Name), isEnabledForInstall));
+            var initialResults = LastSync?.Select(x => GetSearchElementViewModel(x));
             list = ApplyNonHostFilters(initialResults);
             list = ApplyHostFilters(list).ToList();
 
@@ -1491,14 +1489,30 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         private PackageManagerSearchElementViewModel GetViewModelForPackageSearchElement(string packageName)
         {
-            var result = SearchResults.Where(e => e.Name.Equals(packageName));
+            var result = PackageManagerClientViewModel.CachedPackageList.Where(e =>
+            {
+                if (e.Name.Equals(packageName))
+                {
+                    return true;
+                }
+                return false;
+            });
 
             if (!result.Any())
             {
                 return null;
             }
 
-            return result.ElementAt(0);
+            return GetSearchElementViewModel(result.ElementAt(0));
+        }
+
+        private PackageManagerSearchElementViewModel GetSearchElementViewModel(PackageManagerSearchElement package)
+        {
+            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
+            return new PackageManagerSearchElementViewModel(package,
+                PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                CanInstallPackage(package.Name),
+                isEnabledForInstall);
         }
 
         /// <summary>
