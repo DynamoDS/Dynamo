@@ -114,7 +114,7 @@ namespace Dynamo.PackageManager
         {
             foreach (var func in filePaths.Where(x => x.EndsWith(".dyf")))
             {
-                var remapLocation = dyfFiles.First(x =>
+                var remapLocation = dyfFiles.FirstOrDefault(x =>
                 {
                     var p1 = Path.GetFileName(Path.GetDirectoryName(x));
                     var f1 = Path.GetFileName(x);
@@ -126,7 +126,15 @@ namespace Dynamo.PackageManager
 
                     return r1.Equals(r2);
                 });
-                pathRemapper.SetPath(func, remapLocation);
+
+                // If no full path match is found, try to match based on filename only
+                if (remapLocation == null)
+                {
+                    remapLocation = dyfFiles.FirstOrDefault(x =>
+                        Path.GetFileName(x).Equals(Path.GetFileName(func), StringComparison.OrdinalIgnoreCase));
+                }
+
+                pathRemapper.SetPath(func, remapLocation);                
             }
         }
 

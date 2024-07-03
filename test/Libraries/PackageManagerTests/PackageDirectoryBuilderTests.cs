@@ -476,6 +476,48 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
         }
 
+
+        [Test]
+        public void BuildRetainPackageDirectory_CreatesCorrectSingleFolderStructure()
+        {
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\pkg\folder1\file1.dyf" }, new[] { @"C:\pkg\folder1\subfolder1\file2.dyf" } };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+            var fs = new RecordedFileSystem((fn) => files.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
+
+            var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
+
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
+
+            var rootDir = Path.Combine(pkgsDir, pkg.Name);
+
+            Assert.IsTrue(fs.CopiedFiles.Any(x => x.Item2.Equals(@"C:\dynamopackages\Foo\file1.dyf")));
+            Assert.IsTrue(fs.CopiedFiles.Any(x => x.Item2.Equals(@"C:\dynamopackages\Foo\subfolder1\file2.dyf")));
+        }
+
+
+
+        [Test]
+        public void BuildRetainPackageDirectory_CreatesCorrectMultipleFolderStructure()
+        {
+            var files = new List<IEnumerable<string>>() { new[] { @"C:\pkg\PackageTest\loc1\sub1\file1.dyf" }, new[] { @"C:\pkg\PackageTest2\loc1\file2.dyf" } };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+            var fs = new RecordedFileSystem((fn) => files.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
+
+            var pkgsDir = @"C:\dynamopackages";
+            var roots = new List<string> { @"C:\pkg\" };
+
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
+
+            var rootDir = Path.Combine(pkgsDir, pkg.Name);
+
+            Assert.IsTrue(fs.CopiedFiles.Any(x => x.Item2.Equals(@"C:\dynamopackages\Foo\PackageTest\loc1\sub1\file1.dyf")));
+            Assert.IsTrue(fs.CopiedFiles.Any(x => x.Item2.Equals(@"C:\dynamopackages\Foo\PackageTest2\loc1\file2.dyf")));
+        }
+
+
         #endregion
 
         #region CopyFilesIntoPackageDirectory
