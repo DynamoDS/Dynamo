@@ -228,6 +228,17 @@ namespace Dynamo.PackageManager
         {
             dyfFiles = new List<string>();
 
+            // Normalize roots to ensure consistent comparison
+            var normalizedRoots = roots.Select(r => Path.GetFullPath(r)).ToList();
+
+            // Determine if all files are under a single folder
+            var distinctFolders = contentFiles.SelectMany(f => f)
+                                              .Where(f => f != null)
+                                              .Select(f => f.Substring(normalizedRoots.First().Length).TrimStart(new char[] { '/', '\\' }))
+                                              .Select(rp => rp.Split(new char[] { '/', '\\' })[0])
+                                              .Distinct()
+                                              .Count();
+
             foreach (var files in contentFiles)
             {
                 foreach (var file in files.Where(x => x != null))
@@ -240,35 +251,31 @@ namespace Dynamo.PackageManager
 
                     string relativePath = "";
 
-                    foreach (var root in roots)
+                    foreach (var root in normalizedRoots)
                     {
-                        if (file.StartsWith(root))
+                        var normalizedFile = Path.GetFullPath(file);
+                        if (normalizedFile.StartsWith(root, StringComparison.OrdinalIgnoreCase))
                         {
-                            relativePath = file.Substring(root.Length);
-                            // If we have more than 1 root, than we need to nest into a new root folder
-                            // If we don't, and in order to preserve 1-to-1 folder structure, we remove the original root and replace with the package name
-                            if(roots.Count() == 1 && contentFiles.Any(f => f.Count() == 1))
-                            {
-                                relativePath = RemoveFirstFolder(relativePath);
-                            }
+                            relativePath = normalizedFile.Substring(root.Length);
+                            // Trim leading directory separators
+                            relativePath = relativePath.TrimStart(new char[] { '/', '\\' });
                         }
+                    }
+
+                    // If we have more than 1 root, then we need to nest into a new root folder
+                    // If we don't, and in order to preserve 1-to-1 folder structure, we remove the original root and replace with the package name
+                    if (normalizedRoots.Count() == 1 && distinctFolders == 1)
+                    {
+                        relativePath = RemoveFirstFolder(relativePath);
                     }
 
                     // Ensure the relative path starts with a directory separator.
                     if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
                     {
-                        relativePath = relativePath.TrimStart(new char[] { '/', '\\' });
                         relativePath = Path.DirectorySeparatorChar + relativePath;
                     }
 
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
-
-                    // We are already creating the pkg.json file ourselves, so skip it, also skip if we are copying the file to itself.
-                    // Should we stop creating the pkg.json on behalf of the user? If they are using this feature, they probably want to handle this as well
-                    //if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
-                    //{
-                    //    continue;
-                    //}
 
                     if (fileSystem.FileExists(destPath))
                     {

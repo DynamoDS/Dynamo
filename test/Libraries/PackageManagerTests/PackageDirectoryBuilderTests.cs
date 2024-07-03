@@ -352,7 +352,7 @@ namespace Dynamo.PackageManager.Tests
             var pkgsDir = @"C:\dynamopackages";
             var roots = new List<string> { @"C:\pkg\" };
 
-            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, files, markdownFiles);
 
             var mdDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.DocumentationDirectoryName);
 
