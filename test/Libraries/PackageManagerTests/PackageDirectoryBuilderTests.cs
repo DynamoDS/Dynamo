@@ -503,7 +503,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildPackageDirectory_DeletesOriginalDyfFiles()
         {
-            // This tests asserts that the initial custom definition files will be deleted in the build process 
+            // This tests asserts that the initial custom definition files won't be deleted in the build process 
             var files = new[] { @"C:\pkg\file1.dyf", @"C:\pkg\file2.DYF" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
 
@@ -519,7 +519,7 @@ namespace Dynamo.PackageManager.Tests
             var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
 
             Assert.AreEqual(files.Length, fs.CopiedFiles.Count());
-            Assert.AreEqual(files.Length, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count());
         }
 
         #endregion
