@@ -2741,6 +2741,7 @@ namespace Dynamo.PackageManager
                 }
             }
 
+            // Removes duplicate file names, retaining  only the first encounter file path for each unique file name
             files = files.GroupBy(file => Path.GetFileName(file), StringComparer.OrdinalIgnoreCase)
                          .Select(group => group.First()) 
                          .ToList();
