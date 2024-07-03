@@ -64,6 +64,14 @@ namespace Dynamo.PackageManager
             return rootDir;
         }
 
+        /// <summary>
+        ///     Attempts to recreate the file/folder structure from an existing data
+        /// </summary>
+        /// <param name="package">The package to be formed</param>
+        /// <param name="packagesDirectory">The parent directory (the published folder or the default packages directory)</param>
+        /// <param name="contentFiles">The collection of files to be moved</param>
+        /// <param name="markdownFiles">Separately provided markdown files</param>
+        /// <returns></returns>
         public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
         {
             
@@ -127,7 +135,7 @@ namespace Dynamo.PackageManager
         private void RemoveRetainDyfFiles(IEnumerable<string> filePaths, List<string> dyfFiles)
         {
             var dyfsToRemove = filePaths
-                .Where(x => x.EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != Path.GetDirectoryName(dyfFiles.First(f => Path.GetFileName(f).Equals(Path.GetFileName(x)))));
+                .Where(x => x.ToLower().EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != Path.GetDirectoryName(dyfFiles.First(f => Path.GetFileName(f).Equals(Path.GetFileName(x)))));
 
             foreach (var dyf in dyfsToRemove)
             {
@@ -138,7 +146,7 @@ namespace Dynamo.PackageManager
         private void RemoveDyfFiles(IEnumerable<string> filePaths, IDirectoryInfo dyfDir)
         {
             var dyfsToRemove = filePaths
-                .Where(x => x.EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != dyfDir.FullName);
+                .Where(x => x.ToLower().EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != dyfDir.FullName);
 
             foreach (var dyf in dyfsToRemove)
             {
@@ -227,7 +235,8 @@ namespace Dynamo.PackageManager
                         continue;
                     }
 
-                    var relativePath = file.Substring(sourcePackageDir.Length);
+                    // TODO: This will be properly fixed in the next PR
+                    var relativePath = sourcePackageDir != null ? file.Substring(sourcePackageDir.Length) : Path.GetFileName(file);
 
                     // Ensure the relative path starts with a directory separator.
                     if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
@@ -256,7 +265,7 @@ namespace Dynamo.PackageManager
 
                     fileSystem.CopyFile(file, destPath);
 
-                    if (file.EndsWith(".dyf"))
+                    if (file.ToLower().EndsWith(".dyf"))
                     {
                         dyfFiles.Add(destPath);
                     }
@@ -304,11 +313,11 @@ namespace Dynamo.PackageManager
                 {
                     targetFolder = docDirPath;
                 }
-                else if (file.EndsWith(".dyf"))
+                else if (file.ToLower().EndsWith(".dyf"))
                 {
                     targetFolder = dyfDirPath;
                 }
-                else if (file.EndsWith(".dll") || IsXmlDocFile(file, files) || IsDynamoCustomizationFile(file, files))
+                else if (file.ToLower().EndsWith(".dll") || IsXmlDocFile(file, files) || IsDynamoCustomizationFile(file, files))
                 {
                     targetFolder = binDirPath;
                 }
