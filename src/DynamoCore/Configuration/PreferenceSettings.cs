@@ -1061,9 +1061,10 @@ namespace Dynamo.Configuration
                     {
                         if (namespaces[index] == "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel")
                         {
-                            namespaces[index] = $"ProtoGeometry.dll:{typeof(Autodesk.DesignScript.Geometry.PanelSurface).FullName}";
+                            namespaces[index] = "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface";
                         }
                     }
+
                     fs.Close(); // Release file lock
                 }
             }
@@ -1188,7 +1189,7 @@ namespace Dynamo.Configuration
                 NamespacesToExcludeFromLibrary = new List<string>()
                 {
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
-                    $"ProtoGeometry.dll:{typeof(Autodesk.DesignScript.Geometry.PanelSurface).FullName}"
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface"
                 };  
                 NamespacesToExcludeFromLibrarySpecified = true;
             }

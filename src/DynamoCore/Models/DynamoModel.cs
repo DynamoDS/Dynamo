@@ -712,7 +712,7 @@ namespace Dynamo.Models
             //If network traffic is disabled, analytics should also be disabled - this is already done in
             //our other entry points(CLI,Sandbox etc) - but
             //not all integrators will use those entry points, some may just create a DynamoModel directly.
-            Analytics.DisableAnalytics = NoNetworkMode || Analytics.DisableAnalytics;
+            Analytics.DisableAnalytics = NoNetworkMode || Analytics.DisableAnalytics || IsServiceMode;
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client for web traffic reason.
@@ -798,51 +798,52 @@ namespace Dynamo.Models
             var userCommonPackageFolder = pathManager.CommonPackageDirectory;
             AddPackagePath(userCommonPackageFolder);
 
-            // Load Python Template
-            // The loading pattern is conducted in the following order
-            // 1) Set from DynamoSettings.XML
-            // 2) Set from API via the configuration file
-            // 3) Set from PythonTemplate.py located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
-            // 4) Set from OOTB hard-coded default template
+                // Load Python Template
+                // The loading pattern is conducted in the following order
+                // 1) Set from DynamoSettings.XML
+                // 2) Set from API via the configuration file
+                // 3) Set from PythonTemplate.py located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
+                // 4) Set from OOTB hard-coded default template
 
-            // If a custom python template path doesn't already exists in the DynamoSettings.xml
-            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
-            {
-                // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
-                // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
-                // while passing the config to the 'DynamoModel' constructor.
-                if (config is DefaultStartConfiguration)
+                // If a custom python template path doesn't already exists in the DynamoSettings.xml
+                if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) ||
+                    !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
                 {
-                    var configurationSettings = (DefaultStartConfiguration)config;
-                    var templatePath = configurationSettings.PythonTemplatePath;
-
-                    // If a custom python template path was set in the config apply that template
-                    if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
+                    // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
+                    // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
+                    // while passing the config to the 'DynamoModel' constructor.
+                    if (config is DefaultStartConfiguration)
                     {
-                        PreferenceSettings.PythonTemplateFilePath = templatePath;
+                        var configurationSettings = (DefaultStartConfiguration)config;
+                        var templatePath = configurationSettings.PythonTemplatePath;
+
+                        // If a custom python template path was set in the config apply that template
+                        if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
+                        {
+                            PreferenceSettings.PythonTemplateFilePath = templatePath;
                         Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + PreferenceSettings.PythonTemplateFilePath);
+                        }
+
+                        // Otherwise fallback to the default
+                        else
+                        {
+                            SetDefaultPythonTemplate();
+                        }
                     }
 
-                    // Otherwise fallback to the default
                     else
                     {
+                        // Fallback to the default
                         SetDefaultPythonTemplate();
                     }
                 }
 
                 else
                 {
-                    // Fallback to the default
-                    SetDefaultPythonTemplate();
+                    // A custom python template path already exists in the DynamoSettings.xml
+                    Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
                 }
-            }
-
-            else
-            {
-                // A custom python template path already exists in the DynamoSettings.xml
-                Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
-            }
-
+            
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
@@ -861,6 +862,7 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
+            //don't load linter manager in service mode.
             if (!IsServiceMode)
             {
                 LinterManager = new LinterManager(this.ExtensionManager);
@@ -975,18 +977,26 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
-            StartBackupFilesTimer();
+            if (!IsServiceMode)
+            {
+                StartBackupFilesTimer();
+            }
 
             TraceReconciliationProcessor = this;
 
             State = DynamoModelState.StartedUIless;
-            // Write index to disk only once
-            LuceneUtility.CommitWriterChanges();
+
+            if(!IsServiceMode)
+            {
+                // Write index to disk only once
+                LuceneUtility.CommitWriterChanges();
+            }
             //Disposed writer if it is in file system mode so that the index files can be used by other processes (potentially a second Dynamo session)
             if (LuceneUtility.startConfig.StorageType == LuceneSearchUtility.LuceneStorage.FILE_SYSTEM)
             {
-                LuceneUtility.DisposeWriter();
+                    LuceneUtility.DisposeWriter();
             }
+            
 
             GraphChecksumDictionary = new Dictionary<string, List<string>>();
                  

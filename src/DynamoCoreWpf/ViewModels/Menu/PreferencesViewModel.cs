@@ -1271,11 +1271,11 @@ namespace Dynamo.ViewModels
             get
             {
                 return !preferenceSettings.NamespacesToExcludeFromLibrary.Contains(
-                    $"ProtoGeometry.dll:{typeof(Autodesk.DesignScript.Geometry.PanelSurface).FullName}");
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface");
             }
             set
             {
-                HideUnhideNamespace(!value, "ProtoGeometry.dll", typeof(Autodesk.DesignScript.Geometry.PanelSurface).FullName);
+                HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.PanelSurface");
                 RaisePropertyChanged(nameof(EnablePanelingIsChecked));
             }
         }
