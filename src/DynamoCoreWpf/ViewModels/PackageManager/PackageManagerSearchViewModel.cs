@@ -652,9 +652,8 @@ namespace Dynamo.PackageManager
             var pkgs = PackageManagerClientViewModel.CachedPackageList.Where(x => x.Maintainers != null && x.Maintainers.Contains(name)).ToList();
             foreach(var pkg in pkgs)
             {
-                var p = new PackageManagerSearchElementViewModel(pkg,
-                                                                 PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
-                                                                 CanInstallPackage(pkg.Name));
+                var p = GetSearchElementViewModel(pkg, true);
+
                 p.RequestDownload += this.PackageOnExecuted;
                 p.RequestShowFileDialog += this.OnRequestShowFileDialog;
                 p.IsOnwer = true;
@@ -1503,12 +1502,18 @@ namespace Dynamo.PackageManager
                 return null;
             }
 
-            return GetSearchElementViewModel(result.ElementAt(0));
+            return GetSearchElementViewModel(result.FirstOrDefault());
         }
 
-        private PackageManagerSearchElementViewModel GetSearchElementViewModel(PackageManagerSearchElement package)
+        /// <summary>
+        ///    Returns a new PackageManagerSearchElementViewModel for the given package, with updated properties.
+        /// </summary>
+        /// <param name="package">Package to cast</param>
+        /// <param name="bypassCustomPackageLocations">When true, will bypass the check for loading package from custom locations.</param>
+        /// <returns></returns>
+        private PackageManagerSearchElementViewModel GetSearchElementViewModel(PackageManagerSearchElement package, bool bypassCustomPackageLocations = false)
         {
-            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
+            var isEnabledForInstall = bypassCustomPackageLocations || !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
             return new PackageManagerSearchElementViewModel(package,
                 PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                 CanInstallPackage(package.Name),
