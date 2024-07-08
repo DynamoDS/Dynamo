@@ -1488,14 +1488,7 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         private PackageManagerSearchElementViewModel GetViewModelForPackageSearchElement(string packageName)
         {
-            var result = PackageManagerClientViewModel.CachedPackageList.Where(e =>
-            {
-                if (e.Name.Equals(packageName))
-                {
-                    return true;
-                }
-                return false;
-            });
+            var result = PackageManagerClientViewModel.CachedPackageList.Where(e => e.Name.Equals(packageName));
 
             if (!result.Any())
             {
