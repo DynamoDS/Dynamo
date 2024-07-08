@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using DynamoUtilities.Properties;
 using Newtonsoft.Json.Linq;
@@ -64,6 +66,7 @@ namespace Dynamo.Utilities
             {
                 process.StandardInput.WriteLine(@"<<<<<Convert>>>>>");
                 process.StandardInput.WriteLine(mdPath);
+                EncodeMDContent(ref mdString);
                 process.StandardInput.WriteLine(mdString);
                 process.StandardInput.WriteLine(@"<<<<<Eod>>>>>");
             }
@@ -74,6 +77,37 @@ namespace Dynamo.Utilities
             }
 
             return GetData(processCommunicationTimeoutms);
+        }
+
+        private void EncodeMDContent(ref string mdContent)
+        {
+            //Encode to base64 due that the Tools / Md2Html console app is using a different encoding and special characters are lost when sending info to Stdio
+
+            //Get the MD file content and encode it
+            EncodeBase64(ref mdContent, @"#+\s[^\n]*\n(.*?)(?=\n##?\s|$)");
+
+            //Get the MD file headers and encode it
+            EncodeBase64(ref mdContent, @"#+\s(.*?\n)");
+        }
+
+        private void EncodeBase64(ref string mdContent, string regEx)
+        {
+            Regex rxExp = new Regex(regEx, RegexOptions.Singleline);
+            MatchCollection matches = rxExp.Matches(mdContent);
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count == 0) continue;
+
+                var UTF8Content = match.Groups[1].Value.Trim();
+
+                //When the line starts with ![ then means that the value is a image then we don't encode the content
+                if (!string.IsNullOrEmpty(UTF8Content) && !UTF8Content.StartsWith("!["))
+                {
+                    var UTF8ContentBytes = Encoding.UTF8.GetBytes(UTF8Content);
+                    var contentBase64String = Convert.ToBase64String(UTF8ContentBytes);
+                    mdContent = mdContent.Replace(UTF8Content, contentBase64String);                   
+                }
+            }                 
         }
 
         /// <summary>
