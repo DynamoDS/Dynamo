@@ -79,7 +79,7 @@ namespace Dynamo.Utilities
             return GetData(processCommunicationTimeoutms);
         }
 
-        private void EncodeMDContent(ref string mdContent)
+        internal static void EncodeMDContent(ref string mdContent)
         {
             //Encode to base64 due that the Tools / Md2Html console app is using a different encoding and special characters are lost when sending info to Stdio
 
@@ -95,7 +95,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="mdContent">MD file content read usually from the fallback_docs folder</param>
         /// <param name="regEx">Regular Expression that will be applied over the md content</param>
-        private void EncodeBase64(ref string mdContent, string regEx)
+        internal static void EncodeBase64(ref string mdContent, string regEx)
         {
             Regex rxExp = new Regex(regEx, RegexOptions.Singleline);
             MatchCollection matches = rxExp.Matches(mdContent);

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -991,6 +992,50 @@ namespace DynamoCoreWpfTests
 
                 // Assert
                 Assert.IsTrue(string.IsNullOrEmpty(output));
+            }
+        }
+
+        [Test]
+        [TestCase("en-US")]
+        [TestCase("cs-CZ")]
+        [TestCase("ko-KR")]
+        public void CheckThatExtendedCharactersAreCorrectlyInHTML(string language)
+        {
+            string mdFile = "Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.md";
+            string resource = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), language, "fallback_docs", mdFile);
+
+            Assert.True(File.Exists(resource), "The resource provided {0} doesn't exist in the path {1}", mdFile, resource);
+
+            // Arrange
+            var content = File.ReadAllText(resource, Encoding.UTF8);
+
+            using (var converter = new Md2Html())
+            {
+                // Act
+                var html = converter.ParseMd2Html(content, ExecutingDirectory);
+                var output = converter.SanitizeHtml(html);
+
+                // Assert
+                Assert.IsTrue(string.IsNullOrEmpty(output));
+
+                Regex rxExp = new Regex(@"#+\s[^\n]*\n(.*?)(?=\n##?\s|$)", RegexOptions.Singleline);
+
+                //Apply RegEx expression to the md file to getting the content without headers
+                MatchCollection matches = rxExp.Matches(content);
+                foreach (Match match in matches)
+                {
+                    if (match.Groups.Count == 0) continue;
+
+                    var UTF8Content = match.Groups[1].Value.Trim();
+
+                    //Discard the image due that inside the html is converted to <img .......
+                    if(!UTF8Content.StartsWith("![")) 
+                    {
+                        // Assert
+                        //Validates that the content of the md file is exactly the same that the one in the html file
+                        Assert.That(html.Contains(UTF8Content), "Part of the MD file content was not found in the HTML File");
+                    }                   
+                }
             }
         }
 
