@@ -90,6 +90,11 @@ namespace Dynamo.Utilities
             EncodeBase64(ref mdContent, @"#+\s(.*?\n)");
         }
 
+        /// <summary>
+        /// This method will apply the Regular Expression provided over the md content and then encode the md content to base64 
+        /// </summary>
+        /// <param name="mdContent">MD file content read usually from the fallback_docs folder</param>
+        /// <param name="regEx">Regular Expression that will be applied over the md content</param>
         private void EncodeBase64(ref string mdContent, string regEx)
         {
             Regex rxExp = new Regex(regEx, RegexOptions.Singleline);
@@ -108,6 +113,45 @@ namespace Dynamo.Utilities
                     mdContent = mdContent.Replace(UTF8Content, contentBase64String);                   
                 }
             }                 
+        }
+
+        internal static void DecodeHTMLContent(ref string htmlContent)
+        {
+            //Usually the response from Md2Html.exe are in the format <<<<< response >>>>> so we avoid decoding those strings
+            if (!htmlContent.Contains("<<<<<"))
+            {
+                //Decode HTML File paragraphs
+                DecodeBase64(ref htmlContent, @"<p>(.*?)</p>");
+
+                //Decode HTML File headers
+                DecodeBase64(ref htmlContent, @"<h2\s.*>(.*?)</h2>");
+            }
+        }
+
+        internal static void DecodeBase64(ref string htmlContent, string regExp)
+        {
+            if (!string.IsNullOrEmpty(htmlContent))
+            {
+                //TODO- missing to support other HTML tags
+                var Matches = Regex.Matches(htmlContent, regExp, RegexOptions.IgnoreCase);
+                string encodedString = string.Empty;
+                if (Matches.Count > 0)
+                {
+                    //Add validation is groups is null
+                    encodedString = Matches[0].Groups[1].Value;
+                    if (!string.IsNullOrEmpty(encodedString) && !encodedString.Trim().StartsWith("<img"))
+                    {
+                        //Due that in some cases there are nested tags inside <p> or <h2> and if the info is not encoded then it will send an exception so we will leave it as it is
+                        try
+                        {
+                            var base64Line = Convert.FromBase64String(encodedString);
+                            var decodedString = Encoding.UTF8.GetString(base64Line);
+                            htmlContent = htmlContent.Replace(encodedString, decodedString);
+                        }
+                        catch (Exception) { }
+                    }
+                }
+            }
         }
 
         /// <summary>

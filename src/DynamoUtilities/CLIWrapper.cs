@@ -125,7 +125,7 @@ namespace Dynamo.Utilities
                             else
                             {
                                 line = process.StandardOutput.ReadLine();
-                                DecodeHTMLContent(ref line);
+                                Md2Html.DecodeHTMLContent(ref line);
                             }
                             
                            
@@ -163,47 +163,6 @@ namespace Dynamo.Utilities
             //if the completed task was our read std out task, then return the data
             //else we timed out, so return an empty string.
             return completedTask == readStdOutTask ? readStdOutTask.Result : string.Empty;
-        }
-
-        private void DecodeHTMLContent(ref string htmlContent)
-        {
-            //Usually the response from Md2Html.exe are in the format <<<<< response >>>>> so we avoid decoding those strings
-            if (!htmlContent.Contains("<<<<<"))
-            {
-                //Decode HTML File paragraphs
-                DecodeBase64(ref htmlContent, @"<p>(.*?)</p>");
-
-                //Decode HTML File headers
-                DecodeBase64(ref htmlContent, @"<h2\s.*>(.*?)</h2>");
-            }
-        }
-
-        private void DecodeBase64(ref string htmlContent, string regExp)
-        {
-            if (!string.IsNullOrEmpty(htmlContent))
-            {
-                //TODO- missing to support other HTML tags
-                var Matches = Regex.Matches(htmlContent, regExp, RegexOptions.IgnoreCase);
-                string encodedString = string.Empty;
-                if (Matches.Count > 0)
-                {
-                    //Add validation is groups is null
-                    encodedString = Matches[0].Groups[1].Value;
-                    if (!string.IsNullOrEmpty(encodedString) && !encodedString.Trim().StartsWith("<img"))
-                    {
-                        //Due that in some cases there are nested tags inside <p> or <h2> and if the info is not encoded then it will send an exception so we will leave it as it is
-                        try
-                        {
-                            var base64Line = Convert.FromBase64String(encodedString);
-                            var decodedString = Encoding.UTF8.GetString(base64Line);
-                            htmlContent = htmlContent.Replace(encodedString, decodedString);
-                        }
-                        catch (Exception ex)
-                        {
-                        }
-                    }
-                }                            
-            }
         }
 
         protected void RaiseMessageLogged(string message)
