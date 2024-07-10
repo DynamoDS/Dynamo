@@ -1001,8 +1001,9 @@ namespace DynamoCoreWpfTests
         [TestCase("ko-KR")]
         public void CheckThatExtendedCharactersAreCorrectlyInHTML(string language)
         {
+            var testDirectory = GetTestDirectory(ExecutingDirectory);
             string mdFile = "Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.md";
-            string resource = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), language, "fallback_docs", mdFile);
+            string resource = Path.Combine(testDirectory, "Tools", "docGeneratorTestFiles", "fallback_docs", language, mdFile);
 
             Assert.True(File.Exists(resource), "The resource provided {0} doesn't exist in the path {1}", mdFile, resource);
 
@@ -1056,6 +1057,12 @@ namespace DynamoCoreWpfTests
             var docsDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"src\DocumentationBrowserViewExtension\Docs");
 
             return Directory.GetFiles(docsDirectory, wildcard);
+        }
+
+        public static string GetTestDirectory(string executingDirectory)
+        {
+            var directory = new DirectoryInfo(executingDirectory);
+            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
         }
 
         #endregion
