@@ -2,7 +2,7 @@
   "Uuid": "ff205ac3-d314-4c24-b8d1-ec0f3dfbf011",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "DataInput",
+  "Name": "CoreNodeModels.DefineData",
   "ElementResolver": {
     "ResolutionMap": {
       "Point": {
@@ -21,7 +21,7 @@
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "9b30fc26c18e4819a7a5341cccb36f3e",
+          "Id": "be6f8b38220c46818aeb8d95b2b9bdd8",
           "Name": "",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
@@ -30,7 +30,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "b30bed9bad604a6ea2f8205a7e004c7c",
+          "Id": "e7a8faff27244b4ab8e6182392f5a6bd",
           "Name": "",
           "Description": "Value of expression at line 2",
           "UsingDefaultValue": false,
@@ -39,7 +39,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "2e60244c94b5438fb842b3073850da08",
+          "Id": "de923e0cef924085b6f336f244546117",
           "Name": "",
           "Description": "Value of expression at line 3",
           "UsingDefaultValue": false,
@@ -48,7 +48,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "b42b8ba327964cbca39d468cdf28fa52",
+          "Id": "35a2b86a50b0434a9b93e858b571073d",
           "Name": "",
           "Description": "Value of expression at line 4",
           "UsingDefaultValue": false,
@@ -57,7 +57,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "704fbc82904648679ad503a1c72ededb",
+          "Id": "4da3faefa1194bc181ff15387f55839e",
           "Name": "",
           "Description": "Value of expression at line 5",
           "UsingDefaultValue": false,
@@ -66,7 +66,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "be37aef4ed8e413a94b1535213282bd9",
+          "Id": "0ab88c05f96545a585b789414b281ceb",
           "Name": "",
           "Description": "Value of expression at line 6",
           "UsingDefaultValue": false,
@@ -77,13 +77,14 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "\"The quick brown fox jumps over the lazy dog\";\n1;\n21.1;\nfalse;\nPoint.ByCoordinates(0,0,0);\n[1,2,3,4,5];"
+      "Code": "21.1;\n\"The quick brown fox jumps over the lazy dog\";\n[1,2,3,4,5];\n1;\nfalse;\nPoint.ByCoordinates(0,0,0);"
     },
     {
       "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
       "IsAutoMode": false,
       "IsList": false,
       "DisplayValue": "Number",
+      "InputValue": "",
       "SelectedIndex": 15,
       "SelectedString": "Number",
       "Id": "341b49997a5740cfa4470fda4c145392",
@@ -92,7 +93,7 @@
         {
           "Id": "ce9252aa515a489790b48664611de307",
           "Name": ">",
-          "Description": "Input data to be validated",
+          "Description": "Input data to be validated. Refer to drop-down for list of allowed types",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -103,7 +104,7 @@
         {
           "Id": "1260ee19254c45848bbbd43331b8e790",
           "Name": ">",
-          "Description": "Data if validation is successful",
+          "Description": "Validated data",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -111,13 +112,14 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Validates and returns data from a currently or previously connected node"
+      "Description": "Validates the data type of an input and returns it"
     },
     {
       "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
       "IsAutoMode": true,
       "IsList": true,
       "DisplayValue": "Integer",
+      "InputValue": "",
       "SelectedIndex": 16,
       "SelectedString": "Integer",
       "Id": "b0263a5695eb46bea670edba50703bbd",
@@ -126,7 +128,7 @@
         {
           "Id": "53fc0ceb63c64b53807f6aa6cdca79ec",
           "Name": ">",
-          "Description": "Input data to be validated",
+          "Description": "Input data to be validated. Refer to drop-down for list of allowed types",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -137,7 +139,7 @@
         {
           "Id": "5c2b05f6b2b54795bd50642d1d8232cd",
           "Name": ">",
-          "Description": "Data if validation is successful",
+          "Description": "Validated data",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -145,13 +147,14 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Validates and returns data from a currently or previously connected node"
+      "Description": "Validates the data type of an input and returns it"
     },
     {
       "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
       "IsAutoMode": false,
       "IsList": false,
       "DisplayValue": "Number",
+      "InputValue": "",
       "SelectedIndex": 15,
       "SelectedString": "Number",
       "Id": "a4116564c3564028a6461282b498d62e",
@@ -160,7 +163,7 @@
         {
           "Id": "d507fd9590e242ccb8c1b6347b350bd2",
           "Name": ">",
-          "Description": "Input data to be validated",
+          "Description": "Input data to be validated. Refer to drop-down for list of allowed types",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -171,7 +174,7 @@
         {
           "Id": "b8a74f4ba05342e99e2aca0f5a11d4db",
           "Name": ">",
-          "Description": "The selected >",
+          "Description": "Validated data",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -179,26 +182,26 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Validates and returns data from a currently or previously connected node"
+      "Description": "Validates the data type of an input and returns it"
     }
   ],
   "Connectors": [
     {
-      "Start": "9b30fc26c18e4819a7a5341cccb36f3e",
+      "Start": "be6f8b38220c46818aeb8d95b2b9bdd8",
       "End": "ce9252aa515a489790b48664611de307",
-      "Id": "4ec42a40e52a47e793b3f2c58f5efa41",
+      "Id": "ba4b20fb0e614f158437f37659d81619",
       "IsHidden": "False"
     },
     {
-      "Start": "2e60244c94b5438fb842b3073850da08",
+      "Start": "e7a8faff27244b4ab8e6182392f5a6bd",
       "End": "d507fd9590e242ccb8c1b6347b350bd2",
-      "Id": "1184bb5532c44f59adbd67e7a42f3d67",
+      "Id": "8fed5c7c787d48ee932c4544a68f7b50",
       "IsHidden": "False"
     },
     {
-      "Start": "be37aef4ed8e413a94b1535213282bd9",
+      "Start": "de923e0cef924085b6f336f244546117",
       "End": "53fc0ceb63c64b53807f6aa6cdca79ec",
-      "Id": "3e7415930d584f95bd4fe9d92f9c71f0",
+      "Id": "9eb94470bcc14dedbae46ff70467e3c8",
       "IsHidden": "False"
     }
   ],
@@ -212,6 +215,12 @@
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
       "Name": "Properties",
       "Version": "3.1",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "8.0",
       "Data": {}
     }
   ],
@@ -228,7 +237,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.1.0.3411",
+      "Version": "3.2.1.5376",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -253,8 +262,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": -89.08466029404468,
-        "Y": 164.48711803028766
+        "X": -103.16224608671752,
+        "Y": 89.40666046936587
       },
       {
         "Id": "341b49997a5740cfa4470fda4c145392",
@@ -263,8 +272,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 504.79869346839416,
-        "Y": 62.116295816353556
+        "X": 506.1394159248392,
+        "Y": -159.77327072529906
       },
       {
         "Id": "b0263a5695eb46bea670edba50703bbd",
@@ -283,15 +292,15 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 503.5451066974623,
-        "Y": -146.65588355581608
+        "X": 505.55619038213,
+        "Y": 60.485735964941114
       }
     ],
     "Annotations": [
       {
         "Id": "0ca2413e63fe4db79a09078c5ede2480",
-        "Title": "Automatic validation is locked",
-        "DescriptionText": "when in this mode, the node only accepts valid data.",
+        "Title": "Auto-detect mode is off",
+        "DescriptionText": "The node warns if data doesn't match the type set.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -300,20 +309,20 @@
           "a4116564c3564028a6461282b498d62e"
         ],
         "HasNestedGroups": false,
-        "Left": 493.5451066974623,
-        "Top": -262.6558835558161,
-        "Width": 359.25358677093186,
-        "Height": 491.77217937216966,
+        "Left": 495.55619038213,
+        "Top": -276.4399373919657,
+        "Width": 398.5832255427092,
+        "Height": 569.2590066902402,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
-        "InitialTop": -146.65588355581608,
-        "InitialHeight": 351.8500604167258,
-        "TextblockHeight": 106.0,
+        "InitialTop": -159.77327072529906,
+        "InitialHeight": 353.7721793721696,
+        "TextblockHeight": 106.66666666666667,
         "Background": "#FFC1D676"
       },
       {
         "Id": "bd2fd81958024114a3437c340f1b0135",
-        "Title": "Automatic validation is unlocked",
+        "Title": "Auto-detect mode is on",
         "DescriptionText": "The node will automatically set the matching data type.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -323,19 +332,19 @@
         ],
         "HasNestedGroups": false,
         "Left": 498.6923454366158,
-        "Top": 300.6206473722925,
-        "Width": 358.0,
-        "Height": 271.0,
+        "Top": 299.95398070562584,
+        "Width": 398.0,
+        "Height": 337.00000000000006,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 416.6206473722925,
-        "InitialHeight": 185.0,
-        "TextblockHeight": 106.0,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 106.66666666666667,
         "Background": "#FFC1D676"
       }
     ],
-    "X": 258.29615881197935,
-    "Y": 328.38191913885566,
+    "X": 268.29615881197935,
+    "Y": 427.71525247218904,
     "Zoom": 0.994488700419556
   }
 }
