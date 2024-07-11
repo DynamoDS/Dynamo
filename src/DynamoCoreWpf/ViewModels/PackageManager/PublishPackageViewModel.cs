@@ -2362,12 +2362,6 @@ namespace Dynamo.PackageManager
                     var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
                         DynamoModel.IsTestMode);
                     var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
-
-                    //if (string.IsNullOrEmpty(Package.RootDirectory))
-                    //{
-                    //    Package.RootDirectory = CurrentPackageRootDirectories;
-                    //}
-
                     builder.BuildRetainDirectory(Package, publishPath, CurrentPackageRootDirectories, updatedFiles, MarkdownFiles);
                     UploadState = PackageUploadHandle.State.Uploaded;
                 }

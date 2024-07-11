@@ -104,7 +104,6 @@ namespace Dynamo.PackageManager
                 BuildAndZip(package, packagesDirectory, roots, files, markdownFiles, handle).Name);
         }
 
-
         /// <summary>
         /// [Obsolete] Build a new package and upload retaining folder structure 
         /// </summary>
