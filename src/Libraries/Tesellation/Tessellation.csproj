@@ -56,7 +56,7 @@
   <Target Name="CopyFiles" BeforeTargets="Build">
     <Copy SourceFiles="$(ProjectDir)Tessellation_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
-  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" $(RuntimeIdentifier.Contains('win')) ">
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)TessellationImages.resx" OutputResources="$(ProjectDir)TessellationImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)TessellationImages.resources" OutputAssembly="$(OutDir)Tessellation.customization.dll" Version="%(AssemblyInfo.Version)" />

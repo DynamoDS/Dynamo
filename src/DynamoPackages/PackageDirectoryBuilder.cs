@@ -33,7 +33,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="fileSystem">For moving files around</param>
         /// <param name="pathRemapper">For modifying custom node paths</param>
-        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper) 
+        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.pathRemapper = pathRemapper ?? throw new ArgumentNullException(nameof(pathRemapper));
@@ -57,7 +57,7 @@ namespace Dynamo.PackageManager
             WritePackageHeader(package, rootDir);
             RemoveUnselectedFiles(contentFiles, rootDir);
             CopyFilesIntoPackageDirectory(contentFiles, markdownFiles, dyfDir, binDir, extraDir, docDir);
-            RemoveDyfFiles(contentFiles, dyfDir); 
+            RemoveDyfFiles(contentFiles, dyfDir);
 
             RemapCustomNodeFilePaths(contentFiles, dyfDir.FullName);
 
@@ -69,13 +69,12 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="package">The package to be formed</param>
         /// <param name="packagesDirectory">The parent directory (the published folder or the default packages directory)</param>
-        /// <param name="roots">All possible root folders for this collection of contentFiles</param>
         /// <param name="contentFiles">The collection of files to be moved</param>
         /// <param name="markdownFiles">Separately provided markdown files</param>
         /// <returns></returns>
-        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
+        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
         {
-            
+
             var rootPath = Path.Combine(packagesDirectory, package.Name);
             var rootDir = fileSystem.TryCreateDirectory(rootPath);
             package.RootDirectory = rootDir.FullName;
@@ -84,7 +83,7 @@ namespace Dynamo.PackageManager
 
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, roots, rootDir, out dyfFiles);
-            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
+            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
 
             WritePackageHeader(package, rootDir);
@@ -172,9 +171,9 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void FormPackageDirectory(string packageDirectory, string packageName, 
-            out IDirectoryInfo root, out IDirectoryInfo dyfDir, 
-            out IDirectoryInfo binDir, out IDirectoryInfo extraDir, 
+        private void FormPackageDirectory(string packageDirectory, string packageName,
+            out IDirectoryInfo root, out IDirectoryInfo dyfDir,
+            out IDirectoryInfo binDir, out IDirectoryInfo extraDir,
             out IDirectoryInfo docDir)
         {
             var rootPath = Path.Combine(packageDirectory, packageName);
@@ -238,21 +237,8 @@ namespace Dynamo.PackageManager
                         continue;
                     }
 
-                    string relativePath = "";
-
-                    foreach (var root in roots)
-                    {
-                        if (file.StartsWith(root))
-                        {
-                            relativePath = file.Substring(root.Length);
-                            // If we have more than 1 root, than we need to nest into a new root folder
-                            // If we don't, and in order to preserve 1-to-1 folder structure, we remove the original root and replace with the package name
-                            if(roots.Count() == 1 && contentFiles.Any(f => f.Count() == 1))
-                            {
-                                relativePath = RemoveFirstFolder(relativePath);
-                            }
-                        }
-                    }
+                    // TODO: This will be properly fixed in the next PR
+                    var relativePath = sourcePackageDir != null ? file.Substring(sourcePackageDir.Length) : Path.GetFileName(file);
 
                     // Ensure the relative path starts with a directory separator.
                     if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
@@ -277,7 +263,7 @@ namespace Dynamo.PackageManager
 
                     if (!Directory.Exists(Path.GetDirectoryName(destPath)))
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(destPath)); 
+                        Directory.CreateDirectory(Path.GetDirectoryName(destPath));
                     }
 
                     fileSystem.CopyFile(file, destPath);
@@ -313,7 +299,7 @@ namespace Dynamo.PackageManager
             var parts = path.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length > 1) return "\\" + String.Join("\\", parts, 1, parts.Length - 1);
-           
+
             return "\\" + parts[0];
         }
 
@@ -385,7 +371,7 @@ namespace Dynamo.PackageManager
         #endregion
 
         #region Public Static Utility Methods 
-        
+
         public static bool IsXmlDocFile(string path, IEnumerable<string> files)
         {
             if (!path.ToLower().EndsWith(".xml")) return false;

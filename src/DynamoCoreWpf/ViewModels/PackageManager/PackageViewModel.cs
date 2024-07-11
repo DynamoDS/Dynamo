@@ -22,6 +22,7 @@ namespace Dynamo.ViewModels
         private readonly DynamoViewModel dynamoViewModel;
         private readonly PackageManagerClient packageManagerClient;
         private readonly DynamoModel dynamoModel;
+        private readonly PackageManagerClientViewModel packageManagerClientViewModel;
 
         public Package Model { get; private set; }
 
@@ -172,6 +173,7 @@ namespace Dynamo.ViewModels
         {
             this.dynamoViewModel = dynamoViewModel;
             this.dynamoModel = dynamoViewModel.Model;
+            this.packageManagerClientViewModel = dynamoViewModel.PackageManagerClientViewModel;
 
             var pmExtension = dynamoModel.GetPackageManagerExtension();
             this.packageManagerClient = pmExtension.PackageManagerClient;
@@ -182,7 +184,7 @@ namespace Dynamo.ViewModels
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
-            DeprecateCommand = new DelegateCommand(Deprecate, IsOwner);
+            DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
             GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, () => true);
 
@@ -408,6 +410,13 @@ namespace Dynamo.ViewModels
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
         }
 
+        private bool CanDeprecate()
+        {
+            var isDeprecated = IsPackageDeprecated(Model.Name);
+
+            return IsOwner() && !isDeprecated;
+        }
+
         private void Undeprecate()
         {
             var res = MessageBoxService.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
@@ -419,8 +428,9 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            if (!CanPublish) return false;
-            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
+            var isDeprecated = IsPackageDeprecated(Model.Name);
+
+            return IsOwner() && isDeprecated;
         }
 
         private void PublishNewPackageVersion()
@@ -454,6 +464,20 @@ namespace Dynamo.ViewModels
             });
 
             termsOfUseCheck.Execute(false);
+        }
+
+        private PackageManagerSearchElement GetPackageVersionInformationFromCached(string packageName)
+        {
+            var package = this.packageManagerClientViewModel.CachedPackageList.FirstOrDefault(x => x.Name == packageName);
+
+            return package;
+        }
+
+        private bool IsPackageDeprecated(string packageName)
+        {
+            var package = GetPackageVersionInformationFromCached(packageName);
+
+            return package != null ? package.IsDeprecated : false;
         }
     }
 }
