@@ -22,6 +22,7 @@ namespace Dynamo.ViewModels
         private readonly DynamoViewModel dynamoViewModel;
         private readonly PackageManagerClient packageManagerClient;
         private readonly DynamoModel dynamoModel;
+        private readonly PackageManagerClientViewModel packageManagerClientViewModel;
 
         public Package Model { get; private set; }
 
@@ -172,6 +173,7 @@ namespace Dynamo.ViewModels
         {
             this.dynamoViewModel = dynamoViewModel;
             this.dynamoModel = dynamoViewModel.Model;
+            this.packageManagerClientViewModel = dynamoViewModel.PackageManagerClientViewModel;
 
             var pmExtension = dynamoModel.GetPackageManagerExtension();
             this.packageManagerClient = pmExtension.PackageManagerClient;
@@ -410,10 +412,9 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            var packageInfo = new PackageInfo(Model.Name, Version.Parse(Model.VersionName));
-            var packageHeader = this.packageManagerClient.GetPackageHeader(packageInfo);
+            var isDeprecated = IsPackageDeprecated(Model.Name);
 
-            return IsOwner() && !packageHeader.deprecated;
+            return IsOwner() && !isDeprecated;
         }
 
         private void Undeprecate()
@@ -427,10 +428,9 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            var packageInfo = new PackageInfo(Model.Name, Version.Parse(Model.VersionName));
-            var packageHeader = this.packageManagerClient.GetPackageHeader(packageInfo);
+            var isDeprecated = IsPackageDeprecated(Model.Name);
 
-            return IsOwner() && packageHeader.deprecated;
+            return IsOwner() && isDeprecated;
         }
 
         private void PublishNewPackageVersion()
@@ -464,6 +464,20 @@ namespace Dynamo.ViewModels
             });
 
             termsOfUseCheck.Execute(false);
+        }
+
+        private PackageManagerSearchElement GetPackageVersionInformationFromCached(string packageName)
+        {
+            var package = this.packageManagerClientViewModel.CachedPackageList.FirstOrDefault(x => x.Name == packageName);
+
+            return package;
+        }
+
+        private bool IsPackageDeprecated(string packageName)
+        {
+            var package = GetPackageVersionInformationFromCached(packageName);
+
+            return package != null ? package.IsDeprecated : false;
         }
     }
 }
