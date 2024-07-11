@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Dynamo.Utilities
@@ -37,7 +38,8 @@ namespace Dynamo.Utilities
                 RedirectStandardOutput = true,
                 RedirectStandardInput = true,
                 RedirectStandardError = true,
-
+                StandardInputEncoding = Encoding.UTF8,
+                StandardOutputEncoding = Encoding.UTF8,
                 UseShellExecute = false,
                 Arguments = argString,
                 FileName = GetToolPath(relativeEXEPath)
