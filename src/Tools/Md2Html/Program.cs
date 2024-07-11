@@ -24,16 +24,15 @@ namespace Md2Html
             try
             {
                 Console.WriteLine("");
-
                 while (true)
                 {
                     var line = Console.ReadLine();
-                    if (line == @"<<<<<Sanitize>>>>>")
+                    if (line.Contains(@"<<<<<Sanitize>>>>>"))
                     {
                         Console.WriteLine(@"<<<<<Sod>>>>>");
                         Sanitize();
                     }
-                    else if (line == @"<<<<<Convert>>>>>")
+                    else if (line.Contains(@"<<<<<Convert>>>>>"))
                     {
                         Console.WriteLine(@"<<<<<Sod>>>>>");
                         Convert();

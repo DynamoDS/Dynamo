@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Platforms>AnyCPU;NET_Linux;</Platforms>
+    <Platforms>AnyCPU;NET_Linux;Publish_Linux;</Platforms>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformTarget >x64</PlatformTarget>
@@ -61,6 +61,10 @@
     <TargetFramework>$(TargetFramework)-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('Publish')) AND '$(TestProject)' == 'true' " >
+    <!--When under the Publish_ config, forces all test projects to not copy any dependencies into the output path-->
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <PropertyGroup>
     <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
