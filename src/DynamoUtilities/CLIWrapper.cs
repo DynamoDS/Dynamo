@@ -39,7 +39,8 @@ namespace Dynamo.Utilities
                 RedirectStandardOutput = true,
                 RedirectStandardInput = true,
                 RedirectStandardError = true,
-
+                StandardInputEncoding = Encoding.UTF8,
+                StandardOutputEncoding = Encoding.UTF8,
                 UseShellExecute = false,
                 Arguments = argString,
                 FileName = GetToolPath(relativeEXEPath)
@@ -125,7 +126,6 @@ namespace Dynamo.Utilities
                             else
                             {
                                 line = process.StandardOutput.ReadLine();
-                                Md2Html.DecodeHTMLContent(ref line);
                             }
                             
                            
