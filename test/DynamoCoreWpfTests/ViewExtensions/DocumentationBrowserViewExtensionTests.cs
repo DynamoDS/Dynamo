@@ -1033,8 +1033,18 @@ namespace DynamoCoreWpfTests
                     if(!UTF8Content.StartsWith("![")) 
                     {
                         // Assert
-                        //Validates that the content of the md file is exactly the same that the one in the html file
-                        Assert.That(html.Contains(UTF8Content), "Part of the MD file content was not found in the HTML File");
+                        //Clean the content to remove characters also removed by the Md2Html.exe tool
+                        var cleanedContent = UTF8Content.Replace("___", string.Empty).Trim();
+
+                        //Apply a Regular Expresion in the HTML file for getting the first <p> 
+                        Match m = Regex.Match(html, "<p>(.+?)<\\/p>", RegexOptions.IgnoreCase);
+                        string specificHTMLContent = string.Empty;
+                        if (m.Success)
+                        {
+                            specificHTMLContent = m.Groups[1].Value; 
+                        }
+
+                        Assert.IsTrue(specificHTMLContent == cleanedContent, "Part of the MD file content was not found in the HTML File");
                     }                   
                 }
             }
