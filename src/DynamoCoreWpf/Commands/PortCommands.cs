@@ -1,4 +1,4 @@
-﻿using Dynamo.UI.Commands;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -32,7 +32,7 @@ namespace Dynamo.ViewModels
             get
             {
                 if (autoCompleteCommand == null)
-                    autoCompleteCommand = new DelegateCommand(AutoComplete, CanAutoComplete);
+                    autoCompleteCommand = new DelegateCommand(AutoCompleteCluster, CanAutoComplete);
 
                 return autoCompleteCommand;
             }
