@@ -12,6 +12,10 @@ namespace Dynamo.PackageManager
     {
         IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownfiles);
         IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles);
+
+        [Obsolete]
+        IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles);
+
     }
 
     /// <summary>
@@ -85,6 +89,35 @@ namespace Dynamo.PackageManager
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, roots, rootDir, out dyfFiles);
             RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
+            RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
+
+            WritePackageHeader(package, rootDir);
+
+            return rootDir;
+        }
+
+        /// <summary>
+        /// [Obsolete] Attempts to recreate the file/folder structure from an existing data
+        /// </summary>
+        /// <param name="package">The package to be formed</param>
+        /// <param name="packagesDirectory">The parent directory (the published folder or the default packages directory)</param>
+        /// <param name="contentFiles">The collection of files to be moved</param>
+        /// <param name="markdownFiles">Separately provided markdown files</param>
+        /// <returns></returns>
+        [Obsolete]
+        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
+        {
+
+            var rootPath = Path.Combine(packagesDirectory, package.Name);
+            var rootDir = fileSystem.TryCreateDirectory(rootPath);
+            var sourcePackageDir = package.RootDirectory;
+            package.RootDirectory = rootDir.FullName;
+
+            var dyfFiles = new List<string>();
+
+            RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
+            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, sourcePackageDir, rootDir, out dyfFiles);
+            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
 
             WritePackageHeader(package, rootDir);
@@ -228,6 +261,17 @@ namespace Dynamo.PackageManager
             fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 
+        /// <summary>
+        ///     Copies content and markdown files into a retained package directory, normalizing paths and maintaining directory structure.
+        /// We use the 'roots' collection as a guide to the folders we expect to find in the root directory of the package.
+        /// Based on that, we either want to nest inside a new package folder (if more than 2 root folders are found)
+        /// or if just 1 root folder is found, then use that as the new package folder
+        /// </summary>
+        /// <param name="contentFiles">A collection of collections of content file paths to be copied.</param>
+        /// <param name="markdownFiles">A collection of markdown file paths to be copied.</param>
+        /// <param name="roots">A collection of root directories to normalize file paths against.</param>
+        /// <param name="rootDir">The root directory into which the files will be copied.</param>
+        /// <param name="dyfFiles">An output list of paths to .dyf files that were copied.</param>
         internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles,
                                                             IEnumerable<string> markdownFiles,
                                                             IEnumerable<string> roots,
@@ -305,7 +349,6 @@ namespace Dynamo.PackageManager
             }
 
 
-
             // All files under Markdown directory do not apply to the rule above,
             // because they may fall into extra folder instead of docs folder,
             // currently there is on obvious way to filter them properly only based on path string.
@@ -332,6 +375,92 @@ namespace Dynamo.PackageManager
             return "\\" + parts[0];
         }
 
+        /// <summary>
+        /// [Obsolete] Copies content and markdown files into a retained package directory, 
+        /// maintaining directory structure and handling specific cases like .dyf files and markdown files.
+        /// </summary>
+        /// <param name="contentFiles">A collection of collections of content file paths to be copied.</param>
+        /// <param name="markdownFiles">A collection of markdown file paths to be copied.</param>
+        /// <param name="sourcePackageDir">The source directory of the package files.</param>
+        /// <param name="rootDir">The root directory into which the files will be copied.</param>
+        /// <param name="dyfFiles">An output list of paths to .dyf files that were copied.</param>
+        [Obsolete]
+        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles, string sourcePackageDir, IDirectoryInfo rootDir, out List<string> dyfFiles)
+        {
+            dyfFiles = new List<string>();
+
+            foreach (var files in contentFiles)
+            {
+                foreach (var file in files.Where(x => x != null))
+                {
+                    // If the file doesn't actually exist, don't copy it
+                    if (!fileSystem.FileExists(file))
+                    {
+                        continue;
+                    }
+
+                    // TODO: This will be properly fixed in the next PR
+                    var relativePath = sourcePackageDir != null ? file.Substring(sourcePackageDir.Length) : Path.GetFileName(file);
+
+                    // Ensure the relative path starts with a directory separator.
+                    if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
+                    {
+                        relativePath = relativePath.TrimStart(new char[] { '/', '\\' });
+                        relativePath = Path.DirectorySeparatorChar + relativePath;
+                    }
+
+                    var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
+
+                    // We are already creating the pkg.json file ourselves, so skip it, also skip if we are copying the file to itself.
+                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
+                    {
+                        continue;
+                    }
+
+                    if (fileSystem.FileExists(destPath))
+                    {
+                        fileSystem.DeleteFile(destPath);
+                    }
+
+                    if (!Directory.Exists(Path.GetDirectoryName(destPath)))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+                    }
+
+                    fileSystem.CopyFile(file, destPath);
+
+                    if (file.ToLower().EndsWith(".dyf"))
+                    {
+                        dyfFiles.Add(destPath);
+                    }
+                }
+            }
+            // All files under Markdown directory do not apply to the rule above,
+            // because they may fall into extra folder instead of docs folder,
+            // currently there is on obvious way to filter them properly only based on path string.
+            var docDirPath = Path.Combine(rootDir.FullName, DocumentationDirectoryName);
+            foreach (var file in markdownFiles.Where(x => x != null))
+            {
+                var destPath = Path.Combine(docDirPath, Path.GetFileName(file));
+
+                if (fileSystem.FileExists(destPath))
+                {
+                    fileSystem.DeleteFile(destPath);
+                }
+
+                fileSystem.CopyFile(file, destPath);
+            }
+        }
+
+        /// <summary>
+        ///     Copies files into appropriate directories within a package, determining the target directory based on file type and path.
+        /// </summary>
+        /// <param name="files">A collection of file paths to be copied.</param>
+        /// <param name="markdownFiles">A collection of markdown file paths to be copied.</param>
+        /// <param name="dyfDir">The directory for .dyf files.</param>
+        /// <param name="binDir">The directory for binary files (.dll and related).</param>
+        /// <param name="extraDir">The directory for extra files that do not fit other categories.</param>
+        /// <param name="docDir">The directory for documentation files.</param>
         internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IEnumerable<string> markdownFiles,
                                                     IDirectoryInfo dyfDir, IDirectoryInfo binDir,
                                                     IDirectoryInfo extraDir, IDirectoryInfo docDir)
