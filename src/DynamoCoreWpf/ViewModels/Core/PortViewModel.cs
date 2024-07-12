@@ -436,6 +436,10 @@ namespace Dynamo.ViewModels
             wsViewModel.CancelActiveState();
             wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.LastOrDefault().CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
             wsViewModel.Nodes.LastOrDefault().IsFrozen = true;
+            wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.LastOrDefault().CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
+            wsViewModel.Nodes.LastOrDefault().IsFrozen = true;
+            wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.LastOrDefault().CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
+            wsViewModel.Nodes.LastOrDefault().IsFrozen = true;
 
             stopwatch.Stop(); // Stop the stopwatch
             wsViewModel.DynamoViewModel.Model.Logger.Log($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
