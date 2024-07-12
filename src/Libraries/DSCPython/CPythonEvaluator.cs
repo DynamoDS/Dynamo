@@ -415,7 +415,7 @@ sys.stdout = DynamoStdOut({0})
         /// </summary>
         private static void InitializeEncoders()
         {
-            var shared = new object[] { new BigIntegerEncoderDecoder(), new ListEncoderDecoder() };
+            var shared = new object[] { new ListEncoderDecoder() };
             var encoders = shared.Cast<IPyObjectEncoder>().ToArray();
             var decoders = shared.Cast<IPyObjectDecoder>().Concat(new IPyObjectDecoder[]
             {
