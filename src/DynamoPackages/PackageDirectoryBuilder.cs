@@ -161,15 +161,7 @@ namespace Dynamo.PackageManager
             foreach (var path in fileSystem.GetFiles(dir.FullName).Select(x => x.ToLower())
                 .Where(x => !x.EndsWith("pkg.json") && !filePaths.Contains(x)))
             {
-                if (path.ToLowerInvariant().EndsWith(".dll"))
-                {
-                    // TODO: Unload dll from Dynamo first
-                    fileSystem.DeleteFile(path);
-                }
-                else
-                {
-                    fileSystem.DeleteFile(path);
-                }
+                fileSystem.DeleteFile(path);
             }
 
             // Remove all backup folders
