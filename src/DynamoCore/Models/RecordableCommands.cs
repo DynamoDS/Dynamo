@@ -31,24 +31,6 @@ namespace Dynamo.Models
             // See property for more details.
             protected bool redundant = false;
 
-            /// <summary>
-            /// Settings that is used for serializing commands
-            /// </summary>
-            protected static JsonSerializerSettings jsonSettings;
-
-            /// <summary>
-            /// Initialize commands serializing settings
-            /// </summary>
-            static RecordableCommand()
-            {
-                jsonSettings = new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.Objects,
-                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                    Culture = CultureInfo.InvariantCulture
-                };
-            }
-
             #endregion
 
             #region Public Class Operational Methods
@@ -107,18 +89,6 @@ namespace Dynamo.Models
                 XmlElement element = document.CreateElement(commandName);
                 SerializeCore(element);
                 return element;
-            }
-
-            /// <summary>
-            /// This method serializes the RecordableCommand object in the json form.
-            /// The resulting string contains command type name and all the
-            /// arguments that are required by this command.
-            /// </summary>
-            /// <returns>The string can be used for reconstructing RecordableCommand
-            /// using Deserialize method</returns>
-            internal string Serialize()
-            {
-                return JsonConvert.SerializeObject(this, jsonSettings);
             }
 
             /// <summary>
@@ -220,29 +190,6 @@ namespace Dynamo.Models
                 throw new ArgumentException(message);
             }
 
-            /// <summary>
-            /// Call this static method to reconstruct a RecordableCommand from json
-            /// string that contains command name - name of corresponding class inherited
-            /// from RecordableCommand, - and all the arguments that are required by this
-            /// command.
-            /// </summary>
-            /// <param name="jsonString">Json string that contains command name and all
-            /// its arguments.</param>
-            /// <returns>Reconstructed RecordableCommand</returns>
-            internal static RecordableCommand Deserialize(string jsonString)
-            {
-                RecordableCommand command = null;
-                try
-                {
-                    command = JsonConvert.DeserializeObject(jsonString, jsonSettings) as RecordableCommand;
-                    command.IsInPlaybackMode = true;
-                    return command;
-                }
-                catch
-                {
-                    throw new ApplicationException("Invalid jsonString for creating RecordableCommand");
-                }
-            }
             #endregion
 
             #region Public Command Properties

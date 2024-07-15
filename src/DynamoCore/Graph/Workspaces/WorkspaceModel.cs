@@ -41,6 +41,8 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class ExtraWorkspaceViewInfo
     {
+        //TODO is this unsafe? Can we deserialize any object here?
+        //test and if so create a type.
         public object Camera;
         public IEnumerable<ExtraNodeViewInfo> NodeViews;
         public IEnumerable<ExtraNoteViewInfo> Notes;
@@ -70,7 +72,7 @@ namespace Dynamo.Graph.Workspaces
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture
             };
@@ -2289,7 +2291,7 @@ namespace Dynamo.Graph.Workspaces
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
@@ -2326,7 +2328,7 @@ namespace Dynamo.Graph.Workspaces
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
