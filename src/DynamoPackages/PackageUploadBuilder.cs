@@ -150,6 +150,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="package"></param>
         /// <param name="packagesDirectory"></param>
+        /// <param name="roots"></param>
         /// <param name="files"></param>
         /// <param name="markdownFiles"></param>
         /// <param name="handle"></param>
@@ -161,6 +162,7 @@ namespace Dynamo.PackageManager
             if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
             if (files == null) throw new ArgumentNullException("files");
             if (handle == null) throw new ArgumentNullException("handle");
+            if (roots == null) throw new ArgumentNullException("roots");
 
             return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, roots, files, markdownFiles, handle).Name);
         }
