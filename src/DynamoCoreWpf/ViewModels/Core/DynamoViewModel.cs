@@ -218,6 +218,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the the NDA cluster placement feature is enabled from feature flag
+        /// </summary>
+        internal bool IsDNAClusterPlacementEnabled
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNAClusterPlacementEnabled", true) ?? true;
+            }
+        }
+
+        /// <summary>
         /// Count of unresolved issues on the linter manager.
         /// This is used for binding in the NotificationsControl
         /// </summary>

@@ -31,8 +31,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (autoCompleteCommand == null)
-                    autoCompleteCommand = new DelegateCommand(AutoCompleteCluster, CanAutoComplete);
+                autoCompleteCommand ??= new DelegateCommand(NodeViewModel.WorkspaceViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled?AutoCompleteCluster:AutoComplete, CanAutoComplete);
 
                 return autoCompleteCommand;
             }
