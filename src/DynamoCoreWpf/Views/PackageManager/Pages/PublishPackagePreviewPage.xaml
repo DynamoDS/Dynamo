@@ -306,38 +306,37 @@
                 </Setter>
             </Style>
             <!--#endregion-->
+
+            <SolidColorBrush x:Key="BorderBrushWithOpacity"
+                             Color="#FFFFFF"
+                             Opacity="0.1" />
         </ResourceDictionary>
     </Page.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="28px" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-  
 
-        <!-- Info text -->
-        <TextBlock
-            Margin="5 5 20 5"
-            HorizontalAlignment="Left"
-            FontFamily="{StaticResource ArtifaktElementRegular}"
-            FontSize="10"
-            Foreground="#F5F5F5"
-            DataContext="{Binding ElementName=PreviewPackagePage}"
-            Text="{Binding FilesAndFoldersCounterPreview, UpdateSourceTrigger=PropertyChanged}"/>
+    <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
+            BorderThickness="0 0 0 1"
+            Padding="0 0 0 1">
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="28px" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <local:CustomBrowserControl x:Name="customBrowserControl"
+
+            <local:CustomBrowserControl x:Name="customBrowserControl"
                                 Grid.Column="0"
                                 Grid.Row="1"
                                 Loaded="customBrowserControl_Loaded"
                                 Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                 DisableRemove="True"/>
 
-        <!--Files-->
-        <DataGrid x:Name="rootContentsDataGrid"
+            <!--Files-->
+            <DataGrid x:Name="rootContentsDataGrid"
                   Grid.Column="1"
                   Grid.Row="1"
                   Margin="0 0 20 0" 
@@ -348,110 +347,123 @@
                   VerticalScrollBarVisibility="Disabled"
                   ItemsSource="{Binding RootContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                   Style="{StaticResource DataGrid}">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow"
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow"
                        BasedOn="{StaticResource DataGridRowStyle}">
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver"
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver"
                                  Value="True">
-                            <Setter Property="Tag"
+                                <Setter Property="Tag"
                                     Value="Visible" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver"
+                            </Trigger>
+                            <Trigger Property="IsMouseOver"
                                  Value="False">
-                            <Setter Property="Tag"
+                                <Setter Property="Tag"
                                     Value="Hidden" />
-                        </Trigger>
-                        <Trigger Property="IsSelected"
+                            </Trigger>
+                            <Trigger Property="IsSelected"
                                  Value="True">
-                            <Setter Property="Tag"
+                                <Setter Property="Tag"
                                     Value="Visible" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Width="*"
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="*"
                                         Header="{x:Static p:Resources.PublishPackageViewPackageName}"
                                         HeaderStyle="{StaticResource DataGridColumnHeaderFirst}"
                                         SortDirection="Ascending"
                                         IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal"
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal"
                                         VerticalAlignment="Center">
-                                <CheckBox IsThreeState="False"
+                                    <CheckBox IsThreeState="False"
                                           VerticalAlignment="Center"
                                           Visibility="Hidden"
                                           Margin="10 0 10 5">
-                                    <CheckBox.Style>
-                                        <Style TargetType="CheckBox"
+                                        <CheckBox.Style>
+                                            <Style TargetType="CheckBox"
                                                BasedOn="{StaticResource CheckBoxStyle}">
-                                        </Style>
-                                    </CheckBox.Style>
-                                </CheckBox>
-                                <Rectangle Width="14"
+                                            </Style>
+                                        </CheckBox.Style>
+                                    </CheckBox>
+                                    <Rectangle Width="14"
                                            Height="14"
                                            Margin="5 0 5 2">
-                                    <Rectangle.Fill>
-                                        <ImageBrush ImageSource="{Binding DependencyType,
+                                        <Rectangle.Fill>
+                                            <ImageBrush ImageSource="{Binding DependencyType,
                                             Converter={StaticResource DependencyTypeToImageSourceConverter}}" />
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                                <TextBlock Margin="5 0"
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock Margin="5 0"
                                            FontSize="14"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            VerticalAlignment="Center"
                                            Text="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
                                            TextTrimming="CharacterEllipsis">
-                                    <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding FilePath}"
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding FilePath}"
                                                  Style="{StaticResource GenericToolTipLight}" 
                                                  Visibility="{Binding FilePath, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn MinWidth="130"
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn MinWidth="130"
                                         MaxWidth="160"
                                         Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
                                         HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                         IsReadOnly="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal"
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
-                                <CheckBox IsThreeState="False"
+                                    <CheckBox IsThreeState="False"
                                           IsChecked="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           IsEnabled="False"
                                           Margin="10 0 10 5">
-                                    <CheckBox.Style>
-                                        <Style TargetType="CheckBox"
+                                        <CheckBox.Style>
+                                            <Style TargetType="CheckBox"
                                                BasedOn="{StaticResource CheckBoxStyle}">
-                                            <Setter Property="Visibility"
+                                                <Setter Property="Visibility"
                                                     Value="{Binding Converter={StaticResource AsselmblyPackageItemRootViewModelToVisibilityConverter}}" />
-                                        </Style>
-                                    </CheckBox.Style>
-                                </CheckBox>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        <Rectangle Stroke="{StaticResource GridLineColorBrush}"
+                                            </Style>
+                                        </CheckBox.Style>
+                                    </CheckBox>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Rectangle Stroke="{StaticResource GridLineColorBrush}"
                    StrokeThickness="1"
                    Margin="295 0 0 0"
                    Width="1"
                    Height="{Binding ElementName=rootContentsDataGrid, Path=ActualHeight}"
                    Grid.Column="1"
                    Grid.Row="1">
-            
-        </Rectangle>
-    </Grid>
+
+            </Rectangle>
+
+            <!-- Info text -->
+            <TextBlock
+            Grid.Row="1"
+            Margin="5 5 20 5"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            FontFamily="{StaticResource ArtifaktElementRegular}"
+            FontSize="10"
+            Foreground="#F5F5F5"
+            DataContext="{Binding ElementName=PreviewPackagePage}"
+            Text="{Binding FilesAndFoldersCounterPreview, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+    </Border>
 </Page>
