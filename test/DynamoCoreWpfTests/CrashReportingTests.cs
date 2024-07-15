@@ -1,12 +1,11 @@
 using System;
 using System.IO;
-using System.Windows.Threading;
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
-using DynamoCoreWpfTests;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -152,7 +151,7 @@ namespace Dynamo.Tests
             //Gets package loader
             var packageLoader = CurrentDynamoModel.GetPackageManagerExtension()?.PackageLoader;
             Assert.IsNotNull(packageLoader);
-            Assert.IsEmpty(packageLoader.LocalPackages);
+            Assert.IsEmpty(packageLoader.LocalPackages, string.Join(", ", packageLoader.LocalPackages.Select(x => x.Name)));
 
             //Get packages data from null package loader
             var packagesData = Wpf.Utilities.CrashUtilities.PackagesToMakrdown(packageLoader);
