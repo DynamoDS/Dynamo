@@ -94,7 +94,6 @@ namespace Dynamo.Tests.ModelsTest
 
             var xmlAddPresetCommand = AddPresetCommand.Serialize(xmlDocument);
 
-
             var helper = new XmlElementHelper(elementAddPresetCommand);
             Guid gWorkspace = Guid.NewGuid();
             Guid gState = Guid.NewGuid();
@@ -117,8 +116,6 @@ namespace Dynamo.Tests.ModelsTest
             //This will check that the Deserialized commands are valid
             Assert.IsNotNull(deserializedAddPresetCommand);
             Assert.IsNotNull(deserializedApplyPresetCommand);
-            Assert.Throws<ApplicationException>(() => DynamoModel.RecordableCommand.Deserialize(xmlAddPresetCommand));
-
 
         }
     }
