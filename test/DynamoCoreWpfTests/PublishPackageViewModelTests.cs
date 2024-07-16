@@ -472,6 +472,24 @@ namespace DynamoCoreWpfTests
 
 
         [Test]
+        public void FindCommonPaths_MultipleRootsSingleCommonPath()
+        {
+            var vm = new PublishPackageViewModel(ViewModel);
+            var paths = new string[]
+            {
+                "C:\\Packages\\PackageTest\\Loc1\\Sub11\\test.docx",
+                "C:\\Packages\\PackageTest\\Loc2\\Sub21\\test2.docx",
+                "C:\\Packages\\PackageTest2\\Loc1\\test.dyn",
+            };
+
+            var commonPaths = vm.GetCommonPaths(paths);
+
+            Assert.AreEqual(1, commonPaths.Count);
+            Assert.AreEqual("C:\\Packages", commonPaths[0]);
+        }
+
+
+        [Test]
         public void FindCommonPaths_BaseRoot()
         {
             var vm = new PublishPackageViewModel(ViewModel);
@@ -486,7 +504,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, commonPaths.Count);
             Assert.AreEqual("C:\\", commonPaths[0]);
         }
-
 
         #endregion
 
