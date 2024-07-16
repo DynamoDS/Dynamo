@@ -226,19 +226,32 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle PublishAsync(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, bool retainFolderStructure)
+        /// <summary>
+        ///     Asynchronously publishes a package along with associated files and markdown files.
+        /// We use the 'roots' collection as a guide to the folders we expect to find in the root directory of the package.
+        /// Based on that, we either want to nest inside a new package folder (if more than 2 root folders are found)
+        /// or if just 1 root folder is found, then use that as the new package folder
+        /// </summary>
+        /// <param name="package">The package to be published.</param>
+        /// <param name="files">The files to be included in the package.</param>
+        /// <param name="markdownFiles">The markdown files to be included in the package.</param>
+        /// <param name="isNewVersion">Indicates if this is a new version of an existing package.</param>
+        /// <param name="roots">A collection of root directories to normalize file paths against.</param>
+        /// <param name="retainFolderStructure">Indicates whether to retain the original folder structure.</param>
+        /// <returns>A <see cref="PackageUploadHandle"/> Used to track the upload status.</returns>
+        internal PackageUploadHandle PublishAsync(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, IEnumerable<string> roots, bool retainFolderStructure)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
             Task.Factory.StartNew(() =>
             {
-                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle, retainFolderStructure);
+                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle, roots, retainFolderStructure);
             });
 
             return packageUploadHandle;
         }
 
-        internal void Publish(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle, bool retainFolderStructure = false)
+        internal void Publish(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle, IEnumerable<string> roots, bool retainFolderStructure = false)
         {
             try
             {
@@ -246,7 +259,7 @@ namespace Dynamo.PackageManager
                 if (isNewVersion)
                 {
                     var pkg = retainFolderStructure ?
-                        uploadBuilder.NewPackageVersionRetainUpload(package, packageUploadDirectory, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
+                        uploadBuilder.NewPackageVersionRetainUpload(package, packageUploadDirectory, roots, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
                         packageUploadHandle)
                         : uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, (IEnumerable<string>)files, markdownFiles,
                         packageUploadHandle);
@@ -256,7 +269,7 @@ namespace Dynamo.PackageManager
                 else
                 {
                     var pkg = retainFolderStructure ?
-                        uploadBuilder.NewPackageRetainUpload(package, packageUploadDirectory, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
+                        uploadBuilder.NewPackageRetainUpload(package, packageUploadDirectory, roots, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
                         packageUploadHandle)
                         : uploadBuilder.NewPackageUpload(package, packageUploadDirectory, (IEnumerable<string>)files, markdownFiles,
                         packageUploadHandle);
