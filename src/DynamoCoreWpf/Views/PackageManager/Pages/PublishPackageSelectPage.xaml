@@ -11,7 +11,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       UseLayoutRounding="True"
-      x:Name="PublishPackagePage"
+      x:Name="SelectPackagePage"
       Title="PublishPackageSelectPage">
     <Page.Resources>
         <ResourceDictionary>
@@ -179,7 +179,7 @@
                                            VerticalAlignment="Center">
                                     <CheckBox IsThreeState="False"
                                               VerticalAlignment="Center"
-                                              DataContext="{Binding ElementName=PublishPackagePage}"
+                                              DataContext="{Binding ElementName=SelectPackagePage}"
                                               IsChecked="{Binding 
                                                                   Path=AllItemsSelected,
                                                                   UpdateSourceTrigger=PropertyChanged,
@@ -211,7 +211,7 @@
 
                                     <StackPanel DockPanel.Dock="Right"
                                                 Orientation="Horizontal"
-                                                Visibility="{Binding ElementName=PublishPackagePage,
+                                                Visibility="{Binding ElementName=SelectPackagePage,
                                                                      Path=ItemSelection.Count,
                                                                      UpdateSourceTrigger=PropertyChanged,
                                                                      Converter={StaticResource ZeroToVisibilityCollapsedConverter}}">                                      
@@ -253,7 +253,7 @@
                                                    FontSize="14">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0} selected">
-                                                    <Binding ElementName="PublishPackagePage"
+                                                    <Binding ElementName="SelectPackagePage"
                                                              Path="ItemSelection.Count" />
                                                 </MultiBinding>
                                             </TextBlock.Text>
@@ -367,109 +367,118 @@
                 <Setter Property="EnableRowVirtualization" Value="False" />
             </Style>
             <!--#endregion-->
-            
+
+            <SolidColorBrush x:Key="BorderBrushWithOpacity"
+                             Color="#FFFFFF"
+                             Opacity="0.1" />
         </ResourceDictionary>
     </Page.Resources>
-    
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        
-        <!--  Top Row: Buttons and Label  -->
-        <DockPanel Grid.Row="0"
+
+
+    <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
+            BorderThickness="0 0 0 1"
+            Padding="0 0 0 1">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  Top Row: Buttons and Label  -->
+            <DockPanel Grid.Row="0"
                    Grid.ColumnSpan="2"
                    Margin="5 5 20 5"
                    VerticalAlignment="Top"
-                   HorizontalAlignment="Right">
-            <!--  Add Directory  -->
-            <Button Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
+                   HorizontalAlignment="Stretch">
+
+                <!--  Add Directory  -->
+                <Button Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
                     Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
                     DockPanel.Dock="Right"
                     TabIndex="16"
                     Background="{StaticResource PrimaryCharcoal300Brush}"
                     BorderThickness="0"
                     Cursor="Hand">
-                <Button.ToolTip>
-                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}"
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}"
                              Style="{StaticResource GenericToolTipLight}" />
-                </Button.ToolTip>
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="Transparent">
-                            <Viewbox Width="16"
+                    </Button.ToolTip>
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <Viewbox Width="16"
                                      Height="16"
                                      VerticalAlignment="Center">
-                                <Path x:Name="Folder"
+                                    <Path x:Name="Folder"
                                       Fill="#0696D7"
                                       Data="M2.00016 6.66667H6.84016L7.8535 6H13.3335V12H14.0002V5.33333H7.86016L6.00016 4H1.3335V14.6667H8.66683V14H2.00016V6.66667ZM2.00016 4.66667H6.00016L7.20016 5.61333L6.66683 6H2.00016V4.66667ZM12.6668 10.6667V12.6667H14.6668V14H12.6668V16H11.3335V14H9.3335V12.6667H11.3335V10.6667H12.6668Z"
                                       StrokeThickness="0">
-                                </Path>
-                            </Viewbox>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Folder"
+                                    </Path>
+                                </Viewbox>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Folder"
                                         Property="Fill"
                                         Value="#6AC0E7" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
 
-            <!--  Add Files  -->
-            <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
+                <!--  Add Files  -->
+                <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
                     Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
                     DockPanel.Dock="Right"
+                    HorizontalAlignment="Right"
                     TabIndex="15"
                     Margin="0 2 10 0"
                     Background="{StaticResource PrimaryCharcoal300Brush}"
                     BorderThickness="0"
                     Cursor="Hand">
-                <Button.ToolTip>
-                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
                              Style="{StaticResource GenericToolTipLight}" />
-                </Button.ToolTip>
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="Transparent">
-                            <Viewbox Width="16"
+                    </Button.ToolTip>
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <Viewbox Width="16"
                                      Height="16"
                                      VerticalAlignment="Center">
-                                <Path x:Name="Folder"
+                                    <Path x:Name="Folder"
                                       Fill="#0696D7"
                                       Data="M8.66683 12.6667H2.00016V2.66667H8.00016V5.33333H10.6668V9.33333H11.3335V5.33333L8.00016 2H1.3335V13.3333H8.66683V12.6667ZM8.66683 3.60667L9.72683 4.66667H8.66683V3.60667ZM12.6668 12H14.6668V13.3333H12.6668V15.3333H11.3335V13.3333H9.3335V12H11.3335V10H12.6668V12Z"
                                       StrokeThickness="0">
-                                </Path>
-                            </Viewbox>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Folder"
+                                    </Path>
+                                </Viewbox>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Folder"
                                         Property="Fill"
                                         Value="#6AC0E7" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
 
-        </DockPanel>
-        
-        <local:CustomBrowserControl x:Name="customBrowserControl"
+            </DockPanel>
+
+            <local:CustomBrowserControl x:Name="customBrowserControl"
                                     Grid.Column="0" Grid.Row="1"
                                     Loaded="customBrowserControl_Loaded"
                                     Root="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
 
-        <!--Files-->
-        <DataGrid x:Name="rootContentsDataGrid"
+            <!--Files-->
+            <DataGrid x:Name="rootContentsDataGrid"
                   Grid.Column="1"
                   Grid.Row="1"
                   Margin="0 0 20 0"
@@ -479,100 +488,100 @@
                   VerticalScrollBarVisibility="Disabled"
                   ItemsSource="{Binding RootContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                   Style="{StaticResource DataGrid}">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridRowStyle}">
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Tag" Value="Visible" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="False">
-                            <Setter Property="Tag" Value="Hidden" />
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="True">                            
-                            <Setter Property="Tag" Value="Visible" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Width="*"
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridRowStyle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Tag" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Tag" Value="Hidden" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Tag" Value="Visible" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="*"
                                         Header="{x:Static p:Resources.PublishPackageViewPackageName}"
                                         HeaderStyle="{StaticResource DataGridColumnHeaderTextAndControl}"
                                         SortDirection="Ascending"
                                         IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <CheckBox IsThreeState="False"
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <CheckBox IsThreeState="False"
                                           VerticalAlignment="Center"
                                           Click="SelectItemCheckBox_Checked"
                                           IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"
                                           Margin="10 0 10 5">
-                                    <CheckBox.Style>
-                                        <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
-                                            <Setter Property="Visibility"
+                                        <CheckBox.Style>
+                                            <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
+                                                <Setter Property="Visibility"
                                                     Value="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Tag}" />
-                                            <Style.Triggers>
-                                                <Trigger Property="IsChecked" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </CheckBox.Style>
-                                </CheckBox>
-                                <Rectangle Width="14" Height="14" Margin="5 0 5 2">
-                                    <Rectangle.Fill>
-                                        <ImageBrush ImageSource="{Binding DependencyType,
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </CheckBox.Style>
+                                    </CheckBox>
+                                    <Rectangle Width="14" Height="14" Margin="5 0 5 2">
+                                        <Rectangle.Fill>
+                                            <ImageBrush ImageSource="{Binding DependencyType,
                                             Converter={StaticResource DependencyTypeToImageSourceConverter}}" />
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                                <TextBlock Margin="5 0"
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock Margin="5 0"
                                             FontSize="14"
                                             FontFamily="{StaticResource ArtifaktElementRegular}"
                                             VerticalAlignment="Center"
                                             Text="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
                                             TextTrimming="CharacterEllipsis">
-                                    <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding FilePath}"
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding FilePath}"
                                                  Style="{StaticResource GenericToolTipLight}"
                                                  Visibility="{Binding FilePath, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-                                    </TextBlock.ToolTip>
-                                </TextBlock>  
-                            </StackPanel>    
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn MinWidth="130"
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn MinWidth="130"
                                         MaxWidth="160"
                                         Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
                                         HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                         IsReadOnly="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal"
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
-                                <CheckBox IsThreeState="False"
+                                    <CheckBox IsThreeState="False"
                                           IsChecked="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           Margin="10 0 10 5">
-                                    <CheckBox.Style>
-                                        <Style TargetType="CheckBox"
+                                        <CheckBox.Style>
+                                            <Style TargetType="CheckBox"
                                                BasedOn="{StaticResource CheckBoxStyle}">
-                                            <Setter Property="Visibility"
+                                                <Setter Property="Visibility"
                                                     Value="{Binding Converter={StaticResource AsselmblyPackageItemRootViewModelToVisibilityConverter}}" />
-                                        </Style>
-                                    </CheckBox.Style>
-                                </CheckBox>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns> 
-        </DataGrid>
+                                            </Style>
+                                        </CheckBox.Style>
+                                    </CheckBox>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
 
-        <Rectangle Stroke="{StaticResource GridLineColorBrush}"
+            <Rectangle Stroke="{StaticResource GridLineColorBrush}"
                    StrokeThickness="1"
                    Margin="295 0 0 0"
                    Width="1"
@@ -580,13 +589,13 @@
                    Grid.Column="1"
                    Grid.Row="1">
 
-        </Rectangle>
+            </Rectangle>
 
-        <!--Toggle-->
-        <StackPanel Orientation="Horizontal"
+            <!--Toggle-->
+            <StackPanel Orientation="Horizontal"
                     Grid.Column="1"
                     Grid.Row="2">
-            <ToggleButton Width="30"
+                <ToggleButton Width="30"
                           Height="15"
                           VerticalAlignment="Center"
                           Margin="0 5"
@@ -594,21 +603,33 @@
                           IsChecked="{Binding Path=RetainFolderStructureOverride, Mode=TwoWay}"
                           IsTabStop="False"
                           Style="{StaticResource EllipseToggleButton1}" />
-            <TextBlock Text="{x:Static p:Resources.PublishPackageRetainFolderStructureToggleButtonText}"
+                <TextBlock Text="{x:Static p:Resources.PublishPackageRetainFolderStructureToggleButtonText}"
                        Style="{StaticResource LabelStyle}"
                        Margin="5 0"
                        VerticalAlignment="Center" />
-            <Rectangle Width="16"
+                <Rectangle Width="16"
                        Height="16"
                        VerticalAlignment="Center">
-                <Rectangle.Fill>
-                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/help-16px.png" />
-                </Rectangle.Fill>
-                <Rectangle.ToolTip>
-                    <ToolTip Content="{x:Static p:Resources.PublishPackageRetainFolderStructureTooltip}"
+                    <Rectangle.Fill>
+                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/help-16px.png" />
+                    </Rectangle.Fill>
+                    <Rectangle.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.PublishPackageRetainFolderStructureTooltip}"
                              Style="{StaticResource GenericToolTipLight}" />
-                </Rectangle.ToolTip>
-            </Rectangle>
-        </StackPanel>
-    </Grid>
+                    </Rectangle.ToolTip>
+                </Rectangle>
+            </StackPanel>
+
+            <!-- Info text -->
+            <TextBlock
+                Grid.Row="2"
+                HorizontalAlignment="Left"
+            Margin="5 6 0 0"
+                FontFamily="{StaticResource ArtifaktElementRegular}"
+                FontSize="10"
+                Foreground="#F5F5F5"
+                DataContext="{Binding ElementName=SelectPackagePage}"
+                Text="{Binding FilesAndFoldersCounterPreview, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+    </Border>
 </Page>
