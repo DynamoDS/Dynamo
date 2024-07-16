@@ -30,7 +30,8 @@ namespace Views.PackageManager.Pages
 
             var uploadType = PublishPackageViewModel.UploadType;
             var publishedFiles = PackageItemRootViewModel.GetFiles(PublishPackageViewModel.PackageContents.ToList());
-            var count = publishedFiles.Count(x => x.DependencyType != DependencyType.Folder);
+            var count = publishedFiles.Count(x => x.DependencyType != DependencyType.Folder
+                                          || x.DependencyType != DependencyType.CustomNodePreview);
             var message = uploadType.Equals(PackageUploadHandle.UploadType.Local) ?
                 Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesPublishedMessage :
                 Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesUploadedMessage;
