@@ -442,7 +442,7 @@ namespace Dynamo.ViewModels
             wsViewModel.Nodes.LastOrDefault().IsFrozen = true;
 
             stopwatch.Stop(); // Stop the stopwatch
-            wsViewModel.DynamoViewModel.Model.Logger.Log($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
+            wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private void NodePortContextMenu(object obj)
