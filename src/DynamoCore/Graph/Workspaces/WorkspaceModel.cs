@@ -41,8 +41,6 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class ExtraWorkspaceViewInfo
     {
-        //TODO is this unsafe? Can we deserialize any object here?
-        //test and if so create a type.
         public object Camera;
         public IEnumerable<ExtraNodeViewInfo> NodeViews;
         public IEnumerable<ExtraNoteViewInfo> Notes;
