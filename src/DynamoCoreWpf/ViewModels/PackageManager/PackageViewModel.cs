@@ -180,7 +180,7 @@ namespace Dynamo.ViewModels
             Model = model;
 
             PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), IsOwner);
-            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), IsOwner);
+            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
@@ -408,6 +408,25 @@ namespace Dynamo.ViewModels
         {
             if (!CanPublish) return false;
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
+        }
+
+        private bool CanPublishNewPackage()
+        {
+            if (!CanPublish) return false;
+
+            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username) ||
+                PackageNotPublishedAndUserIsHolder(Model, dynamoModel.AuthenticationManager.Username);
+        }
+
+
+        // Utility function to assert if a local package can be published
+        // If the current user is the package holder and a package with that name has not been published yet, return true
+        private bool PackageNotPublishedAndUserIsHolder(Package package, string username)
+        {
+            bool userIsHolder = package.CopyrightHolder != null && package.CopyrightHolder.Equals(username);
+            bool packageHasNotBeenPublished = !this.dynamoViewModel.PackageManagerClientViewModel.CachedPackageList.Any(x => x.Name == package.Name);
+
+            return userIsHolder && packageHasNotBeenPublished;
         }
 
         private bool CanDeprecate()
