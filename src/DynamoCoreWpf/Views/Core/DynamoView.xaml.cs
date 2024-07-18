@@ -1517,7 +1517,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                // setting the owner to the packageManagerWindow will centralize promts originating from the Package Manager
+                // setting the owner to the packageManagerWindow will centralize prompts originating from the Package Manager
                 dynamoViewModel.Owner = packageManagerWindow;
 
                 packageManagerWindow.Closed += HandlePackageManagerWindowClosed;

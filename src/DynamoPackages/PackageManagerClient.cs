@@ -251,6 +251,62 @@ namespace Dynamo.PackageManager
             return packageUploadHandle;
         }
 
+
+        internal PackageUploadHandle PublishInstalledPackageAsync(Package package, bool isNewVersion)
+        {
+            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
+
+            Task.Factory.StartNew(() =>
+            {
+                Publish(package, isNewVersion, packageUploadHandle);
+            });
+
+            return packageUploadHandle;
+        }
+
+        internal void Publish(Package package, bool isNewVersion, PackageUploadHandle packageUploadHandle)
+        {
+            try
+            {
+                ResponseBody ret = null;
+                if (isNewVersion)
+                {
+                    var pkg = uploadBuilder.InstalledPackageVersionUpload(package, packageUploadDirectory, packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                else
+                {
+                    var pkg = uploadBuilder.InstalledPackageUpload(package, packageUploadDirectory, packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                if (ret == null)
+                {
+                    packageUploadHandle.Error("Failed to submit.  Try again later.");
+                    return;
+                }
+
+                if (ret != null && !ret.success)
+                {
+                    packageUploadHandle.Error(ret.message);
+                    return;
+                }
+                packageUploadHandle.Done(null);
+            }
+            catch (Exception ex)
+            {
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    packageUploadHandle.Error(DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyTitle + ": " + DynamoPackages.Properties.Resources.CannotRemovePackageAssemblyMessage + "(" + ex.Message + ")");
+                }
+                else
+                {
+                    packageUploadHandle.Error(ex.GetType() + ": " + ex.Message);
+                }
+            }
+        }
+
         internal void Publish(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle, IEnumerable<string> roots, bool retainFolderStructure = false)
         {
             try

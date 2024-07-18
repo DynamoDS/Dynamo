@@ -457,6 +457,7 @@ namespace Dynamo.ViewModels
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, true);
             vm.IsNewVersion = true;
+            vm.IsPackageInstalled = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
         }
@@ -464,8 +465,9 @@ namespace Dynamo.ViewModels
         private void PublishNewPackage()
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, false);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, true);
             vm.IsNewVersion = false;
+            vm.IsPackageInstalled = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
         }
