@@ -438,10 +438,12 @@ namespace Dynamo.ViewModels
             // Create mock nodes, currently Python nodes, and connect them to the input port
             var targetNode = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.LastOrDefault();
             targetNode.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
+            wsViewModel.Nodes.LastOrDefault().IsPreview = true;
             // Get the original node
             var node1 = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel.Connectors.FirstOrDefault().Start.Owner.GUID;
             targetNode.CreateAndConnectCommand.Execute(wsViewModel.Nodes.Where(Nodes => Nodes.Id == node1).FirstOrDefault().InPorts.FirstOrDefault().PortModel);
             var node2 = wsViewModel.Nodes.LastOrDefault();
+            node2.IsPreview = true;
             targetNode.CreateAndConnectCommand.Execute(node2.InPorts.FirstOrDefault().PortModel);
             wsViewModel.Nodes.LastOrDefault().IsPreview = true;
 

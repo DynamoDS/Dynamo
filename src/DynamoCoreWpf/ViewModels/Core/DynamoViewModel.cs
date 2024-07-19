@@ -224,7 +224,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNAClusterPlacementEnabled", true) ?? true;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNAClusterPlacementEnabled", true) ?? false;
             }
         }
 

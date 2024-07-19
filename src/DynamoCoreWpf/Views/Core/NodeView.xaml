@@ -461,7 +461,7 @@
             </Grid>
             <Grid x:Name="PreviewGlyph" 
                   Visibility="{Binding Path=IsPreview, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
-                <Image x:Name="FrozenImage"
+                <Image x:Name="PreviewImage"
                        Width="16px"
                        Height="16px"
                        HorizontalAlignment="Center"
