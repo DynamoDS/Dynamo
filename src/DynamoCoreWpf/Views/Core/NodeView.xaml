@@ -459,6 +459,16 @@
                        Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
                        Stretch="UniformToFill" />
             </Grid>
+            <Grid x:Name="PreviewGlyph" 
+                  Visibility="{Binding Path=IsPreview, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <Image x:Name="FrozenImage"
+                       Width="16px"
+                       Height="16px"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
+                       Stretch="UniformToFill" />
+            </Grid>
             <Grid x:Name="HiddenEyeGlyph" 
                   Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, Mode=OneWay}">
                 <Image x:Name="HiddenEyeImage"

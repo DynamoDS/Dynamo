@@ -994,6 +994,17 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// A flag indicating whether the node is in preview mode.
+        /// When a node is in preview mode, the node will not participate in execution,
+        /// Or saved to the graph. It is only used for previewing the AutoComplete cluster in the canvas.
+        /// </summary>
+        public bool IsPreview
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// The default behavior for ModelBase objects is to not serialize the X and Y
         /// properties. This overload allows the serialization of the X property
         /// for NodeModel.

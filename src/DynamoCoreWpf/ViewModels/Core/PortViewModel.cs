@@ -443,7 +443,7 @@ namespace Dynamo.ViewModels
             targetNode.CreateAndConnectCommand.Execute(wsViewModel.Nodes.Where(Nodes => Nodes.Id == node1).FirstOrDefault().InPorts.FirstOrDefault().PortModel);
             var node2 = wsViewModel.Nodes.LastOrDefault();
             targetNode.CreateAndConnectCommand.Execute(node2.InPorts.FirstOrDefault().PortModel);
-            wsViewModel.Nodes.LastOrDefault().IsFrozen = true;
+            wsViewModel.Nodes.LastOrDefault().IsPreview = true;
 
             stopwatch.Stop(); // Stop the stopwatch
             wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
