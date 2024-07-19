@@ -459,6 +459,7 @@
                        Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
                        Stretch="UniformToFill" />
             </Grid>
+            <!--This is a test style and may not needed in the final version-->
             <Grid x:Name="PreviewGlyph" 
                   Visibility="{Binding Path=IsPreview, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
                 <Image x:Name="PreviewImage"
