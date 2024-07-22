@@ -411,12 +411,10 @@ namespace Dynamo.PackageManager
 
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
-                    // We are already creating the pkg.json file ourselves, so skip it, also skip if we are copying the file to itself.
-                    // Should we stop creating the pkg.json on behalf of the user? If they are using this feature, they probably want to handle this as well
-                    //if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
-                    //{
-                    //    continue;
-                    //}
+                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
+                    {
+                        continue;
+                    }
 
                     if (fileSystem.FileExists(destPath))
                     {
