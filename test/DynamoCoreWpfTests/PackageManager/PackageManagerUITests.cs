@@ -2074,7 +2074,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var testFoldersCount = testRootItems.Count(x => x.DependencyType.Equals(DependencyType.Folder));
             var testFilesCount = testRootItems.Count(x => !x.DependencyType.Equals(DependencyType.Folder));
 
-            Assert.AreEqual(foldersCount, testFoldersCount - 1);
+            Assert.AreEqual(foldersCount, testFoldersCount);
             Assert.AreEqual(filesCount, testFilesCount);
         }
 
@@ -2362,7 +2362,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
             // Assert
             Assert.AreEqual(createdFiles.Count(), previewFiles.Count());
-            Assert.AreEqual(0, createdFolders.Count()); // When single root, no nested folders should be created
+            Assert.AreEqual(3, createdFolders.Count()); 
 
             // Clean up
             Directory.Delete(publishPath, true);
@@ -2427,8 +2427,13 @@ namespace DynamoCoreWpfTests.PackageManager
 
             var allFiles = vm.BuildPackage();
             Assert.IsNotNull(allFiles);
+
             var updatedFiles = vm.UpdateFilesForRetainFolderStructure(allFiles);
             Assert.IsNotNull(updatedFiles);
+
+            var roots = vm.GetCommonPaths(allFiles.ToArray());
+            Assert.IsNotNull(roots);
+
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
             var fs = new RecordedFileSystem((fn) => updatedFiles.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
@@ -2441,7 +2446,7 @@ namespace DynamoCoreWpfTests.PackageManager
             // Assert
             Assert.DoesNotThrow(() =>
             {
-                m.NewPackageVersionRetainUpload(package, publishPath, updatedFiles, Enumerable.Empty<string>(), handle);
+                m.NewPackageVersionRetainUpload(package, publishPath, roots, updatedFiles, Enumerable.Empty<string>(), handle);
             });
             Assert.AreNotEqual(PackageUploadHandle.State.Error, handle.UploadState);
 

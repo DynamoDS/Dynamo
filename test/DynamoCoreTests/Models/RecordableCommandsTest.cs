@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -53,12 +53,12 @@ namespace Dynamo.Tests.ModelsTest
             //The tag passed as parameter is null, then it will raise an exception later
             var cmd = new Mock<DynamoModel.RecordableCommand>(null);
             var pausePlaybackCommand = new DynamoModel.PausePlaybackCommand(20);
-
+            var xmldoc= new XmlDocument();
             //Act
-            var xmlElements = pausePlaybackCommand.Serialize();
-    
+            var xmlElements = pausePlaybackCommand.Serialize(xmldoc);
+
             //Assert
-            Assert.IsNotNull(JToken.Parse(xmlElements));//Verify that the json serialized is valid
+            Assert.IsNotNull(xmlElements);
 
             //This will execute the exception section in RecordableCommand(string tag), because tag is null
             Assert.Throws<System.Reflection.TargetInvocationException>(() => executive.ExecuteCommand(cmd.Object, "TestRecordable", "ExtensionTests"));
@@ -92,8 +92,7 @@ namespace Dynamo.Tests.ModelsTest
             XmlDocument xmlDocument = new XmlDocument();
             XmlElement elementAddPresetCommand = AddPresetCommand.Serialize(xmlDocument);
 
-            var jsonAddPresetCommand = AddPresetCommand.Serialize();
-
+            var xmlAddPresetCommand = AddPresetCommand.Serialize(xmlDocument);
 
             var helper = new XmlElementHelper(elementAddPresetCommand);
             Guid gWorkspace = Guid.NewGuid();
@@ -109,12 +108,6 @@ namespace Dynamo.Tests.ModelsTest
             var deserializedAddPresetCommand = DynamoModel.RecordableCommand.Deserialize(elementAddPresetCommand);
             var deserializedApplyPresetCommand = DynamoModel.RecordableCommand.Deserialize(elementApplyPresetCommand);
 
-            //This will execute the overloaded Deserialize method (the one receiving a string as parameter)
-            var deserializedFromJson = DynamoModel.RecordableCommand.Deserialize(jsonAddPresetCommand);
-
-            //This will generate a invalid json string, so when it's deserialized will raise an exception
-            jsonAddPresetCommand = jsonAddPresetCommand.Replace('{', '<');
-
             //This is a fake command so when it's deserialized will raise an exception
             XmlElement elemTest = xmlDocument.CreateElement("TestCommand");
             Assert.Throws<ArgumentException>(() => DynamoModel.RecordableCommand.Deserialize(elemTest));
@@ -123,9 +116,6 @@ namespace Dynamo.Tests.ModelsTest
             //This will check that the Deserialized commands are valid
             Assert.IsNotNull(deserializedAddPresetCommand);
             Assert.IsNotNull(deserializedApplyPresetCommand);
-            Assert.IsNotNull(deserializedFromJson);
-            Assert.Throws<ApplicationException>(() => DynamoModel.RecordableCommand.Deserialize(jsonAddPresetCommand));
-
 
         }
     }
