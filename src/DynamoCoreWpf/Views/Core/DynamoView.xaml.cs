@@ -1906,6 +1906,11 @@ namespace Dynamo.Controls
             {
                 isPSSCalledOnViewModelNoCancel = true;
             }
+            //Validates that when Dynamo is being closed we need to close the FileTrust Popup (if is opened)
+            if(fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
+            {
+                fileTrustWarningPopup.IsOpen = false;
+            }
         }
 
         /// <summary>
