@@ -122,7 +122,7 @@ namespace Dynamo.PackageManager
             if (handle == null) throw new ArgumentNullException("handle");
 
             return new PackageUpload(NewRequestBody(package),
-                BuildAndZip(package, packagesDirectory, roots, files, markdownFiles, handle).Name);
+                BuildAndZip(package, packagesDirectory, files, markdownFiles, handle).Name);
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Dynamo.PackageManager
             if (files == null) throw new ArgumentNullException("files");
             if (handle == null) throw new ArgumentNullException("handle");
 
-            return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, roots, files, markdownFiles, handle).Name);
+            return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, files, markdownFiles, handle).Name);
         }
 
         #endregion
@@ -219,7 +219,7 @@ namespace Dynamo.PackageManager
         {
             handle.UploadState = PackageUploadHandle.State.Copying;
 
-            var dir = builder.BuildRetainDirectory(package, packagesDirectory, roots, files, markdownFiles);
+            var dir = builder.BuildRetainDirectory(package, packagesDirectory, files, markdownFiles);
 
             handle.UploadState = PackageUploadHandle.State.Compressing;
 
