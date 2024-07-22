@@ -37,7 +37,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="fileSystem">For moving files around</param>
         /// <param name="pathRemapper">For modifying custom node paths</param>
-        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper) 
+        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.pathRemapper = pathRemapper ?? throw new ArgumentNullException(nameof(pathRemapper));
@@ -61,7 +61,7 @@ namespace Dynamo.PackageManager
             WritePackageHeader(package, rootDir);
             RemoveUnselectedFiles(contentFiles, rootDir);
             CopyFilesIntoPackageDirectory(contentFiles, markdownFiles, dyfDir, binDir, extraDir, docDir);
-            RemoveDyfFiles(contentFiles, dyfDir); 
+            RemoveDyfFiles(contentFiles, dyfDir);
 
             RemapCustomNodeFilePaths(contentFiles, dyfDir.FullName);
 
@@ -79,7 +79,7 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
         {
-            
+
             var rootPath = Path.Combine(packagesDirectory, package.Name);
             var rootDir = fileSystem.TryCreateDirectory(rootPath);
             package.RootDirectory = rootDir.FullName;
@@ -213,9 +213,9 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void FormPackageDirectory(string packageDirectory, string packageName, 
-            out IDirectoryInfo root, out IDirectoryInfo dyfDir, 
-            out IDirectoryInfo binDir, out IDirectoryInfo extraDir, 
+        private void FormPackageDirectory(string packageDirectory, string packageName,
+            out IDirectoryInfo root, out IDirectoryInfo dyfDir,
+            out IDirectoryInfo binDir, out IDirectoryInfo extraDir,
             out IDirectoryInfo docDir)
         {
             var rootPath = Path.Combine(packageDirectory, packageName);
@@ -411,7 +411,6 @@ namespace Dynamo.PackageManager
 
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
-                    // We are already creating the pkg.json file ourselves, so skip it, also skip if we are copying the file to itself.
                     if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
                     {
                         continue;
@@ -435,6 +434,9 @@ namespace Dynamo.PackageManager
                     }
                 }
             }
+
+
+
             // All files under Markdown directory do not apply to the rule above,
             // because they may fall into extra folder instead of docs folder,
             // currently there is on obvious way to filter them properly only based on path string.
@@ -529,7 +531,7 @@ namespace Dynamo.PackageManager
         #endregion
 
         #region Public Static Utility Methods 
-        
+
         public static bool IsXmlDocFile(string path, IEnumerable<string> files)
         {
             if (!path.ToLower().EndsWith(".xml")) return false;
