@@ -1090,19 +1090,14 @@ namespace Dynamo.PackageManager
             if (!rootItems.Any()) return rootItems;
 
             var roots = new List<PackageItemRootViewModel>();
+                      
+            var commonPaths = GetCommonPaths(items.Keys.ToArray());
+            if (commonPaths == null) return null;
 
-            if (CurrentPackageDirectory != null)
-            {
-                roots.Add(new PackageItemRootViewModel(CurrentPackageDirectory));
-            }
-            else
-            {
-                var commonPaths = GetCommonPaths(items.Keys.ToArray());
-                if (commonPaths == null) return null;
+            CurrentPackageRootDirectories = commonPaths;
 
-                // Add a new root item for each common path found
-                commonPaths.ForEach(p => roots.Add(new PackageItemRootViewModel(p)));
-            }
+            // Add a new root item for each common path found
+            commonPaths.ForEach(p => roots.Add(new PackageItemRootViewModel(p)));
 
             // Check each root item and create any missing connections
             foreach (var item in rootItems)
@@ -2370,12 +2365,6 @@ namespace Dynamo.PackageManager
                     var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
                         DynamoModel.IsTestMode);
                     var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
-
-                    //if (string.IsNullOrEmpty(Package.RootDirectory))
-                    //{
-                    //    Package.RootDirectory = CurrentPackageRootDirectories;
-                    //}
-
                     builder.BuildRetainDirectory(Package, publishPath, CurrentPackageRootDirectories, updatedFiles, MarkdownFiles);
                     UploadState = PackageUploadHandle.State.Uploaded;
                 }
@@ -2776,13 +2765,12 @@ namespace Dynamo.PackageManager
         internal PackageItemRootViewModel GetExistingRootItemViewModel(string publishPath, string packageName)
         {
             if (!PackageContents.Any()) return null;
-            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1)
-            {
+            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1) {
                 // If there is only one root item, this root item becomes the new folder
                 var item = PackageContents.First(x => x.DependencyType.Equals(DependencyType.Folder));
 
                 item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
-                item.AddChildren(PackageContents.First().ChildItems.ToList());
+                item.AddChildren( PackageContents.First().ChildItems.ToList() );
 
                 return item;
             }
@@ -2792,7 +2780,7 @@ namespace Dynamo.PackageManager
             foreach (var item in PackageContents)
             {
                 // Skip 'bare' custom nodes, they will be represented by their CustomNodePreview counterparts
-                if (item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
+                if(item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
 
                 item.isChild = true;
                 rootItem.AddChildren(item);

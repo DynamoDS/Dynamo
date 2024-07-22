@@ -1249,7 +1249,10 @@ Dynamo.PackageManager.UI.PackageNameLengthValidationRule
 Dynamo.PackageManager.UI.PackageNameLengthValidationRule.PackageNameLengthValidationRule() -> void
 Dynamo.PackageManager.UI.PublishPackagePreviewPage
 Dynamo.PackageManager.UI.PublishPackagePreviewPage.Dispose() -> void
+Dynamo.PackageManager.UI.PublishPackagePreviewPage.FilesAndFoldersCounterPreview.get -> string
+Dynamo.PackageManager.UI.PublishPackagePreviewPage.FilesAndFoldersCounterPreview.set -> void
 Dynamo.PackageManager.UI.PublishPackagePreviewPage.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PublishPackagePreviewPage.PropertyChanged -> System.ComponentModel.PropertyChangedEventHandler
 Dynamo.PackageManager.UI.PublishPackagePreviewPage.PublishPackagePreviewPage() -> void
 Dynamo.PackageManager.UI.PublishPackagePublishPage
 Dynamo.PackageManager.UI.PublishPackagePublishPage.Dispose() -> void
@@ -1260,6 +1263,8 @@ Dynamo.PackageManager.UI.PublishPackageSelectPage
 Dynamo.PackageManager.UI.PublishPackageSelectPage.AllItemsSelected.get -> bool
 Dynamo.PackageManager.UI.PublishPackageSelectPage.AllItemsSelected.set -> void
 Dynamo.PackageManager.UI.PublishPackageSelectPage.Dispose() -> void
+Dynamo.PackageManager.UI.PublishPackageSelectPage.FilesAndFoldersCounterPreview.get -> string
+Dynamo.PackageManager.UI.PublishPackageSelectPage.FilesAndFoldersCounterPreview.set -> void
 Dynamo.PackageManager.UI.PublishPackageSelectPage.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PublishPackageSelectPage.ItemSelection.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemRootViewModel>
 Dynamo.PackageManager.UI.PublishPackageSelectPage.ItemSelection.set -> void
@@ -5623,6 +5628,7 @@ virtual Dynamo.Controls.IntegerDisplay.Convert(object value, System.Type targetT
 virtual Dynamo.Controls.IntegerDisplay.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 virtual Dynamo.PackageManager.PackageManagerSearchViewModel.OnRequestShowFileDialog(object sender, Dynamo.ViewModels.PackagePathEventArgs e) -> void
 virtual Dynamo.PackageManager.PublishPackageViewModel.OnRequestShowFileDialog(object sender, Dynamo.ViewModels.PackagePathEventArgs e) -> void
+virtual Dynamo.PackageManager.UI.PublishPackagePreviewPage.RaisePropertyChanged(string propertyName) -> void
 virtual Dynamo.PackageManager.UI.PublishPackageSelectPage.RaisePropertyChanged(string propertyName) -> void
 virtual Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.OnRequestShowFileDialog(object sender, Dynamo.ViewModels.PackagePathEventArgs e) -> void
 virtual Dynamo.UI.Controls.CodeCompletionEditor.OnCommitChange() -> void
