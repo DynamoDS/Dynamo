@@ -989,6 +989,8 @@ Dynamo.Graph.Nodes.NodeModel.InputNodes.get -> System.Collections.Generic.IDicti
 Dynamo.Graph.Nodes.NodeModel.IsCustomFunction.get -> bool
 Dynamo.Graph.Nodes.NodeModel.IsFrozen.get -> bool
 Dynamo.Graph.Nodes.NodeModel.IsFrozen.set -> void
+Dynamo.Graph.Nodes.NodeModel.IsPreview.get -> bool
+Dynamo.Graph.Nodes.NodeModel.IsPreview.set -> void
 Dynamo.Graph.Nodes.NodeModel.IsInErrorState.get -> bool
 Dynamo.Graph.Nodes.NodeModel.IsModified.get -> bool
 Dynamo.Graph.Nodes.NodeModel.IsPartiallyApplied.get -> bool

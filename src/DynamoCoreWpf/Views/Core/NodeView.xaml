@@ -467,7 +467,7 @@
                        Height="16px"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
+                       Source="/DynamoCoreWpf;component/UI/Images/NodeStates/preview-64px.png"
                        Stretch="UniformToFill" />
             </Grid>
             <Grid x:Name="HiddenEyeGlyph" 
@@ -592,6 +592,23 @@
                 SnapsToDevicePixels="True" />
 
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is above 0.4 -->
+        <!--<Border Name="nodeColorOverlayZoomIn"
+                Grid.Row="1"
+                Grid.RowSpan="4"    
+                Grid.ColumnSpan="3"
+                Margin="-8"
+                Background="{StaticResource NodeFrozenOverlayColor}"
+                Canvas.ZIndex="6"
+                CornerRadius="8,8,0,0"
+                IsHitTestVisible="False"
+                Opacity="{Binding Path=DataContext.Zoom, 
+                                  RelativeSource={RelativeSource FindAncestor, 
+                                  AncestorType={x:Type controls:WorkspaceView}}, 
+                                  Converter={StaticResource ZoomToOpacityConverter}}"
+                Style="{StaticResource SZoomFadeOutPreview}"
+                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />-->
+
+        <!--  Displays when the node cluster is Preivew state and Zoom is above 0.4 -->
         <Border Name="nodeColorOverlayZoomIn"
                 Grid.Row="1"
                 Grid.RowSpan="4"
@@ -606,7 +623,7 @@
                                   AncestorType={x:Type controls:WorkspaceView}}, 
                                   Converter={StaticResource ZoomToOpacityConverter}}"
                 Style="{StaticResource SZoomFadeOutPreview}"
-                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                Visibility="{Binding Path=IsPreview, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is below 0.4 -->
         <Border Name="nodeColorOverlayZoomOut"
