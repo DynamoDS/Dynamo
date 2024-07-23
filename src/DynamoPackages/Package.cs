@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -228,6 +229,12 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal bool RequiresSignedEntryPoints { get; set; }
 
+
+        /// <summary>
+        /// The unique custom Assemblies Load Context associated with this package
+        /// </summary>
+        public PackageLoadContext LoadContext { get; internal set; }
+
         #endregion
 
         public Package(string directory, string name, string versionName, string license)
@@ -242,6 +249,7 @@ namespace Dynamo.PackageManager
             LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
             AdditionalFiles = new ObservableCollection<PackageFileInfo>();
             Header = PackageUploadBuilder.NewRequestBody(this);
+            LoadContext = new PackageLoadContext(directory);
         }
 
         public static Package FromDirectory(string rootPath, ILogger logger)
@@ -363,7 +371,6 @@ namespace Dynamo.PackageManager
             var nodeLibraries = Header.node_libraries;
             foreach (var assemFile in new DirectoryInfo(BinaryDirectory).EnumerateFiles("*.dll"))
             {
-                Assembly assem;
                 //TODO when can we make this false. 3.0?
                 bool shouldLoadFile = true;
                 if (this.RequiresSignedEntryPoints)
@@ -373,11 +380,10 @@ namespace Dynamo.PackageManager
 
                 if (shouldLoadFile)
                 {
-                    // dll files may be un-managed, skip those
-                    var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
-                    if (result)
+                    Assembly assem = LoadContext.LoadFromAssemblyPath(assemFile.FullName);
+
+                    if (assem != null)
                     {
-                        // IsNodeLibrary may fail, we store the warnings here and then show
                         IList<ILogMessage> warnings = new List<ILogMessage>();
 
                         assemblies.Add(new PackageAssembly()
@@ -397,6 +403,14 @@ namespace Dynamo.PackageManager
             }
 
             return assemblies;
+        }
+
+        /// <summary>
+        /// A public method to unload all assemblies associated with this package
+        /// </summary>
+        public void UnloadPackage()
+        {
+            LoadContext.UnloadPackage();
         }
 
         /// <summary>
@@ -635,6 +649,34 @@ namespace Dynamo.PackageManager
         protected virtual void Log(string s)
         {
             Log(LogMessage.Info(s));
+        }
+    }
+
+    /// <summary>
+    /// A helper class to allow creation of custom Assembly Load Context per package
+    /// </summary>
+    public class PackageLoadContext : AssemblyLoadContext
+    {
+        private readonly string packagePath;
+
+        public PackageLoadContext(string packagePath)
+        {
+            this.packagePath = packagePath;
+        }
+
+        protected override Assembly Load(AssemblyName assemblyName)
+        {
+            string assemblyPath = Path.Combine(packagePath, $"{assemblyName.Name}.dll");
+            if (File.Exists(assemblyPath))
+            {
+                return LoadFromAssemblyPath(assemblyPath);
+            }
+            return null;
+        }
+
+        public void UnloadPackage()
+        {
+            Unload();
         }
     }
 }
