@@ -37,7 +37,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="fileSystem">For moving files around</param>
         /// <param name="pathRemapper">For modifying custom node paths</param>
-        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper) 
+        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.pathRemapper = pathRemapper ?? throw new ArgumentNullException(nameof(pathRemapper));
@@ -80,7 +80,7 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
         {
-            
+
             var rootPath = Path.Combine(packagesDirectory, package.Name);
             var rootDir = fileSystem.TryCreateDirectory(rootPath);
             package.RootDirectory = rootDir.FullName;
@@ -89,7 +89,7 @@ namespace Dynamo.PackageManager
 
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, roots, rootDir, out dyfFiles);
-            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
+            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
 
             WritePackageHeader(package, rootDir);
@@ -168,7 +168,7 @@ namespace Dynamo.PackageManager
                         Path.GetFileName(x).Equals(Path.GetFileName(func), StringComparison.OrdinalIgnoreCase));
                 }
 
-                pathRemapper.SetPath(func, remapLocation);                
+                pathRemapper.SetPath(func, remapLocation);
             }
         }
 
@@ -214,9 +214,9 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void FormPackageDirectory(string packageDirectory, string packageName, 
-            out IDirectoryInfo root, out IDirectoryInfo dyfDir, 
-            out IDirectoryInfo binDir, out IDirectoryInfo extraDir, 
+        private void FormPackageDirectory(string packageDirectory, string packageName,
+            out IDirectoryInfo root, out IDirectoryInfo dyfDir,
+            out IDirectoryInfo binDir, out IDirectoryInfo extraDir,
             out IDirectoryInfo docDir)
         {
             var rootPath = Path.Combine(packageDirectory, packageName);
@@ -337,7 +337,7 @@ namespace Dynamo.PackageManager
 
                     if (!Directory.Exists(Path.GetDirectoryName(destPath)))
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(destPath)); 
+                        Directory.CreateDirectory(Path.GetDirectoryName(destPath));
                     }
 
                     fileSystem.CopyFile(file, destPath);
@@ -372,7 +372,7 @@ namespace Dynamo.PackageManager
             var parts = path.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length > 1) return "\\" + String.Join("\\", parts, 1, parts.Length - 1);
-           
+
             return "\\" + parts[0];
         }
 
@@ -412,7 +412,6 @@ namespace Dynamo.PackageManager
 
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
-                    // We are already creating the pkg.json file ourselves, so skip it, also skip if we are copying the file to itself.
                     if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
                     {
                         continue;
@@ -436,6 +435,9 @@ namespace Dynamo.PackageManager
                     }
                 }
             }
+
+
+
             // All files under Markdown directory do not apply to the rule above,
             // because they may fall into extra folder instead of docs folder,
             // currently there is on obvious way to filter them properly only based on path string.
@@ -530,7 +532,7 @@ namespace Dynamo.PackageManager
         #endregion
 
         #region Public Static Utility Methods 
-        
+
         public static bool IsXmlDocFile(string path, IEnumerable<string> files)
         {
             if (!path.ToLower().EndsWith(".xml")) return false;

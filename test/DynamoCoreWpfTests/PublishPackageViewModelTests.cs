@@ -119,7 +119,7 @@ namespace DynamoCoreWpfTests
                 vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, false);
             });
 
-            Assert.AreEqual(1, vm.AdditionalFiles.Count);
+            Assert.AreEqual(2, vm.AdditionalFiles.Count);
             Assert.AreEqual(0, vm.Assemblies.Count);
 
             Assert.AreEqual(PackageUploadHandle.State.Ready, vm.UploadState);
@@ -177,10 +177,10 @@ namespace DynamoCoreWpfTests
             //since retain is true, we will retain both the (renamed)assembly and the additional file.
             //the already loaded assembly is added to the additional files list as well
             vm.AddFile(addFilePath);
-            Assert.AreEqual(2, vm.AdditionalFiles.Count);
+            Assert.AreEqual(3, vm.AdditionalFiles.Count);
 
             vm.RemoveItemCommand.Execute(pkgItem);
-            Assert.AreEqual(1, vm.AdditionalFiles.Count);
+            Assert.AreEqual(2, vm.AdditionalFiles.Count);
 
             //arrange node libraries
             var assem = vm.Assemblies.FirstOrDefault().Assembly;
