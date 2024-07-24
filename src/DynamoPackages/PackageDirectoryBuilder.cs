@@ -61,8 +61,7 @@ namespace Dynamo.PackageManager
             WritePackageHeader(package, rootDir);
             RemoveUnselectedFiles(contentFiles, rootDir);
             CopyFilesIntoPackageDirectory(contentFiles, markdownFiles, dyfDir, binDir, extraDir, docDir);
-            RemoveDyfFiles(contentFiles, dyfDir);
-
+            //RemoveDyfFiles(contentFiles, dyfDir); // Commenting this out for now to allow for unforeseen issues to manifest
             RemapCustomNodeFilePaths(contentFiles, dyfDir.FullName);
 
             return rootDir;
@@ -88,7 +87,7 @@ namespace Dynamo.PackageManager
 
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, roots, rootDir, out dyfFiles);
-            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
+            //RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles); // Commenting this out for now to allow for unforeseen issues to manifest
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
 
             WritePackageHeader(package, rootDir);
@@ -117,7 +116,7 @@ namespace Dynamo.PackageManager
 
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, sourcePackageDir, rootDir, out dyfFiles);
-            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
+            //RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  // Commenting this out for now to allow for unforeseen issues to manifest
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
 
             WritePackageHeader(package, rootDir);
@@ -167,7 +166,7 @@ namespace Dynamo.PackageManager
                         Path.GetFileName(x).Equals(Path.GetFileName(func), StringComparison.OrdinalIgnoreCase));
                 }
 
-                pathRemapper.SetPath(func, remapLocation);                
+                pathRemapper.SetPath(func, remapLocation);
             }
         }
 
@@ -336,7 +335,7 @@ namespace Dynamo.PackageManager
 
                     if (!Directory.Exists(Path.GetDirectoryName(destPath)))
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(destPath)); 
+                        Directory.CreateDirectory(Path.GetDirectoryName(destPath));
                     }
 
                     fileSystem.CopyFile(file, destPath);
@@ -371,7 +370,7 @@ namespace Dynamo.PackageManager
             var parts = path.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length > 1) return "\\" + String.Join("\\", parts, 1, parts.Length - 1);
-           
+
             return "\\" + parts[0];
         }
 
