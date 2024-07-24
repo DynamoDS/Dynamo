@@ -1457,5 +1457,140 @@ namespace Dynamo.PackageManager.Tests
 
         }
 
+        #region Loader Context
+
+        [Test]
+        public void CanUnloadPackage_DllsCanBeDeleted()
+        {
+            var pkgDir = Path.Combine(PackagesDirectory, "AnotherPackage");
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+
+            var appAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var isAssemblyLoaded = AppDomain.CurrentDomain.GetAssemblies()
+                .Any(a => a.GetName().Name == "AnotherPackage");
+
+            loader.LoadPackages(new List<Package> { pkg });
+            Assert.AreEqual(1, pkg.LoadedAssemblies.Count);
+            Assert.AreEqual("AnotherPackage", pkg.LoadedAssemblies.First().Name);
+            Assert.IsTrue(pkg.LoadedAssemblies.First().IsNodeLibrary);
+
+            // Unload package
+            loader.UnloadPackage(pkg);
+
+            // Verify the assembly can be deleted (indicating it has been unloaded)
+            var assemblyPath = Path.Combine(pkgDir, "bin\\AnotherPackage.dll");
+            Assert.IsTrue(File.Exists(assemblyPath), "Assembly file does not exist.");
+
+            // Create backup directory if it doesn't exist
+            var backupDir = Path.Combine(pkgDir, "backup");
+            if (!Directory.Exists(backupDir))
+            {
+                Directory.CreateDirectory(backupDir);
+            }
+
+            // Copy the assembly file to the backup directory
+            var copyPath = Path.Combine(backupDir, "AnotherPackage.dll");
+            File.Copy(assemblyPath, copyPath, true);
+
+            // Try to delete the original assembly file
+            try
+            {
+                File.Delete(assemblyPath);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Assert.Fail($"Unable to delete the assembly file: {ex.Message}");
+            }
+
+            // Verify that the original assembly file has been deleted
+            Assert.IsFalse(File.Exists(assemblyPath), "Assembly file could not be deleted, indicating it is still in use.");
+
+            // Clean up
+            File.Copy(copyPath, assemblyPath, true);
+            File.Delete(copyPath);
+            Directory.Delete(backupDir);
+
+            // Check if we can reload the package later
+            pkg.LoadState.ResetState();
+
+            loader.LoadPackages(new List<Package> { pkg });
+            Assert.AreEqual(1, pkg.LoadedAssemblies.Count);
+            Assert.AreEqual("AnotherPackage", pkg.LoadedAssemblies.First().Name);
+            Assert.IsTrue(pkg.LoadedAssemblies.First().IsNodeLibrary);
+        }
+
+        [Test]
+        public void CheckIfLoadingContextLoadsAssembly()
+        {
+            var pkgDir = Path.Combine(PackagesDirectory, "AnotherPackage");
+            var pkg = new Package(PackagesDirectory, "TestPackage", "1.0.0", "MIT");
+
+            pkg.LoadContext = new PackageLoadContext();
+            Assert.IsTrue(pkg.LoadContext.Assemblies.Count() == 0);
+
+            // Verify the assembly can be deleted (indicating it has been unloaded)
+            var assemblyPath = Path.Combine(pkgDir, "bin\\AnotherPackage.dll");
+            Assert.IsTrue(File.Exists(assemblyPath), "Assembly file does not exist.");
+
+            Assembly assem = pkg.LoadContext.LoadFromAssemblyPath(assemblyPath);
+
+            Assert.IsNotNull(assem);
+            Assert.IsTrue(pkg.LoadContext.Assemblies.Count() == 1);
+        }
+
+        /// <summary>
+        /// Tests if the separate parts of the load context process are working correctly
+        /// </summary>
+        [Test]
+        public void CheckIfLoadingContextUnloadsAndDeletesAssembly()
+        {
+            var pkgDir = Path.Combine(PackagesDirectory, "AnotherPackage");
+            var pkg = new Package(PackagesDirectory, "TestPackage", "1.0.0", "MIT");
+
+            pkg.LoadContext = new PackageLoadContext();
+            Assert.IsTrue(pkg.LoadContext.Assemblies.Count() == 0);
+
+            // Verify the assembly can be deleted (indicating it has been unloaded)
+            var assemblyPath = Path.Combine(pkgDir, "bin\\AnotherPackage.dll");
+            Assert.IsTrue(File.Exists(assemblyPath), "Assembly file does not exist.");
+
+            // Create backup directory if it doesn't exist
+            var backupDir = Path.Combine(pkgDir, "backup");
+            if (!Directory.Exists(backupDir))
+            {
+                Directory.CreateDirectory(backupDir);
+            }
+
+            // Copy the assembly file to the backup directory
+            var copyPath = Path.Combine(backupDir, "AnotherPackage.dll");
+            File.Copy(assemblyPath, copyPath, true);
+            Assert.IsTrue(File.Exists(copyPath), "Copied file does not exist.");
+
+            pkg.LoadContext = new PackageLoadContext();
+
+            Assembly assem = Package.LoadAssemblyIntoPackageContext(pkg.LoadContext, assemblyPath);
+            Assert.IsTrue(pkg.LoadContext.Assemblies.Count() == 1);
+
+            assem = null;
+
+            pkg.UnloadPackageAssembliesContext(pkg.LoadContext);
+
+            try
+            {
+                File.Delete(copyPath);
+                Directory.Delete(backupDir);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Assert.Fail($"Unable to delete the assembly file: {ex.Message}");
+            }
+
+
+            Assert.IsFalse(File.Exists(copyPath), "Backup file still exists.");
+        }
+
+        #endregion
+
     }
 }

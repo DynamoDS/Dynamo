@@ -156,6 +156,17 @@ namespace Dynamo.PackageManager
             }
         }
 
+        internal void Unload(Package pkg)
+        {
+            if (localPackages.Contains(pkg))
+            {
+                localPackages.Remove(pkg);
+                pkg.MessageLogged -= OnPackageMessageLogged;
+
+                // Anything else we need to do?
+            }
+        }
+
         private void OnPackageMessageLogged(ILogMessage obj)
         {
             Log(obj);
@@ -308,6 +319,37 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Try unloading an already loaded package from the Library 
+        /// </summary>
+        /// <param name="package">The package to be unloaded</param>
+        private void TryUnloadPackageFromLibrary(Package package)
+        {
+            Unload(package);
+
+            try
+            {
+                package.UnloadPackageAssembliesContext(package.LoadContext);
+
+                // clear custom nodes
+                package.LoadedCustomNodes.Clear();
+
+                // Set state to Unloaded
+                package.LoadState.SetAsUnloaded();
+            }
+            catch (Exception e)
+            {
+                if (e is DynamoServices.AssemblyBlockedException)
+                {
+                    var failureMessage = string.Format(Properties.Resources.PackageLoadFailureForBlockedAssembly, e.Message);
+                    DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle);
+                }
+                package.LoadState.SetAsError(e.Message);
+                Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
+                Log(e.GetType() + ": " + e.Message);
+            }
+        }
+
+        /// <summary>
         /// Event raised when a custom node package containing conflicting node definition
         /// with an existing package is tried to load.
         /// </summary>
@@ -356,6 +398,11 @@ namespace Dynamo.PackageManager
                     TryLoadPackageIntoLibrary(pkg);
                 }
             }
+        }
+
+        internal void UnloadPackage(Package package)
+        {
+            TryUnloadPackageFromLibrary(package);
         }
 
         /// <summary>

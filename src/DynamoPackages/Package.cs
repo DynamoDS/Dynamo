@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using Dynamo.Core;
 using Dynamo.Exceptions;
@@ -249,7 +250,6 @@ namespace Dynamo.PackageManager
             LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
             AdditionalFiles = new ObservableCollection<PackageFileInfo>();
             Header = PackageUploadBuilder.NewRequestBody(this);
-            LoadContext = new PackageLoadContext(directory);
         }
 
         public static Package FromDirectory(string rootPath, ILogger logger)
@@ -380,7 +380,9 @@ namespace Dynamo.PackageManager
 
                 if (shouldLoadFile)
                 {
-                    Assembly assem = LoadContext.LoadFromAssemblyPath(assemFile.FullName);
+                    this.LoadContext = new PackageLoadContext();
+
+                    Assembly assem = LoadAssemblyIntoPackageContext(this.LoadContext, assemFile.FullName);
 
                     if (assem != null)
                     {
@@ -406,11 +408,60 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// A public method to unload all assemblies associated with this package
+        /// https://learn.microsoft.com/en-us/dotnet/standard/assembly/unloadability
         /// </summary>
-        public void UnloadPackage()
+        /// <param name="loadContext"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static Assembly LoadAssemblyIntoPackageContext(PackageLoadContext loadContext, string fileName)
         {
-            LoadContext.UnloadPackage();
+            if (loadContext == null) return null;
+
+            using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            {
+                return loadContext.LoadFromStream(fileStream);
+            }
+        }
+
+        /// <summary>
+        /// A public method to unload all assemblies associated with this package
+        /// https://learn.microsoft.com/en-us/dotnet/standard/assembly/unloadability
+        /// </summary>
+        internal void UnloadPackageAssembliesContext(PackageLoadContext loadContext = null)
+        {
+            var weakReference = new WeakReference(loadContext);
+
+            LoadedAssemblies.Clear();
+
+            if (loadContext != null)
+            {
+                loadContext.Unload();
+                loadContext = null;
+            }
+            else
+            {
+                this.LoadContext.Unload();
+                this.LoadContext = new PackageLoadContext();
+            }
+
+            Console.WriteLine("Assembly unloaded and reference nulled");
+
+            // For example, you might want to delete the assembly file that was loaded into the custom AssemblyLoadContext from disk.
+            // In such a case, the following code snippet can be used.
+            // It triggers garbage collection and waits for pending finalizers in a loop until the weak reference to the custom AssemblyLoadContext is set to null,
+            // indicating the target object was collected. In most cases, just one pass through the loop is required.
+            // However, for more complex cases where objects created by the code running in the AssemblyLoadContext have finalizers, more passes might be needed.
+            for (int i = 0; weakReference.IsAlive && (i < 50); i++)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+
+            if (weakReference.IsAlive)
+            {
+                Console.WriteLine("Even if the weak reference is still alive, that is not guarantee that we failed to unload.");
+            }
         }
 
         /// <summary>
@@ -657,26 +708,14 @@ namespace Dynamo.PackageManager
     /// </summary>
     public class PackageLoadContext : AssemblyLoadContext
     {
-        private readonly string packagePath;
-
-        public PackageLoadContext(string packagePath)
+        public PackageLoadContext() : base(isCollectible: true)
         {
-            this.packagePath = packagePath;
         }
 
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            string assemblyPath = Path.Combine(packagePath, $"{assemblyName.Name}.dll");
-            if (File.Exists(assemblyPath))
-            {
-                return LoadFromAssemblyPath(assemblyPath);
-            }
-            return null;
-        }
-
-        public void UnloadPackage()
-        {
-            Unload();
+            return null; // Return null to use the default loading mechanism
         }
     }
 }
+
