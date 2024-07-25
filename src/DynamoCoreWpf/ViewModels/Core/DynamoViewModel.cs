@@ -2787,6 +2787,8 @@ namespace Dynamo.ViewModels
                 if (_fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     SaveAs(_fileDialog.FileName);
+                    if(FileTrustViewModel != null)
+                        FileTrustViewModel.DynFileDirectoryName = _fileDialog.FileName;
                     LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
                     //set the IsTemplate to false, after saving it as a file
                     vm.Model.CurrentWorkspace.IsTemplate = false;
