@@ -1,12 +1,14 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Transactions;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Dynamo.ViewModels
 {
@@ -436,15 +438,20 @@ namespace Dynamo.ViewModels
             wsViewModel.CancelActiveState();
 
             // Create mock nodes, currently Python nodes, and connect them to the input port
-            var targetNode = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.LastOrDefault();
-            targetNode.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
-            wsViewModel.Nodes.LastOrDefault().IsPreview = true;
-            // Get the original node
-            var node1 = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel.Connectors.FirstOrDefault().Start.Owner.GUID;
-            targetNode.CreateAndConnectCommand.Execute(wsViewModel.Nodes.Where(Nodes => Nodes.Id == node1).FirstOrDefault().InPorts.FirstOrDefault().PortModel);
-            var node2 = wsViewModel.Nodes.LastOrDefault();
-            node2.IsPreview = true;
-            targetNode.CreateAndConnectCommand.Execute(node2.InPorts.FirstOrDefault().PortModel);
+            var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.LastOrDefault();
+            targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
+
+            var sizeOfMockCluster = 10;
+            var n = 1;
+            while (n < sizeOfMockCluster)
+            {
+                // Get the last node and connect a new node to it
+                var node1 = wsViewModel.Nodes.LastOrDefault();
+                node1.IsPreview = true;
+                targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
+                n++;
+            }
+
             wsViewModel.Nodes.LastOrDefault().IsPreview = true;
 
             stopwatch.Stop(); // Stop the stopwatch
