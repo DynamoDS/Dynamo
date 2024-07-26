@@ -213,6 +213,24 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// IsPackageInstalled property </summary>
+        /// <value>
+        /// Shows if the package is already installed </value>
+        private bool _isPackageInstalled = false;
+        public bool IsPackageInstalled
+        {
+            get { return _isPackageInstalled; }
+            set
+            {
+                if (_isPackageInstalled != value)
+                {
+                    _isPackageInstalled = value;
+                    RaisePropertyChanged(nameof(IsPackageInstalled));
+                }
+            }
+        }
+
+        /// <summary>
         /// CanEditName property </summary>
         /// <value>
         /// The name of the node to be uploaded </value>
@@ -956,8 +974,8 @@ namespace Dynamo.PackageManager
             customNodeDefinitions = new List<CustomNodeDefinition>();
             SubmitCommand = new DelegateCommand(Submit, CanSubmit);
             PublishLocallyCommand = new DelegateCommand(PublishLocally, CanPublishLocally);
-            ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanShowAddFileDialogAndAdd);
-            SelectDirectoryAndAddFilesRecursivelyCommand = new DelegateCommand(SelectDirectoryAndAddFilesRecursively);
+            ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanAddFiles);
+            SelectDirectoryAndAddFilesRecursivelyCommand = new DelegateCommand(SelectDirectoryAndAddFilesRecursively, CanAddFiles);
             SelectMarkdownDirectoryCommand = new DelegateCommand(SelectMarkdownDirectory);
             ClearMarkdownDirectoryCommand = new DelegateCommand(ClearMarkdownDirectory);
             CancelCommand = new DelegateCommand(Cancel);
@@ -1090,7 +1108,7 @@ namespace Dynamo.PackageManager
             if (!rootItems.Any()) return rootItems;
 
             var roots = new List<PackageItemRootViewModel>();
-                      
+
             var commonPaths = GetCommonPaths(items.Keys.ToArray());
             if (commonPaths == null) return null;
 
@@ -1493,6 +1511,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// The method is used to create a PublishPackageViewModel from a Package object.
         /// If retainFolderStructure is set to true, the folder structure of the package will be retained. Else, the default folder structure will be imposed.
+        /// Investigating if both options (publish and publish new version) should not use 'retainFolderStructure' with disabled package files and folders editing
         /// </summary>
         /// <param name="dynamoViewModel"></param>
         /// <param name="pkg">The package to be loaded</param>
@@ -2120,9 +2139,9 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private bool CanShowAddFileDialogAndAdd()
+        private bool CanAddFiles()
         {
-            return true;
+            return !IsPackageInstalled;
         }
 
         internal void AddFile(string filename)
@@ -2270,7 +2289,15 @@ namespace Dynamo.PackageManager
             {
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, RetainFolderStructureOverride ? updatedFiles : contentFiles, MarkdownFiles, IsNewVersion, CurrentPackageRootDirectories, RetainFolderStructureOverride);
+                PackageUploadHandle handle;
+                if (IsPackageInstalled)
+                {
+                    handle = pmExtension.PackageManagerClient.PublishInstalledPackageAsync(Package, IsNewVersion);
+                }
+                else
+                {
+                    handle = pmExtension.PackageManagerClient.PublishAsync(Package, RetainFolderStructureOverride ? updatedFiles : contentFiles, MarkdownFiles, IsNewVersion, CurrentPackageRootDirectories, RetainFolderStructureOverride);
+                }
 
                 // start upload
                 Uploading = true;
@@ -2604,10 +2631,12 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Delegate used to publish the element locally </summary>
+        /// Delegate used to publish the element locally
+        /// If the package is already installed (and therefore loaded), we shouldn't be able to publish it locally again?
+        /// </summary>
         private bool CanPublishLocally()
         {
-            return CheckPackageValidity();
+            return !IsPackageInstalled && CheckPackageValidity();
         }
 
         private bool CheckPackageValidity()
@@ -2765,12 +2794,13 @@ namespace Dynamo.PackageManager
         internal PackageItemRootViewModel GetExistingRootItemViewModel(string publishPath, string packageName)
         {
             if (!PackageContents.Any()) return null;
-            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1) {
+            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1)
+            {
                 // If there is only one root item, this root item becomes the new folder
                 var item = PackageContents.First(x => x.DependencyType.Equals(DependencyType.Folder));
 
                 item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
-                item.AddChildren( PackageContents.First().ChildItems.ToList() );
+                item.AddChildren(PackageContents.First().ChildItems.ToList());
 
                 return item;
             }
@@ -2780,7 +2810,7 @@ namespace Dynamo.PackageManager
             foreach (var item in PackageContents)
             {
                 // Skip 'bare' custom nodes, they will be represented by their CustomNodePreview counterparts
-                if(item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
+                if (item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
 
                 item.isChild = true;
                 rootItem.AddChildren(item);

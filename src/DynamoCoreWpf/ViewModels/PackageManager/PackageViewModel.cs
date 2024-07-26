@@ -180,7 +180,7 @@ namespace Dynamo.ViewModels
             Model = model;
 
             PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), IsOwner);
-            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), IsOwner);
+            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
@@ -410,6 +410,25 @@ namespace Dynamo.ViewModels
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
         }
 
+        private bool CanPublishNewPackage()
+        {
+            if (!CanPublish) return false;
+
+            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username) ||
+                PackageNotPublishedAndUserIsHolder(Model, dynamoModel.AuthenticationManager.Username);
+        }
+
+
+        // Utility function to assert if a local package can be published
+        // If the current user is the package holder and a package with that name has not been published yet, return true
+        private bool PackageNotPublishedAndUserIsHolder(Package package, string username)
+        {
+            bool userIsHolder = package.CopyrightHolder != null && package.CopyrightHolder.Equals(username);
+            bool packageHasNotBeenPublished = !this.dynamoViewModel.PackageManagerClientViewModel.CachedPackageList.Any(x => x.Name == package.Name);
+
+            return userIsHolder && packageHasNotBeenPublished;
+        }
+
         private bool CanDeprecate()
         {
             var isDeprecated = IsPackageDeprecated(Model.Name);
@@ -438,6 +457,7 @@ namespace Dynamo.ViewModels
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, true);
             vm.IsNewVersion = true;
+            vm.IsPackageInstalled = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
         }
@@ -445,8 +465,9 @@ namespace Dynamo.ViewModels
         private void PublishNewPackage()
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, false);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, true);
             vm.IsNewVersion = false;
+            vm.IsPackageInstalled = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
         }

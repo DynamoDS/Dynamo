@@ -427,6 +427,11 @@
                                         Property="Fill"
                                         Value="#6AC0E7" />
                                 </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Folder"
+                                        Property="Fill"
+                                        Value="Gray" />
+                                </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Button.Template>
@@ -465,6 +470,11 @@
                                         Property="Fill"
                                         Value="#6AC0E7" />
                                 </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Folder"
+                                        Property="Fill"
+                                        Value="Gray" />
+                                </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Button.Template>
@@ -475,6 +485,7 @@
             <local:CustomBrowserControl x:Name="customBrowserControl"
                                     Grid.Column="0" Grid.Row="1"
                                     Loaded="customBrowserControl_Loaded"
+                                    DisableRemove="{Binding IsPackageInstalled}"
                                     Root="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
 
             <!--Files-->
@@ -487,6 +498,7 @@
                   CanUserSortColumns="True"
                   VerticalScrollBarVisibility="Disabled"
                   ItemsSource="{Binding RootContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                  IsEnabled="{Binding IsPackageInstalled, Converter={StaticResource BooleanNegationConverter}}"
                   Style="{StaticResource DataGrid}">
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridRowStyle}">
@@ -599,9 +611,9 @@
                           Height="15"
                           VerticalAlignment="Center"
                           Margin="0 5"
-                          IsEnabled="True"
                           IsChecked="{Binding Path=RetainFolderStructureOverride, Mode=TwoWay}"
                           IsTabStop="False"
+                          IsEnabled="{Binding IsPackageInstalled, Converter={StaticResource BooleanNegationConverter}}"
                           Style="{StaticResource EllipseToggleButton1}" />
                 <TextBlock Text="{x:Static p:Resources.PublishPackageRetainFolderStructureToggleButtonText}"
                        Style="{StaticResource LabelStyle}"

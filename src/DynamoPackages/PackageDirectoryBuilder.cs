@@ -12,10 +12,10 @@ namespace Dynamo.PackageManager
     {
         IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownfiles);
         IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles);
+        IDirectoryInfo BuildPackageHeader(Package package, string packagesDirectory);
 
         [Obsolete]
         IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles);
-
     }
 
     /// <summary>
@@ -118,6 +118,23 @@ namespace Dynamo.PackageManager
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, sourcePackageDir, rootDir, out dyfFiles);
             //RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  // Commenting this out for now to allow for unforeseen issues to manifest
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
+
+            WritePackageHeader(package, rootDir);
+
+            return rootDir;
+        }
+
+        /// <summary>
+        /// Builds package header in the provided package directory
+        /// </summary>
+        /// <param name="package">The already installed package</param>
+        /// <param name="packagesDirectory">The package installation folder</param>
+        /// <returns></returns>
+        public IDirectoryInfo BuildPackageHeader(Package package, string packagesDirectory)
+        {
+            var rootPath = Path.Combine(packagesDirectory, package.Name);
+            var rootDir = fileSystem.TryCreateDirectory(rootPath);
+            package.RootDirectory = rootDir.FullName;
 
             WritePackageHeader(package, rootDir);
 
