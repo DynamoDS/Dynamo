@@ -180,7 +180,7 @@ namespace Dynamo.ViewModels
             Model = model;
 
             PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), IsOwner);
-            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), IsOwner);
+            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), CanSubmitNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
@@ -408,6 +408,20 @@ namespace Dynamo.ViewModels
         {
             if (!CanPublish) return false;
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
+        }
+
+        /// <summary>
+        /// You should only be able to use this if you have an installed local package and submit for the first time
+        /// If a package with such name already exists, the process will fail during the API call, here we are not checking for that
+        /// </summary>
+        /// <returns></returns>
+        private bool CanSubmitNewPackage()
+        {
+            if (!CanPublish) return false;
+            // This is a round-about way to say, if we can publish a version,
+            // then the publish has already been published,
+            // so only allow 'Publish version'
+            return !packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
         }
 
         private bool CanDeprecate()

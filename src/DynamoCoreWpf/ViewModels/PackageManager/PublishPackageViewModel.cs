@@ -184,7 +184,7 @@ namespace Dynamo.PackageManager
             get { return _uploadHandle; }
             set
             {
-                if (_uploadHandle != value)
+                if (value != null && _uploadHandle != value)
                 {
                     _uploadHandle = value;
                     _uploadHandle.PropertyChanged += UploadHandleOnPropertyChanged;
