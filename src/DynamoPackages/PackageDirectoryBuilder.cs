@@ -328,17 +328,18 @@ namespace Dynamo.PackageManager
 
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
-                    if (fileSystem.FileExists(destPath))
-                    {
-                        fileSystem.DeleteFile(destPath);
-                    }
-
                     if (!Directory.Exists(Path.GetDirectoryName(destPath)))
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+                        Directory.CreateDirectory(Path.GetDirectoryName(destPath)); 
                     }
 
-                    fileSystem.CopyFile(file, destPath);
+                    if (!fileSystem.FileExists(destPath))
+                    {
+                        // Only copy new files into the destination folder.
+                        // Under `retain folder structure`, if the destination file == source file,
+                        // then that is simply the actual Package file we want to work with. 
+                        fileSystem.CopyFile(file, destPath);
+                    }
 
                     if (file.ToLower().EndsWith(".dyf"))
                     {

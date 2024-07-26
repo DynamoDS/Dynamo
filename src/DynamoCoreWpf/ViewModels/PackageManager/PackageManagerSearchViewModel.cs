@@ -998,6 +998,7 @@ namespace Dynamo.PackageManager
             var pkgs = PackageManagerClientViewModel.ListAll();
 
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
+            pkgs = pkgs.Where(x => x.Header.versions != null && x.Header.versions.Count > 0).ToList(); // We expect compliant data structure
             LastSync = pkgs;
 
             PopulateMyPackages();   // adding 
