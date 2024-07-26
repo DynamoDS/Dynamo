@@ -238,7 +238,7 @@ namespace CoreNodeModels
         {
             if (elements.Any())
             {
-                string text = string.Join(", ", SelectionResults.Take(20).Select(x => x.ToString()));
+                string text = string.Join(", ", elements.Take(20).Select(x => x.ToString()));
 
                 if (elements.Count() > 20)
                 {
