@@ -328,7 +328,8 @@ namespace Dynamo.PackageManager
 
             try
             {
-                package.UnloadPackageAssembliesContext(package.LoadContext);
+                package.LoadedAssemblies.Clear();
+                Package.UnloadPackageAssembliesContext(package.LoadContext);
 
                 // clear custom nodes
                 package.LoadedCustomNodes.Clear();

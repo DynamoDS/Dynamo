@@ -428,23 +428,18 @@ namespace Dynamo.PackageManager
         /// A public method to unload all assemblies associated with this package
         /// https://learn.microsoft.com/en-us/dotnet/standard/assembly/unloadability
         /// </summary>
-        internal void UnloadPackageAssembliesContext(PackageLoadContext loadContext = null)
+        internal static void UnloadPackageAssembliesContext(PackageLoadContext loadContext)
         {
-            var weakReference = new WeakReference(loadContext);
+            if(loadContext == null) return;
 
-            LoadedAssemblies.Clear();
+            var weakReference = new WeakReference(loadContext);
 
             if (loadContext != null)
             {
                 loadContext.Unload();
-                loadContext = null;
+                loadContext = new PackageLoadContext();
             }
-            else
-            {
-                this.LoadContext.Unload();
-                this.LoadContext = new PackageLoadContext();
-            }
-
+        
             Console.WriteLine("Assembly unloaded and reference nulled");
 
             // For example, you might want to delete the assembly file that was loaded into the custom AssemblyLoadContext from disk.

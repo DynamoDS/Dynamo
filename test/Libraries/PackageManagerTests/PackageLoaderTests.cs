@@ -1574,7 +1574,7 @@ namespace Dynamo.PackageManager.Tests
 
             assem = null;
 
-            pkg.UnloadPackageAssembliesContext(pkg.LoadContext);
+            Package.UnloadPackageAssembliesContext(pkg.LoadContext);
 
             try
             {

@@ -998,6 +998,7 @@ namespace Dynamo.PackageManager
             var pkgs = PackageManagerClientViewModel.ListAll();
 
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
+            pkgs = pkgs.Where(x => x.Header.versions != null && x.Header.versions.Count > 0).ToList(); // We expect compliant data structure
             LastSync = pkgs;
 
             PopulateMyPackages();   // adding 
@@ -1243,7 +1244,8 @@ namespace Dynamo.PackageManager
         internal void SearchAndUpdateResults(string query)
         {
             // if last sync isn't populated, we can't search
-            if (LastSync == null) return;
+            // or if the query is the same as the search text we already have, no need to repeat
+            if (LastSync == null || this.SearchText.Equals(query)) return;
 
             IEnumerable<PackageManagerSearchElementViewModel> results;
             this.SearchText = query;
