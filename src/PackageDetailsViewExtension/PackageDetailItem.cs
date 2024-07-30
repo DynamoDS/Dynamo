@@ -196,8 +196,7 @@ namespace Dynamo.PackageDetails
             this.CopyRightYear = PackageVersion.copyright_year;
             this.CanInstall = canInstall;
             this.IsEnabledForInstall = isEnabledForInstall && canInstall;
-            //TODO: point this property to the package version size after it has been added to the db.
-            this.PackageSize = Dynamo.Properties.Resources.NoneString;
+            this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
 
 
             // To avoid displaying package self-dependencies.

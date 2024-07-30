@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.PackageDetails;
 using Dynamo.PackageManager;
@@ -49,6 +49,7 @@ namespace DynamoCoreWpfTests
                 host_dependencies = new List<string>(Hosts),
                 version = "0.0.1",
                 name = "test",
+                size = "2.19 MiB",
             },
             new PackageVersion
             {
@@ -61,6 +62,7 @@ namespace DynamoCoreWpfTests
                 host_dependencies = new List<string>(Hosts),
                 version = "0.0.2",
                 name = "test",
+                size = "4.19 MiB",
             },
             new PackageVersion
             {
@@ -73,6 +75,7 @@ namespace DynamoCoreWpfTests
                 host_dependencies = new List<string>(Hosts),
                 version = "0.0.3",
                 name = "test",
+                size = "5.19 MiB",
             },
         };
         private static List<string> DependencyVersions { get; } = new List<string> {"1", "2", "3"};
@@ -418,6 +421,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(packageToOpen, packageDetailsViewModel.PackageName);
             Assert.AreEqual(packageAuthor.First().username, packageDetailsViewModel.PackageAuthorName);
             Assert.AreEqual(packageDescription, packageDetailsViewModel.PackageDescription);
+            Assert.AreEqual(false, string.IsNullOrEmpty(packageDetailsViewModel.PackageDetailItems.FirstOrDefault().PackageSize));
         }
     }
 }
