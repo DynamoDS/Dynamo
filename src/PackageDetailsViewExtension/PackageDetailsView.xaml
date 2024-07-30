@@ -684,7 +684,7 @@
 
                         <!--  Size  -->
                         <DataGridTextColumn MinWidth="110"
-                                            Binding="{Binding PythonVersion}"
+                                            Binding="{Binding PackageSize}"
                                             Header="{x:Static p:Resources.PackageDetailsSize}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
