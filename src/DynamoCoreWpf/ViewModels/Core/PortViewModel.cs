@@ -438,7 +438,7 @@ namespace Dynamo.ViewModels
             wsViewModel.CancelActiveState();
 
             // Create mock nodes, currently Python nodes, and connect them to the input port
-            var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.LastOrDefault();
+            var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
             targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
 
             var sizeOfMockCluster = 10;
