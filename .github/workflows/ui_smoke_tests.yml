@@ -33,14 +33,14 @@ jobs:
         shell: cmd
         run: .\TE.exe -SilentInstall
       - name: Download Build Artifact
-        uses: dawidd6/action-download-artifact@deb3bb83256a78589fef6a7b942e5f2573ad7c13 # v5
+        uses: dawidd6/action-download-artifact@595ee515272114bc99adc65ad6a0736f515c52e7 # v5
         with:
           name: DynamoSandbox
           workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
           run_id: ${{ env.WORKFLOW_RUN_ID }}
           path: ${{ github.workspace }}\build
       - name: Download Pull Request Artifact
-        uses: dawidd6/action-download-artifact@deb3bb83256a78589fef6a7b942e5f2573ad7c13 # v5
+        uses: dawidd6/action-download-artifact@595ee515272114bc99adc65ad6a0736f515c52e7 # v5
         with:
           name: pr_data
           workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
