@@ -409,6 +409,22 @@ namespace Dynamo.Utilities
 
                 if (searchTerm.Contains(' '))
                 {
+                    //Added due that the Search algorithm was not matching the exact name when searchTerm contain empty spaces
+                    if (!string.IsNullOrEmpty(searchTerm) && f == nameof(LuceneConfig.NodeFieldsEnum.Name))
+                    {
+                        var wildcardQueryWithEmptySpace = CalculateFieldWeight(f, searchTerm, true);
+
+                        //PhraseQuery will escape whitespace characters trying to match the exact phrase
+                        var phraseQuery = new PhraseQuery
+                        {
+                            new Term(f, searchTerm),
+                        };
+                        phraseQuery.Boost = LuceneConfig.SearchNameWeight;
+
+                        booleanQuery.Add(phraseQuery, occurQuery);
+                        booleanQuery.Add(wildcardQueryWithEmptySpace, occurQuery);
+                    }
+
                     foreach (string s in searchTerm.Split(' ', '.'))
                     {
                         //If is a ByEmptySpace search and the splitted words match with more than MaxNodeNamesRepeated nodes then the word is skipped
