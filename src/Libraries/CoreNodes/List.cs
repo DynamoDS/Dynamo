@@ -165,12 +165,13 @@ namespace DSCore
         /// </summary>
         /// <param name="list">The list to find the element in.</param>
         /// <param name="element">The element whose index is to be returned.</param>
-        /// <returns name="int">The index of the element in the list. Invalid index -1 will be returned if strict match not found.</returns>
+        /// <returns name="int">The index of the element in the list. Invalid index null will be returned if strict match not found.</returns>
         /// <search>index,indexof</search>
         [IsVisibleInDynamoLibrary(true)]
         public static int IndexOf(IList list, object element)
         {
-            return list.IndexOf(element);
+            var index = list.IndexOf(element);
+            return index < 0 ? null : index;
         }
 
         /// <summary>
