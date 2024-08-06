@@ -23,7 +23,6 @@ using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
-using Newtonsoft.Json;
 
 namespace Dynamo.Utilities
 {
