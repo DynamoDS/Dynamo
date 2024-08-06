@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
-using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -992,6 +991,17 @@ namespace Dynamo.Graph.Nodes
                     RaisePropertyChanged(nameof(IsFrozen));
                 }
             }
+        }
+
+        /// <summary>
+        /// A flag indicating whether the node is in preview mode.
+        /// When a node is in preview mode, the node will not participate in execution,
+        /// Or saved to the graph. It is only used for previewing the AutoComplete cluster in the canvas.
+        /// </summary>
+        public bool IsPreview
+        {
+            get;
+            set;
         }
 
         /// <summary>
