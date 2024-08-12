@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -14,6 +16,7 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
+using Greg.Responses;
 using Newtonsoft.Json;
 using String = System.String;
 
@@ -351,7 +354,7 @@ namespace Dynamo.PackageManager
         ///     I.E. Builtin Packages.
         /// </summary>
         /// <returns>The list of all node library assemblies</returns>
-        internal IEnumerable<PackageAssembly> EnumerateAndLoadAssembliesInBinDirectory()
+        internal IEnumerable<PackageAssembly> EnumerateAndLoadAssembliesInBinDirectory(AssemblyLoadContext alc)
         {
             var assemblies = new List<PackageAssembly>();
 
@@ -374,7 +377,7 @@ namespace Dynamo.PackageManager
                 if (shouldLoadFile)
                 {
                     // dll files may be un-managed, skip those
-                    var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                    var result = PackageLoader.TryLoadFrom(alc, assemFile.FullName, out assem);
                     if (result)
                     {
                         // IsNodeLibrary may fail, we store the warnings here and then show
@@ -572,21 +575,60 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
+        AssemblyLoadContext GetPackageALC()
+        {
+            if (LoadedAssemblies.Any())
+            {
+                if (LoadedAssemblies.All(x => AssemblyLoadContext.GetLoadContext(x.Assembly) != AssemblyLoadContext.Default))
+                {
+                    return AssemblyLoadContext.GetLoadContext(LoadedAssemblies[0].Assembly);
+                }
+            }
+            return AssemblyLoadContext.Default;
+        }
+
+
+
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
         {
             if (LoadedAssemblies.Any())
             {
+                var alc = GetPackageALC();
+                if (alc != AssemblyLoadContext.Default)
+                {
+                    void Alc_Unloading(AssemblyLoadContext obj)
+                    {
+                        alc.Unloading -= Alc_Unloading;
+                        try
+                        {
+                            RemovePackage(customNodeManager, packageLoader, prefs);
+                        }
+                        catch
+                        {
+                            // Exception already logged inside RemovePackage
+                        }
+                    }
+
+                    alc.Unloading += Alc_Unloading;
+                    alc.Unload();
+                }
+
                 MarkForUninstall(prefs);
                 return;
             }
 
+            RemovePackage(customNodeManager, packageLoader, prefs);
+        }
+
+        private void RemovePackage(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
+        {
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
                 if (BuiltInPackage)
                 {
                     LoadState.SetAsUnloaded();
-                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} set unloaded");
+                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name} {versionName} set unloaded");
 
                     RaisePropertyChanged(nameof(LoadState));
 

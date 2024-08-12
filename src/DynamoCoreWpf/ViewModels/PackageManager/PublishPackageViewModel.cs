@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
@@ -2202,7 +2203,7 @@ namespace Dynamo.PackageManager
             {
                 // we're not sure if this is a managed assembly or not
                 // we try to load it, if it fails - we add it as an additional file
-                var result = PackageLoader.TryLoadFrom(filename, out Assembly assem);
+                var result = PackageLoader.TryLoadFrom(AssemblyLoadContext.Default, filename, out Assembly assem);
                 if (result)
                 {
                     var assemName = assem.GetName().Name;
