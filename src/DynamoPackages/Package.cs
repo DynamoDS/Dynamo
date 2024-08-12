@@ -593,24 +593,30 @@ namespace Dynamo.PackageManager
         {
             if (LoadedAssemblies.Any())
             {
-                var alc = GetPackageALC();
-                if (alc != AssemblyLoadContext.Default)
-                {
-                    void Alc_Unloading(AssemblyLoadContext obj)
-                    {
-                        alc.Unloading -= Alc_Unloading;
-                        try
-                        {
-                            RemovePackage(customNodeManager, packageLoader, prefs);
-                        }
-                        catch
-                        {
-                            // Exception already logged inside RemovePackage
-                        }
-                    }
+                bool unloadAnyPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("UnloadAnyIsolatedPackage", false) ?? false;
+                bool unloadThisPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("UnloadIsolatedPackage_" + this.Name, false) ?? false;
 
-                    alc.Unloading += Alc_Unloading;
-                    alc.Unload();
+                if (unloadAnyPackage || unloadThisPackage)
+                {
+                    var alc = GetPackageALC();
+                    if (alc != AssemblyLoadContext.Default)
+                    {
+                        void Alc_Unloading(AssemblyLoadContext obj)
+                        {
+                            alc.Unloading -= Alc_Unloading;
+                            try
+                            {
+                                RemovePackage(customNodeManager, packageLoader, prefs);
+                            }
+                            catch
+                            {
+                                // Exception already logged inside RemovePackage
+                            }
+                        }
+
+                        alc.Unloading += Alc_Unloading;
+                        alc.Unload();
+                    }
                 }
 
                 MarkForUninstall(prefs);

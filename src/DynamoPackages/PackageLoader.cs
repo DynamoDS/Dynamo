@@ -210,7 +210,9 @@ namespace Dynamo.PackageManager
 
                 AssemblyLoadContext pkgLoadContext = AssemblyLoadContext.Default;
 
-                if (DynamoModel.FeatureFlags?.CheckFeatureFlag(package.Name, false) ?? true)
+                bool isolateAnyPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolateAnyPackage", false) ?? false;
+                bool isolateThisPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolatePackage_" + package.Name, false) ?? false;
+                if (isolateAnyPackage || isolateThisPackage)
                 {
                     if (extensions.Count() == 1)
                     {
