@@ -210,27 +210,30 @@ namespace Dynamo.PackageManager
 
                 AssemblyLoadContext pkgLoadContext = AssemblyLoadContext.Default;
 
-                if (extensions.Count() == 1)
+                if (DynamoModel.FeatureFlags?.CheckFeatureFlag(package.Name, false) ?? true)
                 {
-                    var ext = extensions[0];
-                    string entryPoint = string.Empty;
-                    try
+                    if (extensions.Count() == 1)
                     {
-                        entryPoint = ExtensionLoader.GetExtensionPath(ext.Model.FullName);
-                        if (!string.IsNullOrEmpty(entryPoint))
+                        var ext = extensions[0];
+                        string entryPoint = string.Empty;
+                        try
                         {
-                            pkgLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, Path.Combine(package.RootDirectory, entryPoint));
+                            entryPoint = ExtensionLoader.GetExtensionPath(ext.Model.FullName);
+                            if (!string.IsNullOrEmpty(entryPoint))
+                            {
+                                pkgLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, Path.Combine(package.RootDirectory, entryPoint));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log(ex);
                         }
                     }
-                    catch (Exception ex)
+                    else if (package.Header.node_libraries.Any())
                     {
-                        Log(ex);
+                        string entryPoint = new AssemblyName(package.Header.node_libraries.First()).Name + ".dll";
+                        pkgLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, Path.Combine(package.BinaryDirectory, entryPoint));
                     }
-                }
-                else if (package.Header.node_libraries.Any())
-                {
-                    string entryPoint = new AssemblyName(package.Header.node_libraries.First()).Name + ".dll";
-                    pkgLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, Path.Combine(package.BinaryDirectory, entryPoint));
                 }
 
                 List<Assembly> blockedAssemblies = new List<Assembly>();
