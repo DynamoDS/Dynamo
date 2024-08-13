@@ -379,7 +379,6 @@ namespace Dynamo.Utilities
                     {
                         //Means that the first term is a category when we will be using the FullCategoryName for making a specific search based in the category
                         trimmedSearchTerm = matchingCategory?.FullCategoryName;
-                        occurQuery = Occur.MUST;
                     }
                     else if (f == nameof(LuceneConfig.NodeFieldsEnum.Name) && firstTermIsCategory == true)
                     {
@@ -412,14 +411,14 @@ namespace Dynamo.Utilities
                     //Added due that the Search algorithm was not matching the exact name when searchTerm contain empty spaces
                     if (!string.IsNullOrEmpty(searchTerm) && f == nameof(LuceneConfig.NodeFieldsEnum.Name))
                     {
-                        var wildcardQueryWithEmptySpace = CalculateFieldWeight(f, searchTerm, true);
+                        //I had to use the use the WildcardQuery class directly to set the weight(Boost) to the default value (instead of using the one calculated by the CalculateFieldWeight() method
+                        var wildcardQueryWithEmptySpace = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
 
                         //PhraseQuery will escape whitespace characters trying to match the exact phrase
                         var phraseQuery = new PhraseQuery
                         {
                             new Term(f, searchTerm),
                         };
-                        phraseQuery.Boost = LuceneConfig.SearchNameWeight;
 
                         booleanQuery.Add(phraseQuery, occurQuery);
                         booleanQuery.Add(wildcardQueryWithEmptySpace, occurQuery);
