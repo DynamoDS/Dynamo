@@ -741,7 +741,7 @@ namespace Dynamo.PackageManager
             var hostFilter = new List<FilterEntry>();
             try
             {
-                foreach (var host in new List<string>())
+                foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
                 {
                     hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
                 }
