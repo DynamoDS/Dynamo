@@ -739,11 +739,17 @@ namespace Dynamo.PackageManager
         public List<FilterEntry> InitializeHostFilter()
         {
             var hostFilter = new List<FilterEntry>();
-            foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
+            try
             {
-                hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
+                foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
+                {
+                    hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
+                }
             }
-
+            catch (Exception ex)
+            {
+                PackageManagerClientViewModel.DynamoViewModel.Model.Logger.Log("Could not fetch hosts: " + ex.Message);
+            }
             return hostFilter;
         }
 
