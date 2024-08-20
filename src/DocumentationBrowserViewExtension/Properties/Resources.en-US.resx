@@ -142,6 +142,9 @@
     <value>Zoom out</value>
     <comment>Image Control ToolTip</comment>
   </data>
+  <data name="InputDefaultValue" xml:space="preserve">
+    <value>default value</value>
+  </data>
   <data name="InsertedGroupSubTitle" xml:space="preserve">
     <value>Inserted Dynamo graph</value>
   </data>
