@@ -175,7 +175,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Returns the index of the element in the given list. Match between given list and target element must be a strict match (i.e. int to int, double to double, string to string, object to object etc.)
+        ///     Returns the stringified index of the element in the given list. Match between given list and target element must be a strict match (i.e. int to int, double to double, string to string, object to object etc.)
         /// </summary>
         /// <param name="list">The list to find the element in.</param>
         /// <param name="element">The element whose index is to be returned.</param>
