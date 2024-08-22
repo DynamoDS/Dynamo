@@ -174,6 +174,21 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Returns the index of the element in the given list. Match between given list and target element must be a strict match (i.e. int to int, double to double, string to string, object to object etc.)
+        ///     Use this node to avoid negative index values.
+        /// </summary>
+        /// <param name="list">The list to find the element in.</param>
+        /// <param name="element">The element whose index is to be returned.</param>
+        /// <returns name="string">The stringified index of the element in the list. Invalid index null will be returned if strict match not found.</returns>
+        /// <search>index,indexof</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static string StringifyIndexOf(IList list, object element)
+        {
+            var index = list.IndexOf(element);
+            return index < 0 ? null : index.ToString();
+        }
+
+        /// <summary>
         ///     Returns the number of false boolean values in the given list.
         /// </summary>
         /// <param name="list">The list find the false boolean values.</param>
