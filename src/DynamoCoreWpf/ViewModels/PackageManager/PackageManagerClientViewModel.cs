@@ -169,7 +169,7 @@ namespace Dynamo.ViewModels
             if (resourceProvider != null)
                 additionalTerms = resourceProvider.AdditionalPackagePublisherTermsOfUse;
 
-            if (!ShowTermsOfUseDialog(true, additionalTerms, WpfUtilities.FindUpVisualTree<DynamoView>(viewParent)))
+            if (!ShowTermsOfUseDialog(true, additionalTerms))
                 return; // Terms of use not accepted.
 
             // If user accepts the terms of use, then update the record on 
@@ -531,7 +531,7 @@ namespace Dynamo.ViewModels
             var touAccepted = prefSettings.PackageDownloadTouAccepted;
             if (!touAccepted)
             {
-                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, WpfUtilities.FindUpVisualTree<DynamoView>(viewParent));
+                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, WpfUtilities.FindUpVisualTree<DynamoView>(ViewModelOwner));
                 prefSettings.PackageDownloadTouAccepted = touAccepted;
                 if (!touAccepted)
                 {
