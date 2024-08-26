@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -168,7 +169,7 @@ namespace Dynamo.ViewModels
             if (resourceProvider != null)
                 additionalTerms = resourceProvider.AdditionalPackagePublisherTermsOfUse;
 
-            if (!ShowTermsOfUseDialog(true, additionalTerms))
+            if (!ShowTermsOfUseDialog(true, additionalTerms, WpfUtilities.FindUpVisualTree<DynamoView>(viewParent)))
                 return; // Terms of use not accepted.
 
             // If user accepts the terms of use, then update the record on 
@@ -530,7 +531,7 @@ namespace Dynamo.ViewModels
             var touAccepted = prefSettings.PackageDownloadTouAccepted;
             if (!touAccepted)
             {
-                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null);
+                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, WpfUtilities.FindUpVisualTree<DynamoView>(viewParent));
                 prefSettings.PackageDownloadTouAccepted = touAccepted;
                 if (!touAccepted)
                 {
