@@ -3498,6 +3498,90 @@ namespace Dynamo.ViewModels
             Wpf.Utilities.MessageBoxService.Show(failureMessage, messageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
+        internal string GetMinimumQualifiedName(NodeModel nodeModel)
+        {
+            switch (nodeModel)
+            {
+                case Graph.Nodes.CustomNodes.Function function:
+                    var category = function.Category;
+                    var name = function.Name;
+                    if (CustomNodeHasCollisons(name, GetMainCategory(nodeModel)))
+                    {
+                        var inputString = GetInputNames(function);
+                        return $"{category}.{name}({inputString})";
+                    }
+                    return $"{category}.{name}";
+
+                case Graph.Nodes.ZeroTouch.DSFunctionBase dSFunction:
+                    var descriptor = dSFunction.Controller.Definition;
+                    if (descriptor.IsOverloaded)
+                    {
+                        var inputString = GetInputNames(nodeModel);
+                        return $"{descriptor.QualifiedName}({inputString})";
+                    }
+
+                    return descriptor.QualifiedName;
+
+                case NodeModel node:
+                    var type = node.GetType();
+                    if (NodeModelHasCollisions(type.FullName))
+                    {
+                        return $"{type.FullName}({GetInputNames(nodeModel)})";
+                    }
+
+                    return type.FullName;
+
+                default:
+                    return string.Empty;
+            }
+        }
+
+        internal bool CustomNodeHasCollisons(string nodeName, string packageName)
+        {
+            var pmExtension = Model.GetPackageManagerExtension();
+            if (pmExtension is null)
+                return false;
+
+            var package = pmExtension.PackageLoader.LocalPackages
+                .Where(x => x.Name == packageName)
+                .FirstOrDefault();
+
+            if (package is null)
+                return false;
+
+            var loadedNodesWithSameName = package.LoadedCustomNodes
+                .Where(x => x.Name == nodeName)
+                .ToList();
+
+            if (loadedNodesWithSameName.Count == 1)
+                return false;
+            return true;
+        }
+
+        internal bool NodeModelHasCollisions(string typeName)
+        {
+            var entries = Model.SearchModel.Entries
+                .Where(x => x.CreationName == typeName)
+                .Select(x => x).ToList();
+
+            if (entries.Count() > 1)
+                return true;
+
+            return false;
+        }
+
+        internal string GetMainCategory(NodeModel node)
+        {
+            return node.Category.Split(new char[] { '.' }).FirstOrDefault();
+        }
+
+        internal string GetInputNames(NodeModel node)
+        {
+            var inputNames = node.InPorts.Select(x => x.Name).ToArray();
+            // Match https://github.com/DynamoDS/Dynamo/blame/master/src/DynamoCore/Search/SearchElements/ZeroTouchSearchElement.cs#L51 
+            return string.Join(", ", inputNames);
+        }
+
         public void ImportLibrary(object parameter)
         {
             string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"), 
@@ -3701,6 +3785,210 @@ namespace Dynamo.ViewModels
                 defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
                 defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
             }
+        }
+
+        private DirectoryInfo GetFallBackDocPath()
+        {
+            DirectoryInfo fallbackDocPath = null;
+            const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
+            var pathManager = Model.PathManager;
+
+            if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
+            {
+                var docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, System.Threading.Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!docsDir.Exists)
+                {
+                    docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
+                fallbackDocPath = docsDir.Exists ? docsDir : null;
+            }
+
+            if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
+            {
+                //when running over any host app like Revit, FormIt, Civil3D... the path to the fallback_docs can change.
+                //e.g. for Revit the variable HostApplicationDirectory = C:\Program Files\Autodesk\Revit 2023\AddIns\DynamoForRevit\Revit
+                //Then we need to remove the last folder from the path so we can find the fallback_docs directory.
+                var hostAppDirectory = Directory.GetParent(pathManager.HostApplicationDirectory).FullName;
+                var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, System.Threading.Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!docsDir.Exists)
+                {
+                    docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
+                fallbackDocPath = docsDir.Exists ? docsDir : null;
+            }
+            return fallbackDocPath;
+        }
+        private DirectoryInfo GetNodeHelpDocPath()
+        {
+            const string SHARED_DOCS_DIRECTORY_NAME = "NodeHelpSharedDocs";
+            var nodeHelpDocPath = new DirectoryInfo(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
+                    SHARED_DOCS_DIRECTORY_NAME));
+
+            return nodeHelpDocPath;
+        }
+
+        /// <summary>
+        /// Debug method to export missing node help data for core nodes
+        /// </summary>
+        /// <param name="parameter"></param>
+        internal void DumpNodeHelpData(object parameter)
+        {
+            const string CSV_HEADER = "Node Name,Full Name,Hash,MD File,DYN File,IMG File, MD File State";
+            const string IMG_NOT_FOUND = "Image not found in MD file";
+            const string IN_DEPTH_NOT_FOUND = "In Depth section not found in MD file";
+            const string MISSING_MD_FILE = "Missing MD file";
+            const string MISSING_DYN_FILE = "Missing DYN file";
+            const string MISSING_IMG_FILE = "Missing IMG file";
+            string fileName = String.Format("NodeHelpData_{0}.csv", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string fullFileName = Path.Combine(Model.PathManager.LogDirectory, fileName);
+            DirectoryInfo fallbackDocPath = GetFallBackDocPath();
+            DirectoryInfo nodeHelpDocPath = GetNodeHelpDocPath();
+            var csv = new System.Text.StringBuilder();
+            //creating a copy to avoid collection changed exceptions
+            var entriesCopy = Model.SearchModel.Entries.ToList();
+            List<string> mdSuffix = new List<string>() { ".md" };
+            List<string> dynSuffix = new List<string>() { ".dyn" };
+            List<string> imgSuffix = new List<string>() { "_img.jpg", "_img.png", "_img.gif" };
+            Dictionary<string, List<string>> stats = new Dictionary<string, List<string>>
+            {
+                { "MD", new List<string>() },
+                { "IMG", new List<string>() },
+                { "DYN", new List<string>() },
+                { "IMG_A", new List<string>() },
+                { "MD_D", new List<string>() }
+            };
+
+            csv.AppendLine(CSV_HEADER);
+            foreach (var ent in entriesCopy)
+            {
+                var node = ent.CreateNode();
+                var mqn = GetMinimumQualifiedName(node);
+                var hash = Hash.GetHashFilenameFromString(mqn);
+
+                string helpDocPath = string.Empty;
+                string helpImgPath = string.Empty;
+                string helpDynPath = string.Empty;
+                string helpImageAttached = IMG_NOT_FOUND;
+                string helpInDepth = IN_DEPTH_NOT_FOUND;
+                if (fallbackDocPath != null)
+                {
+                    var matchingDoc = GetMatchingDocFromDirectory(mqn, hash, mdSuffix, fallbackDocPath);
+                    if (matchingDoc is null)
+                    {
+                        stats["MD"].Add(mqn);
+                        helpDocPath = MISSING_MD_FILE;
+                        helpImageAttached = string.Empty;
+                        helpInDepth = string.Empty;
+                    }
+                    else
+                    {
+                        helpDocPath = matchingDoc.FullName;
+                        var lines = File.ReadAllLines(matchingDoc.FullName);
+                        bool hasImageFile = false;
+                        bool hasImageHeader = false;
+                        bool hasInDepth = false;
+                        for (var i = 0; i < lines.Length; i++)
+                        {
+                            var line = lines[i];
+                            if (line.Trim().ToLower().Contains("## in depth"))
+                            {
+                                hasInDepth = true;
+                                helpInDepth = string.Empty;
+                                continue;
+                            }
+                            if (line.Trim().ToLower().Contains("## example file"))
+                            {
+                                hasImageHeader = true;
+                                continue;
+                            }
+                            if (imgSuffix.Any(s => line.Trim().ToLower().Contains(s)))
+                            {
+                                hasImageFile = true;
+                            }
+                            if (hasImageFile && hasImageHeader)
+                            {
+                                helpImageAttached = string.Empty;
+                                break;
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(helpImageAttached))
+                        {
+                            stats["IMG_A"].Add(mqn);
+                        }
+                        if (!hasInDepth)
+                        {
+                            stats["MD_D"].Add(mqn);
+                        }
+                    }
+
+                    var matchingDyn = GetMatchingDocFromDirectory(mqn, hash, dynSuffix, nodeHelpDocPath);
+                    if (matchingDyn is null)
+                    {
+                        stats["DYN"].Add(mqn);
+                        helpDynPath = MISSING_DYN_FILE;
+                    }
+                    else { helpDynPath = matchingDyn.FullName; }
+
+                    var matchingSpecialImg = GetMatchingDocFromDirectory(mqn, hash, imgSuffix, nodeHelpDocPath);
+                    if (matchingSpecialImg is null)
+                    {
+                        stats["IMG"].Add(mqn);
+                        helpImgPath = MISSING_IMG_FILE;
+                    }
+                    else { helpImgPath = matchingSpecialImg.FullName; }
+                }
+
+                //replaced ',' with '-' for nodes with overload to be displayed in a single cell
+                var newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", node.Name, mqn.Replace(",", "-"), hash, helpDocPath.Replace(",", "-"), helpDynPath.Replace(",", "-"), helpImgPath.Replace(",", "-"), helpImageAttached, helpInDepth);
+                csv.AppendLine(newLine);
+            }
+            var stat = new System.Text.StringBuilder();
+            stat.AppendLine("Total," + entriesCopy.Count);
+            stat.AppendLine("Missing MD Files (MD)," + stats["MD"].Count);
+            stat.AppendLine("Missing DYN Files (DYN)," + stats["DYN"].Count);
+            stat.AppendLine("Missing IMG Files (IMG)," + stats["IMG"].Count);
+            stat.AppendLine("Missing IMG attached in MD File (IMG_A)," + stats["IMG_A"].Count);
+            stat.AppendLine("Missing In Depth section in MD File (MD_D)," + stats["MD_D"].Count);
+            Model.Logger.Log(string.Format(Resources.NodeHelpIsDumped, fullFileName + Environment.NewLine + stat.ToString()));
+            stat.AppendLine(Environment.NewLine);
+
+            foreach (var k in stats.Keys)
+            {
+                stat.AppendLine(k + Environment.NewLine);
+                foreach (var node in stats[k])
+                {
+                    stat.AppendLine(node.Replace(",", "-"));
+                }
+                stat.AppendLine(Environment.NewLine);
+            }
+
+            stat.AppendLine(csv.ToString());
+
+            File.WriteAllText(fullFileName, stat.ToString());
+        }
+
+        private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
+        {
+            FileInfo matchingFile = null;
+            foreach (var sfx in suffix)
+            {
+                matchingFile = dir.GetFiles($"{hash}{sfx}").FirstOrDefault();
+                if (matchingFile is null && !string.IsNullOrWhiteSpace(nodeName) && !nodeName.Contains("/") && !nodeName.Contains("\\"))
+                {
+                    matchingFile = dir.GetFiles($"{nodeName}{sfx}").FirstOrDefault();
+                }
+                if (matchingFile != null)
+                {
+                    break;
+                }
+            }
+
+            return matchingFile;
+        }
+
+        internal bool CanDumpNodeHelpData(object obj)
+        {
+            return true;
         }
 
         #region Shutdown related methods
