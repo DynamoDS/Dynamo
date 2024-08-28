@@ -2067,7 +2067,7 @@ namespace Dynamo.Controls
 
         // the key press event is being intercepted before it can get to
         // the active workspace. This code simply grabs the key presses and
-        // passes it to thecurrent workspace
+        // passes it to the current workspace
         private void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
             Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
@@ -2187,6 +2187,7 @@ namespace Dynamo.Controls
         private void LoadSamplesMenu()
         {
             var samplesDirectory = dynamoViewModel.Model.PathManager.SamplesDirectory;
+
             if (Directory.Exists(samplesDirectory))
             {
                 var sampleFiles = new System.Collections.Generic.List<string>();
@@ -2209,7 +2210,7 @@ namespace Dynamo.Controls
                     }
                 }
 
-                // handle top-level dirs, TODO - factor out to a seperate function, make recusive
+                // handle top-level dirs, TODO - factor out to a separate function, make recursive
                 if (dirPaths.Any())
                 {
                     foreach (string dirPath in dirPaths)

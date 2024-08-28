@@ -113,6 +113,7 @@ namespace Dynamo.UI.Controls
         List<StartPageListItem> references = new List<StartPageListItem>();
         List<StartPageListItem> contributeLinks = new List<StartPageListItem>();
         string sampleFolderPath = null;
+        string sampleDatasetsPath = null;
 
         // Dynamic lists that update views on the fly.
         ObservableCollection<SampleFileEntry> sampleFiles = null;
@@ -228,7 +229,7 @@ namespace Dynamo.UI.Controls
                         //Make sure the folder's name is not "backup"
                         if (!directory.Name.Equals(Configurations.BackupFolderName))
                         {
-                            // Resursive call for each subdirectory.
+                            // Recursive call for each subdirectory.
                             SampleFileEntry sampleFileEntry =
                                 new SampleFileEntry(directory.Name, directory.FullName);
                             WalkDirectoryTree(directory, sampleFileEntry);
@@ -248,6 +249,7 @@ namespace Dynamo.UI.Controls
                         if (sampleFolderPath == null)
                         {
                             sampleFolderPath = Path.GetDirectoryName(file.FullName);
+                            SetSampleDatasetsPath();
                         }
 
                         // Add each file under the root directory property list.
@@ -267,6 +269,37 @@ namespace Dynamo.UI.Controls
             {
                 // Perhaps some permission problems?
                 DynamoViewModel.Model.Logger.Log("Error loading sample file: " + ex.StackTrace);
+            }
+        }
+
+        /// <summary>
+        /// Sets the sampleDatasetsPath based on the value of sampleFolderPath
+        /// </summary>
+        private void SetSampleDatasetsPath()
+        {
+            try
+            {
+                var directoryInfo = new DirectoryInfo(sampleFolderPath);
+
+                // Traverse the directory tree upwards to locate the "samples" folder
+                while (directoryInfo != null && directoryInfo.Name != "samples")
+                {
+                    directoryInfo = directoryInfo.Parent;
+                }
+
+                if (directoryInfo != null && directoryInfo.Name == "samples")
+                {
+                    var datasetsPath = Path.Combine(directoryInfo.FullName, "Data");
+
+                    if (Directory.Exists(datasetsPath))
+                    {
+                        sampleDatasetsPath = datasetsPath;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DynamoViewModel.Model.Logger.Log("Error loading Dataset folder: " + ex.Message);
             }
         }
 
@@ -296,6 +329,11 @@ namespace Dynamo.UI.Controls
         public string SampleFolderPath
         {
             get { return this.sampleFolderPath; }
+        }
+
+        public string SampleDatasetsPath
+        {
+            get { return this.sampleDatasetsPath; }
         }
 
         #region Public Class Properties (Static Lists)
@@ -529,7 +567,6 @@ namespace Dynamo.UI.Controls
                 DynamoViewModel.Model.Logger.Log("Error deserializing dynamo graph file: " + ex.StackTrace);
                 return (null, null, null, null);
             }
-
         }
 
         #endregion
