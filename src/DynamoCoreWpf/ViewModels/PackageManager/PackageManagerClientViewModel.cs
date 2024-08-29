@@ -542,7 +542,7 @@ namespace Dynamo.ViewModels
             var touAccepted = prefSettings.PackageDownloadTouAccepted;
             if (!touAccepted)
             {
-                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, WpfUtilities.FindUpVisualTree<DynamoView>(ViewModelOwner));
+                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, ViewModelOwner);
                 prefSettings.PackageDownloadTouAccepted = touAccepted;
                 if (!touAccepted)
                 {
