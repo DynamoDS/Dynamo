@@ -21,6 +21,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using DynamoServices;
 using Greg.AuthProviders;
@@ -35,6 +36,7 @@ namespace Dynamo.ViewModels
         internal PackageManagerClient PackageManagerClient { get; set; }
         internal AuthenticationManager AuthenticationManager { get; set; }
         internal Action AcceptanceCallback { get; set; }
+        internal Window Parent { get; set; }
     }
 
     /// <summary>
@@ -48,7 +50,7 @@ namespace Dynamo.ViewModels
         private readonly Action callbackAction;
         private readonly PackageManagerClient packageManagerClient;
         private readonly AuthenticationManager authenticationManager;
-
+        private readonly Window parent;
         private static bool isTermsOfUseCreated;
 
         public TermsOfUseHelper(TermsOfUseHelperParams touParams)
@@ -68,6 +70,7 @@ namespace Dynamo.ViewModels
             packageManagerClient = touParams.PackageManagerClient;
             callbackAction = touParams.AcceptanceCallback;
             authenticationManager = touParams.AuthenticationManager;
+            parent = touParams.Parent;
         }
 
         internal void Execute(bool preventReentrant)
@@ -124,12 +127,15 @@ namespace Dynamo.ViewModels
             termsOfUseView.Closed += TermsOfUseView_Closed;
             isTermsOfUseCreated = true;
 
-            if (parent == null)
+            //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
+            if (!GuideFlowEvents.IsAnyGuideActive)
+            {
+                termsOfUseView.Owner = parent;
                 termsOfUseView.ShowDialog();
+            }
             else
             {
-                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
-                termsOfUseView.Owner = parent;
+                //When a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
                 termsOfUseView.Show();
             }
 
@@ -345,7 +351,8 @@ namespace Dynamo.ViewModels
                 PackageManagerClient = Model,
                 AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
-                AcceptanceCallback = ShowNodePublishInfo
+                AcceptanceCallback = ShowNodePublishInfo,
+                Parent = ViewModelOwner,
             });
 
             termsOfUseCheck.Execute(true);
@@ -371,7 +378,9 @@ namespace Dynamo.ViewModels
                     AcceptanceCallback = () => ShowNodePublishInfo(new[]
                     {
                         Tuple.Create(currentFunInfo, m.Definition)
-                    })
+                    }),
+                    Parent = ViewModelOwner,
+
                 });
 
                 termsOfUseCheck.Execute(true);
@@ -429,7 +438,8 @@ namespace Dynamo.ViewModels
                 PackageManagerClient = Model,
                 AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
-                AcceptanceCallback = () => ShowNodePublishInfo(defs)
+                AcceptanceCallback = () => ShowNodePublishInfo(defs),
+                Parent = ViewModelOwner,
             });
 
             termsOfUseCheck.Execute(true);

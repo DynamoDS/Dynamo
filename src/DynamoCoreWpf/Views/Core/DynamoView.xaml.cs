@@ -1469,14 +1469,9 @@ namespace Dynamo.Controls
         {
             var prefSettings = dynamoViewModel.Model.PreferenceSettings;
             if (prefSettings.PackageDownloadTouAccepted)
-                return true; // User accepts the terms of use.
+                return true; // User accepted the terms of use.
 
-            Window packageManParent = null;
-            //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
-            if (dynamoViewModel.MainGuideManager != null && GuideFlowEvents.IsAnyGuideActive)
-                packageManParent = _this;
-            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, packageManParent);
-            prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
+            prefSettings.PackageDownloadTouAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, _this);
 
             // User may or may not accept the terms.
             return prefSettings.PackageDownloadTouAccepted;
