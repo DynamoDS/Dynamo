@@ -21,19 +21,31 @@ namespace Dynamo.PackageManager.UI
             this._clickedDuringMouseOver = false;
         }
 
+        /// <summary>
+        /// Title Dependency Property
+        /// </summary>
         public static readonly DependencyProperty TitleProperty =
          DependencyProperty.Register("Title", typeof(string), typeof(StepIndicatorControl), new PropertyMetadata("Step"));
 
+        /// <summary>
+        /// Title property displayed on top of the step number
+        /// </summary>
         public string Title
         {
             get { return (string)GetValue(TitleProperty); }
             set { SetValue(TitleProperty, value); }
         }
 
+        /// <summary>
+        /// Step Number Dependency Property
+        /// </summary>
         public static readonly DependencyProperty StepNumberProperty =
         DependencyProperty.Register("StepNumber", typeof(string), typeof(StepIndicatorControl),
             new PropertyMetadata("1", OnStepNumberChanged));
 
+        /// <summary>
+        /// Step Number property showing the number
+        /// </summary>
         public string StepNumber
         {
             get { return (string)GetValue(StepNumberProperty); }
@@ -46,6 +58,9 @@ namespace Dynamo.PackageManager.UI
             control.StepNumberText.Text = (string)e.NewValue;
         }
 
+        /// <summary>
+        /// Enum with the possible control states
+        /// </summary>
         public enum StepState
         {
             Inactive,
@@ -53,10 +68,16 @@ namespace Dynamo.PackageManager.UI
             Ok
         }
 
+        /// <summary>
+        /// Step State Dependency Property
+        /// </summary>
         public static readonly DependencyProperty StateProperty =
             DependencyProperty.Register("State", typeof(StepState), typeof(StepIndicatorControl),
                 new PropertyMetadata(StepState.Inactive, OnStateChanged));
 
+        /// <summary>
+        /// State Property accounting for the current state of the control
+        /// </summary>
         public StepState State
         {
             get { return (StepState)GetValue(StateProperty); }
@@ -127,7 +148,7 @@ namespace Dynamo.PackageManager.UI
 
             }
 
-            string stateName = state.ToString();
+            var stateName = state.ToString();
             VisualStateManager.GoToState(this, stateName, true);
         }
     }
