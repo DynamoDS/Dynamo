@@ -182,7 +182,7 @@ namespace Dynamo.Graph.Annotations
             {
                 // Unsubscribe all content in group before
                 // overwriting with the new content.
-                // If we dont do this we end up with
+                // If we don't do this we end up with
                 // lots of memory leaks that eventually will
                 // lead to a stackoverflow exception
                 if (nodes != null && nodes.Any())
@@ -194,15 +194,7 @@ namespace Dynamo.Graph.Annotations
                     }
                 }
 
-                // First remove all pins from the input
-                var valuesWithoutPins = value
-                    .Where(x => !(x is ConnectorPinModel));
-
-                // then recalculate which pins belongs to the
-                // group and add them to the nodes collection
-                var pinModels = GetPinsFromNodes(value.OfType<NodeModel>());
-                nodes = valuesWithoutPins.Concat(pinModels)
-                    .ToHashSet<ModelBase>();
+                nodes = value.ToHashSet<ModelBase>();
 
                 if (nodes != null && nodes.Any())
                 {
