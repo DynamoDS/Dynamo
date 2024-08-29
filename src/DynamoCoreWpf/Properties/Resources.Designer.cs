@@ -8397,6 +8397,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add version compatibility information.
+        /// </summary>
+        public static string PublishPackageCompatibilityPageInfoText {
+            get {
+                return ResourceManager.GetString("PublishPackageCompatibilityPageInfoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help your package users install the right version of your package by adding compatibility information. This information will appear in package search and details..
+        /// </summary>
+        public static string PublishPackageCompatibilityPageTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageCompatibilityPageTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Published Successfully.
         /// </summary>
         public static string PublishPackageDialogCaption {

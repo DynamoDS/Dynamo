@@ -4016,4 +4016,10 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="BackButtonTitle" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="PublishPackageCompatibilityPageInfoText" xml:space="preserve">
+    <value>Add version compatibility information</value>
+  </data>
+  <data name="PublishPackageCompatibilityPageTooltip" xml:space="preserve">
+    <value>Help your package users install the right version of your package by adding compatibility information. This information will appear in package search and details.</value>
+  </data>
 </root>

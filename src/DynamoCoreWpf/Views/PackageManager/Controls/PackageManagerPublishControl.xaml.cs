@@ -273,12 +273,16 @@ namespace Dynamo.PackageManager.UI
             {
                 if (navigatedPage is PublishPackagePublishPage)
                     (navigatedPage as PublishPackagePublishPage).LoadEvents();
+                if (navigatedPage is PublishPackageCompatibilityPage)
+                    (navigatedPage as PublishPackageCompatibilityPage).IsEnabled = true;
                 if (navigatedPage is PublishPackageSelectPage)
                     (navigatedPage as PublishPackageSelectPage).LoadEvents();
                 if (navigatedPage is PublishPackagePreviewPage)
                     (navigatedPage as PublishPackagePreviewPage).LoadEvents();
                 if (navigatedPage is PublishPackageFinishPage)
                     (navigatedPage as PublishPackageFinishPage).IsEnabled = true;
+                if (navigatedPage is PublishPackageConfirmPage)
+                    (navigatedPage as PublishPackageConfirmPage).IsEnabled = true;
             }
         }
 

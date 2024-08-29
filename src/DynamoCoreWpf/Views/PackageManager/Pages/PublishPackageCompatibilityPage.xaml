@@ -1,14 +1,320 @@
 <Page x:Class="Views.PackageManager.Pages.PublishPackageCompatibilityPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:controls="clr-namespace:Dynamo.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:Views.PackageManager.Pages"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="PublishPackageCompatibilityPage">
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+      xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
+      xmlns:ui="clr-namespace:Dynamo.UI"
+      Title="PublishPackageCompatibilityPage"
+      d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      UseLayoutRounding="True"
+      mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
 
-    <Grid>
-        
+            <!--  ComboBox style used in the Package Manager  -->
+            <Style x:Key="ComboBoxCheckBoxStyle" TargetType="{x:Type CheckBox}">
+                <Setter Property="SnapsToDevicePixels" Value="true" />
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="CheckBox">
+                            <BulletDecorator VerticalAlignment="Center" Background="Transparent">
+                                <BulletDecorator.Bullet>
+                                    <Border x:Name="Border"
+                                            Width="13"
+                                            Height="13"
+                                            Background="Transparent"
+                                            BorderThickness="0">
+                                        <Path x:Name="CheckBoxTick"
+                                              Width="12"
+                                              Height="12"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Data="M5 3.94L2 1C1.7132 0.863026 1.37119 0.921704 1.14645 1.14645C0.921704 1.37119 0.863026 1.7132 1 2L4.5 5.5C4.79282 5.79246 5.26718 5.79246 5.56 5.5L9 2C9.13698 1.7132 9.0783 1.37119 8.85356 1.14645C8.62881 0.921704 8.28681 0.863026 8 1L5 3.94Z"
+                                              Fill="#38ABDF"
+                                              Visibility="Hidden" />
+                                    </Border>
+                                </BulletDecorator.Bullet>
+
+                                <ContentPresenter x:Name="contentPresent"
+                                                  Margin="5,0,5,0"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  TextBlock.FontSize="14px"
+                                                  TextBlock.Foreground="#bbbbbb" />
+                            </BulletDecorator>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="true">
+                                    <Setter TargetName="CheckBoxTick" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="True">
+                                    <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="#bbbbbb" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="#444444" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+                <Grid Height="38px"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="20" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Background="Transparent" />
+                    <Border x:Name="Border" Grid.Column="1" />
+                    <Border Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Background="#343434"
+                            BorderBrush="#8F8F8F"
+                            BorderThickness="0,0,0,1" />
+                    <Rectangle x:Name="BlueUnderline"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="2"
+                               Height="1px"
+                               VerticalAlignment="Bottom" />
+                    <Path x:Name="Arrow"
+                          Grid.Column="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Data="M5 3.94L2 1C1.7132 0.863026 1.37119 0.921704 1.14645 1.14645C0.921704 1.37119 0.863026 1.7132 1 2L4.5 5.5C4.79282 5.79246 5.26718 5.79246 5.56 5.5L9 2C9.13698 1.7132 9.0783 1.37119 8.85356 1.14645C8.62881 0.921704 8.28681 0.863026 8 1L5 3.94Z"
+                          Fill="White" />
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                        <Setter TargetName="Border" Property="Background" Value="#808080" />
+                    </Trigger>
+                    <Trigger Property="ToggleButton.IsChecked" Value="true">
+                        <Setter TargetName="Arrow" Property="Fill" Value="#6AC0E7" />
+                        <Setter TargetName="Arrow" Property="Data" Value="M 5 2.56 L 8 5.5 C 8.2868 5.637 8.6288 5.5783 8.8535 5.3536 C 9.0783 5.1288 9.137 4.7868 9 4.5 L 5.5 1 C 5.2072 0.7075 4.7328 0.7075 4.44 1 L 1 4.5 C 0.863 4.7868 0.9217 5.1288 1.1464 5.3536 C 1.3712 5.5783 1.7132 5.637 2 5.5 L 5 2.56 Z" />
+                        <Setter TargetName="BlueUnderline" Property="Fill" Value="#6AC0E7" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter TargetName="Border" Property="Background" Value="#EEEEEE" />
+                        <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA" />
+                        <Setter Property="Foreground" Value="#888888" />
+                        <Setter TargetName="Arrow" Property="Fill" Value="#888888" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+            <Style x:Key="ComboBoxStyle" TargetType="{x:Type ComboBox}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+                <Setter Property="Margin" Value="-6,0,0,0" />
+                <Setter Property="Foreground" Value="#DCDCDC" />
+                <Setter Property="Background" Value="#353535" />
+                <Setter Property="FontSize" Value="12px" />
+                <Setter Property="Padding" Value="5" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ComboBox}">
+                            <Grid>
+                                <ToggleButton Name="ToggleButton"
+                                              Grid.Column="2"
+                                              ClickMode="Press"
+                                              Focusable="false"
+                                              IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Template="{StaticResource ComboBoxToggleButton}" />
+                                <ContentPresenter Name="ContentSite"
+                                                  Margin="3,0,0,0"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                  IsHitTestVisible="False" />
+                                <TextBox x:Name="PART_EditableTextBox"
+                                         Margin="0,0,25,4"
+                                         Padding="3,0"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Center"
+                                         Focusable="True"
+                                         FontFamily="{StaticResource ArtifaktElementRegular}"
+                                         FontSize="10px"
+                                         Foreground="#F5F5F5"
+                                         IsReadOnly="{TemplateBinding IsReadOnly}"
+                                         Visibility="Hidden" />
+                                <Popup Name="Popup"
+                                       AllowsTransparency="True"
+                                       Focusable="False"
+                                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                                       Placement="Bottom"
+                                       PopupAnimation="Slide"
+                                       VerticalOffset="0">
+                                    <Grid Name="DropDown"
+                                          MinWidth="{TemplateBinding ActualWidth}"
+                                          MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                          SnapsToDevicePixels="True">
+                                        <Border x:Name="DropDownBorder" Background="#666666" />
+                                        <ScrollViewer Margin="0"
+                                                      HorizontalAlignment="Stretch"
+                                                      SnapsToDevicePixels="True"
+                                                      VerticalScrollBarVisibility="Visible">
+                                            <StackPanel Margin="-5,0,0,0"
+                                                        IsItemsHost="True"
+                                                        KeyboardNavigation.DirectionalNavigation="Contained" />
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Popup>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasItems" Value="false">
+                                    <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="#888888" />
+                                </Trigger>
+                                <Trigger Property="IsGrouping" Value="true">
+                                    <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                                </Trigger>
+                                <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                                    <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0" />
+                                    <Setter TargetName="DropDownBorder" Property="Margin" Value="0,0,0,0" />
+                                </Trigger>
+                                <Trigger Property="IsEditable" Value="true">
+                                    <Setter Property="IsTabStop" Value="false" />
+                                    <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible" />
+                                    <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Margin="20,20,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Info  -->
+        <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+            <TextBlock Style="{StaticResource PackageManagerInfoTextStyle}" Text="{x:Static p:Resources.PublishPackageCompatibilityPageInfoText}" />
+            <Viewbox Width="16"
+                     Height="16"
+                     Margin="5,0,0,0">
+                <Path Width="16"
+                      Height="16"
+                      Data="M8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15C11.866 15 15 11.866 15 8C15 6.14348 14.2625 4.36301 12.9497 3.05025C11.637 1.7375 9.85652 1 8 1ZM9 12H7V7H9V12ZM8 6.25C7.30964 6.25 6.75 5.69036 6.75 5C6.75 4.30964 7.30964 3.75 8 3.75C8.69036 3.75 9.25 4.30964 9.25 5C9.25 5.33152 9.1183 5.64946 8.88388 5.88388C8.64946 6.1183 8.33152 6.25 8 6.25Z"
+                      Fill="#999999"
+                      StrokeThickness="0" />
+                <Viewbox.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.PublishPackageCompatibilityPageTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                </Viewbox.ToolTip>
+            </Viewbox>
+        </StackPanel>
+
+        <!--  Host grid  -->
+        <StackPanel Grid.Row="1" VerticalAlignment="Top">
+            <!--  External Dependency  -->
+            <TextBlock Name="hostLabel"
+                       Margin="0,0,0,10"
+                       Style="{StaticResource LabelStyle}"
+                       Text="{x:Static p:Resources.PublishPackageViewPackageHostDependency}">
+                <TextBlock.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageHostDependencyTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <ComboBox Margin="0,0,0,20"
+                      IsEditable="False"
+                      ItemsSource="{Binding KnownHosts}"
+                      OverridesDefaultStyle="True"
+                      Style="{StaticResource ComboBoxStyle}"
+                      TabIndex="5">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Name="HostEntry"
+                                      Checked="HostEntry_CheckStateChanged"
+                                      Content="{Binding HostName}"
+                                      IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      Style="{StaticResource ComboBoxCheckBoxStyle}"
+                                      Tag="{RelativeSource FindAncestor,
+                                                           AncestorType={x:Type ComboBox}}"
+                                      Unchecked="HostEntry_CheckStateChanged" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+                <ComboBox.Template>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid Height="38px">
+                            <ToggleButton Name="ToggleButton"
+                                          ClickMode="Press"
+                                          Focusable="false"
+                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Template="{StaticResource ComboBoxToggleButton}" />
+                            <ContentPresenter Name="ContentSite"
+                                              Margin="10,3,23,3"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"
+                                              Content="{Binding Path=SelectedHostsString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                              IsHitTestVisible="False" />
+                            <TextBlock Margin="10,3,23,3"
+                                       VerticalAlignment="Center"
+                                       Background="Transparent"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="12"
+                                       Foreground="#818181"
+                                       Text="Select"
+                                       Visibility="{Binding Path=SelectedHostsString, Mode=OneWay, Converter={StaticResource NonEmptyStringToCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            <Popup Name="Popup"
+                                   MinWidth="{TemplateBinding ActualWidth}"
+                                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                   Focusable="False"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   Placement="Bottom"
+                                   PopupAnimation="Slide">
+                                <Grid Name="DropDown" SnapsToDevicePixels="True">
+                                    <Border Name="DropDownBorder"
+                                            Background="#343434"
+                                            BorderBrush="#444444"
+                                            BorderThickness="1,0,1,1" />
+                                    <ScrollViewer Margin="4,6,4,6"
+                                                  DataContext="{Binding}"
+                                                  SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasItems" Value="false">
+                                <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </ComboBox.Template>
+            </ComboBox>
+
+
+        </StackPanel>
     </Grid>
 </Page>
