@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,12 +19,12 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class PackageManagerPublishControl : UserControl
     {
+        private int currentPage = 0;
 
         public Window Owner { get; set; }
         public PublishPackageViewModel PublishPackageViewModel { get; set; }
         private Dictionary<int, Page> PublishPages { get; set; }
         private Dictionary<int, DockPanel> NavButtonStacks { get; set; }
-        public ObservableCollection<string> Breadcrumbs { get; } = new ObservableCollection<string>();
 
         public PackageManagerPublishControl()
         {
@@ -60,6 +59,7 @@ namespace Dynamo.PackageManager.UI
 
             PublishPackageViewModel = null; 
         }
+
         private void SetDataContext()
         {
             // Set the owner of this user control
@@ -77,9 +77,19 @@ namespace Dynamo.PackageManager.UI
             Logging.Analytics.TrackScreenView("PackageManager");
 
             InitializePages();
+            HandlePageChanged(0);   // Navigate to the starting page
 
-            this.mainFrame.NavigationService.Navigate(PublishPages[0]);
             this.Loaded -= InitializeContext;
+        }
+
+        private void OnStepChanged(object sender, int stepNumber)
+        {
+            ChangePage(stepNumber - 1);   // Account for step numbers starting from 1 in the wizard control
+        }
+
+        private void ChangePage(int page)
+        {
+            HandlePageChanged(page);
         }
 
         public void Dispose()
@@ -88,7 +98,7 @@ namespace Dynamo.PackageManager.UI
                 Actions.Close,
                 Categories.PackageManagerOperations);
 
-            if(PublishPackageViewModel != null )
+            if(PublishPackageViewModel != null )    
             {
                 PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
                 PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
@@ -103,55 +113,53 @@ namespace Dynamo.PackageManager.UI
             PublishPages = null;
             NavButtonStacks = null;
 
-            Breadcrumbs?.Clear();
-            
             this.DataContextChanged -= PackageManagerPublishControl_DataContextChanged;
         }
 
         private void InitializePages()
         {
             if ( PublishPages != null ) { PublishPages.Clear(); }
+
             PublishPages = new Dictionary<int, Page>();
 
             PublishPages[0] = new PublishPackagePublishPage();
-            PublishPages[1] = new PublishPackageSelectPage();
-            PublishPages[2] = new PublishPackagePreviewPage();
-            PublishPages[3] = new PublishPackageFinishPage();
+            PublishPages[1] = new PublishPackageCompatibilityPage();
+            PublishPages[2] = new PublishPackageSelectPage();
+            PublishPages[3] = new PublishPackagePreviewPage();
+            PublishPages[4] = new PublishPackageConfirmPage();
+            PublishPages[5] = new PublishPackageFinishPage();
 
-            foreach(var pageEntry in PublishPages) { pageEntry.Value.DataContext = PublishPackageViewModel; }
+            foreach (var pageEntry in PublishPages) { pageEntry.Value.DataContext = PublishPackageViewModel; }
 
-            Breadcrumbs.Clear();
-            Breadcrumbs.Add((string)PublishPages[0].Tag); // Initial breadcrumb
 
             NavButtonStacks = new Dictionary<int, DockPanel>();
 
             NavButtonStacks[0] = this.PublishPageButtonStack;
-            NavButtonStacks[1] = this.SelectPageButtonStack;
-            NavButtonStacks[2] = this.PreviewPageButtonStack;
-            NavButtonStacks[3] = this.FinishPageButtonStack;
+            NavButtonStacks[1] = this.CompatibilityPageButtonStack;
+            NavButtonStacks[2] = this.SelectPageButtonStack;
+            NavButtonStacks[3] = this.PreviewPageButtonStack;
+            NavButtonStacks[4] = this.ConfirmPageButtonStack;
+            NavButtonStacks[5] = this.FinishPageButtonStack;
         }
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
         {
             if (PublishPages == null) return;
 
-            statusLabel.Visibility = Visibility.Collapsed;
+            HandlePageChanged(5);
 
-            currentPage = 3;
+            //statusLabel.Visibility = Visibility.Collapsed;
 
             // Trigger load events manually for the Finish Page to get the count of published files
             if (PublishPages[currentPage] is PublishPackageFinishPage)
                 (PublishPages[currentPage] as PublishPackageFinishPage).LoadEvents();
 
-            this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
-            this.breadcrumbsNavigation.Visibility = Visibility.Collapsed;
-
-            ToggleButtonRowVisibility(currentPage);
         }
 
         private void OnRequestShowFolderBrowserDialog(object sender, PackagePathEventArgs e)
         {
             e.Cancel = true;
+
             // Handle for the case, initialPath does not exist.
             var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(e.Path);
             if (errorCannotCreateFolder == null)
@@ -198,7 +206,6 @@ namespace Dynamo.PackageManager.UI
             PublishPackageViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
         }
 
-        private int currentPage = 0;
 
         internal void BreadcrumbButton_Click(object sender, RoutedEventArgs e)
         {
@@ -206,82 +213,17 @@ namespace Dynamo.PackageManager.UI
             if (button != null)
             {
                 switch (button.Tag)
-                {
-                    // PublishPackagePublishPage
-                    case var value when value == (string)PublishPages[0].Tag:
-                        currentPage = 0;
-                        int stepIndex = Breadcrumbs.IndexOf((string)PublishPages[0].Tag);
-                        for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
-                        {
-                            Breadcrumbs.RemoveAt(i);
-                        }
-                        this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
-                        this.breadcrumbsNavigation.Visibility = Visibility.Collapsed;
-                        ToggleButtonRowVisibility(0);
-                        break;
-                    // PublishPackageSelectPage
-                    case var value when value == (string)PublishPages[1].Tag:
-                        currentPage = 1;
-                        stepIndex = Breadcrumbs.IndexOf((string)PublishPages[currentPage].Tag);
-                        for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
-                        {
-                            Breadcrumbs.RemoveAt(i);
-                        }
-                        this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
-                        this.breadcrumbsNavigation.Visibility = Visibility.Visible;
-                        ToggleButtonRowVisibility(1);
-                        break;
-                    // PublishPackagePreviewPage
-                    case var value when value == (string)PublishPages[2].Tag:
-                        if (!Breadcrumbs.Contains((string)PublishPages[2].Tag)) Breadcrumbs.Add((string)PublishPages[2].Tag);
-                        currentPage = 2;
-                        stepIndex = Breadcrumbs.IndexOf((string)PublishPages[currentPage].Tag);
-                        for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
-                        {
-                            Breadcrumbs.RemoveAt(i);
-                        }
-                        this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
-                        this.breadcrumbsNavigation.Visibility = Visibility.Visible;
-                        ToggleButtonRowVisibility(2);
-                        break;
+                {                    
                     case "Back":
-                        --currentPage;
-                        stepIndex = Breadcrumbs.IndexOf((string)PublishPages[currentPage].Tag);
-                        for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--) 
-                        {
-                            Breadcrumbs.RemoveAt(i);
-                        }
-                        this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
-                        this.breadcrumbsNavigation.Visibility = currentPage == 0 ? Visibility.Collapsed : Visibility.Visible;
-                        ToggleButtonRowVisibility(currentPage);
+                        HandlePageChanged(currentPage - 1);
                         break;
                     case "Next":
-                        ++currentPage;
-                        if (!Breadcrumbs.Contains((string)PublishPages[currentPage].Tag)) Breadcrumbs.Add((string)PublishPages[currentPage].Tag);
-                        stepIndex = Breadcrumbs.IndexOf((string)PublishPages[currentPage].Tag);
-                        if(stepIndex > 0)
-                        {
-                            for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
-                            {
-                                Breadcrumbs.RemoveAt(i);
-                            }
-                        }
-                        this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
-                        this.breadcrumbsNavigation.Visibility = Visibility.Visible;
-                        ToggleButtonRowVisibility(currentPage);
+                        HandlePageChanged(currentPage + 1);
                         break;
                     case "Finish":
                     case "Done":
-                        statusLabel.Visibility = Visibility.Visible;
-                        currentPage = 0;
-                        stepIndex = Breadcrumbs.IndexOf((string)PublishPages[currentPage].Tag);
-                        for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
-                        {
-                            Breadcrumbs.RemoveAt(i);
-                        }
-                        this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
-                        this.breadcrumbsNavigation.Visibility = currentPage == 0 ? Visibility.Collapsed : Visibility.Visible;
-                        ToggleButtonRowVisibility(currentPage);
+                        //statusLabel.Visibility = Visibility.Visible;
+                        HandlePageChanged(0);
                         break;
                 }
             }
@@ -296,9 +238,9 @@ namespace Dynamo.PackageManager.UI
             }
 
             // Set appropriate buttonStack visible
-            if(NavButtonStacks.TryGetValue(page, out var buttonstack))
+            if(NavButtonStacks.TryGetValue(page, out var buttonStack))
             {
-                buttonstack.Visibility = Visibility.Visible;
+                buttonStack.Visibility = Visibility.Visible;
             }
         }
 
@@ -363,15 +305,17 @@ namespace Dynamo.PackageManager.UI
         /// </summary>
         internal void ResetPageOrder()
         {
-            currentPage = 0;
-            int stepIndex = Breadcrumbs.IndexOf((string)PublishPages[0].Tag);
-            for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
-            {
-                Breadcrumbs.RemoveAt(i);
-            }
+            HandlePageChanged(0);
+        }
+
+        private void HandlePageChanged(int page)
+        {
+            currentPage = page;
             this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
-            this.breadcrumbsNavigation.Visibility = Visibility.Collapsed;
-            ToggleButtonRowVisibility(0);
+            ToggleButtonRowVisibility(page);
+
+            if (wizardControl.CurrentStep != currentPage + 1)
+                wizardControl.CurrentStep = (currentPage + 1);
         }
     }
 }

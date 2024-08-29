@@ -78,7 +78,6 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -89,6 +88,7 @@
                    VerticalAlignment="Bottom"
                    HorizontalAlignment="Center"
                    FontWeight="Normal"
+                   FontSize="12"
                    Margin="0 0 0 8"/>
         <Canvas Grid.Row="1" Height="20" Width="20">
             <Ellipse Name="Ellipse" 

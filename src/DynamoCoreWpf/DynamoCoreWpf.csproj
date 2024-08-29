@@ -122,6 +122,8 @@
     <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
     <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageCompatibilityPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageConfirmPage.xaml" />
     <None Remove="Views\PackageManager\Pages\PublishPackageFinishPage.xaml" />
     <None Remove="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml" />
     <None Remove="Views\PackageManager\Pages\PublishPackagePublishPage.xaml" />
@@ -510,6 +512,8 @@
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PackageManager\Pages\PublishPackageCompatibilityPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackageConfirmPage.xaml.cs" />
     <Compile Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml.cs" />
     <Compile Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml.cs" />
     <Compile Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml.cs" />
@@ -759,6 +763,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>      
+    <Page Include="Views\PackageManager\Pages\PublishPackageCompatibilityPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Pages\PublishPackageConfirmPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
         <SubType>Designer</SubType>
         <Generator>MSBuild:Compile</Generator>
@@ -1850,6 +1862,12 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\PackageManager\Controls\StepIndicatorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackageCompatibilityPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackageConfirmPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">

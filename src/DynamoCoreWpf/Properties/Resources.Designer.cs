@@ -196,6 +196,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string BackButtonTitle {
+            get {
+                return ResourceManager.GetString("BackButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error creating a background preview in Dynamo. This could be due to a lack of graphics resources on your machine. See the log for more information..
         /// </summary>
         public static string BackgroundPreviewCreationFailureMessage {
@@ -4942,6 +4951,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NameNeedMoreCharacters {
             get {
                 return ResourceManager.GetString("NameNeedMoreCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string NextButtonTitle {
+            get {
+                return ResourceManager.GetString("NextButtonTitle", resourceCulture);
             }
         }
         

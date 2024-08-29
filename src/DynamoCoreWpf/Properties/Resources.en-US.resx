@@ -4010,4 +4010,10 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PartialRenderFailureTitle" xml:space="preserve">
     <value>Background Preview had an issue</value>
   </data>
+  <data name="NextButtonTitle" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="BackButtonTitle" xml:space="preserve">
+    <value>Back</value>
+  </data>
 </root>
