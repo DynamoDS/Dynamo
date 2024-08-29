@@ -323,7 +323,8 @@ namespace Dynamo.ViewModels
                         AcceptanceCallback = () => ShowNodePublishInfo(new[]
                         {
                             Tuple.Create(currentFunInfo, currentFunDef)
-                        })
+                        }),
+                        Parent = ViewModelOwner ?? DynamoViewModel.Owner,
                     };
 
                     var termsOfUseCheck = new TermsOfUseHelper(touParams);
@@ -352,7 +353,7 @@ namespace Dynamo.ViewModels
                 AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
                 AcceptanceCallback = ShowNodePublishInfo,
-                Parent = ViewModelOwner,
+                Parent = ViewModelOwner ?? DynamoViewModel.Owner,
             });
 
             termsOfUseCheck.Execute(true);
@@ -379,7 +380,7 @@ namespace Dynamo.ViewModels
                     {
                         Tuple.Create(currentFunInfo, m.Definition)
                     }),
-                    Parent = ViewModelOwner,
+                    Parent = ViewModelOwner ?? DynamoViewModel.Owner,
 
                 });
 
@@ -439,7 +440,7 @@ namespace Dynamo.ViewModels
                 AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
                 AcceptanceCallback = () => ShowNodePublishInfo(defs),
-                Parent = ViewModelOwner,
+                Parent = ViewModelOwner ?? DynamoViewModel.Owner,
             });
 
             termsOfUseCheck.Execute(true);
