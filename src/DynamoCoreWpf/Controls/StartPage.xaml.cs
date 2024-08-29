@@ -295,6 +295,16 @@ namespace Dynamo.UI.Controls
                     {
                         sampleDatasetsPath = datasetsPath;
                     }
+                    else
+                    {
+                        DynamoViewModel.Model.Logger.Log("Datasets folder not found, setting to default path.");
+                        //sampleDatasetsPath = @"C:\Default\Datasets";
+                    }
+                }
+                else
+                {
+                    DynamoViewModel.Model.Logger.Log("Datasets folder not found, setting to default path.");
+                    //sampleDatasetsPath = @"C:\Default\Datasets";
                 }
             }
             catch (Exception ex)
