@@ -101,14 +101,17 @@
     <None Remove="UI\Images\checkmark_16px.png" />
     <None Remove="UI\Images\close_16px.png" />
     <None Remove="UI\Images\caret_drop_down.png" />
+    <None Remove="UI\Images\error_48px.png" />
     <None Remove="UI\Images\file-generic-16px.png" />
     <None Remove="UI\Images\finished_checkmark_30px.png" />
     <None Remove="UI\Images\folder-generic-16px.png" />
     <None Remove="UI\Images\help-16px.png" />
+    <None Remove="UI\Images\info_48px.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
     <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <None Remove="UI\Images\search_icon_20px.png" />
     <None Remove="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
+    <None Remove="UI\Images\warning_48px.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
@@ -1016,10 +1019,12 @@
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
+    <Resource Include="UI\Images\error_48px.png" />
     <Resource Include="UI\Images\file-generic-16px.png" />
     <Resource Include="UI\Images\finished_checkmark_30px.png" />
     <Resource Include="UI\Images\folder-generic-16px.png" />
     <Resource Include="UI\Images\help-16px.png" />
+    <Resource Include="UI\Images\info_48px.png" />
     <Resource Include="UI\Images\maximize_16px_blue.png" />
     <Resource Include="UI\Images\minimize_16px_blue.png" />
     <Resource Include="UI\Images\minus_16px_blue.png" />
@@ -1051,6 +1056,7 @@
     <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <Resource Include="UI\Images\warning_16px.png" />
     <Resource Include="UI\Images\font-size.png" />
+    <Resource Include="UI\Images\warning_48px.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\whiteclosetab.png" />

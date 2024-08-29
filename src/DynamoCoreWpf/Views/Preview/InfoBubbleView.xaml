@@ -114,7 +114,7 @@
                                       Height="25"
                                       HorizontalAlignment="Left"
                                       VerticalAlignment="Top">
-                                    <Image Source="/DynamoCoreWpf;component/UI/Images/Error.png" />
+                                    <Image Source="/DynamoCoreWpf;component/UI/Images/Error_48px.png" />
                                 </Grid>
                                 <!--  Error Header Message  -->
                                 <TextBlock Grid.Row="0"
@@ -343,7 +343,7 @@
                                       Height="26"
                                       HorizontalAlignment="Left"
                                       VerticalAlignment="Center">
-                                    <Image Source="/DynamoCoreWpf;component/UI/Images/Warning.png" />
+                                    <Image Source="/DynamoCoreWpf;component/UI/Images/Warning_48px.png" />
                                 </Grid>
                                 <!--  Warning Header Message  -->
                                 <TextBlock Grid.Row="0"
@@ -619,7 +619,7 @@
                                       VerticalAlignment="Top">
                                     <Image Width="25"
                                            Height="25"
-                                           Source="/DynamoCoreWpf;component/UI/Images/Info.png"
+                                           Source="/DynamoCoreWpf;component/UI/Images/Info_48px.png"
                                            Stretch="UniformToFill" />
                                 </Grid>
                                 <!--  Info Header Message  -->
