@@ -182,7 +182,7 @@ namespace Dynamo.Graph.Annotations
             {
                 // Unsubscribe all content in group before
                 // overwriting with the new content.
-                // If we don't do this we end up with
+                // If we dont do this we end up with
                 // lots of memory leaks that eventually will
                 // lead to a stackoverflow exception
                 if (nodes != null && nodes.Any())
