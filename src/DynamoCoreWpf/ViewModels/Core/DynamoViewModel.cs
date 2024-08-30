@@ -3498,6 +3498,12 @@ namespace Dynamo.ViewModels
             Wpf.Utilities.MessageBoxService.Show(failureMessage, messageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
+        /// <summary>
+        /// Returns a Minimum Qualified Name for a node, given it's NodeModel object.
+        /// The MQN consist of the node namespace, node category, concatenated by the names of it's input and output ports, in case of overloaded nodes.
+        /// </summary>
+        /// <param name="nodeModel"></param>
+        /// <returns></returns>
         internal string GetMinimumQualifiedName(NodeModel nodeModel)
         {
             switch (nodeModel)
@@ -3820,9 +3826,8 @@ namespace Dynamo.ViewModels
         }
         private DirectoryInfo GetNodeHelpDocPath()
         {
-            const string SHARED_DOCS_DIRECTORY_NAME = "NodeHelpSharedDocs";
             var nodeHelpDocPath = new DirectoryInfo(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
-                    SHARED_DOCS_DIRECTORY_NAME));
+                    Configurations.DynamoNodeHelpDocs));
 
             return nodeHelpDocPath;
         }

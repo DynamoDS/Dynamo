@@ -3000,6 +3000,7 @@ static readonly Dynamo.Configuration.Configurations.CBNMaxPortNameLength -> int
 static readonly Dynamo.Configuration.Configurations.CodeBlockOutputPortHeightInPixels -> double
 static readonly Dynamo.Configuration.Configurations.DoubleSliderTextBoxWidth -> double
 static readonly Dynamo.Configuration.Configurations.DynamoAsString -> string
+static readonly Dynamo.Configuration.Configurations.DynamoNodeHelpDocs -> string
 static readonly Dynamo.Configuration.Configurations.ExtensionsSideBarTabMinWidth -> int
 static readonly Dynamo.Configuration.Configurations.FallbackUiCulture -> string
 static readonly Dynamo.Configuration.Configurations.FilePathAttribName -> string
