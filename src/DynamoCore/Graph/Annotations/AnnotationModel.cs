@@ -194,7 +194,15 @@ namespace Dynamo.Graph.Annotations
                     }
                 }
 
-                nodes = value.ToHashSet<ModelBase>();
+                // First separate all pins from the input
+                var pinModels = value.OfType<ConnectorPinModel>().ToList();
+                var valuesWithoutPins = value.Except(pinModels);
+
+                // then recalculate which pins belong to the group based on the nodes
+                var pinsFromNodes = GetPinsFromNodes(valuesWithoutPins.OfType<NodeModel>());
+
+                // Combine all
+                nodes = valuesWithoutPins.Concat(pinModels).Concat(pinsFromNodes).ToHashSet<ModelBase>();
 
                 if (nodes != null && nodes.Any())
                 {
