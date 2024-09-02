@@ -183,6 +183,10 @@ Dynamo.Controls.DateToPackageLabelConverter
 Dynamo.Controls.DateToPackageLabelConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.DateToPackageLabelConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.DateToPackageLabelConverter.DateToPackageLabelConverter() -> void
+Dynamo.Controls.DateToPackageTooltipConverter
+Dynamo.Controls.DateToPackageTooltipConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.DateToPackageTooltipConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.DateToPackageTooltipConverter.DateToPackageTooltipConverter() -> void
 Dynamo.Controls.DateToVisibilityCollapsedConverter
 Dynamo.Controls.DateToVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.DateToVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object

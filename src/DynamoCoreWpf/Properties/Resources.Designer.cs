@@ -6501,7 +6501,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View Details.
+        ///   Looks up a localized string similar to Info.
         /// </summary>
         public static string PackageSearchResultViewDetails {
             get {

@@ -33,7 +33,7 @@
     <Color x:Key="PressedFontColor">#2EFFFFFF</Color>
     <Color x:Key="DisabledFontColor">#66999999</Color>
     <Color x:Key="WhiteColor">#F5F5F5</Color>
-    
+
 
     <!--  Autodesk Colors  -->
     <SolidColorBrush x:Key="PrimaryCharcoal100Brush" Color="{StaticResource PrimaryCharcoal100}" />
@@ -41,7 +41,9 @@
     <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}" />
     <SolidColorBrush x:Key="LightGreyBrush" Color="{StaticResource LightGrey}" />
     <SolidColorBrush x:Key="LightMidGreyBrush" Color="{StaticResource LightMidGrey}" />
-    <SolidColorBrush x:Key="LightMidGreyOpacityBrush" Color="{StaticResource LightMidGrey}" Opacity="0.2" />
+    <SolidColorBrush x:Key="LightMidGreyOpacityBrush"
+                     Opacity="0.2"
+                     Color="{StaticResource LightMidGrey}" />
     <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}" />
     <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}" />
     <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}" />
@@ -82,8 +84,8 @@
     <SolidColorBrush x:Key="NodeInfoColor" Color="{StaticResource Blue300}" />
     <SolidColorBrush x:Key="NodeWarningColor" Color="{StaticResource YellowOrange500}" />
     <SolidColorBrush x:Key="NodeErrorColor" Color="{StaticResource Red500}" />
-    <SolidColorBrush x:Key="NodePreviewColor" Color="#BBBBBB"/>
-    <SolidColorBrush x:Key="NodeCustomColor" Color="#B385F2"/>
+    <SolidColorBrush x:Key="NodePreviewColor" Color="#BBBBBB" />
+    <SolidColorBrush x:Key="NodeCustomColor" Color="#B385F2" />
 
     <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
@@ -95,24 +97,19 @@
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
 
-    <SolidColorBrush x:Key="NodeSelectionTextColor" Color="#6ac0e7"/>
+    <SolidColorBrush x:Key="NodeSelectionTextColor" Color="#6ac0e7" />
 
     <!--  Node colors in selected state  -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
 
-    <!-- NodeLabel colors -->
-    <SolidColorBrush x:Key="stringLabelBackground"
-                     Color="#E0A86F" />
-    <SolidColorBrush x:Key="numberLabelBackground"
-                     Color="#6AC0E7" />
-    <SolidColorBrush x:Key="objectLabelBackground"
-                     Color="#EEEEEE" />
-    <SolidColorBrush x:Key="boolLabelBackground"
-                     Color="#F9F9A5" />
-    <SolidColorBrush x:Key="nullLabelBackground"
-                     Color="#F9F9A5" />
+    <!--  NodeLabel colors  -->
+    <SolidColorBrush x:Key="stringLabelBackground" Color="#E0A86F" />
+    <SolidColorBrush x:Key="numberLabelBackground" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="objectLabelBackground" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="boolLabelBackground" Color="#F9F9A5" />
+    <SolidColorBrush x:Key="nullLabelBackground" Color="#F9F9A5" />
 
-    <!-- Node Autocomplete -->
+    <!--  Node Autocomplete  -->
     <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
     <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#F5F5F5" />
 
@@ -131,7 +128,7 @@
     <SolidColorBrush x:Key="HighlightedBrush" Color="#424242" />
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#949494" />
 
-<!--  Extensions Sidebar  -->
+    <!--  Extensions Sidebar  -->
     <SolidColorBrush x:Key="BorderBrushWhite" Color="#FF3F4040" />
     <SolidColorBrush x:Key="FeedbackSectionBackground" Color="#4192D9" />
     <SolidColorBrush x:Key="ExtensionBackgroundColor" Color="#353535" />
@@ -184,7 +181,7 @@
     <!--  Connector  -->
     <SolidColorBrush x:Key="ConnectorHoverStateColor" Color="#808080" />
 
-    <!-- Modal Pattern -->
+    <!--  Modal Pattern  -->
 
     <!--  TextBlock Link  -->
     <SolidColorBrush x:Key="TextBlockLinkForegroundColor" Color="{StaticResource Blue350}" />
@@ -192,12 +189,20 @@
     <!--  TextBlock Link Dark  -->
     <SolidColorBrush x:Key="TextBlockLinkForegroundColorDark" Color="{StaticResource Blue450}" />
 
-    <!--  TextBlock ToolTip color -->
+    <!--  TextBlock ToolTip color  -->
     <SolidColorBrush x:Key="TextBlockToolTipDescriptionColor" Color="{StaticResource DarkerGrey}" />
 
-    <!--  TextEditor brush color -->
+    <!--  TextEditor brush color  -->
     <SolidColorBrush x:Key="TextEditorBrush" Color="#353535" />
-    
+
     <!--  Custom ToolTip border color  -->
     <SolidColorBrush x:Key="CustomToolTipBorderColor" Color="#808080" />
+
+
+    <!--  Package Manager Colors  -->
+    <Color x:Key="PMForegroundColor">#DFDFDF</Color>
+    <Color x:Key="PMBorderColor">#5F5F5F</Color>
+
+    <SolidColorBrush x:Key="PMForegroundColorBrush" Color="{StaticResource PMForegroundColor}" />
+    <SolidColorBrush x:Key="PMBorderColorBrush" Color="{StaticResource PMBorderColor}" />
 </ResourceDictionary>

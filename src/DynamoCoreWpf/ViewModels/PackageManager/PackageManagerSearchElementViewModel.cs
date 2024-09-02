@@ -14,7 +14,6 @@ namespace Dynamo.PackageManager.ViewModels
     {
         public ICommand DownloadLatestCommand { get; set; }
         public ICommand UpvoteCommand { get; set; }
-
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }

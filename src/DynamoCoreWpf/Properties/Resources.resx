@@ -1504,7 +1504,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Sort by</value>
   </data>
   <data name="PackageSearchResultViewDetails" xml:space="preserve">
-    <value>View Details</value>
+    <value>Info</value>
     <comment>In package search result card.</comment>
   </data>
   <data name="PackageSearchResultRequirements" xml:space="preserve">

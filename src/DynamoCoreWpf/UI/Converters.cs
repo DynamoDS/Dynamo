@@ -1549,6 +1549,40 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Used to determine the tooltip which appears next to a package when it's either
+    /// brand new, recently updated, or deprecated.
+    /// If the package was updated in the last 30 days it says 'Updated'.
+    /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
+    /// </summary>
+    public class DateToPackageTooltipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is Dynamo.PackageManager.PackageManagerSearchElement packageManagerSearchElement)) return String.Empty;
+            if (packageManagerSearchElement.IsDeprecated) return Resources.PackageDeprecatedTooltip;
+
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
+
+            // For testing purposes
+            var test = DateTime.TryParse((string)parameter, out DateTime testDate);
+            TimeSpan difference = test ? testDate - dateLastUpdated : DateTime.Now - dateLastUpdated;
+
+            int numberVersions = packageManagerSearchElement.Header.num_versions;
+
+            if (numberVersions > 1)
+            {
+                return difference.TotalDays >= 30 ? "" : Resources.PackageFilterUpdatedTooltip;
+            }
+            return Resources.PackageFilterNewTooltip;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class InverseBoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
