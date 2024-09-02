@@ -474,7 +474,8 @@ namespace Dynamo.ViewModels
                 PackageManagerClient = dynamoModel.GetPackageManagerExtension().PackageManagerClient,
                 AuthenticationManager = dynamoModel.AuthenticationManager,
                 ResourceProvider = dynamoViewModel.BrandingResourceProvider,
-                AcceptanceCallback = acceptanceCallback
+                AcceptanceCallback = acceptanceCallback,
+                Parent = packageManagerClientViewModel.ViewModelOwner ?? dynamoViewModel.Owner,
             });
 
             termsOfUseCheck.Execute(false);
