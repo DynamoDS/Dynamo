@@ -524,7 +524,6 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <StackPanel Orientation="Vertical"
                                                 Grid.Row="0"
@@ -580,7 +579,6 @@
                                                                    UpdateSourceTrigger=PropertyChanged}">
                                         </ListBox>
                                     </StackPanel>
-
                                 </Grid>
                             </Border>
                         </TabItem>
