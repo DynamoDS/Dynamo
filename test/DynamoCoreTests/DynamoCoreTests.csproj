@@ -136,6 +136,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\TestResource.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NodesJsonDatasets\" />
+  </ItemGroup>
 <Target Name="CopyDisableADPTestDeps">
     <!--ms diag runtime + deps -->
     <Message Importance="High" Text="copying disable adp test deps to test dependencies folder" />
