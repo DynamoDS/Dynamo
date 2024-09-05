@@ -54,6 +54,7 @@ namespace Dynamo.UI.Views
         internal Action RequestNewCustomNodeWorkspace;
         internal Action RequestApplicationLoaded;
         internal Action RequestShowSampleFilesInFolder;
+        internal Action RequestShowSampleDatasetsInFolder;
         internal Action RequestShowBackupFilesInFolder;
         internal Action RequestShowTemplate;
         internal Action<string> RequestSaveSettings;
@@ -87,13 +88,13 @@ namespace Dynamo.UI.Views
             RequestOpenWorkspace = OpenWorkspace;
             RequestNewCustomNodeWorkspace = NewCustomNodeWorkspace;
             RequestShowSampleFilesInFolder = ShowSampleFilesInFolder;
+            RequestShowSampleDatasetsInFolder = ShowSampleDatasetsInFolder;
             RequestShowBackupFilesInFolder = ShowBackupFilesInFolder;
             RequestShowTemplate = OpenTemplate;
             RequestApplicationLoaded = ApplicationLoaded;
             RequestSaveSettings = SaveSettings;
 
             DataContextChanged += OnDataContextChanged;
-
         }
             
         private void InitializeGuideTourItems()
@@ -169,7 +170,7 @@ namespace Dynamo.UI.Views
                 this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
                 this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
-                // Load the embeded resources
+                // Load the embedded resources
                 var assembly = Assembly.GetExecutingAssembly();
 
                 htmlString = PathHelper.LoadEmbeddedResourceAsString(htmlEmbeddedFile, assembly);
@@ -202,6 +203,7 @@ namespace Dynamo.UI.Views
                                         RequestApplicationLoaded,
                                         RequestShowGuidedTour,
                                         RequestShowSampleFilesInFolder,
+                                        RequestShowSampleDatasetsInFolder,
                                         RequestShowBackupFilesInFolder,
                                         RequestShowTemplate,
                                         RequestSaveSettings));
@@ -617,7 +619,21 @@ namespace Dynamo.UI.Views
                 + this.startPage.SampleFolderPath)
             { UseShellExecute = true });
             Logging.Analytics.TrackEvent(Logging.Actions.Show, Logging.Categories.DynamoHomeOperations, "Sample Files");
+        }
+        
+        internal void ShowSampleDatasetsInFolder()
+        {
+            if (this.startPage == null) return;
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(string.Empty);
+                return;
+            }
 
+            Process.Start(new ProcessStartInfo("explorer.exe", /*"/select,"*/
+                /*+ */this.startPage.SampleDatasetsPath)
+            { UseShellExecute = true });
+            Logging.Analytics.TrackEvent(Logging.Actions.Show, Logging.Categories.DynamoHomeOperations, "Dataset Files");
         }
 
         internal void ShowBackupFilesInFolder()
@@ -728,6 +744,7 @@ namespace Dynamo.UI.Views
         readonly Action RequestApplicationLoaded;
         readonly Action<string> RequestShowGuidedTour;
         readonly Action RequestShowSampleFilesInFolder;
+        readonly Action RequestShowSampleDatasetsInFolder;
         readonly Action RequestShowBackupFilesInFolder;
         readonly Action RequestShowTemplate;
         readonly Action<string> RequestSaveSettings;
@@ -739,6 +756,7 @@ namespace Dynamo.UI.Views
             Action requestApplicationLoaded,
             Action<string> requestShowGuidedTour,
             Action requestShowSampleFilesInFolder,
+            Action requestShowSampleDatasetsInFolder,
             Action requestShowBackupFilesInFolder,
             Action requestShowTemplate,
             Action<string> requestSaveSettings)
@@ -750,6 +768,7 @@ namespace Dynamo.UI.Views
             RequestApplicationLoaded = requestApplicationLoaded;
             RequestShowGuidedTour = requestShowGuidedTour;
             RequestShowSampleFilesInFolder = requestShowSampleFilesInFolder;
+            RequestShowSampleDatasetsInFolder = requestShowSampleDatasetsInFolder;
             RequestShowBackupFilesInFolder = requestShowBackupFilesInFolder;
             RequestShowTemplate = requestShowTemplate;
             RequestSaveSettings = requestSaveSettings;
@@ -785,11 +804,15 @@ namespace Dynamo.UI.Views
             RequestShowSampleFilesInFolder();
         }
         [DynamoJSInvokable]
+        public void ShowSampleDatasetsInFolder()
+        {
+            RequestShowSampleDatasetsInFolder();
+        }
+        [DynamoJSInvokable]
         public void ShowBackupFilesInFolder()
         {
             RequestShowBackupFilesInFolder();
         }
-
         [DynamoJSInvokable]
         public void ShowTempalte()
         {
