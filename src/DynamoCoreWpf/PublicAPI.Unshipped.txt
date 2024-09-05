@@ -1223,7 +1223,8 @@ Dynamo.PackageManager.UI.PackageManagerPackagesControl.SearchItems.get -> System
 Dynamo.PackageManager.UI.PackageManagerPackagesControl.SearchItems.set -> void
 Dynamo.PackageManager.UI.PackageManagerPackagesControl.SelectedItem.get -> Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel
 Dynamo.PackageManager.UI.PackageManagerPublishControl
-Dynamo.PackageManager.UI.PackageManagerPublishControl.Breadcrumbs.get -> System.Collections.ObjectModel.ObservableCollection<string>
+Dynamo.PackageManager.UI.PackageManagerPublishControl.CurrentPage.get -> int
+Dynamo.PackageManager.UI.PackageManagerPublishControl.CurrentPage.set -> void
 Dynamo.PackageManager.UI.PackageManagerPublishControl.Dispose() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishControl.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishControl.Owner.get -> System.Windows.Window
@@ -1245,6 +1246,11 @@ Dynamo.PackageManager.UI.PackageManagerView.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerView.PackageManagerView(Dynamo.Controls.DynamoView dynamoView, Dynamo.PackageManager.PackageManagerViewModel packageManagerViewModel) -> void
 Dynamo.PackageManager.UI.PackageManagerView.PackageManagerViewModel.get -> Dynamo.PackageManager.PackageManagerViewModel
 Dynamo.PackageManager.UI.PackageManagerView.PackageManagerViewModel.set -> void
+Dynamo.PackageManager.UI.PackageManagerWizardControl
+Dynamo.PackageManager.UI.PackageManagerWizardControl.CurrentStep.get -> int
+Dynamo.PackageManager.UI.PackageManagerWizardControl.CurrentStep.set -> void
+Dynamo.PackageManager.UI.PackageManagerWizardControl.PackageManagerWizardControl() -> void
+Dynamo.PackageManager.UI.PackageManagerWizardControl.StepChanged -> System.EventHandler<int>
 Dynamo.PackageManager.UI.PackageNameLengthValidationRule
 Dynamo.PackageManager.UI.PackageNameLengthValidationRule.PackageNameLengthValidationRule() -> void
 Dynamo.PackageManager.UI.PublishPackagePreviewPage
@@ -1277,6 +1283,18 @@ Dynamo.PackageManager.UI.SortingConverter
 Dynamo.PackageManager.UI.SortingConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.PackageManager.UI.SortingConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.PackageManager.UI.SortingConverter.SortingConverter() -> void
+Dynamo.PackageManager.UI.StepIndicatorControl
+Dynamo.PackageManager.UI.StepIndicatorControl.State.get -> Dynamo.PackageManager.UI.StepIndicatorControl.StepState
+Dynamo.PackageManager.UI.StepIndicatorControl.State.set -> void
+Dynamo.PackageManager.UI.StepIndicatorControl.StepIndicatorControl() -> void
+Dynamo.PackageManager.UI.StepIndicatorControl.StepNumber.get -> string
+Dynamo.PackageManager.UI.StepIndicatorControl.StepNumber.set -> void
+Dynamo.PackageManager.UI.StepIndicatorControl.StepState
+Dynamo.PackageManager.UI.StepIndicatorControl.StepState.Active = 1 -> Dynamo.PackageManager.UI.StepIndicatorControl.StepState
+Dynamo.PackageManager.UI.StepIndicatorControl.StepState.Inactive = 0 -> Dynamo.PackageManager.UI.StepIndicatorControl.StepState
+Dynamo.PackageManager.UI.StepIndicatorControl.StepState.Ok = 2 -> Dynamo.PackageManager.UI.StepIndicatorControl.StepState
+Dynamo.PackageManager.UI.StepIndicatorControl.Title.get -> string
+Dynamo.PackageManager.UI.StepIndicatorControl.Title.set -> void
 Dynamo.PackageManager.UI.TermsOfUseView
 Dynamo.PackageManager.UI.TermsOfUseView.AcceptedTermsOfUse.get -> bool
 Dynamo.PackageManager.UI.TermsOfUseView.InitializeComponent() -> void
@@ -5570,6 +5588,10 @@ static readonly Dynamo.PackageManager.UI.NumericUpDownControl.ValueProperty -> S
 static readonly Dynamo.PackageManager.UI.NumericUpDownControl.WatermarkProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.PackageManagerPackagesControl.SearchItemsProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.PackageManagerPackagesControl.SelectedItemProperty -> System.Windows.DependencyProperty
+static readonly Dynamo.PackageManager.UI.PackageManagerWizardControl.CurrentStepProperty -> System.Windows.DependencyProperty
+static readonly Dynamo.PackageManager.UI.StepIndicatorControl.StateProperty -> System.Windows.DependencyProperty
+static readonly Dynamo.PackageManager.UI.StepIndicatorControl.StepNumberProperty -> System.Windows.DependencyProperty
+static readonly Dynamo.PackageManager.UI.StepIndicatorControl.TitleProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.TreeViewItemHelper.IndentProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.UI.Controls.CodeCompletionEditor.CodeProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.UI.Controls.DynamoToolTip.AttachmentSideProperty -> System.Windows.DependencyProperty
@@ -5620,6 +5642,10 @@ UI.Prompts.PortPropertiesEditPrompt.PortPropertiesEditPrompt() -> void
 UI.Prompts.PortPropertiesEditPrompt.PortType.get -> Dynamo.Graph.Nodes.PortType
 UI.Prompts.PortPropertiesEditPrompt.PortType.set -> void
 UI.Prompts.PortPropertiesEditPrompt.PropertyChanged -> System.ComponentModel.PropertyChangedEventHandler
+Views.PackageManager.Pages.PublishPackageCompatibilityPage
+Views.PackageManager.Pages.PublishPackageCompatibilityPage.PublishPackageCompatibilityPage() -> void
+Views.PackageManager.Pages.PublishPackageConfirmPage
+Views.PackageManager.Pages.PublishPackageConfirmPage.PublishPackageConfirmPage() -> void
 Views.PackageManager.Pages.PublishPackageFinishPage
 Views.PackageManager.Pages.PublishPackageFinishPage.Dispose() -> void
 Views.PackageManager.Pages.PublishPackageFinishPage.InitializeComponent() -> void

@@ -196,6 +196,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string BackButtonTitle {
+            get {
+                return ResourceManager.GetString("BackButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error creating a background preview in Dynamo. This could be due to a lack of graphics resources on your machine. See the log for more information..
         /// </summary>
         public static string BackgroundPreviewCreationFailureMessage {
@@ -4946,6 +4955,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string NextButtonTitle {
+            get {
+                return ResourceManager.GetString("NextButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next guide: .
         /// </summary>
         public static string NextGuideText {
@@ -8375,6 +8393,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackage {
             get {
                 return ResourceManager.GetString("PublishPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add version compatibility information.
+        /// </summary>
+        public static string PublishPackageCompatibilityPageInfoText {
+            get {
+                return ResourceManager.GetString("PublishPackageCompatibilityPageInfoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help your package users install the right version of your package by adding compatibility information. This information will appear in package search and details..
+        /// </summary>
+        public static string PublishPackageCompatibilityPageTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageCompatibilityPageTooltip", resourceCulture);
             }
         }
         

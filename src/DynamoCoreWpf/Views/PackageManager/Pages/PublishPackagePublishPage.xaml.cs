@@ -62,21 +62,6 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
-        private void HostEntry_CheckStateChanged(object sender, RoutedEventArgs e)
-        {
-            PublishPackageViewModel.SelectedHosts.Clear();
-            PublishPackageViewModel.SelectedHostsString = string.Empty;
-            foreach (var host in PublishPackageViewModel.KnownHosts)
-            {
-                if (host.IsSelected)
-                {
-                    PublishPackageViewModel.SelectedHosts.Add(host.HostName);
-                    PublishPackageViewModel.SelectedHostsString += host.HostName + ", ";
-                }
-            }
-            // Format string since it will be displayed
-            PublishPackageViewModel.SelectedHostsString = PublishPackageViewModel.SelectedHostsString.Trim().TrimEnd(',');
-        }
 
         /// <summary>
         /// Navigates to a predefined URL in the user's default browser.

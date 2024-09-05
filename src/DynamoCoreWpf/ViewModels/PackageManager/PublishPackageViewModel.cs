@@ -1226,7 +1226,7 @@ namespace Dynamo.PackageManager
         /// Return an empty list if PM is down.
         /// </summary>
         /// <returns>A list of HostComboboxEntry describing known hosts from PM.</returns>
-        private List<HostComboboxEntry> initializeHostSelections()
+        private List<HostComboboxEntry> InitializeHostSelections()
         {
             var hostSelections = new List<HostComboboxEntry>();
             foreach (var host in dynamoViewModel.PackageManagerClientViewModel.Model.GetKnownHosts())
@@ -1248,7 +1248,7 @@ namespace Dynamo.PackageManager
         public PublishPackageViewModel(DynamoViewModel dynamoViewModel) : this()
         {
             this.dynamoViewModel = dynamoViewModel;
-            KnownHosts = initializeHostSelections();
+            KnownHosts = InitializeHostSelections();
             isWarningEnabled = false;
         }
 
