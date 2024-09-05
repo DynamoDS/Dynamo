@@ -23,6 +23,7 @@ using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
+using Newtonsoft.Json;
 
 namespace Dynamo.Utilities
 {
@@ -223,6 +224,23 @@ namespace Dynamo.Utilities
             return d;
         }
 
+        /// <summary>
+        /// Remove all the current indexed node info and update it with the new ones passed as parameter
+        /// </summary>
+        /// <param name="nodeList">list of nodes to be indexed</param>
+        internal void UpdateIndexedNodesInfo(List<NodeSearchElement> nodeList)
+        {
+            if(nodeList.Any())
+            {
+                writer.DeleteAll();
+                foreach(var node in nodeList)
+                {
+                    var iDoc = InitializeIndexDocumentForNodes();
+                    AddNodeTypeToSearchIndex(node, iDoc);
+                }             
+            }         
+        }
+
         // TODO:
         // isLast option is used for the last value set in the document, and it will fetch all the other field not set for the document and add them with an empty string.
         // isTextField is used when the value need to be tokenized(broken down into pieces), whereas StringTextFields are tokenized.
@@ -379,7 +397,6 @@ namespace Dynamo.Utilities
                     {
                         //Means that the first term is a category when we will be using the FullCategoryName for making a specific search based in the category
                         trimmedSearchTerm = matchingCategory?.FullCategoryName;
-                        occurQuery = Occur.MUST;
                     }
                     else if (f == nameof(LuceneConfig.NodeFieldsEnum.Name) && firstTermIsCategory == true)
                     {
@@ -409,6 +426,22 @@ namespace Dynamo.Utilities
 
                 if (searchTerm.Contains(' '))
                 {
+                    //Added due that the Search algorithm was not matching the exact name when searchTerm contain empty spaces
+                    if (!string.IsNullOrEmpty(searchTerm) && f == nameof(LuceneConfig.NodeFieldsEnum.Name))
+                    {
+                        //I had to use the use the WildcardQuery class directly to set the weight(Boost) to the default value (instead of using the one calculated by the CalculateFieldWeight() method
+                        var wildcardQueryWithEmptySpace = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
+
+                        //PhraseQuery will escape whitespace characters trying to match the exact phrase
+                        var phraseQuery = new PhraseQuery
+                        {
+                            new Term(f, searchTerm),
+                        };
+
+                        booleanQuery.Add(phraseQuery, occurQuery);
+                        booleanQuery.Add(wildcardQueryWithEmptySpace, occurQuery);
+                    }
+
                     foreach (string s in searchTerm.Split(' ', '.'))
                     {
                         //If is a ByEmptySpace search and the splitted words match with more than MaxNodeNamesRepeated nodes then the word is skipped

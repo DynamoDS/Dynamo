@@ -3,7 +3,7 @@ name: UI Smoke Tests
 on:
   workflow_run:
     workflows:
-      - Build DynamoAll.sln net8.0
+      - Build DynamoAll.sln
     types:
       - completed
 
@@ -13,6 +13,7 @@ env:
   WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
   WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
   WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
+  CHECK_NAME: UI Smoke Tests
 
 jobs:
   ui_smoke_tests:
@@ -33,14 +34,14 @@ jobs:
         shell: cmd
         run: .\TE.exe -SilentInstall
       - name: Download Build Artifact
-        uses: dawidd6/action-download-artifact@deb3bb83256a78589fef6a7b942e5f2573ad7c13 # v5
+        uses: dawidd6/action-download-artifact@595ee515272114bc99adc65ad6a0736f515c52e7 # v5
         with:
           name: DynamoSandbox
           workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
           run_id: ${{ env.WORKFLOW_RUN_ID }}
           path: ${{ github.workspace }}\build
       - name: Download Pull Request Artifact
-        uses: dawidd6/action-download-artifact@deb3bb83256a78589fef6a7b942e5f2573ad7c13 # v5
+        uses: dawidd6/action-download-artifact@595ee515272114bc99adc65ad6a0736f515c52e7 # v5
         with:
           name: pr_data
           workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
@@ -49,7 +50,6 @@ jobs:
       - name: Set Run Details
         run: |
           "PR_NUMBER=$(Get-Content -Path ${{ github.workspace }}\pr\pr_number.txt)" | Out-File -FilePath $env:GITHUB_ENV -Append
-          "CHECK_NAME=$("UI Smoke Tests", $($env:WORKFLOW_RUN_NAME -Split " ")[-1] -Join " - ")" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Run Tests
         shell: cmd
         run: .\utils\run_tests.bat ${{ secrets.SMARTBEAR_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests ${{ github.workspace }}\build
@@ -84,7 +84,7 @@ jobs:
         id: create_comment
         run: |
           $pr_comment=@"
-          ## UI Smoke Tests
+          ## $env:CHECK_NAME
           Test: **${{ steps.test_report.outputs.conclusion }}**. ${{ steps.test_report.outputs.passed }} passed, ${{ steps.test_report.outputs.failed }} failed.
           [TestComplete Test Result]($(Get-Content -Path ${{ github.workspace }}\reports\result.txt))
           Workflow Run: [${{ github.workflow }}](${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }})
@@ -98,7 +98,7 @@ jobs:
         with:
           issue-number: ${{ env.PR_NUMBER }}
           comment-author: github-actions[bot]
-          body-includes: UI Smoke Tests
+          body-includes: ${{ env.CHECK_NAME }}
           direction: last
       - name: Create comment
         if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id == ''

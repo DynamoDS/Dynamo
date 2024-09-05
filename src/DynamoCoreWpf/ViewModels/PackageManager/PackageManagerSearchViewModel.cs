@@ -739,11 +739,17 @@ namespace Dynamo.PackageManager
         public List<FilterEntry> InitializeHostFilter()
         {
             var hostFilter = new List<FilterEntry>();
-            foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
+            try
             {
-                hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
+                foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
+                {
+                    hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
+                }
             }
-
+            catch (Exception ex)
+            {
+                PackageManagerClientViewModel.DynamoViewModel.Model.Logger.Log("Could not fetch hosts: " + ex.Message);
+            }
             return hostFilter;
         }
 
@@ -998,6 +1004,7 @@ namespace Dynamo.PackageManager
             var pkgs = PackageManagerClientViewModel.ListAll();
 
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
+            pkgs = pkgs.Where(x => x.Header.versions != null && x.Header.versions.Count > 0).ToList(); // We expect compliant data structure
             LastSync = pkgs;
 
             PopulateMyPackages();   // adding 

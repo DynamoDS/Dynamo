@@ -31,7 +31,7 @@
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.8" />
-    <PackageReference Include="Greg" Version="3.0.1.4707" />
+    <PackageReference Include="Greg" Version="3.0.2.5756" />
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5365" GeneratePathProperty="true" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
     <PackageReference Include="RestSharp" Version="108.0.1" CopyXML="true" />

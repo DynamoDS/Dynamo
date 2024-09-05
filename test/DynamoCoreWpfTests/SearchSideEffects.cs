@@ -255,5 +255,24 @@ namespace Dynamo.Tests
             Assert.That(firstCatExpectedNode == 0);
 
         }
+
+
+        //This test will validate that File Path node is found when using the criteria "file path"
+        [Test]
+        [Category("UnitTests")]
+        public void LuceneSearchFilePathValidation()
+        {
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
+            string searchTerm = "file path";
+
+            // Search and check that the results are correct based in the node name provided for the searchTerm
+            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm);
+            Assert.IsNotNull(nodesResult);
+            Assert.That(nodesResult.Count(), Is.GreaterThan(0));
+
+            //Validate that the file path node is in the first 5 elements of the resulting list
+            var nodesNamesList = nodesResult.Take(5).Select(x => x.Name.ToLower());
+            Assert.IsTrue(nodesNamesList.Contains(searchTerm));
+        }
     }
 }
