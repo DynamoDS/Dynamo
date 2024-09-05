@@ -1451,11 +1451,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Dump Data.
+        /// </summary>
+        public static string DynamoViewDebugMenuDumpData {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDumpData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Dump Library.
         /// </summary>
         public static string DynamoViewDebugMenuDumpLibrary {
             get {
                 return ResourceManager.GetString("DynamoViewDebugMenuDumpLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Dump Node Help Data.
+        /// </summary>
+        public static string DynamoViewDebugMenuDumpNodeHelpData {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDumpNodeHelpData", resourceCulture);
             }
         }
         
@@ -5041,6 +5059,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeContextMenuShowLabels {
             get {
                 return ResourceManager.GetString("NodeContextMenuShowLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Help Data is dumped to \&quot;{0}\&quot;..
+        /// </summary>
+        public static string NodeHelpIsDumped {
+            get {
+                return ResourceManager.GetString("NodeHelpIsDumped", resourceCulture);
             }
         }
         

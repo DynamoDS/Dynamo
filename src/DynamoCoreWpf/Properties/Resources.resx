@@ -3997,4 +3997,15 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PartialRenderFailureTitle" xml:space="preserve">
     <value>Background Preview had an issue</value>
   </data>
+  <data name="DynamoViewDebugMenuDumpData" xml:space="preserve">
+    <value>_Dump Data</value>
+    <comment>Debug menu | Dump data options</comment>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeHelpData" xml:space="preserve">
+    <value>_Dump Node Help Data</value>
+    <comment>Debug menu | Dump all node help data like hash mapping</comment>
+  </data>
+  <data name="NodeHelpIsDumped" xml:space="preserve">
+    <value>Node Help Data is dumped to \"{0}\".</value>
+  </data>
 </root>
