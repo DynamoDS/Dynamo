@@ -710,9 +710,14 @@
                                   Command="{Binding MutateTestDelegateCommand}"
                                   CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
                                   IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
-                                  Command="{Binding DumpLibraryToXmlCommand}"
-                                  IsEnabled="True" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpData}"
+                                  Name="dumpDataMenuMenu">
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
+                                      Command="{Binding DumpLibraryToXmlCommand}"
+                                      IsEnabled="True" />
+                            <MenuItem  Header="{x:Static p:Resources.DynamoViewDebugMenuDumpNodeHelpData}"
+                                       Command="{Binding DumpNodeHelpDataCommand}" IsEnabled="True"/>
+                        </MenuItem>
                         <MenuItem Name="DebugModes"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"

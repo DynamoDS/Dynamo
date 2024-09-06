@@ -29,8 +29,6 @@ namespace Dynamo.DocumentationBrowser
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
-        //This folder will be used to store images and dyn files previosuly located in /rootDirectory/en-US/fallback_docs so we don't need to copy all those files per each language
-        internal static readonly string SharedDocsDirectoryName = "NodeHelpSharedDocs";
 
         //Path in which the virtual folder for loading images will be created
         internal string VirtualFolderPath { get; set; }
@@ -140,7 +138,7 @@ namespace Dynamo.DocumentationBrowser
                 //if the node is not from a package, then set the virtual host path to the shared docs folder.
                 else if (viewModel.Link != null && !viewModel.IsOwnedByPackage)
                 {
-                    VirtualFolderPath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, SharedDocsDirectoryName);
+                    VirtualFolderPath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, Configuration.Configurations.DynamoNodeHelpDocs);
                 }
                 //unclear what would cause this.
                 else
