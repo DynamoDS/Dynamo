@@ -30,7 +30,7 @@
             <SolidColorBrush x:Key="ForegroundGrayBrush" Color="#D8D8D8" />
             <SolidColorBrush x:Key="HoverBorderGrayBrush" Color="#6d6d6d" />
             <SolidColorBrush x:Key="PressedBorderGrayBrush" Color="#7e7e7e" />
-            <SolidColorBrush x:Key="HasVotedBlueBrush" Color="#84D7CE" />     
+            <SolidColorBrush x:Key="HasVotedBlueBrush" Color="#84D7CE" />
             <Style x:Key="LabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}" />
                 <Setter Property="FontWeight" Value="Bold" />
@@ -66,13 +66,10 @@
                 <Setter Property="Height" Value="22px" />
             </Style>
             <Style TargetType="{x:Type Hyperlink}">
-                <Setter Property="Foreground"
-                        Value="{StaticResource Blue300Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
                 <Style.Triggers>
-                    <Trigger Property="IsMouseOver"
-                             Value="True">
-                        <Setter Property="Foreground"
-                                Value="{StaticResource Blue400Brush}" />
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource Blue400Brush}" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -82,20 +79,20 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Style="{StaticResource BorderStyle}"
-                                    x:Name="buttonBorder"
+                            <Border x:Name="buttonBorder"
                                     BorderBrush="{StaticResource ExtensionButtonBackgroundColor}"
-                                    BorderThickness="2">
+                                    BorderThickness="2"
+                                    Style="{StaticResource BorderStyle}">
                                 <Grid x:Name="container">
                                     <StackPanel Orientation="Horizontal">
                                         <Viewbox Width="12"
                                                  Height="12"
-                                                 VerticalAlignment="Center">    
+                                                 VerticalAlignment="Center">
                                             <Path x:Name="heartIcon"
+                                                  VerticalAlignment="Center"
                                                   Data="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"
                                                   Stroke="{StaticResource ForegroundGrayBrush}"
-                                                  StrokeThickness="1"
-                                                  VerticalAlignment="Center"/>
+                                                  StrokeThickness="1" />
                                         </Viewbox>
                                         <TextBlock Name="VotesLabel"
                                                    Margin="5,2,0,0"
@@ -107,34 +104,23 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="heartIcon"
-                                            Property="Stroke"
-                                            Value="{StaticResource HasVotedBlueBrush}" />
-                                    <Setter TargetName="buttonBorder"
-                                            Property="BorderBrush"
-                                            Value="{StaticResource HoverBorderGrayBrush}" />
+                                    <Setter TargetName="heartIcon" Property="Stroke" Value="{StaticResource HasVotedBlueBrush}" />
+                                    <Setter TargetName="buttonBorder" Property="BorderBrush" Value="{StaticResource HoverBorderGrayBrush}" />
                                 </Trigger>
                                 <Trigger Property="Button.IsPressed" Value="true">
-                                    <Setter TargetName="heartIcon"
-                                            Property="Stroke"
-                                            Value="{StaticResource ForegroundGrayBrush}" />
-                                    <Setter TargetName="buttonBorder"
-                                            Property="BorderBrush"
-                                            Value="{StaticResource PressedBorderGrayBrush}" />
+                                    <Setter TargetName="heartIcon" Property="Stroke" Value="{StaticResource ForegroundGrayBrush}" />
+                                    <Setter TargetName="buttonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderGrayBrush}" />
                                 </Trigger>
                                 <DataTrigger Binding="{Binding Path=HasVoted}" Value="True">
-                                    <Setter TargetName="heartIcon"
-                                            Property="Fill"
-                                            Value="{StaticResource HasVotedBlueBrush}" />
-                                    <Setter TargetName="heartIcon"
-                                            Property="Stroke"
-                                            Value="{StaticResource HasVotedBlueBrush}" />
+                                    <Setter TargetName="heartIcon" Property="Fill" Value="{StaticResource HasVotedBlueBrush}" />
+                                    <Setter TargetName="heartIcon" Property="Stroke" Value="{StaticResource HasVotedBlueBrush}" />
                                 </DataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
+
 
             <!--  DataGrid  -->
             <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
@@ -157,7 +143,7 @@
                                            TextWrapping="Wrap"
                                            ToolTipService.ShowDuration="30000">
                                     <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}" Style="{StaticResource GenericToolTipLight}"/>
+                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}" Style="{StaticResource GenericToolTipLight}" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
                             </Border>
@@ -225,27 +211,27 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <DockPanel Margin="0 8 0 0">
-            <Label Content="Package Details"
-                   Margin="10 0 0 0"
-                   Foreground="#f5f5f5"
+        <DockPanel Margin="0,8,0,0">
+            <Label Margin="10,0,0,0"
+                   Content="Package Details"
+                   FontSize="14"
                    FontWeight="Regular"
-                   FontSize="14" />
+                   Foreground="#f5f5f5" />
             <Button Name="closeButton"
                     Width="16"
                     Height="16"
                     Margin="0,0,17,0"
+                    HorizontalAlignment="Right"
                     Background="{StaticResource PrimaryCharcoal300Brush}"
                     BorderThickness="0"
                     Click="CloseButton_OnClick"
                     DockPanel.Dock="Right"
-                    HorizontalAlignment="Right"
                     Style="{StaticResource CloseButtonStyle}" />
         </DockPanel>
         <ScrollViewer Name="MainScrollViewer"
                       Grid.Row="1"
-                      DataContextChanged="FrameworkElement_OnDataContextChanged"
                       Margin="17px"
+                      DataContextChanged="FrameworkElement_OnDataContextChanged"
                       VerticalScrollBarVisibility="Visible">
 
             <!--  Contains Everything  -->
@@ -256,10 +242,10 @@
                             Margin="0,0,0,10"
                             Orientation="Horizontal">
                     <TextBlock Name="PackageNameLabel"
-                            Width="Auto"
-                            FontSize="16px"
-                            Foreground="White"
-                            Text="{Binding PackageName}" />
+                               Width="Auto"
+                               FontSize="16px"
+                               Foreground="White"
+                               Text="{Binding PackageName}" />
                     <Border Name="PackageStatusLabel"
                             Width="Auto"
                             Height="20"
@@ -270,13 +256,13 @@
                             BorderThickness="1"
                             CornerRadius="3"
                             Visibility="{Binding IsPackageDeprecated, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock VerticalAlignment="Center"
-                                FontSize="13"
-                                Padding="2,0"
-                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                Foreground="{StaticResource PrimaryCharcoal300Brush}"
-                                Text="{x:Static p:Resources.PackageManagerPackageDeprecated}"
-                                ToolTip="{x:Static p:Resources.PackageDeprecatedTooltip}" />
+                        <TextBlock Padding="2,0"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                   FontSize="13"
+                                   Foreground="{StaticResource PrimaryCharcoal300Brush}"
+                                   Text="{x:Static p:Resources.PackageManagerPackageDeprecated}"
+                                   ToolTip="{x:Static p:Resources.PackageDeprecatedTooltip}" />
                     </Border>
                 </StackPanel>
 
@@ -305,9 +291,9 @@
                             Orientation="Horizontal">
 
                     <!--  Votes  -->
-                    <Button Style="{StaticResource ImageButton}"
+                    <Button Command="{Binding UpvoteCommand}"
                             Content="{Binding NumberVotes, Converter={StaticResource NegativeIntToZeroConverter}}"
-                            Command="{Binding UpvoteCommand}" />
+                            Style="{StaticResource ImageButton}" />
 
                     <!--  Downloads  -->
                     <Border Style="{StaticResource BorderStyle}">
@@ -354,7 +340,7 @@
                            Text="{Binding PackageDescription}" />
 
                 <!--  Group  -->
-                <StackPanel Orientation ="Vertical" Visibility="{Binding Group, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                <StackPanel Orientation="Vertical" Visibility="{Binding Group, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                     <TextBlock Name="GroupTitle"
                                MinWidth="0"
                                Style="{StaticResource LabelStyle}"
@@ -367,7 +353,7 @@
                 </StackPanel>
 
                 <!--  Keywords  -->
-                <StackPanel Orientation ="Vertical" Visibility="{Binding Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                <StackPanel Orientation="Vertical" Visibility="{Binding Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                     <TextBlock Name="KeywordsTitle"
                                MinWidth="0"
                                Style="{StaticResource LabelStyle}"
@@ -380,7 +366,7 @@
                 </StackPanel>
 
                 <!--  Links  -->
-                <StackPanel Orientation ="Vertical">
+                <StackPanel Orientation="Vertical">
                     <StackPanel.Visibility>
                         <MultiBinding Converter="{StaticResource PackageDetailsLinkCollapseOnEmpty}">
                             <Binding Path="PackageSiteURL" />
@@ -388,58 +374,56 @@
                         </MultiBinding>
                     </StackPanel.Visibility>
                     <TextBlock Name="LinksTitle"
-                           MinWidth="0"
-                           Style="{StaticResource LabelStyle}"
-                           Text="{x:Static p:Resources.PackageDetailsLinks}" />
+                               MinWidth="0"
+                               Style="{StaticResource LabelStyle}"
+                               Text="{x:Static p:Resources.PackageDetailsLinks}" />
                     <StackPanel MinWidth="200"
-                            Margin="0,10,0,10"
-                            Orientation="Horizontal"
-                            Visibility="{Binding PackageSiteURL, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                Margin="0,10,0,10"
+                                Orientation="Horizontal"
+                                Visibility="{Binding PackageSiteURL, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                         <Rectangle Name="PackageLinkIcon"
-                                Width="16px"
-                                Height="16px">
+                                   Width="16px"
+                                   Height="16px">
                             <Rectangle.Fill>
                                 <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
                             </Rectangle.Fill>
                         </Rectangle>
-                        <TextBlock Name="PackageWebsiteLinkText"
-                            Margin="8,0,0,0">
-                        <Hyperlink Name="PackageWebsiteLink"
-                                   NavigateUri="{Binding PackageSiteURL}" 
-                                   RequestNavigate="Hyperlink_RequestNavigate" 
-                                   TextDecorations="None" 
-                                   Style="{StaticResource BodyLinkStyle}">
-                            <TextBlock Text="{x:Static p:Resources.PackageWebsiteLabel}" />
-                        </Hyperlink>
-                    </TextBlock>
+                        <TextBlock Name="PackageWebsiteLinkText" Margin="8,0,0,0">
+                            <Hyperlink Name="PackageWebsiteLink"
+                                       NavigateUri="{Binding PackageSiteURL}"
+                                       RequestNavigate="Hyperlink_RequestNavigate"
+                                       Style="{StaticResource BodyLinkStyle}"
+                                       TextDecorations="None">
+                                <TextBlock Text="{x:Static p:Resources.PackageWebsiteLabel}" />
+                            </Hyperlink>
+                        </TextBlock>
 
                     </StackPanel>
                     <StackPanel MinWidth="200"
-                            Margin="0,0,0,10"
-                            Orientation="Horizontal"
-                            Visibility="{Binding PackageRepositoryURL, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                Margin="0,0,0,10"
+                                Orientation="Horizontal"
+                                Visibility="{Binding PackageRepositoryURL, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                         <Rectangle Name="RepositoryLinkIcon"
-                               Width="16px"
-                               Height="16px">
+                                   Width="16px"
+                                   Height="16px">
                             <Rectangle.Fill>
                                 <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/link-16px.png" />
                             </Rectangle.Fill>
                         </Rectangle>
-                        <TextBlock Name="PackageRepositoryLinkText"
-                                Margin="8,0,0,0">
-                        <Hyperlink Name="PackageRepositoryLink" 
-                                   NavigateUri="{Binding PackageRepositoryURL}" 
-                                   RequestNavigate="Hyperlink_RequestNavigate" 
-                                   TextDecorations="None" 
-                                   Style="{StaticResource BodyLinkStyle}">
-                            <TextBlock Text="{x:Static p:Resources.PackageRepositoryLabel}" />
-                        </Hyperlink>
-                    </TextBlock>
+                        <TextBlock Name="PackageRepositoryLinkText" Margin="8,0,0,0">
+                            <Hyperlink Name="PackageRepositoryLink"
+                                       NavigateUri="{Binding PackageRepositoryURL}"
+                                       RequestNavigate="Hyperlink_RequestNavigate"
+                                       Style="{StaticResource BodyLinkStyle}"
+                                       TextDecorations="None">
+                                <TextBlock Text="{x:Static p:Resources.PackageRepositoryLabel}" />
+                            </Hyperlink>
+                        </TextBlock>
                     </StackPanel>
                 </StackPanel>
 
                 <!--  License  -->
-                <StackPanel Orientation ="Vertical" Margin="0,10,0,0">
+                <StackPanel Margin="0,10,0,0" Orientation="Vertical">
                     <TextBlock Name="LicenseTitle"
                                MinWidth="0"
                                Style="{StaticResource LabelStyle}"
@@ -457,239 +441,64 @@
                            Style="{StaticResource LabelStyle}"
                            Text="{x:Static p:Resources.PackageDetailsVersionsAndPackageRequirements}" />
 
-                <DataGrid Name="VersionsDataGrid"
-                          Margin="0,0,0,15"
+                <!--  Version List  -->
+                <ListView Name="VersionsListView"
+                          Padding="0,2"
+                          HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          ItemContainerStyle="{StaticResource CustomListViewItemStyle}"
                           ItemsSource="{Binding PackageDetailItems}"
-                          PreviewMouseWheel="VersionsDataGrid_OnPreviewMouseWheel"
-                          Style="{StaticResource DataGrid}"
-                          VerticalScrollBarVisibility="Disabled">
-                    <DataGrid.Columns>
+                          ScrollViewer.CanContentScroll="True"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                          Template="{StaticResource CustomListViewTemplate}">
 
-                        <!--  Versions  -->
-                        <DataGridTextColumn x:Name="VersionsColumn"
-                                            MinWidth="90"
-                                            Binding="{Binding Path=PackageVersionNumber}"
-                                            Header="{x:Static p:Resources.PackageDetailsVersions}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True">
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}">
-                                    <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Standard" />
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                    <Setter Property="BorderThickness" Value="2" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                                <Grid Background="{StaticResource ExtensionBackgroundColor}" IsHitTestVisible="True">
-                                                    <StackPanel Margin="12,8,10,5">
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock HorizontalAlignment="Left"
-                                                                       Foreground="{StaticResource ForegroundGrayBrush}"
-                                                                       Text="{Binding PackageVersionNumber}" />
-                                                            <Rectangle Margin="7,0,0,2" Width="12" Height="12">
-                                                                <Rectangle.Fill>
-                                                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Copyright.png" />
-                                                                </Rectangle.Fill>
-                                                                <Rectangle.ToolTip>
-                                                                    <ToolTip Style="{StaticResource GenericToolTipLight}">
-                                                                        <ToolTip.Content>
-                                                                            <MultiBinding Converter="{StaticResource CopyrightInfoTooltipConverter}">
-                                                                                <Binding Path="CopyRightHolder" />
-                                                                                <Binding Path="CopyRightYear" />
-                                                                            </MultiBinding>
-                                                                        </ToolTip.Content>
-                                                                    </ToolTip>
-                                                                </Rectangle.ToolTip>
-                                                            </Rectangle>
-                                                        </StackPanel>
-                                                        
-                                                        <Button Name="installButton"
-                                                                Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.TryInstallPackageVersionCommand}"
-                                                                CommandParameter="{Binding PackageVersionNumber}"
-                                                                Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
-                                                                ToolTipService.ShowOnDisabled="True"
-                                                                IsEnabled="{Binding IsEnabledForInstall}">
-                                                            <Button.Template>
-                                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                                    <Border Name="ButtonBorder"
-                                                                            Height="25"
-                                                                            Margin="-8,0,0,0"
-                                                                            Padding="5,0"
-                                                                            HorizontalAlignment="Left"
-                                                                            BorderThickness="2"
-                                                                            CornerRadius="2">
-                                                                        <DockPanel>
-                                                                            <Rectangle Width="10"
-                                                                                       Height="10"
-                                                                                       VerticalAlignment="Center"
-                                                                                       DockPanel.Dock="Left">
-                                                                                <Rectangle.Style>
-                                                                                    <Style TargetType="Rectangle">
-                                                                                        <Style.Triggers>
-                                                                                            <DataTrigger Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsPackageDeprecated}" Value="True">
-                                                                                                <Setter Property="Fill">
-                                                                                                    <Setter.Value>
-                                                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
-                                                                                                    </Setter.Value>
-                                                                                                </Setter>
-                                                                                                <Setter Property="Opacity" Value="0.5" />
-                                                                                            </DataTrigger>
-                                                                                            <DataTrigger Binding="{Binding Path=CanInstall}" Value="False">
-                                                                                                <Setter Property="Fill">
-                                                                                                    <Setter.Value>
-                                                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
-                                                                                                    </Setter.Value>
-                                                                                                </Setter>
-                                                                                                <Setter Property="Opacity" Value="1" />
-                                                                                            </DataTrigger>
-                                                                                            <DataTrigger Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsEnabledForInstall}" Value="False">
-                                                                                                <Setter Property="Fill">
-                                                                                                    <Setter.Value>
-                                                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
-                                                                                                    </Setter.Value>
-                                                                                                </Setter>
-                                                                                                <Setter Property="Opacity" Value="1" />
-                                                                                            </DataTrigger>
-                                                                                            <MultiDataTrigger>
-                                                                                                <MultiDataTrigger.Conditions>
-                                                                                                    <Condition Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsPackageDeprecated}" Value="False" />
-                                                                                                    <Condition Binding="{Binding Path=CanInstall}" Value="True" />
-                                                                                                    <Condition Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsEnabledForInstall}" Value="True" />
-                                                                                                </MultiDataTrigger.Conditions>
-                                                                                                <Setter Property="Fill">
-                                                                                                    <Setter.Value>
-                                                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
-                                                                                                    </Setter.Value>
-                                                                                                </Setter>
-                                                                                            </MultiDataTrigger>
-                                                                                        </Style.Triggers>
-                                                                                    </Style>
-                                                                                </Rectangle.Style>
-                                                                            </Rectangle>
-                                                                            <TextBlock Name="textBlock"
-                                                                                       Margin="3,0,0,0"
-                                                                                       HorizontalAlignment="Left"
-                                                                                       VerticalAlignment="Center"
-                                                                                       Cursor="Hand"
-                                                                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                                                       FontSize="11px"
-                                                                                       Text="{TemplateBinding Content}" />
-                                                                        </DockPanel>
-                                                                    </Border>
-                                                                    <ControlTemplate.Triggers>
-                                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#4A4A4A" />
-                                                                        </Trigger>
-                                                                        <Trigger Property="IsPressed" Value="True">
-                                                                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
-                                                                        </Trigger>
-                                                                        <DataTrigger Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsPackageDeprecated}" Value="True">
-                                                                            <Setter Property="TextBlock.Opacity" Value="0.5" />
-                                                                            <Setter Property="TextBlock.Foreground" Value="{StaticResource HasVotedBlueBrush}"  />
-                                                                            <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Path=CanInstall, UpdateSourceTrigger=PropertyChanged}" Value="False">
-                                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                                            <Setter Property="Opacity" Value="1" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsEnabledForInstall}" Value="False">
-                                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                                            <Setter Property="TextBlock.Opacity" Value="1" />
-                                                                        </DataTrigger>
-                                                                        <MultiDataTrigger>
-                                                                            <MultiDataTrigger.Conditions>
-                                                                                <Condition Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsPackageDeprecated}" Value="False" />
-                                                                                <Condition Binding="{Binding Path=CanInstall}" Value="True" />
-                                                                                <Condition Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsEnabledForInstall}" Value="True" />
-                                                                            </MultiDataTrigger.Conditions>
-                                                                            <Setter Property="TextBlock.Opacity" Value="1" />
-                                                                            <Setter Property="TextBlock.Foreground" Value="{StaticResource HasVotedBlueBrush}" />
-                                                                        </MultiDataTrigger>
-                                                                    </ControlTemplate.Triggers>
-                                                                </ControlTemplate>
-                                                            </Button.Template>
-                                                        </Button>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
+                    <!--  ItemTemplate for each row  -->
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Expander Width="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=ActualWidth}"
+                                      Margin="1"
+                                      Padding="0"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
+                                      Background="#474747"
+                                      BorderBrush="#eb5555"
+                                      BorderThickness="4,0,0,0"
+                                      IsExpanded="False"
+                                      Template="{StaticResource VersionExpanderTemplate}">
+                                <!--  Header content  -->
+                                <Expander.Header>
+                                    <StackPanel Margin="10" Orientation="Horizontal">
+                                        <TextBlock FontWeight="Bold" Text="{Binding PackageVersionNumber}" />
+                                        <TextBlock Margin="10,0,0,0"
+                                                   Foreground="Gray"
+                                                   Text="{Binding PackageSize}" />
+                                    </StackPanel>
+                                </Expander.Header>
 
-                        <!--  Host  -->
-                        <DataGridTextColumn MinWidth="100"
-                                            Binding="{Binding Hosts}"
-                                            Header="{x:Static p:Resources.PackageDetailsHost}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True" />
+                                <!--  Expanded content  -->
+                                <Expander.Content>
+                                    <StackPanel Margin="20,0,0,0">
+                                        <TextBlock Margin="0,0,0,5"
+                                                   FontWeight="Bold"
+                                                   Text="Detailed Information" />
+                                        <TextBlock Text="{Binding Hosts}" />
+                                        <TextBlock Text="{Binding PythonVersion}" />
 
-                        <!--  Python  -->
-                        <DataGridTextColumn MinWidth="110"
-                                            Binding="{Binding PythonVersion}"
-                                            Header="{x:Static p:Resources.PackageDetailsPython}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True" />
+                                        <!--  Buttons  -->
+                                        <Button Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.TryInstallPackageVersionCommand}"
+                                                CommandParameter="{Binding PackageVersionNumber}"
+                                                Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
+                                                IsEnabled="{Binding IsEnabledForInstall}" />
+                                    </StackPanel>
+                                </Expander.Content>
+                            </Expander>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
 
-                        <!--  Package  -->
-                        <DataGridTextColumn x:Name="PackageColumn"
-                                            Width="*"
-                                            MinWidth="100"
-                                            Binding="{Binding Packages}"
-                                            Header="{x:Static p:Resources.PackageDetailsPackage}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True">
-                            <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Standard" />
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                    <Setter Property="BorderThickness" Value="2" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                                <Grid Background="{StaticResource ExtensionBackgroundColor}" IsHitTestVisible="True">
-                                                    <ItemsControl Margin="12,8,10,5" ItemsSource="{Binding Packages}">
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <Button Content="{Binding}" />
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                        <ItemsControl.ItemsPanel>
-                                                            <ItemsPanelTemplate>
-                                                                <StackPanel />
-                                                            </ItemsPanelTemplate>
-                                                        </ItemsControl.ItemsPanel>
-                                                    </ItemsControl>
-                                                    <Grid.Resources>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Background" Value="Transparent" />
-                                                            <Setter Property="BorderThickness" Value="0" />
-                                                            <Setter Property="Margin" Value="0,0,5,0" />
-                                                            <Setter Property="Foreground" Value="#6AC0E7" />
-                                                            <Setter Property="HorizontalAlignment" Value="Left" />
-                                                            <Setter Property="HorizontalContentAlignment" Value="Left" />
-                                                            <Setter Property="Command" Value="{Binding ElementName=PackageDetailsWindow, Path=DataContext.OpenDependencyDetailsCommand}" />
-                                                            <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}" />
-                                                        </Style>
-                                                    </Grid.Resources>
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </DataGridTextColumn.CellStyle>
-                        </DataGridTextColumn>
-
-                        <!--  Size  -->
-                        <DataGridTextColumn MinWidth="110"
-                                            Binding="{Binding PackageSize}"
-                                            Header="{x:Static p:Resources.PackageDetailsSize}"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                </ListView>
             </StackPanel>
         </ScrollViewer>
     </Grid>
