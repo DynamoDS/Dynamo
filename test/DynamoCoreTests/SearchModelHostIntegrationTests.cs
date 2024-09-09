@@ -31,7 +31,7 @@ namespace Dynamo.Tests
         public void ValidateRevitSetParameterNodeInSearch()
         {
             string expectedNode = "SetParameterByName";
-            string[] searchTerms = { "set parameter", "element set parameter", "setparameter", "element.setparameter" };
+            string[] searchTerms = { "set parameter", "setparameter", "element.setparameter" };
             const int nodeResultsToTake = 5;
             const int expectedNodeIndex = 0;
 
@@ -58,7 +58,7 @@ namespace Dynamo.Tests
         public void ValidateRevitGetParameterNodeInSearch()
         {
             string expectedNode = "GetParameterValueByName";
-            string[] searchTerms = { "getparameter", "get parameter", "element get parameter", "element.getparameter" };
+            string[] searchTerms = { "getparameter", "get parameter", "element.getparameter" };
             const int nodeResultsToTake = 5;
             const int expectedNodeIndex = 0;
 
@@ -77,6 +77,97 @@ namespace Dynamo.Tests
             }
         }
 
+        /// <summary>
+        /// Validate that several Revit nodes are found in the top 5 results in Revit and also validate that are in the first position
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void ValidateSeveralRevitNodesInSearch()
+        {
+            string[] expectedNodes = { "PointAtParameter", "Select Model Element", "FamilyName", "List.Combine", "String",};
+            string[] searchTerms = { "point at parameter", "select model element", "family name", "combine", "string" };
+            const int nodeResultsToTake = 5;
+            const int expectedNodeIndex = 0;
+
+            string fullJsonNodesPath = Path.Combine(TestDirectory, @"DynamoCoreTests\NodesJsonDatasets\LuceneIndexedNodesRevit.json");
+            UpdateIndexedNodesFromJason(fullJsonNodesPath);
+
+            int index = 0;
+            foreach (var searchTerm in searchTerms)
+            {
+                var results = search.Search(searchTerm, CurrentDynamoModel.LuceneUtility);
+                var nameResults = results.Select(node => node.Name);
+                var expectedNode = expectedNodes[index];
+
+                // Validates that the Expected Node is found in the Top 5 Search results
+                Assert.IsTrue(nameResults.Take(nodeResultsToTake).Contains(expectedNode));
+
+                //Validates that the expected node is at first place
+                Assert.IsTrue(nameResults.IndexOf(expectedNode) == expectedNodeIndex, string.Format("The node: {0} is expected at position: {1} but was found in position: {2}", expectedNode, expectedNodeIndex, nameResults.IndexOf(expectedNode)));
+                index++;
+            }
+        }
+
+        /// <summary>
+        /// Validate that several Revit nodes are found in the top 5 results in Revit and also validate that are in the first position
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void ValidateListCreateNodeInSearch()
+        {
+            string expectedNode = "List Create";
+            string[] searchTerms = { "list.create", "list create"};
+            const int nodeResultsToTake = 5;
+            const int expectedNodeIndex = 0;
+
+            string fullJsonNodesPath = Path.Combine(TestDirectory, @"DynamoCoreTests\NodesJsonDatasets\LuceneIndexedNodesRevit.json");
+            UpdateIndexedNodesFromJason(fullJsonNodesPath);
+
+            int index = 0;
+            foreach (var searchTerm in searchTerms)
+            {
+                var results = search.Search(searchTerm, CurrentDynamoModel.LuceneUtility);
+                var nameResults = results.Select(node => node.Name);
+
+                // Validates that the Expected Node is found in the Top 5 Search results
+                Assert.IsTrue(nameResults.Take(nodeResultsToTake).Contains(expectedNode));
+
+                //Validates that the expected node is at first place
+                Assert.IsTrue(nameResults.IndexOf(expectedNode) == expectedNodeIndex, string.Format("The node: {0} is expected at position: {1} but was found in position: {2}", expectedNode, expectedNodeIndex, nameResults.IndexOf(expectedNode)));
+                index++;
+            }
+        }
+
+        /// <summary>
+        /// Validate that several Revit nodes are found in the top 5 results in Revit and also validate that are in the first position
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void ValidateTranslateNodeInSearch()
+        {
+            string expectedNode = "Translate";
+            string searchTerm = "translate" ;
+            const int nodeResultsToTake = 5;
+            const int expectedNodeIndex = 0;
+
+            string fullJsonNodesPath = Path.Combine(TestDirectory, @"DynamoCoreTests\NodesJsonDatasets\LuceneIndexedNodesRevit.json");
+            UpdateIndexedNodesFromJason(fullJsonNodesPath);
+  
+            var results = search.Search(searchTerm, CurrentDynamoModel.LuceneUtility);
+            var nameResults = results.Select(node => node.Name);
+
+            // Validates that the Expected Node is found in the Top 5 Search results
+            Assert.IsTrue(nameResults.Contains(expectedNode));
+
+            foreach (var result in nameResults.Take(nodeResultsToTake))
+            {
+                //Validates that the first 5 nodes in the result start with the word "Translate"
+                Assert.That(result.Contains("Translate"), Is.True);
+            }
+            //Validates that the expected node is at first place
+            Assert.IsTrue(nameResults.IndexOf(expectedNode) == expectedNodeIndex, string.Format("The node: {0} is expected at position: {1} but was found in position: {2}", expectedNode, expectedNodeIndex, nameResults.IndexOf(expectedNode)));
+        }
+
 
         /// <summary>
         /// Validate that the "Choose Text Style" node is found in the top 5 results from the indexed Civil3D 2025.1 nodes
@@ -89,7 +180,6 @@ namespace Dynamo.Tests
             string[] searchTerms = { "choose text", "choose text style" };
             const int nodeResultsToTake = 5;
 
-            //TO-DO Update this array once the Search algorithm is updated/refactored
             int[] expectedNodeIndex = [1, 0];
 
             string fullJsonNodesPath = Path.Combine(TestDirectory, @"DynamoCoreTests\NodesJsonDatasets\LuceneIndexedInfoC3D.json");
@@ -145,6 +235,7 @@ namespace Dynamo.Tests
             }
         }
 
+        #region Utility Methods
         /// <summary>
         /// Read a json array and convert it to a list of nodes which can be indexed for Lucene Search
         /// </summary>
@@ -179,5 +270,6 @@ namespace Dynamo.Tests
             
             CurrentDynamoModel.LuceneUtility.UpdateIndexedNodesInfo(nodesList);
         }
+        #endregion
     }
 }

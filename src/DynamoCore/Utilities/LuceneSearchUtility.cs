@@ -310,18 +310,6 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Check if the term passed as parameter is found inside the FullCategoryName
-        /// </summary>
-        /// <param name="term">Splitted search term e.g. if the search term is "set parameter" the parameter will be "set" or "parameter"</param>
-        /// <param name="FullCategoryName">The complete category used for a specific node, like Core.File.FileSystem</param>
-        /// <returns></returns>
-        private bool IsMatchingCategory(string term, string FullCategoryName)
-        {
-            var categoryTerms = FullCategoryName.Split(".").Select(x => x.ToLower());
-            return categoryTerms.Contains(term);
-        }
-
-        /// <summary>
         /// Creates a search query with adjusted priority, fuzzy logic and wildcards.
         /// Complete Search term appearing in Name of the package will be given highest priority.
         /// Then, complete search term appearing in other metadata,
@@ -366,7 +354,6 @@ namespace Dynamo.Utilities
             {
                 Occur occurQuery = Occur.SHOULD;
 
-                //Needs to be again due that now a query can contain different values per field (e.g. CategorySplitted:list, Name:tr)
                 searchTerm = QueryParser.Escape(SearchTerm);
                 if (searchType == SearchType.ByDotCategory)
                 {
@@ -386,27 +373,29 @@ namespace Dynamo.Utilities
                     }                   
                 }
 
-                //For normal search we don't consider the fields NameSplitted and CategorySplitted
-                if ((f == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ||
-                    f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted)) && searchType != SearchType.ByDotCategory)
+                //For normal search we don't consider the field CategorySplitted
+                if (f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted) && searchType != SearchType.ByDotCategory)
                     continue;
+
 
                 //This case is for when the user type something like "list.", I mean, not specifying the node name or part of it
                 if (string.IsNullOrEmpty(searchTerm))
                     continue;
 
+                //Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions), with the normal weights
                 AddQueries(searchTerm, f, searchType, booleanQuery, occurQuery, fuzzyLogicMaxEdits);
 
                 if (searchType == SearchType.ByEmptySpace)
                 {
                     foreach (string s in searchTerm.Split(' '))
                     {
-                        //If is a ByEmptySpace search and the split words match with more than MaxNodeNamesRepeated nodes then the word is skipped
+                        //If is a ByEmptySpace search and the split words match with more than MaxNodeNamesRepeated nodes then the word is skipped (otherwise the results will be polluted with hundred of not related nodes)
                         int nodesFrequency = dynamoModel.SearchModel.Entries.Where(entry => entry.Name.ToLower().Contains(s) && !string.IsNullOrEmpty(s)).Count();
                         if (nodesFrequency > MaxNodeNamesRepeated) continue;
 
                         if (string.IsNullOrEmpty(s)) continue;
 
+                        //Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions), with the weights for Queries with RegularExpressions
                         AddQueries(s, f, searchType, booleanQuery, occurQuery, LuceneConfig.FuzzySearchMinEdits, true);
                     }
                 }
@@ -414,6 +403,16 @@ namespace Dynamo.Utilities
             return booleanQuery.ToString();
         }
 
+        /// <summary>
+        ///  //Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions) with specific weight for each one
+        /// </summary>
+        /// <param name="searchTerm">Search Term introduced by the user</param>
+        /// <param name="field">Field being processed</param>
+        /// <param name="searchType">Type of Search: Normal, ByDotCategory and ByEmptySpace</param>
+        /// <param name="booleanQuery">The Boolean query in which the Wildcard queries will be added</param>
+        /// <param name="occurQuery">Occur type can be Should or Must</param>
+        /// <param name="fuzzyLogicMaxEdits">Max edit lenght for Fuzzy queries</param>
+        /// <param name="termSplit">Indicates if the SearchTerm has been split by empty space or not</param>
         private void AddQueries(string searchTerm, string field, SearchType searchType, BooleanQuery booleanQuery, Occur occurQuery, int fuzzyLogicMaxEdits, bool termSplit = false)
         {
             string querySearchTerm = searchTerm.Replace(" ", string.Empty);
@@ -449,6 +448,7 @@ namespace Dynamo.Utilities
             }
 
             string termText;
+            //If the WilcardQuery contains regular expression then we will decrease the defined weight
             switch (wilcardType)
             {
                 case WildcardType.Prefix:
@@ -614,6 +614,7 @@ namespace Dynamo.Utilities
             //In case the search criteria is like "filesystem.replace" we will be storing the value "filesystem" inside the CategorySplitted field
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted), categoryParsed);
 
+            //When indexing the node.Name if the Name contains empty space then we remove it (this will allow to Search without empty spaces and fetch the expected node).
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name.Trim().Replace(" ", string.Empty));
 
             var nameParts = node.Name.Split('.');
