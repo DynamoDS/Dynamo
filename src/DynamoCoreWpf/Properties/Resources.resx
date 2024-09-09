@@ -402,6 +402,10 @@
     <value>Dynamo _Website</value>
     <comment>Help menu | Go Dynamo website</comment>
   </data>
+  <data name="DynamoViewHelpMenuGotoRepo" xml:space="preserve">
+    <value>Dynamo _Repository</value>
+    <comment>Help menu | Go go Dynamo repository</comment>
+  </data>
   <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
     <value>Dynamo _Project Wiki</value>
     <comment>Help menu | Go to wiki</comment>

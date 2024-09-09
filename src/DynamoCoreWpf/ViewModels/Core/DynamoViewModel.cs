@@ -3317,6 +3317,15 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+        public void GoToWebsite(object parameter)
+        {
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoSiteLink) { UseShellExecute = true });
+        }
+
+        internal bool CanGoToWebsite(object parameter)
+        {
+            return true;
+        }
 
         public void GoToSourceCode(object parameter)
         {

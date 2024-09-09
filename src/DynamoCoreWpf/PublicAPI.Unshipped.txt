@@ -1928,6 +1928,9 @@ Dynamo.ViewModels.DynamoViewModel.GoHomeView(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToDictionary(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWebsite(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.GoToSourceCode(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToSourceCodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GoToSourceCodeCommand.set -> void
@@ -4569,6 +4572,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewHelpDictionary.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuDisplayStartPage.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuGotoWebsite.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuGotoRepo.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuGotoWiki.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuReportBug.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuShowInFolder.get -> string
