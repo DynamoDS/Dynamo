@@ -662,8 +662,11 @@
                                   Command="{Binding GoToDictionaryCommand}">
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoWebsite}"
-                                  Command="{Binding GoToSourceCodeCommand}"
+                                  Command="{Binding GoToWebsiteCommand}"
                                   Name="ViewDynamoWebsite"/>
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoRepo}"
+                                  Command="{Binding GoToSourceCodeCommand}"
+                                  Name="ViewDynamoRepo"/>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoWiki}"
                                   Command="{Binding GoToWikiCommand}"
                                   Name="ViewDynamoWiki"/>

@@ -1973,6 +1973,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo _Repository.
+        /// </summary>
+        public static string DynamoViewHelpMenuGotoRepo {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpMenuGotoRepo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamo _Website.
         /// </summary>
         public static string DynamoViewHelpMenuGotoWebsite {

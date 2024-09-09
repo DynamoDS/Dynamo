@@ -63,6 +63,7 @@ namespace Dynamo.ViewModels
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
+            GoToWebsiteCommand = new DelegateCommand(GoToWebsite, CanGoToWebsite);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
             GoToDictionaryCommand = new DelegateCommand(GoToDictionary, CanGoToDictionary);
             DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
@@ -154,6 +155,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ReportABugCommand { get; set; }
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToDictionaryCommand { get; set; }
+        public DelegateCommand GoToWebsiteCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand DisplayStartPageCommand { get; set; }
         public DelegateCommand DisplayInteractiveGuideCommand { get; set; }
