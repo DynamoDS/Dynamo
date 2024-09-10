@@ -7,7 +7,6 @@ using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -28,7 +27,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
-using PythonNodeModels;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.Views
@@ -1163,7 +1161,7 @@ namespace Dynamo.Views
         private void AddPythonEngineOptions(MenuItem contextMenuItem)
         {
             var pythonEngineVersionMenu = contextMenuItem;
-            var selectedNodes = DynamoSelection.Instance.Selection.OfType<PythonNodeBase>().ToList();
+            var selectedNodes = DynamoSelection.Instance.Selection.OfType<PythonNodeModels.PythonNodeBase>().ToList();
             PythonEngineManager.Instance.AvailableEngines.ToList().ForEach(engineName => ViewModel.DynamoViewModel.AddPythonEngineToMenuItems(selectedNodes, pythonEngineVersionMenu, UpdateSelectedPythonNodeEngines, engineName.Name));
         }
 
@@ -1171,7 +1169,7 @@ namespace Dynamo.Views
         {
             if (sender is MenuItem menuItem)
             {
-                var selectedNodes = DynamoSelection.Instance.Selection.OfType<PythonNodeBase>().ToList();
+                var selectedNodes = DynamoSelection.Instance.Selection.OfType<PythonNodeModels.PythonNodeBase>().ToList();
                 selectedNodes.ForEach(pythonNodeModel =>
                 {
                     ViewModel.DynamoViewModel.UpdatePythonNodeEngine(pythonNodeModel, (string)menuItem.Header);

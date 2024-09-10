@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.PythonServices;
