@@ -2994,6 +2994,7 @@ Dynamo.ViewModels.WorkspaceViewModel.CanFindNodesFromElements.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.CanPaste.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanRunNodeToCode.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanShowInfoBubble.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.CanUpdateAllPythonEngine.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanUpdatePythonEngine.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanZoomIn.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanZoomOut.get -> bool
@@ -5495,6 +5496,9 @@ static Dynamo.Wpf.Properties.Resources.UnknowDateFormat.get -> string
 static Dynamo.Wpf.Properties.Resources.UnloadFailureMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UnpinNodeTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineMainMenuHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineWarning.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateNodeIconsDebugMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.UsageReportPromptDialogTitle.get -> string
