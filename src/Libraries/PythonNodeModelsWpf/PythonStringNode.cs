@@ -33,7 +33,7 @@ namespace PythonNodeModelsWpf
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
 
             PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => dynamoViewModel.AddPythonEngineToMenuItems(
-                new List<PythonNodeBase>() { pythonStringNodeModel }, pythonEngineVersionMenu, UpdateEngine, engineName));
+                new List<PythonNodeBase>() { pythonStringNodeModel }, pythonEngineVersionMenu, UpdateEngine, engineName, true));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 

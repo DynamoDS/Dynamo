@@ -23,6 +23,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -1405,7 +1406,7 @@ namespace Dynamo.ViewModels
         }
         private bool SelectionHasPythonNodes()
         {
-            if (DynamoSelection.Instance.Selection.OfType<PythonNode>().Any() || DynamoSelection.Instance.Selection.OfType<PythonStringNode>().Any())
+            if (GetSelectedPythonNodes().Any())
             {
                 return true;
             }
@@ -1420,7 +1421,7 @@ namespace Dynamo.ViewModels
         }
         internal void UpdateAllPythonEngine(object param)
         {
-            var pNodes = Model.CurrentWorkspace.Nodes.OfType<PythonNodeBase>().ToList();
+            var pNodes = GetSelectedPythonNodes(Model.CurrentWorkspace.Nodes);
             if (pNodes.Count == 0) return;
             var result = MessageBoxService.Show(
                         Owner,
@@ -1430,7 +1431,7 @@ namespace Dynamo.ViewModels
                         MessageBoxImage.Exclamation);
             if (result == MessageBoxResult.Yes)
             {
-                Model.CurrentWorkspace.Nodes.OfType<PythonNodeBase>().ToList().ForEach(x => UpdatePythonNodeEngine(x, param.ToString()));
+                pNodes.ForEach(x => UpdatePythonNodeEngine(x, param.ToString()));
             }
         }
         internal bool CanUpdateAllPythonEngine(object param)
@@ -1445,10 +1446,12 @@ namespace Dynamo.ViewModels
         /// <param name="pythonEngineVersionMenu">context menu item to which the engines will be added to</param>
         /// <param name="updateEngineDelegate">Update event handler, to trigger engine update for the node</param>
         /// <param name="engineName">Python engine to be added</param>
+        /// <param name="isBinding">Should be set to true, if you require to bind the passed
+        /// NodeModel engine value with the menu item, works only when a single node is passed in the list.</param>
         internal void AddPythonEngineToMenuItems(List<PythonNodeBase> pythonNodeModel,
            MenuItem pythonEngineVersionMenu,
            RoutedEventHandler updateEngineDelegate,
-           string engineName)
+           string engineName, bool isBinding = false)
         {
             //if all nodes in the selection are set to a specific engine, then that engine will be checked in the list.
             bool hasCommonEngine = pythonNodeModel.All(x => x.EngineName == engineName);
@@ -1461,7 +1464,7 @@ namespace Dynamo.ViewModels
             }
             MenuItem pythonEngineItem = null;
             //if single node, then checked property is bound to the engine value, as python node context menu is not recreated
-            if (pythonNodeModel.Count == 1)
+            if (pythonNodeModel.Count == 1 && isBinding)
             {
                 var pythonNode = pythonNodeModel.FirstOrDefault(); ;
                 pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
@@ -1482,7 +1485,33 @@ namespace Dynamo.ViewModels
             pythonEngineItem.Click += updateEngineDelegate;
             pythonEngineVersionMenu.Items.Add(pythonEngineItem);
         }
-
+        /// <summary>
+        /// Gets the Python nodes from the provided list, including python nodes inside custom nodes as well.
+        /// If no list is provided then the current selection will be considered.
+        /// </summary>
+        /// <returns></returns>
+        internal List<PythonNodeBase> GetSelectedPythonNodes(IEnumerable<NodeModel> nodes = null)
+        {
+            if (nodes == null)
+            {
+                nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            }
+            var selectedPythonNodes = nodes.OfType<PythonNodeBase>().ToList();
+            var customNodes = nodes.Where(x => x.IsCustomFunction).ToList();
+            if (customNodes.Count > 0)
+            {
+                foreach (var cNode in customNodes)
+                {
+                    var customNodeFunction = cNode as Function;
+                    var pythonNodesInCN = customNodeFunction?.Definition.FunctionBody.OfType<PythonNodeBase>().ToList();
+                    if (pythonNodesInCN.Count > 0)
+                    {
+                        selectedPythonNodes.AddRange(pythonNodesInCN);
+                    }
+                }
+            }
+            return selectedPythonNodes;
+        }
         /// <summary>
         /// After command framework is implemented, this method should now be only 
         /// called from a menu item (i.e. Ctrl + W). It should not be used as a way

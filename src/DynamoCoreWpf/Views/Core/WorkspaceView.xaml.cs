@@ -1161,7 +1161,7 @@ namespace Dynamo.Views
         private void AddPythonEngineOptions(MenuItem contextMenuItem)
         {
             var pythonEngineVersionMenu = contextMenuItem;
-            var selectedNodes = DynamoSelection.Instance.Selection.OfType<PythonNodeModels.PythonNodeBase>().ToList();
+            var selectedNodes = ViewModel.DynamoViewModel.GetSelectedPythonNodes();
             PythonEngineManager.Instance.AvailableEngines.ToList().ForEach(engineName => ViewModel.DynamoViewModel.AddPythonEngineToMenuItems(selectedNodes, pythonEngineVersionMenu, UpdateSelectedPythonNodeEngines, engineName.Name));
         }
 
@@ -1169,7 +1169,7 @@ namespace Dynamo.Views
         {
             if (sender is MenuItem menuItem)
             {
-                var selectedNodes = DynamoSelection.Instance.Selection.OfType<PythonNodeModels.PythonNodeBase>().ToList();
+                var selectedNodes = ViewModel.DynamoViewModel.GetSelectedPythonNodes();
                 selectedNodes.ForEach(pythonNodeModel =>
                 {
                     ViewModel.DynamoViewModel.UpdatePythonNodeEngine(pythonNodeModel, (string)menuItem.Header);

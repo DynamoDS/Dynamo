@@ -95,7 +95,7 @@ namespace PythonNodeModelsWpf
             learnMoreItem.Click += OpenPythonLearningMaterial;
 
             PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => dynamoViewModel.AddPythonEngineToMenuItems(
-                new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, engineName));
+                new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, engineName, true));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
@@ -314,7 +314,7 @@ namespace PythonNodeModelsWpf
                 {
                     if(item is PythonEngine newEngine)
                     {
-                        dynamoViewModel.AddPythonEngineToMenuItems(new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, newEngine.Name);
+                        dynamoViewModel.AddPythonEngineToMenuItems(new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, newEngine.Name, true);
                     }
                 }   
             }
