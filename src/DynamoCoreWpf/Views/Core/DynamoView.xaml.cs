@@ -252,6 +252,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
 
+            //add option to update python engine for all python nodes in the workspace.
             AddPythonEngineToMainMenu();
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += OnPythonEngineListUpdated;
             dynamoViewModel.Owner = this;
@@ -279,6 +280,10 @@ namespace Dynamo.Controls
             //Update the main menu Python Engine list whenever a python engine is added or removed.
             AddPythonEngineToMainMenu();
         }
+
+        /// <summary>
+        /// Populates the PythonEngineMenu in the main menu bar with currently available python engines.
+        /// </summary>
         private void AddPythonEngineToMainMenu()
         {
             PythonEngineMenu.Items.Clear();
