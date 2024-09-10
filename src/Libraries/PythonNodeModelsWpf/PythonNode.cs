@@ -94,8 +94,8 @@ namespace PythonNodeModelsWpf
 
             learnMoreItem.Click += OpenPythonLearningMaterial;
 
-            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => AddPythonEngineToMenuItems(
-                pythonNodeModel,pythonEngineVersionMenu,UpdateEngine,engineName));
+            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => dynamoViewModel.AddPythonEngineToMenuItems(
+                new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, engineName));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
@@ -302,10 +302,7 @@ namespace PythonNodeModelsWpf
         {
             if (sender is MenuItem menuItem)
             {
-                dynamoViewModel.ExecuteCommand(
-                   new DynamoModel.UpdateModelValueCommand(
-                       Guid.Empty, pythonNodeModel.GUID, nameof(pythonNodeModel.EngineName), (string)menuItem.Header));
-                pythonNodeModel.OnNodeModified();
+                dynamoViewModel.UpdatePythonNodeEngine(pythonNodeModel, (string)menuItem.Header);
             }
         }
 
@@ -317,34 +314,10 @@ namespace PythonNodeModelsWpf
                 {
                     if(item is PythonEngine newEngine)
                     {
-                        AddPythonEngineToMenuItems(pythonNodeModel,pythonEngineVersionMenu,UpdateEngine,newEngine.Name);
+                        dynamoViewModel.AddPythonEngineToMenuItems(new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, newEngine.Name);
                     }
                 }   
             }
-        }
-
-        /// <summary>
-        /// Adds python engine to MenuItems, if that engine name is not already present.
-        /// </summary>
-        internal static void AddPythonEngineToMenuItems(PythonNodeBase pythonNodeModel,
-            MenuItem pythonEngineVersionMenu,
-            RoutedEventHandler updateEngineDelegate,
-            string engineName)
-        {
-         
-            if (pythonEngineVersionMenu.Items.Cast<MenuItem>().Any(x => x.Header as string == engineName))
-            {
-                return;
-            }
-            var pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
-            pythonEngineItem.Click += updateEngineDelegate;
-            pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.EngineName))
-            {
-                Source = pythonNodeModel,
-                Converter = new CompareToParameterConverter(),
-                ConverterParameter = engineName
-            });
-            pythonEngineVersionMenu.Items.Add(pythonEngineItem);
         }
     }
 }

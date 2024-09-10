@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
@@ -22,6 +23,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -1392,6 +1394,94 @@ namespace Dynamo.ViewModels
         {
             OnRequestPaste();
             RaiseCanExecuteUndoRedo();
+        }
+
+        internal bool CanUpdatePythonNodeEngine(object parameter)
+        {
+            if (DynamoSelection.Instance.Selection.Count > 0 && SelectionHasPythonNodes())
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool SelectionHasPythonNodes()
+        {
+            if (DynamoSelection.Instance.Selection.OfType<PythonNode>().Any() || DynamoSelection.Instance.Selection.OfType<PythonStringNode>().Any())
+            {
+                return true;
+            }
+            return false;
+        }
+        internal void UpdatePythonNodeEngine(PythonNodeBase pythonNode, string engine)
+        {
+            this.ExecuteCommand(
+                   new DynamoModel.UpdateModelValueCommand(
+                       Guid.Empty, pythonNode.GUID, nameof(pythonNode.EngineName), engine));
+            pythonNode.OnNodeModified();
+        }
+        internal void UpdateAllPythonEngine(object param)
+        {
+            var pNodes = Model.CurrentWorkspace.Nodes.OfType<PythonNodeBase>().ToList();
+            if (pNodes.Count == 0) return;
+            var result = MessageBoxService.Show(
+                        Owner,
+                        string.Format(Properties.Resources.UpdateAllPythonEngineWarning, pNodes.Count, param.ToString()),
+                        Properties.Resources.UpdateAllPythonEngineWarningTitle,
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Exclamation);
+            if (result == MessageBoxResult.Yes)
+            {
+                Model.CurrentWorkspace.Nodes.OfType<PythonNodeBase>().ToList().ForEach(x => UpdatePythonNodeEngine(x, param.ToString()));
+            }
+        }
+        internal bool CanUpdateAllPythonEngine(object param)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Adds the python engine to the menu items and subscribes to their click event for updating the engine.
+        /// </summary>
+        /// <param name="pythonNodeModel">List of python nodes</param>
+        /// <param name="pythonEngineVersionMenu">context menu item to which the engines will be added to</param>
+        /// <param name="updateEngineDelegate">Update event handler, to trigger engine update for the node</param>
+        /// <param name="engineName">Python engine to be added</param>
+        internal void AddPythonEngineToMenuItems(List<PythonNodeBase> pythonNodeModel,
+           MenuItem pythonEngineVersionMenu,
+           RoutedEventHandler updateEngineDelegate,
+           string engineName)
+        {
+            //if all nodes in the selection are set to a specific engine, then that engine will be checked in the list.
+            bool hasCommonEngine = pythonNodeModel.All(x => x.EngineName == engineName);
+            var currentItem = pythonEngineVersionMenu.Items.Cast<MenuItem>().FirstOrDefault(x => x.Header as string == engineName);
+            if (currentItem != null)
+            {
+                if (pythonNodeModel.Count == 1) return;
+                currentItem.IsChecked = hasCommonEngine;
+                return;
+            }
+            MenuItem pythonEngineItem = null;
+            //if single node, then checked property is bound to the engine value, as python node context menu is not recreated
+            if (pythonNodeModel.Count == 1)
+            {
+                var pythonNode = pythonNodeModel.FirstOrDefault(); ;
+                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
+                pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new System.Windows.Data.Binding(nameof(pythonNode.EngineName))
+                {
+                    Source = pythonNode,
+                    Converter = new CompareToParameterConverter(),
+                    ConverterParameter = engineName
+                });
+            }
+            else
+            {
+                //when updating multiple nodes checked value is not bound to any specific node,
+                //rather takes into account all the selected nodes
+                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = true };
+                pythonEngineItem.IsChecked = hasCommonEngine;
+            }
+            pythonEngineItem.Click += updateEngineDelegate;
+            pythonEngineVersionMenu.Items.Add(pythonEngineItem);
         }
 
         /// <summary>

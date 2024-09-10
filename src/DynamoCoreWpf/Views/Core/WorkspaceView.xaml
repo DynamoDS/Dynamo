@@ -381,6 +381,7 @@
         <Popup Name="ContextMenuPopup"
                AllowsTransparency="True"
                Opened="OnContextMenuOpened"
+               Closed="OnContextMenuClosed"
                Placement="MousePoint"
                StaysOpen="True"
                Style="{StaticResource WorkspaceContextMenuStylePopup}">
@@ -710,7 +711,7 @@
                               Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
                     <!-- Node Connections Menu -->
-                    <controls:ParentMenuItem  x:Name="NodeConnectionsMenu" Header="{x:Static p:Resources.ContextMenuNodeConnections}" >
+                    <controls:ParentMenuItem  x:Name="NodeConnectionsMenu" Header="{x:Static p:Resources.ContextMenuNodeConnections}">
 
                         <!--  Connections: Show All Wires  -->
                         <MenuItem Command="{Binding Path=ShowAllWiresCommand}"
@@ -763,6 +764,11 @@
                               Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                     <Separator />
+
+                    <!--  Switch Python  -->
+                    <controls:ParentMenuItem  x:Name="PythonEngineMenu" Header="{x:Static p:Resources.UpdateAllPythonEngineMainMenuHeader}" Visibility="{Binding Path=CanUpdatePythonEngine, Converter={StaticResource BooleanToVisibilityCollapsedConverter }}">
+
+                    </controls:ParentMenuItem>
 
                     <!--  Switch to Geometry View  -->
                     <MenuItem Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}"

@@ -51,7 +51,8 @@ namespace Dynamo.ViewModels
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleBackgroundGridVisibilityCommand = new DelegateCommand(ToggleBackgroundGridVisibility, CanToggleBackgroundGridVisibility);
             UpdateGraphicHelpersScaleCommand = new DelegateCommand(UpdateGraphicHelpersScale, CanUpdateGraphicHelpersScale);
-            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
+            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
+            UpdateAllPythonEngineCommand = new DelegateCommand(UpdateAllPythonEngine, CanUpdateAllPythonEngine);
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_ => model.Copy(), CanCopy);
@@ -138,6 +139,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
+        public DelegateCommand UpdateAllPythonEngineCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleBackgroundGridVisibilityCommand { get; set; }

@@ -7,6 +7,7 @@ using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,6 +19,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -26,6 +28,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
+using PythonNodeModels;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.Views
@@ -1146,6 +1149,34 @@ namespace Dynamo.Views
                 InCanvasSearchBar.IsOpen = false;
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
+            AddPythonEngineOptions(PythonEngineMenu);
+        }
+        private void OnContextMenuClosed(object sender, EventArgs e)
+        {
+            foreach (var item in PythonEngineMenu.Items.Cast<MenuItem>())
+            {
+                item.Click -= UpdateSelectedPythonNodeEngines;
+            }
+            PythonEngineMenu.Items.Clear();
+        }
+
+        private void AddPythonEngineOptions(MenuItem contextMenuItem)
+        {
+            var pythonEngineVersionMenu = contextMenuItem;
+            var selectedNodes = DynamoSelection.Instance.Selection.OfType<PythonNodeBase>().ToList();
+            PythonEngineManager.Instance.AvailableEngines.ToList().ForEach(engineName => ViewModel.DynamoViewModel.AddPythonEngineToMenuItems(selectedNodes, pythonEngineVersionMenu, UpdateSelectedPythonNodeEngines, engineName.Name));
+        }
+
+        private void UpdateSelectedPythonNodeEngines(object sender, EventArgs e)
+        {
+            if (sender is MenuItem menuItem)
+            {
+                var selectedNodes = DynamoSelection.Instance.Selection.OfType<PythonNodeBase>().ToList();
+                selectedNodes.ForEach(pythonNodeModel =>
+                {
+                    ViewModel.DynamoViewModel.UpdatePythonNodeEngine(pythonNodeModel, (string)menuItem.Header);
+                });
+            }
         }
 
         private void OnGeometryScaling_Click(object sender, RoutedEventArgs e)
