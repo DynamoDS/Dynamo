@@ -105,7 +105,7 @@ namespace Dynamo.Models
         // Dynamo host application name, e.g. Revit
         public string HostAppName;
         // Dynamo host application version, e.g. 2025
-        public string HostAppVersion;
+        public Version HostAppVersion;
         // Dynamo host parent id for analytics purpose.
         public string ParentId;
         // Dynamo host session id for analytics purpose.

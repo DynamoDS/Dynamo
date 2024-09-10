@@ -2042,7 +2042,7 @@ Dynamo.Models.EvaluationCompletedEventArgs.EvaluationTookPlace.get -> bool
 Dynamo.Models.HostAnalyticsInfo
 Dynamo.Models.HostAnalyticsInfo.HostAnalyticsInfo() -> void
 Dynamo.Models.HostAnalyticsInfo.HostAppName -> string
-Dynamo.Models.HostAnalyticsInfo.HostAppVersion -> string
+Dynamo.Models.HostAnalyticsInfo.HostAppVersion -> System.Version
 Dynamo.Models.HostAnalyticsInfo.HostName -> string
 Dynamo.Models.HostAnalyticsInfo.HostVersion -> System.Version
 Dynamo.Models.HostAnalyticsInfo.ParentId -> string
