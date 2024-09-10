@@ -1412,12 +1412,33 @@ namespace Dynamo.ViewModels
             }
             return false;
         }
+        /// <summary>
+        /// Updates the engine for the Python nodes,
+        /// if the nodes belong to another workspace (like custom nodes), they will be opened silently.
+        /// </summary>
+        /// <param name="pythonNode"></param>
+        /// <param name="engine"></param>
         internal void UpdatePythonNodeEngine(PythonNodeBase pythonNode, string engine)
         {
-            this.ExecuteCommand(
-                   new DynamoModel.UpdateModelValueCommand(
-                       Guid.Empty, pythonNode.GUID, nameof(pythonNode.EngineName), engine));
-            pythonNode.OnNodeModified();
+            try
+            {
+                var workspaceGUID = Guid.Empty;
+                var cnWorkspace = GetCustomNodeWorkspace(pythonNode);
+                if (cnWorkspace != null)
+                {
+                    workspaceGUID = cnWorkspace.Guid;
+                    FocusCustomNodeWorkspace(cnWorkspace.CustomNodeId, true);
+                }
+                this.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                        workspaceGUID, pythonNode.GUID, nameof(pythonNode.EngineName), engine));
+                pythonNode.OnNodeModified();
+            }
+            catch(Exception ex)
+            {
+                Model.Logger.Log("Failed to update Python node engine: " + ex.Message, LogLevel.Console);
+            }
+
         }
         internal void UpdateAllPythonEngine(object param)
         {
@@ -1511,6 +1532,11 @@ namespace Dynamo.ViewModels
                 }
             }
             return selectedPythonNodes;
+        }
+        private CustomNodeWorkspaceModel GetCustomNodeWorkspace(NodeModel node)
+        {
+            var wg = model.CustomNodeManager.LoadedWorkspaces.Where(x => x.Nodes.Contains(node)).FirstOrDefault();
+            return wg ?? null;
         }
         /// <summary>
         /// After command framework is implemented, this method should now be only 
@@ -2685,17 +2711,18 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Change the currently visible workspace to a custom node's workspace
+        ///     Change the currently visible workspace to a custom node's workspace, unless the silent flag is set to true.
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void FocusCustomNodeWorkspace(Guid symbol)
+        /// <param name="silent">When true, the focus will not switch to the workspace, but it will be opened silently.</param>
+        internal void FocusCustomNodeWorkspace(Guid symbol, bool silent = false)
         {
             if (symbol == null)
             {
                 throw new Exception(Resources.MessageNodeWithNullFunction);
             }
-
-            if (model.OpenCustomNodeWorkspace(symbol))
+            var res = silent ? model.OpenCustomNodeWorkspaceSilent(symbol) : model.OpenCustomNodeWorkspace(symbol);
+            if (res)
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
