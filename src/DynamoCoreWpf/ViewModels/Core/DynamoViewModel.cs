@@ -1425,8 +1425,8 @@ namespace Dynamo.ViewModels
             if (pNodes.Count == 0) return;
             var result = MessageBoxService.Show(
                         Owner,
-                        string.Format(Properties.Resources.UpdateAllPythonEngineWarning, pNodes.Count, param.ToString()),
-                        Properties.Resources.UpdateAllPythonEngineWarningTitle,
+                        string.Format(Resources.UpdateAllPythonEngineWarning, pNodes.Count, param.ToString()),
+                        Resources.UpdateAllPythonEngineWarningTitle,
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Exclamation);
             if (result == MessageBoxResult.Yes)

@@ -254,6 +254,7 @@ namespace Dynamo.Controls
 
             AddPythonEngineToMainMenu();
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += OnPythonEngineListUpdated;
+            dynamoViewModel.Owner = this;
 
             FocusableGrid.InputBindings.Clear();
 
