@@ -98,10 +98,14 @@ namespace Dynamo.Models
     /// </summary>
     public struct HostAnalyticsInfo
     {
-        // Dynamo variation identified by host.
+        // Dynamo variation identified by host, e.g. Dynamo Revit
         public string HostName;
         // Dynamo variation version specific to host
         public Version HostVersion;
+        // Dynamo host application name, e.g. Revit
+        public string HostAppName;
+        // Dynamo host application version, e.g. 2025
+        public string HostAppVersion;
         // Dynamo host parent id for analytics purpose.
         public string ParentId;
         // Dynamo host session id for analytics purpose.

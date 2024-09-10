@@ -124,7 +124,7 @@ namespace Dynamo.Logging
             Session.Start();
 
             var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? Configurations.DynamoAsString : hostAnalyticsInfo.HostName;
-            var appversion = hostAnalyticsInfo.HostVersion != null ? hostAnalyticsInfo.HostVersion.ToString() : string.Empty;
+            var appversion = hostAnalyticsInfo.HostVersion?.ToString();
 
             hostInfo = new HostContextInfo() { ParentId = hostAnalyticsInfo.ParentId, SessionId = hostAnalyticsInfo.SessionId };
 
