@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
@@ -22,6 +23,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -1394,6 +1396,148 @@ namespace Dynamo.ViewModels
             RaiseCanExecuteUndoRedo();
         }
 
+        internal bool CanUpdatePythonNodeEngine(object parameter)
+        {
+            if (DynamoSelection.Instance.Selection.Count > 0 && SelectionHasPythonNodes())
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool SelectionHasPythonNodes()
+        {
+            if (GetSelectedPythonNodes().Any())
+            {
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Updates the engine for the Python nodes,
+        /// if the nodes belong to another workspace (like custom nodes), they will be opened silently.
+        /// </summary>
+        /// <param name="pythonNode"></param>
+        /// <param name="engine"></param>
+        internal void UpdatePythonNodeEngine(PythonNodeBase pythonNode, string engine)
+        {
+            try
+            {
+                var workspaceGUID = Guid.Empty;
+                var cnWorkspace = GetCustomNodeWorkspace(pythonNode);
+                if (cnWorkspace != null)
+                {
+                    workspaceGUID = cnWorkspace.Guid;
+                    FocusCustomNodeWorkspace(cnWorkspace.CustomNodeId, true);
+                }
+                this.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                        workspaceGUID, pythonNode.GUID, nameof(pythonNode.EngineName), engine));
+                pythonNode.OnNodeModified();
+            }
+            catch(Exception ex)
+            {
+                Model.Logger.Log("Failed to update Python node engine: " + ex.Message, LogLevel.Console);
+            }
+
+        }
+        internal void UpdateAllPythonEngine(object param)
+        {
+            var pNodes = GetSelectedPythonNodes(Model.CurrentWorkspace.Nodes);
+            if (pNodes.Count == 0) return;
+            var result = MessageBoxService.Show(
+                        Owner,
+                        string.Format(Resources.UpdateAllPythonEngineWarning, pNodes.Count, param.ToString()),
+                        Resources.UpdateAllPythonEngineWarningTitle,
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Exclamation);
+            if (result == MessageBoxResult.Yes)
+            {
+                pNodes.ForEach(x => UpdatePythonNodeEngine(x, param.ToString()));
+            }
+        }
+        internal bool CanUpdateAllPythonEngine(object param)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Adds the python engine to the menu items and subscribes to their click event for updating the engine.
+        /// </summary>
+        /// <param name="pythonNodeModel">List of python nodes</param>
+        /// <param name="pythonEngineVersionMenu">context menu item to which the engines will be added to</param>
+        /// <param name="updateEngineDelegate">Update event handler, to trigger engine update for the node</param>
+        /// <param name="engineName">Python engine to be added</param>
+        /// <param name="isBinding">Should be set to true, if you require to bind the passed
+        /// NodeModel engine value with the menu item, works only when a single node is passed in the list.</param>
+        internal void AddPythonEngineToMenuItems(List<PythonNodeBase> pythonNodeModel,
+           MenuItem pythonEngineVersionMenu,
+           RoutedEventHandler updateEngineDelegate,
+           string engineName, bool isBinding = false)
+        {
+            //if all nodes in the selection are set to a specific engine, then that engine will be checked in the list.
+            bool hasCommonEngine = pythonNodeModel.All(x => x.EngineName == engineName);
+            var currentItem = pythonEngineVersionMenu.Items.Cast<MenuItem>().FirstOrDefault(x => x.Header as string == engineName);
+            if (currentItem != null)
+            {
+                if (pythonNodeModel.Count == 1) return;
+                currentItem.IsChecked = hasCommonEngine;
+                return;
+            }
+            MenuItem pythonEngineItem = null;
+            //if single node, then checked property is bound to the engine value, as python node context menu is not recreated
+            if (pythonNodeModel.Count == 1 && isBinding)
+            {
+                var pythonNode = pythonNodeModel.FirstOrDefault(); ;
+                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
+                pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new System.Windows.Data.Binding(nameof(pythonNode.EngineName))
+                {
+                    Source = pythonNode,
+                    Converter = new CompareToParameterConverter(),
+                    ConverterParameter = engineName
+                });
+            }
+            else
+            {
+                //when updating multiple nodes checked value is not bound to any specific node,
+                //rather takes into account all the selected nodes
+                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = true };
+                pythonEngineItem.IsChecked = hasCommonEngine;
+            }
+            pythonEngineItem.Click += updateEngineDelegate;
+            pythonEngineVersionMenu.Items.Add(pythonEngineItem);
+        }
+        /// <summary>
+        /// Gets the Python nodes from the provided list, including python nodes inside custom nodes as well.
+        /// If no list is provided then the current selection will be considered.
+        /// </summary>
+        /// <returns></returns>
+        internal List<PythonNodeBase> GetSelectedPythonNodes(IEnumerable<NodeModel> nodes = null)
+        {
+            if (nodes == null)
+            {
+                nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            }
+            var selectedPythonNodes = nodes.OfType<PythonNodeBase>().ToList();
+            var customNodes = nodes.Where(x => x.IsCustomFunction).ToList();
+            if (customNodes.Count > 0)
+            {
+                foreach (var cNode in customNodes)
+                {
+                    var customNodeFunction = cNode as Function;
+                    var pythonNodesInCN = customNodeFunction?.Definition.FunctionBody.OfType<PythonNodeBase>().ToList();
+                    if (pythonNodesInCN.Count > 0)
+                    {
+                        selectedPythonNodes.AddRange(pythonNodesInCN);
+                    }
+                }
+            }
+            return selectedPythonNodes;
+        }
+        private CustomNodeWorkspaceModel GetCustomNodeWorkspace(NodeModel node)
+        {
+            var wg = model.CustomNodeManager.LoadedWorkspaces.Where(x => x.Nodes.Contains(node)).FirstOrDefault();
+            return wg ?? null;
+        }
         /// <summary>
         /// After command framework is implemented, this method should now be only 
         /// called from a menu item (i.e. Ctrl + W). It should not be used as a way
@@ -2567,17 +2711,18 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Change the currently visible workspace to a custom node's workspace
+        ///     Change the currently visible workspace to a custom node's workspace, unless the silent flag is set to true.
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void FocusCustomNodeWorkspace(Guid symbol)
+        /// <param name="silent">When true, the focus will not switch to the workspace, but it will be opened silently.</param>
+        internal void FocusCustomNodeWorkspace(Guid symbol, bool silent = false)
         {
             if (symbol == null)
             {
                 throw new Exception(Resources.MessageNodeWithNullFunction);
             }
-
-            if (model.OpenCustomNodeWorkspace(symbol))
+            var res = silent ? model.OpenCustomNodeWorkspaceSilent(symbol) : model.OpenCustomNodeWorkspace(symbol);
+            if (res)
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
