@@ -25,6 +25,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
+using Dynamo.PythonServices;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -251,6 +252,11 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
 
+            //add option to update python engine for all python nodes in the workspace.
+            AddPythonEngineToMainMenu();
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged += OnPythonEngineListUpdated;
+            dynamoViewModel.Owner = this;
+
             FocusableGrid.InputBindings.Clear();
 
             if (fileTrustWarningPopup == null)
@@ -263,11 +269,31 @@ namespace Dynamo.Controls
             }
 
             DefaultMinWidth = MinWidth;
-    }
-
+        }
         private void OnRequestCloseHomeWorkSpace()
         {
             CalculateWindowMinWidth();
+        }
+
+        private void OnPythonEngineListUpdated(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //Update the main menu Python Engine list whenever a python engine is added or removed.
+            AddPythonEngineToMainMenu();
+        }
+
+        /// <summary>
+        /// Populates the PythonEngineMenu in the main menu bar with currently available python engines.
+        /// </summary>
+        private void AddPythonEngineToMainMenu()
+        {
+            PythonEngineMenu.Items.Clear();
+            var availablePythonEngines = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
+            availablePythonEngines.Select(pythonEngine => new MenuItem
+            {
+                Header = pythonEngine,
+                Command = dynamoViewModel.UpdateAllPythonEngineCommand,
+                CommandParameter = pythonEngine
+            }).ToList().ForEach(x => PythonEngineMenu.Items.Add(x));
         }
 
         private void OnWorkspaceHidden(WorkspaceModel workspace)

@@ -1780,7 +1780,8 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
-            RaisePropertyChanged("SelectionArgumentLacing");            
+            RaisePropertyChanged("SelectionArgumentLacing");
+            RaisePropertyChanged("CanUpdatePythonEngine");
         }
 
         /// <summary>

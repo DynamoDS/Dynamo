@@ -2137,6 +2137,8 @@ Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScale(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScaleCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScaleCommand.set -> void
@@ -2985,6 +2987,8 @@ Dynamo.ViewModels.WorkspaceViewModel.CanFindNodesFromElements.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.CanPaste.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanRunNodeToCode.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanShowInfoBubble.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.CanUpdateAllPythonEngine.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.CanUpdatePythonEngine.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanZoomIn.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanZoomOut.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.Checksum.get -> string
@@ -5481,6 +5485,9 @@ static Dynamo.Wpf.Properties.Resources.UnknowDateFormat.get -> string
 static Dynamo.Wpf.Properties.Resources.UnloadFailureMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UnpinNodeTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineMainMenuHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineWarning.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateNodeIconsDebugMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.UsageReportPromptDialogTitle.get -> string
