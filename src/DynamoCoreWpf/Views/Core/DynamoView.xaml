@@ -534,6 +534,8 @@
                                 </MenuItem.Header>
                             </MenuItem>
                         </MenuItem>
+                        <MenuItem Header="{x:Static p:Resources.UpdateAllPythonEngineMainMenuHeader}"
+                              Name="PythonEngineMenu" />
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCleanupLayout}"
                                   Command="{Binding GraphAutoLayoutCommand}"

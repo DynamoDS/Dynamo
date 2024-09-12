@@ -3997,4 +3997,13 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PartialRenderFailureTitle" xml:space="preserve">
     <value>Background Preview had an issue</value>
   </data>
+  <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
+    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
+    <value>Update All Python Nodes</value>
+  </data>
+  <data name="UpdateAllPythonEngineMainMenuHeader" xml:space="preserve">
+    <value>Set Python Engine</value>
+  </data>
 </root>

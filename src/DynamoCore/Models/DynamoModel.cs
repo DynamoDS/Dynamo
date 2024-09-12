@@ -2946,6 +2946,26 @@ namespace Dynamo.Models
 
             return false;
         }
+        /// <summary>
+        ///     Opens an existing custom node workspace.
+        /// </summary>
+        /// <param name="guid">Identifier of the workspace to open</param>
+        /// <returns>True if workspace was found and open</returns>
+        internal bool OpenCustomNodeWorkspaceSilent(Guid guid)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
+            {
+                if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
+                {
+                    AddWorkspace(customNodeWorkspace);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         ///     Adds a node to the current workspace.
