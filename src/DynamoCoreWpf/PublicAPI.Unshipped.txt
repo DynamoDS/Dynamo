@@ -1894,6 +1894,8 @@ Dynamo.ViewModels.DynamoViewModel.DisplayStartPageCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.DoGraphAutoLayout(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.DumpLibraryToXmlCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.DumpLibraryToXmlCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.DynamoViewModel(Dynamo.ViewModels.DynamoViewModel.StartConfiguration startConfiguration) -> void
 Dynamo.ViewModels.DynamoViewModel.EditName.get -> string
 Dynamo.ViewModels.DynamoViewModel.EditName.set -> void
@@ -1926,6 +1928,9 @@ Dynamo.ViewModels.DynamoViewModel.GoHomeView(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToDictionary(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWebsite(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.GoToSourceCode(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToSourceCodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GoToSourceCodeCommand.set -> void
@@ -2139,6 +2144,8 @@ Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScale(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScaleCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScaleCommand.set -> void
@@ -2987,6 +2994,8 @@ Dynamo.ViewModels.WorkspaceViewModel.CanFindNodesFromElements.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.CanPaste.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanRunNodeToCode.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanShowInfoBubble.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.CanUpdateAllPythonEngine.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.CanUpdatePythonEngine.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanZoomIn.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanZoomOut.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.Checksum.get -> string
@@ -4508,7 +4517,9 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewContextMenuClearLog.get -> stri
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuCheckDailyBuild.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDebugModes.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpData.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpLibrary.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpNodeHelpData.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuForceReExecute.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuForceUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuRunMutationTest.get -> string
@@ -4565,6 +4576,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewHelpDictionary.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuDisplayStartPage.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuGotoWebsite.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuGotoRepo.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuGotoWiki.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuReportBug.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuShowInFolder.get -> string
@@ -4902,6 +4914,7 @@ static Dynamo.Wpf.Properties.Resources.NodeContextMenuIsOutput.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuPreview.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuRenameNode.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuShowLabels.get -> string
+static Dynamo.Wpf.Properties.Resources.NodeHelpIsDumped.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeCategory.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeInput.get -> string
@@ -5483,6 +5496,9 @@ static Dynamo.Wpf.Properties.Resources.UnknowDateFormat.get -> string
 static Dynamo.Wpf.Properties.Resources.UnloadFailureMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UnpinNodeTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineMainMenuHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineWarning.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateNodeIconsDebugMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.UsageReportPromptDialogTitle.get -> string

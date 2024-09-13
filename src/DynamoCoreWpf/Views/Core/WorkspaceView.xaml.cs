@@ -18,6 +18,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -1146,6 +1147,34 @@ namespace Dynamo.Views
                 InCanvasSearchBar.IsOpen = false;
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
+            AddPythonEngineOptions(PythonEngineMenu);
+        }
+        private void OnContextMenuClosed(object sender, EventArgs e)
+        {
+            foreach (var item in PythonEngineMenu.Items.Cast<MenuItem>())
+            {
+                item.Click -= UpdateSelectedPythonNodeEngines;
+            }
+            PythonEngineMenu.Items.Clear();
+        }
+
+        private void AddPythonEngineOptions(MenuItem contextMenuItem)
+        {
+            var pythonEngineVersionMenu = contextMenuItem;
+            var selectedNodes = ViewModel.DynamoViewModel.GetSelectedPythonNodes();
+            PythonEngineManager.Instance.AvailableEngines.ToList().ForEach(engineName => ViewModel.DynamoViewModel.AddPythonEngineToMenuItems(selectedNodes, pythonEngineVersionMenu, UpdateSelectedPythonNodeEngines, engineName.Name));
+        }
+
+        private void UpdateSelectedPythonNodeEngines(object sender, EventArgs e)
+        {
+            if (sender is MenuItem menuItem)
+            {
+                var selectedNodes = ViewModel.DynamoViewModel.GetSelectedPythonNodes();
+                selectedNodes.ForEach(pythonNodeModel =>
+                {
+                    ViewModel.DynamoViewModel.UpdatePythonNodeEngine(pythonNodeModel, (string)menuItem.Header);
+                });
+            }
         }
 
         private void OnGeometryScaling_Click(object sender, RoutedEventArgs e)

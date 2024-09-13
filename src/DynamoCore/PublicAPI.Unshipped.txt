@@ -2041,6 +2041,8 @@ Dynamo.Models.EvaluationCompletedEventArgs.EvaluationSucceeded.get -> bool
 Dynamo.Models.EvaluationCompletedEventArgs.EvaluationTookPlace.get -> bool
 Dynamo.Models.HostAnalyticsInfo
 Dynamo.Models.HostAnalyticsInfo.HostAnalyticsInfo() -> void
+Dynamo.Models.HostAnalyticsInfo.HostProductName -> string
+Dynamo.Models.HostAnalyticsInfo.HostProductVersion -> System.Version
 Dynamo.Models.HostAnalyticsInfo.HostName -> string
 Dynamo.Models.HostAnalyticsInfo.HostVersion -> System.Version
 Dynamo.Models.HostAnalyticsInfo.ParentId -> string
@@ -3000,6 +3002,7 @@ static readonly Dynamo.Configuration.Configurations.CBNMaxPortNameLength -> int
 static readonly Dynamo.Configuration.Configurations.CodeBlockOutputPortHeightInPixels -> double
 static readonly Dynamo.Configuration.Configurations.DoubleSliderTextBoxWidth -> double
 static readonly Dynamo.Configuration.Configurations.DynamoAsString -> string
+static readonly Dynamo.Configuration.Configurations.DynamoNodeHelpDocs -> string
 static readonly Dynamo.Configuration.Configurations.ExtensionsSideBarTabMinWidth -> int
 static readonly Dynamo.Configuration.Configurations.FallbackUiCulture -> string
 static readonly Dynamo.Configuration.Configurations.FilePathAttribName -> string

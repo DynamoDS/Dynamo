@@ -25,6 +25,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
+using Dynamo.PythonServices;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -251,6 +252,11 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
 
+            //add option to update python engine for all python nodes in the workspace.
+            AddPythonEngineToMainMenu();
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged += OnPythonEngineListUpdated;
+            dynamoViewModel.Owner = this;
+
             FocusableGrid.InputBindings.Clear();
 
             if (fileTrustWarningPopup == null)
@@ -263,11 +269,31 @@ namespace Dynamo.Controls
             }
 
             DefaultMinWidth = MinWidth;
-    }
-
+        }
         private void OnRequestCloseHomeWorkSpace()
         {
             CalculateWindowMinWidth();
+        }
+
+        private void OnPythonEngineListUpdated(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //Update the main menu Python Engine list whenever a python engine is added or removed.
+            AddPythonEngineToMainMenu();
+        }
+
+        /// <summary>
+        /// Populates the PythonEngineMenu in the main menu bar with currently available python engines.
+        /// </summary>
+        private void AddPythonEngineToMainMenu()
+        {
+            PythonEngineMenu.Items.Clear();
+            var availablePythonEngines = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
+            availablePythonEngines.Select(pythonEngine => new MenuItem
+            {
+                Header = pythonEngine,
+                Command = dynamoViewModel.UpdateAllPythonEngineCommand,
+                CommandParameter = pythonEngine
+            }).ToList().ForEach(x => PythonEngineMenu.Items.Add(x));
         }
 
         private void OnWorkspaceHidden(WorkspaceModel workspace)
@@ -1469,14 +1495,9 @@ namespace Dynamo.Controls
         {
             var prefSettings = dynamoViewModel.Model.PreferenceSettings;
             if (prefSettings.PackageDownloadTouAccepted)
-                return true; // User accepts the terms of use.
+                return true; // User accepted the terms of use.
 
-            Window packageManParent = null;
-            //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
-            if (dynamoViewModel.MainGuideManager != null && GuideFlowEvents.IsAnyGuideActive)
-                packageManParent = _this;
-            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, packageManParent);
-            prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
+            prefSettings.PackageDownloadTouAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, _this);
 
             // User may or may not accept the terms.
             return prefSettings.PackageDownloadTouAccepted;
@@ -1726,6 +1747,7 @@ namespace Dynamo.Controls
                 categoryBox = { Text = e.Category },
                 DescriptionInput = { Text = e.Description },
                 nameBox = { Text = e.Name },
+                Owner = this,
             };
 
             if (e.CanEditName)
