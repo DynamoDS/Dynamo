@@ -295,6 +295,10 @@ namespace Dynamo.UI.Controls
                     {
                         sampleDatasetsPath = datasetsPath;
                     }
+                    else
+                    {
+                        DynamoViewModel.Model.Logger.Log("Error, Dataset folder not found.");
+                    }
                 }
             }
             catch (Exception ex)
