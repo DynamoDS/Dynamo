@@ -86,7 +86,7 @@ namespace Dynamo.Utilities
         /// <summary>
         /// This enum will be used to identify which can of search should be executed based in the user search criteria 
         /// </summary>
-        public enum SearchType
+        internal enum SearchType
         {
             //Normal search using just one word matching a specific node name
             Normal,
@@ -99,9 +99,9 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// This enum will used to create different type of Wildcard queries using regular expressions
+        /// This enum will be used to create different type of Wildcard queries using regular expressions
         /// </summary>
-        public enum WildcardType
+        internal enum WildcardType
         {
             //This represent the same SearchTerm as was inserted e.g. num
             None,
@@ -404,7 +404,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///  //Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions) with specific weight for each one
+        ///  Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions) with specific weight for each one
         /// </summary>
         /// <param name="searchTerm">Search Term introduced by the user</param>
         /// <param name="field">Field being processed</param>
@@ -436,6 +436,14 @@ namespace Dynamo.Utilities
             }
         }
 
+        /// <summary>
+        /// Creates the WildcardQuery with a specific regular expression and assign a weight depending of the field and the reg ex
+        /// </summary>
+        /// <param name="fieldName">Field name that is being processed</param>
+        /// <param name="searchTerm">SearchTerm entered by the user</param>
+        /// <param name="wilcardType">Indicates which can of wildcard will be used</param>
+        /// <param name="termSplit">If SearchTerm contains empty spaces then is splitted by empty space, so this flag indicates if the searchTerm was already split or not</param>
+        /// <returns>The WildcardQuery with the term and weight assigned</returns>
         private WildcardQuery CalculateFieldWeight(string fieldName, string searchTerm, WildcardType wilcardType = WildcardType.None, bool termSplit = false)
         {
             WildcardQuery query;
@@ -448,7 +456,20 @@ namespace Dynamo.Utilities
             }
 
             string termText;
-            //If the WilcardQuery contains regular expression then we will decrease the defined weight
+            //If the WilcardQuery contains regular expression so the WildcardType will be Prefix, Postfix or FullCard then we will decrease the defined weight.
+            /*
+             * e.g. if the user search for "Number" and we are iterating the field Name, the defined weights in LuceneConfig are the next:
+             * SearchNameWeight = 10
+             * WildcardsSearchNameWeight = 7
+             * 
+             * The 4 Wildcardqueries using reg ex created for the Name field will be:
+             * Name:number - 10
+             * Name:number* - 6
+             * Name:*number - 5
+             * Name:*number* - 4
+             * 
+             * Then the name which has the exact word "number" in the Name will have more weight and it will be decreasing according to the reg ex used
+             */
             switch (wilcardType)
             {
                 case WildcardType.Prefix:
@@ -508,7 +529,9 @@ namespace Dynamo.Utilities
                     break;
             }
 
-            //This section only applies if the SearchTerm contain empty spaces then is splitted by empty space and try to calculate the weight for each part
+            /*This piece of code only applies if the SearchTerm contain empty spaces.
+             * When contain empty spaces is split by empty space resulting several terms (that why termSplit = true) and then assign a lower weight for each term.
+             */
             if (fieldName.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)) && termSplit == true)
             {
                 query.Boost = LuceneConfig.WildcardsSearchNameParsedWeight;
