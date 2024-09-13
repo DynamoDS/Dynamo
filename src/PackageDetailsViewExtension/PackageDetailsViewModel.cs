@@ -270,6 +270,7 @@ namespace Dynamo.PackageDetails
                 .Reverse()
                 .Select(x => new PackageDetailItem
                 (
+                    packageManagerSearchElement.VersionInfos,
                     packageManagerSearchElement.Name,
                     x,
                     DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name),

@@ -1,13 +1,20 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.PackageManager;
 using Dynamo.PythonServices;
 using Greg.Responses;
-using PythonNodeModels;
 
 namespace Dynamo.PackageDetails
 {
+    public class FlattenedCompatibility
+    {
+        public string CompatibilityName { get; set; }
+        public string Versions { get; set; }
+    }
+
     /// <summary>
     /// A wrapper class for a PackageVersion object, used in the PackageDetailsExtension.
     /// </summary>
@@ -26,6 +33,9 @@ namespace Dynamo.PackageDetails
         private bool isEnabledForInstall;
         private string packageName;
         private string packageSize;
+        private string created;
+        private List<FlattenedCompatibility> versionInfos;
+
         private PackageLoader PackageLoader { get; }
 
         #endregion
@@ -178,6 +188,32 @@ namespace Dynamo.PackageDetails
             }
         }
 
+        /// <summary>
+        /// The created date
+        /// </summary>
+        public string Created
+        {
+            get => created;
+            set
+            {
+                created = value;
+                RaisePropertyChanged(nameof(Created));
+            }
+        }
+
+        /// <summary>
+        /// Version infos (WIP)
+        /// </summary>
+        public List<FlattenedCompatibility> VersionInfos
+        {
+            get => versionInfos;
+            set
+            {
+                versionInfos = value;
+                RaisePropertyChanged(nameof(VersionInfos));
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -187,7 +223,7 @@ namespace Dynamo.PackageDetails
         /// <param name="packageVersion"></param>
         /// <param name="canInstall"></param>
         /// <param name="isEnabledForInstall">True, if package is not already downloaded, is not deprecated, and package loading is allowed.</param>
-        public PackageDetailItem(string packageName, PackageVersion packageVersion, bool canInstall, bool isEnabledForInstall = true)
+        public PackageDetailItem(List<VersionInfo> versionInfos, string packageName, PackageVersion packageVersion, bool canInstall, bool isEnabledForInstall = true)
         {
             this.PackageName = packageName;
             this.PackageVersion = packageVersion;
@@ -197,6 +233,8 @@ namespace Dynamo.PackageDetails
             this.CanInstall = canInstall;
             this.IsEnabledForInstall = isEnabledForInstall && canInstall;
             this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
+            this.Created = GetFormattedDate(PackageVersion.created);
+            this.VersionInfos = GetFlattenedCompatibilityInfos(versionInfos);
 
 
             // To avoid displaying package self-dependencies.
@@ -207,6 +245,88 @@ namespace Dynamo.PackageDetails
                 .ToList();
 
             DetectDependencies();
+        }
+
+
+        private List<FlattenedCompatibility> GetFlattenedCompatibilityInfos(List<VersionInfo> versionInfos)
+        {
+            var FlattenedCompatibilities = new List<FlattenedCompatibility>();
+
+            try
+            {
+                foreach (var versionInfo in versionInfos)
+                {
+                    if (versionInfo.Compatibility.Dynamo != null)
+                    {
+                        FlattenedCompatibilities.Add(new FlattenedCompatibility
+                        {
+                            CompatibilityName = "Dynamo",
+                            Versions = FormatVersionString(versionInfo.Compatibility.Dynamo)
+                        });
+                    }
+                    if (versionInfo.Compatibility.Revit != null)
+                    {
+                        FlattenedCompatibilities.Add(new FlattenedCompatibility
+                        {
+                            CompatibilityName = "Revit",
+                            Versions = FormatVersionString(versionInfo.Compatibility.Revit)
+                        });
+                    }
+                    if (versionInfo.Compatibility.Civil3D != null)
+                    {
+                        FlattenedCompatibilities.Add(new FlattenedCompatibility
+                        {
+                            CompatibilityName = "Civil3D",
+                            Versions = FormatVersionString(versionInfo.Compatibility.Civil3D)
+                        });
+                    }
+                    if (versionInfo.Compatibility.DotNet != null)
+                    {
+                        FlattenedCompatibilities.Add(new FlattenedCompatibility
+                        {
+                            CompatibilityName = ".NET",
+                            Versions = FormatVersionString(versionInfo.Compatibility.DotNet)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return FlattenedCompatibilities;
+        }
+
+        // Helper method to format the version string
+        private string FormatVersionString(CompatibilityDetail compatibilityDetail)
+        {
+            // Initialize a list to hold parts of the formatted string
+            var parts = new List<string>();
+
+            // Handle Min-Max range
+            if (!string.IsNullOrEmpty(compatibilityDetail.Min) && !string.IsNullOrEmpty(compatibilityDetail.Max))
+            {
+                parts.Add($"{compatibilityDetail.Min} - {compatibilityDetail.Max}");
+            }
+
+            // Handle versions list
+            if (compatibilityDetail.Versions != null && compatibilityDetail.Versions.Any())
+            {
+                parts.Add(string.Join(", ", compatibilityDetail.Versions));
+            }
+
+            // Return the joined string or an empty string if both checks fail
+            return parts.Any() ? string.Join(", ", parts) : string.Empty;
+        }
+
+        private string GetFormattedDate(string dateString)
+        {
+            if (String.IsNullOrEmpty(dateString)) return string.Empty;
+            var parsedDate = DateTime.ParseExact(dateString, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+
+            // Format the DateTime object into the desired format
+            return parsedDate.ToString("dd MMM yyyy");
         }
 
         /// <summary>

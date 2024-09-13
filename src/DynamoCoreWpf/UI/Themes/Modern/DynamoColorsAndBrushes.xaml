@@ -198,11 +198,14 @@
     <!--  Custom ToolTip border color  -->
     <SolidColorBrush x:Key="CustomToolTipBorderColor" Color="#808080" />
 
-
     <!--  Package Manager Colors  -->
     <Color x:Key="PMForegroundColor">#DFDFDF</Color>
     <Color x:Key="PMBorderColor">#5F5F5F</Color>
+    <Color x:Key="PMHeaderBackgroundColor">#3f3f3f</Color>
+    <Color x:Key="PMDataGridBackgroundColor">#474747</Color>
 
     <SolidColorBrush x:Key="PMForegroundColorBrush" Color="{StaticResource PMForegroundColor}" />
     <SolidColorBrush x:Key="PMBorderColorBrush" Color="{StaticResource PMBorderColor}" />
+    <SolidColorBrush x:Key="PMHeaderBackgroundColorBrush" Color="{StaticResource PMHeaderBackgroundColor}" />
+    <SolidColorBrush x:Key="PMDataGridBackgroundColorBrush" Color="{StaticResource PMDataGridBackgroundColor}" />
 </ResourceDictionary>

@@ -29,13 +29,13 @@ namespace Dynamo.PackageDetails
             if (e.Handled) return;
             
             e.Handled = true;
-            var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+
+            var parentScrollViewer = this.MainScrollViewer;
+            if (parentScrollViewer != null)
             {
-                RoutedEvent = MouseWheelEvent,
-                Source = sender
-            };
-            var parent = ((Control)sender).Parent as UIElement;
-            parent?.RaiseEvent(eventArg);
+                parentScrollViewer.ScrollToVerticalOffset(parentScrollViewer.VerticalOffset - e.Delta);
+            }
+         
         }
 
         private void FrameworkElement_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -54,4 +54,5 @@ namespace Dynamo.PackageDetails
             Closed?.Invoke(this, EventArgs.Empty);
         }
     }
+    
 }

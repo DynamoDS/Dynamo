@@ -6,7 +6,6 @@ using Dynamo.PythonServices;
 using Greg.Responses;
 using Moq;
 using NUnit.Framework;
-using PythonNodeModels;
 using SystemTestServices;
 
 namespace DynamoCoreWpfTests
@@ -124,30 +123,35 @@ namespace DynamoCoreWpfTests
             // Act
             PackageDetailItem packageDetailItemNoDependencies = new PackageDetailItem
             (
+                null,
                 string.Empty,
                 packageVersionNoDependencies,
                 true
             );
             PackageDetailItem packageDetailWithPython2Dependency = new PackageDetailItem
             (
+                null,
                 string.Empty,
                 packageVersionWithPython2Dependency,
                 true
             );
             PackageDetailItem packageDetailWithPython3Dependency = new PackageDetailItem
             (
+                null,
                 string.Empty,
                 packageVersionWithPython3Dependency,
                 true
             );
             PackageDetailItem packageDetailWithHostDependency = new PackageDetailItem
             (
+                null,
                 string.Empty,
                 packageVersionWithHostDependency,
                 true
             );
             PackageDetailItem packageDetailWithMultipleHostDependencies = new PackageDetailItem
             (
+                null,
                 string.Empty,
                 packageVersionWithMultipleHostDependencies,
                 true
@@ -211,7 +215,7 @@ namespace DynamoCoreWpfTests
             PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
 
             // Assert
-            Assert.IsNotNull(packageDetailsView.VersionsDataGrid);
+            Assert.IsNotNull(packageDetailsView.VersionsListView);
             Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
 
             PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
