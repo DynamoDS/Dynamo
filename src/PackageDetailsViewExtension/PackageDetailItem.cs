@@ -35,6 +35,7 @@ namespace Dynamo.PackageDetails
         private string packageSize;
         private string created;
         private List<FlattenedCompatibility> versionInfos;
+        private bool? isCompatible;
 
         private PackageLoader PackageLoader { get; }
 
@@ -214,6 +215,16 @@ namespace Dynamo.PackageDetails
             }
         }
 
+        public bool? IsCompatible
+        {
+            get => isCompatible;
+            set
+            {
+                isCompatible = value;
+                RaisePropertyChanged(nameof(IsCompatible));
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -235,7 +246,8 @@ namespace Dynamo.PackageDetails
             this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
             this.Created = GetFormattedDate(PackageVersion.created);
             this.VersionInfos = GetFlattenedCompatibilityInfos(versionInfos);
-
+            this.IsCompatible = GetVersionCompatibility(versionInfos, PackageVersionNumber);
+            
 
             // To avoid displaying package self-dependencies.
             // For instance, avoiding Clockwork showing that it depends on Clockwork.
@@ -247,15 +259,28 @@ namespace Dynamo.PackageDetails
             DetectDependencies();
         }
 
+        private bool? GetVersionCompatibility(List<VersionInfo> versionInfos, string packageVersion)
+        {
+            // Find the specific VersionInfo for the given package version
+            var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageVersion);
+
+            // If no version info is found, return null (unknown compatibility)
+            if (versionInfo == null)
+            {
+                return null;
+            }
+
+            return versionInfo.IsCompatible;
+        }
 
         private List<FlattenedCompatibility> GetFlattenedCompatibilityInfos(List<VersionInfo> versionInfos)
         {
             var FlattenedCompatibilities = new List<FlattenedCompatibility>();
-
             try
             {
                 foreach (var versionInfo in versionInfos)
                 {
+                    if (versionInfo.Compatibility == null) continue;
                     if (versionInfo.Compatibility.Dynamo != null)
                     {
                         FlattenedCompatibilities.Add(new FlattenedCompatibility

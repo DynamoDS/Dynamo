@@ -203,9 +203,15 @@
     <Color x:Key="PMBorderColor">#5F5F5F</Color>
     <Color x:Key="PMHeaderBackgroundColor">#3f3f3f</Color>
     <Color x:Key="PMDataGridBackgroundColor">#474747</Color>
+    <Color x:Key="PMVersionCompatibleColor">#87B340</Color>
+    <Color x:Key="PMVersionUncompatibleColor">#EB5555</Color>
+    <Color x:Key="PMVersionUnknownColor">#73C5FF</Color>
 
     <SolidColorBrush x:Key="PMForegroundColorBrush" Color="{StaticResource PMForegroundColor}" />
     <SolidColorBrush x:Key="PMBorderColorBrush" Color="{StaticResource PMBorderColor}" />
     <SolidColorBrush x:Key="PMHeaderBackgroundColorBrush" Color="{StaticResource PMHeaderBackgroundColor}" />
     <SolidColorBrush x:Key="PMDataGridBackgroundColorBrush" Color="{StaticResource PMDataGridBackgroundColor}" />
+    <SolidColorBrush x:Key="PMVersionCompatibleColorBrush" Color="{StaticResource PMVersionCompatibleColor}" />
+    <SolidColorBrush x:Key="PMVersionUncompatibleColorBrush" Color="{StaticResource PMVersionUncompatibleColor}" />
+    <SolidColorBrush x:Key="PMVersionUnknownColorBrush" Color="{StaticResource PMVersionUnknownColor}" />
 </ResourceDictionary>

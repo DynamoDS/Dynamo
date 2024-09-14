@@ -383,14 +383,37 @@
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch"
                                       VerticalContentAlignment="Center"
-                                      Background="#3f3f3f"
-                                      BorderBrush="#eb5555"
+                                      Background="{StaticResource PMHeaderBackgroundColorBrush}"
                                       BorderThickness="4,0,0,0"
                                       FontFamily="{StaticResource ArtifaktElementRegular}"
                                       FontSize="12"
                                       IsExpanded="False"
                                       PreviewMouseWheel="VersionsDataGrid_OnPreviewMouseWheel"
                                       Template="{StaticResource VersionExpanderTemplate}">
+
+                                <Expander.Style>
+                                    <Style TargetType="Expander">
+                                        <Style.Triggers>
+                                            <!--  Trigger for IsCompatible == true (compatible)  -->
+                                            <DataTrigger Binding="{Binding IsCompatible}" Value="True">
+                                                <Setter Property="BorderBrush" Value="{StaticResource PMHeaderBackgroundColorBrush}" />
+                                            </DataTrigger>
+
+                                            <!--  Trigger for IsCompatible == false (not compatible)  -->
+                                            <DataTrigger Binding="{Binding IsCompatible}" Value="False">
+                                                <Setter Property="BorderBrush" Value="{StaticResource PMVersionUncompatibleColorBrush}" />
+                                                <!--  Red  -->
+                                            </DataTrigger>
+
+                                            <!--  Trigger for IsCompatible == null (unknown)  -->
+                                            <DataTrigger Binding="{Binding IsCompatible}" Value="{x:Null}">
+                                                <Setter Property="BorderBrush" Value="{StaticResource PMVersionUnknownColorBrush}" />
+                                                <!--  Blue  -->
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Expander.Style>
+
                                 <!--  Header content  -->
                                 <Expander.Header>
                                     <DockPanel Margin="10"
@@ -522,8 +545,31 @@
                                                     </ControlTemplate>
                                                 </Button.Template>
                                             </Button>
-                                            <!--  Compatibility status icon  -->
-                                            <Button Template="{StaticResource CustomCanvasTemplate}" />
+                                            <Button Width="18" Height="18">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateUnknown}" />
+                                                        <!--  Default template  -->
+
+                                                        <Style.Triggers>
+                                                            <!--  Trigger for IsCompatible == true (compatible)  -->
+                                                            <DataTrigger Binding="{Binding IsCompatible}" Value="True">
+                                                                <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateComplatible}" />
+                                                            </DataTrigger>
+
+                                                            <!--  Trigger for IsCompatible == false (not compatible)  -->
+                                                            <DataTrigger Binding="{Binding IsCompatible}" Value="False">
+                                                                <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateIncompatible}" />
+                                                            </DataTrigger>
+
+                                                            <!--  Trigger for IsCompatible == null (unknown compatibility)  -->
+                                                            <DataTrigger Binding="{Binding IsCompatible}" Value="{x:Null}">
+                                                                <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateUnknown}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
                                         </StackPanel>
 
                                     </DockPanel>
