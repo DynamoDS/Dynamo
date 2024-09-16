@@ -615,8 +615,10 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            Process.Start(new ProcessStartInfo("explorer.exe", "/select,"
-                + this.startPage.SampleFolderPath)
+            // Open the default Explorer location if the Sample folder cannot be found
+            string explorerArg = this.startPage.SampleFolderPath != null ? "/select," + this.startPage.SampleFolderPath : "";
+
+            Process.Start(new ProcessStartInfo("explorer.exe", explorerArg)
             { UseShellExecute = true });
             Logging.Analytics.TrackEvent(Logging.Actions.Show, Logging.Categories.DynamoHomeOperations, "Sample Files");
         }
@@ -630,8 +632,7 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            Process.Start(new ProcessStartInfo("explorer.exe", /*"/select,"*/
-                /*+ */this.startPage.SampleDatasetsPath)
+            Process.Start(new ProcessStartInfo("explorer.exe", this.startPage.SampleDatasetsPath)
             { UseShellExecute = true });
             Logging.Analytics.TrackEvent(Logging.Actions.Show, Logging.Categories.DynamoHomeOperations, "Dataset Files");
         }
