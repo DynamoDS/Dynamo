@@ -7,8 +7,9 @@ using System.Text;
 using Dynamo.Wpf.Properties;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
+using NotificationObject = Dynamo.Core.NotificationObject;
 using Dynamo.Configuration;
+using CoreNodeModels;
 
 namespace Dynamo.ViewModels
 {
@@ -35,6 +36,8 @@ namespace Dynamo.ViewModels
         public const string LIST = "List";
         public const string EMPTY_DICTIONARY = "Empty Dictionary";
         public const string DICTIONARY = "Dictionary";
+
+        internal Watch WatchNode { get; set; }
 
         private ObservableCollection<WatchViewModel> children = new ObservableCollection<WatchViewModel>();
         private string label;
@@ -183,8 +186,11 @@ namespace Dynamo.ViewModels
             get { return isCollection; }
             set
             {
-                isCollection = value;
-                RaisePropertyChanged("IsCollection");
+                if (isCollection != value)
+                {
+                    isCollection = value;
+                    RaisePropertyChanged(nameof(IsCollection));
+                }
             }
         }
 
@@ -196,8 +202,11 @@ namespace Dynamo.ViewModels
             get { return levels; }
             set
             {
-                levels = value;
-                RaisePropertyChanged("Levels");
+                if (levels != value)
+                {
+                    levels = value;
+                    RaisePropertyChanged(nameof(Levels));
+                }
             }
         }
 
@@ -243,6 +252,9 @@ namespace Dynamo.ViewModels
 
         private static string GetStringFromObject(object obj)
         {
+            if (obj == null)
+                return Resources.NullString;
+
             TypeCode type = Type.GetTypeCode(obj.GetType());
             switch (type)
             {
@@ -250,6 +262,9 @@ namespace Dynamo.ViewModels
                     return ObjectToLabelString(obj);
                 case TypeCode.Double:
                     return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
+                //!!!!carefully consider the consequences of this change before uncommenting.
+                //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
+                //return ((double)obj).ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat, CultureInfo.InvariantCulture);
                 case TypeCode.Int32:
                     return ((int)obj).ToString(CultureInfo.InvariantCulture);
                 case TypeCode.Int64:
@@ -279,6 +294,9 @@ namespace Dynamo.ViewModels
 
         private string GetDisplayType(object obj)
         {
+            if (obj == null)
+                return Resources.NullString;
+
             TypeCode typeCode = Type.GetTypeCode(obj.GetType());
             // returning a customized user friendly string instead of just returning the name of the type 
             switch (typeCode)

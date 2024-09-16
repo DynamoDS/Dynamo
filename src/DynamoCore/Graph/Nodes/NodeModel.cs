@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
-using DesignScript.Builtin;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -106,6 +105,7 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         internal const double HeaderHeight = 46;
+        internal static string ExtensionNode = "ExtensionNode";
 
         #region public members
 
@@ -132,11 +132,12 @@ namespace Dynamo.Graph.Nodes
         /// server type for the node. This property should only be
         /// used for serialization.
         /// </summary>
+        [JsonProperty(Order = 2)]
         public virtual string NodeType
         {
             get
             {
-                return "ExtensionNode";
+                return ExtensionNode;
             }
         }
 
@@ -228,7 +229,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Id for this node, must be unique within the graph.
         /// </summary>
-        [JsonProperty("Id")]
+        [JsonProperty("Id",Order = 1)]
         [JsonConverter(typeof(IdToGuidConverter))]
         public override Guid GUID
         {
@@ -372,7 +373,7 @@ namespace Dynamo.Graph.Nodes
             get { return state; }
             set
             {
-                if (value != ElementState.Error && value != ElementState.Info && value != ElementState.AstBuildBroken)
+                if (value != ElementState.Error && value != ElementState.Info && value != ElementState.PersistentInfo && value != ElementState.AstBuildBroken)
                     ClearTransientWarningsAndErrors();
 
                 // Check before settings and raising
@@ -403,28 +404,6 @@ namespace Dynamo.Graph.Nodes
         public bool PreviewPinned { get; internal set; }
 
         /// <summary>
-        ///     Text that is displayed as this Node's tooltip.
-        /// </summary>
-        [JsonIgnore]
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
-        public string ToolTipText
-        {
-            get 
-            {
-                var builder = new System.Text.StringBuilder();
-                foreach(var info in Infos)
-                {
-                    builder.AppendLine(info.ToString());
-                }
-                return builder.ToString();
-            }
-            set
-            {
-                RaisePropertyChanged(nameof(ToolTipText));
-            }
-        }
-
-        /// <summary>
         /// Collection of warnings, errors and info items applied to the NodeModel.
         /// </summary>
         internal ObservableHashSet<Info> Infos
@@ -432,6 +411,10 @@ namespace Dynamo.Graph.Nodes
             get { return infos; }
         }
 
+        /// <summary>
+        /// BlockInfoBubbleUpdates is flag used to block InfoBubble updates during (or immediately after) graph execution.
+        /// </summary>
+        internal bool BlockInfoBubbleUpdates = false;
 
         /// <summary>
         /// A publicly accessible collector of all Info/Warning/Error data
@@ -471,31 +454,19 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
-        [JsonProperty("Inputs")]
+        [JsonProperty("Inputs", Order = 3)]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
-            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
-            set
-            {
-                inPorts = value;
-                RaisePropertyChanged("InPorts");
-            }
         }
 
         /// <summary>
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
-        [JsonProperty("Outputs")]
+        [JsonProperty("Outputs", Order = 4)]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
-            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
-            set
-            {
-                outPorts = value;
-                RaisePropertyChanged("OutPorts");
-            }
         }
 
         [JsonIgnore]
@@ -513,7 +484,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Control how arguments lists of various sizes are laced.
         /// </summary>
-        [JsonProperty("Replication"), JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("Replication", Order = 6), JsonConverter(typeof(StringEnumConverter))]
         public LacingStrategy ArgumentLacing
         {
             get
@@ -797,10 +768,11 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        [JsonConverter(typeof(DescriptionConverter))]
         /// <summary>
         ///     Description of this Node.
         /// </summary>
+        [JsonConverter(typeof(DescriptionConverter))]
+        [JsonProperty(Order = 7)]
         public string Description
         {
             get
@@ -1732,11 +1704,21 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Clears the info messages that are generated when running the graph,
-        /// the State will be set to ElementState.Dead.
+        /// the State will be set to ElementState.Active.
         /// </summary>
         public virtual void ClearInfoMessages()
         {
-            infos.RemoveWhere(x => x.State == ElementState.Info);
+            // It is very unlikely a node could be in both info state and persistent info state from the current design
+            // If that exception happens, we should redesign this function or have particular node override the behavior
+            if (State == ElementState.Info)
+            {
+                infos.RemoveWhere(x => x.State == ElementState.Info);
+            }
+            else if (State == ElementState.PersistentInfo)
+            {
+                infos.RemoveWhere(x => x.State == ElementState.PersistentInfo);
+            }
+            State = ElementState.Active;
             OnNodeInfoMessagesClearing();
         }
 
@@ -1782,16 +1764,31 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Selects all neighboring nodes ans connector pins to this node
+        /// </summary>
         public void SelectNeighbors()
         {
             IEnumerable<ConnectorModel> outConnectors = outPorts.SelectMany(x => x.Connectors);
             IEnumerable<ConnectorModel> inConnectors = inPorts.SelectMany(x => x.Connectors);
 
             foreach (var c in outConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.End.Owner)))
+            {
                 DynamoSelection.Instance.Selection.Add(c.End.Owner);
+                foreach (var p in c.ConnectorPinModels)
+                {
+                    DynamoSelection.Instance.Selection.Add(p);
+                }
+            }                
 
             foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
+            {
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
+                foreach (var p in c.ConnectorPinModels)
+                {
+                    DynamoSelection.Instance.Selection.Add(p);
+                }
+            }
         }
 
         /// <summary>
@@ -1833,7 +1830,7 @@ namespace Dynamo.Graph.Nodes
 
             if (State == ElementState.PersistentWarning) return;
 
-            if (Infos.Any(x => x.State == ElementState.PersistentWarning))
+            if (Infos.Any(x => x.State == ElementState.PersistentWarning || x.State == ElementState.MigratedFormula))
             {
                 State = ElementState.PersistentWarning;
                 return;
@@ -1862,10 +1859,23 @@ namespace Dynamo.Graph.Nodes
         /// Set an info on a node.
         /// </summary>
         /// <param name="p">The info text.</param>
-        public void Info(string p)
+        /// <param name="isPersistent">Is the info persistent? If true, the info will not be
+        /// cleared when the node is next evaluated. If false, the info will be cleared on the next evaluation.</param>
+        public void Info(string p, bool isPersistent = false)
         {
-            State = ElementState.Info;
-            infos.Add(new Info(p, ElementState.Info));
+            if (isPersistent)
+            {
+                if (!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentInfo))
+                {
+                    State = ElementState.PersistentInfo;
+                    infos.Add(new Info(p, ElementState.PersistentInfo));
+                }
+            }
+            else
+            {
+                State = ElementState.Info;
+                infos.Add(new Info(p, ElementState.Info));
+            }
         }
 
         /// <summary>
@@ -1950,6 +1960,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
+        ///     TODO: DYN-6445 - evaluate if this API can be removed.
         /// </summary>
         [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts(IEnumerable<PortData> portDatas)
@@ -1975,6 +1986,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         ///     Reads outputs list and adds ports for each output
+        ///     TODO: DYN-6445 - evaluate if this API can be removed.
         /// </summary>
         [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public void RegisterOutputPorts(IEnumerable<PortData> portDatas)
@@ -2215,54 +2227,6 @@ namespace Dynamo.Graph.Nodes
         }
 
         #endregion
-
-        #endregion
-
-        #region Code Serialization
-
-        /// <summary>
-        ///     Creates a Scheme representation of this dynNode and all connected dynNodes.
-        /// </summary>
-        /// <returns>S-Expression</returns>
-        [Obsolete("PrintExpression is deprecated and will be removed, please refer to the Node2Code functionality instead for conversion to DesignScript code.")]
-        public virtual string PrintExpression()
-        {
-            string nick = Name.Replace(' ', '_');
-
-            if (!InPorts.Any(p => p.IsConnected))
-                return nick;
-
-            string s = "";
-
-            if (InPorts.All(p => p.IsConnected))
-            {
-                s += "(" + nick;
-                foreach (int data in Enumerable.Range(0, InPorts.Count))
-                {
-                    Tuple<int, NodeModel> input;
-                    TryGetInput(data, out input);
-                    s += " " + input.Item2.PrintExpression();
-                }
-                s += ")";
-            }
-            else
-            {
-                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !InPorts[i].IsConnected).Select(x => x.Name))
-                     + ") (" + nick;
-                foreach (int data in Enumerable.Range(0, InPorts.Count))
-                {
-                    s += " ";
-                    Tuple<int, NodeModel> input;
-                    if (TryGetInput(data, out input))
-                        s += input.Item2.PrintExpression();
-                    else
-                        s += InPorts[data].Name;
-                }
-                s += "))";
-            }
-
-            return s;
-        }
 
         #endregion
 
@@ -2709,6 +2673,25 @@ namespace Dynamo.Graph.Nodes
         public virtual bool RequestVisualUpdateAsync(IScheduler scheduler,
             EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
+            return RequestVisualUpdateAsync(scheduler, engine, factory, forceUpdate, false);
+        }
+
+        /// <summary>
+        /// Call this method to asynchronously regenerate render package for
+        /// this node. This method accesses core properties of a NodeModel and
+        /// therefore is typically called on the main/UI thread.
+        /// </summary>
+        /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
+        /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
+        /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
+        /// <param name="forceUpdate">Normally, render packages are only generated when the node's IsUpdated parameter is true.
+        /// By setting forceUpdate to true, the render packages will be updated.</param>
+        /// <param name="ignoreIsVisible">Normally, render packages are only generated when the node's IsVisible parameter is true.
+        /// By setting ignore to true, the render package will be updated.</param>
+        /// <returns>Flag which indicates if geometry update has been scheduled</returns>
+        public virtual bool RequestVisualUpdateAsync(IScheduler scheduler,
+            EngineController engine, IRenderPackageFactory factory, bool forceUpdate, bool ignoreIsVisible = false)
+        {
             var initParams = new UpdateRenderPackageParams()
             {
                 Node = this,
@@ -2716,7 +2699,8 @@ namespace Dynamo.Graph.Nodes
                 EngineController = engine,
                 DrawableIdMap = GetDrawableIdMap(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name,
-                ForceUpdate = forceUpdate
+                ForceUpdate = forceUpdate,
+                IgnoreIsVisible = ignoreIsVisible
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
@@ -2893,7 +2877,9 @@ namespace Dynamo.Graph.Nodes
         PersistentWarning,
         Error,
         AstBuildBroken,
-        Info
+        Info,
+        PersistentInfo,
+        MigratedFormula
     };
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.WatchTree"
+<UserControl x:Class="Dynamo.Controls.WatchTree"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Dynamo.Controls"
@@ -163,12 +163,13 @@
                                     <!--  Vertical line  -->
 
                                     <Rectangle x:Name="VerLn"
-                                               Grid.RowSpan="2"
+                                               Grid.RowSpan="1"
                                                Width="1"
-                                               Margin="9,0,0,0"
+                                               Margin="9,0,0,3"
                                                HorizontalAlignment="Center"
                                                Fill="Black"
-                                               SnapsToDevicePixels="true"
+                                               SnapsToDevicePixels="True"
+                                               UseLayoutRounding="True"
                                                Stroke="#959595" />
 
                                     <!--  Draw Ellipse at the bottom of each vertical line  -->
@@ -176,11 +177,12 @@
                                     <Ellipse x:Name="LnEnd"
                                              Width="5"
                                              Height="5"
-                                             Margin="8,0,0,0"
+                                             Margin="9,0,0,0"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Bottom"
                                              Fill="#959595"
                                              SnapsToDevicePixels="True"
+                                             UseLayoutRounding="True"
                                              Stroke="#959595" />
 
                                 </Grid>
@@ -378,7 +380,7 @@
 
             <TreeView.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                 Color="{StaticResource Blue300}" />
+                                 Color="{StaticResource Blue450}" Opacity="0.4"/>
             </TreeView.Resources>
         </TreeView>
 
@@ -387,24 +389,17 @@
                 BorderBrush="#D3D3D3"
                 CornerRadius="0,0,2,2"
                 BorderThickness="0">
+            <Grid Name="ListLevelsGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <DockPanel Name="ListLevelsDisplay" Height="27px" Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-
-                <!--  A draggable control to resize the Watch window  -->
-                <Thumb Name="resizeThumb"
-                       DockPanel.Dock="Right"
-                       Margin="1,3,5,3"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       Cursor="SizeNWSE"
-                       DragDelta="ThumbResizeThumbOnDragDeltaHandler"
-                       Visibility="Hidden">
-                    <Thumb.Template>
-                        <ControlTemplate>
-                            <Polygon Fill="#AFAFAF" Points="0,8 8,8 8,0" />
-                        </ControlTemplate>
-                    </Thumb.Template>
-                </Thumb>
+                <!--  Left Column display List Levels  -->
+                <DockPanel Name="ListLevelsDisplay"
+                       Height="27px"
+                       Grid.Column="0"
+                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                 <!--  Shows counts of all items in List  -->
                 <TextBlock Name="ListItems"
@@ -464,7 +459,25 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-            </DockPanel>
+                </DockPanel>
+
+                <!--  Left Column display a draggable control to resize the Watch window  -->
+                <Thumb Name="resizeThumb"
+                       Grid.Column="1"
+                       DockPanel.Dock="Right"
+                       Margin="1,3,5,3"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Cursor="SizeNWSE"
+                       DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+                       Visibility="Collapsed">
+                    <Thumb.Template>
+                        <ControlTemplate>
+                            <Polygon Fill="#AFAFAF" Points="0,8 8,8 8,0" />
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

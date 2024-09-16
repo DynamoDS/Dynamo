@@ -1,6 +1,3 @@
-﻿using Dynamo.Utilities;
-using Dynamo.Notifications.View;
-using NUnit.Framework;
 using System;
 using System.IO;
 using System.Linq;
@@ -8,6 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Notifications;
+using Dynamo.Notifications.View;
+using Dynamo.Utilities;
+using DynamoCoreWpfTests.Utility;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests.ViewExtensions
 {
@@ -20,6 +21,15 @@ namespace DynamoCoreWpfTests.ViewExtensions
             var notificationsButton = (Button)shortcutBar.FindName("notificationsButton");
             notificationsButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
 
+            var notificationExtension = this.View.viewExtensionManager.ViewExtensions.OfType<NotificationsViewExtension>().FirstOrDefault();
+            // Wait for the NotificationCenterController webview2 control to finish initialization
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return notificationExtension.notificationCenterController.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+            
+            Assert.AreEqual(DynamoUtilities.AsyncMethodState.Done, notificationExtension.notificationCenterController.initState);
+
             NotificationUI notificationUI = PresentationSource.CurrentSources.OfType<System.Windows.Interop.HwndSource>()
                                         .Select(h => h.RootVisual)
                                         .OfType<FrameworkElement>()
@@ -27,16 +37,16 @@ namespace DynamoCoreWpfTests.ViewExtensions
                                         .OfType<NotificationUI>()
                                         .FirstOrDefault(p => p.IsOpen);
 
-            Assert.NotNull(notificationUI);
+            Assert.NotNull(notificationUI, "Notification popup not part of the dynamo visual tree");
             var webView = notificationUI.FindName("webView");
-            Assert.NotNull(webView);
+            Assert.NotNull(webView, "WebView framework element not found.");
         }
 
         [Test]
         public void ValidateNotificationsUIEmbededFiles()
         {
             var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x=>x.ManifestModule.Name.Contains("Notifications.dll"));
-            var htmlFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
+            var htmlFile = "Dynamo.Notifications.Packages.NotificationCenter.build.index.html";
 
             var mainJstag = "mainJs";     
 

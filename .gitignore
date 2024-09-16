@@ -104,10 +104,10 @@ test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
 logo.png
-/src/Notifications/node_modules
-/src/Notifications/package.json
-/src/Notifications/package-lock.json
-src/Notifications/.npm-cache
-/src/DynamoSandbox/node_modules
-/src/DynamoSandbox/package-lock.json
-/src/DynamoSandbox/package.json
+/src/DynamoCoreWpf/Packages
+dynamods-splash-screen-*.tgz
+/src/Notifications/Packages
+/src/Notifications/dynamods-notifications-center-*.tgz
+/src/DynamoCoreWpf/.npmrc
+/src/Notifications/.npmrc
+src/LibraryViewExtensionWebView2/.npmrc

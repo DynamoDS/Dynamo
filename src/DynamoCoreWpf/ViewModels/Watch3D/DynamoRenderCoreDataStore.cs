@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
@@ -91,8 +91,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         /// <summary>
         /// Generates an int that packs all enum flags into a single int.
-        /// Can be decoded using binary &
-        /// ie - Flags & 1 = IsFrozen
+        /// Can be decoded using binary &amp;
+        /// ie - Flags &amp; 1 = IsFrozen
         ///  - if flags == 000000 - all flags are off
         ///  - if flags == 000001 - frozen is enabled
         ///  - if flags == 100001 - frozen and flatshade are enabled.

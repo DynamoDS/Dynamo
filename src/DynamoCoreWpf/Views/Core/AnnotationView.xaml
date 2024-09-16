@@ -28,6 +28,7 @@
     <UserControl.Resources>
         <utilities:GroupStyleItemSelector x:Key="GroupStyleItemSelector"/>
         <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
+        <controls:TextForegroundSaturationColorConverter x:Key="TextForegroundSaturationColorConverter"/>
         <CornerRadius x:Key="ExpanderCornerRadius"
                       TopLeft="10"
                       TopRight="10" />
@@ -340,6 +341,11 @@
                 <MenuItem Name="UngroupAnnotation"
                           Click="OnUngroupAnnotation"
                           Header="{x:Static p:Resources.GroupContextMenuUngroup}" />
+                <MenuItem Name="PreviewAnnotation"
+                          Command="{Binding Path=ToggleIsVisibleGroupCommand}"
+                          Header="{x:Static p:Resources.GroupContextMenuPreview}"
+                          IsCheckable="true"
+                          IsChecked="{Binding Path=AnnotationModel.IsVisible, Mode=OneWay}"/>
                 <MenuItem Name="unGroup_cm"
                           Command="{Binding Path=RemoveGroupFromGroupCommand}"
                           Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
@@ -582,6 +588,7 @@
                         <Grid Margin="0,0,20,0">
                             <TextBlock x:Name="GroupTextBlock"
                                        Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
+                                       Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
                                        FontFamily="Trebuchet"
                                        FontSize="{Binding FontSize}"
                                        LineStackingStrategy="BlockLineHeight"
@@ -613,6 +620,7 @@
                         <Grid>
                             <TextBlock x:Name="GroupDescriptionTextBlock"
                                        Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
+                                       Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
                                        FontFamily="Trebuchet"
                                        FontSize="12"
                                        LineStackingStrategy="BlockLineHeight"

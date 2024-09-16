@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Engine;
@@ -6,6 +6,7 @@ using ProtoCore.BuildData;
 using ProtoScript.Runners;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 
 namespace Dynamo.Scheduler
 {
@@ -103,7 +104,10 @@ namespace Dynamo.Scheduler
             // EngineController might be disposed and become invalid.
             // After MAGN-5167 is done, we could remove this checking.
             if (!engineController.IsDisposed)
+            {
+                Analytics.TrackActivityStatus(HeartBeatType.Machine.ToString());
                 engineController.UpdateGraphImmediate(graphSyncData);
+            }
         }
 
         protected override void HandleTaskCompletionCore()
@@ -112,12 +116,15 @@ namespace Dynamo.Scheduler
             {
                 BuildWarnings = new Dictionary<Guid, List<WarningEntry>>();
                 RuntimeWarnings = new Dictionary<Guid, List<ProtoCore.Runtime.WarningEntry>>();
+                RuntimeInfos = new Dictionary<Guid, List<ProtoCore.Runtime.InfoEntry>>();
             }
             else
             {
+                Analytics.TrackActivityStatus(HeartBeatType.Machine.ToString());
                 // Retrieve warnings in the context of ISchedulerThread.
                 BuildWarnings = engineController.GetBuildWarnings();
                 RuntimeWarnings = engineController.GetRuntimeWarnings();
+                RuntimeInfos = engineController.GetRuntimeInfos();
 
                 // Mark all modified nodes as being updated (if the task has been 
                 // successfully scheduled, executed and completed, it is expected 
@@ -143,11 +150,19 @@ namespace Dynamo.Scheduler
                 {
                     node.WasInvolvedInExecution = true;
                     node.WasRenderPackageUpdatedAfterExecution = false;
+                    // Clear node warning or info messages because if node is involved in new graph execution, message should be refreshed
                     if (node.State == ElementState.Warning)
                     {
-                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
                         {
                             node.ClearErrorsAndWarnings();
+                        }
+                    }
+                    if (node.State == ElementState.Info)
+                    {
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        {
+                            node.ClearInfoMessages();
                         }
                     }
                 }
@@ -220,6 +235,7 @@ namespace Dynamo.Scheduler
         internal WorkspaceModel TargetedWorkspace { get; private set; }
         internal IDictionary<Guid, List<WarningEntry>> BuildWarnings { get; private set; }
         internal IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> RuntimeWarnings { get; private set; }
+        internal IDictionary<Guid, List<ProtoCore.Runtime.InfoEntry>> RuntimeInfos { get; private set; }
 
         #endregion
 

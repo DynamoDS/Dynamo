@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
@@ -12,25 +15,17 @@
     <AssemblyName>DynamoPythonTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
-    <PackageReference Include="NUnit" Version="2.6.3" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" />
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5365" />
     <PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-    <Reference Include="Microsoft.Practices.Prism">
-	    <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-	  </Reference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <Reference Include="Python.Runtime">
       <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -68,6 +63,7 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj" />
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
@@ -88,6 +84,7 @@
       <Name>SystemTestServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\TestServices\TestServices.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

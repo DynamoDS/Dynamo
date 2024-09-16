@@ -1,4 +1,4 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
@@ -79,6 +79,7 @@
     <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter" />
     <controls:ConsoleHeightConverter x:Key="ConsoleHeightConverter" />
     <controls:NodeAutocompleteWidthConverter x:Key="NodeAutocompleteWidthConverter" />
+    <controls:NodeAutocompleteImageConverter x:Key="NodeAutocompleteImageConverter" />
     <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter" />
     <controls:BoolToCanvasCursorConverter x:Key="BoolToCanvasCursorConverter" />
     <controls:LacingToVisibilityConverter x:Key="LacingToVisibilityConverter" />
@@ -91,11 +92,11 @@
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
-    <controls:EmptyToVisibilityCollapsedConverter x:Key="EmptyToVisibilityCollapsedConverter"/>
+    <controls:EmptyToVisibilityCollapsedConverter x:Key="EmptyToVisibilityCollapsedConverter" />
+    <controls:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />    
     <controls:EmptyToZeroLengthConverter x:Key="EmptyToZeroLengthConverter"/>
     <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
     <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />
-    <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter" />
     <controls:ZoomToOpacityConverter x:Key="ZoomToOpacityConverter" />
     <controls:ZoomToBooleanConverter x:Key="ZoomToBooleanConverter" />
     <controls:ZoomToVisibilityCollapsedConverter x:Key="ZoomToVisibilityCollapsedConverter" />
@@ -104,8 +105,6 @@
     <controls:TabSizeConverter x:Key="TabSizeConverter" />
     <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter" />
     <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
-    <controls:IsUpdateAvailableToTextConverter x:Key="IsUpdateAvailableToTextConverter" />
-    <controls:IsUpdateAvailableBrushConverter x:Key="IsUpdateAvailableBrushConverter" />
     <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
     <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter" />
     <controls:NumberFormatConverter x:Key="NumberFormatConverter" />
@@ -114,6 +113,7 @@
     <controls:IntegerDisplay x:Key="IntegerDisplayConverter" />
     <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter" />
     <controls:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+    <controls:InverseBoolToEnablingConverter x:Key="InverseBoolToEnablingConverter" />
     <controls:RunPreviewConverter x:Key="RunPreviewConverter" />
     <controls:RunPreviewToolTipConverter x:Key="RunPreviewToolTipConverter" />
     <controls:MenuItemCheckConverter x:Key="MenuItemCheckConverter" />
@@ -129,6 +129,7 @@
     <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
     <controls:NullValueToGridRow1Converter x:Key="NullValueToGridRow1Converter" />
     <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
+    <controls:ConfidenceScoreFormattingConverter x:Key="ConfidenceScoreFormattingConverter" />
     <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
     <controls:NodeTypeToColorConverter
         x:Key="NodeTypeToColorConverter"
@@ -184,4 +185,7 @@
     <controls:CollectionHasMoreThanNItemsToBoolConverter x:Key="CollectionHasMoreThanNItemsToBoolConverter" />
     <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
     <controls:ObjectTypeConverter x:Key="ObjectTypeConverter" />
+    <controls:TextForegroundSaturationColorConverter x:Key="TextForegroundSaturationColorConverter" />
+    <controls:PortTypeToStringConverter x:Key="PortTypeToStringConverter" />
+    <controls:BooleanNegationConverter x:Key="BooleanNegationConverter" />
 </ResourceDictionary>

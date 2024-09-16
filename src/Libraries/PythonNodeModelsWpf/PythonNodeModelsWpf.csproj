@@ -1,4 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -9,6 +12,7 @@
     <RootNamespace>PythonNodeModelsWpf</RootNamespace>
     <AssemblyName>PythonNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemDefinitionGroup>
  	<ReferenceCopyLocalPaths>
@@ -17,20 +21,29 @@
 	</ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
-	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
-	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationCore">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationFramework">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
+    <None Remove="Resources\alert.png" />
+    <None Remove="Resources\convert.png" />
+    <None Remove="Resources\convert_hover.png" />
+    <None Remove="Resources\question-filled.png" />
+    <None Remove="Resources\question-filled_hover.png" />
+    <None Remove="Resources\redo.png" />
+    <None Remove="Resources\redo_hover.png" />
+    <None Remove="Resources\reset.png" />
+    <None Remove="Resources\reset_hover.png" />
+    <None Remove="Resources\save.png" />
+    <None Remove="Resources\save_hover.png" />
+    <None Remove="Resources\tabs.png" />
+    <None Remove="Resources\tabs_hover.png" />
+    <None Remove="Resources\undo.png" />
+    <None Remove="Resources\undo_hover.png" />
+    <None Remove="Resources\zoom-in.png" />
+    <None Remove="Resources\zoom-in_hover.png" />
+    <None Remove="Resources\zoom-out.png" />
+    <None Remove="Resources\zoom-out_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+	<PackageReference Include="FontAwesome5" Version="2.1.11" />
+	<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -60,9 +73,27 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\alert.png" />
+    <Resource Include="Resources\convert.png" />
     <EmbeddedResource Include="Resources\ICSharpCode.PythonBinding.Resources.Python.xshd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Resource Include="Resources\convert_hover.png" />
+    <Resource Include="Resources\question-filled.png" />
+    <Resource Include="Resources\question-filled_hover.png" />
+    <Resource Include="Resources\redo.png" />
+    <Resource Include="Resources\redo_hover.png" />
+    <Resource Include="Resources\reset.png" />
+    <Resource Include="Resources\reset_hover.png" />
+    <Resource Include="Resources\save.png" />
+    <Resource Include="Resources\save_hover.png" />
+    <Resource Include="Resources\tabs.png" />
+    <Resource Include="Resources\tabs_hover.png" />
+    <Resource Include="Resources\undo.png" />
+    <Resource Include="Resources\undo_hover.png" />
+    <Resource Include="Resources\zoom-in.png" />
+    <Resource Include="Resources\zoom-in_hover.png" />
+    <Resource Include="Resources\zoom-out.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\EngineLabel.xaml">
@@ -94,5 +125,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\2to3Icon.png" />
+    <Resource Include="Resources\zoom-out_hover.png" />
   </ItemGroup>
 </Project>

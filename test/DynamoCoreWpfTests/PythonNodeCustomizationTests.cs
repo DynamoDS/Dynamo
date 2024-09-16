@@ -1,25 +1,30 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
+using Autodesk.DesignScript.Runtime;
 using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.DocumentationBrowser;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PythonServices;
+using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Tests;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
+using ICSharpCode.AvalonEdit.Document;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
 
 namespace DynamoCoreWpfTests
 {
+    [TestFixture]
     public class PythonNodeCustomizationTests : DynamoTestUIBase
     {
         bool bTextEnteringEventRaised = false;
@@ -46,6 +51,19 @@ namespace DynamoCoreWpfTests
                 }
             }
             return null;
+        }
+
+        private void WaitForDocumentationBrowserInitialization()
+        {
+            var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
+
+            // Wait for the DocumentationBrowserView webview2 control to finish initialization
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return docBrowserviewExtension.BrowserView.initState == DynamoUtilities.AsyncMethodState.Done;
+            });
+
+            Assert.IsTrue(docBrowserviewExtension.BrowserView.initState == DynamoUtilities.AsyncMethodState.Done);
         }
 
         public override void Open(string path)
@@ -146,16 +164,15 @@ namespace DynamoCoreWpfTests
             codeEditor.Focus();
 
             //This will generate the event of going to the end of the line
-            var textArea = Keyboard.FocusedElement;
-            textArea.RaiseEvent(new KeyEventArgs(
-                Keyboard.PrimaryDevice,
-                PresentationSource.FromVisual(codeEditor),
-                0,
-                Key.End)
-            {
-                RoutedEvent = Keyboard.KeyDownEvent
-            }
-            );
+            var textArea = scriptWindow.editText.TextArea;
+
+            // Get the current caret position
+            TextLocation caretPosition = textArea.Caret.Location;
+
+            // Set the caret position to the end of the line
+            var endOfLine = new TextLocation(caretPosition.Line,
+                codeEditor.Document.GetLineByNumber(caretPosition.Line).Length + 1);
+            textArea.Caret.Location = endOfLine;
 
             //This will pop up the automcompletion list info
             textArea.RaiseEvent(
@@ -270,18 +287,18 @@ namespace DynamoCoreWpfTests
             codeEditor.Focus();
 
             //Check that we don't have any extension tabs shown right now
-            Assert.That(this.View.ExtensionTabItems.Count, Is.EqualTo(0));
+            Assert.That(this.ViewModel.SideBarTabItems.Count, Is.EqualTo(0));
 
             var moreInfoButton = scriptWindow.FindName("MoreInfoButton") as Button;
 
             //Pressing the MoreInfo button, here the OnMoreInfoEvent is raised 
             moreInfoButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-            DispatcherUtil.DoEvents();
+            WaitForDocumentationBrowserInitialization();
 
             //Check that now we are showing a extension tab (DocumentationBrowser)
-            Assert.That(this.View.ExtensionTabItems.Count, Is.EqualTo(1));
+            Assert.That(this.ViewModel.SideBarTabItems.Count, Is.EqualTo(1));
 
-            var docBrowser = this.View.ExtensionTabItems
+            var docBrowser = this.ViewModel.SideBarTabItems
                             .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                             .FirstOrDefault();
 
@@ -315,10 +332,9 @@ namespace DynamoCoreWpfTests
 
             //Click the button and internally the  OpenPythonLearningMaterial method is executed
             learnMoreMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            WaitForDocumentationBrowserInitialization();
 
-            DispatcherUtil.DoEvents();
-
-            var learnMoreTab = this.View.ExtensionTabItems
+            var learnMoreTab = this.ViewModel.SideBarTabItems
                                 .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                                 .FirstOrDefault();
 
@@ -349,10 +365,9 @@ namespace DynamoCoreWpfTests
 
             //Click the button and internally the  OpenPythonLearningMaterial method is executed
             learnMoreMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            WaitForDocumentationBrowserInitialization();
 
-            DispatcherUtil.DoEvents();
-
-            var learnMoreTab = this.View.ExtensionTabItems
+            var learnMoreTab = this.ViewModel.SideBarTabItems
                                 .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                                 .FirstOrDefault();
 
@@ -707,6 +722,125 @@ namespace DynamoCoreWpfTests
             var errorBubble = GetInfoBubble(View);
             Assert.IsNotNull(errorBubble);
             Assert.AreEqual(Visibility.Visible, (errorBubble as UIElement).Visibility);
+        }
+
+        [Test]
+        public void PythonEditorDockingTest()
+        {
+            Open(@"core\python\python.dyn");
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNode;
+            Assert.NotNull(nodeModel);
+
+            // Dock python editor
+            var scriptWindow = EditPythonCode(nodeView, View);
+            scriptWindow.DockWindow();
+            Assert.IsTrue(ViewModel.DockedNodeWindows.Contains(nodeModel.GUID.ToString()));
+
+            var editorTab = ViewModel.SideBarTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString());
+            Assert.IsNotNull(editorTab);
+            Assert.AreEqual(editorTab.Header.ToString(), "Python Script");
+
+            // Undock editor tab from right side panel.
+            View.UndockWindow(editorTab);
+
+            Assert.IsFalse(ViewModel.DockedNodeWindows.Contains(nodeModel.GUID.ToString()));
+            Assert.IsNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString()));
+        }
+
+        /// <summary>
+        /// This test evaluates the functionality of the Tab Folding Strategy
+        /// Tab consists of 4 spaces and every tab yields a new folding
+        /// A folding closes when reaching a line with the same number of tabs it was opened with
+        /// </summary>
+        [Test]
+        public void AvalonEditTabFoldingStrategyTest()
+        {
+            // Arrange
+            string pythonCode = "from System.Collections import ArrayList";
+            Open(@"core\python\python.dyn");
+
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
+            Assert.NotNull(nodeModel);
+
+            var scriptWindow = EditPythonCode(nodeView, View);
+            var codeEditor = FindCodeEditor(scriptWindow);
+            var foldings = scriptWindow.foldingManager.AllFoldings.Count();
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(foldings == 0);
+
+            var textWithFourFoldings =
+                @"def TestDef(self):
+    # Every tab will cause a new foldnig to be created
+    self.data = 'reloaded'    
+
+try:
+    data = true
+    if data:
+        pass
+except:
+    data = false
+
+# Inadequate number of spaces different than 4 should not form a folding
+# Therefore leaving any amount of spaces not divisible by 4 should not yield further foldings
+
+class NoTabs():
+   value = true
+       pass
+
+";
+            SetTextEditorText(scriptWindow, textWithFourFoldings);
+            foldings = scriptWindow.foldingManager.AllFoldings.Count();
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(foldings == 4);
+        }
+
+        private class TestEngine : PythonEngine
+        {
+            public override object InputDataMarshaler => throw new NotImplementedException();
+
+            public override object OutputDataMarshaler => throw new NotImplementedException();
+
+            public override string Name => nameof(TestEngine);
+
+            public override event EvaluationStartedEventHandler EvaluationStarted;
+            public override event EvaluationFinishedEventHandler EvaluationFinished;
+
+            public override object Evaluate(string code, IList bindingNames, [ArbitraryDimensionArrayImport] IList bindingValues)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        [Test]
+        public void OnlyUniqueEnginesAddedToUI()
+        {
+            var node = new PythonNode();
+            Model.CurrentWorkspace.AddAndRegisterNode(node);
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            DispatcherUtil.DoEvents();
+            var nodeView = View.NodeViewsInFirstWorkspace().FirstOrDefault();
+            var menu = nodeView.MainContextMenu.Items.Cast<MenuItem>().First(x => (x.Header as string) == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher);
+            Assert.AreEqual(2, menu.Items.Count);
+        }
+        [Test]
+        public void OnlyUniqueEnginesAddedToUI2()
+        {
+            var node = new PythonNode();
+            Model.CurrentWorkspace.AddAndRegisterNode(node);
+            DispatcherUtil.DoEvents();
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+            PythonEngineManager.Instance.AvailableEngines.Add(new TestEngine());
+       
+            var nodeView = View.NodeViewsInFirstWorkspace().FirstOrDefault();
+            var menu = nodeView.MainContextMenu.Items.Cast<MenuItem>().First(x => (x.Header as string) == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher);
+            Assert.AreEqual(2, menu.Items.Count);
         }
     }
 }

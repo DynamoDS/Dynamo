@@ -1,9 +1,16 @@
-﻿using System;
+using System;
 using System.IO;
-using NDesk.Options;
+using CommandLine;
+using CommandLine.Text;
 
 namespace Md2Html
 {
+    internal class CMDLineOptions
+    {
+        [Option('h', "help", Required = false, HelpText = "Show help and exit")]
+        public bool ShowHelp { get; set; }
+    }
+
     static class Program
     {
         static void Main(string[] args)
@@ -17,16 +24,15 @@ namespace Md2Html
             try
             {
                 Console.WriteLine("");
-
                 while (true)
                 {
                     var line = Console.ReadLine();
-                    if (line == @"<<<<<Sanitize>>>>>")
+                    if (line.Contains(@"<<<<<Sanitize>>>>>"))
                     {
                         Console.WriteLine(@"<<<<<Sod>>>>>");
                         Sanitize();
                     }
-                    else if (line == @"<<<<<Convert>>>>>")
+                    else if (line.Contains(@"<<<<<Convert>>>>>"))
                     {
                         Console.WriteLine(@"<<<<<Sod>>>>>");
                         Convert();
@@ -82,15 +88,19 @@ namespace Md2Html
         static bool CheckForHelp(string[] args)
         {
             bool help = false;
-            var options = new OptionSet()
-            {
-                {@"h|?|help", @"Show help and exit", v => help = v != null },
-            };
+            var parser = new Parser(options => {
+                options.IgnoreUnknownArguments = true; options.HelpWriter = Console.Out;
+                options.CaseSensitive = false;
+            });
+            var results = parser.ParseArguments<CMDLineOptions>(args);
 
-            options.Parse(args);
+            help = results.MapResult((cmdArgs) => {
+                return cmdArgs.ShowHelp;
+            }, errs => false);
+
             if (help)
             {
-                options.WriteOptionDescriptions(Console.Out);
+                Console.WriteLine(HelpText.AutoBuild(results, null, null).ToString());
                 DisplayHelp();
             }
 

@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Dynamo.Logging
 {
@@ -7,6 +9,9 @@ namespace Dynamo.Logging
     /// </summary>
     public enum Categories
     {
+        /// XXXOperations usually means actions from Dynamo users
+        /// v.s. XXX usually means actions from the Dynamo component itself
+
         /// <summary>
         /// Events Category related to application lifecycle
         /// </summary>
@@ -46,6 +51,11 @@ namespace Dynamo.Logging
         /// Events Category related to user preferences
         /// </summary>
         Preferences,
+
+        /// <summary>
+        /// Events Category related to the Package Manager
+        /// </summary>
+        PackageManager,
 
         /// <summary>
         /// Events Category related to Dynamo upgrade
@@ -126,6 +136,21 @@ namespace Dynamo.Logging
         /// Events Category related to guided tours
         /// </summary>
         GuidedTourOperations,
+
+        /// <summary>
+        /// Events Category related to the splash screen
+        /// </summary>
+        SplashScreenOperations,
+
+        /// <summary>
+        /// Events Category related to DynamoMLDataPipeline
+        /// </summary>
+        DynamoMLDataPipelineOperations,
+
+        /// <summary>
+        /// Events Category related to DynamoHome
+        /// </summary>
+        DynamoHomeOperations
     }
 
     /// <summary>
@@ -367,14 +392,17 @@ namespace Dynamo.Logging
         /// Hide event, e.g when a connection is hidden by user choice
         /// </summary>
         Hide,
+
         /// <summary>
         /// When a package conflict is encountered which involves at least one built-in package.
         /// </summary>
         BuiltInPackageConflict,
+
         /// <summary>
         /// Sort event, when user wants to sort some information
         /// </summary>
         Sort,
+
         /// <summary>
         /// View event, when user wants to see some information
         /// </summary>
@@ -384,6 +412,11 @@ namespace Dynamo.Logging
         /// Show event, when user wants to view Documentation.
         /// </summary>
         ViewDocumentation,
+
+        /// <summary>
+        /// When the in-depth node help documentation is un-available
+        /// </summary>
+        MissingDocumentation,
 
         /// <summary>
         /// Cancel operation, e.g. cancel adding a new group style 
@@ -409,6 +442,32 @@ namespace Dynamo.Logging
         /// TimeElapsed event, e.g. tracks the time elapsed since an event
         /// </summary>
         TimeElapsed,
+
+        /// <summary>
+        /// SignIn event, e.g. tracks the SignIn event
+        /// </summary>
+        SignIn,
+
+        /// <summary>
+        /// SignOut event, e.g. tracks the SignOut event
+        /// </summary>
+        SignOut,
+
+        /// <summary>
+        /// Import event, e.g. tracks the ImportSettings event
+        /// </summary>
+        Import,
+
+        /// <summary>
+        /// Export event, e.g. tracks the ExportSettings event
+        /// </summary>
+        Export,
+    }
+
+    public enum HeartBeatType
+    {
+        User,
+        Machine
     }
 
     /// <summary>
@@ -421,11 +480,6 @@ namespace Dynamo.Logging
         /// Checks if analytics reporting is ON.
         /// </summary>
         bool ReportingAnalytics { get; }
-
-        /// <summary>
-        /// Checks if detailed usage reporting is ON.
-        /// </summary>
-        bool ReportingUsage { get; }
 
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
@@ -478,6 +532,13 @@ namespace Dynamo.Logging
         void TrackException(Exception ex, bool isFatal);
 
         /// <summary>
+        /// This API is used to track user/machine's activity status.
+        /// </summary>
+        /// <param name="activityType">Value must be: machine or user. If no value is provided the API will default to user activity type.</param>
+        /// <returns>0 if successful, otherwise returns an error code.</returns>
+        void TrackActivityStatus(string activityType);
+
+        /// <summary>
         /// Creates a new timed event with start state and tracks its start.
         /// Disposing the returnd event will record the event completion.
         /// </summary>
@@ -489,6 +550,17 @@ namespace Dynamo.Logging
         IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value);
 
         /// <summary>
+        /// Creates a new task timed event with start state and tracks its start.
+        /// After task is compoleted, disposing the returnd event will record the event completion.
+        /// </summary>
+        /// <param name="category">Event category</param>
+        /// <param name="variable">Timed varaible name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <returns>Event as IDisposable</returns>
+        Task<IDisposable> CreateTaskTimedEvent(Categories category, string variable, string description, int? value);
+
+        /// <summary>
         /// Creates a new command event of the given name. Start of the 
         /// command is tracked. When the event is disposed, it's completion is tracked.
         /// </summary>
@@ -497,6 +569,23 @@ namespace Dynamo.Logging
         /// <param name="value">A metric value associated with the event</param>
         /// <returns>Event as IDisposable</returns>
         IDisposable CreateCommandEvent(string name, string description, int? value);
+
+        /// <summary>
+        /// Creates a new task command event of the given name. Start of the 
+        /// command is tracked. When the task is completed and the event is disposed, it's completion is tracked.
+        /// </summary>
+        /// <param name="name">Command name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <param name="parameters">A dictionary of (string, object) associated with the event</param>
+        /// <returns>Event as IDisposable</returns>
+        Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null);
+
+        /// <summary>
+        /// Waits for the given task to end so that it can dispose the event and
+        /// complete the tracking.
+        /// </summary>
+        void EndEventTask(Task<IDisposable> taskToEnd);
 
         /// <summary>
         /// Creates a new file operation event and tracks the start of the event.
@@ -510,10 +599,14 @@ namespace Dynamo.Logging
         IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description);
 
         /// <summary>
-        /// Logs usage data
+        /// Creates a new file operation task event and tracks the start of the event.
+        /// After the task is completed, disposing the returned event will record its completion.
         /// </summary>
-        /// <param name="tag">Usage tag</param>
-        /// <param name="data">Usage data</param>
-        void LogPiiInfo(string tag, string data);
+        /// <param name="filepath">File path</param>
+        /// <param name="operation">File operation</param>
+        /// <param name="size">Size parameter</param>
+        /// <param name="description">Event description</param>
+        /// <returns>Event as IDisposable</returns>
+        Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description);
     }
 }

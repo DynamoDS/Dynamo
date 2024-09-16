@@ -1,8 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Configuration;
@@ -13,8 +11,8 @@ using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.WorkspaceDependency;
-using Dynamo.Wpf.Extensions;
 using Dynamo.WorkspaceDependency.Properties;
+using Dynamo.Wpf.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -68,7 +66,7 @@ namespace DynamoCoreWpfTests
             viewExtension.Loaded(loadedParams);
 
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
-            viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
+            viewExtension.DependencyRegen(CurrentWorkspace);
             // Restart banner should not display by default
             Assert.AreEqual(Visibility.Hidden, viewExtension.DependencyView.RestartBanner.Visibility);
         }
@@ -94,12 +92,12 @@ namespace DynamoCoreWpfTests
             package.LoadState.SetScheduledForDeletion();
 
             // Once choosing to install the specified version, info.State should reflect RequireRestart
-            viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
+            viewExtension.DependencyRegen(CurrentWorkspace);
 
             // Restart banner should display immediately
             Assert.AreEqual(Visibility.Visible, viewExtension.DependencyView.RestartBanner.Visibility);
             Assert.AreEqual(1, viewExtension.DependencyView.PackageDependencyTable.Items.Count);
-            var newInfo = viewExtension.DependencyView.dataRows.FirstOrDefault().DependencyInfo;
+            var newInfo = viewExtension.dataRows.FirstOrDefault().DependencyInfo;
 
             // Local loaded version was 2.0.0, but now will be update to date with dyn
             Assert.AreEqual("2.0.1", newInfo.Version.ToString());
@@ -119,11 +117,11 @@ namespace DynamoCoreWpfTests
             extensionManager.Add(viewExtension);
             // Open a graph which should bring up the Workspace References view extension window with one tab
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
             Utility.DispatcherUtil.DoEvents();
-            View.CloseExtensionTab(WpfUtilities.ChildrenOfType<Button>(View.ExtensionTabItems.FirstOrDefault()).FirstOrDefault(), null);
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            View.OnCloseRightSideBarTab(WpfUtilities.ChildrenOfType<Button>(ViewModel.SideBarTabItems.FirstOrDefault()).FirstOrDefault(), null);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
         }
 
         /// <summary>
@@ -138,11 +136,11 @@ namespace DynamoCoreWpfTests
             extensionManager.Add(viewExtension);
             // Open a graph which should bring up the Workspace References view extension window with one tab
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             loadedParams.CloseExtensioninInSideBar(this.viewExtension);
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
         }
 
         /// <summary>
@@ -156,7 +154,7 @@ namespace DynamoCoreWpfTests
 
             // Open a graph which should bring up the Workspace References view extension window with one tab
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
 
@@ -167,7 +165,7 @@ namespace DynamoCoreWpfTests
             // This will un-check the workspace references menu item.
             loadedParams.CloseExtensioninInSideBar(WorkspaceReferencesExtension);
 
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
 
             // Assert that the workspace references menu item is un-checked.
             Assert.IsFalse(WorkspaceReferencesExtension.workspaceReferencesMenuItem.IsChecked);
@@ -184,10 +182,10 @@ namespace DynamoCoreWpfTests
             extensionManager.Add(viewExtension);
             // Open a graph which should bring up the Workspace References view extension window with one tab
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
             var homeSpace = Model.Workspaces.First(ws => ws is HomeWorkspaceModel) as HomeWorkspaceModel;
             homeSpace.Clear();
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
         }
 
         /// <summary>
@@ -197,6 +195,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void DependencyRegenCrashingDynamoTest()
         {
+            this.View.WindowState = WindowState.Maximized;
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             extensionManager.Add(viewExtension);
@@ -216,7 +215,7 @@ namespace DynamoCoreWpfTests
             // Closing the dyf will trigger DependencyRegen of HomeWorkspaceModel.
             // The HomeWorkspaceModel does not contain any dependency info since it's empty
             // but DependencyRegen() call on it should not crash
-            Assert.DoesNotThrow(()=> viewExtension.DependencyView.DependencyRegen(homeWorkspaceModel));
+            Assert.DoesNotThrow(()=> viewExtension.DependencyRegen(homeWorkspaceModel));
         }
 
         [Test]
@@ -267,12 +266,12 @@ namespace DynamoCoreWpfTests
 
             var extensionManager = View.viewExtensionManager;
 
-            var initialNum = View.ExtensionTabItems.Count;
+            var initialNum = ViewModel.SideBarTabItems.Count;
 
             // Adding the workspace references extension will 
             // not add a dup tab in the extensions side bar
             extensionManager.Add(viewExtension);
-            Assert.AreEqual(initialNum, View.ExtensionTabItems.Count);
+            Assert.AreEqual(initialNum, ViewModel.SideBarTabItems.Count);
         }
 
         [Test]
@@ -291,9 +290,9 @@ namespace DynamoCoreWpfTests
 
             var examplePath = Path.Combine(@"core\packageDependencyTests\PackageDependencyStates.dyn");
             Open(examplePath);
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
-            foreach (PackageDependencyRow packageDependencyRow in WorkspaceReferencesExtension.DependencyView.dataRows)
+            foreach (PackageDependencyRow packageDependencyRow in WorkspaceReferencesExtension.dataRows)
             {
                 var dependencyInfo = packageDependencyRow.DependencyInfo;
                 Assert.Contains(dependencyInfo.Name, dependenciesList);
@@ -316,8 +315,8 @@ namespace DynamoCoreWpfTests
             examplePath = Path.Combine(@"core\LocalDefinitionsTest.dyn");
             Open(examplePath);
            
-            Assert.AreEqual(1, WorkspaceReferencesExtension.DependencyView.localDefinitionDataRows.Count());
-            DependencyRow localDefinitionRow = WorkspaceReferencesExtension.DependencyView.localDefinitionDataRows.FirstOrDefault();
+            Assert.AreEqual(1, WorkspaceReferencesExtension.localDefinitionDataRows.Count());
+            DependencyRow localDefinitionRow = WorkspaceReferencesExtension.localDefinitionDataRows.FirstOrDefault();
             var dependencyInfo = localDefinitionRow.DependencyInfo;
             Assert.Contains(dependencyInfo.Name, dependenciesList);
         }
@@ -331,10 +330,10 @@ namespace DynamoCoreWpfTests
             var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
             Open(examplePath);
 
-            WorkspaceReferencesExtension.DependencyView.DependencyRegen(Model.CurrentWorkspace, true);
+            WorkspaceReferencesExtension.DependencyRegen(Model.CurrentWorkspace, true);
 
-            Assert.AreEqual(2, WorkspaceReferencesExtension.DependencyView.externalFilesDataRows.Count());
-            foreach (DependencyRow localDefinitionRow in WorkspaceReferencesExtension.DependencyView.externalFilesDataRows)
+            Assert.AreEqual(2, WorkspaceReferencesExtension.externalFilesDataRows.Count());
+            foreach (DependencyRow localDefinitionRow in WorkspaceReferencesExtension.externalFilesDataRows)
             {
                 var dependencyInfo = localDefinitionRow.DependencyInfo;
                 Assert.Contains(dependencyInfo.Name, dependenciesList);
@@ -348,11 +347,11 @@ namespace DynamoCoreWpfTests
             var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
             Open(examplePath);
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = false;
-            WorkspaceReferencesExtension.DependencyView.DependencyRegen(Model.CurrentWorkspace, true);
+            WorkspaceReferencesExtension.DependencyRegen(Model.CurrentWorkspace, true);
             var results = Model.CurrentWorkspace.ExternalFiles;
             Assert.AreEqual(0, results.Count());
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = true;
-            WorkspaceReferencesExtension.DependencyView.DependencyRegen(Model.CurrentWorkspace, true);
+            WorkspaceReferencesExtension.DependencyRegen(Model.CurrentWorkspace, true);
             results = Model.CurrentWorkspace.ExternalFiles;
             Assert.AreEqual(2, results.Count());
         }

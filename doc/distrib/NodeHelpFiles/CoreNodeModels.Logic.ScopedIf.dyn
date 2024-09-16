@@ -1,0 +1,328 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.Logic.ScopedIf_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "3a9aeaf8e32242389118739ed6a96954",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4207a2caeec94100a0c9d9368944a95e",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..20..2;\n0..5..1;",
+      "Id": "3a73c89ff629415c96a022fb043f496b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "534d9bb7cc8242768caac53eae957da0",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fc62f1382c2249b19ffdf671948b703c",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.ScopedIf, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "72a1dc07e0d048f19e8bc6e47d909ba3",
+      "Inputs": [
+        {
+          "Id": "d5d236a4e9d74a45aff6efdd17bcd2c2",
+          "Name": "test",
+          "Description": "Boolean test",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "10cee097746a4b6ba095088855eb3a83",
+          "Name": "true",
+          "Description": "Returned if test is true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "210cd63ea60546ff86de1518f61126f4",
+          "Name": "false",
+          "Description": "Returned if test is false",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "53544e057fae4c6884300f5906854f0b",
+          "Name": "result",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. It's critical that that both True and False branches are isolated and do not interact with each other!"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "7e6173b2ce2e4449bb3eb0ee947b6507",
+      "Inputs": [
+        {
+          "Id": "4b3ff67827fb454f9e4548e764c58f6a",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "64e31fea3a96409cb1a4901839c8d132",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "12a8ae7c5e674d039df741e77decad8c",
+      "Inputs": [
+        {
+          "Id": "167473a3078b4b82bf8a28fa0bdedd79",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c2a36897736a4254a6c4fca927d0f5e2",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d96dd289fa7c4d95a0e88b51f3956da8",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2c273131199d46ec9e3131bdaf25954e",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4207a2caeec94100a0c9d9368944a95e",
+      "End": "d5d236a4e9d74a45aff6efdd17bcd2c2",
+      "Id": "971649caf8b04a9c9297e5c4b60867f3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "534d9bb7cc8242768caac53eae957da0",
+      "End": "10cee097746a4b6ba095088855eb3a83",
+      "Id": "037ddad0869547789934b8a0d5cd25e3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fc62f1382c2249b19ffdf671948b703c",
+      "End": "210cd63ea60546ff86de1518f61126f4",
+      "Id": "b6c7a02aade54ebfbd55434c1580d68a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "53544e057fae4c6884300f5906854f0b",
+      "End": "4b3ff67827fb454f9e4548e764c58f6a",
+      "Id": "cb33fb32b0c945c0ac9c25f44b5ac82d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "64e31fea3a96409cb1a4901839c8d132",
+      "End": "167473a3078b4b82bf8a28fa0bdedd79",
+      "Id": "7bdc96d11f744534b0444655170e69c5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "64e31fea3a96409cb1a4901839c8d132",
+      "End": "c2a36897736a4254a6c4fca927d0f5e2",
+      "Id": "99680d9cb9044da7acabe7826cba4048",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 0.945887565612793,
+      "EyeY": 9.48127031326294,
+      "EyeZ": 21.69605827331543,
+      "LookX": 11.798663139343262,
+      "LookY": -8.0999212265014648,
+      "LookZ": -20.694217681884766,
+      "UpX": 0.055209234356880188,
+      "UpY": 0.99376815557479858,
+      "UpZ": -0.096834421157836914
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Boolean",
+        "ShowGeometry": true,
+        "Id": "3a9aeaf8e32242389118739ed6a96954",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1007.3748234521078,
+        "Y": 1960.1135451466987
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "3a73c89ff629415c96a022fb043f496b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1007.3748234521078,
+        "Y": 2108.7685451466987
+      },
+      {
+        "Name": "ScopeIf",
+        "ShowGeometry": true,
+        "Id": "72a1dc07e0d048f19e8bc6e47d909ba3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1301.7748234521077,
+        "Y": 2013.1135451466987
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "7e6173b2ce2e4449bb3eb0ee947b6507",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1531.3748234521076,
+        "Y": 2013.1135451466987
+      },
+      {
+        "Name": "Point.ByCoordinates",
+        "ShowGeometry": false,
+        "Id": "12a8ae7c5e674d039df741e77decad8c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1909.7748234521077,
+        "Y": 1996.1135451466987
+      }
+    ],
+    "Annotations": [],
+    "X": -621.78329276780323,
+    "Y": -610.115175412559,
+    "Zoom": 0.6807561440323695
+  }
+}

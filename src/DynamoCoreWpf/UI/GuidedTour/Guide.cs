@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -143,7 +143,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void Initialize()
         {
-            TotalSteps = GuideSteps.Count;
+            //There are guided tours containing repeated Sequences due that we can have different Steps flow (conditional flows)
+            var differentSteps = GuideSteps.Select(step => step.Sequence).Distinct().ToList();
+            TotalSteps = differentSteps.Count;
 
             SetLibraryViewVisible(false);
 
@@ -205,9 +207,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
         internal void NextStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence, GuideFlow.FORWARD);
             if (CurrentStepSequence < TotalSteps)
             {
+                HideCurrentStep(CurrentStepSequence, GuideFlow.FORWARD);
+
                 CalculateStep(GuideFlow.FORWARD, CurrentStepSequence);
                 CurrentStep.Show(GuideFlow.FORWARD);
                 Logging.Analytics.TrackEvent(Logging.Actions.Next, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), CurrentStep.Sequence);
@@ -220,9 +223,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter is the "sequence" of the current Step so we can get the previous Step from the list</param>
         internal void PreviousStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence, GuideFlow.BACKWARD);
             if (CurrentStepSequence > 0)
             {
+                HideCurrentStep(CurrentStepSequence, GuideFlow.BACKWARD);
+
                 CalculateStep(GuideFlow.BACKWARD, CurrentStepSequence);
                 CurrentStep.Show(GuideFlow.BACKWARD);
                 Logging.Analytics.TrackEvent(Logging.Actions.Previous, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), CurrentStep.Sequence);
@@ -274,7 +278,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This event method will be executed when the user press the Back button in the tooltip/popup
         /// </summary>
-        /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the previous Step from the list</param>
         private void GuideFlowEvents_GuidedTourPrevStep()
         {
             PreviousStep(CurrentStep.Sequence);
@@ -283,7 +286,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This event method will be executed then the user press the Next button in the tooltip/popup
         /// </summary>
-        /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
         private void GuideFlowEvents_GuidedTourNextStep()
         {
             NextStep(CurrentStep.Sequence);

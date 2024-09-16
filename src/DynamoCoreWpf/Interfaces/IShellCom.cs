@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -198,7 +198,7 @@ namespace Dynamo.Wpf.Interfaces
         // Defined on IModalWindow - repeated here due to requirements of COM interop layer
         // --------------------------------------------------------------------------------
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime ), PreserveSig]
-        int Show ( [In] IntPtr parent );
+        new int Show ( [In] IntPtr parent );
 
         // IFileDialog-Specific interface members
         // --------------------------------------------------------------------------------
@@ -283,78 +283,78 @@ namespace Dynamo.Wpf.Interfaces
         // Defined on IModalWindow - repeated here due to requirements of COM interop layer
         // --------------------------------------------------------------------------------
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime ), PreserveSig]
-        int Show ( [In] IntPtr parent );
+        new int Show ( [In] IntPtr parent );
 
         // Defined on IFileDialog - repeated here due to requirements of COM interop layer
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetFileTypes ( [In] uint cFileTypes, [In, MarshalAs(UnmanagedType.LPArray)] COMDLG_FILTERSPEC[] rgFilterSpec );
+        new void SetFileTypes ( [In] uint cFileTypes, [In, MarshalAs(UnmanagedType.LPArray)] COMDLG_FILTERSPEC[] rgFilterSpec );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetFileTypeIndex ( [In] uint iFileType );
+        new void SetFileTypeIndex ( [In] uint iFileType );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void GetFileTypeIndex ( out uint piFileType );
+        new void GetFileTypeIndex ( out uint piFileType );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void Advise ( [In, MarshalAs ( UnmanagedType.Interface )] IFileDialogEvents pfde, out uint pdwCookie );
+        new void Advise ( [In, MarshalAs ( UnmanagedType.Interface )] IFileDialogEvents pfde, out uint pdwCookie );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void Unadvise ( [In] uint dwCookie );
+        new void Unadvise ( [In] uint dwCookie );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetOptions ( [In] FOS fos );
+        new void SetOptions ( [In] FOS fos );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void GetOptions ( out FOS pfos );
+        new void GetOptions ( out FOS pfos );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetDefaultFolder ( [In, MarshalAs ( UnmanagedType.Interface )] IShellItem psi );
+        new void SetDefaultFolder ( [In, MarshalAs ( UnmanagedType.Interface )] IShellItem psi );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetFolder ( [In, MarshalAs ( UnmanagedType.Interface )] IShellItem psi );
+        new void SetFolder ( [In, MarshalAs ( UnmanagedType.Interface )] IShellItem psi );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void GetFolder ( [MarshalAs ( UnmanagedType.Interface )] out IShellItem ppsi );
+        new void GetFolder ( [MarshalAs ( UnmanagedType.Interface )] out IShellItem ppsi );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void GetCurrentSelection ( [MarshalAs ( UnmanagedType.Interface )] out IShellItem ppsi );
+        new void GetCurrentSelection ( [MarshalAs ( UnmanagedType.Interface )] out IShellItem ppsi );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetFileName ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszName );
+        new void SetFileName ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszName );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void GetFileName ( [MarshalAs ( UnmanagedType.LPWStr )] out string pszName );
+        new void GetFileName ( [MarshalAs ( UnmanagedType.LPWStr )] out string pszName );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetTitle ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszTitle );
+        new void SetTitle ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszTitle );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetOkButtonLabel ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszText );
+        new void SetOkButtonLabel ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszText );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetFileNameLabel ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszLabel );
+        new void SetFileNameLabel ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszLabel );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void GetResult ( [MarshalAs ( UnmanagedType.Interface )] out IShellItem ppsi );
+        new void GetResult ( [MarshalAs ( UnmanagedType.Interface )] out IShellItem ppsi );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void AddPlace ( [In, MarshalAs ( UnmanagedType.Interface )] IShellItem psi, FDAP fdap );
+        new void AddPlace ( [In, MarshalAs ( UnmanagedType.Interface )] IShellItem psi, FDAP fdap );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetDefaultExtension ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszDefaultExtension );
+        new void SetDefaultExtension ( [In, MarshalAs ( UnmanagedType.LPWStr )] string pszDefaultExtension );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void Close ( [MarshalAs ( UnmanagedType.Error )] int hr );
+        new void Close ( [MarshalAs ( UnmanagedType.Error )] int hr );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetClientGuid ( [In] ref Guid guid );
+        new void SetClientGuid ( [In] ref Guid guid );
 
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void ClearClientData ( );
+        new void ClearClientData ( );
 
         // Not supported:  IShellItemFilter is not defined, converting to IntPtr
         [MethodImpl ( MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime )]
-        void SetFilter ( [MarshalAs ( UnmanagedType.Interface )] IntPtr pFilter );
+        new void SetFilter ( [MarshalAs ( UnmanagedType.Interface )] IntPtr pFilter );
 
         // Defined by IFileOpenDialog
         // ---------------------------------------------------------------------------------

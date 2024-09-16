@@ -118,45 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SandboxBuildsPageDialogMessage" xml:space="preserve">
-    <value>Goto the Dynamo builds wiki site({0}) for more information.</value>
+    <value>Go to the Dynamo builds wiki site({0}) for more information.</value>
     <comment>message directing user to wiki page</comment>
   </data>
   <data name="SandboxCrashMessage" xml:space="preserve">
-    <value>Could not start DynamoSandbox, unhandled exception.</value>
-  </data>
-  <data name="SettingsMigrationDialogMessage" xml:space="preserve">
-    <value>Migrating Settings ...</value>
-    <comment>Settings migration dialog message prompt</comment>
-  </data>
-  <data name="SettingsMigrationDialogTitle" xml:space="preserve">
-    <value>First Use Setup</value>
-    <comment>Title of settings migration dialog</comment>
-  </data>
-  <data name="SplashScreenFailedImportSettings" xml:space="preserve">
-    <value>Failed to Import Settings</value>
-  </data>
-  <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
-    <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
-  </data>
-  <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
-    <value>Launching dynamo view...</value>
-  </data>
-  <data name="SplashScreenLaunchTitle" xml:space="preserve">
-    <value>Launch Dynamo</value>
-  </data>
-  <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
-    <value>Loading time</value>
-  </data>
-  <data name="SplashScreenSettingsImported" xml:space="preserve">
-    <value>Settings imported</value>
-  </data>
-  <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
-    <value>Don’t show this screen again</value>
-  </data>
-  <data name="SplashScreenSignIn" xml:space="preserve">
-    <value>Sign in</value>
-  </data>
-  <data name="SplashScreenWelcomeToDynamo" xml:space="preserve">
-    <value>Welcome to Dynamo!</value>
+    <value>Could not start Dynamo Sandbox, unhandled exception.</value>
   </data>
 </root>

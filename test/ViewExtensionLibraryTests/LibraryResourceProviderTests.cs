@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +14,7 @@ using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace ViewExtensionLibraryTests
@@ -325,6 +326,16 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual(IconUrl.DefaultIcon, url.Name);
             Assert.AreEqual(IconUrl.DefaultPath, url.Path);
         }
+     
+
+        private LoadedTypeData<LoadedTypeItem> GetLoadedTypesFromJson(Stream stream)
+        {
+            using (var sr = new StreamReader(stream))
+            {
+                var serializer = new JsonSerializer();
+                return (LoadedTypeData<LoadedTypeItem>)serializer.Deserialize(sr, typeof(LoadedTypeData<LoadedTypeItem>));
+            }
+        }
 
         [Test]
         [Category("UnitTests")]
@@ -347,6 +358,8 @@ namespace ViewExtensionLibraryTests
             var url = new IconUrl(name, path, true);
             Assert.AreEqual(url.Url, item.iconUrl);
         }
+
+
         /*
         [Test]
         [Category("UnitTests"), Category("Failure")]

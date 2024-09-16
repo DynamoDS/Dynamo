@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,7 +45,7 @@ namespace Dynamo.GraphMetadata
             {
                 try
                 {
-                    Process.Start(new ProcessStartInfo(uri.ToString()));
+                    Process.Start(new ProcessStartInfo(uri.ToString()) { UseShellExecute = true });
                 }
                 catch
                 {

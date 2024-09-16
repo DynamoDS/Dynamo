@@ -300,24 +300,6 @@ namespace Dynamo.Models
         }
     }
 
-    internal class SettingsMigrationEventArgs : EventArgs
-    {
-        public enum EventStatusType
-        { 
-            Invalid = 0,
-            Begin,
-            End 
-        }
-
-        public EventStatusType EventStatus;
-
-        public SettingsMigrationEventArgs(EventStatusType eventStatus)
-        {
-            EventStatus = eventStatus;
-        }
-
-    }
-
     /// <summary>
     /// Event arguments when creating a splash screen event
     /// </summary>

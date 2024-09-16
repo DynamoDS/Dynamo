@@ -1,0 +1,524 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CenterPoint",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "e82578de3a6f4a85879a45762df3c7e6",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Value": "30",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.ByBestFit@Autodesk.DesignScript.Geometry.Point[]",
+      "Id": "c249ed54de7045f2ab97549e237ecb91",
+      "Inputs": [
+        {
+          "Id": "d4209acf711042929d523ab961894197",
+          "Name": "points",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "920af4b3ce8245609b5b83ac4d83fc82",
+          "Name": "Sphere",
+          "Description": "Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Fit a Sphere as close as possible to the input Points.\n\nSphere.ByBestFit (points: Point[]): Sphere"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "33e67c63fa964c7bb1a8a9c51693e210",
+      "Inputs": [
+        {
+          "Id": "8e4228769540495baa6dd6044734c6cd",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d8ed700012c245ba8bcf0e276531cb27",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "abf57b206b544b0f9288e5b158dd0e92",
+      "Inputs": [
+        {
+          "Id": "c1fac34b73964847be3b1f5d65d8b6c5",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3f1eda4d2f164b2e954b314ab9f67a62",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "bdd791f926c945d4bca1f0bb57efbf0e",
+      "Inputs": [
+        {
+          "Id": "edb426bc6e8f44648f51cbab29f8afe3",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ce020965da2148f6aa0e32ae474e595f",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 30,
+      "MaximumValue": 100,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "e82578de3a6f4a85879a45762df3c7e6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f93d7f8f94fe4c99bdee36821b1994ad",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "55ed393cf537449ebe6eaeec3f75a90f",
+      "Inputs": [
+        {
+          "Id": "d08b665c167d4ee5b0fa4e4654edcf94",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "514674e254ea4537b8651f05a6dc5d12",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fe3a2ba056c24370befd360d93b63a29",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d807c164f4984c9198a668844563a3bd",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*10;",
+      "Id": "5aa9747d197e4acdbca6e07a7f449f6e",
+      "Inputs": [
+        {
+          "Id": "b2c70436ba9744548bb43874920d8df4",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "543ed71c027f4a5aac58c59b0fe0f9d6",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "y*10;",
+      "Id": "a3419926e0684559a5fa75fb20e099dc",
+      "Inputs": [
+        {
+          "Id": "875d74f53e574af984a22822ac0179b7",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f2ad544dd35f4b53b09409e7a1b1ff43",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "z*10;",
+      "Id": "d3a2a6cc21814969b850260c064cb8d7",
+      "Inputs": [
+        {
+          "Id": "4d92906f12564834aaf41345c3ef5423",
+          "Name": "z",
+          "Description": "z",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dff1760746ec4144956063ae83d43828",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.CenterPoint",
+      "Id": "38c59bef57c349dbad0226c63505afc8",
+      "Inputs": [
+        {
+          "Id": "76fd4469e84f46e79d9bd669b65149e3",
+          "Name": "sphere",
+          "Description": "Autodesk.DesignScript.Geometry.Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "882fa42ae122475787c5c920e0384464",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Return the center Point of the Sphere.\n\nSphere.CenterPoint: Point"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "920af4b3ce8245609b5b83ac4d83fc82",
+      "End": "76fd4469e84f46e79d9bd669b65149e3",
+      "Id": "1e2636280b884a618a6c2da76aad2c59"
+    },
+    {
+      "Start": "d8ed700012c245ba8bcf0e276531cb27",
+      "End": "b2c70436ba9744548bb43874920d8df4",
+      "Id": "6821007c9f6140ebafae1c0a30535091"
+    },
+    {
+      "Start": "3f1eda4d2f164b2e954b314ab9f67a62",
+      "End": "875d74f53e574af984a22822ac0179b7",
+      "Id": "4c9d94e57c8a4f60b3ff2a82b3b3180d"
+    },
+    {
+      "Start": "ce020965da2148f6aa0e32ae474e595f",
+      "End": "4d92906f12564834aaf41345c3ef5423",
+      "Id": "4c42ef836be14ffd977fd11ec321e982"
+    },
+    {
+      "Start": "f93d7f8f94fe4c99bdee36821b1994ad",
+      "End": "8e4228769540495baa6dd6044734c6cd",
+      "Id": "d755e979d38c437dbec8f0b1203a875a"
+    },
+    {
+      "Start": "f93d7f8f94fe4c99bdee36821b1994ad",
+      "End": "c1fac34b73964847be3b1f5d65d8b6c5",
+      "Id": "7a1f20705a0c41a790ece2c62a50a55a"
+    },
+    {
+      "Start": "f93d7f8f94fe4c99bdee36821b1994ad",
+      "End": "edb426bc6e8f44648f51cbab29f8afe3",
+      "Id": "98ea89f6444f4c51930776f7cb70d715"
+    },
+    {
+      "Start": "d807c164f4984c9198a668844563a3bd",
+      "End": "d4209acf711042929d523ab961894197",
+      "Id": "0df30bd2d30b45b1b25feb00ad457a73"
+    },
+    {
+      "Start": "543ed71c027f4a5aac58c59b0fe0f9d6",
+      "End": "d08b665c167d4ee5b0fa4e4654edcf94",
+      "Id": "e09e6da8c8e049fdaba11f7609a80423"
+    },
+    {
+      "Start": "f2ad544dd35f4b53b09409e7a1b1ff43",
+      "End": "514674e254ea4537b8651f05a6dc5d12",
+      "Id": "aacccec480b945a3968c24b45f6b30de"
+    },
+    {
+      "Start": "dff1760746ec4144956063ae83d43828",
+      "End": "fe3a2ba056c24370befd360d93b63a29",
+      "Id": "426e2bf12802435aab0040c07ac35082"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -2.4316387176513672,
+      "EyeY": 28.00129508972168,
+      "EyeZ": 37.108081817626953,
+      "LookX": 9.15898323059082,
+      "LookY": -9.9222326278686523,
+      "LookZ": -44.2684211730957,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Sphere.ByBestFit",
+        "Id": "c249ed54de7045f2ab97549e237ecb91",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 934.13401328190776,
+        "Y": 139.95544790029331
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "33e67c63fa964c7bb1a8a9c51693e210",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 170.13401328190776,
+        "Y": 57.955447900293308
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "abf57b206b544b0f9288e5b158dd0e92",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 170.13401328190776,
+        "Y": 165.95544790029331
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "bdd791f926c945d4bca1f0bb57efbf0e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 170.13401328190776,
+        "Y": 273.95544790029334
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "e82578de3a6f4a85879a45762df3c7e6",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -228.86598671809224,
+        "Y": 165.95544790029331
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "55ed393cf537449ebe6eaeec3f75a90f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 676.13401328190776,
+        "Y": 139.95544790029331
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "5aa9747d197e4acdbca6e07a7f449f6e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 486.13401328190776,
+        "Y": 62.168781233626646
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a3419926e0684559a5fa75fb20e099dc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 486.13401328190776,
+        "Y": 170.16878123362665
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "d3a2a6cc21814969b850260c064cb8d7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 486.13401328190776,
+        "Y": 278.16878123362665
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Sphere.CenterPoint",
+        "Id": "38c59bef57c349dbad0226c63505afc8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1234.1340132819078,
+        "Y": 140.90394613899062
+      }
+    ],
+    "Annotations": [],
+    "X": 15.6928056341434,
+    "Y": 16.0273317092566,
+    "Zoom": 1.05429821501133
+  }
+}

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.IO;
-using System.Windows.Threading;
+using System.Linq;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
-using DynamoCoreWpfTests;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -58,11 +58,11 @@ namespace Dynamo.Tests
         {
             // Create a crash report to submit
             var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(null, null);
-            Assert.IsNotNullOrEmpty(crashReport);
+            Assert.IsFalse(string.IsNullOrEmpty(crashReport));
 
             // Mock url for request
             string url = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(crashReport);
-            Assert.IsNotNullOrEmpty(url);
+            Assert.IsFalse(string.IsNullOrEmpty(url));
 
             // Report a bug with no details
             Assert.DoesNotThrow(() => DynamoViewModel.ReportABug());
@@ -77,7 +77,7 @@ namespace Dynamo.Tests
 
             // Create a crash report to submit
             var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, Packages);
-            Assert.IsNotNullOrEmpty(crashReport);
+            Assert.IsFalse(string.IsNullOrEmpty(crashReport));
 
             // Report a bug with a stack trace
             Assert.DoesNotThrow(() => DynamoViewModel.ReportABug(crashReport));
@@ -91,11 +91,11 @@ namespace Dynamo.Tests
 
             // Create a crash report to submit
             var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, Packages);
-            Assert.IsNotNullOrEmpty(crashReport);
+            Assert.IsFalse(string.IsNullOrEmpty(crashReport));
 
             // Mock url for request
             string url = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(crashReport);
-            Assert.IsNotNullOrEmpty(url);
+            Assert.IsFalse(string.IsNullOrEmpty(url));
 
             // Get body content from request
             var query = "body=";
@@ -124,11 +124,11 @@ namespace Dynamo.Tests
 
             // Create a crash report to submit
             var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, packagesData);
-            Assert.IsNotNullOrEmpty(crashReport);
+            Assert.IsFalse(string.IsNullOrEmpty(crashReport));
 
             // Mock url for request
             string url = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(crashReport);
-            Assert.IsNotNullOrEmpty(url);
+            Assert.IsFalse(string.IsNullOrEmpty(url));
 
             // Get body content from request
             var query = "body=";
@@ -151,18 +151,18 @@ namespace Dynamo.Tests
             //Gets package loader
             var packageLoader = CurrentDynamoModel.GetPackageManagerExtension()?.PackageLoader;
             Assert.IsNotNull(packageLoader);
-            Assert.IsEmpty(packageLoader.LocalPackages);
+            Assert.IsEmpty(packageLoader.LocalPackages, string.Join(", ", packageLoader.LocalPackages.Select(x => x.Name)));
 
             //Get packages data from null package loader
             var packagesData = Wpf.Utilities.CrashUtilities.PackagesToMakrdown(packageLoader);
 
             // Create a crash report to submit
             var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, packagesData);
-            Assert.IsNotNullOrEmpty(crashReport);
+            Assert.IsFalse(string.IsNullOrEmpty(crashReport));
 
             // Mock url for request
             string url = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(crashReport);
-            Assert.IsNotNullOrEmpty(url);
+            Assert.IsFalse(string.IsNullOrEmpty(url));
 
             // Get body content from request
             var query = "body=";
@@ -190,6 +190,18 @@ namespace Dynamo.Tests
                 Assert.IsTrue(File.Exists(dumpLocation));
                 File.Delete(dumpLocation);//cleanup
             }
+        }
+        [Test]
+        public void TestAppNameSentToCER()
+        {
+            CurrentDynamoModel.HostName = null;
+            var name = CrashReportTool.GetHostAppName();
+            //if both hostname and hostinfo.hostname are null, then use proc name.
+            Assert.True(name.Contains("testhost") ||  name.Contains("nunit-agent"));
+            DynamoModel.HostAnalyticsInfo = new  HostAnalyticsInfo(){HostName = "123"};
+            name = CrashReportTool.GetHostAppName();
+            //prefer hostinfo.hostname over others.
+            Assert.AreEqual(DynamoModel.HostAnalyticsInfo.HostName, name);
         }
     }
 }

@@ -21,9 +21,9 @@ namespace ProtoCore
     /// Represents a single replication guide entity that is associated with an argument to a function
     /// 
     /// Given:
-    ///     a = f(i<1>, j<2L>)
+    ///     a = f(i&lt;1&gt;, j&lt;2L&gt;)
     ///     
-    ///     <1> and <2L> are each represented by a ReplicationGuide instance
+    ///     &lt;1&gt; and &lt;2L&gt; are each represented by a ReplicationGuide instance
     ///     
     /// </summary>
     public class ReplicationGuide
@@ -221,14 +221,6 @@ namespace ProtoCore
 
 
         public List<CodeBlock> CodeBlockList { get; set; }
-        // The Complete Code Block list contains all the code blocks
-        // unlike the codeblocklist which only stores the outer most code blocks
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        public List<CodeBlock> CompleteCodeBlockList
-        {
-            get { return CompleteCodeBlockDict.Select(x => x.Value).ToList(); }
-            set { value.ForEach(x => CompleteCodeBlockDict.Add(x.codeBlockId, x)); }
-        }
         internal SortedDictionary<int, CodeBlock> CompleteCodeBlockDict { get; set; }
 
         /// <summary>

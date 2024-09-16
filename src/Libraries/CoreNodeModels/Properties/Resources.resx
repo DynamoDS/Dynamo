@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -537,7 +537,7 @@
     <value>A converted numeric value.</value>
   </data>
   <data name="DateTimeDescription" xml:space="preserve">
-    <value>Creates a dateTime object from a formatted date and time string. Date and time must be in the format "April 12, 1977 12:00 PM"</value>
+    <value>Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format "MMMM dd, yyyy h:mm tt", e.g. "April 02, 1977 12:00 PM"</value>
   </data>
   <data name="ColorRangeSearchTags" xml:space="preserve">
     <value>colorrange;</value>
@@ -631,5 +631,49 @@ Default value: {0}</value>
   </data>
   <data name="CustomSelectionOutputDescription" xml:space="preserve">
     <value>Selected value</value>
+  </data>
+  <data name="TooltipTextAction" xml:space="preserve">
+    <value>Nodes that execute an action</value>
+  </data>
+  <data name="TooltipTextCreate" xml:space="preserve">
+    <value>Nodes that create data</value>
+  </data>
+  <data name="TooltipTextQuery" xml:space="preserve">
+    <value>Nodes that query data</value>
+  </data>
+  <data name="RememberDescription" xml:space="preserve">
+    <value>Store data passing through this node to the Dynamo file. Return the stored data if the input is null.</value>
+  </data>
+  <data name="RememberInputToolTip" xml:space="preserve">
+    <value>Data to sample and store in the file.</value>
+  </data>
+  <data name="RememberOuputToolTip" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="GateDescription" xml:space="preserve">
+    <value>Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.
+
+In Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit</value>
+  </data>
+  <data name="GateInPortToolTip" xml:space="preserve">
+    <value>Data to pass to a downstream node with gated controls.</value>
+  </data>
+  <data name="GateOutPortToolTip" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="GateSearchTags" xml:space="preserve">
+    <value>gate;stop;data</value>
+  </data>
+  <data name="DefineDataDescription" xml:space="preserve">
+    <value>Validates the data type of an input and returns it</value>
+  </data>
+  <data name="DefineDataInputTooltip" xml:space="preserve">
+    <value>Input data to be validated. Refer to drop-down for list of allowed types</value>
+  </data>
+  <data name="DefineDataOutputTooltip" xml:space="preserve">
+    <value>Validated data</value>
+  </data>
+  <data name="DefineDataDisplayValueMessage" xml:space="preserve">
+    <value>Select Types</value>
   </data>
 </root>

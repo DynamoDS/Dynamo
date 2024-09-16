@@ -1,5 +1,8 @@
 ## In Depth
-ByGeometry brings each input geometry into Revit as an individual Import Instance element. An Import Instance is identified as an Import Symbol in Revit.
+`BoundingBox.ByGeometry` creates a BoundingBox around geometry.
+
+In the example below, a BoundingBox is created around a sphere. To visualize the box, it is converted to a cuboid and its edge curves are extracted.
+
 ___
 ## Example File
 

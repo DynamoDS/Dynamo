@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -32,7 +33,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
 
             writer.WriteStartObject();
 
-            writer.WritePropertyName("Dynamo");
+            writer.WritePropertyName(Configurations.DynamoAsString);
             serializer.Serialize(writer, workspaceView.DynamoPreferences);
 
             writer.WritePropertyName("Camera");
@@ -51,14 +52,17 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteStartArray();
             foreach (var nodeView in workspaceView.Nodes)
             {
-              serializer.Serialize(writer, nodeView);
+                serializer.Serialize(writer, nodeView);
             }
             writer.WriteEndArray();
 
             writer.WritePropertyName("Annotations");
             writer.WriteStartArray();
             foreach (var annotation in workspaceView.Annotations)
+            {
                 serializer.Serialize(writer, annotation);
+            }
+
             foreach (var note in workspaceView.Notes)
             {
                 AnnotationModel convertedNote = new AnnotationModel(new NodeModel[0], new NoteModel[0]);
@@ -146,6 +150,8 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.Height);
             writer.WritePropertyName("FontSize");
             writer.WriteValue(anno.FontSize);
+            writer.WritePropertyName("GroupStyleId");
+            writer.WriteValue(anno.GroupStyleId);
             writer.WritePropertyName("InitialTop");
             writer.WriteValue(anno.InitialTop);
             writer.WritePropertyName("InitialHeight");

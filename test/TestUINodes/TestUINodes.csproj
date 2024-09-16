@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
@@ -10,60 +13,66 @@
     <AssemblyName>TestUINodes</AssemblyName>
 	  <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
-  <ItemDefinitionGroup>
-    <ReferenceCopyLocalPaths>
-      <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
-      <DestinationSubDirectory>..\</DestinationSubDirectory>
-	</ReferenceCopyLocalPaths>
-  </ItemDefinitionGroup>
-  <ItemGroup>
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
+    <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2">
+        <IncludeAssets>none</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1">
+      </PackageReference>
+    <PackageReference Include="NUnit" Version="3.13.3">
+      <IncludeAssets>none</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1">
+      <IncludeAssets>none</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
       <Private>False</Private>
+      <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <ProjectReference Include="..\..\src\Libraries\CoreNodes\CoreNodes.csproj">
       <Private>False</Private>
-      <Name>DynamoCore</Name>
+      <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\CoreNodes\CoreNodes.csproj" />
-    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
-      <Name>Units</Name>
+    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\UnitsCore.csproj">
+        <Private>False</Private>
+        <IncludeAssets>none</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\UnitsNodeModels\UnitsNodeModels.csproj">
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
+      <IncludeAssets>none</IncludeAssets>
+    </ProjectReference>    <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
       <Project>{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}</Project>
       <Name>UnitsUI</Name>
+          <Private>False</Private>
+          <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\src\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
+      <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
       <Private>False</Private>
+      <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
       <Private>False</Private>
+      <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
+      <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
 </Project>

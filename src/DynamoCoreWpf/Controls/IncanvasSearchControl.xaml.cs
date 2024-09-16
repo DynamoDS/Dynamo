@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -31,7 +32,7 @@ namespace Dynamo.UI.Controls
         public InCanvasSearchControl()
         {
             InitializeComponent();
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated += CurrentApplicationDeactivated;
                 Application.Current.MainWindow.Closing += InCanvasSearchControl_Unloaded;
@@ -40,7 +41,7 @@ namespace Dynamo.UI.Controls
 
         private void InCanvasSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
                 Application.Current.MainWindow.Closing -= InCanvasSearchControl_Unloaded;
@@ -84,12 +85,14 @@ namespace Dynamo.UI.Controls
         {
             if (!(sender is FrameworkElement fromSender)) return;
 
+            HighlightedItem.IsSelected = false;
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
+            HighlightedItem.IsSelected = true;
             toolTipPopup.DataContext = null;
             toolTipPopup.IsOpen = false;
         }

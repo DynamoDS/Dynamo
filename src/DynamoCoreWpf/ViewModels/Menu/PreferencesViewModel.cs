@@ -6,24 +6,24 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Dynamo.Configuration;
 using Dynamo.Core;
-using Dynamo.Events;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PythonServices;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using DynamoUtilities;
+using ViewModels.Core;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
 {
     /// <summary>
-    /// The next enum will contain the posible values for Scaling (Visual Settings -> Geometry Scaling section)
+    /// The next enum will contain the possible values for Scaling (Visual Settings -> Geometry Scaling section)
     /// </summary>
     public enum GeometryScaleSize
     {
@@ -33,6 +33,9 @@ namespace Dynamo.ViewModels
         ExtraLarge
     }
 
+    /// <summary>
+    /// Preferences data context
+    /// </summary>
     public class PreferencesViewModel : ViewModelBase, INotifyPropertyChanged
     {
         #region Private Properties
@@ -42,13 +45,15 @@ namespace Dynamo.ViewModels
         private string selectedPackagePathForInstall;
 
         private string selectedLanguage;
-        private string selectedFontSize;
+        private string selectedUnits;
         private string selectedNumberFormat;
         private string selectedPythonEngine;
 
         private ObservableCollection<string> languagesList;
+        private ObservableCollection<string> unitList;
         private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
+        private ObservableCollection<int> groupStyleFontSizeList;
         private ObservableCollection<string> numberFormatList;
         private StyleItem addStyleControl;
         private ObservableCollection<string> pythonEngineList;
@@ -67,26 +72,28 @@ namespace Dynamo.ViewModels
         private bool isVisibleAddStyleBorder;
         private bool isEnabledAddStyleButton;
         private GeometryScalingOptions optionsGeometryScale = null;
+        private GeometryScaleSize defaultGeometryScaling = GeometryScaleSize.Medium;
+        private bool canResetBackupLocation = false;
+        private bool canResetTemplateLocation = false;
 
         #endregion Private Properties
 
-        public GeometryScaleSize ScaleSize { get; set; }
-
-        public Tuple<string, string, string> ScaleRange
+        public GeometryScaleSize DefaultGeometryScaling
         {
             get
             {
-                return scaleRanges[ScaleSize];
+                return defaultGeometryScaling;
+            }
+            set
+            {
+                if(defaultGeometryScaling != value)
+                {
+                    defaultGeometryScaling = value;
+                    SelectedDefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor((int)defaultGeometryScaling);
+                    RaisePropertyChanged(nameof(DefaultGeometryScaling));
+                }              
             }
         }
-
-        private Dictionary<GeometryScaleSize, Tuple<string, string, string>> scaleRanges = new Dictionary<GeometryScaleSize, Tuple<string, string, string>>
-        {
-            {GeometryScaleSize.Medium, new Tuple<string, string, string>("medium", "0.0001", "10,000")},
-            {GeometryScaleSize.Small, new Tuple<string, string, string>("small", "0.000,001", "100")},
-            {GeometryScaleSize.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
-            {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
-        };
 
         /// <summary>
         /// This property will be used by the Preferences screen to store and retrieve all the settings from the expanders
@@ -160,24 +167,57 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                selectedLanguage = value;
-                RaisePropertyChanged(nameof(SelectedLanguage));
+                if (selectedLanguage != value)
+                {
+                    selectedLanguage = value;
+                    RaisePropertyChanged(nameof(SelectedLanguage));
+                    if (Configurations.SupportedLocaleDic.TryGetValue(selectedLanguage, out string locale))
+                    {
+                        preferenceSettings.Locale = locale;
+                        dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
+                    }
+                }
             }
         }
 
         /// <summary>
-        /// Controls the Selected option in Node Font Size ComboBox
+        /// Contains the currently selected scaling unit used for grahic helpers (grids, axes)
         /// </summary>
-        public string SelectedFontSize
+        public string SelectedUnits
         {
             get
             {
-                return selectedFontSize;
+                return selectedUnits;
             }
             set
             {
-                selectedFontSize = value;
-                RaisePropertyChanged(nameof(SelectedFontSize));
+                if (selectedUnits != value)
+                {
+                    selectedUnits = value;
+                    RaisePropertyChanged(nameof(SelectedUnits));
+
+                    if (UseHostScaleUnits && IsDynamoRevit) return;
+
+                    var enUnit = LocalizedUnitsMap.FirstOrDefault(x => x.Key == selectedUnits).Value;
+                    var result = Enum.TryParse(enUnit, out Configurations.Units currentUnit);
+                    if (!result) return;
+
+                    if (Configurations.SupportedUnits.TryGetValue(currentUnit, out double units))
+                    {
+                        // Update preferences setting and update the grapic helpers
+                        preferenceSettings.GraphicScaleUnit = currentUnit.ToString();
+                        preferenceSettings.GridScaleFactor = (float)units;
+                        dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
+
+                        // We have turn the grid visilibilty on
+                        // Check the current visibility settings, and turn it back off 
+                        if (!preferenceSettings.IsBackgroundGridVisible)
+                        {
+                            dynamoViewModel.ToggleBackgroundGridVisibilityCommand.Execute(null);    // switch 'on'
+                            dynamoViewModel.ToggleBackgroundGridVisibilityCommand.Execute(null);    // switch 'off'
+                        }
+                    }
+                }
             }
         }
 
@@ -199,6 +239,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// This property holds the Geometry Scale factor selected in the Preferences panel (when a new workspace is created this will be the Geometry Scale used)
+        /// </summary>
+        public double SelectedDefaultScaleFactor
+        {
+            get
+            {
+                return preferenceSettings.DefaultScaleFactor;
+            }
+            set
+            {
+                preferenceSettings.DefaultScaleFactor = value;
+                RaisePropertyChanged(nameof(SelectedDefaultScaleFactor));
+            }
+        }
+
+        /// <summary>
         /// Time Interval for backup files in minutes
         /// Serialized as milliseconds in preferences setting.
         /// </summary>
@@ -212,6 +268,62 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.BackupInterval = value * 60000;
                 RaisePropertyChanged(nameof(BackupIntervalInMinutes));
+            }
+        }
+
+        /// <summary>
+        /// Backup files path
+        /// </summary>
+        public string BackupLocation
+        {
+            get
+            {
+                return preferenceSettings.BackupLocation;
+            }
+            set
+            {
+                preferenceSettings.BackupLocation = value;
+                RaisePropertyChanged(nameof(BackupLocation));
+                RaisePropertyChanged(nameof(CanResetBackupLocation));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the user can reset the Backup Location to the default value
+        /// </summary>
+        public bool CanResetBackupLocation
+        {
+            get
+            {
+                return !dynamoViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Backup);
+            }
+        }
+
+        /// <summary>
+        /// Backup files path
+        /// </summary>
+        public string TemplateLocation
+        {
+            get
+            {
+                return preferenceSettings.TemplateFilePath;
+            }
+            set
+            {
+                preferenceSettings.TemplateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateLocation));
+                RaisePropertyChanged(nameof(CanResetTemplateLocation));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the user can reset the Backup Location to the default value
+        /// </summary>
+        public bool CanResetTemplateLocation
+        {
+            get
+            {
+                return !dynamoViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Templates);
             }
         }
 
@@ -254,36 +366,10 @@ namespace Dynamo.ViewModels
                 }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
             }
-        }
+        }        
 
         /// <summary>
-        /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
-        /// </summary>
-        public bool NodeAutocompleteMachineLearningIsChecked
-        {
-            get
-            {
-                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;                
-            }
-            set
-            {
-                if (value)
-                {
-                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                }
-                else
-                {
-                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
-                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
-                }
-                dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
-                RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
-            }
-        }
-
-        /// <summary>
-        /// Controls the IsChecked property in the Show Run Preview toogle button
+        /// Controls the IsChecked property in the Show Run Preview toggle button
         /// </summary>
         public bool RunPreviewIsChecked
         {
@@ -300,7 +386,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the Show Static Splash Screen toogle button
+        /// Controls the IsChecked property in the Show Static Splash Screen toggle button
         /// </summary>
         public bool StaticSplashScreenEnabled
         {
@@ -316,7 +402,23 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the Enabled property in the Show Run Preview toogle button
+        /// Controls the IsChecked property in the selecting to include timestamp for export path section
+        /// </summary>
+        public bool IsTimeStampIncludedInExportFilePath
+        {
+            get
+            {
+                return preferenceSettings.IsTimeStampIncludedInExportFilePath;
+            }
+            set
+            {
+                preferenceSettings.IsTimeStampIncludedInExportFilePath = value;
+                RaisePropertyChanged(nameof(IsTimeStampIncludedInExportFilePath));
+            }
+        }
+
+        /// <summary>
+        /// Controls the Enabled property in the Show Run Preview toggle button
         /// </summary>
         public bool RunPreviewEnabled
         {
@@ -327,7 +429,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// LanguagesList property containt the list of all the languages listed in: https://wiki.autodesk.com/display/LOCGD/Dynamo+Languages
+        /// LanguagesList property contains the list of all the languages listed in: https://wiki.autodesk.com/display/LOCGD/Dynamo+Languages
         /// </summary>
         public ObservableCollection<string> LanguagesList
         {
@@ -339,6 +441,22 @@ namespace Dynamo.ViewModels
             {
                 languagesList = value;
                 RaisePropertyChanged(nameof(LanguagesList));
+            }
+        }
+
+        /// <summary>
+        /// Supported units in Host (Revit), used in scaling of grapic helpers (grid, axes)
+        /// </summary>
+        public ObservableCollection<string> UnitList
+        {
+            get
+            {
+                return unitList;
+            }
+            set
+            {
+                unitList = value;
+                RaisePropertyChanged(nameof(UnitList));
             }
         }
 
@@ -451,19 +569,20 @@ namespace Dynamo.ViewModels
                 preferenceSettings.SetTrustWarningsDisabled(value);
             }
         }
+
         /// <summary>
-        /// FontSizesList contains the list of sizes for fonts defined (the ones defined are Small, Medium, Large, Extra Large)
+        /// GroupStyleFontSizeList contains the list of sizes for defined fonts to be applied to a GroupStyle
         /// </summary>
-        public ObservableCollection<string> FontSizeList
+        public ObservableCollection<int> GroupStyleFontSizeList
         {
             get
             {
-                return fontSizeList;
+                return groupStyleFontSizeList;
             }
             set
             {
-                fontSizeList = value;
-                RaisePropertyChanged(nameof(FontSizeList));
+                groupStyleFontSizeList = value;
+                RaisePropertyChanged(nameof(GroupStyleFontSizeList));
             }
         }
 
@@ -505,16 +624,16 @@ namespace Dynamo.ViewModels
         /// <param name="style">style to be added</param>
         public void AddStyle(StyleItem style)
         {
-            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { 
-                HexColorString = style.HexColorString, 
-                Name = style.Name, 
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem {
+                HexColorString = style.HexColorString,
+                Name = style.Name,
+                FontSize = style.FontSize,
+                GroupStyleId = style.GroupStyleId,
                 IsDefault = style.IsDefault
             });
             RaisePropertyChanged(nameof(StyleItemsList));
         }
-
-      
-
+     
         /// <summary>
         /// This flag will be in true when the Style that user is trying to add already exists (otherwise will be false - Default)
         /// </summary>
@@ -597,7 +716,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the binding for the ShowEdges toogle in the Preferences->Visual Settings->Display Settings section
+        /// Controls the binding for the ShowEdges toggle in the Preferences->Visual Settings->Display Settings section
         /// </summary>
         public bool ShowEdges
         {
@@ -609,6 +728,22 @@ namespace Dynamo.ViewModels
             {
                 dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = value;
                 RaisePropertyChanged(nameof(ShowEdges));
+            }
+        }
+
+        /// <summary>
+        /// Controls the binding for the UseRenderInstancing toggle in the Preferences->Visual Settings->Display Settings section
+        /// </summary>
+        public bool UseRenderInstancing
+        {
+            get
+            {
+                return dynamoViewModel.RenderPackageFactoryViewModel.UseRenderInstancing;
+            }
+            set
+            {
+                dynamoViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = value;
+                RaisePropertyChanged(nameof(UseRenderInstancing));
             }
         }
 
@@ -629,7 +764,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the binding for the IsolateSelectedGeometry toogle in the Preferences->Visual Settings->Display Settings section
+        /// Controls the binding for the IsolateSelectedGeometry toggle in the Preferences->Visual Settings->Display Settings section
         /// </summary>
         public bool IsolateSelectedGeometry
         {
@@ -673,6 +808,88 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.ShowPreviewBubbles = value;
                 RaisePropertyChanged(nameof(ShowPreviewBubbles));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
+        /// Also toggles between Host and Dynamo units 
+        /// </summary>
+        public bool UseHostScaleUnits
+        {
+            get
+            {
+                return preferenceSettings.UseHostScaleUnits;
+            }
+            set
+            {
+                preferenceSettings.UseHostScaleUnits = value;
+                RaisePropertyChanged(nameof(EnableManualScaleOverrides));
+                RaisePropertyChanged(nameof(UseHostScaleUnits));
+                RaisePropertyChanged(nameof(HostGenericScaleUnits));
+
+                var hostUnits = preferenceSettings.CurrentHostUnits;
+                var result = Enum.TryParse(preferenceSettings.GraphicScaleUnit, out Configurations.Units dynamoUnits);
+                if (!result) return;
+
+                var unitsToUse = value ? GetTransformedHostUnits(hostUnits) : dynamoUnits;
+
+                if (Configurations.SupportedUnits.TryGetValue(unitsToUse, out double units))
+                {
+                    preferenceSettings.GridScaleFactor = (float)units;
+                    dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
+                }
+            }
+        }
+
+        // Perform unit reverse conversion to create a uniform grid for any Host units
+        internal Configurations.Units GetTransformedHostUnits(Configurations.Units hostUnits)
+        {
+            if(hostUnits == Configurations.Units.Millimeters)
+            {
+                return Configurations.Units.Meters;
+            }
+            else if(hostUnits == Configurations.Units.Centimeters)
+            {
+                return Configurations.Units.Centimeters;
+            }
+            else if (hostUnits == Configurations.Units.Meters)
+            {
+                return Configurations.Units.Millimeters;
+            }
+            else
+            {
+                return hostUnits;
+            }
+        }
+
+        public string HostGenericScaleUnits
+        {
+            get
+            {
+                if (preferenceSettings.CurrentHostUnits == Configurations.Units.Feet
+                    || preferenceSettings.CurrentHostUnits == Configurations.Units.Inches
+                    || preferenceSettings.CurrentHostUnits == Configurations.Units.Miles)
+                {
+                    return Res.PreferencesHostGenericScaleImperialUnits;
+                }
+                else
+                {
+                    return Res.PreferencesHostGenericScaleMetricUnits;
+                }
+            }
+        }
+
+        /// <summary>
+        /// If not in DynamoRevit, then enable this option
+        /// Else, control via the Revit-specific toggle
+        /// </summary>
+        public bool EnableManualScaleOverrides
+        {
+            get
+            {
+                if (!IsDynamoRevit) return true;
+                return !UseHostScaleUnits;
             }
         }
 
@@ -785,25 +1002,9 @@ namespace Dynamo.ViewModels
                 }
             }
         }
-        
-        /// <summary>
-        /// Controls the IsChecked property in the "Hide IronPython alerts" toogle button
-        /// </summary>
-        public bool HideIronPythonAlertsIsChecked
-        {
-            get
-            {
-                return preferenceSettings.IsIronPythonDialogDisabled;
-            }
-            set
-            {
-                preferenceSettings.IsIronPythonDialogDisabled = value;
-                RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
-            }
-        }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Show Whitespace in Python editor" toogle button
+        /// Controls the IsChecked property in the "Show Whitespace in Python editor" toggle button
         /// </summary>
         public bool ShowWhitespaceIsChecked
         {
@@ -820,23 +1021,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Node autocomplete" toogle button
-        /// </summary>
-        public bool NodeAutocompleteIsChecked
-        {
-            get
-            {
-                return preferenceSettings.EnableNodeAutoComplete;
-            }
-            set
-            {
-                preferenceSettings.EnableNodeAutoComplete = value;
-                RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
-            }
-        }
-
-        /// <summary>
-        /// Controls the IsChecked property in the "Notification Center" toogle button
+        /// Controls the IsChecked property in the "Notification Center" toggle button
         /// </summary>
         public bool NotificationCenterIsChecked
         {
@@ -852,7 +1037,217 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Enable T-spline nodes" toogle button
+        /// Controls the IsChecked property in the "Extensions" toggle button, to enable persisted extensions, that will remember
+        /// extensions setting as per the last session.
+        /// </summary>
+        public bool PersistExtensionsIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnablePersistExtensions;
+            }
+            set
+            {
+                preferenceSettings.EnablePersistExtensions = value;
+                RaisePropertyChanged(nameof(PersistExtensionsIsChecked));
+            }
+        }
+
+        #region [ Node Autocomplete ]
+
+        /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        public bool HideAutocompleteMethodOptions
+        {
+            get
+            {
+                return preferenceSettings.HideAutocompleteMethodOptions;
+            }
+        }
+
+        /// <summary>
+        /// Returns if the current session is Dynamo Revit
+        /// </summary>
+        public bool IsDynamoRevit
+        {
+            get
+            {
+                // HostAnalyticsInfo is not set when this is invoked??
+                //return this.dynamoViewModel.Model.HostAnalyticsInfo.HostName.Equals("Dynamo Revit");
+                var host = DynamoModel.HostAnalyticsInfo.HostName;
+
+                if (host != null)
+                {
+                    return host.Equals("Dynamo Revit");
+                }
+                else if(this.dynamoViewModel.Model?.HostName != null)
+                {
+                    return this.dynamoViewModel.Model.HostName.Equals("Dynamo Revit");
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete" toggle button
+        /// </summary>
+        public bool NodeAutocompleteIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnableNodeAutoComplete;
+            }
+            set
+            {
+                preferenceSettings.EnableNodeAutoComplete = value;
+                RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
+                RaisePropertyChanged(nameof(EnableHideNodesToggle));
+                RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// If MLAutocompleteTOU is approved
+        /// </summary>
+        internal bool IsMLAutocompleteTOUApproved
+        {
+            get
+            {
+                return preferenceSettings.IsMLAutocompleteTOUApproved;
+            }
+        }
+
+        /// <summary>
+        /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
+        /// </summary>
+        public bool NodeAutocompleteMachineLearningIsChecked
+        {
+            get
+            {
+                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
+            }
+            set
+            {
+                if (value)
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                }
+                else
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                }
+
+                dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
+                RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
+                RaisePropertyChanged(nameof(NodeAutocompleteMachineLearningIsChecked));
+                RaisePropertyChanged(nameof(EnableHideNodesToggle));
+                RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// Controls if the the Node autocomplete Machine Learning option is beta from feature flag
+        /// </summary>
+        public bool NodeAutocompleteMachineLearningIsBeta
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false) ?? false;
+            }
+        }
+
+        /// <summary>
+        /// Controls if the TSpline nodes experiment toggle is visible from feature flag
+        /// </summary>
+        public bool IsTSplineNodesExperimentToggleVisible
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false;
+            }
+        }
+
+        /// <summary>
+        /// Contains the numbers of result of the ML recommendation
+        /// </summary>
+        public int MLRecommendationNumberOfResults
+        {
+            get
+            {
+                return preferenceSettings.MLRecommendationNumberOfResults;
+            }
+            set
+            {
+                preferenceSettings.MLRecommendationNumberOfResults = value;
+                RaisePropertyChanged(nameof(MLRecommendationNumberOfResults));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Hide nodes below a specific confidence level" toggle button
+        /// </summary>
+        public bool HideNodesBelowSpecificConfidenceLevelIsChecked
+        {
+            get
+            {
+                return preferenceSettings.HideNodesBelowSpecificConfidenceLevel;
+            }
+            set
+            {
+                preferenceSettings.HideNodesBelowSpecificConfidenceLevel = value;
+                RaisePropertyChanged(nameof(HideNodesBelowSpecificConfidenceLevelIsChecked));
+                RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }        
+
+        /// <summary>
+        /// Contains the confidence level of a ML recommendation
+        /// </summary>
+        public int MLRecommendationConfidenceLevel
+        {
+            get
+            {
+                return preferenceSettings.MLRecommendationConfidenceLevel;
+            }
+            set
+            {
+                preferenceSettings.MLRecommendationConfidenceLevel = value;
+                RaisePropertyChanged(nameof(MLRecommendationConfidenceLevel));
+            }
+        }
+
+        /// <summary>
+        /// If the user can click on the Hide Nodes toggle
+        /// </summary>
+        public bool EnableHideNodesToggle
+        {
+            get
+            {
+                return NodeAutocompleteIsChecked && NodeAutocompleteMachineLearningIsChecked;
+            }
+        }
+
+        /// <summary>
+        /// If the user can click on the confidence level Slider
+        /// </summary>
+        public bool EnableConfidenceLevelSlider
+        {
+            get
+            {
+                return NodeAutocompleteIsChecked && NodeAutocompleteMachineLearningIsChecked && HideNodesBelowSpecificConfidenceLevelIsChecked;
+            }
+        }
+
+        #endregion        
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Enable T-spline nodes" toggle button
         /// </summary>
         public bool EnableTSplineIsChecked
         {
@@ -865,6 +1260,23 @@ namespace Dynamo.ViewModels
             {
                 HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
                 RaisePropertyChanged(nameof(EnableTSplineIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Enable Paneling nodes" toggle button
+        /// </summary>
+        public bool EnablePanelingIsChecked
+        {
+            get
+            {
+                return !preferenceSettings.NamespacesToExcludeFromLibrary.Contains(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface");
+            }
+            set
+            {
+                HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.PanelSurface");
+                RaisePropertyChanged(nameof(EnablePanelingIsChecked));
             }
         }
 
@@ -897,7 +1309,7 @@ namespace Dynamo.ViewModels
         private void AddPythonEnginesOptions()
         {
             var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
-            foreach (var item in PythonEngineManager.Instance.AvailableEngines)
+            foreach (var item in PythonEngineManager.Instance.AvailableEngines.GroupBy(x=>x.Name).Select(g=>g.FirstOrDefault()).ToList())
             {
                 options.Add(item.Name);
             }
@@ -949,6 +1361,41 @@ namespace Dynamo.ViewModels
             return setSettings(newPreferences);
         }
 
+        /// <summary>
+        /// The dictionary that contains the localized resource strings for Units.
+        /// This is done to avoid a breaking change that is storing the selected unit in settings file in english language.
+        /// </summary>
+        private Dictionary<string, string> LocalizedUnitsMap;
+
+        /// <summary>
+        /// Returns localized resource strings for Units
+        /// </summary>
+        private string GetLocalizedUnits(Enum value)
+        {
+            if (value != null)
+            {
+                switch (value)
+                {
+                    case Configurations.Units.Millimeters:
+                        return Res.GESUnitMillimeters;
+                    case Configurations.Units.Centimeters:
+                        return Res.GESUnitCentimeters;
+                    case Configurations.Units.Kilometers:
+                        return Res.GESUnitKilometers;
+                    case Configurations.Units.Meters:
+                        return Res.GESUnitMeters;
+                    case Configurations.Units.Inches:
+                        return Res.GESUnitInches;
+                    case Configurations.Units.Feet:
+                        return Res.GESUnitFeet;
+                    case Configurations.Units.Miles:
+                        return Res.GESUnitMiles;
+                }
+            }
+            return null;
+        }
+
+
         private bool setSettings(PreferenceSettings newPreferences)
         {
             // Explicit copy
@@ -962,8 +1409,10 @@ namespace Dynamo.ViewModels
             SelectedPythonEngine = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
             dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = preferenceSettings.RenderPrecision;
             dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = preferenceSettings.ShowEdges;
+            dynamoViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = preferenceSettings.UseRenderInstancing;
             PackagePathsForInstall = null;
             PackagePathsViewModel?.InitializeRootLocations();
+            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
 
             dynamoViewModel.IsShowingConnectors = preferenceSettings.ShowConnector;
             dynamoViewModel.IsShowingConnectorTooltip = preferenceSettings.ShowConnectorToolTip;
@@ -976,8 +1425,19 @@ namespace Dynamo.ViewModels
                 }
             }
 
+            preferenceSettings.SanitizeValues();
             RaisePropertyChanged(string.Empty);
             return true;
+        }
+
+        internal void InitializeGeometryScaling()
+        {
+            int UIScaleFactor = GeometryScalingOptions.ConvertScaleFactorToUI((int)SelectedDefaultScaleFactor);
+
+            if (Enum.IsDefined(typeof(GeometryScaleSize), UIScaleFactor))
+            {
+                DefaultGeometryScaling = (GeometryScaleSize)UIScaleFactor;
+            }
         }
 
         /// <summary>
@@ -986,10 +1446,14 @@ namespace Dynamo.ViewModels
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)
         {
             this.preferenceSettings = dynamoViewModel.PreferenceSettings;
+            this.preferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
-            this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
-                dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
+
+            if (dynamoViewModel.PackageManagerClientViewModel != null)
+            {
+                installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
+            }
 
             // Scan for engines
             AddPythonEnginesOptions();
@@ -1001,29 +1465,33 @@ namespace Dynamo.ViewModels
             var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
             SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
-            string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
-            LanguagesList = new ObservableCollection<string>(languages.Split(','));
-            SelectedLanguage = languages.Split(',').First();
+            // Fill language list using supported locale dictionary keys in current thread locale
+            LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
+            SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
 
-            FontSizeList = new ObservableCollection<string>
+            LocalizedUnitsMap = new Dictionary<string, string>();
+            foreach (var unit in Configurations.SupportedUnits)
             {
-                Wpf.Properties.Resources.ScalingSmallButton,
-                Wpf.Properties.Resources.ScalingMediumButton,
-                Wpf.Properties.Resources.ScalingLargeButton,
-                Wpf.Properties.Resources.ScalingExtraLargeButton
-            };
-            SelectedFontSize = Wpf.Properties.Resources.ScalingMediumButton;
+                LocalizedUnitsMap.Add(GetLocalizedUnits(unit.Key), unit.Key.ToString());
+            }
+
+            // Chose the scaling unit, if option is allowed by user
+            UnitList = Configurations.SupportedUnits.Keys.Select(x => GetLocalizedUnits(x)).ToObservableCollection();
+            SelectedUnits = GetLocalizedUnits(Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key);
+
+            GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
             // Number format settings
             NumberFormatList = new ObservableCollection<string>
             {
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber0,
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber00,
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber000,
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000,
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000
+                Res.DynamoViewSettingMenuNumber0,
+                Res.DynamoViewSettingMenuNumber00,
+                Res.DynamoViewSettingMenuNumber000,
+                Res.DynamoViewSettingMenuNumber0000,
+                Res.DynamoViewSettingMenuNumber00000
             };
             SelectedNumberFormat = preferenceSettings.NumberFormat;
+            BackupLocation = preferenceSettings.BackupLocation;
 
             runSettingsIsChecked = preferenceSettings.DefaultRunType;
             RunPreviewIsChecked = preferenceSettings.ShowRunPreview;
@@ -1040,27 +1508,27 @@ namespace Dynamo.ViewModels
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScale = new GeometryScalingOptions();
 
-            UpdateGeoScaleRadioButtonSelected(dynamoViewModel.ScaleFactorLog);
-
             optionsGeometryScale.DescriptionScaleRange = new ObservableCollection<string>();
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Small].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.Small].Item3));
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Medium].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.Medium].Item3));
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Large].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.Large].Item3));
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.ExtraLarge].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item3));
 
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
 
             // Add tabs
-            preferencesTabs = new Dictionary<string, TabSettings>();
-            preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
-            preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
-            preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
-            preferencesTabs.Add("Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty });
+            preferencesTabs = new Dictionary<string, TabSettings>
+            {
+                { "General", new TabSettings() { Name = "General", ExpanderActive = string.Empty } },
+                { "Features", new TabSettings() { Name = "Features", ExpanderActive = string.Empty } },
+                { "VisualSettings", new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty } },
+                { "Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty } }
+            };
 
             //create a packagePathsViewModel we'll use to interact with the package search paths list.
             var loadPackagesParams = new LoadPackageParams
@@ -1072,10 +1540,31 @@ namespace Dynamo.ViewModels
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
             TrustedPathsViewModel = new TrustedPathViewModel(this.preferenceSettings, this.dynamoViewModel?.Model?.Logger);
 
-            WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
-
             PropertyChanged += Model_PropertyChanged;
             InitializeCommands();
+        }
+
+        private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var property = e.PropertyName;
+            if (property.Equals(nameof(preferenceSettings.CurrentHostUnits)))
+            {
+                // Forces update to host units
+                // The host (revit) units are set after the DynamoViewModel has been initialized and the grid scaled up or down
+                // The units are set inside the preferenceSettings, so we are listening for when this happens to set the scale
+                UseHostScaleUnits = UseHostScaleUnits;
+            }
+        }
+
+        [Obsolete("API obsolete - This is a deprecated API and should not be used. Use UpdatePreferenceItemLocation instead")]
+        public bool UpdateBackupLocation(string newBackupLocation)
+        {
+            return dynamoViewModel.Model.UpdatePreferenceItemLocation(Core.PathManager.PreferenceItem.Backup, newBackupLocation);
+        }
+        [Obsolete("API obsolete - This is a deprecated API and should not be used. Use ResetPreferenceItemLocation instead")]
+        public void ResetBackupLocation()
+        {
+            dynamoViewModel.Model.ResetPreferenceItemLocation(Core.PathManager.PreferenceItem.Backup);
         }
 
         public event EventHandler<PythonTemplatePathEventArgs> RequestShowFileDialog;
@@ -1090,12 +1579,15 @@ namespace Dynamo.ViewModels
         public DelegateCommand AddPythonPathCommand { get; private set; }
         public DelegateCommand DeletePythonPathCommand { get; private set; }
         public DelegateCommand UpdatePythonPathCommand { get; private set; }
+        public DelegateCommand CopyToClipboardCommand { get; set; }
+
 
         private void InitializeCommands()
         {
             AddPythonPathCommand = new DelegateCommand(p => AddPath());
             DeletePythonPathCommand = new DelegateCommand(p => RemovePath(), p => CanDelete());
             UpdatePythonPathCommand = new DelegateCommand(p => UpdatePathAt());
+            CopyToClipboardCommand = new DelegateCommand(p => CopyToClipboard(p));
         }
 
         // Add python template path
@@ -1155,30 +1647,19 @@ namespace Dynamo.ViewModels
             OnRequestShowFileDialog(this, e);
         }
 
+        // Copy currently selected package download path to clipboard
+        private void CopyToClipboard(object obj)
+        {
+            var selectedItem = obj as string;
+            Clipboard.SetText(string.IsNullOrEmpty(selectedItem) ? string.Empty : selectedItem);
+        }
+
         private void RaiseCanExecuteChanged()
         {
             AddPythonPathCommand.RaiseCanExecuteChanged();
             DeletePythonPathCommand.RaiseCanExecuteChanged();
             UpdatePythonPathCommand.RaiseCanExecuteChanged();
-        }
-
-        /// <summary>
-        /// This method will be executed every time the WorkspaceModel.ScaleFactor value is updated.
-        /// </summary>
-        /// <param name="args"></param>
-        private void PreferencesViewModel_WorkspaceSettingsChanged(WorkspacesSettingsChangedEventArgs args)
-        {
-            //The WorkspaceSettingsChanged event is refering to the double ScaleFactor, then we need to make the conversion to Logarithm scale factor ScaleFactorLog       
-            UpdateGeoScaleRadioButtonSelected(Convert.ToInt32(Math.Log10(args.ScaleFactor)));
-        }
-
-        /// <summary>
-        /// This method will update the currently selected Radio Button in the Geometry Scaling section.
-        /// </summary>
-        /// <param name="scaleFactor"></param>
-        private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
-        {
-            ScaleSize = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
+            CopyToClipboardCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -1187,7 +1668,7 @@ namespace Dynamo.ViewModels
         internal virtual void UnsubscribeAllEvents()
         {
             PropertyChanged -= Model_PropertyChanged;
-            WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
+            this.preferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
         }
 
@@ -1260,7 +1741,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void InitPackageListFilters()
         {
-            installedPackagesViewModel.PopulateFilters();
+            installedPackagesViewModel?.PopulateFilters();
         }
 
         /// <summary>
@@ -1274,80 +1755,95 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(SelectedLanguage):
-                    // Do nothing for now
-                    break;
-                case nameof(SelectedFontSize):
-                    // Do nothing for now
-                    break;
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewLanguageLabel), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
                 case nameof(SelectedNumberFormat):
-                    description = Resources.ResourceManager.GetString(nameof(Res.DynamoViewSettingMenuNumberFormat), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.DynamoViewSettingMenuNumberFormat), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(SelectedPackagePathForInstall):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewSelectedPackagePathForDownload), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewSelectedPackagePathForDownload), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableBuiltInPackages):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewDisableBuiltInPackages), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewDisableBuiltInPackages), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableCustomPackages):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewDisableCustomPackages), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewDisableCustomPackages), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(RunSettingsIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewRunSettingsLabel), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewRunSettingsLabel), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(RunPreviewIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.DynamoViewSettingShowRunPreview), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.DynamoViewSettingShowRunPreview), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(StyleItemsList):
-                    // Do nothing for now
-                    break;
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsGroupStyles), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
                 case nameof(OptionsGeometryScale):
-                    description = Resources.ResourceManager.GetString(nameof(Res.DynamoViewSettingsMenuChangeScaleFactor), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.DynamoViewSettingsMenuChangeScaleFactor), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowEdges):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingShowEdges), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingShowEdges), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(UseRenderInstancing):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingUseInstancing), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(IsolateSelectedGeometry):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsIsolateSelectedGeo), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsIsolateSelectedGeo), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(UseHardwareAcceleration):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingHardwareAcceleration), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingHardwareAcceleration), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(BackupIntervalInMinutes):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingBackupInterval), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingBackupInterval), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(BackupLocation):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingDefaultBackupLocation), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(MaxNumRecentFiles):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);
                     UpdateRecentFiles();
                     goto default;
                 case nameof(PythonTemplateFilePath):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingCustomPythomTemplate), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingCustomPythomTemplate), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(TessellationDivisions):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsRenderPrecision), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsRenderPrecision), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(SelectedPythonEngine):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewDefaultPythonEngine), System.Globalization.CultureInfo.InvariantCulture);
-                    goto default;
-                case nameof(HideIronPythonAlertsIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewIsIronPythonDialogDisabled), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewDefaultPythonEngine), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowWhitespaceIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewShowWhitespaceInPythonEditor), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowWhitespaceInPythonEditor), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(NodeAutocompleteIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewEnableNodeAutoComplete), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableNodeAutoComplete), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(EnableTSplineIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewEnableTSplineNodes), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableTSplineNodes), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(EnablePanelingIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnablePanelingNodes), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowPreviewBubbles):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewShowCodeBlockNodeLineNumber), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowCodeBlockNodeLineNumber), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableTrustWarnings):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                // We track these this in two places, one in preference panel,
+                // one where user make such switch in Node AutoComplete UI
+                case nameof(nodeAutocompleteSuggestion):
+                    if (nodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation)
+                        description = nameof(NodeAutocompleteSuggestion.MLRecommendation);
+                    else
+                        description = nameof(NodeAutocompleteSuggestion.ObjectType);
+                    goto default;
+                case nameof(MLRecommendationConfidenceLevel):
+                    // Internal use only, no need to localize for now
+                    description = "Confidence Level";
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))
@@ -1412,8 +1908,7 @@ namespace Dynamo.ViewModels
         {
             IsEnabledAddStyleButton = true;
             IsSaveButtonEnabled = true;
-            AddStyleControl.Name = String.Empty;
-            AddStyleControl.HexColorString = GetRandomHexStringColor();
+            AddStyleControl = new StyleItem();
             IsWarningEnabled = false;
             IsVisibleAddStyleBorder = false;          
         }
@@ -1475,10 +1970,6 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class GeometryScalingOptions
     {
-        //The Enum values can be Small, Medium, Large or Extra Large
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
-        public GeometryScaleSize EnumProperty { get; set; }
-
         /// <summary>
         /// This property will contain the description of each of the radio buttons in the Visual Settings -> Geometry Scaling section
         /// </summary>

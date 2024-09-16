@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -80,9 +80,10 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
                 url = url?.Replace("about:", string.Empty);
             }
 
-            if (!String.IsNullOrEmpty(url) && urlToBase64DataCache.ContainsKey(url))
+            Tuple<string, string> tmpUrl = null;
+            if (!String.IsNullOrEmpty(url) && urlToBase64DataCache.TryGetValue(url, out tmpUrl))
             {
-                var cachedData = urlToBase64DataCache[url];
+                var cachedData = tmpUrl;
                 extension = cachedData.Item2;
                 return cachedData.Item1;
             }
@@ -111,11 +112,12 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
 
             //before trying to create a uri we have to handle resources that might 
             //be embedded into the resources.dlls
-            //these paths will start with ./dist
-            if (url.StartsWith(@"./dist"))
+            //these paths will start with ./dist or http://localhost/dist
+            if (url.StartsWith(@"./dist") || url.StartsWith(@"http://localhost/dist"))
             {
+                var urlAbs = url;
                 //make relative url a full uri
-                var urlAbs = url.Replace(@"./dist", @"http://localhost/dist");
+                urlAbs = url.Replace(@"./dist", @"http://localhost/dist");
                 var ext = string.Empty;
                 var stream = embeddedDllResourceProvider.GetResource(urlAbs, out ext);
                 if (stream != null)

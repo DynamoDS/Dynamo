@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -25,12 +25,12 @@ namespace Dynamo.Tests
         /// Automated creation of regression test cases.
         /// </summary>
         /// <param name="dynamoFilePath">The path of the dynamo workspace.</param>
-        [Test, TestCaseSource("SetupMigrationTests"), Category("RegressionTests")]
+        [Test, TestCaseSource(nameof(SetupMigrationTests)), Category("RegressionTests")]
         public void Regressions(string dynamoFilePath)
         {
             //ensure that the incoming arguments are not empty or null
             //if a dyn file is found in the regression tests directory
-            Assert.IsNotNullOrEmpty(dynamoFilePath, "Dynamo file path is invalid or missing.");
+            Assert.That(dynamoFilePath, Is.Not.Null.Or.Empty, "Dynamo file path is invalid or missing.");
             
             //open the dyn file
             OpenModel(dynamoFilePath);
@@ -61,6 +61,11 @@ namespace Dynamo.Tests
             foreach (var fileInfo in dyns)
             {
                 if (fileInfo.FullName.Contains("FAILURE"))
+                    continue;
+
+                var filenameLowerInvariant = fileInfo.FullName.ToLowerInvariant();
+                //TODO_NET6 excel nodes and legacy unitUI nodes not built for net6.
+                if (filenameLowerInvariant.Contains("excel") || filenameLowerInvariant.Contains("testmigration_core_input.dyn") )
                     continue;
 
                 testParameters.Add(fileInfo.FullName);        

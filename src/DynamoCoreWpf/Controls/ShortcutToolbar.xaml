@@ -1,14 +1,11 @@
-﻿<UserControl x:Class="Dynamo.UI.Controls.ShortcutToolbar"
+<UserControl x:Class="Dynamo.UI.Controls.ShortcutToolbar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:DynamoCore.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:um="clr-namespace:Dynamo.Updates"
-             xmlns:updateManager="clr-namespace:Dynamo.Updates;assembly=DynamoCore"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="http://schemas.fontawesome.com/icons/"
              mc:Ignorable="d"
              Height="Auto"
              Width="Auto"
@@ -140,13 +137,98 @@
                 <Menu HorizontalAlignment="Right"
                       Style="{StaticResource MainMenu}"
                       Margin="0,0,10,0"
-                      IsMainMenu="True">
+                      IsMainMenu="True"
+                      Name="RightMenu">
+                    <MenuItem Name="loginMenu" Margin="0,-3,-10,0">
+                        <MenuItem.Header>
+                            <Button Name="LoginButton" Click="LoginButton_OnClick" Foreground="#DCDCDC"
+                                    >
+                                <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
+
+                                    <Image Source="/DynamoCoreWpf;component/UI/Images/Profile_48px.png" Width="16" Height ="16"></Image>
+
+                                    <TextBlock Name="txtSignIn" Padding="10,5,5,5" Visibility="{Binding ShowMenuItemText, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Text" Value="{x:Static p:Resources.SignInButtonText}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding LoginState}" Value="LoggedIn">
+                                                        <Setter Property="Text" Value="{Binding Username}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding LoginState}" Value="LoggingIn">
+                                                        <Setter Property="Text" Value="{x:Static p:Resources.SigningInButtonText}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                                
+                                <Button.Style >
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="{x:Null}" />
+                                        <Setter Property="BorderBrush" Value="{x:Null}" />
+
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+
+                                                    <Border Name="BorderInterior"  Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                    </Border>
+
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsKeyboardFocused" Value="true">
+                                                        </Trigger>
+                                                        <Trigger Property="IsDefaulted" Value="true">
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="true">
+                                                        </Trigger>
+                                                        <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="false">
+                                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#444" />
+                                                <Setter Property="BorderBrush" Value="{x:Null}" />
+                                                <Setter Property="FontWeight" Value="Normal" />
+                                            </Trigger>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter Property="FontWeight" Value="Normal" />
+                                            </Trigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+
+                                </Button.Style>
+                                <Button.ToolTip>
+                                    <ToolTip Content="{x:Static p:Resources.SignInButtonContentToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                </Button.ToolTip>
+                            </Button>
+                        </MenuItem.Header>
+                        <MenuItem Focusable="False"
+                                              Header="{x:Static p:Resources.LogoutMenuItemText}"
+                                              Click="LogoutOption_Click"
+                                              Name="logoutOption">
+                            <MenuItem.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.SignOutConfirmationDialogText}" Style="{StaticResource GenericToolTipLight}"/>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
+                    </MenuItem>
                     <MenuItem Name="exportMenu"
-                              Cursor="Hand"
+                              Cursor="Hand"                            
                               Focusable="False"
-                              Margin="0,-3,-10,0"
+                              Margin="10,-3,-10,0"                             
                               MouseEnter="exportMenu_MouseEnter"
-                              MouseLeave="exportMenu_MouseLeave">
+                              MouseLeave="exportMenu_MouseLeave">  
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <Image x:Name="Icon"
@@ -157,14 +239,15 @@
                                            VerticalAlignment="Center"
                                            Margin="10 0 0 0"
                                            Foreground="#DCDCDC"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}">
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           Visibility="{Binding ShowMenuItemText, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                 </TextBlock>
                             </StackPanel>
                         </MenuItem.Header>
 
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.ShortcutExportWorkspace}"
-                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  Command="{Binding ValidateWorkSpaceBeforeToExportAsImageCommand}"
                                   Name="saveImage">
                             <MenuItem.ToolTip>
                                 <ToolTip Content="{x:Static p:Resources.DynamoViewToolbarExportButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
@@ -173,7 +256,7 @@
 
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.ShortcutExportBackground3DPreview}"
-                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  Command="{Binding ValidateWorkSpaceBeforeToExportAsImageCommand}"
                                   CommandParameter="{x:Static p:Resources.ScreenShotFrom3DParameter}"
                                   Name="save3DImage">
                             <MenuItem.ToolTip>
@@ -182,7 +265,7 @@
                         </MenuItem>
                     </MenuItem>
                     <MenuItem Name="NotificationCenter"
-                              Margin="-15 0 -30 0">
+                              Margin="-16 0 -30 0">
                         <MenuItem.Header>
                             <Button x:Name="notificationsButton"
                                     BorderBrush="Transparent"
@@ -244,12 +327,6 @@
                         </MenuItem.Header>
                     </MenuItem>
                 </Menu>
-                <!--The update indication-->
-                <controls:GraphUpdateNotificationControl x:Name="UpdateControl"
-                                                         HorizontalAlignment="Right" 
-                                                         Margin="0,0,50,0"
-                                                         Visibility="{Binding Path=DataContext.IsUpdateAvailable, RelativeSource={RelativeSource AncestorType={x:Type Window}}, 
-                                                         Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
             </Grid>
         </Border>
     </Border>

@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 
@@ -23,9 +22,6 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
     /// </summary>
     class SearchResultDataProvider : NodeItemDataProvider
     {
-        public const string serviceIdentifier = "/nodeSearch";
-        private MethodInfo searchMethod = typeof(NodeSearchModel).GetMethod("Search", BindingFlags.Instance|BindingFlags.NonPublic);
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -50,11 +46,8 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
         /// <returns></returns>
         public override Stream GetResource(string searchText, out string extension)
         {
-
             var text = Uri.UnescapeDataString(searchText);
-            //TODO replace this with direct call.
-            var elements = searchMethod.Invoke(model,new object[] { text,0,null }) as IEnumerable<NodeSearchElement>;
-
+            var elements = model.Search(text, LuceneSearch.LuceneUtilityNodeSearch);
             extension = "json";
             return GetNodeItemDataStream(elements, true);
         }
@@ -62,13 +55,13 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
         /// <summary>
         /// Create a LoadedTypeData object for serialization
         /// </summary>
-        /// <param name="searchEntries"></param>
+        /// <param name="entries"></param>
         /// <returns></returns>
-        protected override object CreateObjectForSerialization(IEnumerable<NodeSearchElement> searchEntries)
+        protected override object CreateObjectForSerialization(IEnumerable<NodeSearchElement> entries)
         {
             int w = 0; //represents the weight
             var data = new LoadedTypeData<LoadedTypeItemExtended>();
-            data.loadedTypes = searchEntries
+            data.loadedTypes = entries
                 .Select(e => CreateLoadedTypeItem<LoadedTypeItemExtended>(e).setWeight(w++)).ToList();
             return data;
         }

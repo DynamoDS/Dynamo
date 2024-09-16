@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
 using Dynamo.Library;
@@ -58,67 +58,29 @@ namespace Dynamo.Extensions
         private readonly LinterManager linterManager;
 
         /// <summary>
-        /// Returns true if ASM/LibG are loaded. May only be valid in sandbox sessions.
+        /// True when Dynamo starts up in offline mode.
         /// </summary>
-        internal bool IsGeometryLibraryLoaded { get; private set; }
+        public bool NoNetworkMode { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StartupParams"/> class.
+        /// Returns true if ASM/LibG are loaded. May only be valid in sandbox sessions.
         /// </summary>
-        /// <param name="provider"><see cref="IAuthProvider"/> for DynamoModel</param>
-        /// <param name="pathManager"><see cref="IPathManager"/> for DynamoModel</param>
-        /// <param name="libraryLoader"><see cref="ILibraryLoader"/> for DynamoModel</param>
-        /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
-        /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
-        /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
-        [Obsolete("Use internal constructor")]
-        public StartupParams(IAuthProvider provider, IPathManager pathManager,
-            ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
-            Version dynamoVersion, IPreferences preferences)
-        {
-            this.authProvider = provider;
-            this.pathManager = pathManager;
-            this.libraryLoader = libraryLoader;
-            this.customNodeManager = customNodeManager;
-            this.dynamoVersion = dynamoVersion;
-            this.preferences = preferences;
-        }
-        [Obsolete("Use internal constructor")]
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StartupParams"/> class.
-        /// </summary>
-        /// <param name="provider"><see cref="IAuthProvider"/> for DynamoModel</param>
-        /// <param name="pathManager"><see cref="IPathManager"/> for DynamoModel</param>
-        /// <param name="libraryLoader"><see cref="ILibraryLoader"/> for DynamoModel</param>
-        /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
-        /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
-        /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
-        /// <param name="linterManager"><see cref="LinterManager"/> for DynamoModel></param>
-        public StartupParams(IAuthProvider provider, IPathManager pathManager,
-            ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
-            Version dynamoVersion, IPreferences preferences, LinterManager linterManager)
-        {
-            this.authProvider = provider;
-            this.pathManager = pathManager;
-            this.libraryLoader = libraryLoader;
-            this.customNodeManager = customNodeManager;
-            this.dynamoVersion = dynamoVersion;
-            this.preferences = preferences;
-            this.linterManager = linterManager;
-        }
+        internal bool IsGeometryLibraryLoaded { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="StartupParams"/> class.
         /// </summary>
         internal StartupParams(DynamoModel dynamoModel)
         {
-            this.authProvider = dynamoModel.AuthenticationManager.AuthProvider;
-            this.pathManager = dynamoModel.PathManager;
-            this.libraryLoader = new ExtensionLibraryLoader(dynamoModel);
-            this.customNodeManager = dynamoModel.CustomNodeManager;
-            this.dynamoVersion = new Version(dynamoModel.Version);
-            this.preferences = dynamoModel.PreferenceSettings;
-            this.linterManager = dynamoModel.LinterManager;
-            this.IsGeometryLibraryLoaded = dynamoModel.IsASMLoaded;
+            authProvider = dynamoModel.AuthenticationManager?.AuthProvider;
+            pathManager = dynamoModel.PathManager;
+            libraryLoader = new ExtensionLibraryLoader(dynamoModel);
+            customNodeManager = dynamoModel.CustomNodeManager;
+            dynamoVersion = new Version(DynamoModel.Version);
+            preferences = dynamoModel.PreferenceSettings;
+            linterManager = dynamoModel.LinterManager;
+            IsGeometryLibraryLoaded = dynamoModel.IsASMLoaded;
+            NoNetworkMode = dynamoModel.NoNetworkMode;
         }
 
     }

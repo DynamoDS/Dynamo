@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 
@@ -6,17 +6,6 @@ namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
     {
-        [Obsolete("This event will be removed, do not use. It does nothing.")]
-        public event EventHandler RequestManagePackagesDialog;
-        [Obsolete("This method will be removed do not use. It does nothing.")]
-        public virtual void OnRequestManagePackagesDialog(Object sender, EventArgs e)
-        {
-            if (RequestManagePackagesDialog != null)
-            {
-                RequestManagePackagesDialog(this, e);
-            }
-        }
-
         public event RequestPackagePublishDialogHandler RequestPackagePublishDialog;
         public void OnRequestPackagePublishDialog(PublishPackageViewModel vm)
         {
@@ -32,14 +21,15 @@ namespace Dynamo.ViewModels
                 RequestPackageManagerSearchDialog(this, e);
             }
         }
-        [Obsolete("This event will be removed, do not use. It does nothing.")]
-        public event EventHandler RequestPackagePathsDialog;
-        [Obsolete("This method will be removed do not use. It does nothing.")]
-        public virtual void OnRequestPackagePathsDialog(object sender, EventArgs e)
+
+
+        public event EventHandler RequestPackageManagerDialog;
+        public virtual void OnRequestPackageManagerDialog(Object sender, EventArgs e)
         {
-            var handler = RequestPackagePathsDialog;
-            if (handler != null)
-                handler(sender, e);
+            if (RequestPackageManagerDialog != null)
+            {
+                RequestPackageManagerDialog(this, e);
+            }
         }
 
         public event ImageSaveEventHandler RequestSaveImage;
@@ -58,18 +48,6 @@ namespace Dynamo.ViewModels
             if (RequestSave3DImage != null)
             {
                 RequestSave3DImage(this, e);
-            }
-        }
-        [Obsolete("This event will be removed later, now the Scaling Factor functionality is implemented in PreferencesViewModel.cs")]
-        public event EventHandler RequestScaleFactorDialog;
-
-        [Obsolete("This method will be removed later, now the Scaling Factor functionality is implemented in PreferencesViewModel.cs")]
-        public virtual void OnRequestScaleFactorDialog(object sender, EventArgs e)
-        {
-            var handler = RequestScaleFactorDialog;
-            if (handler != null)
-            {
-                handler(sender, e);
             }
         }
 
@@ -106,15 +84,6 @@ namespace Dynamo.ViewModels
             if (RequestAboutWindow != null)
             {
                 RequestAboutWindow(vm);
-            }
-        }
-
-        public event RequestShowHideGalleryHandler RequestShowHideGallery;
-        public virtual void OnRequestShowHideGallery(bool showGallery)
-        {
-            if (RequestShowHideGallery != null)
-            {
-                RequestShowHideGallery(showGallery);
             }
         }
 
@@ -159,11 +128,45 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event Action RequestCloseHomeWorkSpace;
+        private void OnRequestCloseHomeWorkSpace()
+        {
+            if (RequestCloseHomeWorkSpace != null)
+            {
+                RequestCloseHomeWorkSpace();
+            }
+        }
+
+        internal event Action<double> RequestShorcutToolbarLoaded;
+        public void OnRequestShorcutToolbarLoaded(double rightMenuActualWidth)
+        {
+            if (RequestShorcutToolbarLoaded != null)
+            {
+                RequestShorcutToolbarLoaded(rightMenuActualWidth);
+            }
+        }
+
+        internal event Action <object> RequestExportWorkSpaceAsImage;
+        private void OnRequestExportWorkSpaceAsImage(object parameter)
+        {
+            if (RequestExportWorkSpaceAsImage != null)
+            {
+                RequestExportWorkSpaceAsImage(parameter);
+            }
+        }
+
         internal event Action RequestReturnFocusToView;
         internal void OnRequestReturnFocusToView()
         {
             if (RequestReturnFocusToView != null)
                 RequestReturnFocusToView();
+        }
+
+        public event Action<bool> RequestEnableShortcutBarItems;
+        public virtual void OnEnableShortcutBarItems(bool enable)
+        {
+            if (RequestEnableShortcutBarItems != null)
+                RequestEnableShortcutBarItems(enable);
         }
 
         /// <summary>

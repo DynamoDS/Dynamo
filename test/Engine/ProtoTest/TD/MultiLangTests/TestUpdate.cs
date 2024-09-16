@@ -823,7 +823,6 @@ b = a1.IntVal;
 a1.IntVal = null;
 ";
             thisTest.VerifyRunScriptSource(code);
-            Object n1 = null;
             thisTest.Verify("b", 1); // int cannot be set to null
         }
 
@@ -881,7 +880,6 @@ b = a1.IntVal;
 a1 = foo ( a1);
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
             thisTest.Verify("b", 10);
         }
 
@@ -898,7 +896,6 @@ b = a1.IntVal;
 a1.IntVal = -1;
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
             thisTest.Verify("b", -1);
         }
 
@@ -2014,7 +2011,6 @@ a1 = foo ( a1);
 // received b = {1,2} - 10,11,12,13,11,12  - wrong 
  ";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4088
-            Object n1 = null;
             string errmsg = "MAGN-4088: Design issue with inline condition : only the condition being replicated";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new object[] { -1 });
@@ -2040,7 +2036,6 @@ b = a1.a;
 a1.a = -1;
 // b= {-1} , received - 10,11,12,13 - correct 
  ";
-            Object n1 = null;
             string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new object[] { -1 });
@@ -2067,7 +2062,6 @@ b = a1.a;
 a1.a = [1,2];
 // received - b- {1,2} 10,11,12,13 - correct
  ";
-            Object n1 = null;
             string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new object[] { 1, 2 });
@@ -2107,7 +2101,6 @@ c = a + 1;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
             thisTest.Verify("c", 2);
             thisTest.Verify("b", 2);
         }

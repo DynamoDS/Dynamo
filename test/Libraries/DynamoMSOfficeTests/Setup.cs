@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using Dynamo.Utilities;
@@ -11,7 +11,7 @@ namespace Dynamo.Tests
     {
         private AssemblyHelper assemblyHelper;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void RunBeforeAllTests()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -25,9 +25,11 @@ namespace Dynamo.Tests
 
             assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
+
+            DSOffice.ExcelInterop.ShowOnStartup = false;
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void RunAfterAllTests()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;

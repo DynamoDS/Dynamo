@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -122,19 +122,10 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns whether this port has a default value that can be used.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool DefaultValueEnabled
-        {
-            get { return port.DefaultValue != null; }
-        }
-        
-        /// <summary>
         /// Returns whether the port is using its default value, or whether this been disabled
         /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool UsingDefaultValue
+        [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
+        internal bool UsingDefaultValue
         {
             get { return port.UsingDefaultValue; }
             set
@@ -143,7 +134,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
         /// IsHitTestVisible property gets a value that declares whether 
         /// a Snapping rectangle can possibly be returned as a hit test result.
         /// When FirstActiveConnector is not null, Snapping rectangle handles click events.
@@ -168,8 +158,8 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// If should display Use Levels popup menu. 
         /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool ShowUseLevelMenu
+        [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
+        internal bool ShowUseLevelMenu
         {
             get
             {
@@ -179,56 +169,6 @@ namespace Dynamo.ViewModels
             {
                 showUseLevelMenu = value;
                 RaisePropertyChanged(nameof(ShowUseLevelMenu));
-            }
-        }
-
-        /// <summary>
-        /// If UseLevel is enabled on this port.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool UseLevels
-        {
-            get { return port.UseLevels; }
-        }
-
-        /// <summary>
-        /// If should keep list structure on this port.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool ShouldKeepListStructure
-        {
-            get { return port.KeepListStructure; }
-        }
-
-        /// <summary>
-        /// Levle of list.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public int Level
-        {
-            get { return port.Level; }
-            set
-            {
-                ChangeLevel(value);
-            }
-        }
-
-        /// <summary>
-        /// The visibility of Use Levels menu.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public Visibility UseLevelVisibility
-        {
-            get
-            {
-                if (node.ArgumentLacing != LacingStrategy.Disabled)
-                {
-                    return Visibility.Visible;
-                }
-                else
-                {
-                    return Visibility.Collapsed;
-                }
             }
         }
 
@@ -347,11 +287,12 @@ namespace Dynamo.ViewModels
 
         private CustomPopupPlacement[] PlacePortContextMenu(Size popupSize, Size targetSize, Point offset)
         {
+            // The actual zoom here is confusing
+            // What matters is the zoom factor measured from the scaled : unscaled node size
             var zoom = node.WorkspaceViewModel.Zoom;
 
             double x;
             var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
-            var scaledHeight = targetSize.Height / node.ActualHeight;
 
             if (PortModel.PortType == PortType.Input)
             {
@@ -363,10 +304,15 @@ namespace Dynamo.ViewModels
                 // Offset popup to the right by node width and spacing from left edge of node.
                 x = scaledWidth + targetSize.Width;
             }
-            // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
-            // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
-            var absoluteHeight = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
-            var y = absoluteHeight * scaledHeight;
+            // Important - while zooming in and out, Node elements are scaled, while popup is not
+            // Calculate absolute popup halfheight to deduct from the overal y pos
+            // Then add the header, port height and port index position
+            var popupHeightOffset = - popupSize.Height * 0.5;
+            var headerHeightOffset = 2 * NodeModel.HeaderHeight * zoom;
+            var portHalfHeight = PortModel.Height * 0.5 * zoom;
+            var rowOffset = PortModel.Index * (1.5 * PortModel.Height) * zoom;
+
+            var y = popupHeightOffset + headerHeightOffset + portHalfHeight + rowOffset;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
@@ -440,47 +386,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// UseLevels command
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public DelegateCommand UseLevelsCommand
-        {
-            get
-            {
-                if (useLevelsCommand == null)
-                {
-                    useLevelsCommand = new DelegateCommand(null, p => true);
-                }
-                return useLevelsCommand;
-            }
-        }
-
-        /// <summary>
-        /// ShouldKeepListStructure command
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public DelegateCommand KeepListStructureCommand
-        {
-            get
-            {
-                if (keepListStructureCommand == null)
-                {
-                    keepListStructureCommand = new DelegateCommand(null, p => true);
-                }
-                return keepListStructureCommand;
-            }
-        }
-
-        //Todo remove in 2.13
-        private void ChangeLevel(int level)
-        {
-            var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", port.Index, level));
-
-            node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-        }
-        
+       
         private void Connect(object parameter)
         {
             DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
@@ -514,9 +420,11 @@ namespace Dynamo.ViewModels
         {
             // If this port does not display a Chevron button to open the context menu and it doesn't
             // have a default value then using right-click to open the context menu should also do nothing.
+            // Added check for Python node model (allow input context menu for rename)
             if (obj is InPortViewModel inPortViewModel &&
                 inPortViewModel.UseLevelVisibility == Visibility.Collapsed &&
-                !inPortViewModel.DefaultValueEnabled) return;
+                !inPortViewModel.DefaultValueEnabled &&
+                !(inPortViewModel.NodeViewModel.NodeModel is PythonNodeModels.PythonNode)) return;
             
             var wsViewModel = node.WorkspaceViewModel;
             

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -173,8 +174,17 @@ namespace Dynamo.ViewModels
         {
             bool isInPort = portType == PortType.Input;
 
-            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
-            PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+            if (Model.GetModelInternal(nodeId) is not NodeModel node) return;
+            PortModel portModel;
+            try
+            {
+                portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+            }
+            catch(Exception ex)
+            {
+                this.DynamoViewModel.Model.Logger.Log("Failed to make connection: " + ex.Message);
+                return;
+            }
 
             // Test if port already has a connection, if so grab it and begin connecting 
             // to somewhere else (we don't allow the grabbing of the start connector).
@@ -196,7 +206,7 @@ namespace Dynamo.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    this.DynamoViewModel.Model.Logger.Log(ex.Message);
                 }
             }
         }
@@ -715,6 +725,29 @@ namespace Dynamo.ViewModels
 
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
+                    // Pin hovered Note to Node
+                    var dropNode = owningWorkspace.Nodes
+                        .Where(x => x.NodeHoveringState)
+                        .FirstOrDefault();
+
+                    if(dropNode != null)
+                    {
+                        // Only allow one note to be pinned
+                        var draggedNote = DynamoSelection.Instance.Selection
+                            .OfType<NoteModel>()
+                            .First();
+
+                        DynamoSelection.Instance.ClearSelection();
+                        DynamoSelection.Instance.Selection.AddUnique(dropNode.NodeModel);
+
+                        var note = owningWorkspace.Notes.First(n => n.Model.GUID.Equals(draggedNote.GUID));
+                        note.PinToNodeCommand.Execute(null);
+
+                        // Clean up
+                        dropNode.NodeHoveringState = false;
+                        DynamoSelection.Instance.ClearSelection();
+                    }
+
                     // When mouse is released get any group with NodeHoveringState
                     // set to true (this should only ever be one),
                     // and add all ModelBase items in selection to that group
@@ -737,7 +770,7 @@ namespace Dynamo.ViewModels
                             .ToList();
 
                         // AddModelsToGroupModelCommand adds models to the selected group
-                        // therefor we add the dropGroup to the selection before calling
+                        // therefore we add the dropGroup to the selection before calling
                         // the command.
                         DynamoSelection.Instance.Selection.AddUnique(dropGroup.AnnotationModel);
 
@@ -770,7 +803,9 @@ namespace Dynamo.ViewModels
                             owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
                         }
                         dropGroup.NodeHoveringState = false;
-                        dropGroup.SelectAll();
+                        //select only those models which were added to the group
+                        DynamoSelection.Instance.ClearSelection();
+                        DynamoSelection.Instance.Selection.AddRange(modelsToAdd);
                     }
 
                     SetCurrentState(State.None); // Dragging operation ended.
@@ -857,7 +892,14 @@ namespace Dynamo.ViewModels
                     // Update the dragged nodes (note: this isn't recorded).
                     owningWorkspace.UpdateDraggedSelection(mouseCursor.AsDynamoType());
 
+                    // Perform drag&drop for notes
+                    // terminate early if this was successful 
+                    if(PerformDropNotes(mouseCursor)) return false;
+
                     var draggedGroups = DynamoSelection.Instance.Selection.OfType<AnnotationModel>();
+
+                    // Terminate early if a Note is being hovered over a Node
+                    if (owningWorkspace.Nodes.Any(x => x.NodeHoveringState)) return false;
 
                     // Here we check if the mouse cursor is inside any Annotation groups
                     var dropGroups = owningWorkspace.Annotations
@@ -930,6 +972,76 @@ namespace Dynamo.ViewModels
                 }
 
                 return false; // Mouse event not handled.
+            }
+
+            /// <summary>
+            /// Handles the drag &amp; drop for Notes over Nodes
+            /// </summary>
+            /// <param name="mouseCursor">The current location of the mouse cursor</param>
+            /// <returns></returns>
+            private bool PerformDropNotes(Point mouseCursor)
+            {
+                // If the selected element is not a Note
+                // we don't need to keep going
+                var draggedNotes = DynamoSelection.Instance.Selection.OfType<NoteModel>();
+                if (!draggedNotes.Any())
+                {
+                    return false;
+                }
+
+                var draggedNodes = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+
+                // Here we check if the mouse cursor is inside any Nodes
+                var dropNodes = owningWorkspace.Nodes
+                    .Where(x =>
+                    !draggedNodes.Select(a => a.GUID).Contains(x.NodeModel.GUID) &&
+                    x.NodeModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
+
+                // Only select one Node, in case they are overlapping
+                var dropNode = dropNodes.FirstOrDefault();
+
+                if (dropNode is null)
+                {
+                    // Reset the workspace from hovered nodes
+                    owningWorkspace.Nodes
+                        .Where(x => x.NodeHoveringState)
+                        .ToList()
+                        .ForEach(x => x.NodeHoveringState = false);
+                }
+                else if (!dropNode.NodeHoveringState)
+                {
+                    // also skip nodes that already have pinned note to them
+                    var nodeAlreadyPinned = owningWorkspace.Notes
+                        .Where(n => n.PinnedNode != null)
+                        .Any(n => n.PinnedNode.NodeModel.GUID == dropNode.NodeModel.GUID);
+
+                    if (nodeAlreadyPinned) return false;
+
+                    // make sure there are no other node
+                    // set to NodeHoveringState before setting
+                    // the current node.
+                    // If we dont do this there are scenarios where
+                    // two nodes are very close and a note is dragged
+                    // quickly between the two where the hovering state
+                    // is not reset.
+                    owningWorkspace.Nodes
+                        .Where(x => x.NodeHoveringState)
+                        .ToList()
+                        .ForEach(x => x.NodeHoveringState = false);
+
+                    // also make sure no Annotation groups are marked as hovered
+                    // in case the Note is being dropped over a Node inside a Group
+                    owningWorkspace.Annotations
+                        .Where(x => x.NodeHoveringState)
+                        .ToList()
+                        .ForEach(x => x.NodeHoveringState = false);
+
+                    dropNode.NodeHoveringState = true;
+
+                    return true;   // Mouse event has not been handled
+                }
+
+                return false;
             }
 
             internal bool HandleMouseMove(object sender, MouseEventArgs e)

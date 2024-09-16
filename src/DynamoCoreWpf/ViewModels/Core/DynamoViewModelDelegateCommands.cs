@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Wpf.ViewModels;
-using Microsoft.Practices.Prism.Commands;
+using Prism.Commands;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
@@ -18,11 +18,15 @@ namespace Dynamo.ViewModels
             SaveCommand = new DelegateCommand(Save, CanSave);
             SaveAsCommand = new DelegateCommand(SaveAs, CanSaveAs);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
+            ShowOpenDialogAndOpenResultAsyncCommand = new DelegateCommand(ShowOpenDialogAndOpenResultAsync, CanShowOpenDialogAndOpenResultCommand);
+            ShowOpenTemplateDialogAsyncCommand = new DelegateCommand(ShowOpenDialogAndOpenResultAsync, CanShowOpenDialogAndOpenResultCommand);
+            ShowOpenTemplateDialogCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
+            ShowInsertDialogAndInsertResultCommand = new DelegateCommand(ShowInsertDialogAndInsertResult, CanShowInsertDialogAndInsertResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             Save3DImageCommand = new DelegateCommand(Save3DImage, CanSaveImage);
-            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
+            ValidateWorkSpaceBeforeToExportAsImageCommand = new DelegateCommand(ValidateWorkSpaceBeforeToExportAsImage, CanValidateWorkSpaceBeforeToExportAsImage);
             WriteToLogCmd = new DelegateCommand(o => model.Logger.Log(o.ToString()), CanWriteToLog);
             PostUiActivationCommand = new DelegateCommand(model.PostUIActivation);
             AddNoteCommand = new DelegateCommand(AddNote, CanAddNote);
@@ -46,7 +50,9 @@ namespace Dynamo.ViewModels
             ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleBackgroundGridVisibilityCommand = new DelegateCommand(ToggleBackgroundGridVisibility, CanToggleBackgroundGridVisibility);
-            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
+            UpdateGraphicHelpersScaleCommand = new DelegateCommand(UpdateGraphicHelpersScale, CanUpdateGraphicHelpersScale);
+            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
+            UpdateAllPythonEngineCommand = new DelegateCommand(UpdateAllPythonEngine, CanUpdateAllPythonEngine);
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_ => model.Copy(), CanCopy);
@@ -58,18 +64,23 @@ namespace Dynamo.ViewModels
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
+            GoToWebsiteCommand = new DelegateCommand(GoToWebsite, CanGoToWebsite);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
             GoToDictionaryCommand = new DelegateCommand(GoToDictionary, CanGoToDictionary);
             DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
             DisplayInteractiveGuideCommand = new DelegateCommand(DisplayStartPage, CanDisplayInteractiveGuide);
             GettingStartedGuideCommand = new DelegateCommand(StartGettingStartedGuide, CanStartGettingStartedGuide);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
-            PublishNewPackageCommand = new DelegateCommand(PackageManagerClientViewModel.PublishNewPackage, PackageManagerClientViewModel.CanPublishNewPackage);
-            ShowInstalledPackagesCommand = new DelegateCommand(o => { }, o => true);
-            ManagePackagePathsCommand = new DelegateCommand(o => { }, o => true);
-            PublishCurrentWorkspaceCommand = new DelegateCommand(PackageManagerClientViewModel.PublishCurrentWorkspace, PackageManagerClientViewModel.CanPublishCurrentWorkspace);
-            PublishSelectedNodesCommand = new DelegateCommand(PackageManagerClientViewModel.PublishSelectedNodes, PackageManagerClientViewModel.CanPublishSelectedNodes);
-            PublishCustomNodeCommand = new DelegateCommand<Function>(PackageManagerClientViewModel.PublishCustomNode, PackageManagerClientViewModel.CanPublishCustomNode);
+            ShowPackageManagerCommand = new DelegateCommand(ShowPackageManager, CanShowPackageManager);
+
+            if (PackageManagerClientViewModel != null && !Model.IsServiceMode)
+            {
+                PublishNewPackageCommand = new DelegateCommand(PackageManagerClientViewModel.PublishNewPackage, PackageManagerClientViewModel.CanPublishNewPackage);
+                PublishCurrentWorkspaceCommand = new DelegateCommand(PackageManagerClientViewModel.PublishCurrentWorkspace, PackageManagerClientViewModel.CanPublishCurrentWorkspace);
+                PublishSelectedNodesCommand = new DelegateCommand(PackageManagerClientViewModel.PublishSelectedNodes, PackageManagerClientViewModel.CanPublishSelectedNodes);
+                PublishCustomNodeCommand = new DelegateCommand<Function>(PackageManagerClientViewModel.PublishCustomNode, PackageManagerClientViewModel.CanPublishCustomNode);
+            }
+
             SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
             ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
             PanCommand = new DelegateCommand(Pan, CanPan);
@@ -81,19 +92,23 @@ namespace Dynamo.ViewModels
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
+            DumpNodeHelpDataCommand = new DelegateCommand(DumpNodeHelpData, CanDumpNodeHelpData);
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
-            ShowGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(true), o => true);
-            CloseGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(false), o => true);
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             OpenDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink);
             ShowNodeDocumentationCommand = new DelegateCommand(ShowNodeDocumentation, CanShowNodeDocumentation);
+            UnpinAllPreviewBubblesCommand = new DelegateCommand(UnpinAllPreviewBubbles, CanUnpinAllPreviewBubbles);
         }
         public DelegateCommand OpenFromJsonIfSavedCommand { get; set; }
         public DelegateCommand OpenFromJsonCommand { get; set; }
         public DelegateCommand OpenIfSavedCommand { get; set; }
         public DelegateCommand OpenCommand { get; set; }
+        public DelegateCommand ShowOpenDialogAndOpenResultAsyncCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
+        public DelegateCommand ShowOpenTemplateDialogCommand { get; set; }
+        public DelegateCommand ShowOpenTemplateDialogAsyncCommand { get; set; }
+        public DelegateCommand ShowInsertDialogAndInsertResultCommand { get; set; }
         public DelegateCommand WriteToLogCmd { get; set; }
         public DelegateCommand PostUiActivationCommand { get; set; }
         public DelegateCommand AddNoteCommand { get; set; }
@@ -113,10 +128,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand GraphAutoLayoutCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand ShowInstalledPackagesCommand { get; set; }
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand ManagePackagePathsCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
         public DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand { get; set; }
@@ -128,13 +139,15 @@ namespace Dynamo.ViewModels
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
+        public DelegateCommand UpdateAllPythonEngineCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleBackgroundGridVisibilityCommand { get; set; }
+        public DelegateCommand UpdateGraphicHelpersScaleCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand Save3DImageCommand { get; set; }
-        public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
+        public DelegateCommand ValidateWorkSpaceBeforeToExportAsImageCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }
@@ -144,6 +157,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ReportABugCommand { get; set; }
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToDictionaryCommand { get; set; }
+        public DelegateCommand GoToWebsiteCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand DisplayStartPageCommand { get; set; }
         public DelegateCommand DisplayInteractiveGuideCommand { get; set; }
@@ -167,12 +181,11 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenRecentCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
         public DelegateCommand DumpLibraryToXmlCommand { get; set; }
-        public DelegateCommand ShowGalleryCommand { get; set; }
-        public DelegateCommand CloseGalleryCommand { get; set; }
+        public DelegateCommand DumpNodeHelpDataCommand { get; set; }
         public DelegateCommand ShowNewPresetsDialogCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand OpenDocumentationLinkCommand { get; set; }
         public DelegateCommand ShowNodeDocumentationCommand { get; set; }
-        
+        public DelegateCommand UnpinAllPreviewBubblesCommand { get; set; }
     }
 }

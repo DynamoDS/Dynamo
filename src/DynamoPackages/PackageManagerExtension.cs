@@ -1,9 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -44,16 +42,17 @@ namespace Dynamo.PackageManager
         /// </summary>
         private Dictionary<string, List<PackageInfo>> NodePackageDictionary;
 
+        private bool noNetworkMode;
+
         public string Name { get { return "DynamoPackageManager"; } }
 
         public string UniqueId
         {
             get { return "FCABC211-D56B-4109-AF18-F434DFE48139"; }
         }
-        internal HostAnalyticsInfo HostInfo { get; private set; }
 
         // Current host, empty if sandbox, null when running tests
-        internal virtual string Host => HostInfo.HostName;
+        internal virtual string Host => DynamoModel.HostAnalyticsInfo.HostName;
 
         /// <summary>
         ///     Manages loading of packages (property meant solely for tests)
@@ -120,7 +119,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Startup(StartupParams startupParams)
         {
-            string url = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "packageManagerAddress");
+            string url = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "packageManagerAddress");
 
             OnMessageLogged(LogMessage.Info("Dynamo will use the package manager server at : " + url));
 
@@ -161,6 +160,7 @@ namespace Dynamo.PackageManager
                 uploadBuilder, packageUploadDirectory);
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
+            noNetworkMode = startupParams.NoNetworkMode;
         }
 
         private PackageInfo handleCustomNodeOwnerQuery(Guid customNodeFunctionID)
@@ -176,7 +176,6 @@ namespace Dynamo.PackageManager
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
             currentWorkspace = (sp.CurrentWorkspaceModel as WorkspaceModel);
-            HostInfo = ReadyParams.HostInfo;
         }
 
         public void Shutdown()
@@ -339,9 +338,15 @@ namespace Dynamo.PackageManager
         {
             // determine if any of the packages are targeting other hosts
             var containsPackagesThatTargetOtherHosts = false;
+            //fallback list of hosts as of 9/8/23
+            IEnumerable<string> knownHosts =  new List<string> { "Revit", "Civil 3D", "Alias", "Advance Steel", "FormIt" };
 
-            // Known hosts
-            var knownHosts = PackageManagerClient.GetKnownHosts();
+            //we don't ask dpm for known hosts in offline mode.
+            if (!noNetworkMode)
+            {
+                // Known hosts
+                knownHosts = PackageManagerClient.GetKnownHosts();
+            }
 
             // Sandbox, special case: Warn if any package targets only one known host
             if (String.IsNullOrEmpty(Host))
@@ -357,7 +362,8 @@ namespace Dynamo.PackageManager
                 {
                     // Is our host in the list?
                     // If not, is any other host in the list?
-                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies.Contains(y));
+                    // Also, check if any dependency contains the hostname or vice-versa.
+                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && !x.host_dependencies.Any(y => Host.Contains(y)) && otherHosts.Any(y => x.host_dependencies.Contains(y));
                 });
             }
 

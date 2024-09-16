@@ -21,44 +21,6 @@ To Initialize the `DynamoModel`, integrators will need to do these steps from so
 ### Preload shared Dynamo Dlls from host.  
 
 Currently the list in D4R only includes `Revit\SDA\bin\ICSharpCode.AvalonEdit.dll.` This is done to avoid library version conflicts between Dynamo and Revit. E.g. When conflicts on `AvalonEdit` happen, the function of code block can be totally broken. The issue is reported in Dynamo 1.1.x at https://github.com/DynamoDS/Dynamo/issues/7130 and, also manually reproducible. If integrators found library conflicts between host function and Dynamo, it is suggested to do this as a first step. This is sometimes required to stop other plugin or the host application itself from loading an incompatible version of as shared dependency. A better solution is to resolve the version conflict by aligning the version - or to use a .net binding redirect in the host’s app.config if possible. 
-
-### Initialize UpdateManager 
-
-The UpdateManager component checks for the dynamo product updates by requesting update version info from configured download source path (AWS S3 bucket link). It skips the update if the user’s local version is newer than the version online.
-
-To create an `updateManager` object, first the users disk is searched for a config - in the file named UpdateManagerConfig.xml, and created if it does not exist using `UpdateManagerConfiguration` default constructor with default values. Then an `UpdateManager` is created using that config.  
-
-The config looks like:
-``` xml
-<UpdateManagerConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
-
-<DownloadSourcePath>http://dyn-builds-data.s3.amazonaws.com/</DownloadSourcePath> 
-
-<SignatureSourcePath>http://dyn-builds-data-sig.s3.amazonaws.com/</SignatureSourcePath> 
-
-<CheckNewerDailyBuild>false</CheckNewerDailyBuild> 
-
-<ForceUpdate>false</ForceUpdate> 
-
-<InstallerNameBase>DynamoInstall</InstallerNameBase> 
-
-<DisableUpdates>false</DisableUpdates> 
-
-</UpdateManagerConfiguration> 
-```
- 
-Although `UpdateManager` has not been obsoleted in code at this time, it has been disabled in a different way after Dynamo 2.1.x in DynamoRevit since  
-Dynamo installers are no longer delivered to the AWS S3 bucket as Dynamo releases. 
-
-Dynamo deliveries are now named starting with DynamoCoreRuntime instead of DynamoInstall,and the build scan code will no longer work to indicate the latest build for users since the InstallerNameBase is still DynamoInstall. It also no longer makes sense with how Dynamo Revit is delivered at this time.
-
-If you would like to disable automatic Dynamo update for your integration, please follow the example by Revit team here to set DisableUpdates to false under UpdateManager.Configuration. 
-
-``` c#
-if(revitUpdateManager.Configuration is IDisableUpdateConfig) 
-
-       (revitUpdateManager.Configuration as IDisableUpdateConfig).DisableUpdates=true; 
-```
  
 
 ### Loading ASM 
@@ -138,7 +100,7 @@ It consists of the following:
 
 * UserDataRootFolder // User data folder, e.g. `"AppData\Roaming\Dynamo\Dynamo Revit"` 
 
-* CommonDataRootFolder // Default folder for saving custom definitions, samples, gallery etc.
+* CommonDataRootFolder // Default folder for saving custom definitions, samples, etc.
 
 * Context // Integrator host name + version `(Revit<BuildNum>)`
 

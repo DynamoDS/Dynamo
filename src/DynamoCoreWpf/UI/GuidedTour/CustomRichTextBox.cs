@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -124,7 +124,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             Hyperlink link = new Hyperlink(run3);
                             link.IsEnabled = true;
                             link.NavigateUri = new Uri(linkURL);
-                            link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
+                            link.RequestNavigate += (sender, args) => Process.Start(new ProcessStartInfo(args.Uri.ToString()) { UseShellExecute = true });
                             para.Inlines.Add(link);
                             bHyperlinkActive = false;
                         }
@@ -171,8 +171,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         imageFig.Height = new FigureLength(30);
                         para.Inlines.Add(imageFig);
                     }
-                    //End fo the Bullet Items formatting
-                    if (word.EndsWith("-"))
+                    //End of the Bullet Items formatting
+                    if (word.EndsWith("-") && bulletedItemsList != null)
                     {
                         bBulletListActive = false;
                         bulletedItemsList.ListItems.Add(new ListItem(new Paragraph(new Run(bulletEntryText.Replace("-", "")))));

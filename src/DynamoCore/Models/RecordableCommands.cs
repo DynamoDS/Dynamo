@@ -1,4 +1,4 @@
-﻿using Dynamo.Graph;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Properties;
 using Dynamo.Utilities;
@@ -30,24 +30,6 @@ namespace Dynamo.Models
 
             // See property for more details.
             protected bool redundant = false;
-
-            /// <summary>
-            /// Settings that is used for serializing commands
-            /// </summary>
-            protected static JsonSerializerSettings jsonSettings;
-
-            /// <summary>
-            /// Initialize commands serializing settings
-            /// </summary>
-            static RecordableCommand()
-            {
-                jsonSettings = new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.Objects,
-                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                    Culture = CultureInfo.InvariantCulture
-                };
-            }
 
             #endregion
 
@@ -107,18 +89,6 @@ namespace Dynamo.Models
                 XmlElement element = document.CreateElement(commandName);
                 SerializeCore(element);
                 return element;
-            }
-
-            /// <summary>
-            /// This method serializes the RecordableCommand object in the json form.
-            /// The resulting string contains command type name and all the
-            /// arguments that are required by this command.
-            /// </summary>
-            /// <returns>The string can be used for reconstructing RecordableCommand
-            /// using Deserialize method</returns>
-            internal string Serialize()
-            {
-                return JsonConvert.SerializeObject(this, jsonSettings);
             }
 
             /// <summary>
@@ -220,29 +190,6 @@ namespace Dynamo.Models
                 throw new ArgumentException(message);
             }
 
-            /// <summary>
-            /// Call this static method to reconstruct a RecordableCommand from json
-            /// string that contains command name - name of corresponding class inherited
-            /// from RecordableCommand, - and all the arguments that are required by this
-            /// command.
-            /// </summary>
-            /// <param name="jsonString">Json string that contains command name and all
-            /// its arguments.</param>
-            /// <returns>Reconstructed RecordableCommand</returns>
-            internal static RecordableCommand Deserialize(string jsonString)
-            {
-                RecordableCommand command = null;
-                try
-                {
-                    command = JsonConvert.DeserializeObject(jsonString, jsonSettings) as RecordableCommand;
-                    command.IsInPlaybackMode = true;
-                    return command;
-                }
-                catch
-                {
-                    throw new ApplicationException("Invalid jsonString for creating RecordableCommand");
-                }
-            }
             #endregion
 
             #region Public Command Properties
@@ -458,7 +405,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            ///
+            /// Constructor
             /// </summary>
             /// <param name="filePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
@@ -466,6 +413,20 @@ namespace Dynamo.Models
             {
                 FilePath = filePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
+                IsTemplate = false;
+            }
+
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="filePath">The path to the file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
+            /// <param name="isTemplate">Is Dynamo opening a template file?</param>
+            public OpenFileCommand(string filePath, bool forceManualExecutionMode, bool isTemplate)
+            {
+                FilePath = filePath;
+                ForceManualExecutionMode = forceManualExecutionMode;
+                IsTemplate = isTemplate;
             }
 
             private static string TryFindFile(string xmlFilePath, string uriString = null)
@@ -507,6 +468,7 @@ namespace Dynamo.Models
             [DataMember]
             internal string FilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
+            internal bool IsTemplate { get; private set; }
             private DynamoModel dynamoModel;
 
             #endregion
@@ -516,7 +478,14 @@ namespace Dynamo.Models
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 this.dynamoModel = dynamoModel;
-                dynamoModel.OpenFileImpl(this);
+                if (IsTemplate)
+                {
+                    dynamoModel.OpenTemplateImpl(this);
+                }
+                else
+                {
+                    dynamoModel.OpenFileImpl(this);
+                }
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -528,7 +497,107 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
+                    FilePath,
+                    Logging.Actions.Open,
+                    dynamoModel.CurrentWorkspace.Nodes.Count());
+
+                // If there are unresolved nodes in the opened workspace, log the node names and count
+                var unresolvedNodes = dynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+                if (unresolvedNodes != null && unresolvedNodes.Any())
+                {
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Logging.Actions.Unresolved,
+                        Logging.Categories.NodeOperations,
+                        unresolvedNodes.Select(n => string.Format("{0}:{1}", n.LegacyAssembly, n.LegacyFullName))
+                            .Aggregate((x, y) => string.Format("{0}, {1}", x, y)),
+                        unresolvedNodes.Count());
+                }
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// A command to open a file.
+        /// </summary>
+        [DataContract]
+        public class InsertFileCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            /// <summary>
+            /// Insert Graph or Custom Node from a file path into the current Workspace
+            /// </summary>
+            /// <param name="filePath">The path to the file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
+            public InsertFileCommand(string filePath, bool forceManualExecutionMode = false)
+            {
+                FilePath = filePath;
+                ForceManualExecutionMode = forceManualExecutionMode;
+            }
+
+            private static string TryFindFile(string xmlFilePath, string uriString = null)
+            {
+                if (File.Exists(xmlFilePath))
+                    return xmlFilePath;
+
+                var xmlFileName = Path.GetFileName(xmlFilePath);
+                if (uriString != null)
+                {
+                    // Try to find the file right next to the command XML file.
+                    Uri uri = new Uri(uriString);
+                    string directory = Path.GetDirectoryName(uri.AbsolutePath);
+                    xmlFilePath = Path.Combine(directory, xmlFileName);
+
+                    // If it still cannot be resolved, fall back to system search.
+                    if (!File.Exists(xmlFilePath))
+                        xmlFilePath = Path.GetFullPath(xmlFileName);
+
+                    if (File.Exists(xmlFilePath))
+                        return xmlFilePath;
+                }
+
+                var message = "Target file cannot be found!";
+                throw new FileNotFoundException(message, xmlFileName);
+            }
+
+            internal static InsertFileCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string xmlFilePath = TryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
+                return new InsertFileCommand(xmlFilePath);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal string FilePath { get; private set; }
+            internal bool ForceManualExecutionMode { get; private set; }
+            private DynamoModel dynamoModel;
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                this.dynamoModel = dynamoModel;
+                dynamoModel.InsertFileImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("XmlFilePath", FilePath);
+            }
+
+            internal override void TrackAnalytics()
+            {
+                // Log file open action and the number of nodes in the opened workspace
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
                     FilePath,
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
@@ -605,7 +674,7 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
                     "In memory json file",
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
@@ -881,10 +950,16 @@ namespace Dynamo.Models
 
             internal override void TrackAnalytics()
             {
-                Dynamo.Logging.Analytics.TrackEvent(
-                    Logging.Actions.Create,
-                    Logging.Categories.NodeOperations,
-                    (Node != null) ? Node.GetOriginalName() : Name ?? "");
+                // For custom nodes, Node is null until the node has been created
+                // Including the custom node cases should not be encouraged since
+                // GetOriginalName() will return the Guid of custom node
+                if (Node != null)
+                {
+                    Logging.Analytics.TrackEvent(
+                        Logging.Actions.Create,
+                        Logging.Categories.NodeOperations,
+                        Node.GetOriginalName() ?? string.Empty);
+                }
             }
 
             #endregion
@@ -1065,7 +1140,7 @@ namespace Dynamo.Models
                 this.Outputs = outputs;
             }
 
-            internal static CreateProxyNodeCommand DeserializeCore(XmlElement element)
+            internal static new CreateProxyNodeCommand DeserializeCore(XmlElement element)
             {
                 var baseCommand = CreateNodeCommand.DeserializeCore(element);
                 var helper = new XmlElementHelper(element);
@@ -1703,7 +1778,7 @@ namespace Dynamo.Models
 
             internal override void TrackAnalytics()
             {
-                Dynamo.Logging.Analytics.TrackCommandEvent(
+                Dynamo.Logging.Analytics.TrackTaskCommandEvent(
                     CmdOperation.ToString()); // "Undo" or "Redo"
             }
 
@@ -1895,7 +1970,7 @@ namespace Dynamo.Models
             /// <summary>
             /// A collection of <see cref="Guid"/> which identify the model objects to update.
             /// </summary>
-            public IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
+            public new IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
 
             /// <summary>
             /// The name of the property to update.

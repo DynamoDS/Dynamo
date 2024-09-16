@@ -3,4 +3,4 @@ Analysis.Label.ByPointAndString creates a label in the Dynamo viewport given a p
 ___
 ## Example File
 
-![Analysis.Label.ByPointAndString](./Analysis.Label.ByPointAndString.png)
+![Analysis.Label.ByPointAndString](./Analysis.Label.ByPointAndString_img.png)

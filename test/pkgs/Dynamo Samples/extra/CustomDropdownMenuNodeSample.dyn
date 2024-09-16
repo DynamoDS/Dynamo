@@ -27,14 +27,14 @@
       ],
       "SelectedIndex": 1,
       "SelectedString": "Two",
-      "NodeType": "ExtensionNode",
       "Id": "2c9b14f9f3b04c909cbbf4fc1bf58315",
+      "NodeType": "ExtensionNode",
       "Inputs": [],
       "Outputs": [
         {
           "Id": "c4f968efd3b34cd4ae68f7e1bb073213",
-          "Name": "Value",
-          "Description": "The selected Value",
+          "Name": "value",
+          "Description": "Selected value",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -43,9 +43,47 @@
       ],
       "Replication": "Disabled",
       "Description": "A dropdown menu with customizable values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 27.5,
+      "WatchHeight": 38.0,
+      "Id": "de5ce4eaea724bae90ddfc6d58a1907c",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "ada3f228896d48f284e7716a8b5a55ed",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "62ae1a52b09549d79e3da29c7f996db7",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
     }
   ],
-  "Connectors": [],
+  "Connectors": [
+    {
+      "Start": "c4f968efd3b34cd4ae68f7e1bb073213",
+      "End": "ada3f228896d48f284e7716a8b5a55ed",
+      "Id": "a73ae984e456400ab8da9424caf37282",
+      "IsHidden": "False"
+    }
+  ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
   "Thumbnail": "",
@@ -71,12 +109,12 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.16.0.2215",
+      "Version": "2.18.0.2986",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -90,19 +128,29 @@
     "ConnectorPins": [],
     "NodeViews": [
       {
-        "Name": "Custom Dropdown Menu",
-        "ShowGeometry": true,
         "Id": "2c9b14f9f3b04c909cbbf4fc1bf58315",
+        "Name": "Custom Dropdown Menu",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 125.0,
         "Y": 159.0
+      },
+      {
+        "Id": "de5ce4eaea724bae90ddfc6d58a1907c",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 562.9073737487314,
+        "Y": 160.17383716945719
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": -75.195648451677073,
+    "Y": 46.328897894012982,
+    "Zoom": 0.8033215934625979
   }
 }

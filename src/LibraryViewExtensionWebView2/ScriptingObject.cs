@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
-    public class ScriptingObject
+    public class ScriptingObject: IDisposable
     {
         private LibraryViewController controller;
 
@@ -20,25 +20,30 @@ namespace Dynamo.LibraryViewExtensionWebView2
             this.controller = controller;
         }
 
+        public void Dispose()
+        {
+            controller = null;
+        }
+
         /// <summary>
         /// Used to get access to the iconResourceProvider and return a base64encoded string version of an icon.
         /// </summary>
         /// <param name="iconurl"></param>
-        public async void GetBase64StringFromPath(string iconurl)
+        public string GetBase64StringFromPath(string iconurl)
         {
 
             string ext;
             var iconAsBase64 = controller.iconProvider.GetResourceAsString(iconurl, out ext);
             if (string.IsNullOrEmpty(iconAsBase64))
             {
-                await LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeReplaceImages", "","");
+                return string.Empty;
             }
             if (ext.Contains("svg"))
             {
                 ext = "svg+xml";
             }
             //send back result.
-            await LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeReplaceImages", $"data:image/{ext};base64, {iconAsBase64}", iconurl);
+            return $"data:image/{ext};base64, {iconAsBase64}";
         }
 
         /// <summary>
@@ -89,11 +94,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 {
                     controller.ImportLibrary();
                 }
-                else if (funcName == "logEventsToInstrumentation")
-                {
-                    var data = (simpleRPCPayload["data"] as JArray).Children();
-                    controller.LogEventsToInstrumentation(data.ElementAt(0).Value<string>(), data.ElementAt(1).Value<string>());
-                }
                 else if (funcName == "performSearch")
                 {
                     var data = simpleRPCPayload["data"] as string;
@@ -101,7 +101,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                     var searchStream = controller.searchResultDataProvider.GetResource(data, out extension);
                     var searchReader = new StreamReader(searchStream);
                     var results = searchReader.ReadToEnd();
-                    //send back results to libjs
+                    //send back results to librarie.js
                     LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeSearch", results);
                     searchReader.Dispose();
                 }

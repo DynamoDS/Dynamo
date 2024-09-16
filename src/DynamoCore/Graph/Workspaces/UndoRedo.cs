@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -377,7 +377,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (model is ConnectorPinModel connectorPin)
             {
-                ///The equivalent of 'deleting' a connectorPin
+                // The equivalent of 'deleting' a connectorPin
                 var matchingConnector = Connectors.FirstOrDefault(connector => connector.GUID == connectorPin.ConnectorId);
                 if (matchingConnector is null)
                 {

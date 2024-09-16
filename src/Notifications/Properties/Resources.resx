@@ -138,4 +138,10 @@
   <data name="NotificationCenterDisabledMsg" xml:space="preserve">
     <value>Notification Center feature is disabled. Enable it in preference panel to see latest news.</value>
   </data>
+  <data name="NotificationsCenterBottomButtonText" xml:space="preserve">
+    <value>Mark all as read</value>
+  </data>
+  <data name="NotificationsCenterTitle" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
 </root>

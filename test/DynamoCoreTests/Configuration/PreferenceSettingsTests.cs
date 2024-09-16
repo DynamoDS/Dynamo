@@ -1,13 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Dynamo.Configuration;
-using Dynamo.Models;
-using NUnit.Framework;
 using System.Linq;
-using System.Xml;
-using System;
-using Dynamo.Interfaces;
 using System.Reflection;
+using Dynamo.Configuration;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Utilities;
+using NUnit.Framework;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -20,7 +20,6 @@ namespace Dynamo.Tests.Configuration
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
             string settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-PythonTemplate-initial.xml");
-            string initialPyFilePath = Path.Combine(settingDirectory, @"PythonTemplate-initial.py");
 
             // Assert files required for test exist
             Assert.IsTrue(File.Exists(settingsFilePath));
@@ -61,7 +60,6 @@ namespace Dynamo.Tests.Configuration
             // Assert defaults
             Assert.AreEqual(settings.GetIsBackgroundPreviewActive("MyBackgroundPreview"), true);
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
-            Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
             Assert.AreEqual(settings.EnableNotificationCenter, true);
@@ -71,6 +69,9 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.UseHardwareAcceleration, true);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
+            Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
+            Assert.AreEqual(settings.EnableDynamoPlayerRenamedWatchAsOutput, false);
+            Assert.AreEqual(settings.Locale, "Default");
 
             // Save
             settings.Save(tempPath);
@@ -79,7 +80,6 @@ namespace Dynamo.Tests.Configuration
             // Assert deserialized values are same when saved with defaults
             Assert.AreEqual(settings.GetIsBackgroundPreviewActive("MyBackgroundPreview"), true);
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
-            Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
             Assert.AreEqual(settings.EnableNotificationCenter, true);
@@ -89,11 +89,13 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.UseHardwareAcceleration, true);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
+            Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
+            Assert.AreEqual(settings.EnableDynamoPlayerRenamedWatchAsOutput, false);
+            Assert.AreEqual(settings.Locale, "Default");
 
             // Change setting values
             settings.SetIsBackgroundPreviewActive("MyBackgroundPreview", false);
             settings.ShowCodeBlockLineNumber = false;
-            settings.IsIronPythonDialogDisabled = true;
             settings.ShowTabsAndSpacesInScriptEditor = true;
             settings.DefaultPythonEngine = "CP3";
             settings.MaxNumRecentFiles = 24;
@@ -116,11 +118,29 @@ namespace Dynamo.Tests.Configuration
                     Status = WindowStatus.Maximized
                 }
             });
-            settings.GroupStyleItemsList.Add(new GroupStyleItem 
+            settings.GroupStyleItemsList.Add(new GroupStyleItem
             {
-                Name = "TestGroup", 
-                HexColorString = "000000" 
+                Name = "TestGroup",
+                HexColorString = "000000"
             });
+            settings.DynamoPlayerFolderGroups.Add(new DynamoPlayerFolderGroup()
+            {
+                EntryPoint = "GenerativeDesign",
+                Folders = new List<DynamoPlayerFolder>()
+                {
+                    new DynamoPlayerFolder()
+                    {
+                        Path = @"C:\MyGenerativeDesignFolder",
+                        DisplayName = "My Generative Design Folder",
+                        Id = "41B5B0F7-1B21-42A8-A938-E2C34521EF61",
+                        IsRemovable = true,
+                        Order = -1,
+                    }
+                }
+            });
+            settings.EnableDynamoPlayerRenamedWatchAsOutput = true;
+            settings.Locale = "zh-CN";
+
 
             // Save
             settings.Save(tempPath);
@@ -129,7 +149,6 @@ namespace Dynamo.Tests.Configuration
             // Assert deserialized values are same as last changed
             Assert.AreEqual(settings.GetIsBackgroundPreviewActive("MyBackgroundPreview"), false);
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, false);
-            Assert.AreEqual(settings.IsIronPythonDialogDisabled, true);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, true);
             Assert.AreEqual(settings.DefaultPythonEngine, "CP3");
             Assert.AreEqual(settings.MaxNumRecentFiles, 24);
@@ -155,6 +174,10 @@ namespace Dynamo.Tests.Configuration
             var styleItemsList = settings.GroupStyleItemsList[0];
             Assert.AreEqual(styleItemsList.Name, "TestGroup");
             Assert.AreEqual(styleItemsList.HexColorString, "000000");
+            Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 1);
+            Assert.AreEqual(settings.DynamoPlayerFolderGroups[0].Folders.Count, 1);
+            Assert.AreEqual(settings.EnableDynamoPlayerRenamedWatchAsOutput, true);
+            Assert.AreEqual(settings.Locale, "zh-CN");
         }
 
         [Test]
@@ -170,7 +193,7 @@ namespace Dynamo.Tests.Configuration
 
             var token = settings.CustomPackageFolders[1];
 
-            Assert.AreEqual(DynamoModel.BuiltInPackagesToken,token);
+            Assert.AreEqual(DynamoModel.BuiltInPackagesToken, token);
         }
 
         [Test]
@@ -211,7 +234,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(1, settingsLoaded.TrustedLocations.Count);
 
             Assert.IsTrue(settingsLoaded.IsTrustedLocation(Path.GetTempPath()));
-        }        
+        }
 
         /// <summary>
         /// Struct to support the comparison between two PreferenceSettings instances
@@ -220,7 +243,7 @@ namespace Dynamo.Tests.Configuration
         {
             public List<string> Properties { get; set; }
             public List<String> SamePropertyValues { get; set; }
-            public List<String> DifferentPropertyValues { get; set; }          
+            public List<String> DifferentPropertyValues { get; set; }
         }
 
         /// <summary>
@@ -262,6 +285,11 @@ namespace Dynamo.Tests.Configuration
             foreach (var destinationPi in destinationProperties)
             {
                 var sourcePi = newGeneralSettings.GetType().GetProperty(destinationPi.Name);
+
+                if (sourcePi.Name == "DynamoPlayerFolderGroups")
+                {
+                    // Do nothing for now
+                }
 
                 if (!PropertyHasExcludedAttributes(destinationPi) && !PropertyHasStaticField(defaultSettings, destinationPi))
                 {
@@ -318,6 +346,18 @@ namespace Dynamo.Tests.Configuration
                             propertiesWithDifferentValue.Add(destinationPi.Name);
                         }
                     }
+                    else if (destinationPi.PropertyType == typeof(List<DynamoPlayerFolderGroup>))
+                    {
+                        if (((List<DynamoPlayerFolderGroup>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
+                            ((List<DynamoPlayerFolderGroup>)destinationPi.GetValue(defaultSettings, null)).Count)
+                        {
+                            propertiesWithSameValue.Add(destinationPi.Name);
+                        }
+                        else
+                        {
+                            propertiesWithDifferentValue.Add(destinationPi.Name);
+                        }
+                    }
                     else
                     {
                         if (newValue?.ToString() == oldValue?.ToString())
@@ -331,7 +371,7 @@ namespace Dynamo.Tests.Configuration
                     }
                 }
             }
-            
+
             result.SamePropertyValues = propertiesWithSameValue;
             result.DifferentPropertyValues = propertiesWithDifferentValue;
             result.Properties = evaluatedProperties;
@@ -355,21 +395,30 @@ namespace Dynamo.Tests.Configuration
             var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
             int diffProps = checkDifference.DifferentPropertyValues.Count;
             int totProps = checkDifference.Properties.Count;
-            string firstPropertyWithSameValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
+            string firstPropertyWithSameOrNewValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
             string defSettNumberFormat = defaultSettings.NumberFormat;
             string newSettNumberFormat = newSettings.NumberFormat;
-            string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} | DiffProps: {diffProps.ToString()} | TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} | New Sett NumberFormat: {newSettNumberFormat} | First Property with the same value {firstPropertyWithSameValue}";
+            string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} " +
+                                 $"| DiffProps: {diffProps.ToString()} " +
+                                 $"| TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} " +
+                                 $"| New Sett NumberFormat: {newSettNumberFormat} " +
+                                 $"| First Property with the same value {firstPropertyWithSameOrNewValue}";
 
             // checking if the new Setting are completely different from the Default
             Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count, failMessage);
 
+            // GroupStyle - Assigning Default styles
+            defaultSettings.GroupStyleItemsList = GroupStyleItem.DefaultGroupStyleItems.AddRange(defaultSettings.GroupStyleItemsList.Where(style => style.IsDefault != true)).ToList();
             newSettings.CopyProperties(defaultSettings);
+            // Checking if the new settings has at least a Custom Style
+            Assert.IsTrue(defaultSettings.GroupStyleItemsList.Where(style => style.IsDefault == false).Count() > 0);
+
             // Explicit copy
             defaultSettings.SetTrustWarningsDisabled(newSettings.DisableTrustWarnings);
             defaultSettings.SetTrustedLocations(newSettings.TrustedLocations);
 
             // checking if the default Setting instance has the same property values of the new one
-            var checkEquality = comparePrefenceSettings(defaultSettings, newSettings);            
+            var checkEquality = comparePrefenceSettings(defaultSettings, newSettings);
             Assert.IsTrue(checkEquality.SamePropertyValues.Count == checkEquality.Properties.Count);
         }
 
@@ -393,7 +442,7 @@ namespace Dynamo.Tests.Configuration
             bool isOpenedFile = true;
             bool isHomeSpace = true;
             bool isShowStartPage = false;
-            bool isFileInTrustedLocation = false;            
+            bool isFileInTrustedLocation = false;
             bool isDisableTrustWarnings = false;
 
             // getting result
@@ -404,8 +453,52 @@ namespace Dynamo.Tests.Configuration
                 isShowStartPage,
                 isDisableTrustWarnings);
 
-            // checking the result            
+            // checking the result
             Assert.IsTrue(result == PreferenceSettings.AskForTrustedLocationResult.Ask, $"Conditions info: is opened file : {isOpenedFile} | is file in trusted location : {isFileInTrustedLocation} | is home space : {isHomeSpace} | is show Start page : {isShowStartPage} | is disable trust warnings : {isDisableTrustWarnings}");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSanitizeValues()
+        {
+            string settingDirectory = Path.Combine(TestDirectory, "settings");
+            string settingslFilePath = Path.Combine(settingDirectory, "DynamoSettings_Tainted_Values.xml");
+
+            var settings = PreferenceSettings.Load(settingslFilePath);
+            settings.SanitizeValues();
+
+            bool allTheGroupStylesHaveAValidFontSize = true;
+            foreach (var groupStyle in settings.GroupStyleItemsList)
+            {
+                if (!settings.PredefinedGroupStyleFontSizes.Contains(groupStyle.FontSize))
+                {
+                    allTheGroupStylesHaveAValidFontSize = false;
+                    break;
+                }
+            }
+
+            Assert.IsTrue(allTheGroupStylesHaveAValidFontSize, $"All the GroupStyles have a valid Font size : {allTheGroupStylesHaveAValidFontSize}");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSerializingHomePageSettings()
+        {
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "homePagePreference.xml");
+
+            PreferenceSettings settings = new PreferenceSettings();
+
+            // Assert defaults
+            Assert.IsEmpty(settings.HomePageSettings);
+
+            settings.HomePageSettings = new List<string> { { String.Concat("greeting", "Hello World") } };
+
+            // Save
+            settings.Save(tempPath);
+            settings = PreferenceSettings.Load(tempPath);
+
+            Assert.IsTrue(settings.HomePageSettings.Contains(String.Concat("greeting", "Hello World")));
         }
     }
 }

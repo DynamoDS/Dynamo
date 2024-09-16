@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Linq;
+#if NET6_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 using System.Threading;
 using Dynamo.Applications;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using static System.Windows.Threading.Dispatcher;
 
@@ -14,6 +17,9 @@ namespace DynamoWPFCLI
     {
         private static EventWaitHandle suspendEvent = new AutoResetEvent(false);
 
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+#endif
         [STAThread]
         internal static void Main(string[] args)
         {
@@ -21,19 +27,21 @@ namespace DynamoWPFCLI
             try
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
-                useConsole = !cmdLineArgs.NoConsoleCli;
+                useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
 
-                if (cmdLineArgs.DisableAnalytics)
-                {
-                    Dynamo.Logging.Analytics.DisableAnalytics = true;
-                }
+                cmdLineArgs.SetDisableAnalytics();
 
+                if (cmdLineArgs.ServiceMode)
+                {
+                    Console.WriteLine("Starting DynamoWPFCLI in service mode");
+                }
                 if (cmdLineArgs.KeepAlive)
                 {
-                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
-
-                    thread.Name = "DynamoModelKeepAlive";
+                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs))
+                    {
+                        Name = "DynamoModelKeepAlive"
+                    };
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
                     if (!useConsole)
@@ -50,7 +58,7 @@ namespace DynamoWPFCLI
                 }
                 else
                 {
-                    var viewModel = StartupDaynamo(cmdLineArgs);
+                    var viewModel = StartupDynamo(cmdLineArgs);
 
                     var runner = new CommandLineRunnerWPF(viewModel);
                     runner.Run(cmdLineArgs);
@@ -80,17 +88,9 @@ namespace DynamoWPFCLI
         /// </summary>
         /// <param name="cmdLineArgs"></param>
         /// <returns></returns>
-        private static DynamoViewModel StartupDaynamo(StartupUtils.CommandLineArguments cmdLineArgs)
+        private static DynamoViewModel StartupDynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
-            DynamoModel model;
-            if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
-            {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath, cmdLineArgs.AnalyticsInfo);
-            }
-            else
-            {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
-            }
+            var model = StartupUtils.MakeCLIModel(cmdLineArgs);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {
@@ -122,9 +122,9 @@ namespace DynamoWPFCLI
         {
             try
             {
-                StartupDaynamo(cmdLineArgs);
+                StartupDynamo(cmdLineArgs);
 
-                if (!cmdLineArgs.NoConsoleCli)
+                if (!cmdLineArgs.NoConsole)
                 {
                     Console.WriteLine("-----------------------------------------");
                     Console.WriteLine("DynamoWPFCLI is running in keepalive mode");

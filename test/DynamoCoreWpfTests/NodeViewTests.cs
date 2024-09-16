@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Controls;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -405,6 +406,38 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);  
         }
 
+        [Test]
+        public void ZoomWarningFileFromPathTest()
+        {
+            // Arrange
+            Open(@"UI\DisplayImage.dyn");
+
+            NodeView filePathNode = NodeViewWithGuid(Guid.Parse("5a424eaa78c84cffaef5469c034de703").ToString());
+            NodeView fileFromPathNode = NodeViewWithGuid(Guid.Parse("eeeadd2b09294b5fbe3ea2668b99777a").ToString());
+            NodeView imageReadFromFileNode = NodeViewWithGuid(Guid.Parse("8d82e3934d0e464cb810ddc7389ab0ae").ToString());
+
+            // Get a reference to the NodeViewModels and the current workspace
+            NodeViewModel filePathNodeViewModel = filePathNode.DataContext as NodeViewModel;
+            NodeViewModel fileFromPathNodeViewModel = (fileFromPathNode.DataContext as NodeViewModel);
+            NodeViewModel imageReadFromFileNodeViewModel = imageReadFromFileNode.DataContext as NodeViewModel;
+
+            WorkspaceViewModel wvm = filePathNodeViewModel.WorkspaceViewModel as WorkspaceViewModel;
+                        
+            // Zoom out, less than 0.4
+            wvm.Zoom = 0.3;
+
+            Assert.AreEqual(fileFromPathNode.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Visible);
+            Assert.AreEqual(fileFromPathNode.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Visible);            
+
+            // Fix the image path and re run the engine
+            filePathNodeViewModel.NodeModel.UpdateValue(new Dynamo.Graph.UpdateValueParams("Value", ".\\Bricks.PNG"));
+
+            wvm.Zoom = 0.6;
+
+            Assert.AreEqual(fileFromPathNode.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);
+            Assert.AreEqual(fileFromPathNode.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Collapsed);
+        }
+
         /// <summary>
         /// Tests the GetWarningColor method to ensure that the node's WarningBar displays
         /// the proper colors when a node is displaying Info/Warning/Error messages.
@@ -605,6 +638,38 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(outPort_With_Function.ValueMarkerWidth, outPort_With_Function.ValueMarkerWidthWithFunction);
             Assert.AreEqual(outPort_Without_Function.ValueMarkerWidth, outPort_Without_Function.ValueMarkerWidthWithoutFunction);
+        }
+
+        [Test]
+        public void TestSelectNeighborPins()
+        {
+            // Open and run the workspace
+            Open(@"core\ConnectorPinSelectionTest.dyn");
+
+            // Clear selection to ensure a clean state
+            DynamoSelection.Instance.Selection.Clear();
+
+            // Select the node
+            var nodeView = NodeViewWithGuid("a0d7d02a-df09-455e-bd04-c38def8f3e07");
+
+            NodeViewModel nodeVM = (nodeView.DataContext as NodeViewModel);
+            WorkspaceModel ws = nodeVM.DynamoViewModel.CurrentSpace;
+
+            // Check if connectors are in the model
+            var allConnectors = ws.Connectors;
+
+            DynamoSelection.Instance.Selection.Add(nodeVM.NodeModel);
+
+            var countBefore = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(1, countBefore);
+
+            // Run method and assert whether more nodes were selected
+            nodeVM.NodeModel.SelectNeighbors();
+
+            var modelsSelected = DynamoSelection.Instance.Selection.Select(s => s as ModelBase);
+            var countAfter = modelsSelected.Count();
+
+            Assert.AreEqual(5, countAfter);
         }
     }
 }

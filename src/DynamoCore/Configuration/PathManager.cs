@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -48,8 +48,15 @@ namespace Dynamo.Core
         internal IPathResolver PathResolver { get; set; }
     }
 
-    class PathManager : IPathManager
+    internal class PathManager : IPathManager
     {
+        internal static Lazy<PathManager>
+         lazy =
+         new Lazy<PathManager>
+         (() => new PathManager(new PathManagerParams()));
+
+        public static PathManager Instance { get { return lazy.Value; } }
+
         #region Class Private Data Members
 
         public const string PackagesDirectoryName = "packages";
@@ -59,39 +66,49 @@ namespace Dynamo.Core
         public const string ViewExtensionsDirectoryName = "viewExtensions";
         public const string DefinitionsDirectoryName = "definitions";
         public const string SamplesDirectoryName = "samples";
-        public const string GalleryDirectoryName = "gallery";
+        public const string TemplateDirectoryName = "templates";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
         public const string PythonTemplateFileName = "PythonTemplate.py";
-        public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
+        private Updates.BinaryVersion productVersion;
         private readonly string dynamoCoreDir;
-        private readonly string hostApplicationDirectory;
-        private readonly string userDataDir;
-        private readonly string commonDataDir;
+        private string hostApplicationDirectory;
+        private string userDataDir;
+        private string commonDataDir;
 
-        private readonly string commonDefinitions;
-        private readonly string commonPackages;
-        private readonly string logDirectory;
-        private readonly string samplesDirectory;
-        private readonly string backupDirectory;
-        private readonly string preferenceFilePath;
-        private readonly string galleryFilePath;
+        private string commonDefinitions;
+        private string commonPackages;
+        private string logDirectory;
+        private string samplesDirectory;
+        private string templatesDirectory;
+        private string defaultTemplatesDirectory;
+        private string backupDirectory;
+        private string defaultBackupDirectory;
+        private string preferenceFilePath;
         private string pythonTemplateFilePath;
 
-        private readonly List<string> rootDirectories;
-        private readonly HashSet<string> nodeDirectories;
-        private readonly HashSet<string> additionalResolutionPaths;
-        private readonly HashSet<string> preloadedLibraries;
+        private List<string> rootDirectories;
+        private HashSet<string> nodeDirectories;
+        private HashSet<string> additionalResolutionPaths;
+        private HashSet<string> preloadedLibraries;
         private readonly HashSet<string> extensionsDirectories;
         private readonly HashSet<string> viewExtensionsDirectories;
-        private readonly IPathResolver pathResolver;
+        private IPathResolver pathResolver;
 
         #endregion
 
         internal IPreferences Preferences { get; set; }
+
+        /// <summary>
+        /// PathResolver is used to resolve paths for custom nodes, packages, and preloaded libraries.
+        /// </summary>
+        public IPathResolver PathResolver
+        {
+            get { return pathResolver; }
+        }
 
         private IEnumerable<string> RootDirectories
         {
@@ -190,6 +207,16 @@ namespace Dynamo.Core
         }
 
         /// <summary>
+        /// The enum will contain the possible values for Preference Item 
+        /// </summary>
+        public enum PreferenceItem
+        {
+            Backup,
+            Templates,
+            Samples
+        }
+
+        /// <summary>
         /// Default directory where new packages are downloaded to.
         /// This directory path is user configurable and if set to something other than the default,
         /// the currently selected path can be obtained from preference settings.
@@ -226,9 +253,29 @@ namespace Dynamo.Core
             get { return samplesDirectory; }
         }
 
+        /// <summary>
+        /// Dynamo Templates folder
+        /// </summary>
+        public string TemplatesDirectory
+        {
+            get { return templatesDirectory; }
+        }
+        /// <summary>
+        /// Default templates directory, it is used when the user resets the custom template path
+        /// </summary>
+        public string DefaultTemplatesDirectory
+        {
+            get { return defaultTemplatesDirectory; }
+        }
+
         public string BackupDirectory
         {
             get { return backupDirectory; }
+        }
+
+        public string DefaultBackupDirectory
+        {
+            get { return defaultBackupDirectory; }
         }
 
         public string PreferenceFilePath
@@ -239,11 +286,6 @@ namespace Dynamo.Core
         public string PythonTemplateFilePath
         {
             get { return pythonTemplateFilePath; }
-        }
-
-        public string GalleryFilePath
-        {
-            get { return galleryFilePath; }
         }
 
         public IEnumerable<string> NodeDirectories
@@ -264,6 +306,14 @@ namespace Dynamo.Core
         public int MinorFileVersion
         {
             get { return minorFileVersion; }
+        }
+
+        /// <summary>
+        /// This function indicates if there is an already assigned Path Resolver , otherwise it will take from the ctor config
+        /// </summary>
+        public bool HasPathResolver
+        {
+            get { return pathResolver != null; }
         }
 
         public void AddResolutionPath(string path)
@@ -339,6 +389,20 @@ namespace Dynamo.Core
         #region Public Class Operational Methods
 
         /// <summary>
+        /// Assigns a hostPath and IPathResolver on demand with the same behavior as the Ctor.
+        /// </summary>
+        /// <param name="hostPath"></param>
+        /// /// <param name="resolver"></param>
+        internal void AssignHostPathAndIPathResolver(string hostPath, IPathResolver resolver)
+        {
+            pathResolver = resolver;
+            BuildHostDirectories(hostPath);
+            BuildUserSpecificDirectories();
+            BuildCommonDirectories();
+            LoadPathsFromResolver();
+        }
+
+        /// <summary>
         /// Constructs an instance of PathManager object.
         /// </summary>
         /// <param name="pathManagerParams">Parameters to configure the new 
@@ -359,6 +423,7 @@ namespace Dynamo.Core
             }
 
             dynamoCoreDir = corePath;
+
             var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
             if (!PathHelper.IsValidPath(assemblyPath))
             {
@@ -368,18 +433,13 @@ namespace Dynamo.Core
                     "TestServices.dll.config.");
             }
 
-            hostApplicationDirectory = pathManagerParams.HostPath;
             extensionsDirectories = new HashSet<string>();
             viewExtensionsDirectories = new HashSet<string>();
 
             extensionsDirectories.Add(Path.Combine(dynamoCoreDir, ExtensionsDirectoryName));
             viewExtensionsDirectories.Add(Path.Combine(dynamoCoreDir, ViewExtensionsDirectoryName));
 
-            if(!string.IsNullOrEmpty(hostApplicationDirectory))
-            {
-                extensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ExtensionsDirectoryName));
-                viewExtensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ViewExtensionsDirectoryName));
-            }
+            BuildHostDirectories(pathManagerParams.HostPath);
 
             // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;
@@ -391,37 +451,8 @@ namespace Dynamo.Core
                 minorFileVersion = v.FileMinorPart;
             }
 
-            // Current user specific directories.
-            userDataDir = GetUserDataFolder();
-
-            // When running as a headless process, put the logs directory in a consistent
-            // location that doesn't change every time the version number changes.
-            var userDataDirNoVersion = Directory.GetParent(userDataDir).FullName;
-            logDirectory = Path.Combine(Dynamo.Models.DynamoModel.IsHeadless ? userDataDirNoVersion : userDataDir,
-                                        LogsDirectoryName);
-
-            preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
-            pythonTemplateFilePath = Path.Combine(userDataDir, PythonTemplateFileName);
-            backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
-
-            // Common directories.
-            commonDataDir = GetCommonDataFolder();
-
-            commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
-            commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
-            samplesDirectory = GetSamplesFolder(commonDataDir);
-            var galleryDirectory = GetGalleryDirectory(commonDataDir);
-            galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
-
-            rootDirectories = new List<string> { userDataDir };
-
-            nodeDirectories = new HashSet<string>
-            {
-                Path.Combine(dynamoCoreDir, NodesDirectoryName)
-            };
-
-            preloadedLibraries = new HashSet<string>();
-            additionalResolutionPaths = new HashSet<string>();
+            BuildUserSpecificDirectories();
+            BuildCommonDirectories();
             LoadPathsFromResolver();
         }
 
@@ -458,6 +489,24 @@ namespace Dynamo.Core
             exceptions.Add(PathHelper.CreateFolderIfNotExist(commonPackages));
 
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
+        }
+
+        internal bool UpdatePreferenceItemPath(PreferenceItem item, string newLocation)
+        {
+            bool isValidFolder = PathHelper.CreateFolderIfNotExist(newLocation) == null;
+            if (!isValidFolder)
+                return false;
+
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    backupDirectory = newLocation;
+                    break;
+                case PreferenceItem.Templates:
+                    templatesDirectory = newLocation;
+                    break;
+            }
+            return true;
         }
 
         /// <summary>
@@ -503,7 +552,7 @@ namespace Dynamo.Core
                 xmlDoc.Save(savePath);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -513,6 +562,69 @@ namespace Dynamo.Core
 
         #region Private Class Helper Methods
 
+        /// <summary>
+        /// Build the Extensions and ViewExtensions directories based on the Host.
+        /// </summary>
+        /// <param name="hostPath"></param>
+        private void BuildHostDirectories(string hostPath)
+        {
+            hostApplicationDirectory = hostPath;
+
+            if (!string.IsNullOrEmpty(hostApplicationDirectory))
+            {
+                extensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ExtensionsDirectoryName));
+                viewExtensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ViewExtensionsDirectoryName));
+            }
+        }
+
+        /// <summary>
+        /// Build directories based on the User.
+        /// </summary>
+        private void BuildUserSpecificDirectories()
+        {
+            // Current user specific directories.
+            userDataDir = GetUserDataFolder();
+
+            // When running as a headless process, put the logs directory in a consistent
+            // location that doesn't change every time the version number changes.
+            var userDataDirNoVersion = Directory.GetParent(userDataDir).FullName;
+            logDirectory = Path.Combine(Dynamo.Models.DynamoModel.IsHeadless ? userDataDirNoVersion : userDataDir,
+                                        LogsDirectoryName);
+
+            preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
+            pythonTemplateFilePath = Path.Combine(userDataDir, PythonTemplateFileName);
+            backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
+            defaultBackupDirectory = backupDirectory;
+        }
+
+        /// <summary>
+        /// Build common Directories.
+        /// </summary>
+        private void BuildCommonDirectories()
+        {
+            // Common directories.
+            commonDataDir = GetCommonDataFolder();
+
+            commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
+            commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
+            samplesDirectory = GetSamplesFolder(commonDataDir);
+            defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
+
+            rootDirectories = new List<string> { userDataDir };
+
+            nodeDirectories = new HashSet<string>
+            {
+                Path.Combine(dynamoCoreDir, NodesDirectoryName)
+            };
+
+            preloadedLibraries = new HashSet<string>();
+            additionalResolutionPaths = new HashSet<string>();
+        }
+
+        /// <summary>
+        /// Load the Paths based on the Resolver
+        /// </summary>
+        /// <exception cref="DirectoryNotFoundException"></exception>
         private void LoadPathsFromResolver()
         {
             if (pathResolver == null) // No optional path resolver is specified...
@@ -552,7 +664,19 @@ namespace Dynamo.Core
                 return userDataDir; //Return the cached userDataDir if we have one.
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
+            return GetDynamoDataFolder(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"));
+        }
+
+        /// <summary>
+        /// Returns the current Dynamo product version.
+        /// </summary>
+        /// <returns></returns>
+        public Updates.BinaryVersion GetProductVersion()
+        {
+            if (null != productVersion) return productVersion;
+            var executingAssemblyName = Assembly.GetExecutingAssembly().GetName();
+            productVersion = Updates.BinaryVersion.FromString(executingAssemblyName.Version.ToString());
+            return productVersion;
         }
 
         private string GetCommonDataFolder()
@@ -561,7 +685,7 @@ namespace Dynamo.Core
                 return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
+            return GetDynamoDataFolder(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"));
         }
 
         private string GetDynamoDataFolder(string folder)
@@ -629,42 +753,48 @@ namespace Dynamo.Core
             return sampleDirectory;
         }
 
-        private static string GetGalleryDirectory(string commonDataDir)
+        /// <summary>
+        /// Get template folder path from common data directory
+        /// </summary>
+        /// <param name="dataRootDirectory"></param>
+        /// <returns></returns>
+        private string GetTemplateFolder(string dataRootDirectory)
         {
-            var versionedDirectory = commonDataDir;
+            var versionedDirectory = dataRootDirectory;
             if (!Directory.Exists(versionedDirectory))
             {
                 // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
                 // does not, then root directory would be "%ProgramData%\{...}".
                 //
-                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
-            else if (!Directory.Exists(Path.Combine(versionedDirectory, GalleryDirectoryName)))
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, TemplateDirectoryName)))
             {
                 // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
-                // if the folder "%ProgramData%\{...}\{major}.{minor}\gallery" exists. If it
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\templates" exists. If it
                 // doesn't exist, then root directory would be "%ProgramData%\{...}".
                 //
-                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
 
             var uiCulture = CultureInfo.CurrentUICulture.Name;
-            var galleryDirectory = Path.Combine(commonDataDir, GalleryDirectoryName, uiCulture);
+            var templateDirectory = Path.Combine(dataRootDirectory, TemplateDirectoryName, uiCulture);
 
-            // If the localized gallery directory does not exist then fall back 
-            // to using the en-US gallery folder. Do an additional check to see 
+            // If the localized template directory does not exist then fall back 
+            // to using the en-US template folder. Do an additional check to see 
             // if the localized folder is available but is empty.
             // 
-            var di = new DirectoryInfo(galleryDirectory);
-            if (!Directory.Exists(galleryDirectory) ||
-                !di.GetFiles("*.xml",SearchOption.TopDirectoryOnly).Any())
+            var di = new DirectoryInfo(templateDirectory);
+            if (!Directory.Exists(templateDirectory) ||
+                !di.GetDirectories().Any() ||
+                !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
-                var neutralCommonGallery = Path.Combine(commonDataDir, GalleryDirectoryName, "en-US");
-                if (Directory.Exists(neutralCommonGallery))
-                    galleryDirectory = neutralCommonGallery;
+                var neturalCommonTemplates = Path.Combine(dataRootDirectory, TemplateDirectoryName, "en-US");
+                if (Directory.Exists(neturalCommonTemplates))
+                    templateDirectory = neturalCommonTemplates;
             }
 
-            return galleryDirectory;
+            return templateDirectory;
         }
 
         private IEnumerable<string> LibrarySearchPaths(string library)

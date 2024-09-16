@@ -1,10 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
     <ProjectGuid>{5F9AE581-6781-4A4C-A262-1B06CD27208B}</ProjectGuid>
     <OutputType>Exe</OutputType>
+	<RollForward>Major</RollForward>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoCLI</RootNamespace>
     <AssemblyName>DynamoCLI</AssemblyName>
@@ -12,10 +13,6 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">
       <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
@@ -40,6 +37,7 @@
     <ProjectReference Include="..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
       <Name>DesignScriptBuiltin</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.NodeView"
+<UserControl x:Class="Dynamo.Controls.NodeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
@@ -276,6 +276,13 @@
                                         <Run Text="{x:Static p:Resources.NodeTooltipOriginalName}" />
                                         <Run Text="{Binding Path=OriginalName, Mode=OneWay}" />
                                     </TextBlock>
+                                    <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
+                                               FontWeight="Light"
+                                               TextWrapping="Wrap"
+                                               Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <Run Text="{x:Static p:Resources.NodeTooltipPackage}" />
+                                        <Run Text="{Binding Path=PackageName, Mode=OneWay}" />
+                                    </TextBlock>
                                     <TextBlock Text="&#x0a;" />
                                     <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
                                                FontWeight="Medium"
@@ -306,11 +313,11 @@
                    Panel.ZIndex="3"
                    FlowDirection="LeftToRight">
             <!--  The Icon for this Node  -->
-            <Ellipse Name="nodeIcon"
+            <Rectangle Name="nodeIcon"
                      Width="34"
                      Height="34">
-                <Ellipse.Style>
-                    <Style TargetType="Ellipse">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle">
                         <Setter Property="Fill">
                             <Setter.Value>
                                 <ImageBrush ImageSource="{Binding ImageSource}" Stretch="UniformToFill" />
@@ -327,8 +334,8 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </Ellipse.Style>
-            </Ellipse>
+                </Rectangle.Style>
+            </Rectangle>
 
             <TextBlock Name="NameBlock"
                        Margin="6,3,6,0"
@@ -686,6 +693,30 @@
             </Border.Visibility>
         </Border>
 
+        <!--
+        If a note is dragged over this group
+        this border is activated, indicating that the node can be dropped into the group.
+        The visibility of this is controlled by the NodeViewModel property 'NodeHoveringState'
+        which is set in the StateMachine.
+        -->
+        <Border x:Name="nodeHoveringStateBorder"
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="3"
+                Margin="-3"
+                Background="Transparent"
+                IsHitTestVisible="False"
+                Canvas.ZIndex="41"
+                CornerRadius="10,10,0,0"
+                BorderBrush="#CCCCCC"
+                BorderThickness="6px"
+                Visibility="{Binding NodeHoveringState,
+                    Converter={StaticResource BooleanToVisibilityConverter},
+                    Mode=OneWay,
+                    UpdateSourceTrigger=PropertyChanged}"
+                >
+        </Border>
+
         <!--  DO NOT ERASE. THIS IS FOR DEBUGGING  -->
         <!--<Rectangle Name="ForceReexecBorder"
                    Grid.Row="1"
@@ -732,6 +763,13 @@
                 ClipToBounds="False"
                 Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             <Label HorizontalContentAlignment="Center" Content="{Binding ASTText}" />
+
+        </Canvas>
+        <Canvas Grid.Row="3" Canvas.ZIndex="51" 
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Polygon Points="0,-15 15,0 0,0" Fill="#E3E3E3"/>
         </Canvas>
     </Grid>
 </UserControl>

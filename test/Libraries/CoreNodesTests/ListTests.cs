@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -179,7 +179,7 @@ namespace DSCoreNodesTests
         public static void ListIndexOf()
         {
             Assert.AreEqual(1, List.IndexOf(new ArrayList { "x", "y", 1 }, "y"));
-            Assert.AreEqual(-1, List.IndexOf(new ArrayList { 3, 4, 6, 8 }, 9));
+            Assert.AreEqual(null, List.IndexOf(new ArrayList { 3, 4, 6, 8 }, 9));
         }
 
         [Test]
@@ -498,6 +498,35 @@ namespace DSCoreNodesTests
         public static void GetFromList()
         {
             Assert.AreEqual(2, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, 2));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetNegtiveIndexItemFromList()
+        {
+            Assert.AreEqual(3, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, -1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetNegtiveIndexItemFromListCouldThrow()
+        {
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                // -7 as index argument will cause exception.
+                List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, -7);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetPositiveIndexItemFromListCouldThrow()
+        {
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                // 7 as index argument will cause exception.
+                List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, 7);
+            });
         }
 
         [Test]
@@ -946,6 +975,25 @@ namespace DSCoreNodesTests
 
             indices = List.AllIndicesOf(input, 21).Cast<int>();
             Assert.IsEmpty(indices);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void AllIndicesOfNullTest()
+        {
+            var input = new List<object> { true, false, null };
+
+            var indices = List.AllIndicesOf(input, true);
+            Assert.True(indices.Count == 1);
+            Assert.AreEqual(0, indices[0]);
+
+            indices = List.AllIndicesOf(input, false);
+            Assert.True(indices.Count == 1);
+            Assert.AreEqual(1, indices[0]);
+
+            indices = List.AllIndicesOf(input, null);
+            Assert.True(indices.Count == 1);
+            Assert.AreEqual(2, indices[0]);
         }
 
         [Test]

@@ -1,5 +1,8 @@
 ## In Depth
-Plane By Best Fit Through Points uses a set of points and finds the plane that best approximates the set. In the example, we use a series of RandomList components to generate random x,y and z coordinates. The points are created By Coordinates, and the list of points is then used as an input for ByBestFitThroughPoints.
+`Circle.ByBestFitThroughPoints` receives point inputs and creates a best-fit circle through them. 
+
+In the example below, a list of randomly generated points is used to generate a circle that best approximates them. We can dynamically increase and decrease the number of points with a number slider, altering the shape of the best-fit circle.
+
 ___
 ## Example File
 

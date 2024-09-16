@@ -177,7 +177,7 @@
                         <ControlTemplate>
                             <Rectangle Width="16" Height="16">
                                 <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Sort.png" />
+                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/sort.png" />
                                 </Rectangle.Fill>
                             </Rectangle>
                         </ControlTemplate>
@@ -815,11 +815,12 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Border>
+        
         <!--  Download bar: A stacking list of (up to 3) most-recently downloaded packages. Appears when the user installs a package.  -->
         <ListBox
             Name="DownloadsListBox"
             Grid.Row="3"
-            Margin="0,5,0,10"
+            Margin="0,5,0,0"
             Background="Transparent"
             BorderThickness="0"
             IsHitTestVisible="True"
@@ -1012,7 +1013,7 @@
         <ListBox
             Name="InfectedListBox"
             Grid.Row="4"
-            Margin="0,5,0,10"
+            Margin="0,5,0,0"
             Background="Transparent"
             BorderThickness="0"
             IsHitTestVisible="True"

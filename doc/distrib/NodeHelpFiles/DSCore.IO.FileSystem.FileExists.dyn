@@ -1,0 +1,245 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.FileExists_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Temp\\Sample.txt",
+      "InputValue": "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\Temp\\Sample.txt",
+      "NodeType": "ExtensionNode",
+      "Id": "054c8c81f54e4af0923e74a37e16a17e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "23eecdd98600468fbe84b2f0a0f4d20f",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.FileExists@string",
+      "Id": "a9db86bad130499583f521a60c2ba3e8",
+      "Inputs": [
+        {
+          "Id": "ff76003a5d81403888d054e9e29a46c6",
+          "Name": "path",
+          "Description": "String representing a file path\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "df23b9461c9645c5b2da79155a138363",
+          "Name": "bool",
+          "Description": "True if file exists, false if it doesn't",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determines if a file exists at the given path.\n\nFileSystem.FileExists (path: string): bool"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.DeleteFile@string",
+      "Id": "3824eede81004d9eb6bfc931acc0ee6d",
+      "Inputs": [
+        {
+          "Id": "c1bf8cf649bf42ca82c758c98d897880",
+          "Name": "path",
+          "Description": "File path to delete\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b2ec5aafca2444cf9a6690ecb9855f0a",
+          "Name": "void",
+          "Description": "Node performs a task, doesn’t produce an output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Deletes the specified file.\n\nFileSystem.DeleteFile (path: string): void"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "811cef94bf2f4046aefd59b406e9608d",
+      "Inputs": [
+        {
+          "Id": "10e6f60c5e5f464ea9cd74287b899a0e",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5d73f194625a4c0ba14da4ee9ebaa5ca",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "23eecdd98600468fbe84b2f0a0f4d20f",
+      "End": "c1bf8cf649bf42ca82c758c98d897880",
+      "Id": "7896cb38c8ce42db972dff039e79aede",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "23eecdd98600468fbe84b2f0a0f4d20f",
+      "End": "ff76003a5d81403888d054e9e29a46c6",
+      "Id": "1b7c6c12be68452794a5ef3e338e65ea",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "df23b9461c9645c5b2da79155a138363",
+      "End": "10e6f60c5e5f464ea9cd74287b899a0e",
+      "Id": "33fb9c154b81434c9af780aec6db5a44",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "054c8c81f54e4af0923e74a37e16a17e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3291.444180727779,
+        "Y": 3792.8606381754057
+      },
+      {
+        "Name": "FileSystem.FileExists",
+        "ShowGeometry": true,
+        "Id": "a9db86bad130499583f521a60c2ba3e8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3589.8441807277791,
+        "Y": 3866.8606381754057
+      },
+      {
+        "Name": "FileSystem.DeleteFile",
+        "ShowGeometry": true,
+        "Id": "3824eede81004d9eb6bfc931acc0ee6d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3919.444180727779,
+        "Y": 3718.8606381754057
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "811cef94bf2f4046aefd59b406e9608d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3919.444180727779,
+        "Y": 3866.8606381754057
+      }
+    ],
+    "Annotations": [],
+    "X": -3109.2463573187424,
+    "Y": -2685.146596958703,
+    "Zoom": 0.96421855318101279
+  }
+}

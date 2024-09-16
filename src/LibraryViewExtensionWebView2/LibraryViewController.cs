@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,18 +8,21 @@ using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using CoreNodeModels.Properties;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
 using Dynamo.LibraryViewExtensionWebView2.Views;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
+using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
@@ -28,6 +31,43 @@ namespace Dynamo.LibraryViewExtensionWebView2
 {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     [ComVisibleAttribute(true)]
+
+    /// <summary>
+    /// This is for the object we're gonna host exposing the functions
+    /// for clipboard management to React component
+    /// </summary>
+    public class ScriptObject
+    {
+        Action<string> onCopyToClipboard;
+        Func<string> onPasteFromClipboard;
+
+        internal ScriptObject(Action<string> onCopyToClipboard, Func<string> onPasteFromClipboard)
+        {
+            this.onCopyToClipboard = onCopyToClipboard;
+            this.onPasteFromClipboard = onPasteFromClipboard;
+        }
+
+        /// <summary>
+        /// This is the function we expose for adding a string to the clipboard
+        /// In React component will be accesible from chrome.webview.hostObjects.scriptObject.CopyToClipboard(text)
+        /// </summary>
+        /// <param name="text">text to be added to the clipboard</param>
+        public void CopyToClipboard(string text)
+        {
+            onCopyToClipboard(text);
+        }
+
+        /// <summary>
+        /// This is the function we expose for paste a string from the clipboard
+        /// In React component will be accesible from chrome.webview.hostObjects.scriptObject.PasteFromClipboard();
+        /// </summary>
+        public string PasteFromClipboard()
+        {
+            return onPasteFromClipboard();
+        }
+
+    }
+
     public class LibraryViewController : IDisposable
     {
         private Window dynamoWindow;
@@ -36,11 +76,12 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private FloatingLibraryTooltipPopup libraryViewTooltip;
         // private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
-        internal WebView2 browser;
+        internal DynamoWebView2 browser;
         ScriptingObject twoWayScriptingObject;
         private const string CreateNodeInstrumentationString = "Search-NodeAdded";
         // TODO remove this when we can control the library state from Dynamo more precisely.
         private bool disableObserver = false;
+        internal AsyncMethodState initState = AsyncMethodState.NotStarted;
 
         private LayoutSpecProvider layoutProvider;
         private NodeItemDataProvider nodeProvider;
@@ -48,6 +89,12 @@ namespace Dynamo.LibraryViewExtensionWebView2
         internal IconResourceProvider iconProvider;
         private LibraryViewCustomization customization;
         internal string WebBrowserUserDataFolder { get; set; }
+
+        //Assuming that the fon size is 14px and the screen height is 1080 initially
+        private const int standardFontSize = 14;
+        private const int standardScreenHeight = 1080;
+        private double libraryFontSize;
+        private const double minimumZoomScale = 0.25d;
 
         /// <summary>
         /// Creates a LibraryViewController.
@@ -66,6 +113,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
 
+            dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
+
             DirectoryInfo webBrowserUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoViewModel.Model.PathManager.UserDataDirectory);
             webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
@@ -73,6 +122,35 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
+
+            /// Create and add the library view to the WPF visual tree.
+            /// Also load the library.html and js files.
+            LibraryViewModel model = new LibraryViewModel();
+            LibraryView view = new LibraryView(model);
+           
+            //Adding the LibraryView to the sidebar ensures that the webview2 component is visible.
+            var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
+            sidebarGrid.Children.Add(view);
+
+            browser = view.mainGrid.Children.OfType<DynamoWebView2>().FirstOrDefault();
+
+            browser.Loaded += Browser_Loaded;
+            browser.SizeChanged += Browser_SizeChanged;
+
+            LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel,
+                    this, this.customization);
+        }
+
+        private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
+        {
+            var preferencesView = (Wpf.Views.PreferencesView)sender;
+            preferencesView.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
+        }
+
+        private void Browser_ZoomFactorChanged(object sender, EventArgs e)
+        {
+            //Multiplies by 100 so the value can be saved as a percentage
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = (int)(browser.ZoomFactor * 100);
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -112,7 +190,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), LibraryViewExtensionWebView2.ExtensionName);
-                LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
 
                 this.disableObserver = false;
             }));
@@ -129,19 +206,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
         }
 
         /// <summary>
-        /// This function logs events to instrumentation if it matches a set of known events
-        /// </summary>
-        /// <param name="eventName">Event Name that gets logged to instrumentation</param>
-        /// <param name="data"> Data that gets logged to instrumentation </param>
-        public void LogEventsToInstrumentation(string eventName, string data)
-        {
-            if (eventName == "Search" || eventName == "Filter-Categories" || eventName == "Search-NodeAdded")
-            {
-                Analytics.LogPiiInfo(eventName, data);
-            }
-        }
-
-        /// <summary>
         /// This method will read the layoutSpecs.json and layoutType and then pass the info to javacript so all the resources can be loaded
         /// </summary>
         /// <param name="browser"></param>
@@ -149,23 +213,42 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             string layoutSpecsjson = String.Empty;
             string loadedTypesjson = String.Empty;
-
-            dynamoWindow.Dispatcher.BeginInvoke(
-            new Action(() =>
+            if (!dynamoViewModel.Model.IsServiceMode)
             {
-                var ext1 = string.Empty;
-                var ext2 = string.Empty;
-                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
-                var loadedTypes = reader.ReadToEnd();
+                dynamoWindow.Dispatcher.BeginInvoke(
+                new Action(() =>
+                {
+                    var ext1 = string.Empty;
+                    var ext2 = string.Empty;
+                    var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
+                    var loadedTypes = reader.ReadToEnd();
 
-                var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
-                var layoutSpec = reader2.ReadToEnd();
+                    var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
+                    var layoutSpec = reader2.ReadToEnd();
 
-                ExecuteScriptFunctionAsync(browser, "refreshLibViewFromData", loadedTypes, layoutSpec);
-            }));
+                    ExecuteScriptFunctionAsync(browser, "refreshLibViewFromData", loadedTypes, layoutSpec);
+                }));
+            }
         }
 
         #endregion
+
+        /// <summary>
+        /// This function will copy a string to clipboard 
+        /// </summary>
+        /// <param name="text">text to be added to clipboard</param>
+        internal void OnCopyToClipboard(string text)
+        {
+            dynamoViewModel.Model.ClipBoard.Clear();
+            Clipboard.SetText(text);
+        }
+
+        /// <summary>
+        /// This function will return the clipboard content
+        /// </summary>
+        internal string OnPasteFromClipboard() {
+            return Clipboard.GetText();
+        }
 
         private string ReplaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
         {
@@ -178,7 +261,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 minifiedURL = $"{magicstringprod}\"{minifiedURL}\"";
             }
-            var searchString = minifiedURL.Replace(magicstringprod, @"./dist").Replace("\"", "");
+            var searchString = minifiedURL.Replace(magicstringprod, @"./dist/").Replace("\"", "");
             var base64 = iconProvider.GetResourceAsString(searchString, out ext);
             if (string.IsNullOrEmpty(base64))
             {
@@ -206,66 +289,70 @@ namespace Dynamo.LibraryViewExtensionWebView2
         //list of resources which have paths embedded directly into the source.
         private readonly Tuple<string, bool>[] dynamicResourcePaths = new Tuple<string, bool>[]
         {
-           Tuple.Create("/resources/ArtifaktElement-Bold.woff",true),
-           Tuple.Create("/resources/ArtifaktElement-Regular.woff",true),
-           Tuple.Create("/resources/bin.svg",true),
-           Tuple.Create("/resources/default-icon.svg",true),
-           Tuple.Create("/resources/library-action.svg",true),
-           Tuple.Create("/resources/library-create.svg",true),
-           Tuple.Create("/resources/library-query.svg",true),
-           Tuple.Create("/resources/indent-arrow-category-down.svg",true),
-           Tuple.Create("/resources/indent-arrow-category-right.svg",true),
-           Tuple.Create("/resources/indent-arrow-down.svg",true),
-           Tuple.Create("/resources/indent-arrow-right.svg",true),
-           Tuple.Create("/resources/plus-symbol.svg",true),
-           Tuple.Create("/resources/search-detailed.svg",true),
-           Tuple.Create("/resources/search-filter.svg",true),
-           Tuple.Create("/resources/search-filter-selected.svg",true),
-           Tuple.Create("/resources/search-icon.svg",true),
-           Tuple.Create("/resources/search-icon-clear.svg",true)
+           Tuple.Create("resources/ArtifaktElement-Bold.woff",true),
+           Tuple.Create("resources/ArtifaktElement-Regular.woff",true),
+           Tuple.Create("resources/bin.svg",true),
+           Tuple.Create("resources/default-icon.svg",true),
+           Tuple.Create("resources/library-action.svg",true),
+           Tuple.Create("resources/library-create.svg",true),
+           Tuple.Create("resources/library-query.svg",true),
+           Tuple.Create("resources/indent-arrow-category-down.svg",true),
+           Tuple.Create("resources/indent-arrow-category-right.svg",true),
+           Tuple.Create("resources/indent-arrow-down.svg",true),
+           Tuple.Create("resources/indent-arrow-right.svg",true),
+           Tuple.Create("resources/plus-symbol.svg",true),
+           Tuple.Create("resources/search-detailed.svg",true),
+           Tuple.Create("resources/search-filter.svg",true),
+           Tuple.Create("resources/search-filter-selected.svg",true),
+           Tuple.Create("resources/search-icon.svg",true),
+           Tuple.Create("resources/search-icon-clear.svg",true)
         };
-
-        /// <summary>
-        /// Creates and adds the library view to the WPF visual tree.
-        /// Also loads the library.html and js files.
-        /// </summary>
-        /// <returns>LibraryView control</returns>
-        internal void AddLibraryView()
-        {
-            LibraryViewModel model = new LibraryViewModel();
-            LibraryView view = new LibraryView(model);
-
-            var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
-            sidebarGrid.Children.Add(view);
-
-            browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
-            browser.Loaded += Browser_Loaded;
-            browser.SizeChanged += Browser_SizeChanged;
-
-            this.browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
-            InitializeAsync();
-
-            LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
-        }
 
         async void InitializeAsync()
         {
-            browser.CoreWebView2InitializationCompleted += Browser_CoreWebView2InitializationCompleted;
-
-            if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
+            if (initState == AsyncMethodState.NotStarted)
             {
-                //This indicates in which location will be created the WebView2 cache folder
-                this.browser.CreationProperties = new CoreWebView2CreationProperties()
-                {
-                    UserDataFolder = WebBrowserUserDataFolder
-                };
-            }
+                initState = AsyncMethodState.Started;
 
-            await browser.EnsureCoreWebView2Async();
-            this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
-            twoWayScriptingObject = new ScriptingObject(this);
-            //register the interop object into the browser.
-            this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
+                try
+                {
+                    var absolutePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                        @"runtimes\win-x64\native");
+                    CoreWebView2Environment.SetLoaderDllFolderPath(absolutePath);
+                }
+                catch (InvalidOperationException e)
+                {
+                    LogToDynamoConsole("WebView2Loader.dll is already loaded successfully.");
+                }
+
+                browser.CoreWebView2InitializationCompleted += Browser_CoreWebView2InitializationCompleted;
+
+                if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
+                {
+                    //This indicates in which location will be created the WebView2 cache folder
+                    this.browser.CreationProperties = new CoreWebView2CreationProperties()
+                    {
+                        UserDataFolder = WebBrowserUserDataFolder
+                    };
+                }
+
+                try
+                {
+                    await browser.Initialize(LogToDynamoConsole);
+
+                    this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+                    twoWayScriptingObject = new ScriptingObject(this);
+                    //register the interop object into the browser.
+                    this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
+                    browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+
+                    initState = AsyncMethodState.Done;
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    LogToDynamoConsole(ex.Message);
+                }
+            }
         }
 
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs args)
@@ -276,14 +363,24 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
         private void Browser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
         {
+            if (!e.IsSuccess)
+            {
+                if (e.InitializationException != null)
+                {
+                    LogToDynamoConsole(e.InitializationException.Message);
+                }
+                LogToDynamoConsole("LibraryViewExtension CoreWebView2 initialization failed.");
+                return;
+            }
+
             LibraryViewModel model = new LibraryViewModel();
             LibraryView view = new LibraryView(model);
 
             var lib_min_template = "LIBPLACEHOLDER";
-            var libHTMLURI = "Dynamo.LibraryViewExtensionWebView2.web.library.library.html";
+            var libHTMLURI = "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS.library.html";
             var stream = LoadResource(libHTMLURI);
 
-            var libMinURI = "Dynamo.LibraryViewExtensionWebView2.web.library.librarie.min.js";
+            var libMinURI = "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS.build.librarie.min.js";
             var libminstream = LoadResource(libMinURI);
             var libminstring = "LIBJS";
             var libraryHTMLPage = "LIBRARY HTML WAS NOT FOUND";
@@ -306,11 +403,20 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
             try
             {
-                 this.browser.NavigateToString(libraryHTMLPage);
+                this.browser.NavigateToString(libraryHTMLPage);
+                SetLibraryFontSize();
+                SetTooltipText();
+                browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100d;
+                browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
+                browser.KeyDown += Browser_KeyDown;
+
+                // Hosts an object that will expose the properties and methods to be called from the javascript side
+                browser.CoreWebView2.AddHostObjectToScript("scriptObject",
+                    new ScriptObject(OnCopyToClipboard, OnPasteFromClipboard));
             }
             catch (Exception ex)
             {
-                string msg = ex.Message;
+                LogToDynamoConsole("LibraryViewExtension CoreWebView2 initialization failed: " + ex.Message);
             }
         }
 
@@ -318,7 +424,51 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             string msg = "Browser Loaded";
             LogToDynamoConsole(msg);
+
+            InitializeAsync();
         }
+
+        // This enum is for matching the modifier keys between C# and javaScript
+        enum ModifiersJS
+        {
+            none = 0,
+            altKey = 1,
+            ctrlKey = 2,
+            shiftKey = 4
+        }
+
+        // This enum is for define the events to be tracked
+        enum EventsTracked
+        {
+            Delete,
+            A,
+            C,
+            V
+        }
+
+        /// <summary>
+        /// Collect the main and modifier key from KeyEventArgs in order to pass
+        /// that data to eventDispatcher (located in library.html) which is responsible
+        /// for binding KeyDown events between dynamo and webview instances
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        ///
+
+        private void Browser_KeyDown(object sender, KeyEventArgs e)
+
+        {
+            if (!Enum.IsDefined(typeof(EventsTracked), e.Key.ToString())) return;
+
+            var synteticEventData = new Dictionary<string, string>
+            {
+                [Enum.GetName(typeof(ModifiersJS), e.KeyboardDevice.Modifiers)] = "true",
+                ["key"] = e.Key.ToString()
+            };
+
+            _ = ExecuteScriptFunctionAsync(browser, "eventDispatcher", synteticEventData);
+        }
+
 
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -327,6 +477,46 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 browser.InvalidateVisual();
                 UpdatePopupLocation();
+                SetLibraryFontSize();
+            }
+        }
+
+        //Changes the size of the font's library depending of the screen height
+        private async void SetLibraryFontSize()
+        {
+            //Gets the height of the primary monitor
+            var height = SystemParameters.PrimaryScreenHeight;
+
+            //Calculates the proportion of the font size depending on the screen height
+            //Changing the scale also changes the screen height (F.E: height of 1080px with 150% will be actually 720px)
+            var fontSize = (standardFontSize * height) / standardScreenHeight;
+
+            if(fontSize != libraryFontSize)
+            {
+                try
+                {
+                    var result = await ExecuteScriptFunctionAsync(browser, "setLibraryFontSize", fontSize);
+                    if (result != null)
+                        libraryFontSize = fontSize;
+                }
+                catch (Exception ex)
+                {
+                    LogToDynamoConsole("Error setting the font size: " + ex.Message);
+                }
+            }
+        }
+
+        private async void SetTooltipText()
+        {
+            var jsonTooltipText = new { create = Resources.TooltipTextCreate, action = Resources.TooltipTextAction, query = Resources.TooltipTextQuery };
+            var jsonString = JsonConvert.SerializeObject(jsonTooltipText);
+            try
+            {
+                var result = await ExecuteScriptFunctionAsync(browser, "setTooltipText", jsonString);
+            }
+            catch (Exception ex)
+            {
+                LogToDynamoConsole("Error setting the tooltip text: " + ex.Message);
             }
         }
 
@@ -433,18 +623,21 @@ namespace Dynamo.LibraryViewExtensionWebView2
             };
             Action<NodeSearchElement> onRemove = e => handler(null);
 
-            //Set up the event callback
-            model.EntryAdded += handler;
-            model.EntryRemoved += onRemove;
-            model.EntryUpdated += handler;
-
-            //Set up the dispose event handler
-            observer.Disposed += () =>
+            if (model != null)
             {
-                model.EntryAdded -= handler;
-                model.EntryRemoved -= onRemove;
-                model.EntryUpdated -= handler;
-            };
+                //Set up the event callback
+                model.EntryAdded += handler;
+                model.EntryRemoved += onRemove;
+                model.EntryUpdated += handler;
+
+                //Set up the dispose event handler
+                observer.Disposed += () =>
+                {
+                    model.EntryAdded -= handler;
+                    model.EntryRemoved -= onRemove;
+                    model.EntryUpdated -= handler;
+                };
+            }
 
             return observer;
         }
@@ -493,11 +686,25 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="customization"></param>
         private void InitializeResourceProviders(DynamoModel model, LibraryViewCustomization customization)
         {
-            var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionWebView2.web.library");
+            var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS");
             iconProvider = new IconResourceProvider(model.PathManager, dllProvider, customization);
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
-            layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json");
+            layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS.layoutSpecs.json");
+        }
+
+        private void DynamoSliderValueChanged(object sender, EventArgs e)
+        {
+            Slider slider = (Slider)sender;
+            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
+            double zoomFactor = slider.Value / 100d;
+
+            //To avoid an invalid value for the zoom factor
+            if (zoomFactor < minimumZoomScale)
+                zoomFactor = minimumZoomScale;
+
+            browser.ZoomFactor = zoomFactor;
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((int)slider.Value);
         }
 
         /// <summary>
@@ -520,7 +727,14 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="meessage"></param>
         internal void LogToDynamoConsole(string message)
         {
-            this.dynamoViewModel.Model.Logger.Log(message);
+            if (DynamoModel.IsTestMode)
+            {
+                System.Console.WriteLine(message);
+            }
+            else
+            {
+                this.dynamoViewModel?.Model?.Logger?.Log(message);
+            }
         }
 
         public void Dispose()
@@ -539,19 +753,29 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 dynamoWindow.StateChanged -= DynamoWindowStateChanged;
                 dynamoWindow.SizeChanged -= DynamoWindow_SizeChanged;
+                browser.ZoomFactorChanged -= Browser_ZoomFactorChanged;
+                dynamoViewModel.PreferencesWindowChanged-= DynamoViewModel_PreferencesWindowChanged;
                 dynamoWindow = null;
+                browser.KeyDown -= Browser_KeyDown;
             }
             if (this.browser != null)
             {
+                browser.CoreWebView2.RemoveHostObjectFromScript("bridgeTwoWay");
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;
                 browser.Dispose();
                 browser = null;
             }
+            twoWayScriptingObject.Dispose();
+            dynamoViewModel = null;
+            commandExecutive = null;
         }
 
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
         {
+            if (webView2.CoreWebView2 == null)
+                return null;
+
             string script = functionName + "(";
             for (int i = 0; i < parameters.Length; i++)
             {
@@ -563,6 +787,15 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
             script += ");";
             return await webView2.ExecuteScriptAsync(script);
+        }
+        /// <summary>
+        /// Gives the library UI information on Dynamo's current context.
+        /// </summary>
+        /// <param name="type"></param>
+        internal void UpdateContext(string type)
+        {
+            ExecuteScriptFunctionAsync(browser, "libController.setHostContext", type);
+            ExecuteScriptFunctionAsync(browser, "replaceImages");
         }
     }
 }

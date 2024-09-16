@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
+using HelixToolkit.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
 using ITransformable = Autodesk.DesignScript.Interfaces.ITransformable;
@@ -79,43 +80,6 @@ namespace Dynamo.Wpf.Rendering
         /// A 4x4 matrix that is used to transform all geometry in the render packaage.
         /// </summary>
         public double[] Transform { get; private set; }
-
-        /// <summary>
-        /// Set the transform that is applied to all geometry in the renderPackage.
-        /// </summary>
-        /// <param name="transform"></param>
-        [Obsolete("This method will be removed in 3.0. Use SetTransform(double[] matrix) instead.")]
-        public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
-        {
-            var xaxis = transform.XAxis;
-            var yaxis = transform.YAxis;
-            var zaxis = transform.ZAxis;
-            var org = transform.Origin;
-
-            var csAsMat = new System.Windows.Media.Media3D.Matrix3D(xaxis.X, xaxis.Z, -xaxis.Y, 0,
-                                                                    zaxis.X, zaxis.Z, -zaxis.Y, 0,
-                                                                    -yaxis.X, -yaxis.Z, yaxis.Y, 0,
-                                                                      org.X, org.Z, -org.Y, 1);
-
-
-            this.Transform = csAsMat.ToArray();
-        }
-
-
-        /// <summary>
-        /// Set the transform that is applied to all geometry in the renderPackage
-        /// by computing the matrix that transforms between from and to.
-        /// </summary>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        [Obsolete("This method will be removed in 3.0.")]
-        public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem from, Autodesk.DesignScript.Geometry.CoordinateSystem to)
-        {
-            var inverse = from.Inverse();
-            var final = inverse.PreMultiplyBy(to);
-
-            this.SetTransform(final);
-        }
 
 
         /// <summary>
@@ -632,6 +596,9 @@ namespace Dynamo.Wpf.Rendering
         /// Add a label position to the render package.
         /// </summary>
         /// <param name="label">Text to be displayed in the label</param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void AddLabel(string label, double x, double y, double z)
         {
             LabelPlaces.Add(new Tuple<string, Vector3>(label, Vector3ForYUp(x, y, z)));
@@ -832,7 +799,7 @@ namespace Dynamo.Wpf.Rendering
         /// This flag is used by the UpdateRenderPackageAsyncTask implementation to flag
         /// any third party usage of deprecated color methods in IRenderPackageSupplement.MeshVerticesRangesAssociatedWithTextureMaps
         /// </summary>
-        [Obsolete("Do not use! This will be removed in Dynamo 3.0")]
+        [Obsolete("Do not use! This will be removed in a future version of Dynamo")]
         public bool AllowLegacyColorOperations { get; set; } = true;
 
         #endregion
@@ -845,8 +812,8 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// Set an instance reference for a specific range of mesh vertices
         /// </summary>
-        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices
-        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices></param>
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
         public void AddInstanceGuidForMeshVertexRange(int startIndex, int endIndex, Guid id)
         {
@@ -871,8 +838,8 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// Set an instance reference for a specific range of line vertices
         /// </summary>
-        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices
-        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices></param>
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
         public void AddInstanceGuidForLineVertexRange(int startIndex, int endIndex, Guid id)
         {
@@ -911,6 +878,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="m42"></param>
         /// <param name="m43"></param>
         /// <param name="m44"></param>
+        /// <param name="id"></param>
         public void AddInstanceMatrix(float m11, float m12, float m13, float m14,
             float m21, float m22, float m23, float m24,
             float m31, float m32, float m33, float m34,
@@ -946,6 +914,7 @@ namespace Dynamo.Wpf.Rendering
         /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
         /// </summary>
         /// <param name="matrix"></param>
+        /// <param name="id"></param>
         public void AddInstanceMatrix(float[] matrix, Guid id)
         {
             if (!ContainsTessellationId(id))

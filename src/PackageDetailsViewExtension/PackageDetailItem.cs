@@ -25,6 +25,7 @@ namespace Dynamo.PackageDetails
         private bool canInstall;
         private bool isEnabledForInstall;
         private string packageName;
+        private string packageSize;
         private PackageLoader PackageLoader { get; }
 
         #endregion
@@ -136,6 +137,20 @@ namespace Dynamo.PackageDetails
         }
 
         /// <summary>
+        /// The size of the current package version.
+        /// //TODO: Point this property to the package version size after it has been added to the db.
+        /// </summary>
+        public string PackageSize
+        {
+            get => packageSize;
+            set
+            {
+                packageSize = value;
+                RaisePropertyChanged(nameof(PackageSize));
+            }
+        }
+
+        /// <summary>
         /// Returs true if package version is not already installed,
         /// false if already installed.
         /// </summary>
@@ -181,6 +196,7 @@ namespace Dynamo.PackageDetails
             this.CopyRightYear = PackageVersion.copyright_year;
             this.CanInstall = canInstall;
             this.IsEnabledForInstall = isEnabledForInstall && canInstall;
+            this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
 
 
             // To avoid displaying package self-dependencies.

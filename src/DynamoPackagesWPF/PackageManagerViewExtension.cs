@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Greg.Responses;
 
@@ -59,6 +60,9 @@ namespace Dynamo.PackageManager.UI
             remove { layouthandler -= value; }
         }
 
+        public event Func<LayoutSpecification> RequestLayoutSpec;
+
+
         Action<NotificationMessage> notificationLogged;
         event Action<NotificationMessage> INotificationSource.NotificationLogged
         {
@@ -75,12 +79,15 @@ namespace Dynamo.PackageManager.UI
 
         public void Dispose()
         {
-            packageManager.PackageLoader.PackgeLoaded -= packageLoadedHandler;
+            if (packageManager != null)
+            {
+                packageManager.PackageLoader.PackgeLoaded -= packageLoadedHandler;
+            }
         }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            RequestLoadLayoutSpecs(packageManager.PackageLoader.LocalPackages);
+            RequestLoadLayoutSpecs(packageManager?.PackageLoader.LocalPackages);
             var packagesToCheck = packageManager?.PackageLoader.LocalPackages;
             if(packagesToCheck != null)
             {
@@ -116,7 +123,7 @@ namespace Dynamo.PackageManager.UI
             foreach (var package in packages)
             {
                 //if package was previously loaded then additional files are already cached.
-                if (package.Loaded)
+                if (package.LoadState.State == PackageLoadState.StateTypes.Loaded)
                 {
                     var vieweExtensionManifests = package.AdditionalFiles.Where(file => file.Model.Name.Contains("ViewExtensionDefinition.xml")).ToList();
                     foreach (var extPath in vieweExtensionManifests)
@@ -150,11 +157,11 @@ namespace Dynamo.PackageManager.UI
                         Resources.TitlePackageTargetOtherHost));
                 }
             }
-
         }
 
         private void RequestLoadLayoutSpecs(IEnumerable<Package> packages)
         {
+            if (packages == null) return;
             foreach(var package in packages)
             {
                 //only load layout specs for built in packages.

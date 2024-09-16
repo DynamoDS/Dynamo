@@ -1,7 +1,10 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
+using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Tests;
 using NUnit.Framework;
+using TestServices;
 
 namespace DynamoCoreWpfTests
 {
@@ -89,7 +92,7 @@ namespace DynamoCoreWpfTests
         }
         [Test]
         public void PackagePathsForInstall_FiltersSomeFilePaths()
-        { 
+        {
             //add a new path to the package paths
             ViewModel.Model.PreferenceSettings.CustomPackageFolders.Add(@"C:\DoesNotExist\DoesNotExist.DLL");
             //set to null, so getter regenerates list
@@ -110,6 +113,77 @@ namespace DynamoCoreWpfTests
             //assert model set method works
             ViewModel.PreferenceSettings.SetTrustWarningsDisabled(true);
             Assert.True(ViewModel.PreferenceSettings.DisableTrustWarnings);
+        }
+
+        [Test]
+        public void TestGetTransformedHostUnits()
+        {
+            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Millimeters),
+                Dynamo.Configuration.Configurations.Units.Meters);
+
+            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Centimeters),
+                Dynamo.Configuration.Configurations.Units.Centimeters);
+
+            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Meters),
+                Dynamo.Configuration.Configurations.Units.Millimeters);
+
+            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Kilometers),
+                Dynamo.Configuration.Configurations.Units.Kilometers);
+
+            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Feet),
+                Dynamo.Configuration.Configurations.Units.Feet);
+
+            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Inches),
+                Dynamo.Configuration.Configurations.Units.Inches);
+
+            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Miles),
+                Dynamo.Configuration.Configurations.Units.Miles);
+        }
+
+        [Test]
+        public void PathManagerWithDifferentHostTest()
+        {
+            PathManager singletonPathManager = PathManager.Instance;
+            TestPathResolverParams revitResolverParams = new TestPathResolverParams()
+            {
+                UserDataRootFolder = "C:\\Users\\user\\AppData\\Roaming\\Dynamo\\Dynamo Revit",
+                CommonDataRootFolder = "C:\\ProgramData\\Autodesk\\RVT 2024\\Dynamo"
+            };
+
+            IPathResolver revitPathResolver = new TestPathResolver(revitResolverParams);
+            string dynamoRevitHostPath = "C:\\Program Files\\Autodesk\\Revit 2024\\AddIns\\DynamoForRevit\\Revit)";
+            singletonPathManager.AssignHostPathAndIPathResolver(dynamoRevitHostPath, revitPathResolver);
+
+            string dynamoRevitUserDataDirectory = Path.Combine(revitResolverParams.UserDataRootFolder, "3.4");
+            string dynamoRevitCommonDataDirectory = Path.Combine(revitResolverParams.CommonDataRootFolder, "3.4");
+            string dynamoRevitSamplesPath = Path.Combine(revitResolverParams.CommonDataRootFolder, "samples\\en-US");
+            string dynamoRevitTemplatesPath = Path.Combine(revitResolverParams.CommonDataRootFolder, "templates\\en-US");
+
+            Assert.AreEqual(Path.GetFullPath(singletonPathManager.UserDataDirectory), Path.GetFullPath(dynamoRevitUserDataDirectory));
+            Assert.AreEqual(Path.GetFullPath(singletonPathManager.CommonDataDirectory), Path.GetFullPath(dynamoRevitCommonDataDirectory));
+            Assert.AreEqual(Path.GetFullPath(singletonPathManager.SamplesDirectory), Path.GetFullPath(dynamoRevitSamplesPath));
+            Assert.AreEqual(Path.GetFullPath(singletonPathManager.DefaultTemplatesDirectory), Path.GetFullPath(dynamoRevitTemplatesPath));
+        }
+
+        [Test]
+        public void EnsureTemplatePathsAreSetAndCanBeUpdated()
+        {
+            PathManager pathManager = PathManager.Instance;
+            Assert.IsFalse(string.IsNullOrEmpty(ViewModel.PreferencesViewModel.TemplateLocation));
+            Assert.IsFalse(string.IsNullOrEmpty(pathManager.DefaultTemplatesDirectory));
+            Assert.IsTrue(ViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Templates));
+            Assert.IsFalse(ViewModel.PreferencesViewModel.CanResetTemplateLocation);
+
+            // Set a new template location
+            ViewModel.Model.UpdatePreferenceItemLocation(PathManager.PreferenceItem.Templates, Path.GetTempPath());
+            Assert.AreEqual(Path.GetTempPath(), ViewModel.PreferencesViewModel.TemplateLocation);
+            Assert.AreEqual(Path.GetTempPath(), ViewModel.PreferenceSettings.TemplateFilePath);
+            Assert.IsTrue(ViewModel.PreferencesViewModel.CanResetTemplateLocation);
+
+            // Reset the template location
+            ViewModel.Model.ResetPreferenceItemLocation(PathManager.PreferenceItem.Templates);
+            Assert.IsTrue(ViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Templates));
+            Assert.IsFalse(ViewModel.PreferencesViewModel.CanResetTemplateLocation);
         }
     }
 }

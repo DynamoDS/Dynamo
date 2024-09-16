@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -21,6 +21,16 @@ namespace Dynamo.Graph.Nodes
                 gathered.Add(n);
                 n.VisibleUpstreamNodes(gathered);
             }
+        }
+
+        /// <summary>
+        /// Provide the upstream nodes that are imediately connected.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        internal static HashSet<NodeModel> ImediateUpstreamNodes(this NodeModel node)
+        {
+            return node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).ToHashSet();
         }
 
         internal static IEnumerable<NodeModel> UpstreamNodesMatchingPredicate(this NodeModel node, List<NodeModel> gathered, Predicate<NodeModel> match)
@@ -157,6 +167,19 @@ namespace Dynamo.Graph.Nodes
                 return elNameAttrib.Name;
 
             return nodeType.FullName;
+        }
+
+        /// <summary>
+        /// Returns the package name of the node
+        /// </summary>
+        /// <param name="node">target NodeModel</param>
+        /// <returns></returns>
+        internal static string GetPackageName(this NodeModel node, Workspaces.PackageInfo packageInfo)
+        {
+            // Only return package name if the node comes from a package
+            if (node == null || !node.IsCustomFunction || packageInfo == null) return string.Empty;
+
+            return packageInfo?.Name;
         }
 
         private static void GetGraphicItemsFromMirrorData(MirrorData mirrorData, List<IGraphicItem> graphicItems)

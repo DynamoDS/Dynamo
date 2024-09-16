@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.GuidedTour;
@@ -119,7 +120,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             guideBackgroundElement.ClearCutOffSection();
             guideBackgroundElement.ClearHighlightSection();
             stopwatch = Stopwatch.StartNew();
-    }
+        }
 
         /// <summary>
         /// Creates the background for the GuidedTour
@@ -174,6 +175,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                dynamoViewModel.OnEnableShortcutBarItems(false);
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
                 Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), currentGuide.SequenceOrder);
             }
@@ -230,7 +232,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void ExitTour()
         {
-
             if (currentGuide != null)
             {
                 foreach (Step tmpStep in currentGuide.GuideSteps)
@@ -239,14 +240,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 }
 
                 string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", "");
-                if (currentGuide.TotalSteps - 1 == currentGuide.CurrentStep.Sequence)
+                int offSet = 1;
+                //Due that the Packages guide doesn't have a Welcome popup (like the other guides) then the Guide.Sequence starts at 1 (instead of 0) when we need to use a offSet = 0
+                if (currentGuide.Name == PackagesGuideName)
+                    offSet = 0;
+                if (currentGuide.TotalSteps - offSet == currentGuide.CurrentStep.Sequence)
                 {
                     Logging.Analytics.TrackEvent(Logging.Actions.Completed, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
                 }
-                else 
+                else
                 {
                     Logging.Analytics.TrackEvent(Logging.Actions.End, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
-                }                
+                }
                 Logging.Analytics.TrackTimedEvent(Logging.Categories.GuidedTourOperations, Logging.Actions.TimeElapsed.ToString(), stopwatch.Elapsed, guidName);
 
                 currentGuide.ClearGuide();
@@ -259,12 +264,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     exitGuideWindow.ContinueTourButton.Click -= ContinueTourButton_Click;
                 }
 
+                dynamoViewModel.OnEnableShortcutBarItems(true);
+
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
                 GuidesValidationMethods.CurrentExecutingGuide = null;
                 tourStarted = false;
             }
-
         }
 
         /// <summary>
@@ -336,7 +342,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 totalTooltips = (from step in guide.GuideSteps
                                  where step.StepType == Step.StepTypes.TOOLTIP ||
                                        step.StepType == Step.StepTypes.SURVEY
-                                 select step).GroupBy(x=>x.Sequence).Count();
+                                 select step).GroupBy(x => x.Sequence).Count();
 
                 foreach (Step step in guide.GuideSteps)
                 {
@@ -384,7 +390,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This method will return a new HostControlInfo object populated with the information passed as parameter
         /// Basically this method store the information coming from Step and search the UIElement in the main WPF VisualTree
         /// </summary>
-        /// <param name="jsonStepInfo">Step that contains all the info deserialized from the Json file</param>
+        /// <param name="jsonHostControlInfo">Step that contains all the info deserialized from the Json file</param>
         /// <returns></returns>
         private HostControlInfo CreateHostControl(HostControlInfo jsonHostControlInfo)
         {
@@ -462,7 +468,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         }
                     };
                     var popupWindow = newStep.stepUIPopup as PopupWindow;
-                    if(popupWindow != null && hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
+                    if (popupWindow != null && hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
                     {
                         popupWindow.WebBrowserUserDataFolder = userDataFolder != null ? userDataFolder.FullName : string.Empty;
                     }
@@ -473,7 +479,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         Sequence = jsonStepInfo.Sequence,
                         RatingTextTitle = formattedText.ToString(),
                         StepType = Step.StepTypes.SURVEY,
-                        IsRatingVisible = dynamoViewModel.Model.PreferenceSettings.IsADPAnalyticsReportingApproved,
+                        IsRatingVisible = Analytics.IsEnabled && !Analytics.DisableAnalytics,
                         StepContent = new Content()
                         {
                             FormattedText = formattedText,
@@ -527,7 +533,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             GuideFlowEvents.OnGuidedTourFinish(currentGuide.Name);
 
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 
-            if(stepType != Step.StepTypes.SURVEY)
+            if (stepType != Step.StepTypes.SURVEY)
                 CreateRealTimeInfoWindow(Res.ExitTourWindowContent);
         }
 
@@ -544,10 +550,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
 
             // When popup already exist, replace it
-            if ( exitTourPopup != null && exitTourPopup.IsOpen)
-            {
-                exitTourPopup.IsOpen = false;
-            }
+            CloseRealTimeInfoWindow();
             // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
             // to show the popup over the Dynamo workspace
             exitTourPopup = new RealTimeInfoWindow()
@@ -562,6 +565,28 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (hostUIElement != null)
                 exitTourPopup.PlacementTarget = hostUIElement;
             exitTourPopup.IsOpen = true;
+        }
+
+        /// <summary>
+        /// Closes the exitTourPopup if exist and it's open
+        /// </summary>
+        internal void CloseRealTimeInfoWindow()
+        {
+            if (exitTourPopup != null && exitTourPopup.IsOpen)
+            {
+                exitTourPopup.IsOpen = false;
+            }
+        }
+
+        /// <summary>
+        /// Returns if the ExitTourPopup (Toast Notification) is open or not.
+        /// </summary>
+        internal bool ExitTourPopupIsVisible
+        {
+            get
+            {
+                return exitTourPopup != null && exitTourPopup.IsOpen;
+            }
         }
     }
 }

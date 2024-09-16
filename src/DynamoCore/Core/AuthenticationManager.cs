@@ -1,5 +1,4 @@
-﻿using System;
-
+using System;
 using Greg;
 using Greg.AuthProviders;
 
@@ -12,6 +11,7 @@ namespace Dynamo.Core
     public class AuthenticationManager
     {
         private readonly IAuthProvider authProvider;
+        private static LoginState loginStateInitial;
 
         /// <summary>
         ///     Occurs when login state is changed
@@ -29,15 +29,37 @@ namespace Dynamo.Core
         /// <summary>
         ///     Specifies whether the user is logged in or not.
         /// </summary>
-        internal LoginState LoginState
+        public LoginState LoginState
         {
             get { return HasAuthProvider ? authProvider.LoginState : LoginState.LoggedOut; }
         }
 
         /// <summary>
+        /// This Property will return the initial LoginState assigned in the constructor in order to be used in the Initialization flow. Others features require direct calls to the LoginState due to are on demand.
+        /// </summary>
+        public LoginState LoginStateInitial
+        {
+            get { return loginStateInitial; }
+        }
+
+        internal bool IsLoggedIn()
+        {            
+            return HasAuthProvider && authProvider.LoginState == LoginState.LoggedIn ? true : false;
+        }
+
+        /// <summary>
+        /// This function will return the value by checking the LoginStateSingle property (which load its value only once time) used only in the initialization flow
+        /// </summary>
+        /// <returns></returns>
+        internal bool IsLoggedInInitial()
+        {
+            return HasAuthProvider && LoginStateInitial == LoginState.LoggedIn ? true : false;
+        }
+
+        /// <summary>
         ///     The username of the current user, if logged in.  Otherwise null
         /// </summary>
-        internal string Username
+        public string Username
         {
             get { return HasAuthProvider ? authProvider.Username : ""; }
         }
@@ -62,6 +84,7 @@ namespace Dynamo.Core
             // session.  Hence, we do not subscribe to this event.
             if (this.authProvider != null)
             {
+                loginStateInitial = LoginState;
                 this.authProvider.LoginStateChanged += OnLoginStateChanged;
             }
         }
@@ -82,14 +105,6 @@ namespace Dynamo.Core
             }
         }
 
-        /// <summary>
-        /// Check if able to toggle login state
-        /// </summary>
-        internal bool CanToggleLoginState(object o)
-        {
-            return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
-        }
-
         internal void Login()
         {
             if (!HasAuthProvider) return;
@@ -106,6 +121,7 @@ namespace Dynamo.Core
         {
             if (LoginStateChanged != null)
             {
+                loginStateInitial = status;
                 LoginStateChanged(status);
             }
         }

@@ -1,11 +1,16 @@
-﻿using System;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.PythonServices;
@@ -18,6 +23,36 @@ using PythonNodeModelsWpf.Controls;
 
 namespace PythonNodeModelsWpf
 {
+    internal static class PythonNodeUtils
+    {
+        /// <summary>
+        /// Returns unique set of names from loaded and deserialized engines.
+        /// </summary>
+        /// <param name="nodeModel"></param>
+        /// <returns></returns>
+        internal static List<string> GetEngineNames(NodeModel nodeModel)
+        {
+            var engineName = string.Empty;
+            switch (nodeModel)
+            {
+                case PythonNode pyNode:
+                    engineName = pyNode.EngineName;
+                    break;
+                case PythonStringNode pyNode:
+                    engineName = pyNode.EngineName;
+                    break;
+            }
+
+            var availableEngineNames = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
+            // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
+            if (!availableEngineNames.Contains(engineName))
+            {
+                availableEngineNames.Add(engineName);
+            }
+            return availableEngineNames.Distinct().ToList();
+        }
+    }
+
     public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
     {       
         private DynamoViewModel dynamoViewModel;
@@ -25,6 +60,7 @@ namespace PythonNodeModelsWpf
         private NodeView pythonNodeView;
         private WorkspaceModel workspaceModel;
         private ScriptEditorWindow editWindow;
+        private DynamoView dynamoView;
         private ModelessChildWindow.WindowRect editorWindowRect;
         private readonly MenuItem editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
         private MenuItem pythonEngineVersionMenu;
@@ -42,24 +78,29 @@ namespace PythonNodeModelsWpf
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += EditScriptContent;
 
+            var previousdelegates = pythonNodeModel.GetInvocationListForEditAction();
+
+            // Unsubscibe any previous listeners to the EditNode action when switching views.
+            foreach (Delegate d in previousdelegates)
+            {
+                pythonNodeModel.EditNode -= (Action<string>)d;
+            }
+
+            pythonNodeModel.EditNode += EditScriptContent;
+            pythonNodeModel.PropertyChanged += NodeModel_PropertyChanged;
+
             pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
 
             learnMoreItem.Click += OpenPythonLearningMaterial;
 
-            var availableEngineNames = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
-            // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
-            if (!availableEngineNames.Contains(nodeModel.EngineName))
-            {
-                availableEngineNames.Add(nodeModel.EngineName);
-            }
-            availableEngineNames.ForEach(x => AddPythonEngineToMenuItems(x));
+            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => dynamoViewModel.AddPythonEngineToMenuItems(
+                new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, engineName, true));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
             nodeView.MainContextMenu.Items.Add(learnMoreItem);
-
-            nodeView.UpdateLayout();
+            
 
             nodeView.MouseDown += View_MouseDown;
             nodeModel.DeletionStarted += NodeModel_DeletionStarted;
@@ -73,6 +114,21 @@ namespace PythonNodeModelsWpf
             nodeView.grid.Children.Add(engineLabel);
             Grid.SetColumn(engineLabel, 0);
             Grid.SetRow(engineLabel, 3);
+        }
+
+       
+
+        /// <summary>
+        /// Check if the script editor is saved.
+        /// </summary>
+        /// <returns></returns>
+        internal bool IsEditorSaved()
+        {
+            if (editWindow != null)
+            {
+                return editWindow.IsSaved;
+            }
+            return false;
         }
 
         /// <summary>
@@ -92,7 +148,18 @@ namespace PythonNodeModelsWpf
             {
                 editWindow.Close();
             }
+
+            // When the node is disposed, close the script editor if it is docked in the right SideBar
+            if (dynamoView != null && IsEditorCurrentlyDocked())
+            {
+                var tabItem = dynamoViewModel.SideBarTabItems.FirstOrDefault(t => t.Uid == pythonNodeModel.GUID.ToString());
+                dynamoView.CloseRightSideBarTab(tabItem);
+            }
+
             editWindowItem.Click -= EditScriptContent;
+            pythonNodeModel.EditNode -= EditScriptContent;
+            pythonNodeModel.PropertyChanged -= NodeModel_PropertyChanged;
+
             if (pythonEngineVersionMenu != null)
             {
                 foreach (var item in pythonEngineVersionMenu.Items)
@@ -110,7 +177,7 @@ namespace PythonNodeModelsWpf
 
         private void NodeModel_DeletionStarted(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (editWindow != null)
+            if (editWindow != null || IsEditorCurrentlyDocked())
             {
                 var res = MessageBoxService.Show(
                     String.Format(
@@ -143,21 +210,90 @@ namespace PythonNodeModelsWpf
 
         private void EditScriptContent(object sender, EventArgs e)
         {
-            using (var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("PythonEdit"))
+            try
             {
-                if (editWindow != null)
+                using (var cmd = Dynamo.Logging.Analytics.TrackTaskCommandEvent("PythonEdit"))
                 {
-                    editWindow.Activate();
-                }
-                else
-                {
-                    editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
-                    editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
-                    editWindow.Closed += editWindow_Closed;
-                    editWindow.Show();
+                    if (editWindow != null)
+                    {
+                        editWindow.Activate();
+                        dynamoView = editWindow.Owner as DynamoView;
+                    }
+                    else
+                    {
+                        editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
+
+                        if (pythonNodeModel.ScriptContentSaved || sender == null)
+                        {
+                            editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
+                        }
+                        else
+                        {
+                            editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", sender.ToString());
+                            editWindow.IsSaved = false;
+                        }
+
+                        editWindow.Closed += editWindow_Closed;
+                        dynamoView = editWindow.Owner as DynamoView;
+
+                        if (IsEditorInDockedState())
+                        {
+                            editWindow.DockWindow();
+                        }
+                        else
+                        {
+                            editWindow.Show();
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Failed to open script editor window.");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            }
         }
+
+        // Checks the state of this node script editor, either DockRight or FloatingWindow
+        private bool IsEditorInDockedState()
+        {
+            var nodemodel = pythonNodeModel as NodeModel;
+            dynamoViewModel.NodeWindowsState.TryGetValue(nodemodel.GUID.ToString(), out ViewExtensionDisplayMode viewExtensionDisplayMode);
+
+            return viewExtensionDisplayMode.Equals(ViewExtensionDisplayMode.DockRight);
+        }
+
+        // Checks if this node editor is currrently docked(and opened) in the right side-bar
+        private bool IsEditorCurrentlyDocked()
+        {
+            var nodemodel = pythonNodeModel as NodeModel;
+            return dynamoViewModel.DockedNodeWindows.Contains(nodemodel.GUID.ToString());
+        }
+
+        private void EditScriptContent(string text)
+        {
+            EditScriptContent(text, null);
+        }
+
+        private void NodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                // If this node is renamed, update the tab header in the right SideBar
+                case nameof(NodeModel.Name):
+                    if (dynamoView != null && IsEditorCurrentlyDocked())
+                    {
+                        TabItem tabItem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == pythonNodeModel.GUID.ToString());
+                        if (tabItem != null)
+                        {
+                            tabItem.Header = pythonNodeModel.Name;
+                        }
+                    }
+                    break;
+            }
+        }
+
 
         /// <summary>
         /// MenuItem click handler
@@ -166,10 +302,7 @@ namespace PythonNodeModelsWpf
         {
             if (sender is MenuItem menuItem)
             {
-                dynamoViewModel.ExecuteCommand(
-                   new DynamoModel.UpdateModelValueCommand(
-                       Guid.Empty, pythonNodeModel.GUID, nameof(pythonNodeModel.EngineName), (string)menuItem.Header));
-                pythonNodeModel.OnNodeModified();
+                dynamoViewModel.UpdatePythonNodeEngine(pythonNodeModel, (string)menuItem.Header);
             }
         }
 
@@ -179,25 +312,12 @@ namespace PythonNodeModelsWpf
             {
                 foreach (var item in e.NewItems)
                 {
-                    AddPythonEngineToMenuItems((item as PythonEngine).Name);
+                    if(item is PythonEngine newEngine)
+                    {
+                        dynamoViewModel.AddPythonEngineToMenuItems(new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, newEngine.Name, true);
+                    }
                 }   
             }
-        }
-
-        /// <summary>
-        /// Adds python engine to MenuItems
-        /// </summary>
-        private void AddPythonEngineToMenuItems(string engineName)
-        {
-            var pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
-            pythonEngineItem.Click += UpdateEngine;
-            pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.EngineName))
-            {
-                Source = pythonNodeModel,
-                Converter = new CompareToParameterConverter(),
-                ConverterParameter = engineName
-            });
-            pythonEngineVersionMenu.Items.Add(pythonEngineItem);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Dynamo.Session
 {
@@ -81,5 +81,6 @@ namespace Dynamo.Session
         /// The return value is an ILogger
         /// </summary>
         public static readonly string Logger = nameof(Logger);
+        
     }
 }

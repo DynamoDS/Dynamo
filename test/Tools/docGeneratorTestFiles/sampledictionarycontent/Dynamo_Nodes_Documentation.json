@@ -4342,5 +4342,23 @@
     "dynFile": ["TrimWhitespace"],
     "folderPath": "String/Modify/Action",
     "inDepth": "TrimWhitespace will remove all the whitespace of an input string. In the example below, we start with the string '     Hello World     ', which has several leading and trailing spaces. By using TrigWhitespace, we can remove the spaces at the beginning and end of the string, as well as the space between 'Hello' and 'World'."
+}, {
+    "Name": "Remember",
+    "imageFile": ["Remember"],
+    "dynFile": ["Remember"],
+    "folderPath": "ImportExport/Data/Action",
+    "inDepth": "Store data passing through this node to the Dynamo file. Return the stored data if the input is null."
+}, {
+    "Name": "Gate",
+    "imageFile": ["Gate"],
+    "dynFile": ["Gate"],
+    "folderPath": "Script/Control Flow/Action",
+    "inDepth": "Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.\n\nIn Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit"
+}, {
+     "Name": "DefineData",
+     "imageFile": ["DefineData"],
+     "dynFile": ["DefineData"],
+     "folderPath": "Input/Object/Action",
+     "inDepth": "Validates and returns data from a currently or previously connected node."
 }
 ]

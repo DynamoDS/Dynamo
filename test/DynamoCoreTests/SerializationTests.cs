@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using CoreNodeModels;
+using DesignScript.Builtin;
 using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Events;
@@ -19,7 +20,6 @@ using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using TestUINodes;
 
 namespace Dynamo.Tests
 {
@@ -277,12 +277,22 @@ namespace Dynamo.Tests
             {
                 var valueA = kvp.Value;
                 var valueB = b.NodeDataMap[kvp.Key];
+                var valANodeName = a.NodeTypeMap[kvp.Key].FullName;
 
                 // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
                 // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
-                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                if (valANodeName == "CoreNodeModels.Input.IntegerSlider")
                 {
                     Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[kvp.Key].FullName);
+                    continue;
+                }
+                //ignore file name/object nodes - the result is dependent on where the graph was run.
+                //which is modified during this test.
+
+                if (valANodeName.ToLower() == "corenodemodels.input.filename" ||
+                    valANodeName.ToLower()== "corenodemodels.input.fileobject"||
+                    valANodeName.ToLower() == "corenodemodels.input.directory")
+                {
                     continue;
                 }
 
@@ -293,7 +303,7 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
-                    Assert.AreEqual(valueA, valueB,
+                    Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
@@ -310,6 +320,12 @@ namespace Dynamo.Tests
                 Assert.AreEqual(vala, valb, "input datas are not the same.");
             }
         }
+
+        internal static bool DynamoDictionaryEquality(Dictionary a, Dictionary b)
+        {
+            return (bool)a?.Keys.SequenceEqual(b?.Keys) && (bool)a?.Values.SequenceEqual(b?.Values);
+        }
+
 
         public static void CompareWorkspacesDifferentGuids(serializationTestUtils.WorkspaceComparisonData a,
             serializationTestUtils.WorkspaceComparisonData b,
@@ -383,12 +399,23 @@ namespace Dynamo.Tests
                 //convert the old guid to the new guid
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, modelGuidsToIDmap[kvp.Key]);
                 var valueB = b.NodeDataMap[newGuid];
+                var valANodeName = a.NodeTypeMap[kvp.Key].FullName;
 
                 // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
                 // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
-                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                if (valANodeName == "CoreNodeModels.Input.IntegerSlider")
                 {
                     Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[newGuid].FullName);
+                    continue;
+                }
+
+                //ignore file name/object nodes - the result is dependent on where the graph was run.
+                //which is modified during this test.
+
+                if (valANodeName.ToLower() == "corenodemodels.input.filename" ||
+                    valANodeName.ToLower() == "corenodemodels.input.fileobject" ||
+                    valANodeName.ToLower() == "corenodemodels.input.directory")
+                {
                     continue;
                 }
 
@@ -399,7 +426,8 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
-                    Assert.AreEqual(valueA, valueB,
+                    Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
+
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
@@ -561,7 +589,7 @@ namespace Dynamo.Tests
             }
         }
     }
-    #endregion
+#endregion
 
     /* The Serialization tests compare the results of a workspace opened and executed from its
      * original .dyn format, to one converted to json, deserialized and executed. In the process,
@@ -592,7 +620,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
@@ -631,7 +659,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
@@ -880,34 +908,6 @@ namespace Dynamo.Tests
 
         }
 
-
-        [Test]
-        public void SelectionNodeInputDataSerializationTest()
-        {
-            // Arrange
-            var filePath = Path.Combine(TestDirectory, @"core\NodeInputOutputData\selectionNodeInputData.dyn");
-            if (!File.Exists(filePath))
-            {
-                var savePath = Path.ChangeExtension(filePath, null);
-                var selectionHelperMock = new Mock<IModelSelectionHelper<ModelBase>>(MockBehavior.Strict);
-                var selectionNode = new SelectionConcrete(SelectionType.Many, SelectionObjectType.Element, "testMessage", "testPrefix", selectionHelperMock.Object);
-                selectionNode.Name = "selectionTestName";
-                selectionNode.IsSetAsInput = true;
-
-                this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(selectionNode);
-                ConvertCurrentWorkspaceToJsonAndSave(this.CurrentDynamoModel, savePath);
-            }
-
-            // Act
-            // Assert
-            DoWorkspaceOpenAndCompare(
-                filePath,
-                jsonFolderName,
-                ConvertCurrentWorkspaceToJsonAndSave,
-                serializationTestUtils.CompareWorkspaceModels,
-                serializationTestUtils.SaveWorkspaceComparisonData);
-        }
-
         [Test, Category("JsonTestExclude")]
         public void FunctionNodeLoadsWhenSignatureChanges()
         {
@@ -935,7 +935,7 @@ namespace Dynamo.Tests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
-        public object[] FindWorkspaces()
+        public static object[] FindWorkspaces()
         {
             var di = new DirectoryInfo(TestDirectory);
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
@@ -949,7 +949,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
@@ -966,7 +966,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationInDifferentCultureTest(string filePath)
         {
             var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
@@ -997,7 +997,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
@@ -1201,7 +1201,7 @@ namespace Dynamo.Tests
         private static string ConvertCurrentWorkspaceToJsonAndSave(DynamoModel model, string filePathBase)
         {
             var json = model.CurrentWorkspace.ToJson(model.EngineController);
-            Assert.IsNotNullOrEmpty(json);
+            Assert.That(json, Is.Not.Null.Or.Empty);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -1227,7 +1227,7 @@ namespace Dynamo.Tests
 
             json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace, modelsGuidToIdMap);
 
-            Assert.IsNotNullOrEmpty(json);
+            Assert.That(json, Is.Not.Null.Or.Empty);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);

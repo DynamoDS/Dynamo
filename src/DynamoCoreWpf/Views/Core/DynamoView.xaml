@@ -7,6 +7,7 @@
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:workspaces="clr-namespace:Dynamo.Graph.Workspaces;assembly=DynamoCore"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:uiviews="clr-namespace:Dynamo.UI.Views"
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
         xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
@@ -85,7 +86,9 @@
         <KeyBinding Key="A"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.SelectAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
-
+        <KeyBinding Key="K"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.UnpinAllPreviewBubblesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="D"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -111,7 +114,14 @@
                     Command="{Binding Path=DataContext.ShowSaveDialogAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="O"
                     Modifiers="Control"
-                    Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultAsyncCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="T"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.ShowOpenTemplateDialogAsyncCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                    CommandParameter="Template"/>
+        <KeyBinding Key="I"
+                    Modifiers="Control+Shift"
+                    Command="{Binding Path=DataContext.ShowInsertDialogAndInsertResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="H"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -174,9 +184,6 @@
         <MouseBinding Gesture="Shift+LeftDoubleClick"
                       Command="{Binding Path=DataContext.HomeSpaceViewModel.ShowInCanvasSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
-        <KeyBinding Key="T"
-                    Modifiers="Control"
-                    Command="{Binding Path=DataContext.ShowNewPresetsDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="F1"
                     Command="{Binding Path=DataContext.ShowNodeDocumentationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
@@ -303,9 +310,6 @@
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
-                            <MenuItem.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                            </MenuItem.ToolTip>
                         </MenuItem>
                             <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
@@ -334,13 +338,27 @@
                             </MenuItem>
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpen}"
-                                  Command="{Binding ShowOpenDialogAndOpenResultCommand}"
-                                  Name="openButton"
-                                  InputGestureText="Ctrl + O">
+                                  Name="openButton">
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpenFile}"
+                                      Name="openFileMenuItem"
+                                      Command="{Binding ShowOpenDialogAndOpenResultCommand}"
+                                      InputGestureText="Ctrl + O">
+                            </MenuItem>
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuOpenTemplate}"
+                                      Name="openTemplateMenuItem"
+                                      Command="{Binding ShowOpenTemplateDialogCommand}"
+                                      CommandParameter="Template"
+                                      InputGestureText="Ctrl + T">
+                            </MenuItem>
+                        </MenuItem>
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuInsert}"
+                                  Command="{Binding ShowInsertDialogAndInsertResultCommand}"
+                                  Name="insertButton"
+                                  InputGestureText="Ctrl + Shift + I">
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuRecentFiles}"
                                   ItemsSource="{Binding RecentFiles}">
-                            <MenuItem.ItemContainerStyle>
+                            <MenuItem.ItemContainerStyle>   
                                 <Style TargetType="MenuItem">
                                     <Setter Property="Header"
                                             Value="{Binding Converter={StaticResource FilePathDisplayConverter}}" />
@@ -355,12 +373,14 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuSave}"
                                   Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}"
                                   Name="saveThisButton"
-                                  InputGestureText="Ctrl + S">
+                                  InputGestureText="Ctrl + S"
+                                  IsEnabled="False">
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuSaveAs}"
                                   Command="{Binding ShowSaveDialogAndSaveResultCommand}"
                                   Name="saveButton"
-                                  InputGestureText="Ctrl + Shift + S">
+                                  InputGestureText="Ctrl + Shift + S"
+                                  IsEnabled="False">
                         </MenuItem>
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuImport}"
@@ -369,13 +389,14 @@
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExport}"
                                   Name="exportMenu"
-                                  Tag="NoDownArrow">
+                                  Tag="NoDownArrow"
+                                  IsEnabled="False">
                             <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExportAsImage}"
-                                      Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                      Command="{Binding ValidateWorkSpaceBeforeToExportAsImageCommand }"
                                       Name="saveImage">
                             </MenuItem>
                             <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExport3DAsImage}"
-                                      Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                      Command="{Binding ValidateWorkSpaceBeforeToExportAsImageCommand }"
                                       CommandParameter="{x:Static p:Resources.ScreenShotFrom3DParameter}"
                                       Name="save3DImage">
                             </MenuItem>
@@ -429,6 +450,10 @@
                                   Command="{Binding SelectAllCommand}"
                                   Name="selectAll"
                                   InputGestureText="Ctrl + A" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuUnpinAllPreviewBubbles}"
+                                  Command="{Binding UnpinAllPreviewBubblesCommand}"
+                                  Name="unpinPB"
+                                  InputGestureText="Ctrl + K"/>                        
                         <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeleteSelected}"
                                   Command="{Binding DeleteCommand}"
                                   Name="deleteSelected"
@@ -509,6 +534,8 @@
                                 </MenuItem.Header>
                             </MenuItem>
                         </MenuItem>
+                        <MenuItem Header="{x:Static p:Resources.UpdateAllPythonEngineMainMenuHeader}"
+                              Name="PythonEngineMenu" />
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCleanupLayout}"
                                   Command="{Binding GraphAutoLayoutCommand}"
@@ -598,27 +625,20 @@
                               Name="PackageManagerMenu"
                               Focusable="False"
                               IsEnabled="True">
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewPackageMenuSearchPackage}"
-                                  Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Name="showPMSearch" />
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewPackageMenuPublishPackage}"
-                                  Command="{Binding Path=DataContext.PublishNewPackageCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Name="publishNewPackage" />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewPackageMenuPublishNodes}"
                                   Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishSelected" />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewPackageMenuPublishWorkspace}"
                                   Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishCurrent" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewPackageMenuPackageManager}"
+                                  Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  Name="showPM" />
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
                               Name="HelpMenu"
                               Focusable="False">
-                        <MenuItem Header="{x:Static p:Resources.GettingStartedMenuItem}"
-                                  Name="WhatsNew"
-                                  Command="{Binding ShowGalleryCommand}">
-                        </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.InteractiveGuides}"
                                   x:Name="InteractiveGuidesMenuItem"
                                   Command="{Binding DisplayInteractiveGuideCommand}">
@@ -644,8 +664,11 @@
                                   Command="{Binding GoToDictionaryCommand}">
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoWebsite}"
-                                  Command="{Binding GoToSourceCodeCommand}"
+                                  Command="{Binding GoToWebsiteCommand}"
                                   Name="ViewDynamoWebsite"/>
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoRepo}"
+                                  Command="{Binding GoToSourceCodeCommand}"
+                                  Name="ViewDynamoRepo"/>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoWiki}"
                                   Command="{Binding GoToWikiCommand}"
                                   Name="ViewDynamoWiki"/>
@@ -692,19 +715,14 @@
                                   Command="{Binding MutateTestDelegateCommand}"
                                   CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
                                   IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
-                        <MenuItem Name="CheckDailyBuilds"
-                                  Header="{x:Static p:Resources.DynamoViewDebugMenuCheckDailyBuild}"
-                                  DataContext="{Binding Path=Model.UpdateManager}"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding Path=CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
-                        <MenuItem Name="ForceUpdate"
-                                  Header="{x:Static p:Resources.DynamoViewDebugMenuForceUpdate}"
-                                  DataContext="{Binding Path=Model.UpdateManager}"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}" />
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
-                                  Command="{Binding DumpLibraryToXmlCommand}"
-                                  IsEnabled="True" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpData}"
+                                  Name="dumpDataMenuMenu">
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
+                                      Command="{Binding DumpLibraryToXmlCommand}"
+                                      IsEnabled="True" />
+                            <MenuItem  Header="{x:Static p:Resources.DynamoViewDebugMenuDumpNodeHelpData}"
+                                       Command="{Binding DumpNodeHelpDataCommand}" IsEnabled="True"/>
+                        </MenuItem>
                         <MenuItem Name="DebugModes"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"
@@ -712,6 +730,10 @@
                         <MenuItem Name="FileTrustWarning"
                                   Header="{x:Static p:Resources.DynamoShowFileTrustWarning}"
                                   Click="FileTrustWarning_Click"
+                                  IsCheckable="False" />
+                        <MenuItem Name="UpdateNodeIcons"
+                                  Header="{x:Static p:Resources.UpdateNodeIconsDebugMenu}"
+                                  Click="UpdateNodeIcons_Click"
                                   IsCheckable="False" />
                     </MenuItem>
                 </Menu>
@@ -735,11 +757,6 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-
-            <Grid Name="loginGrid" 
-                  Grid.Row="0" 
-                  Grid.Column="1">
-            </Grid>
 
             <Border Name="shortcutBarBorder"
                     BorderThickness="0"
@@ -1367,7 +1384,7 @@
                     Background="{StaticResource HighlightedBrush}"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Margin="0,310,0,0">
+                    Margin="0,400,0,0">
             <Grid Background="#353535"
                   Width="Auto"
                   Cursor="Hand">
@@ -1424,7 +1441,7 @@
             </StackPanel.RenderTransform>
         </StackPanel>
 
-        <!--Collapsed Extension Sidebar-->
+        <!--Collapsed right sidebar panel-->
         <StackPanel Grid.Row="2"
                     Grid.Column="2"
                     Orientation="Vertical"
@@ -1434,7 +1451,7 @@
                     Background="{StaticResource HighlightedBrush}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
-                    Margin="0,310,0,0"
+                    Margin="0,400,0,0"
                     RenderTransformOrigin="1,0">
             <Grid Background="#353535"
                   Width="Auto"
@@ -1480,7 +1497,7 @@
                                    Foreground="#aaaaaa"
                                    FontWeight="Normal"
                                    Margin="0,5,5,0"
-                                   Text="{x:Static p:Resources.ExtensionsViewTitle}"
+                                   Text="{x:Static p:Resources.SideBarPanelViewTitle}"
                                    RenderTransformOrigin="0.5,0.5">
                                 <TextBlock.RenderTransform>
                                     <RotateTransform Angle="180"/>
@@ -1544,7 +1561,7 @@
               Grid.RowSpan="2">
         </Grid>
 
-        <!--Right Extensions Sidebar-->
+        <!--Right Sidebar Panel-->
         <Grid Height="Auto"
               Width="Auto"
               HorizontalAlignment="Stretch"
@@ -1554,7 +1571,7 @@
               Grid.Row="2"
               Grid.Column="4"
               Grid.RowSpan="2">
-            <TabControl Name="tabDynamic" Background="#353535" BorderThickness="0" ItemsSource="{Binding}">
+            <TabControl Name="tabDynamic" Background="#353535" BorderThickness="0" ItemsSource="{Binding SideBarTabItems, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                 <TabControl.Resources>
                     <!--Styling for the close button in the tab-->
                     <Style TargetType="{x:Type Button}"
@@ -1567,8 +1584,6 @@
                                     Value="Center" />
                         <Setter Property="HorizontalAlignment"
                                     Value="Right" />
-                        <Setter Property="Margin"
-                                    Value="8,2,0,0" />
                         <Setter Property="Background"
                                     Value="Transparent" />
                         <Setter Property="BorderThickness"
@@ -1588,14 +1603,19 @@
                         </Setter>
                     </Style>
 
-                    <!--Template for tab header in the extensions side bar-->
+                    <!--Template for tab header in the right side bar-->
                     <DataTemplate x:Key="TabHeader" DataType="TabItem">
                         <DockPanel HorizontalAlignment="Stretch" Name ="TabPanel" MinWidth="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}">
-                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Stretch"/>
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}"
+                                       FontFamily="{StaticResource ArtifaktElementBold}"
+                                       FontSize="12"
+                                       Margin="5,7,0,0"
+                                       HorizontalAlignment="Stretch"/>
+                            
                             <!--Button to close a particular tab-->
-                            <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="CloseExtensionTab"
-                                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
-                                <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="OnCloseRightSideBarTab"
+                                    Margin="5,5,5,0" Uid="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Uid}">
+                                <Image Width="18" Height="18" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">
                                             <Style.Triggers>
@@ -1613,9 +1633,9 @@
                                 </Image>
                             </Button>
                             <!-- Undock -->
-                            <Button Name="UndockButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="UndockExtensionTab"
-                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
-                                <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button Name="UndockButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="OnUndockRightSideBarTab"
+                                    Margin="8,5,0,0" Uid="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Uid}">
+                                <Image Width="18" Height="18" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">
                                             <Style.Triggers>
@@ -1635,7 +1655,7 @@
                         </DockPanel>
                     </DataTemplate>
 
-                    <!--Styling for the tab in the extensions side bar-->
+                    <!--Styling for the tab in the right side bar-->
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="MinWidth" Value="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}" />
                         <Setter Property="Template">
@@ -1739,7 +1759,7 @@
                       Background="Transparent"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
-        <!--Split Between Extension and Canvas-->
+        <!--Split Between Right Sidebar panel and Canvas-->
         <GridSplitter ResizeDirection="Auto"
                       Grid.Column="3"
                       Grid.Row="2"
@@ -1755,41 +1775,45 @@
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
         <!--Start Page-->
-        <ItemsControl Name="startPageItemsControl"
-                      Grid.Row="2"
-                      Grid.RowSpan="4"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="5">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type uictrls:StartPageViewModel}">
-                    <Grid>
-                        <Grid.Height>
-                            <Binding Path="ActualHeight"
-                                     Mode="OneWay"
-                                     RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
-                        </Grid.Height>
-                        <uictrls:StartPageView />
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.Visibility>
-                <Binding Path="DataContext.ShowStartPage"
-                         Mode="OneWay"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                         Converter="{StaticResource BooleanToVisibilityConverter}"
-                         UpdateSourceTrigger="Explicit" />
-            </ItemsControl.Visibility>
-        </ItemsControl>
-
-        <!--Gallery or What's new-->
-        <Grid Name="galleryBackground"
-              Visibility="Hidden"
-              Canvas.ZIndex="2"
-              MouseLeftButtonDown="OnGalleryBackgroundMouseClick">
-            <Grid.Background>
-                <SolidColorBrush Color="Black" Opacity="0.8"/>
-            </Grid.Background>
-        </Grid>
+        <Grid x:Name="oldHomePageContainer"
+              Visibility="{Binding IsNewAppHomeEnabled,
+                                    Converter={StaticResource InverseBoolToVisibilityConverter},
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+              Grid.Row="2"
+              Grid.RowSpan="4"
+              Grid.Column="0"
+              Grid.ColumnSpan="5">
+            <ItemsControl Name="startPageItemsControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type uictrls:StartPageViewModel}">
+                        <Grid>
+                            <Grid.Height>
+                                <Binding Path="ActualHeight"
+                                         Mode="OneWay"
+                                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
+                            </Grid.Height>  
+                            <uictrls:StartPageView />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.Visibility>
+                    <Binding Path="DataContext.ShowStartPage"
+                             Mode="OneWay"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                             UpdateSourceTrigger="Explicit" />
+                </ItemsControl.Visibility>
+            </ItemsControl>
+            </Grid>
+        <!--Do not delete newHomePageContainer grid as it is hosting the HomePage-->
+        <Grid x:Name="newHomePageContainer"
+              Visibility="{Binding IsNewAppHomeEnabled, 
+                                   Converter={StaticResource BooleanToVisibilityConverter}, 
+                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+              Grid.Row="2"
+              Grid.RowSpan="4"
+              Grid.Column="0"
+              Grid.ColumnSpan="5"/>
 
         <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
     </Grid>

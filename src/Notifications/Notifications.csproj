@@ -1,4 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
 	<ImportGroup Label="PropertySheets">
 		<Import Project="$(SolutionDir)Config\CS_SDK.props" />
 	</ImportGroup>
@@ -8,32 +11,59 @@
 		<AppDesignerFolder>Properties</AppDesignerFolder>
 		<RootNamespace>Dynamo.Notifications</RootNamespace>
 		<AssemblyName>Notifications</AssemblyName>
+        <EnableDefaultPageItems>false</EnableDefaultPageItems>
 	</PropertyGroup>
 
-	<Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-		<Exec Command="npm install --prefix ./ @dynamods/notifications-center@latest" />
-	</Target>
+    <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+        <PropertyGroup>
+            <PackageVersion>0.0.29</PackageVersion>
+            <PackageName>NotificationCenter</PackageName>
+        </PropertyGroup>
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
+            <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+        </Exec>
+        <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high"></Message>
+        
+        <!--This command updates the npm registry configuration if necessary-->
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1"  Condition="$(ShouldInstall)"/>
+        <!--This command gets a specific build of the notifcation center from npm-->
+        <Exec Command="npm pack @dynamods/notifications-center@$(PackageVersion)"  Condition="$(ShouldInstall)"/>
+    </Target>
 
+    <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
+        <!--Locates the .tgz files-->
+        <ItemGroup>
+            <TGZFiles Include="./dynamods-notifications-center-*.tgz" />
+        </ItemGroup>
+
+        <!--Gets the last one-->
+        <PropertyGroup>
+            <Last>%(TGZFiles.Filename)</Last>
+        </PropertyGroup>
+
+        <!--Creates the folder for the package-->
+        <MakeDir Directories="Packages/NotificationCenter" />
+
+        <!--Extracts the file to /package-->
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/NotificationCenter"></Exec>
+
+        <!--Deletes the tgz file-->
+        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
+    </Target>
+    
+    
 	<ItemGroup>
-		<None Remove="node_modules\%40dynamods\package.json" />
-		<None Remove="node_modules\%40dynamods\README.md" />
+		<None Remove="package\package.json" />
+		<None Remove="package\README.md" />
 		<None Remove="View\NotificationUI.xaml" />
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="node_modules\@dynamods\notifications-center\build\index.bundle.js" />
-		<EmbeddedResource Include="node_modules\@dynamods\notifications-center\build\index.html" />
+		<EmbeddedResource Include="Packages\NotificationCenter\build\index.bundle.js" />
+		<EmbeddedResource Include="Packages\NotificationCenter\build\index.html" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
-		<Reference Include="Microsoft.Practices.Prism">
-			<HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
-		<Reference Include="PresentationCore" />
-		<Reference Include="PresentationFramework" />
-		<Reference Include="System.Xaml" />
-		<Reference Include="WindowsBase" />
+		<PackageReference Include="FontAwesome5" Version="2.1.11" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">

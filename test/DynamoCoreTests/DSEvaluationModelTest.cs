@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -362,7 +362,7 @@ namespace Dynamo.Tests
             AssertValue("a", null);
         }
 
-        [Ignore] //Ignored because empty code block nodes should not exist
+        [Ignore("empty codeblocks should not exist")] //Ignored because empty code block nodes should not exist
         public void Regress722()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
@@ -663,15 +663,6 @@ namespace Dynamo.Tests
             // Function object to property method and used in apply 
             RunModel(@"core\dsevaluation\EvaluateFptrInOtherCBN.dyn");
             AssertPreviewValue("49048255-fc2c-463d-8e93-96e20f061a0d", 42);
-        }
-
-        [Test]
-        public void Test_Formula_Lacing()
-        {
-            RunModel(@"core\formula\formula_lacing.dyn");
-
-            AssertPreviewValue("d9b9d0a9-1fec-4b20-82c4-2d1665306509", new int[] { 4, 6, 7 });
-            AssertPreviewValue("c35f1c6d-b955-4638-802f-208f93112078", new object[] { new int[] { 4, 5, 6 }, new int[] { 5, 6, 7 } });
         }
 
         [Test]

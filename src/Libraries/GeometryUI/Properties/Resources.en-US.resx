@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExportToSATDescripiton" xml:space="preserve">
-    <value>Exports the specified geometry to the given SAT  file path.</value>
+    <value>Exports the given geometry to the given SAT file path</value>
   </data>
   <data name="ExportToSatFilePathDescription" xml:space="preserve">
     <value>File to export the geometry to.</value>
@@ -147,6 +147,9 @@
   </data>
   <data name="ImportToSATUnitsDesc" xml:space="preserve">
     <value>Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+  </data>
+  <data name="PanelSurfaceBoundaryConditionDropDownDesc" xml:space="preserve">
+    <value>A drop down node that allow easy access to PanelSurface BoundaryCondition possible values</value>
   </data>
   <data name="SABSATGeoDesc" xml:space="preserve">
     <value>Loaded geometry</value>

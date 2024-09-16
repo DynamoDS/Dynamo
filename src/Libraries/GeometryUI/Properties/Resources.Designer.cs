@@ -61,7 +61,7 @@ namespace GeometryUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exports the specified geometry to the given SAT  file path..
+        ///   Looks up a localized string similar to Exports the given geometry to the given SAT file path.
         /// </summary>
         public static string ExportToSATDescripiton {
             get {
@@ -147,6 +147,15 @@ namespace GeometryUI.Properties {
         public static string ImportToSATUnitsDesc {
             get {
                 return ResourceManager.GetString("ImportToSATUnitsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A drop down node that allow easy access to PanelSurface BoundaryCondition possible values.
+        /// </summary>
+        public static string PanelSurfaceBoundaryConditionDropDownDesc {
+            get {
+                return ResourceManager.GetString("PanelSurfaceBoundaryConditionDropDownDesc", resourceCulture);
             }
         }
         

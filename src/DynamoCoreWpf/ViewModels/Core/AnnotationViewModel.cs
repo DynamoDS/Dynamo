@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -25,7 +25,7 @@ namespace Dynamo.ViewModels
         private AnnotationModel annotationModel;
         private IEnumerable<PortModel> originalInPorts;
         private IEnumerable<PortModel> originalOutPorts;
-        private Dictionary<Guid, int> GroupIdToCutGeometryIndex = new Dictionary<Guid, int>();
+        private Dictionary<Guid, Geometry> GroupIdToCutGeometry = new Dictionary<Guid, Geometry>();
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
@@ -175,6 +175,22 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Id of the applied GroupStyle
+        /// </summary>
+        [JsonIgnore]
+        public Guid GroupStyleId
+        {
+            get
+            {
+                return annotationModel.GroupStyleId;
+            }
+            set
+            {
+                annotationModel.GroupStyleId = value;
+            }
+        }
+
         [JsonIgnore]
         public IEnumerable<ModelBase> Nodes
         {
@@ -244,25 +260,20 @@ namespace Dynamo.ViewModels
             get => annotationModel.IsExpanded;
             set
             {
+                // This change is triggered by the user interaction in the View.
+                // Before we updating the value in the Model and ViewModel
+                // we record the current state in the UndoRedoStack.
+                // This ensures that any modifications can be reverted by the user.
+                var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
+                using (undoRecorder.BeginActionGroup())
+                {
+                    undoRecorder.RecordModificationForUndo(annotationModel);
+                }
+
                 annotationModel.IsExpanded = value;
-                InPorts.Clear();
-                OutPorts.Clear();
-                if (value)
-                {
-                    this.ShowGroupContents();       
-                }
-                else
-                {
-                    this.SetGroupInputPorts();
-                    this.SetGroupOutPorts();
-                    this.CollapseGroupContents(true);
-                    RaisePropertyChanged(nameof(NodeContentCount));
-                }
-                WorkspaceViewModel.HasUnsavedChanges = true;
-                AddGroupToGroupCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged(nameof(IsExpanded));
-                RedrawConnectors();
-                ReportNodesPosition();
+
+                // Methods to collapse or expand the group based on the new value of IsExpanded.
+                ManageAnnotationMVExpansionAndCollapse();
             }
         }
 
@@ -334,15 +345,6 @@ namespace Dynamo.ViewModels
             {
                 return new System.Windows.Rect(0, 0, Width, ModelAreaHeight);
             }
-        }
-
-        /// <summary>
-        /// This property getter returns an empty GeometryCollection
-        /// </summary>
-        [Obsolete("This property will be removed in Dynamo 3.0 - please use NestedGroupsGeometries instead.")]
-        public GeometryCollection NestedGroupsGeometryCollection
-        {
-            get => new GeometryCollection();
         }
 
         /// <summary>
@@ -436,6 +438,25 @@ namespace Dynamo.ViewModels
                 return removeGroupFromGroup;
             }
         }
+
+        private DelegateCommand dissolveNestedGroup;
+        /// <summary>
+        /// Command to dissolve hosted groups inside the host group
+        /// belongs to.
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand DissolveNestedGroupsCommand
+        {
+            get
+            {
+                if (dissolveNestedGroup == null)
+                    dissolveNestedGroup =
+                        new DelegateCommand(DissolveNestedGroups, CanUngroupGroup);
+
+                return dissolveNestedGroup;
+            }
+        }
+
 
         private bool CanAddToGroup(object obj)
         {
@@ -533,6 +554,44 @@ namespace Dynamo.ViewModels
             Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
         }
 
+        private void DissolveNestedGroups(object parameters)
+        {
+            // For this command to work, this needs to be a host group
+            if (!this.AnnotationModel.HasNestedGroups) return;
+
+            var hostedAnnotations = this.Nodes.OfType<AnnotationModel>();
+            var nodes = GetAllHostedNodes(hostedAnnotations);
+            DynamoSelection.Instance.ClearSelection();
+
+            foreach (var annotation in hostedAnnotations)
+            {
+                var annotationGuid = annotation.GUID;
+                this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+                WorkspaceViewModel.DynamoViewModel.UngroupAnnotationCommand.Execute(null);
+            }
+
+            foreach (var node in nodes)
+            {
+                this.AnnotationModel.AddToTargetAnnotationModel(node);
+            }
+
+            RaisePropertyChanged(nameof(ZIndex));
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
+        }
+
+        private List<ModelBase> GetAllHostedNodes(IEnumerable<AnnotationModel> hostedAnnotations)
+        {
+            List<ModelBase> result = new List<ModelBase>();
+
+            foreach (var annotation in hostedAnnotations)
+            {
+                result.AddRange(annotation.Nodes);
+            }
+
+            return result;
+        }
+
         private bool CanUngroupGroup(object parameters)
         {
             return BelongsToGroup();
@@ -542,6 +601,12 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+
+        /// <summary>
+        /// Command to toggle this group's node preview visibility.
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand ToggleIsVisibleGroupCommand { get; private set; }
         #endregion
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
@@ -553,6 +618,7 @@ namespace Dynamo.ViewModels
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
+            ToggleIsVisibleGroupCommand = new DelegateCommand(ToggleIsVisibleGroup, CanToggleIsVisibleGroup);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
@@ -571,7 +637,7 @@ namespace Dynamo.ViewModels
 
             ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
 
-            // Add all grouped AnnotaionModels to the CutGeometryDictionary.
+            // Add all grouped AnnotationModels to the CutGeometryDictionary.
             // And raise ZIndex changed to make sure nested groups have
             // a higher zIndex than the parent.
             using (NestedGroupsGeometries.DeferCollectionReset())
@@ -721,13 +787,6 @@ namespace Dynamo.ViewModels
                     .Where(p => !p.IsConnected ||
                                 !p.Connectors.All(c => Nodes.Contains(c.End.Owner)))
                 );
-        }
-
-        private double GetPortVerticalOffset(PortModel portModel, int proxyPortIndex)
-        {
-            // calculate the vertical offset based on the port index.
-            double portHeight = portModel.Height;
-            return verticalOffset + (proxyPortIndex * portHeight) + portVerticalMidPoint;
         }
 
         private Point2D CalculatePortPosition(PortModel portModel, double verticalPosition)
@@ -916,7 +975,7 @@ namespace Dynamo.ViewModels
                 .SelectMany(x => x.Nodes.OfType<NodeModel>())
                 .Concat(this.Nodes.OfType<NodeModel>());
 
-            foreach (var connector in allNodes.SelectMany(x=>x.AllConnectors))
+            foreach (var connector in allNodes.SelectMany(x => x.AllConnectors))
             {
                 var connectorViewModel = WorkspaceViewModel
                     .Connectors
@@ -944,7 +1003,7 @@ namespace Dynamo.ViewModels
                 if (viewModel is AnnotationViewModel annotationViewModel)
                 {
                     // Update connectors and ports if the nested group is not collapsed
-                    if(annotationViewModel.Nodes.Any() && !annotationViewModel.IsCollapsed)
+                    if (annotationViewModel.Nodes.Any() && !annotationViewModel.IsCollapsed)
                     {
                         UpdateConnectorsAndPortsOnShowContents(annotationViewModel.Nodes);
                     }
@@ -987,6 +1046,36 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// Manages the expansion or collapse of the annotation group in the view model.
+        /// </summary>
+        private void ManageAnnotationMVExpansionAndCollapse()
+        {
+            if (InPorts.Any() || OutPorts.Any())
+            {
+                InPorts.Clear();
+                OutPorts.Clear();
+            }
+
+            if (annotationModel.IsExpanded)
+            {
+                this.ShowGroupContents();
+            }
+            else
+            {
+                this.SetGroupInputPorts();
+                this.SetGroupOutPorts();
+                this.CollapseGroupContents(true);
+                RaisePropertyChanged(nameof(NodeContentCount));
+            }
+            WorkspaceViewModel.HasUnsavedChanges = true;
+            AddGroupToGroupCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(IsExpanded));
+            RedrawConnectors();
+            ReportNodesPosition();
+        }
+
         private void UpdateFontSize(object parameter)
         {
             if (parameter == null) return;
@@ -1007,6 +1096,8 @@ namespace Dynamo.ViewModels
             if (itemEntryParameter == null) return;
 
             Background = (Color)ColorConverter.ConvertFromString("#" + itemEntryParameter.HexColorString);
+            FontSize = (double)itemEntryParameter.FontSize;
+            GroupStyleId = itemEntryParameter.GroupStyleId;
 
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
@@ -1137,6 +1228,10 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(AnnotationModel.Position));
                     UpdateProxyPortsPosition();
                     break;
+                case nameof(IsExpanded):
+                    ManageAnnotationMVExpansionAndCollapse();
+                    break;
+
             }
         }
 
@@ -1156,17 +1251,20 @@ namespace Dynamo.ViewModels
         {
             using (NestedGroupsGeometries.DeferCollectionReset())
             {
-                ViewModelBases
-                    .OfType<AnnotationViewModel>()
-                    .ToList()
-                    .ForEach(x => UpdateGroupCutGeometry(x));
+                if (ViewModelBases != null)
+                {        
+                    ViewModelBases
+                        .OfType<AnnotationViewModel>()
+                        .ToList()
+                        .ForEach(x => UpdateGroupCutGeometry(x));
+                }
             }
         }
 
         private void HandleNodesCollectionChanges()
         {
             var allGroupedGroups = Nodes.OfType<AnnotationModel>();
-            var removedFromGroup = GroupIdToCutGeometryIndex.Keys
+            var removedFromGroup = GroupIdToCutGeometry.Keys
                 .ToList()
                 .Except(allGroupedGroups.Select(x => x.GUID));
 
@@ -1179,7 +1277,7 @@ namespace Dynamo.ViewModels
 
                 var addedToGroup = allGroupedGroups
                     .Select(x => x.GUID)
-                    .Except(GroupIdToCutGeometryIndex.Keys.ToList());
+                    .Except(GroupIdToCutGeometry.Keys.ToList());
 
                 foreach (var key in addedToGroup)
                 {
@@ -1196,14 +1294,14 @@ namespace Dynamo.ViewModels
 
         private void RemoveKeyFromCutGeometryDictionary(Guid groupGuid)
         {
-            if (GroupIdToCutGeometryIndex is null ||
-                !GroupIdToCutGeometryIndex.ContainsKey(groupGuid))
+            if (GroupIdToCutGeometry is null ||
+                !GroupIdToCutGeometry.ContainsKey(groupGuid))
             {
                 return;
             }
 
-            NestedGroupsGeometries.RemoveAt(GroupIdToCutGeometryIndex[groupGuid]);
-            GroupIdToCutGeometryIndex.Remove(groupGuid);
+            NestedGroupsGeometries.Remove(GroupIdToCutGeometry[groupGuid]);
+            GroupIdToCutGeometry.Remove(groupGuid);
 
             var groupViewModel = this.WorkspaceViewModel.Annotations
                 .Where(x => x.AnnotationModel.GUID == groupGuid)
@@ -1218,11 +1316,12 @@ namespace Dynamo.ViewModels
         private void AddToCutGeometryDictionary(AnnotationViewModel annotationViewModel)
         {
             var key = annotationViewModel.AnnotationModel.GUID;
-            if (GroupIdToCutGeometryIndex.ContainsKey(key)) return;
+            if (GroupIdToCutGeometry.ContainsKey(key)) return;
 
             int nextPos = NestedGroupsGeometries.Count;
-            NestedGroupsGeometries.Insert(nextPos, CreateRectangleGeometry(annotationViewModel));
-            GroupIdToCutGeometryIndex[key] = nextPos;
+            var geo = CreateRectangleGeometry(annotationViewModel);
+            NestedGroupsGeometries.Insert(nextPos, geo);
+            GroupIdToCutGeometry[key] = geo;
 
             annotationViewModel.PropertyChanged += GroupViewModel_PropertyChanged;
         }
@@ -1256,22 +1355,46 @@ namespace Dynamo.ViewModels
         private void UpdateGroupCutGeometry(AnnotationViewModel annotationViewModel)
         {
             var key = annotationViewModel.AnnotationModel.GUID;
-            if (GroupIdToCutGeometryIndex == null ||
-                !GroupIdToCutGeometryIndex.ContainsKey(key))
+            if (GroupIdToCutGeometry == null ||
+                !GroupIdToCutGeometry.ContainsKey(key))
             {
                 return;
             }
-            var index = GroupIdToCutGeometryIndex[key];
-            if (index >= 0 &&
-                index < NestedGroupsGeometries.Count)
+            var geo = GroupIdToCutGeometry[key];
+            if (geo != null)
             {
-                NestedGroupsGeometries[index] = CreateRectangleGeometry(annotationViewModel);
+                int index = NestedGroupsGeometries.IndexOf(geo);
+                if (index >= 0 && index < NestedGroupsGeometries.Count)
+                {
+                    NestedGroupsGeometries[index] = CreateRectangleGeometry(annotationViewModel);
+                }
             }
         }
 
         private bool BelongsToGroup()
         {
             return WorkspaceViewModel.Model.Annotations.ContainsModel(this.annotationModel);
+        }
+
+        internal void ToggleIsVisibleGroup(object parameters)
+        {
+            DynamoSelection.Instance.ClearSelection();
+            var nodesInGroup = this.AnnotationModel.Nodes.Select(n => n.GUID).ToList();
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+            nodesInGroup, nameof(this.AnnotationModel.IsVisible), (!this.AnnotationModel.IsVisible).ToString());
+
+            this.AnnotationModel.IsVisible = !this.AnnotationModel.IsVisible;
+            WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);
+            WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
+            WorkspaceViewModel.HasUnsavedChanges = true;
+
+            Analytics.TrackEvent(Actions.Preview, Categories.GroupOperations, this.AnnotationModel.IsVisible.ToString());
+        }
+
+        internal bool CanToggleIsVisibleGroup(object parameters)
+        {
+            return true;
         }
 
         public override void Dispose()

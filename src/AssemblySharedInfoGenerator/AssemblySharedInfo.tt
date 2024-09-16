@@ -1,4 +1,4 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
 using System;
 using System.Reflection;
 using System.Resources;
@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyCompany("Autodesk, Inc")]
 [assembly: AssemblyProduct("Dynamo")]
-[assembly: AssemblyCopyright("Copyright © Autodesk, Inc 2022")]
+[assembly: AssemblyCopyright("Copyright © Autodesk, Inc 2024")]
 [assembly: AssemblyTrademark("")]
 
 //In order to begin building localizable applications, set
@@ -67,10 +67,10 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyFileVersion("<#= this.MajorVersion #>.<#= this.MinorVersion #>.<#= this.BuildNumber #>.<#= this.RevisionNumber #>")]
 <#+
-int MajorVersion = 2;
-int MinorVersion = 17;
+int MajorVersion = 3;
+int MinorVersion = 4;
 int BuildNumber = 0;
 // The datetime baseline we choose using this algorithm will affect build number and all nuget packages uploaded
 // Please only change when major or minor version got incremented
-int RevisionNumber = ((int)(DateTime.UtcNow - new DateTime(2022,1,1)).TotalDays)*10+((int)DateTime.UtcNow.Hour)/3;
+int RevisionNumber = ((int)(DateTime.UtcNow - new DateTime(2023,1,1)).TotalDays)*10+((int)DateTime.UtcNow.Hour)/3;
 #>

@@ -222,7 +222,7 @@ Default value: 1</value>
     <value>Download latest version</value>
     <comment>Button Download Lastest</comment>
   </data>
-  <data name="ArggOKButton" xml:space="preserve">
+  <data name="052465" xml:space="preserve">
     <value>Arrrrg, ok</value>
     <comment>Button OK</comment>
   </data>
@@ -740,6 +740,12 @@ Parameter name: {0}</value>
     <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
     <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
   </data>
+  <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
+    <value>{0} files and {1} folders will be created.</value>
+  </data>
+  <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
+    <value>{0} files and {1} folders loaded.</value>
+  </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored.</value>
   </data>
@@ -781,10 +787,10 @@ This package is loaded and ready to be used.</value>
 This package has not been loaded because another conflicting package was loaded before it.</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group description&gt;</value>
+    <value>Description &lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group title&gt;</value>
+    <value>Title &lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="OutputPortAlternativeName" xml:space="preserve">
     <value>output</value>
@@ -876,18 +882,42 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>Low confidence</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>There’s no node that we can recommend to you, you may try</value>
-  </data>
-  <data name="AutocompleteSwitchToObjectTypeMessage" xml:space="preserve">
-    <value>switching to Object Type Autocomplete</value>
+    <value>There are no recommendations yet. You can try switching to node type match autocomplete.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>We are not very confident that the nodes below will work, you may try them or</value>
-  </data>
-  <data name="AutocompleteLowConfidenceMessageAditional" xml:space="preserve">
-    <value>to view more options</value>
+    <value>All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
-    <value>Low Confidence Tooltip</value>
+    <value>Show Recommendations that are below the confidence level.</value>
+  </data>
+  <data name="LoginNeededTitle" xml:space="preserve">
+    <value>Not authenticated</value>
+  </data>
+  <data name="LoginNeededMessage" xml:space="preserve">
+    <value>You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete.</value>
+  </data>
+  <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
+    <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>
+  </data>
+  <data name="InsertDialogBoxText" xml:space="preserve">
+    <value>Insert Dynamo Definition...</value>
+  </data>
+  <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
+    <value>Example file added to workspace. Run mode changed to Manual.</value>
+  </data>
+  <data name="DynamoLanguages_noxlate" xml:space="preserve">
+    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+  </data>
+  <data name="FormulaDSConversionFailure" xml:space="preserve">
+    <value>Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node.</value>
+  </data>
+  <data name="FormulaMigrated" xml:space="preserve">
+    <value>Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script.</value>
+  </data>
+  <data name="LegacyTraceDataWarning" xml:space="preserve">
+    <value>This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding data will be saved in the new format the next time you run and save this workspace.</value>
+  </data>
+  <data name="InputNodeRenameHint" xml:space="preserve">
+    <value>default input name, rename me!</value>
   </data>
 </root>

@@ -14,7 +14,8 @@
             <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>
     </xsl:template>
-  
+      <!--NOTE! THESE excludes do not affect the harvest folder-->
+
     <!--Exclude *.xml-->
     <xsl:key name="xml-search" match="wix:Component[contains(@Directory, 'INSTALLDIR') and (contains(wix:File/@Source, '.xml') or contains(wix:File/@Source, '.XML')) and not(contains(wix:File/@Source, '_DynamoCustomization.xml') or contains(wix:File/@Source, '.Migrations.xml'))]" use="@Id"/>
     <xsl:template match="wix:Component[key('xml-search', @Id)]" />
@@ -88,9 +89,4 @@
     <xsl:template match="wix:Directory[@Name = 'samples']" />
     <xsl:key name="samples-search" match="wix:Component[contains(wix:File/@Source, '\samples\')]" use="@Id"/>
     <xsl:template match="wix:Component[key('samples-search', @Id)]" />
-
-    <!--Exclude 'gallery' folders-->
-    <xsl:template match="wix:Directory[@Name = 'gallery']" />
-    <xsl:key name="gallery-search" match="wix:Component[contains(wix:File/@Source, '\gallery\')]" use="@Id"/>
-    <xsl:template match="wix:Component[key('gallery-search', @Id)]" />  
 </xsl:stylesheet>

@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
@@ -10,6 +9,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
@@ -17,6 +17,7 @@ using ProtoCore.Utils;
 using ProtoScript.Runners;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
+using RuntimeInfo = ProtoCore.Runtime.InfoEntry;
 
 namespace Dynamo.Engine
 {
@@ -42,6 +43,11 @@ namespace Dynamo.Engine
         /// The event notifies client that the VMLibraries have been reset and the VM is now ready to run the new code. 
         /// </summary>
         internal static event Action VMLibrariesReset;
+
+        /// <summary>
+        /// Dynamo version in which the current workspace was last created or modified.
+        /// </summary>
+        internal Version CurrentWorkspaceVersion { get; set; }
 
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
@@ -152,6 +158,8 @@ namespace Dynamo.Engine
             syncDataManager = new SyncDataManager();
 
             VerboseLogging = verboseLogging;
+
+            CurrentWorkspaceVersion = AssemblyHelper.GetDynamoVersion();
         }
 
         /// <summary>
@@ -381,7 +389,6 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="scheduler">The scheduler on which custom node compilation 
         /// task can be scheduled.</param>
-        /// 
         internal void ProcessPendingCustomNodeSyncData(IScheduler scheduler)
         {
             while (pendingCustomNodeSyncData.Count > 0)
@@ -430,7 +437,8 @@ namespace Dynamo.Engine
 
             foreach (var node in nodes)
             {
-                if (!node.IsInputNode) continue;
+                //Ignore inputs, nodes with input ports, and nodes derived from custom nodes.
+                if (!node.IsInputNode || node.InPorts.Any() || node.IsCustomFunction) continue;
 
                 // Only one or the other of the two lists, Added or Modified, will match the node GUID if they do. 
                 bool isAdded = false;
@@ -500,6 +508,11 @@ namespace Dynamo.Engine
             return liveRunnerServices.GetRuntimeWarnings();
         }
 
+        internal IDictionary<Guid, List<RuntimeInfo>> GetRuntimeInfos()
+        {
+            return liveRunnerServices.GetRuntimeInfos();
+        }
+
         internal IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
         {
             return liveRunnerServices.GetExecutedAstGuids(sessionID);
@@ -517,7 +530,7 @@ namespace Dynamo.Engine
                 throw new ObjectDisposedException("EngineController");
             }
 
-            var callsiteToOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+            var callsiteToOrphanMap = new Dictionary<Guid, List<string>>();
             foreach (var cs in liveRunnerServices.RuntimeCore.RuntimeData.CallsiteCache.Values)
             {
                 var orphanedSerializables = cs.GetOrphanedSerializables().ToList();
@@ -635,22 +648,11 @@ namespace Dynamo.Engine
         /// <summary>
         /// Creates CompilationServices.
         /// </summary>
-        /// <param name="core">Copilation core</param>
+        /// <param name="libraryServices">Copilation core</param>
         public CompilationServices(LibraryServices libraryServices)
         {
             compilationCore = libraryServices.LibraryManagementCore;
             priorNames = libraryServices.GetPriorNames();
-        }
-
-        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
-        /// <summary>
-        /// Pre-compiles Design script code in code block node.
-        /// </summary>
-        /// <param name="parseParams">Container for compilation related parameters</param>
-        /// <returns>true if code compilation succeeds, false otherwise</returns>
-        public bool PreCompileCodeBlock(ref ParseParam parseParams)
-        {
-            return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);
         }
 
         /// <summary>
@@ -667,11 +669,11 @@ namespace Dynamo.Engine
     internal class TraceReconciliationEventArgs : EventArgs
     {
         /// <summary>
-        /// A list of ISerializable items.
+        /// A list of string items.
         /// </summary>
-        public Dictionary<Guid, List<ISerializable>> CallsiteToOrphanMap { get; private set; }
+        public Dictionary<Guid, List<string>> CallsiteToOrphanMap { get; private set; }
 
-        public TraceReconciliationEventArgs(Dictionary<Guid, List<ISerializable>> callsiteToOrphanMap)
+        public TraceReconciliationEventArgs(Dictionary<Guid, List<string>> callsiteToOrphanMap)
         {
             CallsiteToOrphanMap = callsiteToOrphanMap;
         }
@@ -679,6 +681,6 @@ namespace Dynamo.Engine
 
     public interface ITraceReconciliationProcessor
     {
-        void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
+        void PostTraceReconciliation(Dictionary<Guid, List<string>> orphanedSerializables);
     }
 }

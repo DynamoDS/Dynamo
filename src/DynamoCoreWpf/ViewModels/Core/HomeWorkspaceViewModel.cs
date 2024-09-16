@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -75,7 +75,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         public bool HasErrors
         {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Error); }
+            get { return Model.HasErrors; }
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         public bool HasInfos
         {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Info); }
+            get { return Model.HasInfos; }
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         public bool HasWarnings
         {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
+            get { return Model.HasWarnings; }
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 }
             }
 
-            //if the graph is executed then set the node preview to false , provided
+            //if the graph is executed then set the node preview to false, provided
             // there is no error on that node.
             if (nodeGuids.Count == 0 && graphExecuted)
             {
@@ -347,7 +347,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             else
                 if (FooterNotificationItems[1].NotificationCount != 0) FooterNotificationItems[1].NotificationCount = 0;
             if (hasInfo)
-                FooterNotificationItems[2].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Info);
+                FooterNotificationItems[2].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo);
             else
                 if (FooterNotificationItems[2].NotificationCount != 0) FooterNotificationItems[2].NotificationCount = 0;
         }
@@ -440,7 +440,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                     FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
                     break;
                 case FooterNotificationItem.FooterNotificationType.Information:
-                    nodes = Model.Nodes.Where(n => n.State == ElementState.Info);
+                    nodes = Model.Nodes.Where(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo);
                     FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
                     break;
             }
@@ -449,6 +449,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// A sequence of methods to zoom around a selection of nodes 
         /// </summary>
         /// <param name="selectedNodes"></param>
+        /// <param name="currentNotificationType"></param>
         private void FitSelection(IEnumerable<NodeModel> selectedNodes, FooterNotificationItem.FooterNotificationType currentNotificationType)
         {
             Guid nodeToSelect = Guid.Empty;

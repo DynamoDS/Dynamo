@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -15,35 +18,10 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
-	<Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-		<Exec Command="npm install --prefix ./ @dynamods/splash-screen@latest" />
-    </Target>
-
   <PropertyGroup>
     <ApplicationIcon>logo_square_32x32.ico</ApplicationIcon>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="node_modules\%40dynamods\splash-screen\build\index.bundle.js" />
-    <None Remove="node_modules\%40dynamods\splash-screen\build\index.html" />
-    <None Remove="WebApp\splashScreenBackground.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.bundle.js" />
-    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.html" />
-    <EmbeddedResource Include="WebApp\splashScreenBackground.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">
       <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
@@ -78,16 +56,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\logo_square_32x32.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="logo_square_32x32.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="SplashScreen.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -115,11 +84,5 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
 </Project>

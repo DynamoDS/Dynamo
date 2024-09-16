@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Dynamo.Events;
 using NUnit.Framework;
@@ -27,7 +27,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
@@ -63,7 +63,7 @@ namespace Dynamo.Tests
                 });
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;

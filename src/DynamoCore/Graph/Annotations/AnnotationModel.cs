@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -194,15 +194,15 @@ namespace Dynamo.Graph.Annotations
                     }
                 }
 
-                // First remove all pins from the input
-                var valuesWithoutPins = value
-                    .Where(x => !(x is ConnectorPinModel));
+                // First separate all pins from the input
+                var pinModels = value.OfType<ConnectorPinModel>().ToList();
+                var valuesWithoutPins = value.Except(pinModels);
 
-                // then recalculate which pins belongs to the
-                // group and add them to the nodes collection
-                var pinModels = GetPinsFromNodes(value.OfType<NodeModel>());
-                nodes = valuesWithoutPins.Concat(pinModels)
-                    .ToHashSet<ModelBase>();
+                // then recalculate which pins belong to the group based on the nodes
+                var pinsFromNodes = GetPinsFromNodes(valuesWithoutPins.OfType<NodeModel>());
+
+                // Combine all
+                nodes = valuesWithoutPins.Concat(pinModels).Concat(pinsFromNodes).ToHashSet<ModelBase>();
 
                 if (nodes != null && nodes.Any())
                 {
@@ -262,7 +262,6 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-
         private double textMaxWidth;
         /// <summary>
         /// Returns the maxWidth of text area of the group
@@ -286,7 +285,24 @@ namespace Dynamo.Graph.Annotations
             set
             {
                 fontSize = value;
-                RaisePropertyChanged("FontSize");
+                RaisePropertyChanged(nameof(FontSize));
+            }
+        }
+
+        private Guid groupStyleId;
+        /// <summary>
+        /// Returns the Groupstyle applied
+        /// </summary>
+        public Guid GroupStyleId
+        {
+            get
+            {
+                return groupStyleId;
+            }
+            set
+            {
+                groupStyleId = value;
+                RaisePropertyChanged(nameof(GroupStyleId));
             }
         }
 
@@ -378,6 +394,26 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public bool HasNestedGroups => nodes.OfType<AnnotationModel>().Any();
 
+        private bool isVisible = true;
+        /// <summary>
+        /// Preview visibility of the nodes in a group
+        /// </summary>
+        [JsonIgnore]
+        public bool IsVisible
+        {
+            get
+            {
+                return isVisible;
+            }
+            internal set
+            {
+                if (value != isVisible)
+                {
+                    isVisible = value;
+                    RaisePropertyChanged(nameof(IsVisible));
+                }
+            }
+        }
         #endregion
 
         /// <summary>
@@ -605,10 +641,13 @@ namespace Dynamo.Graph.Annotations
 
             switch (name)
             {
-                case "FontSize":
+                case nameof(FontSize):
                     FontSize = Convert.ToDouble(value);
                     break;
-                case "Background":
+                case nameof(GroupStyleId):
+                    GroupStyleId = new Guid(value);
+                    break;
+                case nameof(Background):
                     Background = value;
                     break;  
                 case "TextBlockText":
@@ -616,6 +655,9 @@ namespace Dynamo.Graph.Annotations
                     break;
                 case nameof(AnnotationDescriptionText):
                     AnnotationDescriptionText = value;
+                    break;
+                case nameof(IsExpanded):
+                    IsExpanded = Convert.ToBoolean(value);
                     break;
             }
 
@@ -634,11 +676,13 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("width", this.Width);
             helper.SetAttribute("height", this.Height);
             helper.SetAttribute("fontSize", this.FontSize);
+            helper.SetAttribute("groupStyleId", this.GroupStyleId);
             helper.SetAttribute("InitialTop", this.InitialTop);
             helper.SetAttribute("InitialHeight", this.InitialHeight);
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
             helper.SetAttribute(nameof(IsSelected), IsSelected);
+            helper.SetAttribute(nameof(IsExpanded), this.IsExpanded);
 
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
@@ -666,15 +710,17 @@ namespace Dynamo.Graph.Annotations
             this.height = helper.ReadDouble("height", DoubleValue);
             this.background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
+            this.groupStyleId =  helper.ReadGuid("groupStyleId", GroupStyleId);
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
-            this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);            
+            this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);
+            this.IsExpanded = helper.ReadBoolean(nameof(IsExpanded), true);
 
             if (IsSelected)
                 DynamoSelection.Instance.Selection.Add(this);
             else
-                DynamoSelection.Instance.Selection.Remove(this);
+                DynamoSelection.Instance.Selection.Remove(this);  
 
             //Deserialize Selected models
             if (element.HasChildNodes)
@@ -709,10 +755,12 @@ namespace Dynamo.Graph.Annotations
 
             //On any Undo Operation, current values are restored to previous values.
             //These properties should be Raised, so that they get the correct value on Undo.
-            RaisePropertyChanged("Background");
-            RaisePropertyChanged("FontSize");
-            RaisePropertyChanged("AnnotationText");
-            RaisePropertyChanged("Nodes");
+            RaisePropertyChanged(nameof(Background));
+            RaisePropertyChanged(nameof(FontSize));           
+            RaisePropertyChanged(nameof(GroupStyleId));
+            RaisePropertyChanged(nameof(AnnotationText));
+            RaisePropertyChanged(nameof(Nodes));
+            RaisePropertyChanged(nameof(IsExpanded));
             this.ReportPosition();
         }
 

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
@@ -9,19 +9,12 @@
     <RootNamespace>DisplayTests</RootNamespace>
     <AssemblyName>DisplayTests</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-	  <PackageReference Include="NUnit" Version="2.6.3" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5365" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+        <PackageReference Include="NUnit" Version="3.13.3" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>

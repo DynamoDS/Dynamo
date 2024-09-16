@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -66,8 +66,6 @@ namespace Dynamo.Graph.Nodes
         /// <param name="statements">A list of Statement objects whose defined 
         /// variables are to be retrieved. This list can be empty but it cannot 
         /// be null.</param>
-        /// <param name="onlyTopLevel">Set this parameter to false to retrieve 
-        /// all variables defined in nested Statement objects.</param>
         /// <returns>Returns a list of lists of variables defined by the given 
         /// set of Statement objects.</returns>
         internal static List<List<string>> GetStatementVariables(

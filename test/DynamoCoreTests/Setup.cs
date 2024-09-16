@@ -1,17 +1,15 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace Dynamo.Tests
-{
     [SetUpFixture]
     public class Setup
     {
         private AssemblyHelper assemblyHelper;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void RunBeforeAllTests()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -28,11 +26,10 @@ namespace Dynamo.Tests
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void RunAfterAllTests()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
         }
     }
-}

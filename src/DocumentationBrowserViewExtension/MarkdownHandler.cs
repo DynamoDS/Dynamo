@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.IO;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 
 namespace Dynamo.DocumentationBrowser
@@ -10,7 +11,6 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     internal class MarkdownHandler : IDisposable
     {
-        private const string NODE_ANNOTATION_NOT_FOUND = "Dynamo.DocumentationBrowser.Docs.NodeAnnotationNotFound.md";
         private readonly Md2Html converter = new Md2Html();
 
         /// <summary>
@@ -39,24 +39,16 @@ namespace Dynamo.DocumentationBrowser
         }
 
         /// <summary>
-        /// Converts a markdown string into Html.
+        /// Converts a markdown string into Html string.
         /// </summary>
-        /// <param name="writer"></param>
         /// <param name="nodeNamespace"></param>
-        internal void ParseToHtml(ref StringWriter writer, string nodeNamespace, string packageName)
+        internal string ParseToHtml(string nodeNamespace, string packageName)
         {
-            if (writer is null)
-                throw new ArgumentNullException(nameof(writer));
-
             var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace, packageName);
 
-            string mdString;
+            string mdString = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(mdFilePath) ||
-                !File.Exists(mdFilePath))
-                mdString = DocumentationBrowserUtils.GetContentFromEmbeddedResource(NODE_ANNOTATION_NOT_FOUND);
-
-            else
+            if (!string.IsNullOrWhiteSpace(mdFilePath) && File.Exists(mdFilePath))
             {
                 // Doing this to avoid 'System.ObjectDisposedException'
                 // https://docs.microsoft.com/en-us/visualstudio/code-quality/ca2202?view=vs-2019
@@ -76,11 +68,17 @@ namespace Dynamo.DocumentationBrowser
                 }
 
                 if (string.IsNullOrWhiteSpace(mdString))
-                    return;
+                    return string.Empty;
+            }
+            else
+            {
+                var nodeName = string.IsNullOrEmpty(packageName) ? nodeNamespace : "Package:" + packageName + " " + nodeNamespace;
+                //if in-depth documentatiuon is not available, do not show any additional message, but log it for analytics
+                Analytics.TrackEvent(Actions.MissingDocumentation, Categories.NodeContextMenuOperations, nodeName);
             }
 
             var html = converter.ParseMd2Html(mdString, mdFilePath);
-            writer.WriteLine(html);
+            return html;
         }
 
         /// <summary>

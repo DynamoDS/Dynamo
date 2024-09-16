@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--  a good color picker  -->
     <!--  http://www.colorspire.com/rgb-color-wheel/  -->
@@ -26,11 +26,14 @@
     <Color x:Key="Blue300">#6AC0E7</Color>
     <Color x:Key="Blue350">#6DD2FF</Color>
     <Color x:Key="Blue400">#38ABDF</Color>
+    <Color x:Key="Blue450">#006EAF</Color>
     <Color x:Key="DarkBlue200">#BCD3EE</Color>
     <Color x:Key="DefaultFontColor">#DCDCDC</Color>
     <Color x:Key="HoverFontColor">#1AFFFFFF</Color>
     <Color x:Key="PressedFontColor">#2EFFFFFF</Color>
     <Color x:Key="DisabledFontColor">#66999999</Color>
+    <Color x:Key="WhiteColor">#F5F5F5</Color>
+    
 
     <!--  Autodesk Colors  -->
     <SolidColorBrush x:Key="PrimaryCharcoal100Brush" Color="{StaticResource PrimaryCharcoal100}" />
@@ -52,6 +55,7 @@
     <SolidColorBrush x:Key="Blue200Brush" Color="{StaticResource Blue200}" />
     <SolidColorBrush x:Key="Blue300Brush" Color="{StaticResource Blue300}" />
     <SolidColorBrush x:Key="Blue400Brush" Color="{StaticResource Blue400}" />
+    <SolidColorBrush x:Key="Blue450Brush" Color="{StaticResource Blue450}" />
     <SolidColorBrush x:Key="DarkBlue200Brush" Color="{StaticResource DarkBlue200}" />
     <SolidColorBrush x:Key="DefaultFontColorBrush" Color="{StaticResource DefaultFontColor}" />
     <SolidColorBrush x:Key="HoverFontColorBrush" Color="{StaticResource HoverFontColor}" />
@@ -79,6 +83,7 @@
     <SolidColorBrush x:Key="NodeWarningColor" Color="{StaticResource YellowOrange500}" />
     <SolidColorBrush x:Key="NodeErrorColor" Color="{StaticResource Red500}" />
     <SolidColorBrush x:Key="NodePreviewColor" Color="#BBBBBB"/>
+    <SolidColorBrush x:Key="NodeCustomColor" Color="#B385F2"/>
 
     <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
@@ -110,10 +115,6 @@
     <!-- Node Autocomplete -->
     <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
     <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#F5F5F5" />
-
-    <!--  Update Manager  -->
-    <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="#AF1B1B" />
-    <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="#168576" />
 
     <!--  3D  -->
     <Color x:Key="EdgeColor">#000000</Color>
@@ -187,5 +188,16 @@
 
     <!--  TextBlock Link  -->
     <SolidColorBrush x:Key="TextBlockLinkForegroundColor" Color="{StaticResource Blue350}" />
+
+    <!--  TextBlock Link Dark  -->
+    <SolidColorBrush x:Key="TextBlockLinkForegroundColorDark" Color="{StaticResource Blue450}" />
+
+    <!--  TextBlock ToolTip color -->
+    <SolidColorBrush x:Key="TextBlockToolTipDescriptionColor" Color="{StaticResource DarkerGrey}" />
+
+    <!--  TextEditor brush color -->
+    <SolidColorBrush x:Key="TextEditorBrush" Color="#353535" />
     
+    <!--  Custom ToolTip border color  -->
+    <SolidColorBrush x:Key="CustomToolTipBorderColor" Color="#808080" />
 </ResourceDictionary>

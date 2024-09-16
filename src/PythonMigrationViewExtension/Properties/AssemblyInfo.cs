@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -13,4 +13,4 @@ using System.Runtime.InteropServices;
 
 // Visible to DynamoCoreWpfTests dll for unit testing
 [assembly: InternalsVisibleTo("IronPythonTests")]
-[assembly: InternalsVisibleTo("DynamoCoreTests")]
+[assembly: InternalsVisibleTo("DynamoPythonTests")]

@@ -1,117 +1,102 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
-  </ImportGroup>
-  <PropertyGroup>
-    <ProjectGuid>{10AF430D-0D3A-49CE-A63D-848912959745}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo.PythonMigration</RootNamespace>
-    <AssemblyName>PythonMigrationViewExtension</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true" />
-	  <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-    <Reference Include="PresentationCore">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationFramework">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Python.Runtime, Version=2.5.2.4265, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Python\Python.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xaml">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="WindowsBase">
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
-      <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
-      <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
-      <Name>DynamoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\DSCPython\DSCPython.csproj" />
-    <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
-      <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
-      <Name>PythonNodeModels</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>DynamoServices</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Controls\MigrationAssistantDisclaimer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\BaseDiffViewer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\InLineControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\SideBySideControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="IronPythonInfoDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MigrationAssistant\migrate_2to3.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MigrationAssistant\reindent.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\Resources.en-US.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\Resources.en-US.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <Target Name="AfterBuildOps" AfterTargets="Build">
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
+    <ImportGroup Label="PropertySheets">
+        <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+    </ImportGroup>
+    <PropertyGroup>
+        <ProjectGuid>{10AF430D-0D3A-49CE-A63D-848912959745}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>Dynamo.PythonMigration</RootNamespace>
+        <AssemblyName>PythonMigrationViewExtension</AssemblyName>
+        <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    </PropertyGroup>
     <ItemGroup>
-      <ExtensionDefinition Include="PythonMigration_ViewExtensionDefinition.xml" />
-      <PythonFixers Include="$(SolutionDir)PythonMigrationViewExtension\MigrationAssistant\python_migration_fixers\*" />
+        <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true" />
+        <PackageReference Include="FontAwesome5" Version="2.1.11" />
+        <Reference Include="Python.Runtime, Version=2.5.2.4265, Culture=neutral, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\..\extern\Python\Python.Runtime.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
     </ItemGroup>
-    <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
-    <Copy SourceFiles="@(PythonFixers)" DestinationFolder="$(OutputPath)python_migration_fixers\" />
-  </Target>
+    <ItemGroup>
+        <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
+            <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
+            <Name>DynamoCoreWpf</Name>
+            <Private>False</Private>
+        </ProjectReference>
+        <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+            <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
+            <Name>DynamoCore</Name>
+            <Private>False</Private>
+        </ProjectReference>
+        <ProjectReference Include="..\Libraries\DSCPython\DSCPython.csproj" />
+        <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+            <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
+            <Name>PythonNodeModels</Name>
+            <Private>False</Private>
+        </ProjectReference>
+        <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
+            <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+            <Name>DynamoServices</Name>
+            <Private>False</Private>
+        </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Include="Controls\MigrationAssistantDisclaimer.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Controls\BaseDiffViewer.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Controls\InLineControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Controls\SideBySideControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="MigrationAssistant\migrate_2to3.py" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="MigrationAssistant\reindent.py" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Properties\Resources.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Properties\Resources.en-US.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>Resources.en-US.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Properties\Resources.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\Resources.en-US.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+    <Target Name="AfterBuildOps" AfterTargets="Build">
+        <ItemGroup>
+            <ExtensionDefinition Include="PythonMigration_ViewExtensionDefinition.xml" />
+            <PythonFixers Include="$(SolutionDir)PythonMigrationViewExtension\MigrationAssistant\python_migration_fixers\*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
+        <Copy SourceFiles="@(PythonFixers)" DestinationFolder="$(OutputPath)python_migration_fixers\" />
+    </Target>
 </Project>

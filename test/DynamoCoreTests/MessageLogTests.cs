@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -40,6 +40,7 @@ namespace Dynamo.Tests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
@@ -56,6 +57,19 @@ namespace Dynamo.Tests
 
             ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);
             Assert.AreEqual(ProtoCore.Runtime.WarningID.Default, warningEntry.ID);
+        }
+
+        [Test]
+        public void TestInfoMessageLog()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\messagelog\ScaleInfo.dyn");
+            RunModel(openPath);
+
+            ProtoCore.RuntimeCore runtimeCore = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            Assert.AreEqual(1, runtimeCore.RuntimeStatus.InfosCount);
+
+            ProtoCore.Runtime.InfoEntry infoEntry = runtimeCore.RuntimeStatus.Infos.ElementAt(0);
+            Assert.AreEqual(ProtoCore.Runtime.InfoID.Default, infoEntry.ID);
         }
 
         [Test]

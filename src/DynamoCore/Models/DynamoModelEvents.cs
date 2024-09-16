@@ -8,6 +8,7 @@ using Dynamo.Graph.Workspaces;
 using System.Collections.Generic;
 using Dynamo.Graph;
 using Dynamo.Extensions;
+using Dynamo.Logging;
 
 namespace Dynamo.Models
 {
@@ -64,20 +65,22 @@ namespace Dynamo.Models
                 action();
         }
 
-        internal static event SettingsMigrationHandler RequestMigrationStatusDialog;
-        internal static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
-        {
-            if (RequestMigrationStatusDialog != null)
-                RequestMigrationStatusDialog(args);
-        }
-
         /// <summary>
         /// Event to throw for Splash Screen to update Dynamo launching tasks
         /// </summary>
-        internal static event SplashScreenHandler RequestUpdateLoadBarStatus;
+        internal static event SplashScreenLoadingHandler RequestUpdateLoadBarStatus;
         internal static void OnRequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
         {
             RequestUpdateLoadBarStatus?.Invoke(args);
+        }
+
+        /// <summary>
+        /// Event to throw for Splash Screen to display the content in the proper language
+        /// </summary>
+        internal static event SplashScreenLanguageDetected LanguageDetected;
+        internal static void OnDetectLanguage()
+        {
+            LanguageDetected?.Invoke();
         }
 
         /// <summary>
@@ -155,6 +158,11 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceAdded;
             if (handler != null) handler(obj);
+
+            if (obj is CustomNodeWorkspaceModel)
+                Analytics.TrackScreenView("CustomWorkspace");
+            else
+                Analytics.TrackScreenView("Workspace");
 
             WorkspaceEvents.OnWorkspaceAdded(obj.Guid, obj.Name, obj.GetType());
         }
@@ -302,20 +310,6 @@ namespace Dynamo.Models
         // TODO(Ben): Obsolete CrashPrompt and make use of GenericTaskDialog.
         public delegate void CrashPromptHandler(object sender, CrashPromptArgs e);
         public event CrashPromptHandler RequestsCrashPrompt;
-
-        /// <summary>
-        /// Shows the crash error reporting window.
-        /// This method will always try to show the Autodesk CER UI first (if the CER tool is found on disk). 
-        /// If the CER tool is not found, the Dynamo in-house crash prompt will be shown.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args">Can be called with CrashErrorReportArgs or CrashPromptArgs</param>
-        [Obsolete("Will be removed in Dynamo3.0. Please use 'OnRequestsCrashPrompt(CrashErrorReportArgs args)' instead.")]
-        public void OnRequestsCrashPrompt(object sender, CrashPromptArgs args)
-        {
-            if (RequestsCrashPrompt != null)
-                RequestsCrashPrompt(this, args);
-        }
 
         /// <summary>
         /// Shows the crash error reporting window.
@@ -534,6 +528,18 @@ namespace Dynamo.Models
                 ResetEngine(true);
             }
 
+        }
+
+        /// <summary>
+        /// This event is used to raise a toast notification from the DynamoViewModel 
+        /// </summary>
+        internal event Action<string, bool> RequestNotification;
+        internal void OnRequestNotification(string notification, bool stayOpen = false)
+        {
+            if (RequestNotification != null)
+            {
+                RequestNotification(notification, stayOpen);
+            }
         }
 
         #endregion

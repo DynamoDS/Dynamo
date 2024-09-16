@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Library;
+using Dynamo.Properties;
 using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -99,7 +100,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             get
             {
-                return "FunctionNode";
+                return FunctionNode;
             }
         }
 
@@ -310,6 +311,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
         }
 
+        internal static string FunctionNode = "FunctionNode";
+
         /// <summary>
         ///     Validates passed Custom Node definition and synchronizes node with it.
         /// </summary>
@@ -386,35 +389,26 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-
-            InputSymbol = String.Empty;
+            InputSymbol = new TypedParameter(
+                Resources.InputPortAlternativeName,
+                "var",
+                -1,
+                null,
+                Resources.InputNodeRenameHint)
+                .ToCommentNameString();
 
             ElementResolver = new ElementResolver();
-        }
-
-        // TODO - Dynamo 3.0 - use JSONConstructor on this method
-        // and remove custom logic in nodeReadConverter for symbol nodes.
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Symbol"/> class.
-        /// </summary>
-        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter, ElementResolver elementResolver) : base(inPorts, outPorts)
-        {
-            ArgumentLacing = LacingStrategy.Disabled;
-            InputSymbol = parameter.ToCommentNameString();
-            ElementResolver = elementResolver ?? new ElementResolver();
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Symbol"/> class.
         /// </summary>
         [JsonConstructor]
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the constructor with ElementResolver parameter ")]
-        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter) : base(inPorts, outPorts)
+        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter, ElementResolver elementResolver) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InputSymbol = parameter.ToCommentNameString();
-            ElementResolver = new ElementResolver();
+            ElementResolver = elementResolver ?? new ElementResolver();
         }
 
         /// <summary>
@@ -475,7 +469,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
 
                 OnNodeModified();
-                RaisePropertyChanged("InputSymbol");
+                RaisePropertyChanged(nameof(InputSymbol));
             }
         }
 

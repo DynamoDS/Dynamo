@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -188,7 +188,7 @@ namespace Dynamo.Controls
         {
             // If this is the first time NodeView is bound to the NodeViewModel, 
             // cache the DataContext (i.e. NodeViewModel) locally and start 
-            // referecing it from this point onwards. Note that this notification 
+            // referencing it from this point onwards. Note that this notification 
             // can be sent as a result of DataContext becoming DisconnectedItem too,
             // but ViewModel should not be updated in that case (hence the null-check).
             // 
@@ -224,7 +224,7 @@ namespace Dynamo.Controls
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)
         {
-            // If the mouse does not leave the node after the connnector is added,
+            // If the mouse does not leave the node after the connector is added,
             // try to show the preview bubble without new mouse enter event. 
             if (IsMouseOver)
             {
@@ -422,7 +422,7 @@ namespace Dynamo.Controls
             var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
 
-            view.mainGrid.Focus();
+            view?.mainGrid.Focus();
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
@@ -501,7 +501,7 @@ namespace Dynamo.Controls
 
     #region Preview Control Related Event Handlers
 
-    private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
+        private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
@@ -551,6 +551,9 @@ namespace Dynamo.Controls
         {
             ViewModel.ZIndex = oldZIndex;
 
+            //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
+            if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
+
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
             if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || IsMouseInsidePreview(e) ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
@@ -571,7 +574,7 @@ namespace Dynamo.Controls
         /// This event fires right after preview's state has been changed.
         /// This event is necessary, it handles some preview's manipulations, 
         /// that we can't handle in mouse enter/leave events.
-        /// E.g. When mouse leaves preview control, it should be first condesed, after that hidden.
+        /// E.g. When mouse leaves preview control, it should be first condensed, after that hidden.
         /// </summary>
         /// <param name="sender">PreviewControl</param>
         /// <param name="e">Event arguments</param>
@@ -730,6 +733,9 @@ namespace Dynamo.Controls
         internal void TogglePreviewControlAllowance()
         {
             previewEnabled = !previewEnabled;
+
+            //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
+            if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 
             if (previewEnabled == false && !PreviewControl.StaysOpen)
             {

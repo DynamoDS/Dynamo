@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Diagnostics;
 using Dynamo.Models;
 
 namespace Dynamo.ViewModels
@@ -29,7 +30,7 @@ namespace Dynamo.ViewModels
                 if (string.IsNullOrEmpty(xmlFilePath) == false)
                 {
                     if (System.IO.File.Exists(xmlFilePath))
-                        System.Diagnostics.Process.Start(xmlFilePath);
+                        System.Diagnostics.Process.Start(new ProcessStartInfo(xmlFilePath) { UseShellExecute = true });
                 }
             }
         }
@@ -144,6 +145,7 @@ namespace Dynamo.ViewModels
                 case "AddModelToGroupCommand":
                 case "CreateAndConnectNodeCommand":
                 case "AddGroupToGroupCommand":
+                case "InsertFileCommand":
                     RaiseCanExecuteUndoRedo();
                     break;
 
@@ -189,6 +191,7 @@ namespace Dynamo.ViewModels
 
                 case "OpenFileCommand":
                 case "OpenFileFromJsonCommand":
+                case "InsertFileCommand":
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":
@@ -246,7 +249,7 @@ namespace Dynamo.ViewModels
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                // TODO - can be removed in Dynamo 3.0 - DYN-1729
+                // TODO - can be removed in a future version of Dynamo - DYN-1729
                 case DynamoModel.MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
                     CurrentSpaceViewModel.BeginCreateConnections(
                         nodeId, command.PortIndex, command.Type);

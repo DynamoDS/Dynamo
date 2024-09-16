@@ -1,3 +1,4 @@
+<!--
 Please Note:
 1. Before submitting the PR, please review [How to Contribute to Dynamo](https://github.com/DynamoDS/Dynamo/blob/master/CONTRIBUTING.md)
 2. Dynamo Team will meet 1x a month to review PRs found on Github (Issues will be handled separately)
@@ -6,11 +7,11 @@ Please Note:
 5. PRs should use either Dynamo's default PR template or [one of these other template options](https://github.com/DynamoDS/Dynamo/wiki/Choosing-a-Pull-Request-Template) in order to be considered for review.
 6. PRs that do not have one of the Dynamo PR templates completely filled out with all declarations satisfied will not be reviewed by the Dynamo team.
 7. PRs made to the `DynamoRevit` repo will need to be cherry-picked into all the DynamoRevit Release branches that Dynamo supports. Contributors will be responsible for cherry-picking their reviewed commits to the other branches after a `LGTM` label is added to the PR.
+-->
 
 ### Purpose
 
-(FILL ME IN) This section describes why this PR is here. Usually it would include a reference 
-to the tracking task that it is part or all of the solution for.
+(FILL ME IN) This section describes why this PR is here. Usually it would include a reference to the tracking task that it is part or all of the solution for.
 
 ### Declarations
 
@@ -24,15 +25,15 @@ Check these if you believe they are true
 - [ ] Snapshot of UI changes, if any.
 - [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
 - [ ] This PR modifies some build requirements and the readme is updated
+- [ ] This PR contains no files larger than 50 MB
 
 ### Release Notes
 
-(FILL ME IN) Brief description of the fix / enhancement. **Mandatory section** 
-
+(FILL ME IN) Brief description of the fix / enhancement. Use N/A to indicate that the changes in this pull request do not apply to Release Notes. **Mandatory section**
 
 ### Reviewers
 
-(FILL ME IN) Reviewer 1  (If possible, assign the Reviewer for the PR)
+(FILL ME IN) Reviewer 1 (If possible, assign the Reviewer for the PR)
 
 (FILL ME IN, optional) Any additional notes to reviewers or testers.
 

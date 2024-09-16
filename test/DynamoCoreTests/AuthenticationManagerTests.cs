@@ -1,4 +1,4 @@
-﻿using Dynamo.Core;
+using Dynamo.Core;
 
 using Greg;
 
@@ -70,17 +70,8 @@ namespace Dynamo.Tests
 
             var authManager = new AuthenticationManager(authProviderMock.Object);
 
-            authManager.ToggleLoginState(authManager);
+            authManager.ToggleLoginState(null);
             Assert.True(loginCalled);
-        }
-
-        [Test]
-        public void CanToggleLoginState()
-        {
-            var authProviderMock = new Mock<IAuthProvider>();
-            var authManager = new AuthenticationManager(authProviderMock.Object);
-
-            Assert.IsTrue(authManager.CanToggleLoginState(authManager));
         }
 
         #endregion

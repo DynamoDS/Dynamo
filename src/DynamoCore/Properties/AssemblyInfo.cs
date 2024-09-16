@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 // General Information about an assembly is controlled through the following 
@@ -23,7 +23,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoWPFCLI")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] // Dynamic assembly created by Moq
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
-[assembly: InternalsVisibleTo("LibraryViewExtension")]
 [assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
 [assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]
 [assembly: InternalsVisibleTo("DynamoPerformanceTests")]
@@ -32,16 +31,19 @@ using System.Runtime.CompilerServices;
 // For workspace package dependency collection
 [assembly: InternalsVisibleTo("DynamoPackages")]
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
+[assembly: InternalsVisibleTo("DynamoMLDataPipeline")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonNodeModels")]
-[assembly: InternalsVisibleTo("LibraryViewExtensionMSWebBrowser")]
 [assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
 [assembly: InternalsVisibleTo("LintingViewExtension")]
 [assembly: InternalsVisibleTo("GenerativeDesign.Dynamo.ViewExtension")]
 [assembly: InternalsVisibleTo("GenerativeDesign.Dynamo.PackAndGo")]
-[assembly: InternalsVisibleTo("DynamoPlayerExtension")]
+[assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
+[assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
+[assembly: InternalsVisibleTo("DynamoPlayer")]
+[assembly: InternalsVisibleTo("DynamoConnector")]
 [assembly: InternalsVisibleTo("DSCPython")]
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
@@ -51,5 +53,10 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
 [assembly: InternalsVisibleTo("GraphNodeManagerViewExtension")]
 [assembly: InternalsVisibleTo("ExportSampleImagesViewExtension")]
+[assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
+[assembly: InternalsVisibleTo("Notifications")]
 
+// Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
+#pragma warning disable RS0016 
 [assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]
+#pragma warning restore RS0016

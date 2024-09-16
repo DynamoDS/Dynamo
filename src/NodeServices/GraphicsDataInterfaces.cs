@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Autodesk.DesignScript.Interfaces
@@ -303,7 +303,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// This flag is used by the UpdateRenderPackageAsyncTask implementation to flag
         /// any third party usage of deprecated color methods in IRenderPackage API
         /// </summary>
-        [Obsolete("Do not use! This will be removed in Dynamo 3.0")]
+        [Obsolete("Do not use! This will be removed in a future version of Dynamo")]
         bool AllowLegacyColorOperations { get; set; }
     }
     
@@ -329,6 +329,9 @@ namespace Autodesk.DesignScript.Interfaces
         /// Add a label position to the render package.
         /// </summary>
         /// <param name="label">Text to be displayed in the label</param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         void AddLabel(string label, double x, double y, double z);
 
         /// <summary>
@@ -345,7 +348,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// Internal interface to enable adding labels that are related to an instanceableGraphicItem.
     /// </summary>
-    internal interface IRenderInstancedLabels
+    public interface IRenderInstancedLabels
     {
         /// <summary>
         /// Adds a label to the render package, but first transforms the label by the transform matrix of the 
@@ -369,7 +372,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// Represents instance matrices and references to tessellated geometry in the RenderPackage
     /// </summary>
-    internal interface IInstancingRenderPackage
+    public interface IInstancingRenderPackage
     {
         /// <summary>
         /// Checks if a base tessellation guid has already been registered with this <see cref="IInstancingRenderPackage"/>.
@@ -382,16 +385,16 @@ namespace Autodesk.DesignScript.Interfaces
         /// <summary>
         /// Set an instance reference for a specific range of mesh vertices
         /// </summary>
-        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices
-        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices></param>
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
         void AddInstanceGuidForMeshVertexRange(int startIndex, int endIndex, Guid id);
 
         /// <summary>
         /// Set an instance reference for a specific range of line vertices
         /// </summary>
-        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices
-        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices></param>
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
         void AddInstanceGuidForLineVertexRange(int startIndex, int endIndex, Guid id);
 
@@ -417,6 +420,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="m42"></param>
         /// <param name="m43"></param>
         /// <param name="m44"></param>
+        /// <param name="id"></param>
         void AddInstanceMatrix(float m11, float m12, float m13, float m14,
            float m21, float m22, float m23, float m24,
            float m31, float m32, float m33, float m34,
@@ -434,6 +438,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
         /// </summary>
         /// <param name="matrix"></param>
+        /// <param name="id"></param>
         void AddInstanceMatrix(float[] matrix, Guid id);
     }
 
@@ -523,7 +528,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// An interface that defines items whose graphics are defined by a single base tessellation and instance transforms defined by 4x4 transformation matrices.
     /// </summary>
-    internal interface IInstanceableGraphicItem
+    public interface IInstanceableGraphicItem
     {
         /// <summary>
         /// A Guid used to reference the base tessellation geometry that will be transformed for all related instances
@@ -576,6 +581,12 @@ namespace Autodesk.DesignScript.Interfaces
         public bool ShowEdges { get; set; }
 
         /// <summary>
+        /// A flag indicating whether rendering data for instancing
+        /// is included in the RenderPackage. Default is false.
+        /// </summary>
+        public bool UseRenderInstancing { get; set; }
+
+        /// <summary>
         /// The scale factor set in the workspace that must be applied to 
         /// distance and coordinate values used in rendering only ASM geometry.
         /// This scale factor is consumed only by LibG in its Tessellate method implementation.
@@ -587,6 +598,7 @@ namespace Autodesk.DesignScript.Interfaces
             Tolerance = -1;
             MaxTessellationDivisions = 512;
             ShowEdges = false;
+            UseRenderInstancing = false;
             ScaleFactor = 1.0;
         }
     }

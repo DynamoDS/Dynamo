@@ -1,10 +1,12 @@
-﻿<UserControl x:Class="Dynamo.Wpf.Controls.InstalledPackagesControl"
+<UserControl x:Class="Dynamo.Wpf.Controls.InstalledPackagesControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -25,15 +27,19 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <!-- Separate elements of this control should not be cycled through using the `Tab` key -->
+    <Grid KeyboardNavigation.IsTabStop="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
         <ItemsControl Name="Filters"
                       Grid.Column="0" Grid.Row="0"
-                      ItemsSource="{Binding Path=Filters}" 
+                      ItemsSource="{Binding Path=Filters}"
                       Background="Transparent"
+                      KeyboardNavigation.IsTabStop="False"
+                      VerticalContentAlignment="Center"
                       Padding="0,5,0,5">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -46,33 +52,41 @@
                                  GroupName="PackageFilters"
                                  IsChecked="{Binding Path=IsChecked, Mode=TwoWay}"
                                  Style="{StaticResource {x:Type ToggleButton}}"
-                                 FontSize="10"
+                                 FontSize="11"
                                  FontFamily="Artifakt Element"
+                                 FontWeight="Medium"
                                  HorizontalAlignment="Center"
-                                 BorderThickness="1,1,1,1"
-                                 Background="{StaticResource PrimaryCharcoal300Brush}"
+                                 VerticalAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 BorderThickness="1"
+                                 BorderBrush="Transparent"
+                                 UseLayoutRounding="True"
+                                 SnapsToDevicePixels="True"
+                                 Background="#CCCCCC"
                                  Checked="ToggleButton_OnChecked"
-                                 Foreground="{StaticResource ExpanderCaretToggleButtonBackground}">
+                                 Foreground="{StaticResource PackageManagerTabBackgroundColor}">
                         <RadioButton.Resources>
                             <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
+                                <Setter Property="CornerRadius" Value="8"/>
                                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                <Setter Property="Margin" Value="5,0,0,5"/>
-                                <Setter Property="Padding" Value="5,0,5,0"/>
+                                <Setter Property="Margin" Value="5,3,0,0"/>
+                                <Setter Property="Padding" Value="5,1,5,0"/>
                             </Style>
                         </RadioButton.Resources>
                     </RadioButton>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <ScrollViewer Grid.Row="1"  
-            VerticalScrollBarVisibility="Auto" 
-            Background="{StaticResource PreferencesWindowBackgroundColor}" 
-            MaxHeight="246">
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      KeyboardNavigation.IsTabStop="False"
+                      Background="{StaticResource PreferencesWindowBackgroundColor}">
             <ItemsControl Name="SearchResultsListBox"
                               ItemsSource="{Binding Path=LocalPackages}"
                               HorizontalContentAlignment="Stretch"
                               VirtualizingPanel.ScrollUnit="Pixel"
+                              KeyboardNavigation.IsTabStop="False"
                               BorderThickness="0"
                               Padding="0">
 
@@ -85,21 +99,20 @@
                         ItemsPresenter can't be wider then visible part of the window.-->
                         <Border BorderBrush="{StaticResource PreferencesWindowBackgroundColor}"
                                 BorderThickness="0,0,0,1"
-                                Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                Background="{StaticResource PackageManagerTabBackgroundColor}"
                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, 
                                                                             AncestorType={x:Type ItemsPresenter}}}">
                             <Expander Name="PackageHeader"
-                                              IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
-                                              Style="{StaticResource InstalledPackagesExpanderStyle}">
+                                      IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
+                                      Style="{StaticResource InstalledPackagesExpanderStyle}">
                                 <Expander.Header>
                                     <Grid x:Name="PackageGrid" >
-                                        <DockPanel HorizontalAlignment="Stretch"
-                                                       >
+                                        <DockPanel HorizontalAlignment="Stretch">
                                             <StackPanel HorizontalAlignment="Left"
                                                             Orientation="Horizontal"
                                                             Margin="10,5,5,7">
                                                 <TextBlock Text="{Binding Path=Model.Name}"
-                                                               FontSize="11"
+                                                               FontSize="12"
                                                                Width="150"
                                                                TextTrimming="CharacterEllipsis"
                                                                Margin="15,0,10,0"
@@ -110,15 +123,20 @@
                                                 </TextBlock>
                                                 <TextBlock Text="{Binding Path=Model.VersionName}"
                                                                MinWidth="70"
-                                                               FontSize="11"
+                                                               FontSize="12"
+                                                               VerticalAlignment="Center"
                                                                Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
+                                               
+                                            </StackPanel>
+                                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
                                                 <Grid Height="18"
-                                                    MaxWidth="150">
-                                                    <Border Background="DimGray"
-                                                        HorizontalAlignment="Stretch"
-                                                        CornerRadius="5"
-                                                        Margin="5,0,0,0"
-                                                        Padding="5,0,5,0">
+                                                      MaxWidth="150"
+                                                      Margin="10 0">
+                                                    <Border Background="#CCCCCC"
+                                                            HorizontalAlignment="Stretch"
+                                                            CornerRadius="8"
+                                                            Margin="5,0,0,0"
+                                                            Padding="5,0,5,0">
                                                         <Border.ToolTip>
                                                             <ToolTip Content="{Binding Path=PackageLoadStateTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                                                         </Border.ToolTip>
@@ -126,14 +144,13 @@
                                                                    TextTrimming="CharacterEllipsis"
                                                                    FontSize="10"
                                                                    FontFamily="Artifakt Element"
+                                                                   FontWeight="Medium"
                                                                    TextAlignment="Left"
                                                                    HorizontalAlignment="Center"
-                                                                   Margin="0,3,0,0"
-                                                                   Foreground="{StaticResource PrimaryCharcoal100Brush}"/>
+                                                                   Margin="0,2,0,0"
+                                                                   Foreground="{StaticResource PackageManagerTabBackgroundColor}"/>
                                                     </Border>
                                                 </Grid>
-                                            </StackPanel>
-                                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
                                                 <Button Name="MoreButton"
                                                                 Click="MoreButton_OnClick"
                                                                 Width="16"
@@ -188,7 +205,7 @@
                                                                 </MenuItem.ToolTip>
                                                             </MenuItem>
                                                             <MenuItem Name="MakeNewVersionButton"
-                                                                              Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                                              Visibility="{Binding Path=CanPublishNewVersion, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                                               Command="{Binding Path=PublishNewPackageVersionCommand}"
                                                                               Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersion}">
                                                                 <MenuItem.ToolTip>
@@ -240,7 +257,8 @@
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Path=Name}"
                                                                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                                           FontSize="9"
+                                                                           FontSize="11"
+                                                                           FontWeight="Regular"
                                                                            TextTrimming="CharacterEllipsis" />
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
@@ -264,7 +282,8 @@
                                                             <TextBlock Name="Label"
                                                                            Text="{Binding Path=Name}"
                                                                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                                           FontSize="9"
+                                                                           FontSize="11"
+                                                                           FontWeight="Regular"
                                                                            TextTrimming="CharacterEllipsis" />
 
                                                             <DataTemplate.Triggers>
@@ -297,7 +316,8 @@
                                                             <TextBlock Name="Label"
                                                                            Text="{Binding Path=Name}"
                                                                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                                           FontSize="9"
+                                                                           FontSize="11"
+                                                                           FontWeight="Regular"
                                                                            TextTrimming="CharacterEllipsis" />
 
                                                             <DataTemplate.Triggers>
@@ -319,7 +339,7 @@
                                                         Margin="0,0,0,5">
 
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
-                                                           FontSize="11"
+                                                           FontSize="12"
                                                        Padding="0,5,5,5"
                                                            Foreground="{StaticResource PreferencesWindowFontColor}"></Label>
                                                 <ItemsControl Name="AdditionalFiles"
@@ -329,9 +349,10 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Path=RelativePath}"
-                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                                           FontSize="9"
-                                                                           TextTrimming="CharacterEllipsis" />
+                                                                       Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                                       FontSize="12"
+                                                                       FontWeight="Regular"
+                                                                       TextTrimming="CharacterEllipsis" />
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
 
@@ -348,6 +369,7 @@
 
             </ItemsControl>
         </ScrollViewer>
+
     </Grid>
 
 </UserControl>

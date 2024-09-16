@@ -19,7 +19,7 @@ namespace DSOffice.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,56 +61,11 @@ namespace DSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error setting up communication with Excel.  Try closing any open Excel instances..
+        ///   Looks up a localized string similar to The file or directory cannot be found.
         /// </summary>
-        internal static string ExcelCommunicationError {
+        internal static string StreamWriterNotFoundException {
             get {
-                return ResourceManager.GetString("ExcelCommunicationError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Excel is not installed. href=ExcelNotInstalled.html.
-        /// </summary>
-        internal static string ExcelNotInstalled {
-            get {
-                return ResourceManager.GetString("ExcelNotInstalled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to One or more of the input types are not matching. Couldn&apos;t find a version of {0} that takes arguments of type {1}.
-        /// </summary>
-        internal static string kMethodResolutionFailureWithTypes {
-            get {
-                return ResourceManager.GetString("kMethodResolutionFailureWithTypes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use File.FromPath -&gt; Excel.ReadFromFile node instead..
-        /// </summary>
-        internal static string ReadObsolete {
-            get {
-                return ResourceManager.GetString("ReadObsolete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A workbook was not found in the provided path..
-        /// </summary>
-        internal static string WorkbookNotFound {
-            get {
-                return ResourceManager.GetString("WorkbookNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A worksheet with the provided name &apos;{0}&apos; was not found in the workbook..
-        /// </summary>
-        internal static string WorksheetNotFound {
-            get {
-                return ResourceManager.GetString("WorksheetNotFound", resourceCulture);
+                return ResourceManager.GetString("StreamWriterNotFoundException", resourceCulture);
             }
         }
     }

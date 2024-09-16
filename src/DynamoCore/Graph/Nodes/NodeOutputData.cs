@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.Serialization;
@@ -49,16 +49,6 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public string InitialValue { get; set; }
         /// <summary>
-        /// Obsolete property due to typo in API.  Please use InitialValue.
-        /// </summary>
-        [JsonIgnore]
-        [Obsolete("Property will be deprecated in Dynamo 3.0, please use InitialValue")]
-        public string IntitialValue
-        {
-            get { return InitialValue; }
-            set { InitialValue = value; }
-        }
-        /// <summary>
         /// Description displayed to user of this output node.
         /// </summary>
         public string Description { get; set; }
@@ -94,7 +84,7 @@ namespace Dynamo.Graph.Nodes
             {
                 valNumberComparison = Math.Abs(Convert.ToDouble(this.InitialValue, CultureInfo.InvariantCulture) - Convert.ToDouble(converted.InitialValue, CultureInfo.InvariantCulture)) < .000001;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //this just stays false.
                 valNumberComparison = false;
@@ -110,5 +100,4 @@ namespace Dynamo.Graph.Nodes
                 ((this.InitialValue == converted.InitialValue) || valNumberComparison || this.InitialValue.ToString() == converted.InitialValue.ToString());
         }
     }
-
 }

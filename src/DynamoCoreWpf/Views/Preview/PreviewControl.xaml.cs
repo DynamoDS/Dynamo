@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -178,6 +178,16 @@ namespace Dynamo.UI.Controls
             {
                 TransitionToState(State.Hidden);
             }
+        }
+
+        /// <summary>
+        /// Unpins and hides the preview bubbles
+        /// </summary>
+        internal void UnpinPreviewBubble()
+        {
+            StaysOpen = false;
+            nodeViewModel.PreviewPinned = false;
+            this.HidePreviewBubble();
         }
 
         /// <summary>
@@ -383,8 +393,7 @@ namespace Dynamo.UI.Controls
 
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                         nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering,
-                        null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
-
+                        null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);                    
                 },
                 (m) =>
                 {
@@ -434,11 +443,12 @@ namespace Dynamo.UI.Controls
                 }
             );
         }
-
+        
         /// <summary>
         /// It's used to apply Collapsed and Expanded events for TreeViewItems.
         /// </summary>
         /// <param name="sender">TreeView</param>
+        /// <param name="e"></param>
         private void WatchContainer_StatusChanged(object sender, EventArgs e)
         {
             var generator = sender as ItemContainerGenerator;

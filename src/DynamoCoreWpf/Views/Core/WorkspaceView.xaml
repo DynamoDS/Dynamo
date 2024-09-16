@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Views.WorkspaceView"
+<UserControl x:Class="Dynamo.Views.WorkspaceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -323,10 +323,23 @@
                 <ui:ImageCheckBox.Visibility>
                     <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              Converter="{StaticResource BooleanToVisibilityConverter}"
+                             ConverterParameter="Collapse"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Visibility>
             </ui:ImageCheckBox>
-
+            
+            <!--Working Range control-->
+            <ui:ImageRepeatButton x:Name="geometryScalingButton"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Right"
+                            Click="OnGeometryScaling_Click"
+                            StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geometry-scaling.png">
+                <ui:ImageRepeatButton.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.InCanvasGeometryScalingToolTip}"
+                             Style="{StaticResource GenericToolTipLight}"/>
+                </ui:ImageRepeatButton.ToolTip>
+            </ui:ImageRepeatButton>
         </StackPanel>
 
         <Popup Name="PortContextMenu"
@@ -368,6 +381,7 @@
         <Popup Name="ContextMenuPopup"
                AllowsTransparency="True"
                Opened="OnContextMenuOpened"
+               Closed="OnContextMenuClosed"
                Placement="MousePoint"
                StaysOpen="True"
                Style="{StaticResource WorkspaceContextMenuStylePopup}">
@@ -750,6 +764,11 @@
                               Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                     <Separator />
+
+                    <!--  Switch Python  -->
+                    <controls:ParentMenuItem  x:Name="PythonEngineMenu" Header="{x:Static p:Resources.UpdateAllPythonEngineMainMenuHeader}" Visibility="{Binding Path=CanUpdatePythonEngine, Converter={StaticResource BooleanToVisibilityCollapsedConverter }}">
+
+                    </controls:ParentMenuItem>
 
                     <!--  Switch to Geometry View  -->
                     <MenuItem Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}"
