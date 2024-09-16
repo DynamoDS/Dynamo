@@ -1567,7 +1567,7 @@ namespace Dynamo.Models
             void SetProperties(int portIndex, PortType portType, Mode mode)
             {
                 PortIndex = portIndex;
-                Type = portType;    
+                Type = portType;
                 ConnectionMode = mode;
                 IsHidden = !PreferenceSettings.Instance.ShowConnector;
             }
