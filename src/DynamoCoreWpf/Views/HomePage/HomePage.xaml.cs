@@ -125,7 +125,7 @@ namespace Dynamo.UI.Views
 
         private void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(dynWebView?.CoreWebView2 != null && e.PropertyName.Equals(nameof(startPage.DynamoViewModel.ShowStartPage)))
+            if(e.PropertyName == nameof(startPage.DynamoViewModel.ShowStartPage) && dynWebView?.CoreWebView2 != null)
             {
                 dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
             }
