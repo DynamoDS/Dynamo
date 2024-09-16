@@ -160,7 +160,9 @@ namespace Dynamo.Graph.Connectors
             GUID = guid;
             Start = start.OutPorts[startIndex];
             PortModel endPort = end.InPorts[endIndex];
-            isHidden = !PreferenceSettings.Instance.ShowConnector;
+            // Reading visibility settings from preferences and setting the visibility of the connector
+            // so that setting changes within the session can be relfected instantly
+            IsHidden = !PreferenceSettings.Instance.ShowConnector;
 
             Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).",
                 start.GUID, Start.Owner == null ? "null" : Start.Owner.Name, end.GUID, endPort.Owner == null ? "null" : endPort.Owner.Name);
