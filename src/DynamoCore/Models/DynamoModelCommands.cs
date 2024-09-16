@@ -551,7 +551,7 @@ namespace Dynamo.Models
                 firstPort.Owner,
                 secondPort.Owner,
                 firstPort.Index,
-                secondPort.Index)
+                secondPort.Index);
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();

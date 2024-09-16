@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
@@ -159,6 +160,7 @@ namespace Dynamo.Graph.Connectors
             GUID = guid;
             Start = start.OutPorts[startIndex];
             PortModel endPort = end.InPorts[endIndex];
+            isHidden = !PreferenceSettings.Instance.ShowConnector;
 
             Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).",
                 start.GUID, Start.Owner == null ? "null" : Start.Owner.Name, end.GUID, endPort.Owner == null ? "null" : endPort.Owner.Name);

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Globalization;
+using Dynamo.Configuration;
 
 namespace Dynamo.Models
 {
@@ -1566,9 +1567,9 @@ namespace Dynamo.Models
             void setProperties(int portIndex, PortType portType, Mode mode, bool isHidden)
             {
                 PortIndex = portIndex;
-                Type = portType;
+                Type = portType;    
                 ConnectionMode = mode;
-                IsHidden = isHidden;
+                IsHidden = !PreferenceSettings.Instance.ShowConnector;
             }
 
             /// <summary>
