@@ -1564,7 +1564,7 @@ namespace Dynamo.Models
                 BeginCreateConnections
             }
 
-            void setProperties(int portIndex, PortType portType, Mode mode, bool isHidden)
+            void SetProperties(int portIndex, PortType portType, Mode mode)
             {
                 PortIndex = portIndex;
                 Type = portType;    
@@ -1579,12 +1579,11 @@ namespace Dynamo.Models
             /// <param name="portIndex"></param>
             /// <param name="portType"></param>
             /// <param name="mode"></param>
-            /// <param name="isHidden"></param>
             [JsonConstructor]
-            public MakeConnectionCommand(string nodeId, int portIndex, PortType portType, Mode mode, bool isHidden = true)
+            public MakeConnectionCommand(string nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { Guid.Parse(nodeId) })
             {
-                setProperties(portIndex, portType, mode, isHidden);
+                SetProperties(portIndex, portType, mode);
             }
 
             /// <summary>
@@ -1594,11 +1593,10 @@ namespace Dynamo.Models
             /// <param name="portIndex"></param>
             /// <param name="portType"></param>
             /// <param name="mode"></param>
-            /// <param name="isHidden"></param>
-            public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode, bool isHidden = true)
+            public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { nodeId })
             {
-                setProperties(portIndex, portType, mode, isHidden);
+                SetProperties(portIndex, portType, mode);
             }
 
             /// <summary>
@@ -1608,11 +1606,10 @@ namespace Dynamo.Models
             /// <param name="portIndex"></param>
             /// <param name="portType"></param>
             /// <param name="mode"></param>
-            /// <param name="isHidden"></param>
-            public MakeConnectionCommand(IEnumerable<Guid> nodeId, int portIndex, PortType portType, Mode mode, bool isHidden = true)
+            public MakeConnectionCommand(IEnumerable<Guid> nodeId, int portIndex, PortType portType, Mode mode)
                 : base(nodeId)
             {
-                setProperties(portIndex, portType, mode, isHidden);
+                SetProperties(portIndex, portType, mode);
             }
 
             internal static MakeConnectionCommand DeserializeCore(XmlElement element)
@@ -1621,10 +1618,9 @@ namespace Dynamo.Models
                 int portIndex = helper.ReadInteger("PortIndex");
                 var portType = ((PortType)helper.ReadInteger("Type"));
                 var mode = ((Mode)helper.ReadInteger("ConnectionMode"));
-                var isHidden = helper.ReadBoolean("IsHidden");
                 var modelGuids = DeserializeGuid(element, helper);
 
-                return new MakeConnectionCommand(modelGuids, portIndex, portType, mode, isHidden);
+                return new MakeConnectionCommand(modelGuids, portIndex, portType, mode);
             }
 
             #endregion
