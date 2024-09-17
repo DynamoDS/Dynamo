@@ -50,6 +50,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(homePage.RequestNewCustomNodeWorkspace);
             Assert.IsNotNull(homePage.RequestApplicationLoaded);
             Assert.IsNotNull(homePage.RequestShowSampleFilesInFolder);
+            Assert.IsNotNull(homePage.RequestShowSampleDatasetsInFolder);
             Assert.IsNotNull(homePage.RequestShowBackupFilesInFolder);
             Assert.IsNotNull(homePage.RequestShowTemplate);
         }

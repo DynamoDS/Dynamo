@@ -315,7 +315,8 @@ namespace Dynamo.DocumentationBrowser
              {
                  if (line.ToLowerInvariant().Contains(Resources.InputDefaultValue))
                  {
-                     return line.Remove(0, 16);
+                    var index = line.IndexOf(":");
+                    return line.Remove(0, index + 1);
                  }
              }
              return string.Empty;

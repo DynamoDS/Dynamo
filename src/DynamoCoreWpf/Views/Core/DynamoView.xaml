@@ -534,6 +534,8 @@
                                 </MenuItem.Header>
                             </MenuItem>
                         </MenuItem>
+                        <MenuItem Header="{x:Static p:Resources.UpdateAllPythonEngineMainMenuHeader}"
+                              Name="PythonEngineMenu" />
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCleanupLayout}"
                                   Command="{Binding GraphAutoLayoutCommand}"
@@ -662,8 +664,11 @@
                                   Command="{Binding GoToDictionaryCommand}">
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoWebsite}"
-                                  Command="{Binding GoToSourceCodeCommand}"
+                                  Command="{Binding GoToWebsiteCommand}"
                                   Name="ViewDynamoWebsite"/>
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoRepo}"
+                                  Command="{Binding GoToSourceCodeCommand}"
+                                  Name="ViewDynamoRepo"/>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoWiki}"
                                   Command="{Binding GoToWikiCommand}"
                                   Name="ViewDynamoWiki"/>
@@ -710,9 +715,14 @@
                                   Command="{Binding MutateTestDelegateCommand}"
                                   CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
                                   IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
-                                  Command="{Binding DumpLibraryToXmlCommand}"
-                                  IsEnabled="True" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpData}"
+                                  Name="dumpDataMenuMenu">
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
+                                      Command="{Binding DumpLibraryToXmlCommand}"
+                                      IsEnabled="True" />
+                            <MenuItem  Header="{x:Static p:Resources.DynamoViewDebugMenuDumpNodeHelpData}"
+                                       Command="{Binding DumpNodeHelpDataCommand}" IsEnabled="True"/>
+                        </MenuItem>
                         <MenuItem Name="DebugModes"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"

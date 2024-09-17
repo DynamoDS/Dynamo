@@ -48,6 +48,11 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly string DynamoAsString = "Dynamo";
 
+        /// <summary>
+        /// Const string for Dynamo Node Help Docs
+        /// </summary>
+        public static readonly string DynamoNodeHelpDocs = "NodeHelpSharedDocs";
+
         #endregion
 
         #region Usage Reporting Error Message

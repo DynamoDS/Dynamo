@@ -23,6 +23,7 @@ using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
+using Newtonsoft.Json;
 
 namespace Dynamo.Utilities
 {
@@ -221,6 +222,23 @@ namespace Dynamo.Utilities
                name, description, keywords, hosts, author
             };
             return d;
+        }
+
+        /// <summary>
+        /// Remove all the current indexed node info and update it with the new ones passed as parameter
+        /// </summary>
+        /// <param name="nodeList">list of nodes to be indexed</param>
+        internal void UpdateIndexedNodesInfo(List<NodeSearchElement> nodeList)
+        {
+            if(nodeList.Any())
+            {
+                writer.DeleteAll();
+                foreach(var node in nodeList)
+                {
+                    var iDoc = InitializeIndexDocumentForNodes();
+                    AddNodeTypeToSearchIndex(node, iDoc);
+                }             
+            }         
         }
 
         // TODO:

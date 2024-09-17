@@ -661,6 +661,10 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Dynamo _Website</value>
     <comment>Help menu | Go go Dynamo website</comment>
   </data>
+  <data name="DynamoViewHelpMenuGotoRepo" xml:space="preserve">
+    <value>Dynamo _Repository</value>
+    <comment>Help menu | Go go Dynamo repository</comment>
+  </data>
   <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
     <value>Dynamo _Project Wiki</value>
     <comment>Help menu | Go to wiki</comment>
@@ -4009,5 +4013,25 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="PartialRenderFailureTitle" xml:space="preserve">
     <value>Background Preview had an issue</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpData" xml:space="preserve">
+    <value>_Dump Data</value>
+    <comment>Debug menu | Dump data options</comment>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeHelpData" xml:space="preserve">
+    <value>_Dump Node Help Data</value>
+    <comment>Debug menu | Dump all node help data like hash mapping</comment>
+  </data>
+  <data name="NodeHelpIsDumped" xml:space="preserve">
+    <value>Node Help Data is dumped to \"{0}\".</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
+    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
+    <value>Update All Python Nodes</value>
+  </data>
+  <data name="UpdateAllPythonEngineMainMenuHeader" xml:space="preserve">
+    <value>Set Python Engine</value>
   </data>
 </root>
