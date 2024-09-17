@@ -331,22 +331,6 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         private HashSet<Guid> removedPins = new HashSet<Guid>();
 
-        /// <summary>
-        /// Marks a connector pin as removed by adding its GUID to the removedPins set.
-        /// </summary>
-        public void MarkPinAsRemoved(ConnectorPinModel pin)
-        {
-            removedPins.Add(pin.GUID);
-        }
-
-        /// <summary>
-        /// Clears the set of removed connector pins.
-        /// </summary>
-        public void ClearRemovedPins()
-        {
-            removedPins.Clear();
-        }
-
         private double widthAdjustment;
         /// <summary>
         /// Adjustment margin to be added to the width of the
@@ -485,6 +469,22 @@ namespace Dynamo.Graph.Annotations
                 .ToArray();
 
             return connectorPinsToAdd;
+        }
+
+        /// <summary>
+        /// Marks a connector pin as removed by adding its GUID to the removedPins set.
+        /// </summary>
+        internal void MarkPinAsRemoved(ConnectorPinModel pin)
+        {
+            removedPins.Add(pin.GUID);
+        }
+
+        /// <summary>
+        /// Clears the set of removed connector pins.
+        /// </summary>
+        private void ClearRemovedPins()
+        {
+            removedPins.Clear();
         }
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
