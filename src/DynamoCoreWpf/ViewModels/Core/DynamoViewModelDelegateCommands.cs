@@ -51,7 +51,8 @@ namespace Dynamo.ViewModels
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleBackgroundGridVisibilityCommand = new DelegateCommand(ToggleBackgroundGridVisibility, CanToggleBackgroundGridVisibility);
             UpdateGraphicHelpersScaleCommand = new DelegateCommand(UpdateGraphicHelpersScale, CanUpdateGraphicHelpersScale);
-            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
+            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
+            UpdateAllPythonEngineCommand = new DelegateCommand(UpdateAllPythonEngine, CanUpdateAllPythonEngine);
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_ => model.Copy(), CanCopy);
@@ -63,6 +64,7 @@ namespace Dynamo.ViewModels
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
+            GoToWebsiteCommand = new DelegateCommand(GoToWebsite, CanGoToWebsite);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
             GoToDictionaryCommand = new DelegateCommand(GoToDictionary, CanGoToDictionary);
             DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
@@ -90,6 +92,7 @@ namespace Dynamo.ViewModels
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
+            DumpNodeHelpDataCommand = new DelegateCommand(DumpNodeHelpData, CanDumpNodeHelpData);
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
@@ -136,6 +139,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
+        public DelegateCommand UpdateAllPythonEngineCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleBackgroundGridVisibilityCommand { get; set; }
@@ -153,6 +157,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ReportABugCommand { get; set; }
         public DelegateCommand GoToWikiCommand { get; set; }
         public DelegateCommand GoToDictionaryCommand { get; set; }
+        public DelegateCommand GoToWebsiteCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand DisplayStartPageCommand { get; set; }
         public DelegateCommand DisplayInteractiveGuideCommand { get; set; }
@@ -176,6 +181,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenRecentCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
         public DelegateCommand DumpLibraryToXmlCommand { get; set; }
+        public DelegateCommand DumpNodeHelpDataCommand { get; set; }
         public DelegateCommand ShowNewPresetsDialogCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand OpenDocumentationLinkCommand { get; set; }

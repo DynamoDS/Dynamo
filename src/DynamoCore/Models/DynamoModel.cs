@@ -98,10 +98,14 @@ namespace Dynamo.Models
     /// </summary>
     public struct HostAnalyticsInfo
     {
-        // Dynamo variation identified by host.
+        // Dynamo variation identified by host, e.g. Dynamo Revit
         public string HostName;
         // Dynamo variation version specific to host
         public Version HostVersion;
+        // Dynamo host application name, e.g. Revit
+        public string HostProductName;
+        // Dynamo host application version, e.g. 2025.2.0
+        public Version HostProductVersion;
         // Dynamo host parent id for analytics purpose.
         public string ParentId;
         // Dynamo host session id for analytics purpose.
@@ -2945,6 +2949,26 @@ namespace Dynamo.Models
                 }
 
                 CurrentWorkspace = customNodeWorkspace;
+                return true;
+            }
+
+            return false;
+        }
+        /// <summary>
+        ///     Opens an existing custom node workspace.
+        /// </summary>
+        /// <param name="guid">Identifier of the workspace to open</param>
+        /// <returns>True if workspace was found and open</returns>
+        internal bool OpenCustomNodeWorkspaceSilent(Guid guid)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
+            {
+                if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
+                {
+                    AddWorkspace(customNodeWorkspace);
+                }
+
                 return true;
             }
 

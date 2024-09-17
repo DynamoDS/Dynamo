@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Globalization;
+using Dynamo.Configuration;
 
 namespace Dynamo.Models
 {
@@ -1563,15 +1564,16 @@ namespace Dynamo.Models
                 BeginCreateConnections
             }
 
-            void setProperties(int portIndex, PortType portType, Mode mode)
+            void SetProperties(int portIndex, PortType portType, Mode mode)
             {
                 PortIndex = portIndex;
                 Type = portType;
                 ConnectionMode = mode;
+                IsHidden = !PreferenceSettings.Instance.ShowConnector;
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1581,11 +1583,11 @@ namespace Dynamo.Models
             public MakeConnectionCommand(string nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { Guid.Parse(nodeId) })
             {
-                setProperties(portIndex, portType, mode);
+                SetProperties(portIndex, portType, mode);
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1594,11 +1596,11 @@ namespace Dynamo.Models
             public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { nodeId })
             {
-                setProperties(portIndex, portType, mode);
+                SetProperties(portIndex, portType, mode);
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1607,7 +1609,7 @@ namespace Dynamo.Models
             public MakeConnectionCommand(IEnumerable<Guid> nodeId, int portIndex, PortType portType, Mode mode)
                 : base(nodeId)
             {
-                setProperties(portIndex, portType, mode);
+                SetProperties(portIndex, portType, mode);
             }
 
             internal static MakeConnectionCommand DeserializeCore(XmlElement element)
@@ -1616,7 +1618,6 @@ namespace Dynamo.Models
                 int portIndex = helper.ReadInteger("PortIndex");
                 var portType = ((PortType)helper.ReadInteger("Type"));
                 var mode = ((Mode)helper.ReadInteger("ConnectionMode"));
-
                 var modelGuids = DeserializeGuid(element, helper);
 
                 return new MakeConnectionCommand(modelGuids, portIndex, portType, mode);
@@ -1635,6 +1636,9 @@ namespace Dynamo.Models
             [DataMember]
             public Mode ConnectionMode { get; private set; }
 
+            [DataMember]
+            internal bool IsHidden { get; private set; }
+
             #endregion
 
             #region Protected Overridable Methods
@@ -1651,6 +1655,7 @@ namespace Dynamo.Models
                 helper.SetAttribute("PortIndex", PortIndex);
                 helper.SetAttribute("Type", ((int)Type));
                 helper.SetAttribute("ConnectionMode", ((int)ConnectionMode));
+                helper.SetAttribute("IsHidden", IsHidden);
             }
 
             #endregion
