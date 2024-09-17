@@ -45,7 +45,7 @@
 
         <PackageReference Include="JUnitTestLogger" Version="1.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="RestSharp" Version="108.0.1">
+        <PackageReference Include="RestSharp" Version="112.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
