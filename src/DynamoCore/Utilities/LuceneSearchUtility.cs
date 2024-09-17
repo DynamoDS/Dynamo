@@ -492,6 +492,18 @@ namespace Dynamo.Utilities
 
             query = new WildcardQuery(new Term(fieldName, termText));
 
+            /*This piece of code only applies if the SearchTerm contain empty spaces.
+            * When contain empty spaces is split by empty space resulting several terms (that why termSplit = true) and then assign a lower weight for each term.
+            */
+            if (fieldName.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)) && termSplit == true)
+            {
+                query.Boost = LuceneConfig.WildcardsSearchNameParsedWeight;
+            }
+            else if (termSplit == true)
+            {
+                query.Boost = LuceneConfig.FuzzySearchWeight;
+            }
+
             switch (fieldName)
             {
                 case nameof(LuceneConfig.NodeFieldsEnum.Name):
@@ -529,17 +541,7 @@ namespace Dynamo.Utilities
                     break;
             }
 
-            /*This piece of code only applies if the SearchTerm contain empty spaces.
-             * When contain empty spaces is split by empty space resulting several terms (that why termSplit = true) and then assign a lower weight for each term.
-             */
-            if (fieldName.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)) && termSplit == true)
-            {
-                query.Boost = LuceneConfig.WildcardsSearchNameParsedWeight;
-            }
-            else if (termSplit == true)
-            {
-                query.Boost = LuceneConfig.FuzzySearchWeight;
-            }
+           
 
             return query;
         }
