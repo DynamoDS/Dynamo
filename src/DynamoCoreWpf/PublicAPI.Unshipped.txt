@@ -1754,6 +1754,8 @@ Dynamo.ViewModels.ConnectorPinViewModel.Top.get -> double
 Dynamo.ViewModels.ConnectorPinViewModel.Top.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.UnpinConnectorCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.ConnectorPinViewModel.UnpinConnectorCommand.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.RemovePinFromGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorPinViewModel.RemovePinFromGroupCommand.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.ZIndex.get -> int
 Dynamo.ViewModels.ConnectorPinViewModel.ZIndex.set -> void
 Dynamo.ViewModels.ConnectorViewModel

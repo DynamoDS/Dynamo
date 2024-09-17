@@ -170,7 +170,7 @@ namespace Dynamo.Graph.Annotations
                 RaisePropertyChanged("Background");
             }
         }
-              
+
         private HashSet<ModelBase> nodes;
         /// <summary>
         /// Returns collection of models (nodes and notes) which the group contains
@@ -198,8 +198,11 @@ namespace Dynamo.Graph.Annotations
                 var pinModels = value.OfType<ConnectorPinModel>().ToList();
                 var valuesWithoutPins = value.Except(pinModels);
 
-                // then recalculate which pins belong to the group based on the nodes
+                // Then recalculate which pins belong to the group based on the nodes
                 var pinsFromNodes = GetPinsFromNodes(valuesWithoutPins.OfType<NodeModel>());
+
+                // Then filter out pins that have been marked as removed
+                pinsFromNodes = pinsFromNodes.Where(p => !removedPins.Contains(p.GUID)).ToArray();  
 
                 // Combine all
                 nodes = valuesWithoutPins.Concat(pinModels).Concat(pinsFromNodes).ToHashSet<ModelBase>();
@@ -214,7 +217,7 @@ namespace Dynamo.Graph.Annotations
                 }
                 UpdateBoundaryFromSelection();
                 RaisePropertyChanged(nameof(Nodes));
-            }            
+            }
         }
 
         /// <summary>
@@ -321,6 +324,27 @@ namespace Dynamo.Graph.Annotations
                 pinnedNode = value;
                 RaisePropertyChanged(nameof(PinnedNode));
             }
+        }
+
+        /// <summary>
+        /// Stores the GUIDs of connector pins that have been marked as removed from the group.
+        /// </summary>
+        private HashSet<Guid> removedPins = new HashSet<Guid>();
+
+        /// <summary>
+        /// Marks a connector pin as removed by adding its GUID to the removedPins set.
+        /// </summary>
+        public void MarkPinAsRemoved(ConnectorPinModel pin)
+        {
+            removedPins.Add(pin.GUID);
+        }
+
+        /// <summary>
+        /// Clears the set of removed connector pins.
+        /// </summary>
+        public void ClearRemovedPins()
+        {
+            removedPins.Clear();
         }
 
         private double widthAdjustment;
@@ -872,6 +896,7 @@ namespace Dynamo.Graph.Annotations
                     model.Disposed -= model_Disposed;
                 }
             }
+            ClearRemovedPins();
             base.Dispose();
         }     
     }   

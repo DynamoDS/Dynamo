@@ -1,0 +1,179 @@
+{
+  "Uuid": "662012e3-6b9d-4486-8eb9-8b88aa241e0e",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "groupWithConnectorPin",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "d0b80570768a40b9bd7aeb9c4f688620",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2ef500dc34ec41cd88a3f786ff21c858",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "\"world\";"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "812465b4fa9e4ae993a21d8ee97f0dfe",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "fc6c066f25c44857bfb41fc77ac49e30",
+          "Name": "noun",
+          "Description": "noun",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ef92a0d5fb4e4ec0ae5ec24af5f4c1bd",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "\"Hello \" + noun + \" !\";"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "2ef500dc34ec41cd88a3f786ff21c858",
+      "End": "fc6c066f25c44857bfb41fc77ac49e30",
+      "Id": "2c99ec05de7b4f9cbc74894897bc438a",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.1",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "8.1",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.0.0.7186",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [
+      {
+        "Left": 842.1958456973293,
+        "Top": 222.36815252225523,
+        "IsHidden": false,
+        "ConnectorGuid": "2c99ec05-de7b-4f9c-bc74-894897bc438a"
+      }
+    ],
+    "NodeViews": [
+      {
+        "Id": "d0b80570768a40b9bd7aeb9c4f688620",
+        "Name": "Node1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 658.0,
+        "Y": 268.0
+      },
+      {
+        "Id": "812465b4fa9e4ae993a21d8ee97f0dfe",
+        "Name": "Node2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 953.0,
+        "Y": 271.0
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "aca6a2ea054b4c90bc83d2a8d4880014",
+        "Title": "Group 1",
+        "DescriptionText": "Description <Double click here to edit group description>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "d0b80570768a40b9bd7aeb9c4f688620",
+          "812465b4fa9e4ae993a21d8ee97f0dfe",
+          "f20d47d5b7c64fda8fad22190e723887"
+        ],
+        "HasNestedGroups": false,
+        "Left": 648.0,
+        "Top": 159.36805252225523,
+        "Width": 630.0,
+        "Height": 243.63194747774477,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 232.36805252225523,
+        "InitialHeight": 183.63194747774477,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 112.04750000000001,
+    "Y": 233.0125,
+    "Zoom": 0.8425
+  }
+}
