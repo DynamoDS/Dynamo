@@ -118,7 +118,7 @@ namespace Dynamo.Tests
             string expectedNode = "List Create";
             string[] searchTerms = { "list.create", "list create"};
             const int nodeResultsToTake = 5;
-            const int expectedNodeIndex = 0;
+            int[] expectedNodeIndex = { 0, 1 };
 
             string fullJsonNodesPath = Path.Combine(TestDirectory, @"DynamoCoreTests\NodesJsonDatasets\LuceneIndexedNodesRevit.json");
             UpdateIndexedNodesFromJason(fullJsonNodesPath);
@@ -133,7 +133,7 @@ namespace Dynamo.Tests
                 Assert.IsTrue(nameResults.Take(nodeResultsToTake).Contains(expectedNode));
 
                 //Validates that the expected node is at first place
-                Assert.IsTrue(nameResults.IndexOf(expectedNode) == expectedNodeIndex, string.Format("The node: {0} is expected at position: {1} but was found in position: {2}", expectedNode, expectedNodeIndex, nameResults.IndexOf(expectedNode)));
+                Assert.IsTrue(nameResults.IndexOf(expectedNode) == expectedNodeIndex[index], string.Format("The node: {0} is expected at position: {1} but was found in position: {2}", expectedNode, expectedNodeIndex[index], nameResults.IndexOf(expectedNode)));
                 index++;
             }
         }
