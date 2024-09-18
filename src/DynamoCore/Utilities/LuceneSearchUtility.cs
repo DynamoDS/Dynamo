@@ -74,8 +74,6 @@ namespace Dynamo.Utilities
         /// </summary>
         internal static readonly LuceneStartConfig DefaultPkgIndexStartConfig = new LuceneStartConfig(LuceneSearchUtility.LuceneStorage.FILE_SYSTEM, LuceneConfig.PackagesIndexingDirectory);
 
-        private bool hasEmptySpaces { get; set; }
-
         public enum LuceneStorage
         {
             //Lucene Storage will be located in RAM and all the info indexed will be lost when Dynamo app is closed
@@ -88,13 +86,34 @@ namespace Dynamo.Utilities
         /// <summary>
         /// This enum will be used to identify which can of search should be executed based in the user search criteria 
         /// </summary>
-        public enum SearchType
+        internal enum SearchType
         {
             //Normal search using just one word matching a specific node name
             Normal,
 
             //Search by category using the "." character for example "list.re"
-            ByCategory
+            ByDotCategory,
+
+            //The SearchTerm contains at least one empty space
+            ByEmptySpace
+        }
+
+        /// <summary>
+        /// This enum will be used to create different type of Wildcard queries using regular expressions
+        /// </summary>
+        internal enum WildcardType
+        {
+            //This represent the same SearchTerm as was inserted e.g. num
+            None,
+
+            //This represent the SearchTerm with the regular expression num*
+            PostFix,
+
+            //This represent the SearchTerm with the regular expression *num
+            Prefix,
+
+            //This represent the SearchTerm with the regular expression  *num*
+            FullCard
         }
 
         // Used for creating the StandardAnalyzer
@@ -291,18 +310,6 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Check if the term passed as parameter is found inside the FullCategoryName
-        /// </summary>
-        /// <param name="term">Splitted search term e.g. if the search term is "set parameter" the parameter will be "set" or "parameter"</param>
-        /// <param name="FullCategoryName">The complete category used for a specific node, like Core.File.FileSystem</param>
-        /// <returns></returns>
-        private bool IsMatchingCategory(string term, string FullCategoryName)
-        {
-            var categoryTerms = FullCategoryName.Split(".").Select(x => x.ToLower());
-            return categoryTerms.Contains(term);
-        }
-
-        /// <summary>
         /// Creates a search query with adjusted priority, fuzzy logic and wildcards.
         /// Complete Search term appearing in Name of the package will be given highest priority.
         /// Then, complete search term appearing in other metadata,
@@ -320,7 +327,6 @@ namespace Dynamo.Utilities
             //By Default the search will be normal
             SearchType searchType = SearchType.Normal;
             int fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMinEdits;
-            hasEmptySpaces = false;
 
             //Max number of nodes allowed in the search when is a ByEmptySpace search
             const int MaxNodeNamesRepeated = 20;
@@ -337,20 +343,19 @@ namespace Dynamo.Utilities
             if (!IsPackageContext)
             {
                 if (searchTerm.Contains('.'))
-                    searchType = SearchType.ByCategory;
+                    searchType = SearchType.ByDotCategory;
                 else if (searchTerm.Contains(' '))
-                    hasEmptySpaces = true;
+                    searchType = SearchType.ByEmptySpace;
+                else
+                    searchType = SearchType.Normal;
             }
-
-            var trimmedSearchTerm = hasEmptySpaces == true ? searchTerm.Replace(" ", "") : searchTerm;
 
             foreach (string f in fields)
             {
                 Occur occurQuery = Occur.SHOULD;
 
-                //Needs to be again due that now a query can contain different values per field (e.g. CategorySplitted:list, Name:tr)
                 searchTerm = QueryParser.Escape(SearchTerm);
-                if (searchType == SearchType.ByCategory)
+                if (searchType == SearchType.ByDotCategory)
                 {
                     //This code section should be only executed if the search criteria is CategoryBased like "category.nodename"
                     if (f != nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) &&
@@ -368,153 +373,176 @@ namespace Dynamo.Utilities
                     }                   
                 }
 
-                //For normal search we don't consider the fields NameSplitted and CategorySplitted
-                if ((f == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ||
-                    f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted)) && searchType != SearchType.ByCategory)
+                //For normal search we don't consider the field CategorySplitted
+                if (f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted) && searchType != SearchType.ByDotCategory)
                     continue;
+
 
                 //This case is for when the user type something like "list.", I mean, not specifying the node name or part of it
                 if (string.IsNullOrEmpty(searchTerm))
                     continue;
 
-                bool firstTermIsCategory = false;
+                //Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions), with the normal weights
+                AddQueries(searchTerm, f, searchType, booleanQuery, occurQuery, fuzzyLogicMaxEdits);
 
-                //This will only valid when the search term has empty spaces
-                if (hasEmptySpaces)
+                if (searchType == SearchType.ByEmptySpace)
                 {
-                    //Check if the first term of the search criteria match any category
-                    var possibleCategory = searchTerm.Split(' ')[0];
-                    if (string.IsNullOrEmpty(possibleCategory)) continue;
-
-                    var specificCategoryEntries = dynamoModel.SearchModel.Entries.Where(entry => IsMatchingCategory(possibleCategory, entry.FullCategoryName) == true);
-                    firstTermIsCategory = specificCategoryEntries.Any();
-
-                    //Get the node matching the Category provided in the search term
-                    var matchingCategory = specificCategoryEntries.FirstOrDefault();
-                    if (matchingCategory == null && firstTermIsCategory == true) continue;
-
-                    if (f == nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName) && firstTermIsCategory == true)
+                    foreach (string s in searchTerm.Split(' '))
                     {
-                        //Means that the first term is a category when we will be using the FullCategoryName for making a specific search based in the category
-                        trimmedSearchTerm = matchingCategory?.FullCategoryName;
-                    }
-                    else if (f == nameof(LuceneConfig.NodeFieldsEnum.Name) && firstTermIsCategory == true)
-                    {
-                        //If the field being iterated is Name and we are sure that the first term is a Category when we remove the term from the string so we can search for the specific node Name
-                        trimmedSearchTerm = trimmedSearchTerm?.Replace(possibleCategory, string.Empty);
-                        if (string.IsNullOrEmpty(trimmedSearchTerm)) continue;
-                    }
-                }
-
-                FuzzyQuery fuzzyQuery;
-                if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
-                {
-                    fuzzyQuery = new FuzzyQuery(new Term(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm), fuzzyLogicMaxEdits);
-                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-                }
-
-                var fieldQuery = CalculateFieldWeight(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm);
-                var wildcardQuery = CalculateFieldWeight(f, hasEmptySpaces == true ? trimmedSearchTerm : searchTerm, true);
-
-                if (searchType == SearchType.ByCategory && f == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
-                {
-                    occurQuery = Occur.MUST;
-                }
-               
-                booleanQuery.Add(fieldQuery, occurQuery);
-                booleanQuery.Add(wildcardQuery, occurQuery);
-
-                if (searchTerm.Contains(' '))
-                {
-                    //Added due that the Search algorithm was not matching the exact name when searchTerm contain empty spaces
-                    if (!string.IsNullOrEmpty(searchTerm) && f == nameof(LuceneConfig.NodeFieldsEnum.Name))
-                    {
-                        //I had to use the use the WildcardQuery class directly to set the weight(Boost) to the default value (instead of using the one calculated by the CalculateFieldWeight() method
-                        var wildcardQueryWithEmptySpace = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
-
-                        //PhraseQuery will escape whitespace characters trying to match the exact phrase
-                        var phraseQuery = new PhraseQuery
-                        {
-                            new Term(f, searchTerm),
-                        };
-
-                        booleanQuery.Add(phraseQuery, occurQuery);
-                        booleanQuery.Add(wildcardQueryWithEmptySpace, occurQuery);
-                    }
-
-                    foreach (string s in searchTerm.Split(' ', '.'))
-                    {
-                        //If is a ByEmptySpace search and the splitted words match with more than MaxNodeNamesRepeated nodes then the word is skipped
+                        //If is a ByEmptySpace search and the split words match with more than MaxNodeNamesRepeated nodes then the word is skipped (otherwise the results will be polluted with hundred of not related nodes)
                         int nodesFrequency = dynamoModel.SearchModel.Entries.Where(entry => entry.Name.ToLower().Contains(s) && !string.IsNullOrEmpty(s)).Count();
                         if (nodesFrequency > MaxNodeNamesRepeated) continue;
 
                         if (string.IsNullOrEmpty(s)) continue;
 
-                        if (s.Length > LuceneConfig.FuzzySearchMinimalTermLength)
-                        {
-                            fuzzyQuery = new FuzzyQuery(new Term(f, s), LuceneConfig.FuzzySearchMinEdits);
-                            booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-                        }
-                        wildcardQuery = new WildcardQuery(new Term(f, "*" + s + "*"));
-
-                        if (f.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)))
-                        {
-                            wildcardQuery.Boost = LuceneConfig.WildcardsSearchNameParsedWeight;
-                        }
-                        else
-                        {
-                            wildcardQuery.Boost = LuceneConfig.FuzzySearchWeight;
-                        }
-                        booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                        //Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions), with the weights for Queries with RegularExpressions
+                        AddQueries(s, f, searchType, booleanQuery, occurQuery, LuceneConfig.FuzzySearchMinEdits, true);
                     }
                 }
             }
             return booleanQuery.ToString();
         }
 
-        private WildcardQuery CalculateFieldWeight(string fieldName, string searchTerm, bool isWildcard = false)
+        /// <summary>
+        ///  Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions) with specific weight for each one
+        /// </summary>
+        /// <param name="searchTerm">Search Term introduced by the user</param>
+        /// <param name="field">Field being processed</param>
+        /// <param name="searchType">Type of Search: Normal, ByDotCategory and ByEmptySpace</param>
+        /// <param name="booleanQuery">The Boolean query in which the Wildcard queries will be added</param>
+        /// <param name="occurQuery">Occur type can be Should or Must</param>
+        /// <param name="fuzzyLogicMaxEdits">Max edit lenght for Fuzzy queries</param>
+        /// <param name="termSplit">Indicates if the SearchTerm has been split by empty space or not</param>
+        private void AddQueries(string searchTerm, string field, SearchType searchType, BooleanQuery booleanQuery, Occur occurQuery, int fuzzyLogicMaxEdits, bool termSplit = false)
+        {
+            string querySearchTerm = searchTerm.Replace(" ", string.Empty);
+
+            FuzzyQuery fuzzyQuery;
+            if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
+            {
+                fuzzyQuery = new FuzzyQuery(new Term(field, querySearchTerm), fuzzyLogicMaxEdits);
+                booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+            }
+
+            if (searchType == SearchType.ByDotCategory && field == nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted))
+            {
+                occurQuery = Occur.MUST;
+            }
+
+            foreach (WildcardType enumVal in Enum.GetValues(typeof(WildcardType)))
+            {
+                var wildcardQuery = CalculateFieldWeight(field, querySearchTerm, enumVal, termSplit);
+                booleanQuery.Add(wildcardQuery, occurQuery);
+            }
+        }
+
+        /// <summary>
+        /// Creates the WildcardQuery with a specific regular expression and assign a weight depending of the field and the reg ex
+        /// </summary>
+        /// <param name="fieldName">Field name that is being processed</param>
+        /// <param name="searchTerm">SearchTerm entered by the user</param>
+        /// <param name="wilcardType">Indicates which can of wildcard will be used</param>
+        /// <param name="termSplit">If SearchTerm contains empty spaces then is splitted by empty space, so this flag indicates if the searchTerm was already split or not</param>
+        /// <returns>The WildcardQuery with the term and weight assigned</returns>
+        private WildcardQuery CalculateFieldWeight(string fieldName, string searchTerm, WildcardType wilcardType = WildcardType.None, bool termSplit = false)
         {
             WildcardQuery query;
+            bool isWildcard = true;
+            float boostOffset = 0;
 
-            //In case we are weighting the NameSplitted field then means that is a search based on Category of the type "cat.node" so we will be using the wilcard "category.node*" otherwise will be the normal wildcard
-            var termText = fieldName == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted) ? searchTerm + "*" : "*" + searchTerm + "*";
+            if (fieldName == nameof(LuceneConfig.NodeFieldsEnum.NameSplitted))
+            {
+                wilcardType = WildcardType.PostFix;
+            }
 
-            query = isWildcard == false ?
-                new WildcardQuery(new Term(fieldName, searchTerm)) : new WildcardQuery(new Term(fieldName, termText));
+            string termText;
+            //If the WilcardQuery contains regular expression so the WildcardType will be Prefix, Postfix or FullCard then we will decrease the defined weight.
+            /*
+             * e.g. if the user search for "Number" and we are iterating the field Name, the defined weights in LuceneConfig are the next:
+             * SearchNameWeight = 10
+             * WildcardsSearchNameWeight = 7
+             * 
+             * The 4 Wildcardqueries using reg ex created for the Name field will be:
+             * Name:number - 10
+             * Name:number* - 6
+             * Name:*number - 5
+             * Name:*number* - 4
+             * 
+             * Then the name which has the exact word "number" in the Name will have more weight and it will be decreasing according to the reg ex used
+             */
+            switch (wilcardType)
+            {
+                case WildcardType.Prefix:
+                    termText = "*" + searchTerm;
+                    boostOffset = 2;
+                    break;
+                case WildcardType.PostFix:
+                    termText = searchTerm + "*";
+                    boostOffset = 1;
+                    break;
+                case WildcardType.FullCard:
+                    termText = "*" + searchTerm + "*";
+                    boostOffset = 3;
+                    break;
+                default:
+                    isWildcard = false;
+                    termText = searchTerm;
+                    break;
+            }
+
+            query = new WildcardQuery(new Term(fieldName, termText));
+
+            /*This piece of code only applies if the SearchTerm contain empty spaces.
+            * When contain empty spaces is split by empty space resulting several terms (that why termSplit = true) and then assign a lower weight for each term.
+            */
+            if (fieldName.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)) && termSplit == true)
+            {
+                query.Boost = LuceneConfig.WildcardsSearchNameParsedWeight;
+            }
+            else if (termSplit == true)
+            {
+                query.Boost = LuceneConfig.FuzzySearchWeight;
+            }
 
             switch (fieldName)
             {
                 case nameof(LuceneConfig.NodeFieldsEnum.Name):
-                    query.Boost = isWildcard == false?
-                        LuceneConfig.SearchNameWeight :  LuceneConfig.WildcardsSearchNameWeight;
+                    query.Boost = isWildcard == false ?
+                        LuceneConfig.SearchNameWeight : (LuceneConfig.WildcardsSearchNameWeight - boostOffset);
                     break;
                 case nameof(LuceneConfig.NodeFieldsEnum.NameSplitted):
                     //Under this case the NameSplitted field will have less weight than CategorySplitted
                     query.Boost = isWildcard == false ?
-                        LuceneConfig.SearchCategoryWeight : LuceneConfig.WildcardsSearchCategoryWeight;
+                        LuceneConfig.SearchCategoryWeight : (LuceneConfig.WildcardsSearchCategoryWeight - boostOffset);
                     break;
                 case nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName):
-                    query.Boost = isWildcard == false?
-                        LuceneConfig.SearchCategoryWeight : LuceneConfig.WildcardsSearchCategoryWeight;
+                    query.Boost = isWildcard == false ?
+                        LuceneConfig.SearchCategoryWeight : (LuceneConfig.WildcardsSearchCategoryWeight - boostOffset);
                     break;
                 case nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted):
                     //Under this case the CategorySplitted field will have more weight than NameSplitted
                     query.Boost = isWildcard == false ?
-                        LuceneConfig.SearchNameWeight : LuceneConfig.WildcardsSearchNameWeight;
+                        LuceneConfig.SearchNameWeight : (LuceneConfig.WildcardsSearchNameWeight - boostOffset);
                     break;
                 case nameof(LuceneConfig.NodeFieldsEnum.Description):
                     query.Boost = isWildcard == false ?
-                        LuceneConfig.SearchDescriptionWeight : LuceneConfig.WildcardsSearchDescriptionWeight;
+                        LuceneConfig.SearchDescriptionWeight : (LuceneConfig.WildcardsSearchDescriptionWeight - boostOffset);
                     break;
                 case nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords):
                     query.Boost = isWildcard == false ?
-                       LuceneConfig.SearchTagsWeight : LuceneConfig.WildcardsSearchTagsWeight;
+                       LuceneConfig.SearchTagsWeight : (LuceneConfig.WildcardsSearchTagsWeight - boostOffset);
+                    break;
+                case nameof(LuceneConfig.NodeFieldsEnum.Parameters):
+                    query.Boost = 1;
                     break;
                 default:
                     query.Boost = isWildcard == false ?
-                       LuceneConfig.SearchMetaFieldsWeight : LuceneConfig.WildcardsSearchMetaFieldsWeight;
+                       LuceneConfig.SearchMetaFieldsWeight : (LuceneConfig.WildcardsSearchMetaFieldsWeight - boostOffset);
                     break;
             }
+
+           
+
             return query;
         }
 
@@ -611,7 +639,8 @@ namespace Dynamo.Utilities
             //In case the search criteria is like "filesystem.replace" we will be storing the value "filesystem" inside the CategorySplitted field
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.CategorySplitted), categoryParsed);
 
-            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            //When indexing the node.Name if the Name contains empty space then we remove it (this will allow to Search without empty spaces and fetch the expected node).
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name.Trim().Replace(" ", string.Empty));
 
             var nameParts = node.Name.Split('.');
             string nameParsed = nameParts.Length > 1 ? nameParts[nameParts.Length - 1] : node.Name;
