@@ -407,7 +407,7 @@
 
                                             <!--  Trigger for IsCompatible == null (unknown)  -->
                                             <DataTrigger Binding="{Binding IsCompatible}" Value="{x:Null}">
-                                                <Setter Property="BorderBrush" Value="{StaticResource PMVersionUnknownColorBrush}" />
+                                                <Setter Property="BorderBrush" Value="#d1d1d1" />
                                                 <!--  Blue  -->
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -554,7 +554,7 @@
                                                         <Style.Triggers>
                                                             <!--  Trigger for IsCompatible == true (compatible)  -->
                                                             <DataTrigger Binding="{Binding IsCompatible}" Value="True">
-                                                                <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateComplatible}" />
+                                                                <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateCompatible}" />
                                                             </DataTrigger>
 
                                                             <!--  Trigger for IsCompatible == false (not compatible)  -->

@@ -174,6 +174,7 @@ namespace Dynamo.PackageDetails
             if (!(obj is string versionName)) return;
             PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(PackageName);
             if (packageManagerSearchElement == null) return;
+            var compatible = packageManagerSearchElement.VersionInfos?.First(x => x.Version.Equals(versionName))?.IsCompatible;
 
             PackageInfo packageInfo = new PackageInfo(PackageName, Version.Parse(versionName));
             

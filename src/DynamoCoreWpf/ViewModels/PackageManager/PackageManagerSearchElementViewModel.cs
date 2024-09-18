@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using CoreNodeModels.Properties;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Greg.Responses;
 using Prism.Commands;
@@ -65,7 +69,35 @@ namespace Dynamo.PackageManager.ViewModels
         /// <summary>
         /// The currently selected version of a package
         /// </summary>
-        public string SelectedVersion { get; set; }
+        private VersionInfo selectedVersion;
+
+        public bool? IsSelectedVersionCompatible
+        {
+            get { return isSelectedVersionCompatible; }
+            set
+            {
+                if (isSelectedVersionCompatible != value)
+                {
+                    isSelectedVersionCompatible = value;
+                    RaisePropertyChanged(nameof(IsSelectedVersionCompatible));
+                }
+            }
+        }
+
+        public VersionInfo SelectedVersion   
+        {
+            get { return selectedVersion; }
+            set
+            {
+                if (selectedVersion != value)
+                {
+                    selectedVersion = value;
+
+                    // Update the compatibility info so the icon of the currently selected version is updated
+                    IsSelectedVersionCompatible = selectedVersion.IsCompatible;
+                }
+            }
+        }
 
         /// <summary>
         /// Alternative constructor to assist communication between the 
@@ -82,14 +114,20 @@ namespace Dynamo.PackageManager.ViewModels
             CanInstall = install;
             IsEnabledForInstall = isEnabledForInstall;
 
-            this.SelectedVersion = this.SearchElementModel.LatestVersion;
+            // Attempts to show the latest compatible version. If no compatible, will return the latest instead.
+            //this.SelectedVersion = this.SearchElementModel.LatestVersion;
+            this.SelectedVersion = this.SearchElementModel.LatestCompatibleVersion;
+            this.VersionInfos = this.SearchElementModel.VersionInfos;
+            WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>
+                .AddHandler(this.SearchElementModel, nameof(INotifyPropertyChanged.PropertyChanged), OnSearchElementModelPropertyChanged);
+
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.SearchElementModel.IsExpanded = !this.SearchElementModel.IsExpanded);
 
             this.DownloadLatestCommand = new DelegateCommand(
-                () => OnRequestDownload(SearchElementModel.Header.versions.First(x => x.version.Equals(SelectedVersion)), false),
+                () => OnRequestDownload(false),
                 () => !SearchElementModel.IsDeprecated && CanInstall);
-            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(SearchElementModel.Header.versions.First(x => x.version.Equals(SelectedVersion)), true));
+            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(true));
 
             this.UpvoteCommand = new DelegateCommand(SearchElementModel.Upvote, () => canLogin);
 
@@ -98,6 +136,19 @@ namespace Dynamo.PackageManager.ViewModels
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(SearchElementModel.RepositoryUrl)), () => !String.IsNullOrEmpty(SearchElementModel.RepositoryUrl));
         }
+
+        private void OnSearchElementModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SearchElementModel.LatestCompatibleVersion))
+            {
+                this.SelectedVersion = this.SearchElementModel.LatestCompatibleVersion;
+            }
+            if (e.PropertyName == nameof(SearchElementModel.VersionInfos))
+            {
+                this.VersionInfos = this.SearchElementModel.VersionInfos;
+            }
+        }
+
 
         /// <summary>
         /// PackageManagerSearchElementViewModel Constructor (only used for testing in Dynamo).
@@ -192,14 +243,63 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
+        private List<VersionInfo> versionInfos;
+
+        public List<VersionInfo> VersionInfos
+        {
+            get { return versionInfos; }
+            set
+            {
+                if (value != versionInfos)
+                {
+                    versionInfos = value;
+                    RaisePropertyChanged(nameof(VersionInfos));
+                }
+            }
+        }
+
+
         private List<String> CustomPackageFolders;
-        
+        private bool? isSelectedVersionCompatible;
+
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
         
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
+            string downloadPath = String.Empty;
+
+            if (downloadToCustomPath)
+            {
+                downloadPath = GetDownloadPath();
+
+                if (String.IsNullOrEmpty(downloadPath))
+                    return;
+            }
+
+            if (RequestDownload != null)
+                RequestDownload(this.SearchElementModel, version, downloadPath);
+        }
+
+        public void OnRequestDownload(bool downloadToCustomPath)
+        {
+            var version = this.SearchElementModel.Header.versions.First(x => x.version.Equals(SelectedVersion.Version));
+            var compatible = SelectedVersion.IsCompatible;
+
+            if (compatible == null || compatible == false)
+            {
+                var msg = Resources.PackageManagerIncompatibleVersionDownloadMsg;
+                var result = MessageBoxService.Show(msg,
+                    Resources.PackageManagerIncompatibleVersionDownloadTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (result != MessageBoxResult.OK)
+                {
+                    return;
+                }
+            }
+
             string downloadPath = String.Empty;
 
             if (downloadToCustomPath)

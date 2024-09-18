@@ -10,6 +10,42 @@ using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
+    public class Compatibility
+    {
+        public CompatibilityDetail Dynamo { get; set; }
+        public CompatibilityDetail Revit { get; set; }
+        public CompatibilityDetail Civil3D { get; set; }
+        public CompatibilityDetail DotNet { get; set; }
+    }
+
+    public class CompatibilityDetail
+    {
+        public List<string> Versions { get; set; }
+        public string Min { get; set; }
+        public string Max { get; set; }
+    }
+
+    public class VersionInfo
+    {
+        public string Version { get; set; }
+        public Compatibility Compatibility { get; set; }
+        public bool? IsCompatible { get; set; }
+
+        public static bool? GetVersionCompatibility(List<VersionInfo> versionInfos, string packageVersion)
+        {
+            // Find the specific VersionInfo for the given package version
+            var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageVersion);
+
+            // If no version info is found, return null (unknown compatibility)
+            if (versionInfo == null)
+            {
+                return null;
+            }
+
+            return versionInfo.IsCompatible;
+        }
+    }
+
     /// <summary>
     /// A search element representing an element from the package manager </summary>
     public class PackageManagerSearchElement : SearchElementBase
@@ -35,6 +71,24 @@ namespace Dynamo.PackageManager
         public int UsedBy { get { return this.Header.used_by.Count; } }
         public string LatestVersion { get { return Header.versions != null ? Header.versions[Header.versions.Count - 1].version : String.Empty; } }
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
+
+        private VersionInfo latestCompatibleVersion;
+        public VersionInfo LatestCompatibleVersion
+        {
+            get { return latestCompatibleVersion; }
+            set
+            {
+                if (latestCompatibleVersion != value)
+                {
+                    latestCompatibleVersion = value;
+
+                    RaisePropertyChanged(nameof(LatestCompatibleVersion));
+                }
+            }
+        }
+
+
+
 
         public IEnumerable<string> PackageVersions { get { return Header.versions.OrderByDescending(x => x.version).Select(x => x.version); } }
 
@@ -133,6 +187,30 @@ namespace Dynamo.PackageManager
                 hasUpvote = value;
                 RaisePropertyChanged(nameof(HasUpvote));
             }
+        }
+
+        private List<VersionInfo> versionInfos;
+        /// <summary>
+        /// A detailed property for package Versions (+ compatibility info)
+        /// </summary>
+        public List<VersionInfo> VersionInfos
+        {
+            get { return versionInfos; }
+            set
+            {
+                versionInfos = value;
+                LatestCompatibleVersion = GetLatestCompatibleVersion();
+                RaisePropertyChanged(nameof(VersionInfos));
+            }
+        }
+
+        private VersionInfo GetLatestCompatibleVersion()
+        {
+            // Find the last compatible version
+            var compatibleVersion = VersionInfos?.LastOrDefault(v => v.IsCompatible == true);
+
+            // If no compatible version is found, return the latest version
+            return compatibleVersion ?? VersionInfos?.LastOrDefault() ?? null;
         }
 
 

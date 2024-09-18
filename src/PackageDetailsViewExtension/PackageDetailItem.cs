@@ -246,7 +246,7 @@ namespace Dynamo.PackageDetails
             this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
             this.Created = GetFormattedDate(PackageVersion.created);
             this.VersionInfos = GetFlattenedCompatibilityInfos(versionInfos);
-            this.IsCompatible = GetVersionCompatibility(versionInfos, PackageVersionNumber);
+            this.IsCompatible = VersionInfo.GetVersionCompatibility(versionInfos, PackageVersionNumber);
             
 
             // To avoid displaying package self-dependencies.
@@ -259,19 +259,7 @@ namespace Dynamo.PackageDetails
             DetectDependencies();
         }
 
-        private bool? GetVersionCompatibility(List<VersionInfo> versionInfos, string packageVersion)
-        {
-            // Find the specific VersionInfo for the given package version
-            var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageVersion);
-
-            // If no version info is found, return null (unknown compatibility)
-            if (versionInfo == null)
-            {
-                return null;
-            }
-
-            return versionInfo.IsCompatible;
-        }
+        
 
         private List<FlattenedCompatibility> GetFlattenedCompatibilityInfos(List<VersionInfo> versionInfos)
         {

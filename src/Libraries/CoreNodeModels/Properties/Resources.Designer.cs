@@ -304,7 +304,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Data Type.
+        ///   Looks up a localized string similar to Select Types.
         /// </summary>
         public static string DefineDataDisplayValueMessage {
             get {
@@ -1032,6 +1032,24 @@ namespace CoreNodeModels.Properties {
         public static string OrDescription {
             get {
                 return ResourceManager.GetString("OrDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This version is incompatible with your current setup (Dynamo and host version, if applicable). It may not work properly. Do you want to install it anyway?.
+        /// </summary>
+        public static string PackageManagerIncompatibleVersionDownloadMsg {
+            get {
+                return ResourceManager.GetString("PackageManagerIncompatibleVersionDownloadMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incompatible version.
+        /// </summary>
+        public static string PackageManagerIncompatibleVersionDownloadTitle {
+            get {
+                return ResourceManager.GetString("PackageManagerIncompatibleVersionDownloadTitle", resourceCulture);
             }
         }
         

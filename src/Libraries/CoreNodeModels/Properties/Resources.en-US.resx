@@ -676,4 +676,10 @@ In Generative Design workflows, this node should be used to control and block th
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Select Types</value>
   </data>
+  <data name="PackageManagerIncompatibleVersionDownloadTitle" xml:space="preserve">
+    <value>Incompatible version</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadMsg" xml:space="preserve">
+    <value>This version is incompatible with your current setup (Dynamo and host version, if applicable). It may not work properly. Do you want to install it anyway?</value>
+  </data>
 </root>

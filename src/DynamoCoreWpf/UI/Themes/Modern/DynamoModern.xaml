@@ -6436,7 +6436,7 @@
     </Style>
 
     <!--  Compatibility icon - green (compatible)  -->
-    <ControlTemplate x:Key="CustomCanvasTemplateComplatible">
+    <ControlTemplate x:Key="CustomCanvasTemplateCompatible">
         <Canvas Width="18"
                 Height="18"
                 VerticalAlignment="Center"
