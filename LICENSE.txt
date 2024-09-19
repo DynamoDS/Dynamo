@@ -586,7 +586,7 @@ Xceed Extended WPF Toolkit v.5.0.103:
 Microsoft Public License
 https://github.com/xceedsoftware/wpftoolkit/blob/0ed4ed84152d6a3e2a627f2ef05f82627fdaf3fc/license.md
 
-Microsoft.Web.WebView2 v.1.0.2045.28
+Microsoft.Web.WebView2 v.1.0.2478.35
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

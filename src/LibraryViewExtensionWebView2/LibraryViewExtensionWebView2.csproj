@@ -211,7 +211,7 @@
     <EmbeddedResource Include="Packages\LibrarieJS\resources\Tessellation.Voronoi.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
