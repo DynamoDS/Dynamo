@@ -59,7 +59,7 @@
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>1.0.19</PackageVersion>
+            <PackageVersion>1.0.20</PackageVersion>
             <PackageName>DynamoHome</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
