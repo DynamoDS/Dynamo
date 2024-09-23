@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Dynamo.Interfaces;
@@ -26,6 +26,7 @@ namespace Dynamo.Configuration
             parameters[ParameterKeys.LastExecutionDuration] = new TimeSpan(updateTask.ExecutionEndTime.TickCount - updateTask.ExecutionStartTime.TickCount);
             parameters[ParameterKeys.PackagePaths] = pathManager.PackagesDirectories;
             parameters[ParameterKeys.Logger] = model.Logger;
+            parameters[ParameterKeys.PreferenceFilePath] = pathManager.PreferenceFilePath;
         }
 
         /// <summary>
