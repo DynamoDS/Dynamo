@@ -186,7 +186,7 @@ namespace Dynamo.Tests
         {
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
             string searchTerm = "number";
-            List<string> expectedSearchResults1 = new List<string> { "number", "number slider", "round" };
+            List<string> expectedSearchResults1 = new List<string> { "number", "number slider", "numberofcurves" };
 
             string searchTerm2 = "list.join";
             List<string> expectedSearchResults2 = new List<string> { "join", "list create", "range" };

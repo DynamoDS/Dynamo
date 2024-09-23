@@ -63,7 +63,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="FontAwesome5" Version="2.1.11" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
