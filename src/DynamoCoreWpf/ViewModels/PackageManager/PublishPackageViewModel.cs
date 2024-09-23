@@ -1229,9 +1229,16 @@ namespace Dynamo.PackageManager
         private List<HostComboboxEntry> initializeHostSelections()
         {
             var hostSelections = new List<HostComboboxEntry>();
-            foreach (var host in dynamoViewModel.PackageManagerClientViewModel.Model.GetKnownHosts())
+            try
             {
-                hostSelections.Add(new HostComboboxEntry(host));
+                foreach (var host in dynamoViewModel.PackageManagerClientViewModel.Model?.GetKnownHosts())
+                {
+                    hostSelections.Add(new HostComboboxEntry(host));
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Could not fetch hosts: " + ex.Message);
             }
             return hostSelections;
         }
