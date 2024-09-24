@@ -27,29 +27,29 @@ namespace DynamoInstallDetective
 
         private const string m_registryKey = @"HKEY_LOCAL_MACHINE\SOFTWARE\Autodesk\SharedComponents\";
 
-        private readonly string m_majorRelease;
-        private readonly string m_Version;
-        private bool m_fetchFromEnv;
-        private string m_installPath;
-        private string m_regPath;
+        private readonly string majorRelease;
+        private readonly string version;
+        private bool fetchFromEnv;
+        private string installPath;
+        private string regPath;
 
         private ASC_STATUS ReadASCVersionFromEnv()
         {
             ASC_STATUS status = ASC_STATUS.FAILED;
 
-            var minorVersion = Environment.GetEnvironmentVariable(m_Version);
+            var minorVersion = Environment.GetEnvironmentVariable(version);
 
             if(minorVersion != null)
             {
-                m_fetchFromEnv = true;
+                fetchFromEnv = true;
 
-                status = ReadASCInstallPathFromRegistry(m_majorRelease);
+                status = ReadASCInstallPathFromRegistry(majorRelease);
 
-                m_installPath = Path.Combine(m_installPath, minorVersion);
+                installPath = Path.Combine(installPath, minorVersion);
 
                 if(status != ASC_STATUS.SUCCESS)
                 {
-                    m_fetchFromEnv = false;
+                    fetchFromEnv = false;
                 }
             }
 
@@ -60,10 +60,10 @@ namespace DynamoInstallDetective
         {
             ASC_STATUS status = ASC_STATUS.REG_FAILED;
 
-            var registryPath = Path.Combine(m_registryKey, m_majorRelease);
-            if(string.IsNullOrEmpty(m_regPath))
+            var registryPath = Path.Combine(m_registryKey, this.majorRelease);
+            if(string.IsNullOrEmpty(regPath))
             {
-                m_regPath = registryPath;
+                regPath = registryPath;
             }
 
             const string valueName = @"InstallPath";
@@ -77,9 +77,9 @@ namespace DynamoInstallDetective
                     return ASC_STATUS.INCORRECT_REG_PATH;
                 }
 
-                if (m_fetchFromEnv)
+                if (fetchFromEnv)
                 {
-                    m_installPath = installPath;
+                    this.installPath = installPath;
                     status = ASC_STATUS.SUCCESS;
                 }
                 else
@@ -90,9 +90,9 @@ namespace DynamoInstallDetective
                         return ASC_STATUS.EMPTY_REG_VERSION;
                     }
 
-                    m_installPath = Path.Combine(installPath, version);
+                    this.installPath = Path.Combine(installPath, version);
 
-                    if (!Directory.Exists(m_installPath))
+                    if (!Directory.Exists(this.installPath))
                     {
                         return ASC_STATUS.INCORRECT_REG_PATH;
                     }
@@ -104,19 +104,19 @@ namespace DynamoInstallDetective
 
         public AscSdkWrapper(string release)
         {
-            m_majorRelease = release;
-            m_Version = @"ACS_VERSION_" + m_majorRelease;
+            majorRelease = release;
+            version = @"ACS_VERSION_" + majorRelease;
         }
 
         public ASC_STATUS GetInstalledPath(ref string installedPath)
         {
-            if(string.IsNullOrEmpty(m_majorRelease))
+            if(string.IsNullOrEmpty(majorRelease))
             {
                 return ASC_STATUS.INITIALIZE_FAILED;
             }
 
-            var status = ReadASCVersionFromEnv() == ASC_STATUS.SUCCESS ? ASC_STATUS.SUCCESS : ReadASCInstallPathFromRegistry(m_majorRelease);
-            installedPath = m_installPath;
+            var status = ReadASCVersionFromEnv() == ASC_STATUS.SUCCESS ? ASC_STATUS.SUCCESS : ReadASCInstallPathFromRegistry(majorRelease);
+            installedPath = installPath;
 
             return status;
         }
