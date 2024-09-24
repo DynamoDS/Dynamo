@@ -55,8 +55,9 @@ namespace Modifiers
                 {
                     colorMap[j][i] = colors[i][j];
                 }
-            } 
+            }
         }
+
 
         private GeometryColor(Point[] vertices, Color[] colors)
         {
@@ -91,14 +92,14 @@ namespace Modifiers
 
         /// <summary>
         /// Display color values on a surface.
-        /// 
+        ///
         /// The colors provided are converted internally to an image texture which is
-        /// mapped to the surface. 
+        /// mapped to the surface.
         /// </summary>
         /// <param name="surface">The surface on which to apply the colors.
         /// </param>
         /// <param name="colors">A two dimensional list of Colors.
-        /// 
+        ///
         /// The list of colors must be square. Attempting to pass a jagged array
         /// will result in an exception. </param>
         /// <returns>A Display object.</returns>
@@ -139,17 +140,17 @@ namespace Modifiers
 
         /// <summary>
         /// Create a colored mesh using points and colors.
-        /// 
+        ///
         /// The list of points supplied is used to construct a triangulated mesh, with
         /// non-joined vertices.
         /// </summary>
-        /// <param name="points">A list of Points. 
-        /// 
-        /// Only triangular meshes are currently supported. Each triplet of points in the list will form one 
-        /// triangle in the mesh. Points should be ordered CCW. 
+        /// <param name="points">A list of Points.
+        ///
+        /// Only triangular meshes are currently supported. Each triplet of points in the list will form one
+        /// triangle in the mesh. Points should be ordered CCW.
         /// Attempting to pass a list of vertices whose count is not divisble by 3 will throw an exception.</param>
-        /// <param name="colors">A list of colors. 
-        /// 
+        /// <param name="colors">A list of colors.
+        ///
         /// The number of colors must match the number of vertices. Attempting pass a list of colors which does not
         /// have the same number of Colors as the list of points will throw an exception.</param>
         /// <returns>A Display object.</returns>
@@ -187,6 +188,44 @@ namespace Modifiers
             }
 
             return new GeometryColor(points, colors);
+        }
+
+        public static GeometryColor ByMeshColors(
+            [KeepReferenceAttribute] Mesh mesh,
+            Color[] colors)
+        {
+            if (mesh == null)
+            {
+                throw new ArgumentNullException("mesh");
+            }
+
+            if (colors == null)
+            {
+                throw new ArgumentNullException("colors");
+            }
+
+            if (!colors.Any())
+            {
+                throw new ArgumentException(Resources.NoColorsExceptionMessage);
+            }
+
+            if (colors.Length == mesh.VertexPositions.Length)
+            {
+                return new GeometryColor(mesh.VertexPositions, colors);
+            }
+
+            if (colors.Length == 1)
+            {
+                Color singleColor = colors[0];
+                colors = new Color[mesh.VertexPositions.Length];
+                for (int i = 0; i < colors.Length; i++)
+                {
+                    colors[i] = singleColor;
+                }
+                return new GeometryColor(mesh.VertexPositions, colors);
+            }
+
+            throw new ArgumentException("Color count has to be 1 or equal the vertex count");
         }
 
         #endregion
@@ -284,13 +323,13 @@ namespace Modifiers
             package.RequiresPerVertexColoration = true;
 
             // As you add more data to the render package, you need
-            // to keep track of the index where this coloration will 
+            // to keep track of the index where this coloration will
             // start from.
 
             geometry.Tessellate(package, parameters);
 
             TessellateEdges(package, parameters);
-            
+
             //Update colors in render package
             if (package is IRenderPackageSupplement packageSupplement)
             {
@@ -314,9 +353,9 @@ namespace Modifiers
             }
             else
             {
-                //todo support 
+                //todo support
             }
-            
+
         }
 
         private void TessellateEdges(IRenderPackage package, TessellationParameters parameters)
