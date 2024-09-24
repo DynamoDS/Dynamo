@@ -27,7 +27,6 @@
   <ItemGroup>
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
     <PackageReference Include="LiveChartsCore" Version="2.0.0-rc3.3" />
-    <PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.0.0-rc3.3" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc3.3" />
   </ItemGroup>
   <ItemGroup>
