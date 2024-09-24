@@ -857,6 +857,8 @@ Dynamo.PackageManager.PackageManagerSearchViewModel.ClearSearchTextBoxCommand.se
 Dynamo.PackageManager.PackageManagerSearchViewModel.ClearToastNotification(object obj) -> void
 Dynamo.PackageManager.PackageManagerSearchViewModel.ClearToastNotificationCommand.get -> Prism.Commands.DelegateCommand<object>
 Dynamo.PackageManager.PackageManagerSearchViewModel.ClearToastNotificationCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.CompatibilityFilter.get -> System.Collections.Generic.List<Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry>
+Dynamo.PackageManager.PackageManagerSearchViewModel.CompatibilityFilter.set -> void
 Dynamo.PackageManager.PackageManagerSearchViewModel.DisableSearchTextBox() -> void
 Dynamo.PackageManager.PackageManagerSearchViewModel.Downloads.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.PackageDownloadHandle>
 Dynamo.PackageManager.PackageManagerSearchViewModel.ExecuteSelected() -> void

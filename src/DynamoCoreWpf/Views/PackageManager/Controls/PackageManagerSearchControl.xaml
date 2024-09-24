@@ -269,6 +269,9 @@
                                         </Setter>
                                     </Style>
                                     <CollectionViewSource x:Key="MenuItems" Source="{Binding HostFilter}" />
+                                    <CollectionViewSource x:Key="CompatibilityItems"
+                                                          Filter="CompatibilityItem_OnFilter"
+                                                          Source="{Binding CompatibilityFilter}" />
                                     <CollectionViewSource x:Key="StatusItems"
                                                           Filter="StatusItem_OnFilter"
                                                           Source="{Binding NonHostFilter}" />
@@ -278,11 +281,24 @@
                                 </ContextMenu.Resources>
                                 <ContextMenu.ItemsSource>
                                     <CompositeCollection>
+                                        <!--  Sub-Title 'VERSION COMPATIBILITY'  -->
+                                        <Separator>
+                                            <Separator.Template>
+                                                <ControlTemplate TargetType="Separator">
+                                                    <StackPanel>
+                                                        <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}" Text="{x:Static p:Resources.PackageFilterByCompatibility}" />
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Separator.Template>
+                                        </Separator>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource CompatibilityItems}}" />
+
                                         <!--  Sub-Title 'FILTER BY HOST'  -->
                                         <Separator>
                                             <Separator.Template>
                                                 <ControlTemplate TargetType="Separator">
                                                     <StackPanel>
+                                                        <Rectangle Style="{StaticResource SeparatorLineStyle}" />
                                                         <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}" Text="{x:Static p:Resources.PackageFilterByHost}" />
                                                     </StackPanel>
                                                 </ControlTemplate>
@@ -339,6 +355,9 @@
                 <ItemsControl x:Name="FilterItemControl">
                     <ItemsControl.Resources>
                         <CollectionViewSource x:Key="FilterItems" Source="{Binding HostFilter}" />
+                        <CollectionViewSource x:Key="CompatibilityItems"
+                                              Filter="CompatibilityItem_OnFilter"
+                                              Source="{Binding CompatibilityFilter}" />
                         <CollectionViewSource x:Key="StatusItems"
                                               Filter="StatusItem_OnFilter"
                                               Source="{Binding NonHostFilter}" />
@@ -348,6 +367,7 @@
                     </ItemsControl.Resources>
                     <ItemsControl.ItemsSource>
                         <CompositeCollection>
+                            <CollectionContainer Collection="{Binding Source={StaticResource CompatibilityItems}}" />
                             <CollectionContainer Collection="{Binding Source={StaticResource FilterItems}}" />
                             <CollectionContainer Collection="{Binding Source={StaticResource StatusItems}}" />
                             <CollectionContainer Collection="{Binding Source={StaticResource DependencyItems}}" />
