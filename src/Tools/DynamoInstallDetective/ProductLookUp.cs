@@ -242,7 +242,7 @@ namespace DynamoInstallDetective
         /// </summary>
         public string ProductLookUpName { get; private set; }
 
-        private readonly Func<string, string> fileLocator;
+        private Func<string, string> fileLocator;
 
         /// <summary>
         /// Implements a product look up algorithm based on registry key.
@@ -345,6 +345,41 @@ namespace DynamoInstallDetective
                 return Tuple.Create(0, 0, 0, 0);
             var version = FileVersionInfo.GetVersionInfo(filePath);
             return Tuple.Create(version.FileMajorPart, version.FileMinorPart, version.FileBuildPart, version.FilePrivatePart);
+        }
+    }
+
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
+    public class InstalledAscLookUp : InstalledProductLookUp
+    {
+
+        public InstalledAscLookUp(string fileLookup) : base(@"Autodesk Shared Components", fileLookup)
+        {
+        }
+
+        internal override IEnumerable<(string DisplayName, string ProductKey)> GetProductNameAndCodeList()
+        {
+            var list = AscSdkWrapper.GetMajorVersions().Select(x => (DisplayName: x, ProductKey: string.Empty));
+            return list;
+        }
+
+        public override IEnumerable<string> GetProductNameList()
+        {
+            var list = new List<string>();
+            return list;
+        }
+
+        public override string GetInstallLocationFromProductName(string name)
+        {
+            AscSdkWrapper asc = new AscSdkWrapper(name);
+            string path = string.Empty;
+            if(asc.GetInstalledPath(ref path) == AscSdkWrapper.ASC_STATUS.SUCCESS)
+            {
+                return path;
+            }
+
+            return null;
         }
     }
 
