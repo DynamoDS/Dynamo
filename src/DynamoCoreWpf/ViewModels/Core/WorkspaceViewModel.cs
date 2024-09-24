@@ -1646,6 +1646,25 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
+
+            try
+            {
+                var group = DynamoViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID.ToString() == id.ToString());
+
+                if (group != null)
+                {
+                    //select the element
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(group);
+
+                    //focus on the element
+                    DynamoViewModel.ShowElement(group);
+                }
+            }
+            catch
+            {
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindGroupById);
+            }
         }
 
         private static bool CanFindById(object id)
