@@ -60,7 +60,7 @@ namespace DynamoInstallDetective
         {
             ASC_STATUS status = ASC_STATUS.REG_FAILED;
 
-            var registryPath = Path.Combine(registryKey, this.majorRelease);
+            var registryPath = Path.Combine(registryKey, majorRelease);
             if(string.IsNullOrEmpty(regPath))
             {
                 regPath = registryPath;
