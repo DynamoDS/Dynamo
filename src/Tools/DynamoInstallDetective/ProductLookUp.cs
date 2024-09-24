@@ -242,7 +242,7 @@ namespace DynamoInstallDetective
         /// </summary>
         public string ProductLookUpName { get; private set; }
 
-        private Func<string, string> fileLocator;
+        private readonly Func<string, string> fileLocator;
 
         /// <summary>
         /// Implements a product look up algorithm based on registry key.
