@@ -249,14 +249,14 @@
                         <!--  When clicked, the filter button displays a ContextMenu of options to the user  -->
                         <Button.ContextMenu>
                             <ContextMenu Name="HostFilter"
-                                         Width="180"
                                          Background="{StaticResource GenericBorderBackgroundColorBrush}"
                                          DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
-                                         DisplayMemberPath="FilterName"
                                          StaysOpen="True"
                                          Style="{StaticResource ContextMenuStyle}">
                                 <ContextMenu.Resources>
-                                    <Style BasedOn="{StaticResource ContextMenuItemStyle}" TargetType="{x:Type MenuItem}">
+                                    <Style x:Key="ParentMenuItemStyle"
+                                           BasedOn="{StaticResource ContextMenuItemStyle}"
+                                           TargetType="{x:Type MenuItem}">
                                         <Setter Property="IsCheckable" Value="True" />
                                         <Setter Property="StaysOpenOnClick" Value="True" />
                                         <Setter Property="Command" Value="{Binding FilterCommand}" />
@@ -268,7 +268,14 @@
                                             </Setter.Value>
                                         </Setter>
                                     </Style>
-                                    <CollectionViewSource x:Key="MenuItems" Source="{Binding HostFilter}" />
+                                    <Style x:Key="ChildMenuItemStyle"
+                                           BasedOn="{StaticResource ContextMenuItemStyle}"
+                                           TargetType="{x:Type MenuItem}">
+                                        <Setter Property="IsCheckable" Value="True" />
+                                        <Setter Property="StaysOpenOnClick" Value="True" />
+                                        <Setter Property="IsChecked" Value="{Binding OnChecked, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Style>
+                                    <CollectionViewSource x:Key="HostItems" Source="{Binding HostFilter}" />
                                     <CollectionViewSource x:Key="CompatibilityItems"
                                                           Filter="CompatibilityItem_OnFilter"
                                                           Source="{Binding CompatibilityFilter}" />
@@ -278,7 +285,16 @@
                                     <CollectionViewSource x:Key="DependencyItems"
                                                           Filter="DependencyItem_OnFilter"
                                                           Source="{Binding NonHostFilter}" />
+
+                                    <!--
+                                        Define DataTemplate for Year items
+                                        Important - we assign the Style of the item here!
+                                    -->
+                                    <DataTemplate x:Key="YearMenuItemTemplate">
+                                        <MenuItem Header="{Binding Year}" Style="{StaticResource ChildMenuItemStyle}" />
+                                    </DataTemplate>
                                 </ContextMenu.Resources>
+
                                 <ContextMenu.ItemsSource>
                                     <CompositeCollection>
                                         <!--  Sub-Title 'VERSION COMPATIBILITY'  -->
@@ -304,7 +320,7 @@
                                                 </ControlTemplate>
                                             </Separator.Template>
                                         </Separator>
-                                        <CollectionContainer Collection="{Binding Source={StaticResource MenuItems}}" />
+                                        <CollectionContainer Collection="{Binding Source={StaticResource HostItems}}" />
 
                                         <!--  Sub-Title 'FILTER BY STATUS'  -->
                                         <Separator>
@@ -334,6 +350,18 @@
 
                                     </CompositeCollection>
                                 </ContextMenu.ItemsSource>
+                                <!--
+                                    Setting the Context MenuItem template for ALL CollectionContainers
+                                    only it will show up with the ones that have 'Years' assigned to them
+                                    The 'HierarchicalDataTemplate' points to the child (nested) menu item.
+                                    The 'MenuItem' points to the parent (level 1) menu item.
+                                    We easily assign the style of the parent, but for the child, we go through it's DataTemplate
+                                -->
+                                <ContextMenu.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemTemplate="{StaticResource YearMenuItemTemplate}" ItemsSource="{Binding Years}">
+                                        <MenuItem Header="{Binding FilterName}" Style="{StaticResource ParentMenuItemStyle}" />
+                                    </HierarchicalDataTemplate>
+                                </ContextMenu.ItemTemplate>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
