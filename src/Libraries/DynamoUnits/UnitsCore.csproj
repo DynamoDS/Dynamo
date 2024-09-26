@@ -20,7 +20,7 @@
         <!--Skip copying the runtime dlls because we only need one (ForgeUnitsManaged.dll) which we copy in a task bellow.-->
         <ExcludeAssets>runtime;build</ExcludeAssets>
     </PackageReference>
-	<PackageReference Include="ForgeUnits.Schemas" Version="1.0.1" GeneratePathProperty="true" />
+	<PackageReference Include="ForgeUnits.Schemas" Version="1.0.4" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
