@@ -552,34 +552,7 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         internal Analyzer CreateAnalyzerByLanguage(string language)
         {
-            switch (language)
-            {
-                case "en-US":
-                    return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "cs-CZ":
-                    return new CzechAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "de-DE":
-                    return new GermanAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "es-ES":
-                    return new SpanishAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "fr-FR":
-                    return new FrenchAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "it-IT":
-                    return new ItalianAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "ja-JP":
-                case "ko-KR":
-                case "zh-CN":
-                case "zh-TW":
-                    return new CJKAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "pl-PL":
-                    return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "pt-BR":
-                    return new BrazilianAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "ru-RU":
-                    return new RussianAnalyzer(LuceneConfig.LuceneNetVersion);
-                default:
-                    return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
-            }
+            return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion, language);
         }
 
         /// <summary>
@@ -663,10 +636,12 @@ namespace Dynamo.Utilities
     public class LuceneCustomAnalyzer : Analyzer
     {
         private readonly LuceneVersion luceneVersion;
+        private readonly string analyzerLanguage;
 
-        public LuceneCustomAnalyzer(LuceneVersion matchVersion)
+        public LuceneCustomAnalyzer(LuceneVersion matchVersion, string language)
         {
             luceneVersion = matchVersion;
+            analyzerLanguage = language ?? "en-US";
         }
 
         protected override TokenStreamComponents CreateComponents(string fieldName, TextReader reader)
@@ -681,10 +656,51 @@ namespace Dynamo.Utilities
             //Lowercase all the text
             tok = new LowerCaseFilter(luceneVersion, tok);
 
+            CharArraySet languageSet = StopAnalyzer.ENGLISH_STOP_WORDS_SET;
+
+
+            switch (analyzerLanguage)
+            {
+                case "cs-CZ":
+                    languageSet = CzechAnalyzer.DefaultStopSet;
+                    break;
+                case "de-DE":
+                    languageSet = GermanAnalyzer.DefaultStopSet;
+                    break;
+                case "es-ES":
+                    languageSet = SpanishAnalyzer.DefaultStopSet;
+                    break;
+                case "fr-FR":
+                    languageSet = FrenchAnalyzer.DefaultStopSet;
+                    break;
+                case "it-IT":
+                    languageSet = ItalianAnalyzer.DefaultStopSet;
+                    break;
+                case "ja-JP":
+                case "ko-KR":
+                case "zh-CN":
+                case "zh-TW":
+                    languageSet = CJKAnalyzer.DefaultStopSet;
+                    break;
+                case "pl-PL":
+                    languageSet = StopAnalyzer.ENGLISH_STOP_WORDS_SET;
+                    break;
+                case "pt-BR":                   
+                    languageSet = BrazilianAnalyzer.DefaultStopSet;
+                    break;
+                case "ru-RU":
+                    languageSet = RussianAnalyzer.DefaultStopSet;
+                    break;
+                default:
+                    languageSet = StopAnalyzer.ENGLISH_STOP_WORDS_SET;
+                    break;
+
+            }
+
             //List of stopwords that will be removed by the StopFilter like "a", "an", "and", "are", "as", "at", "be", "but", "by"
             CharArraySet stopWords = new CharArraySet(luceneVersion, 1, true)
             {
-                StopAnalyzer.ENGLISH_STOP_WORDS_SET,
+                languageSet
             };
 
             tok = new StopFilter(LuceneConfig.LuceneNetVersion, tok, stopWords);
