@@ -7,8 +7,8 @@ using System.Windows.Controls.Primitives;
 using Dynamo.Notifications;
 using Dynamo.Notifications.View;
 using Dynamo.Utilities;
-using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests.ViewExtensions
 {

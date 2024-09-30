@@ -70,7 +70,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3, rank);
 
             //find the nodeView that has the same dataContext as the addNode.
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             var nodeViews = WpfUtilities.ChildrenOfType<NodeView>(View);
             var nodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes.Where(x => x.Id == addNode.GUID).FirstOrDefault();
             var matchingNodeView = nodeViews.Where(x => (x.DataContext as NodeViewModel).Id == nodeViewModel.Id).FirstOrDefault();

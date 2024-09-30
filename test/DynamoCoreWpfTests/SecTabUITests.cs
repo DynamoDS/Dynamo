@@ -1,12 +1,7 @@
-﻿using Dynamo.Wpf.Views;
-using DynamoCoreWpfTests.Utility;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
+using Dynamo.Wpf.Views;
+using NUnit.Framework;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

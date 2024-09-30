@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using SystemTestServices;
 
 namespace WpfVisualizationTests
 {

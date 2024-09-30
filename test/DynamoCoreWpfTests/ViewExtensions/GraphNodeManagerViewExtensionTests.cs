@@ -17,6 +17,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 using ProtoCore.Mirror;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {
@@ -96,7 +97,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
             // Close
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             View.OnCloseRightSideBarTab(WpfUtilities.ChildrenOfType<Button>(ViewModel.SideBarTabItems.FirstOrDefault()).FirstOrDefault(), null);
             Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
         }
@@ -134,7 +135,7 @@ namespace DynamoCoreWpfTests
             hwm.RemoveAndDisposeNode(hwm.Nodes.First());
 
             hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             int deleteGraphNodes = hwm.Nodes.Count();
             int deleteExtensionNodes = dataGridItems.Count;
@@ -180,7 +181,7 @@ namespace DynamoCoreWpfTests
                 }
             }
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             // Get the number of frozen Nodes in the Extension
             var dataGridItems = view.NodesInfoDataGrid.Items;
@@ -216,7 +217,7 @@ namespace DynamoCoreWpfTests
             var view = viewExt.ManagerView;
 
             IEnumerable<Image> images = [];
-            Utility.DispatcherUtil.DoEventsLoop(() =>
+            DispatcherUtil.DoEventsLoop(() =>
             {
                 images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
 
@@ -260,7 +261,7 @@ namespace DynamoCoreWpfTests
             Exit();
             Start();
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             //confirm that extension is reopened after restart
             Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
@@ -296,7 +297,7 @@ namespace DynamoCoreWpfTests
             Exit();
             Start();
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             //confirm that extension is still closed after restart
             Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
@@ -328,7 +329,7 @@ namespace DynamoCoreWpfTests
             Exit();
             Start();
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             //confirm that extension is still closed after restart
             Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);

@@ -15,12 +15,12 @@ using Dynamo.PythonServices;
 using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Tests;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using ICSharpCode.AvalonEdit.Document;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

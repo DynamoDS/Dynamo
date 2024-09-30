@@ -13,6 +13,7 @@ using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

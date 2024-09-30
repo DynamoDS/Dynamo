@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using CoreNodeModels;
@@ -7,8 +7,8 @@ using CoreNodeModelsWpf;
 using CoreNodeModelsWpf.Controls;
 using Dynamo.Tests;
 using Dynamo.Utilities;
-using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

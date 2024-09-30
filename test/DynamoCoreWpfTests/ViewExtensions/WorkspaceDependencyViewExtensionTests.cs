@@ -16,6 +16,7 @@ using Dynamo.Wpf.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {
@@ -119,7 +120,7 @@ namespace DynamoCoreWpfTests
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
             Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             View.OnCloseRightSideBarTab(WpfUtilities.ChildrenOfType<Button>(ViewModel.SideBarTabItems.FirstOrDefault()).FirstOrDefault(), null);
             Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
         }

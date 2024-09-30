@@ -9,14 +9,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using Dynamo.Controls;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
+using SystemTestServices;
 
 namespace WpfVisualizationTests
 {
