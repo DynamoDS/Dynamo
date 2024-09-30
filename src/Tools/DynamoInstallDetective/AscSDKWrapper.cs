@@ -101,13 +101,21 @@ namespace DynamoInstallDetective
             }
             return status;
         }
-
+        /// <summary>
+        /// Initialize ASC wrapper
+        /// </summary>
+        /// <param name="release">Major ASC release, for example 2026</param>
         public AscSdkWrapper(string release)
         {
             majorRelease = release;
             version = @"ACS_VERSION_" + majorRelease;
         }
 
+        /// <summary>
+        /// Get the install path for the major release
+        /// </summary>
+        /// <param name="installedPath">The install path for the major release if successful</param>
+        /// <returns>ASC_STATUS.SUCCESS if path was retrived successfully</returns>
         public ASC_STATUS GetInstalledPath(ref string installedPath)
         {
             if(string.IsNullOrEmpty(majorRelease))
@@ -121,6 +129,10 @@ namespace DynamoInstallDetective
             return status;
         }
 
+        /// <summary>
+        /// Get the major version of all ASC packages installed on the local machine
+        /// </summary>
+        /// <returns>An array of major versions</returns>
         public static string[] GetMajorVersions()
         {
             string[] majorVersions = [];
