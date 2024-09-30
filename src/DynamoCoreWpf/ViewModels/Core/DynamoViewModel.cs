@@ -2736,31 +2736,35 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="e"></param>
         /// <param name="forceShowElement"></param>
-        internal void ShowElement(NodeModel e, bool forceShowElement = true)
+        internal void ShowElement(ModelBase e, bool forceShowElement = true)
         {
             if (HomeSpace.RunSettings.RunType == RunType.Automatic && forceShowElement)
                 return;
 
-            if (!model.CurrentWorkspace.Nodes.Contains(e))
+            // Handle NodeModel
+            if (e is NodeModel node)
             {
-                if (HomeSpace != null && HomeSpace.Nodes.Contains(e))
+                if (!model.CurrentWorkspace.Nodes.Contains(e))
                 {
-                    //Show the homespace
-                    model.CurrentWorkspace = HomeSpace;
-                }
-                else
-                {
-                    foreach (
-                        var customNodeWorkspace in
-                            model.CustomNodeManager.LoadedWorkspaces.Where(
-                                customNodeWorkspace => customNodeWorkspace.Nodes.Contains(e)))
+                    if (HomeSpace != null && HomeSpace.Nodes.Contains(e))
                     {
-                        FocusCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
-                        break;
+                        //Show the homespace
+                        model.CurrentWorkspace = HomeSpace;
+                    }
+                    else
+                    {
+                        foreach (
+                            var customNodeWorkspace in
+                                model.CustomNodeManager.LoadedWorkspaces.Where(
+                                    customNodeWorkspace => customNodeWorkspace.Nodes.Contains(e)))
+                        {
+                            FocusCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
+                            break;
+                        }
                     }
                 }
             }
-
+            // Center the view on the model
             this.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
         }
 
