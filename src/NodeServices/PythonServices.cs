@@ -108,8 +108,7 @@ namespace Dynamo.PythonServices
             new Lazy<PythonEngineManager>
             (() => new PythonEngineManager());
 
-        private readonly string[] dotNetRuntimePaths;
-        private readonly IEnumerable<string> dynCorePaths;
+        private readonly IEnumerable<string> standardPaths;
 
         #region Public members
         /// <summary>
@@ -125,8 +124,10 @@ namespace Dynamo.PythonServices
         [Obsolete("AvailableEngines field will be replaced in a future Dynamo release.")]
         public ObservableCollection<PythonEngine> AvailableEngines;
 
+        internal Dictionary<string, Tuple<string, string>> PythonEnginePackageMap;
+
         #region Constant strings
-        
+
         /// <summary>
         /// CPython Engine name
         /// </summary>
@@ -162,10 +163,12 @@ namespace Dynamo.PythonServices
         /// </summary>
         private PythonEngineManager()
         {
-            dotNetRuntimePaths = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
-            dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
+            var dotNetRuntimePaths = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+            var dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
+            standardPaths = dotNetRuntimePaths.Concat(dynCorePaths);
 
             AvailableEngines = new ObservableCollection<PythonEngine>();
+            PythonEnginePackageMap = new Dictionary<string, Tuple<string, string>>();
 
             // We check only for the default python engine because it is the only one loaded by static references.
             // Other engines can only be loaded through package manager
@@ -173,6 +176,18 @@ namespace Dynamo.PythonServices
                FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
 
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
+        }
+
+        internal static Tuple<string, string> TryGetPythonEnginePackage(string engineName)
+        {
+            if (Instance.PythonEnginePackageMap.Count > 0)
+            {
+                if (Instance.PythonEnginePackageMap.TryGetValue(engineName, out var tuple))
+                {
+                    return tuple;
+                }
+            }
+            return null;
         }
 
         private void LoadDefaultPythonEngine(Assembly a)
@@ -210,37 +225,11 @@ namespace Dynamo.PythonServices
         // This method can throw exceptions.
         private void LoadPythonEngine(Assembly assembly)
         {
-            if (assembly == null)
-            {
-                return;
-            }
-            // Currently we are using try-catch to validate loaded assembly and Singleton Instance method exist
-            // but we can optimize by checking all loaded types against evaluators interface later
             try
             {
-                Type eType = null;
-                PropertyInfo instanceProp = null;
-                try
-                {
-                    eType = assembly.GetTypes().FirstOrDefault(x => typeof(PythonEngine).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
-                    if (eType == null) return;
+                if (!ValidatePythonEngine(assembly, out var engine)) return;
 
-                    instanceProp = eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static);
-                    if (instanceProp == null) return;
-                }
-                catch
-                {
-                    // Ignore exceptions from iterating assembly types.
-                    return;
-                }
-
-                PythonEngine engine = (PythonEngine)instanceProp.GetValue(null);
-                if (engine == null)
-                {
-                    throw new Exception($"Could not get a valid PythonEngine instance by calling the {eType.Name}.{PythonEvaluatorSingletonInstance} method");
-                }
-
-                VerifyEngineReferences(assembly,dotNetRuntimePaths.Concat(dynCorePaths));
+                VerifyEngineReferences(assembly, standardPaths);
 
                 if (GetEngine(engine.Name) == null)
                 {
@@ -252,6 +241,52 @@ namespace Dynamo.PythonServices
                 throw new Exception($"Failed to add a Python engine from assembly {assembly.GetName().Name}.dll with error: {ex.Message}");
             }
         }
+
+        // This method can throw exceptions.
+        internal bool ValidatePythonEngine(Assembly assembly, out PythonEngine eng)
+        {
+            eng = null;
+            if (assembly == null)
+            {
+                return false;
+            }
+            // Currently we are using try-catch to validate loaded assembly and Singleton Instance method exist
+            // but we can optimize by checking all loaded types against evaluators interface later
+            try
+            {
+                Type eType = null;
+                PropertyInfo instanceProp = null;
+                try
+                {
+                    //eType = assembly.GetTypes().FirstOrDefault(x => typeof(PythonEngine).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+
+                    eType = assembly.GetTypes().FirstOrDefault(x => typeof(PythonEngine).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+                    if (eType == null) return false;
+
+                    instanceProp = eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static);
+                    if (instanceProp == null) return false;
+                }
+                catch
+                {
+                    // Ignore exceptions from iterating assembly types.
+                    return false;
+                }
+
+                PythonEngine engine = (PythonEngine)instanceProp.GetValue(null);
+                if (engine == null)
+                {
+                    throw new Exception($"Could not get a valid PythonEngine instance by calling the {eType.Name}.{PythonEvaluatorSingletonInstance} method");
+                }
+                eng = engine;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to validate the Python engine from assembly {assembly.GetName().Name}.dll with error: {ex.Message}");
+            }
+        }
+
+
         /// <summary>
         /// Attempts to verify that the dependencies of the given assembly can be found and loaded into an MetadataLoadContext.
         /// Will throw exceptions if assemblies cannot be loaded.

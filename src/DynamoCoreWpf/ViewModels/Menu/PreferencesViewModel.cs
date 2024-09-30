@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -1314,6 +1316,78 @@ namespace Dynamo.ViewModels
                 options.Add(item.Name);
             }
             PythonEnginesList = options;
+            PopulatePythonEnginePackageMap();
+        }
+
+        private void PopulatePythonEnginePackageMap()
+        {
+            var packageBinPaths = new List<string>();
+            foreach (var packagePath in preferenceSettings.CustomPackageFolders)
+            {
+                var ppath = packagePath == DynamoModel.BuiltInPackagesToken ? PathManager.BuiltinPackagesDirectory : packagePath;
+                packageBinPaths = packageBinPaths.Concat(Directory.GetFiles(ppath, "*.dll", SearchOption.AllDirectories)).ToList();
+            }
+
+            var dotNetRuntimePaths = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+            var dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
+            var standardPaths = dotNetRuntimePaths.Concat(dynCorePaths);
+
+            MetadataLoadContext mlc = null;
+            var resolver = new PathAssemblyResolver(standardPaths);
+            mlc = new MetadataLoadContext(resolver);
+            var all = AppDomain.CurrentDomain.GetAssemblies().ToList();
+
+            foreach (var packageBin in packageBinPaths)
+            {
+                try
+                {
+                    //Load assembly into MLC
+                    var mlcassem = mlc.LoadFromAssemblyPath(packageBin);
+                    if (mlcassem != null)
+                    {
+                        //Check if it consists of a Python Engine
+                        var a = mlcassem.GetTypes().FirstOrDefault(x => IsEqualPythonEngineAssemblyName(x) && !x.IsInterface && !x.IsAbstract);
+                        if (a != null)
+                        {
+                            //Fetch it's loaded instance from AppDomain
+                            var b = all.FirstOrDefault(x => x.GetName().Name.ToLower().Equals(Path.GetFileNameWithoutExtension(mlcassem.GetName().Name).ToLower()), null);
+                            if (b != null)
+                            {
+                                //Validate result and add to map
+                                PythonEngineManager.Instance.ValidatePythonEngine(b, out var eng);
+                                if (PythonEnginesList.Contains(eng.Name))
+                                {
+                                    var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
+                                    var pkg = packageLoader.GetOwnerPackage(packageBin);
+                                    var tup = new Tuple<string, string>(pkg.Name, pkg.VersionName);
+                                    PythonEngineManager.Instance.PythonEnginePackageMap.Add(eng.Name, tup);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Ignore exceptions from iterating assembly types.
+                    continue;
+                }
+            }
+            mlc?.Dispose();
+        }
+
+        //ignoring assembly version
+        private bool IsEqualPythonEngineAssemblyName(Type t)
+        {
+            var pArr = typeof(PythonEngine).AssemblyQualifiedName?.Split(',');
+            var tArr = t.BaseType?.AssemblyQualifiedName?.Split(',');
+            if (pArr.Count() > 0 && tArr.Count() > 0)
+            {
+                if (pArr[0].Equals(tArr[0]) && pArr[1].Equals(tArr[1]))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         #endregion
 

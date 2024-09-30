@@ -35,6 +35,8 @@ namespace PythonNodeModels
     public abstract class PythonNodeBase : VariableInputNode
     {
         private string engine = string.Empty;
+        private string enginePackageName = string.Empty;
+        private string enginePackageVersion = string.Empty;
 
         // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
         [DefaultValue("IronPython2")]
@@ -58,7 +60,46 @@ namespace PythonNodeModels
                 if (engine != value)
                 {
                     engine = value;
+                    SetEnginePackageInfo(engine);
                     RaisePropertyChanged(nameof(EngineName));
+                }
+            }
+        }
+
+        [JsonProperty("EnginePackageName")]
+        /// <summary>
+        /// Return the package name of the selected python engine, if it was loaded from an extenal package.
+        /// </summary>
+        public string EnginePackageName
+        {
+            get
+            {
+                return enginePackageName;
+            }
+            set
+            {
+                if (enginePackageName != value)
+                {
+                    enginePackageName = value;
+                }
+            }
+        }
+
+        [JsonProperty("EnginePackageVersion")]
+        /// <summary>
+        /// Return the package version of the selected python engine, if it was loaded from an extenal package.
+        /// </summary>
+        public string EnginePackageVersion
+        {
+            get
+            {
+                return enginePackageVersion;
+            }
+            set
+            {
+                if (enginePackageVersion != value)
+                {
+                    enginePackageVersion = value;
                 }
             }
         }
@@ -82,6 +123,16 @@ namespace PythonNodeModels
             {
                 // Use CPython as default
                 engine = PythonEngineManager.CPython3EngineName;
+            }
+            SetEnginePackageInfo(engine);
+        }
+        private void SetEnginePackageInfo(string engine)
+        {
+            var pkgDetails = PythonEngineManager.TryGetPythonEnginePackage(engine);
+            if (pkgDetails != null)
+            {
+                enginePackageName = pkgDetails.Item1;
+                enginePackageVersion = pkgDetails.Item2;
             }
         }
 
