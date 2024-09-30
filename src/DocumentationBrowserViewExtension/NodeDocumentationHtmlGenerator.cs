@@ -313,7 +313,7 @@ namespace Dynamo.DocumentationBrowser
              var stringArr = element.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
              foreach (var line in stringArr)
              {
-                 if (line.ToLowerInvariant().Contains(Resources.InputDefaultValue))
+                 if (line.ToLowerInvariant().Contains(Resources.InputDefaultValue.ToLower()))
                  {
                     var index = line.IndexOf(":");
                     return line.Remove(0, index + 1);

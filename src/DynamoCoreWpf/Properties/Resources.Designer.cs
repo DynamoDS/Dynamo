@@ -4508,6 +4508,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No group could be found with that Id..
+        /// </summary>
+        public static string MessageFailedToFindGroupById {
+            get {
+                return ResourceManager.GetString("MessageFailedToFindGroupById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No node could be found with that Id..
         /// </summary>
         public static string MessageFailedToFindNodeById {
