@@ -270,7 +270,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3, watchVM.Children.Count);
 
             Assert.AreEqual("1", watchVM.Children.ElementAt(0).NodeLabel);
-            Assert.AreEqual("Int64", watchVM.Children.ElementAt(0).ValueType);
+            Assert.AreEqual("int", watchVM.Children.ElementAt(0).ValueType);
 
             Assert.AreEqual("null", watchVM.Children.ElementAt(1).NodeLabel);
             Assert.AreEqual("null", watchVM.Children.ElementAt(1).ValueType);
