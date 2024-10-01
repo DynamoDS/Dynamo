@@ -38,6 +38,12 @@ namespace Dynamo.PackageDetails
          
         }
 
+        /// <summary>
+        /// The DataContext of this control is an individual PackageDetailItem
+        /// Scroll up to the start of the item's info page when we assign a new PackageDetailItem
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrameworkElement_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             MainScrollViewer.ScrollToTop();

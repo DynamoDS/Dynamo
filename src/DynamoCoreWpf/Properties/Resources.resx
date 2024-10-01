@@ -4024,4 +4024,16 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="UpdateAllPythonEngineMainMenuHeader" xml:space="preserve">
     <value>Set Python Engine</value>
   </data>
+  <data name="PackageDetailsReleaseNotes" xml:space="preserve">
+    <value>Release notes</value>
+  </data>
+  <data name="PackageDetailsDependsOn" xml:space="preserve">
+    <value>Depends on</value>
+  </data>
+  <data name="PackageDetailsCompatibility" xml:space="preserve">
+    <value>COMPATIBILITY</value>
+  </data>
+  <data name="PackageDetailsCompatibilityWithSetup" xml:space="preserve">
+    <value>Compatible with your current setup</value>
+  </data>
 </root>

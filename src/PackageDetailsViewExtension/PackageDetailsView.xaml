@@ -583,7 +583,7 @@
                                                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                                                 <Setter Property="FontSize" Value="12px" />
                                                 <Setter Property="Foreground" Value="#ffffff" />
-                                                <Setter Property="Margin" Value="0,2" />
+                                                <Setter Property="Margin" Value="0,5" />
                                             </Style>
                                         </StackPanel.Resources>
                                         <Grid>
@@ -596,19 +596,53 @@
                                                 <RowDefinition Height="*" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <TextBlock Foreground="#6dd2ff" Text="Release notes" />
-                                            <TextBlock Grid.Row="1" Text="Depends on" />
+                                            <TextBlock Margin="0,5"
+                                                       Foreground="#6dd2ff"
+                                                       Text="{x:Static p:Resources.PackageDetailsReleaseNotes}" />
                                             <TextBlock Grid.Row="1"
-                                                       Grid.Column="1"
-                                                       Text="Package 1, Package 2" />
-                                            <TextBlock Grid.Row="2" Text="Size" />
+                                                       Margin="0,5"
+                                                       Text="{x:Static p:Resources.PackageDetailsDependsOn}" />
+
+                                            <!--  Dependencies  -->
+                                            <ItemsControl Grid.Row="1"
+                                                          Grid.Column="1"
+                                                          Margin="0,5"
+                                                          ItemsSource="{Binding Packages}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Button Content="{Binding}" />
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.Resources>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                        <Setter Property="BorderThickness" Value="0" />
+                                                        <Setter Property="Margin" Value="0,0,5,0" />
+                                                        <Setter Property="Foreground" Value="#6AC0E7" />
+                                                        <Setter Property="HorizontalAlignment" Value="Left" />
+                                                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                                        <Setter Property="Command" Value="{Binding ElementName=MainWindow, Path=DataContext.OpenDependencyDetailsCommand}" />
+                                                        <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}" />
+                                                    </Style>
+                                                </ItemsControl.Resources>
+                                            </ItemsControl>
+
+                                            <TextBlock Grid.Row="2"
+                                                       Margin="0,5"
+                                                       Text="Size" />
                                             <TextBlock Grid.Row="2"
                                                        Grid.Column="1"
+                                                       VerticalAlignment="Center"
                                                        Text="{Binding PackageSize}" />
                                         </Grid>
                                         <StackPanel Margin="0,10">
-                                            <TextBlock Margin="0,0,0,5" Text="COMPATIBILITY" />
-                                            <TextBlock Margin="0,0,0,5" Text="Compatible with your current setup" />
+                                            <TextBlock Margin="0,5" Text="{x:Static p:Resources.PackageDetailsCompatibility}" />
+                                            <TextBlock Margin="0,5" Text="{x:Static p:Resources.PackageDetailsCompatibilityWithSetup}" />
                                             <DataGrid x:Name="VersionCompatibilityDataGrid"
                                                       Margin="0,0,20,20"
                                                       AlternatingRowBackground="{StaticResource PMDataGridBackgroundColorBrush}"
