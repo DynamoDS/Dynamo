@@ -276,7 +276,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("null", watchVM.Children.ElementAt(1).ValueType);
 
             Assert.AreEqual("null", watchVM.Children.ElementAt(2).NodeLabel);
-            Assert.AreEqual("String", watchVM.Children.ElementAt(2).ValueType);
+            Assert.AreEqual("string", watchVM.Children.ElementAt(2).ValueType);
         }
 
         [Test]
