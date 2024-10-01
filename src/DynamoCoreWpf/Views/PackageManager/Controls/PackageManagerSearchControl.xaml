@@ -386,7 +386,7 @@
 
             <local:PackageManagerPackagesControl x:Name="packageManagerSearchPackages"
                                                  Grid.Row="2"
-                                                 SearchItems="{Binding Path=SearchJsonResults}"
+                                                 SearchItems="{Binding Path=SearchResults}"
                                                  Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
 
 

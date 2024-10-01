@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 
@@ -235,6 +235,7 @@ namespace Dynamo.PackageManager
                 this.Keywords = "";
             }
             this.Votes = header.votes;
+            this.VersionInfos = TransformVersionsToVersionInfo(header);
         }
 
         public PackageManagerSearchElement(PackageVersion infectedVersion)
@@ -260,5 +261,135 @@ namespace Dynamo.PackageManager
 
             HasUpvote = true;
         }
+
+        private List<VersionInfo> TransformVersionsToVersionInfo(Greg.Responses.PackageHeader header)
+        {
+            var versionInfos = new List<VersionInfo>();
+
+            // Iterate through each version entry in the header
+            foreach (var versionEntry in header.versions)
+            {
+                var compatibilityMatrix = versionEntry.compatibility_matrix;
+                var hasCompatibilityMatrix = compatibilityMatrix != null;
+
+                var versionInfo = new VersionInfo
+                {
+                    Version = versionEntry.version, // Map the version directly
+                    Compatibility = hasCompatibilityMatrix ? new Compatibility
+                    {
+                        // Map compatibility matrix entries to the respective CompatibilityDetail
+                        Dynamo = MapCompatibilityDetail(compatibilityMatrix, "Dynamo"),
+                        Revit = MapCompatibilityDetail(compatibilityMatrix, "Revit"),
+                        Civil3D = MapCompatibilityDetail(compatibilityMatrix, "Civil3D"),
+                        DotNet = MapCompatibilityDetail(compatibilityMatrix, "DotNet")
+                    } : null, // If no compatibility matrix, set Compatibility to null
+                    IsCompatible = hasCompatibilityMatrix ? CalculateCompatibility(compatibilityMatrix) : null // If no compatibility matrix, set IsCompatible to null (Unknown Compatibility)
+                };
+
+                versionInfos.Add(versionInfo);
+            }
+
+            return versionInfos;
+        }
+
+        private CompatibilityDetail MapCompatibilityDetail(List<Greg.Responses.Compatibility> compatibilityMatrix, string name)
+        {
+            var compatibility = compatibilityMatrix.FirstOrDefault(c => c.name == name);
+            if (compatibility != null)
+            {
+                return new CompatibilityDetail
+                {
+                    Versions = compatibility.versions,
+                    Min = compatibility.min,
+                    Max = compatibility.max
+                };
+            }
+
+            return null; // No compatibility info for this name
+        }
+
+        /// <summary>
+        /// Determines if a package version is compatible based on the current Dynamo/Host and the compatibility matrix
+        /// </summary>
+        /// <param name="compatibilityMatrix">The compatibility matrix containing the user-defined compatibility information</param>
+        /// <returns></returns>
+        internal bool? CalculateCompatibility(List<Greg.Responses.Compatibility> compatibilityMatrix)
+        {
+            // Parse Dynamo and Host versions from the model
+            Version.TryParse(DynamoModel.Version, out var dynVersion);
+            Version hostVersion = DynamoModel.HostAnalyticsInfo.HostVersion;
+            string host = DynamoModel.HostAnalyticsInfo.HostName;
+
+            if (compatibilityMatrix == null || compatibilityMatrix.Count == 0)
+            {
+                return null; // No compatibility information
+            }
+
+            // Step 1: Check Dynamo version compatibility
+            var dynamoCompatibility = compatibilityMatrix.FirstOrDefault(c => c.name == "Dynamo");
+            if (dynamoCompatibility != null)
+            {
+                bool isListedInVersions = false;
+                bool isWithinMinMax = false;
+
+                // Check if the Dynamo version is explicitly listed in 'versions'
+                if (dynamoCompatibility.versions != null && dynamoCompatibility.versions.Contains(dynVersion.ToString()))
+                {
+                    isListedInVersions = true;
+                }
+
+                // Check if the Dynamo version falls within the min/max range
+                if ((dynamoCompatibility.min == null || dynVersion >= Version.Parse(dynamoCompatibility.min)) &&
+                    (dynamoCompatibility.max == null || dynVersion <= Version.Parse(dynamoCompatibility.max)))
+                {
+                    isWithinMinMax = true;
+                }
+
+                // If the version is neither listed nor within the min/max range, it's incompatible
+                if (!isListedInVersions && !isWithinMinMax)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                // No Dynamo compatibility information
+                return null;
+            }
+
+            // Step 2: Check Host version compatibility (if available)
+            if (!string.IsNullOrEmpty(host))
+            {
+                var hostCompatibility = compatibilityMatrix.FirstOrDefault(c => c.name == host);
+                if (hostCompatibility != null)
+                {
+                    bool isHostListedInVersions = false;
+                    bool isHostWithinMinMax = false;
+
+                    // Check if the host version is explicitly listed in 'versions'
+                    if (hostCompatibility.versions != null && hostCompatibility.versions.Contains(hostVersion.ToString()))
+                    {
+                        isHostListedInVersions = true;
+                    }
+
+                    // Check if the host version falls within the min/max range
+                    if ((hostCompatibility.min == null || hostVersion >= Version.Parse(hostCompatibility.min)) &&
+                        (hostCompatibility.max == null || hostVersion <= Version.Parse(hostCompatibility.max)))
+                    {
+                        isHostWithinMinMax = true;
+                    }
+
+                    // If the host version is neither listed nor within the min/max range, it's incompatible
+                    if (!isHostListedInVersions && !isHostWithinMinMax)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            // If we passed all the checks, the version is compatible
+            return true;
+        }
+
     }
 }

@@ -174,7 +174,7 @@
         <ListBox Name="packagesListBox"
                  Background="{StaticResource PackageManagerTabBackgroundColor}"
                  BorderThickness="0"
-                 ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=SearchJsonResults}"
+                 ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=SearchResults}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  SelectedIndex="{Binding Path=SelectedIndex}"

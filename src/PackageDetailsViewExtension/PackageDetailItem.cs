@@ -347,13 +347,35 @@ namespace Dynamo.PackageDetails
             return parts.Any() ? string.Join(", ", parts) : string.Empty;
         }
 
+        /// <summary>
+        /// Try parse a date string in a preferred format
+        /// </summary>
+        /// <param name="dateString"></param>
+        /// <returns></returns>
         private string GetFormattedDate(string dateString)
         {
             if (String.IsNullOrEmpty(dateString)) return string.Empty;
-            var parsedDate = DateTime.ParseExact(dateString, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
-            // Format the DateTime object into the desired format
-            return parsedDate.ToString("dd MMM yyyy");
+            DateTime parsedDate;
+
+            // Attempt to parse using a preferred format (ISO 8601, for example)
+            string[] preferredFormats = { "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ssZ" };
+
+            foreach (var format in preferredFormats)
+            {
+                if (DateTime.TryParseExact(dateString, format, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out parsedDate))
+                {
+                    return parsedDate.ToString("dd MMM yyyy");
+                }
+            }
+
+            // Fallback to the more flexible DateTime parsing
+            if (DateTime.TryParse(dateString, out parsedDate))
+            {
+                return parsedDate.ToString("dd MMM yyyy");
+            }
+
+            return string.Empty;
         }
 
         /// <summary>
