@@ -12,7 +12,6 @@ using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
-
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
