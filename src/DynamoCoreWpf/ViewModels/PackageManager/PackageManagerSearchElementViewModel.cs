@@ -282,7 +282,7 @@ namespace Dynamo.PackageManager.ViewModels
                 RequestDownload(this.SearchElementModel, version, downloadPath);
         }
 
-        public void OnRequestDownload(bool downloadToCustomPath)
+        private void OnRequestDownload(bool downloadToCustomPath)
         {
             var version = this.SearchElementModel.Header.versions.First(x => x.version.Equals(SelectedVersion.Version));
             var compatible = SelectedVersion.IsCompatible;

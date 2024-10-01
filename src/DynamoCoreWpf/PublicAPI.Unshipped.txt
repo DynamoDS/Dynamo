@@ -4988,8 +4988,11 @@ static Dynamo.Wpf.Properties.Resources.PackageContextMenuUnmarkDeletePackageTool
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuUnmarkUnloadPackageText.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuUnmarkUnloadPackageTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDeprecatedTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsCompatibility.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsCompatibilityWithSetup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsCopyRightHolder.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsCopyRightYear.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsDependsOn.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsHost.get -> string
@@ -4998,6 +5001,7 @@ static Dynamo.Wpf.Properties.Resources.PackageDetailsLicense.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsLinks.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsPackage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsPython.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsReleaseNotes.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsSize.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersions.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersionsAndPackageRequirements.get -> string
