@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using DynamoUtilities;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

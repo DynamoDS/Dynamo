@@ -20,7 +20,6 @@ using ICSharpCode.AvalonEdit.Document;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
-using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

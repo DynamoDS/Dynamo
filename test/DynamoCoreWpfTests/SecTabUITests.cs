@@ -1,7 +1,7 @@
 using System.Windows.Controls.Primitives;
 using Dynamo.Wpf.Views;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

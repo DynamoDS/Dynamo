@@ -10,8 +10,8 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

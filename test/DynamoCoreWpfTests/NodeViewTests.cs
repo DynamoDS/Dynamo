@@ -12,8 +12,8 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

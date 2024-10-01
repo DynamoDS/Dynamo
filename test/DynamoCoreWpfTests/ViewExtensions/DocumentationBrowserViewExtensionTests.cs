@@ -18,9 +18,9 @@ using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
 using DynamoUtilities;
 using NUnit.Framework;
-using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {

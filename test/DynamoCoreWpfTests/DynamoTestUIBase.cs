@@ -20,7 +20,6 @@ using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
 using DynamoUtilities;
 using NUnit.Framework;
-using SystemTestServices;
 using TestServices;
 
 namespace DynamoCoreWpfTests

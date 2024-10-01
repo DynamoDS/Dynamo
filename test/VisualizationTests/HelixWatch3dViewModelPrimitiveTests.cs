@@ -5,11 +5,12 @@ using System.Windows.Media.Media3D;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using DynamoCoreWpfTests.Utility;
 using HelixToolkit.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SharpDX;
-using SystemTestServices;
+
 namespace WpfVisualizationTests
 {
     class HelixWatch3dViewModelPrimitiveTests : WpfVisualizationTests.VisualizationTest

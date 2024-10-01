@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Windows.Threading;
 
-namespace SystemTestServices
+namespace DynamoCoreWpfTests.Utility
 {
     public static class DispatcherUtil
     {
