@@ -36,6 +36,7 @@ namespace Dynamo.PackageDetails
         private string created;
         private List<FlattenedCompatibility> versionInfos;
         private bool? isCompatible;
+        private string releaseNotes;
 
         private PackageLoader PackageLoader { get; }
 
@@ -225,6 +226,19 @@ namespace Dynamo.PackageDetails
             }
         }
 
+        /// <summary>
+        /// Returns the URL to the online package release notes
+        /// </summary>
+        public string ReleaseNotes
+        {
+            get => releaseNotes;
+            set
+            {
+                releaseNotes = value;
+                RaisePropertyChanged(nameof(ReleaseNotes));
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -247,7 +261,7 @@ namespace Dynamo.PackageDetails
             this.Created = GetFormattedDate(PackageVersion.created);
             this.VersionInfos = GetFlattenedCompatibilityInfos(versionInfos);
             this.IsCompatible = VersionInfo.GetVersionCompatibility(versionInfos, PackageVersionNumber);
-            
+            this.ReleaseNotes = PackageVersion.release_notes_url;
 
             // To avoid displaying package self-dependencies.
             // For instance, avoiding Clockwork showing that it depends on Clockwork.

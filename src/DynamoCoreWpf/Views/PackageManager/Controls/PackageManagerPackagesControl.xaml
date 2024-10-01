@@ -74,7 +74,7 @@
 
             <!--  DataTemplate for ComboBox items  -->
             <DataTemplate x:Key="VersionInfoTemplate">
-                <StackPanel MinWidth="80" Orientation="Horizontal">
+                <StackPanel MinWidth="111" Orientation="Horizontal">
                     <!--  Compatibility Icon  -->
                     <Button Width="18"
                             Height="18"
@@ -605,7 +605,7 @@
 
                             <!--  Date Label  -->
                             <TextBlock Name="dateLabel"
-                                       Margin="5,0"
+                                       Margin="5,0,27,0"
                                        DockPanel.Dock="Right"
                                        Style="{StaticResource resultLabelStyle}"
                                        Text="{Binding Path=LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" />
@@ -621,7 +621,7 @@
 
                             <!--  Number of Downloads Label  -->
                             <TextBlock Name="noDownloadsLabel"
-                                       Margin="5,0"
+                                       Margin="5,0,27,0"
                                        DockPanel.Dock="Right"
                                        Style="{StaticResource resultLabelStyle}"
                                        Text="{Binding Path=Downloads}" />
@@ -637,7 +637,7 @@
 
                             <!--  Number of Favorites Label  -->
                             <TextBlock Name="noFavoritesLabel"
-                                       Margin="5,0"
+                                       Margin="5,0,27,0"
                                        DockPanel.Dock="Right"
                                        Style="{StaticResource resultLabelStyle}"
                                        Text="{Binding Path=Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />

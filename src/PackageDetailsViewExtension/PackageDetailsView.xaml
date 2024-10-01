@@ -25,6 +25,7 @@
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+            <controls:InverseEmptyListToVisibilityConverter x:Key="InverseEmptyListToVisibilityConverter" />
             <controls:CopyrightInfoTooltipConverter x:Key="CopyrightInfoTooltipConverter" />
             <controls:PackageDetailsLinkCollapseOnEmpty x:Key="PackageDetailsLinkCollapseOnEmpty" />
             <SolidColorBrush x:Key="ForegroundGrayBrush" Color="#D8D8D8" />
@@ -59,6 +60,16 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style x:Key="TextLinkStyle" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontSize" Value="14px" />
+                <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource Blue400Brush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <Style x:Key="BorderStyle" TargetType="Border">
                 <Setter Property="CornerRadius" Value="3" />
                 <Setter Property="Margin" Value="0,0,11,0" />
@@ -74,7 +85,30 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-
+            <Style x:Key="InterlinkButton" TargetType="{x:Type Button}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Foreground" Value="{StaticResource Blue400Brush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
             <Style x:Key="ImageButton" TargetType="{x:Type Button}">
                 <Setter Property="UseLayoutRounding" Value="True" />
                 <Setter Property="Template">
@@ -425,6 +459,7 @@
                                             <TextBlock VerticalAlignment="Center"
                                                        Foreground="#ffffff"
                                                        Text="{Binding PackageVersionNumber}" />
+                                            <!--  Person icon  -->
                                             <Viewbox Width="16"
                                                      Height="16"
                                                      Margin="10,0"
@@ -596,21 +631,37 @@
                                                 <RowDefinition Height="*" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <TextBlock Margin="0,5"
-                                                       Foreground="#6dd2ff"
-                                                       Text="{x:Static p:Resources.PackageDetailsReleaseNotes}" />
-                                            <TextBlock Grid.Row="1"
-                                                       Margin="0,5"
-                                                       Text="{x:Static p:Resources.PackageDetailsDependsOn}" />
+                                            <TextBlock Name="PackageReleaseNotesText" Visibility="{Binding ReleaseNotes, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                                <Hyperlink Name="PackageVersionReleaseNotesLink"
+                                                           NavigateUri="{Binding ReleaseNotes}"
+                                                           RequestNavigate="Hyperlink_RequestNavigate"
+                                                           TextDecorations="None"
+                                                           ToolTip="{Binding ReleaseNotes}">
+                                                    <TextBlock Margin="0"
+                                                               Style="{StaticResource TextLinkStyle}"
+                                                               Text="{x:Static p:Resources.PackageDetailsReleaseNotes}" />
+                                                </Hyperlink>
+                                            </TextBlock>
 
                                             <!--  Dependencies  -->
-                                            <ItemsControl Grid.Row="1"
+                                            <TextBlock Name="PackageDependenciesLabel"
+                                                       Grid.Row="1"
+                                                       Margin="0,5"
+                                                       Text="{x:Static p:Resources.PackageDetailsDependsOn}"
+                                                       Visibility="{Binding Packages, Converter={StaticResource InverseEmptyListToVisibilityConverter}}" />
+                                            <ItemsControl Name="PackageDependenciesListItemsControl"
+                                                          Grid.Row="1"
                                                           Grid.Column="1"
                                                           Margin="0,5"
-                                                          ItemsSource="{Binding Packages}">
+                                                          ItemsSource="{Binding Packages}"
+                                                          Visibility="{Binding Packages, Converter={StaticResource InverseEmptyListToVisibilityConverter}}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Button Content="{Binding}" />
+                                                        <Button Margin="0,0,5,0"
+                                                                Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.OpenDependencyDetailsCommand}"
+                                                                CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}"
+                                                                Content="{Binding}"
+                                                                Style="{DynamicResource InterlinkButton}" />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                                 <ItemsControl.ItemsPanel>
@@ -618,24 +669,15 @@
                                                         <StackPanel />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
-                                                <ItemsControl.Resources>
-                                                    <Style TargetType="Button">
-                                                        <Setter Property="Background" Value="Transparent" />
-                                                        <Setter Property="BorderThickness" Value="0" />
-                                                        <Setter Property="Margin" Value="0,0,5,0" />
-                                                        <Setter Property="Foreground" Value="#6AC0E7" />
-                                                        <Setter Property="HorizontalAlignment" Value="Left" />
-                                                        <Setter Property="HorizontalContentAlignment" Value="Left" />
-                                                        <Setter Property="Command" Value="{Binding ElementName=MainWindow, Path=DataContext.OpenDependencyDetailsCommand}" />
-                                                        <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}" />
-                                                    </Style>
-                                                </ItemsControl.Resources>
                                             </ItemsControl>
 
-                                            <TextBlock Grid.Row="2"
+                                            <!--  Size  -->
+                                            <TextBlock Name="PackageVersionSizeLabel"
+                                                       Grid.Row="2"
                                                        Margin="0,5"
-                                                       Text="Size" />
-                                            <TextBlock Grid.Row="2"
+                                                       Text="{x:Static p:Resources.PackageDetailsSize}" />
+                                            <TextBlock Name="PackageVersionSize"
+                                                       Grid.Row="2"
                                                        Grid.Column="1"
                                                        VerticalAlignment="Center"
                                                        Text="{Binding PackageSize}" />

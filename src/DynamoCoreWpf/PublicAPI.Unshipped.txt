@@ -341,6 +341,10 @@ Dynamo.Controls.InverseBoolToVisibilityConverter
 Dynamo.Controls.InverseBoolToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.InverseBoolToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.InverseBoolToVisibilityConverter.InverseBoolToVisibilityConverter() -> void
+Dynamo.Controls.InverseEmptyListToVisibilityConverter
+Dynamo.Controls.InverseEmptyListToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.InverseEmptyListToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.InverseEmptyListToVisibilityConverter.InverseEmptyListToVisibilityConverter() -> void
 Dynamo.Controls.LacingToAbbreviationConverter
 Dynamo.Controls.LacingToAbbreviationConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LacingToAbbreviationConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object

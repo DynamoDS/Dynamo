@@ -4049,4 +4049,7 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PackageDetailsCompatibilityWithSetup" xml:space="preserve">
     <value>Compatible with your current setup</value>
   </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
 </root>
