@@ -259,7 +259,7 @@ namespace Dynamo.PackageDetails
             this.IsEnabledForInstall = isEnabledForInstall && canInstall;
             this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
             this.Created = GetFormattedDate(PackageVersion.created);
-            this.VersionInfos = GetFlattenedCompatibilityInfos(versionInfos);
+            this.VersionInfos = GetFlattenedCompatibilityInfos(packageVersion.compatibility_matrix);
             this.IsCompatible = VersionInfo.GetVersionCompatibility(versionInfos, PackageVersionNumber);
             this.ReleaseNotes = PackageVersion.release_notes_url;
 
@@ -273,48 +273,28 @@ namespace Dynamo.PackageDetails
             DetectDependencies();
         }
 
-        
-
-        private List<FlattenedCompatibility> GetFlattenedCompatibilityInfos(List<VersionInfo> versionInfos)
+        /// <summary>
+        /// Flattens the list of compatibility information from a collection of version infos.
+        /// Each compatibility entry is represented by its name and associated versions.
+        /// </summary>
+        /// <param name="versionInfos">A list of version compatibility information. Each entry contains a compatibility name, version range, and version list.</param>
+        /// <returns>A list of <see cref="FlattenedCompatibility"/> objects, each representing a flattened compatibility with its name and formatted versions.</returns>
+        private List<FlattenedCompatibility> GetFlattenedCompatibilityInfos(List<Greg.Responses.Compatibility> versionInfos)
         {
-            var FlattenedCompatibilities = new List<FlattenedCompatibility>();
+            var flattenedCompatibilities = new List<FlattenedCompatibility>();
             try
             {
                 foreach (var versionInfo in versionInfos)
                 {
-                    if (versionInfo.Compatibility == null) continue;
-                    if (versionInfo.Compatibility.Dynamo != null)
+                    // Ensure versions list is not empty or null
+                    if (versionInfo.versions == null || !versionInfo.versions.Any()) continue;
+
+                    // Add each compatibility dynamically based on the name
+                    flattenedCompatibilities.Add(new FlattenedCompatibility
                     {
-                        FlattenedCompatibilities.Add(new FlattenedCompatibility
-                        {
-                            CompatibilityName = "Dynamo",
-                            Versions = FormatVersionString(versionInfo.Compatibility.Dynamo)
-                        });
-                    }
-                    if (versionInfo.Compatibility.Revit != null)
-                    {
-                        FlattenedCompatibilities.Add(new FlattenedCompatibility
-                        {
-                            CompatibilityName = "Revit",
-                            Versions = FormatVersionString(versionInfo.Compatibility.Revit)
-                        });
-                    }
-                    if (versionInfo.Compatibility.Civil3D != null)
-                    {
-                        FlattenedCompatibilities.Add(new FlattenedCompatibility
-                        {
-                            CompatibilityName = "Civil3D",
-                            Versions = FormatVersionString(versionInfo.Compatibility.Civil3D)
-                        });
-                    }
-                    if (versionInfo.Compatibility.DotNet != null)
-                    {
-                        FlattenedCompatibilities.Add(new FlattenedCompatibility
-                        {
-                            CompatibilityName = ".NET",
-                            Versions = FormatVersionString(versionInfo.Compatibility.DotNet)
-                        });
-                    }
+                        CompatibilityName = versionInfo.name,
+                        Versions = FormatVersionString(versionInfo)
+                    });
                 }
             }
             catch (Exception ex)
@@ -322,29 +302,25 @@ namespace Dynamo.PackageDetails
                 Console.WriteLine(ex.Message);
             }
 
-            return FlattenedCompatibilities;
+            return flattenedCompatibilities;
         }
 
-        // Helper method to format the version string
-        private string FormatVersionString(CompatibilityDetail compatibilityDetail)
+        /// <summary>
+        /// Formats the version information from a <see cref="Greg.Responses.Compatibility"/> object into a single string.
+        /// Combines the minimum and maximum versions with the version list if available.
+        /// </summary>
+        /// <param name="compatibility">The <see cref="Greg.Responses.Compatibility"/> object containing versioning information.</param>
+        /// <returns>A formatted string representing the version range and individual versions, or a comma-delimited string of versions if no range is provided.</returns>
+        private string FormatVersionString(Greg.Responses.Compatibility compatibility)
         {
-            // Initialize a list to hold parts of the formatted string
-            var parts = new List<string>();
-
-            // Handle Min-Max range
-            if (!string.IsNullOrEmpty(compatibilityDetail.Min) && !string.IsNullOrEmpty(compatibilityDetail.Max))
+            if (!string.IsNullOrEmpty(compatibility.min) && !string.IsNullOrEmpty(compatibility.max))
             {
-                parts.Add($"{compatibilityDetail.Min} - {compatibilityDetail.Max}");
+                return $"{compatibility.min} - {compatibility.max}, {string.Join(", ", compatibility.versions)}";
             }
-
-            // Handle versions list
-            if (compatibilityDetail.Versions != null && compatibilityDetail.Versions.Any())
+            else
             {
-                parts.Add(string.Join(", ", compatibilityDetail.Versions));
+                return string.Join(", ", compatibility.versions);
             }
-
-            // Return the joined string or an empty string if both checks fail
-            return parts.Any() ? string.Join(", ", parts) : string.Empty;
         }
 
         /// <summary>
