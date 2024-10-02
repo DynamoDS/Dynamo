@@ -25,13 +25,18 @@ namespace DynamoInstallDetective
             FAILED = 100
         };
 
-        private const string registryKey = @"HKEY_LOCAL_MACHINE\SOFTWARE\Autodesk\SharedComponents\";
+        private const string registryKey = @"SOFTWARE\Autodesk\SharedComponents\";
 
         private readonly string majorRelease;
         private readonly string version;
         private bool fetchFromEnv;
         private string installPath;
         private string regPath;
+
+        /// <summary>
+        /// Allows the basekey to be ovrridden, used by unit tests
+        /// </summary>
+        public RegistryKey BaseKey { get; set; } = Registry.LocalMachine;
 
         private ASC_STATUS ReadASCVersionFromEnv()
         {
@@ -60,7 +65,7 @@ namespace DynamoInstallDetective
         {
             ASC_STATUS status = ASC_STATUS.REG_FAILED;
 
-            var registryPath = Path.Combine(registryKey, majorRelease);
+            var registryPath = Path.Combine(BaseKey.Name, registryKey, majorRelease);
             if(string.IsNullOrEmpty(regPath))
             {
                 regPath = registryPath;
