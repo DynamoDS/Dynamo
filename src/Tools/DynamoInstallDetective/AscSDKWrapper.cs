@@ -7,6 +7,34 @@ namespace DynamoInstallDetective
 #if NET6_0_OR_GREATER
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
+    ///
+    /// Autodesk Shared Components SDK
+    ///
+    /// There is one or more installed shared components packages for each major version.
+    /// Major versions are for example 2026, 2027 and 2028 and corresponds to our global launches.
+    /// Minor versions are for example 1.0.0, 1.1.0, 2.0.0 etc.
+    ///
+    /// These packages are ususally installed in "C:\Program Files\Common Files\Autodesk Shared\Components", 
+    /// for example in C:\Program Files\Common Files\Autodesk Shared\Components\2026\1.0.0 for version 1.0.0 of the package used by 2026 products.
+    ///
+    /// There is no guarantee that this localtion is used as it can be overridden at deplyments time. Instead, the registry should be queried
+    /// for the final location.
+    ///
+    /// The registry location "HKEY_LOCAL_MACHINE\SOFTWARE\Autodesk\SharedComponents\" contains one key for each major version,
+    /// for example the key 2026 is used for the 2026 package.
+    ///
+    /// Each key will hold two values:
+    /// Version: The current version of the package
+    /// InstallPath: The actual location where the package is installed.
+    ///
+    /// There is usually only one minor version installed for each major version but there are situations when multiple minor versions can be installed.
+    /// One of these cases is when testing beta versions of the shared components. The version used can then be overridden by using an environment variable,
+    /// ACS_VERSION_<majorRelease> that points to the prefered version to use. So to load the 2.0-beta verion of the 2026 components you would
+    /// set ACS_VERSION_2026 to 2.0-beta.
+    ///
+    /// All shared components are currenly installed into one flat directory for each release. Possible future changes include the ability to only install those
+    /// components that actually is needed. This wrapper might need to be updated at that point.
+    /// 
     internal class AscSdkWrapper
     {
         public enum ASC_STATUS
@@ -137,7 +165,7 @@ namespace DynamoInstallDetective
         /// <summary>
         /// Get the major version of all ASC packages installed on the local machine
         /// </summary>
-        /// <returns>An array of major versions</returns>
+        /// <returns>An array of major versions, for example ["2026, "2027", "2028"]</returns>
         public static string[] GetMajorVersions()
         {
             string[] majorVersions = [];
