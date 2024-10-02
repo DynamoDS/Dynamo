@@ -11,6 +11,4 @@ using NUnit.Framework;
 [assembly: AssemblyCulture("")]
 [assembly: Guid("c4964946-b367-44ee-9ed2-451ff2a83d32")]
 [assembly: NUnit.Framework.Apartment(ApartmentState.STA)]
-[assembly: TypeForwardedToAttribute(typeof(DynamoCoreWpfTests.Utility.DispatcherUtil))]
-
 
