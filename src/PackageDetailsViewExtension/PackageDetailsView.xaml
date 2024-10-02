@@ -682,7 +682,7 @@
                                                        VerticalAlignment="Center"
                                                        Text="{Binding PackageSize}" />
                                         </Grid>
-                                        <StackPanel Margin="0,10" Visibility="{Binding VersionInfos, Converter={StaticResource InverseEmptyListToVisibilityConverter}}">
+                                        <StackPanel Margin="0,10" Visibility="{Binding VersionInformation, Converter={StaticResource InverseEmptyListToVisibilityConverter}}">
                                             <TextBlock Margin="0,5" Text="{x:Static p:Resources.PackageDetailsCompatibility}" />
                                             <TextBlock Margin="0,5" Text="{x:Static p:Resources.PackageDetailsCompatibilityWithSetup}" />
                                             <DataGrid x:Name="VersionCompatibilityDataGrid"
@@ -702,7 +702,7 @@
                                                       IsHitTestVisible="False"
                                                       IsReadOnly="True"
                                                       IsSynchronizedWithCurrentItem="True"
-                                                      ItemsSource="{Binding VersionInfos}"
+                                                      ItemsSource="{Binding VersionInformation}"
                                                       RowDetailsVisibilityMode="Collapsed"
                                                       ScrollViewer.CanContentScroll="True"
                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"

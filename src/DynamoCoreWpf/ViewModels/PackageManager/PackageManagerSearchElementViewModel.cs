@@ -117,7 +117,7 @@ namespace Dynamo.PackageManager.ViewModels
             // Attempts to show the latest compatible version. If no compatible, will return the latest instead.
             //this.SelectedVersion = this.SearchElementModel.LatestVersion;
             this.SelectedVersion = this.SearchElementModel.LatestCompatibleVersion;
-            this.VersionInfos = this.SearchElementModel.VersionDetails;
+            this.VersionInformation = this.SearchElementModel.VersionDetails;
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>
                 .AddHandler(this.SearchElementModel, nameof(INotifyPropertyChanged.PropertyChanged), OnSearchElementModelPropertyChanged);
 
@@ -145,7 +145,7 @@ namespace Dynamo.PackageManager.ViewModels
             }
             if (e.PropertyName == nameof(SearchElementModel.VersionDetails))
             {
-                this.VersionInfos = this.SearchElementModel.VersionDetails;
+                this.VersionInformation = this.SearchElementModel.VersionDetails;
             }
         }
 
@@ -243,17 +243,17 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
-        private List<VersionInformation> versionInfos;
+        private List<VersionInformation> versionInformation;
 
-        public List<VersionInformation> VersionInfos
+        public List<VersionInformation> VersionInformation
         {
-            get { return versionInfos; }
+            get { return versionInformation; }
             set
             {
-                if (value != versionInfos)
+                if (value != versionInformation)
                 {
-                    versionInfos = value;
-                    RaisePropertyChanged(nameof(VersionInfos));
+                    versionInformation = value;
+                    RaisePropertyChanged(nameof(VersionInformation));
                 }
             }
         }

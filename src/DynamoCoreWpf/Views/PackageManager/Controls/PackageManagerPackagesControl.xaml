@@ -443,7 +443,7 @@
                                     <ComboBox x:Name="VersionComboBox"
                                               HorizontalAlignment="Left"
                                               ItemTemplate="{StaticResource VersionInfoTemplate}"
-                                              ItemsSource="{Binding Path=VersionInfos, UpdateSourceTrigger=PropertyChanged}"
+                                              ItemsSource="{Binding Path=VersionInformation, UpdateSourceTrigger=PropertyChanged}"
                                               SelectedItem="{Binding Path=SelectedVersion, UpdateSourceTrigger=PropertyChanged}"
                                               Style="{StaticResource PackageManagerSmallComboBox}" />
                                     <Rectangle Height="5" Style="{StaticResource RectangleStyle}" />

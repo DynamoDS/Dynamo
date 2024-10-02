@@ -34,7 +34,7 @@ namespace Dynamo.PackageDetails
         private string packageName;
         private string packageSize;
         private string created;
-        private List<FlattenedCompatibility> versionInfos;
+        private List<FlattenedCompatibility> versionInformation;
         private bool? isCompatible;
         private string releaseNotes;
 
@@ -204,20 +204,20 @@ namespace Dynamo.PackageDetails
         }
 
         /// <summary>
-        /// Version infos (WIP)
+        /// A flattened collection of VersionInformation
         /// </summary>
-        public List<FlattenedCompatibility> VersionInfos
+        public List<FlattenedCompatibility> VersionInformation
         {
-            get => versionInfos;
+            get => versionInformation;
             set
             {
-                versionInfos = value;
-                RaisePropertyChanged(nameof(VersionInfos));
+                versionInformation = value;
+                RaisePropertyChanged(nameof(VersionInformation));
             }
         }
 
         /// <summary>
-        /// 
+        /// If the current version is compatible, incompatible or with unknown compatibility
         /// </summary>
         public bool? IsCompatible
         {
@@ -262,8 +262,8 @@ namespace Dynamo.PackageDetails
             this.IsEnabledForInstall = isEnabledForInstall && canInstall;
             this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
             this.Created = GetFormattedDate(PackageVersion.created);
-            this.VersionInfos = GetFlattenedCompatibilityInfos(packageVersion.compatibility_matrix);
-            this.IsCompatible = VersionInformation.GetVersionCompatibility(versionDetails, PackageVersionNumber);
+            this.VersionInformation = GetFlattenedCompatibilityInformation(packageVersion.compatibility_matrix);
+            this.IsCompatible = PackageManager.VersionInformation.GetVersionCompatibility(versionDetails, PackageVersionNumber);
             this.ReleaseNotes = PackageVersion.release_notes_url;
 
             // To avoid displaying package self-dependencies.
@@ -282,11 +282,11 @@ namespace Dynamo.PackageDetails
         /// </summary>
         /// <param name="versionDetails">A list of version compatibility information. Each entry contains a compatibility name, version range, and version list.</param>
         /// <returns>A list of <see cref="FlattenedCompatibility"/> objects, each representing a flattened compatibility with its name and formatted versions.</returns>
-        private List<FlattenedCompatibility> GetFlattenedCompatibilityInfos(List<Greg.Responses.Compatibility> versionDetails)
+        private List<FlattenedCompatibility> GetFlattenedCompatibilityInformation(List<Greg.Responses.Compatibility> versionDetails)
         {
             var flattenedCompatibilities = new List<FlattenedCompatibility>();
             try
-            {
+            {   
                 foreach (var versionInformation in versionDetails)
                 {
                     // Add each compatibility dynamically based on the name

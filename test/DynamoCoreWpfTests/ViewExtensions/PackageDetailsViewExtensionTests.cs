@@ -499,15 +499,63 @@ namespace DynamoCoreWpfTests
                 $" {string.Join(", ", CompatibilityList.FirstOrDefault().versions)}";
 
             // Assert
-            Assert.IsNotNull(item.VersionInfos);
-            Assert.AreEqual(2, item.VersionInfos.Count);
+            Assert.IsNotNull(item.VersionInformation);
+            Assert.AreEqual(2, item.VersionInformation.Count);
 
             // Complete
-            Assert.AreEqual(CompatibilityList[0].name, item.VersionInfos[0].CompatibilityName);
-            Assert.AreEqual(dynamoVersions, item.VersionInfos[0].Versions);
+            Assert.AreEqual(CompatibilityList[0].name, item.VersionInformation[0].CompatibilityName);
+            Assert.AreEqual(dynamoVersions, item.VersionInformation[0].Versions);
             // Missing or incomplete compatibility information
-            Assert.AreEqual(CompatibilityList[1].name, item.VersionInfos[1].CompatibilityName);
-            Assert.AreEqual(string.Empty, item.VersionInfos[1].Versions);
+            Assert.AreEqual(CompatibilityList[1].name, item.VersionInformation[1].CompatibilityName);
+            Assert.AreEqual(string.Empty, item.VersionInformation[1].Versions);
+        }
+
+        [Test]
+        public void TestCorrectLatestCompatibleVersionIsFound()
+        {
+            // Arrange
+            string packageToOpen = "Sample View Extension";
+            List<User> packageAuthor = new List<User> { new User { _id = "1", username = "DynamoTeam" } };
+            string packageDescription = "Dynamo sample view extension.";
+
+            PackageDetailsViewExtension.PackageManagerClientViewModel = ViewModel.PackageManagerClientViewModel;
+
+            PackageHeader packageHeader = new PackageHeader
+            {
+                _id = null,
+                name = packageToOpen,
+                versions = PackageVersions,
+                latest_version_update = System.DateTime.Now,
+                num_versions = PackageVersions.Count,
+                comments = null,
+                num_comments = 0,
+                latest_comment = null,
+                votes = 0,
+                downloads = 0,
+                repository_url = null,
+                site_url = null,
+                banned = false,
+                deprecated = false,
+                @group = null,
+                engine = null,
+                license = null,
+                used_by = null,
+                host_dependencies = Hosts,
+                num_dependents = 0,
+                description = packageDescription,
+                maintainers = packageAuthor,
+                keywords = null
+            };
+            PackageManagerSearchElement packageManagerSearchElement = new PackageManagerSearchElement(packageHeader);
+            PackageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
+            PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
+            Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
+            PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
+
+            var latestCompatibleVersion = packageManagerSearchElement.LatestCompatibleVersion;
+
+            // Assert
+            Assert.AreEqual(PackageVersions[2].version, latestCompatibleVersion);
         }
     }
 }
