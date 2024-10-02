@@ -533,44 +533,6 @@ namespace Dynamo.ViewModels
             Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
         }
 
-        private void DissolveNestedGroups(object parameters)
-        {
-            // For this command to work, this needs to be a host group
-            if (!this.AnnotationModel.HasNestedGroups) return;
-
-            var hostedAnnotations = this.Nodes.OfType<AnnotationModel>();
-            var nodes = GetAllHostedNodes(hostedAnnotations);
-            DynamoSelection.Instance.ClearSelection();
-
-            foreach (var annotation in hostedAnnotations)
-            {
-                var annotationGuid = annotation.GUID;
-                this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
-                WorkspaceViewModel.DynamoViewModel.UngroupAnnotationCommand.Execute(null);
-            }
-
-            foreach (var node in nodes)
-            {
-                this.AnnotationModel.AddToTargetAnnotationModel(node);
-            }
-
-            RaisePropertyChanged(nameof(ZIndex));
-            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
-        }
-
-        private List<ModelBase> GetAllHostedNodes(IEnumerable<AnnotationModel> hostedAnnotations)
-        {
-            List<ModelBase> result = new List<ModelBase>();
-
-            foreach (var annotation in hostedAnnotations)
-            {
-                result.AddRange(annotation.Nodes);
-            }
-
-            return result;
-        }
-
         private bool CanUngroupGroup(object parameters)
         {
             return BelongsToGroup();
