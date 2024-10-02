@@ -216,6 +216,9 @@ namespace Dynamo.PackageDetails
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool? IsCompatible
         {
             get => isCompatible;
@@ -248,7 +251,7 @@ namespace Dynamo.PackageDetails
         /// <param name="packageVersion"></param>
         /// <param name="canInstall"></param>
         /// <param name="isEnabledForInstall">True, if package is not already downloaded, is not deprecated, and package loading is allowed.</param>
-        public PackageDetailItem(List<VersionInfo> versionInfos, string packageName, PackageVersion packageVersion, bool canInstall, bool isEnabledForInstall = true)
+        public PackageDetailItem(List<VersionInformation> versionDetails, string packageName, PackageVersion packageVersion, bool canInstall, bool isEnabledForInstall = true)
         {
             this.PackageName = packageName;
             this.PackageVersion = packageVersion;
@@ -260,7 +263,7 @@ namespace Dynamo.PackageDetails
             this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
             this.Created = GetFormattedDate(PackageVersion.created);
             this.VersionInfos = GetFlattenedCompatibilityInfos(packageVersion.compatibility_matrix);
-            this.IsCompatible = VersionInfo.GetVersionCompatibility(versionInfos, PackageVersionNumber);
+            this.IsCompatible = VersionInformation.GetVersionCompatibility(versionDetails, PackageVersionNumber);
             this.ReleaseNotes = PackageVersion.release_notes_url;
 
             // To avoid displaying package self-dependencies.
@@ -277,20 +280,20 @@ namespace Dynamo.PackageDetails
         /// Flattens the list of compatibility information from a collection of version infos.
         /// Each compatibility entry is represented by its name and associated versions.
         /// </summary>
-        /// <param name="versionInfos">A list of version compatibility information. Each entry contains a compatibility name, version range, and version list.</param>
+        /// <param name="versionDetails">A list of version compatibility information. Each entry contains a compatibility name, version range, and version list.</param>
         /// <returns>A list of <see cref="FlattenedCompatibility"/> objects, each representing a flattened compatibility with its name and formatted versions.</returns>
-        private List<FlattenedCompatibility> GetFlattenedCompatibilityInfos(List<Greg.Responses.Compatibility> versionInfos)
+        private List<FlattenedCompatibility> GetFlattenedCompatibilityInfos(List<Greg.Responses.Compatibility> versionDetails)
         {
             var flattenedCompatibilities = new List<FlattenedCompatibility>();
             try
             {
-                foreach (var versionInfo in versionInfos)
+                foreach (var versionInformation in versionDetails)
                 {
                     // Add each compatibility dynamically based on the name
                     flattenedCompatibilities.Add(new FlattenedCompatibility
                     {
-                        CompatibilityName = versionInfo.name,
-                        Versions = FormatVersionString(versionInfo)
+                        CompatibilityName = versionInformation.name,
+                        Versions = FormatVersionString(versionInformation)
                     });
                 }
             }

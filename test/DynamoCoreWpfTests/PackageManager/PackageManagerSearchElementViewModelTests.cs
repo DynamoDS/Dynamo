@@ -703,5 +703,81 @@ namespace Dynamo.PackageManager.Wpf.Tests
             //Assert - validate order by Votes
             Assert.IsTrue(isOrderedByVotes && packageManagerSearchVM.SearchResults.Count != 0);
         }
+
+        [Test]
+        public void TestComputeVersionCompatibility()
+        {
+            //Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "2.0", max = "2.5" },
+                new Greg.Responses.Compatibility { name = "Host", min = "2020", max = "2025" }
+            };
+
+            var compatibilityMatrixNoHost = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "2.0", max = "2.5" },
+            };
+
+            var customDynamoVersion = new Version("2.3");
+            var customHostVersion = new Version("2023.0");
+
+            // Act
+            var result = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customDynamoVersion, customHostVersion);
+            var resultNoHost = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrixNoHost, customDynamoVersion, customHostVersion);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsTrue(resultNoHost);
+        }
+
+        [Test]
+        public void TestComputeIncompatibleVersionCompatibility()
+        {
+            //Arrange
+            var compatibilityMatrixIncompatibleDynamo = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "3.0", max = "3.5" },
+                new Greg.Responses.Compatibility { name = "Host", min = "2020.0", max = "2025.0" }
+            };
+
+            var compatibilityMatrixIncompatibleHost = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "2.0", max = "3.5" },
+                new Greg.Responses.Compatibility { name = "Host", min = "2020.0", max = "2022.0" }
+            };
+
+            var customDynamoVersion = new Version("2.9");
+            var customHostVersion = new Version("2023.0");
+            var customHostName = "Host";
+
+            // Act
+            var resultIncompatibleDynamo = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrixIncompatibleDynamo, customDynamoVersion, customHostVersion, customHostName);
+            var resultIncompatibleHost = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrixIncompatibleHost, customDynamoVersion, customHostVersion, customHostName);
+
+            // Assert
+            Assert.IsFalse(resultIncompatibleDynamo);
+            Assert.IsFalse(resultIncompatibleHost);
+        }
+
+        [Ignore("Waiting for confirmation on dynamo-host compatibility schema route")]
+        [Test]
+        public void TestComputeVersionNoDynamoCompatibility()
+        {
+            //Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Host", min = "2020", max = "2025" }
+            };
+
+            var customDynamoVersion = new Version("2.3");
+            var customHostVersion = new Version("2023.0");
+
+            // Act
+            var result = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customDynamoVersion, customHostVersion);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
     }
 }

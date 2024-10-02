@@ -1317,12 +1317,12 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PkgVersion
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.RequestDownload -> Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PackageSearchElementDownloadHandler
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.RequestShowFileDialog -> System.EventHandler<Dynamo.ViewModels.PackagePathEventArgs>
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SearchElementModel.get -> Dynamo.PackageManager.PackageManagerSearchElement
-Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.get -> Dynamo.PackageManager.VersionInfo
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.get -> Dynamo.PackageManager.VersionInformation
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.UpvoteCommand.get -> System.Windows.Input.ICommand
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.UpvoteCommand.set -> void
-Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInfos.get -> System.Collections.Generic.List<Dynamo.PackageManager.VersionInfo>
-Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInfos.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInformation.get -> System.Collections.Generic.List<Dynamo.PackageManager.VersionInformation>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInformation.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Versions.get -> System.Collections.Generic.List<System.Tuple<Greg.Responses.PackageVersion, Prism.Commands.DelegateCommand<object>>>
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitRepositoryCommand.get -> System.Windows.Input.ICommand
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitRepositoryCommand.set -> void
