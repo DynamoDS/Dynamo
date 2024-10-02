@@ -682,7 +682,7 @@
                                                        VerticalAlignment="Center"
                                                        Text="{Binding PackageSize}" />
                                         </Grid>
-                                        <StackPanel Margin="0,10">
+                                        <StackPanel Margin="0,10" Visibility="{Binding VersionInfos, Converter={StaticResource InverseEmptyListToVisibilityConverter}}">
                                             <TextBlock Margin="0,5" Text="{x:Static p:Resources.PackageDetailsCompatibility}" />
                                             <TextBlock Margin="0,5" Text="{x:Static p:Resources.PackageDetailsCompatibilityWithSetup}" />
                                             <DataGrid x:Name="VersionCompatibilityDataGrid"
@@ -693,12 +693,13 @@
                                                       Background="{StaticResource ExtensionBackgroundColor}"
                                                       BorderThickness="1"
                                                       CanUserAddRows="False"
-                                                      CanUserResizeColumns="True"
-                                                      CanUserSortColumns="True"
+                                                      CanUserResizeColumns="False"
+                                                      CanUserSortColumns="False"
                                                       ColumnWidth="*"
                                                       FontFamily="{StaticResource ArtifaktElementRegular}"
                                                       Foreground="#ffffff"
                                                       HeadersVisibility="Column"
+                                                      IsHitTestVisible="False"
                                                       IsReadOnly="True"
                                                       IsSynchronizedWithCurrentItem="True"
                                                       ItemsSource="{Binding VersionInfos}"
@@ -706,8 +707,6 @@
                                                       ScrollViewer.CanContentScroll="True"
                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                      SelectionMode="Single"
-                                                      SelectionUnit="FullRow"
                                                       Style="{StaticResource DataGridStyle1}"
                                                       VirtualizingStackPanel.IsVirtualizing="True"
                                                       VirtualizingStackPanel.VirtualizationMode="Recycling">
