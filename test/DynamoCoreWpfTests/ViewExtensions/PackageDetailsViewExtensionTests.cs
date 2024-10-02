@@ -47,9 +47,9 @@ namespace DynamoCoreWpfTests
             new Greg.Responses.Compatibility
             {
                 name = "Revit",
-                versions = new List<string> { "2020" },
+                versions = null,
                 min = "2022",
-                max = "2025"
+                max = string.Empty
             }
         };
         private static List<PackageVersion> PackageVersions = new List<PackageVersion>
@@ -101,7 +101,7 @@ namespace DynamoCoreWpfTests
         
         /// <summary>
         /// Tests whether a PackageDetailItem detects its dependencies and sets correponding values properly.
-        /// These display in the PackageDetailsView versions DataGrid as the 'Host' and 'Python' columns.
+        /// These display in the PackageDetailsView dynamoVersions DataGrid as the 'Host' and 'Python' columns.
         /// </summary>
         [Test]
         public void TestDependencyDetection()
@@ -197,7 +197,7 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// Tests whether the PackageDetailsViewModel receives the package versions properly.
+        /// Tests whether the PackageDetailsViewModel receives the package dynamoVersions properly.
         /// </summary>
         [Test]
         public void TestVersionsDisplayedInView()
@@ -495,13 +495,19 @@ namespace DynamoCoreWpfTests
             PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
 
             var item = packageDetailsViewModel.PackageDetailItems.FirstOrDefault();
-            var versions = $"{CompatibilityList.FirstOrDefault().min} - {CompatibilityList.FirstOrDefault().max}," +
+            var dynamoVersions = $"{CompatibilityList.FirstOrDefault().min} - {CompatibilityList.FirstOrDefault().max}," +
                 $" {string.Join(", ", CompatibilityList.FirstOrDefault().versions)}";
 
             // Assert
             Assert.IsNotNull(item.VersionInfos);
-            Assert.AreEqual(CompatibilityList.FirstOrDefault().name, item.VersionInfos.FirstOrDefault().CompatibilityName);
-            Assert.AreEqual(versions, item.VersionInfos.FirstOrDefault().Versions);
+            Assert.AreEqual(2, item.VersionInfos.Count);
+
+            // Complete
+            Assert.AreEqual(CompatibilityList[0].name, item.VersionInfos[0].CompatibilityName);
+            Assert.AreEqual(dynamoVersions, item.VersionInfos[0].Versions);
+            // Missing or incomplete compatibility information
+            Assert.AreEqual(CompatibilityList[1].name, item.VersionInfos[1].CompatibilityName);
+            Assert.AreEqual(string.Empty, item.VersionInfos[1].Versions);
         }
     }
 }

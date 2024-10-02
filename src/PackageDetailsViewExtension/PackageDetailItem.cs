@@ -286,9 +286,6 @@ namespace Dynamo.PackageDetails
             {
                 foreach (var versionInfo in versionInfos)
                 {
-                    // Ensure versions list is not empty or null
-                    if (versionInfo.versions == null || !versionInfo.versions.Any()) continue;
-
                     // Add each compatibility dynamically based on the name
                     flattenedCompatibilities.Add(new FlattenedCompatibility
                     {
@@ -313,13 +310,23 @@ namespace Dynamo.PackageDetails
         /// <returns>A formatted string representing the version range and individual versions, or a comma-delimited string of versions if no range is provided.</returns>
         private string FormatVersionString(Greg.Responses.Compatibility compatibility)
         {
-            if (!string.IsNullOrEmpty(compatibility.min) && !string.IsNullOrEmpty(compatibility.max))
+            var hasVersions = compatibility.versions != null && compatibility.versions.Any();
+
+            if (!string.IsNullOrEmpty(compatibility.min) && !string.IsNullOrEmpty(compatibility.max) && hasVersions)
             {
                 return $"{compatibility.min} - {compatibility.max}, {string.Join(", ", compatibility.versions)}";
             }
-            else
+            else if (!string.IsNullOrEmpty(compatibility.min) && !string.IsNullOrEmpty(compatibility.max))
+            {
+                return $"{compatibility.min} - {compatibility.max}";
+            }
+            else if (hasVersions)
             {
                 return string.Join(", ", compatibility.versions);
+            }
+            else
+            {
+                return string.Empty;
             }
         }
 
