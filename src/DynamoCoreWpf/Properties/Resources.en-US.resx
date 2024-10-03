@@ -4052,4 +4052,13 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PackageDetailsSize" xml:space="preserve">
     <value>Size</value>
   </data>
+  <data name="PackageDetailsCompatibleVersionTooltip" xml:space="preserve">
+    <value>This version should be compatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsUnknownCompatibilityVersionTooltip" xml:space="preserve">
+    <value>The compatibility of this version has not been verified. It may or may not be compatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsIncompatibileVersionTooltip" xml:space="preserve">
+    <value>This version may be incompatible with your current setup</value>
+  </data>
 </root>

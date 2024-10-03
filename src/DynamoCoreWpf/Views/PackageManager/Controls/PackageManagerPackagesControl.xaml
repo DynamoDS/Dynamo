@@ -23,7 +23,7 @@
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
-
+            <Style BasedOn="{StaticResource GenericToolTipLight}" TargetType="ToolTip" />
             <Style x:Key="RectangleStyle" TargetType="Rectangle">
                 <Setter Property="Opacity" Value="0" />
                 <Style.Triggers>
@@ -84,21 +84,25 @@
                             <Style TargetType="Button">
                                 <!--  Default template  -->
                                 <Setter Property="Template" Value="{DynamicResource CustomCanvasTemplateCompatible}" />
+                                <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsCompatibleVersionTooltip}" />
 
                                 <Style.Triggers>
                                     <!--  Trigger for IsCompatible == true (compatible)  -->
                                     <DataTrigger Binding="{Binding IsCompatible}" Value="True">
                                         <Setter Property="Template" Value="{DynamicResource CustomCanvasTemplateCompatible}" />
+                                        <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsCompatibleVersionTooltip}" />
                                     </DataTrigger>
 
                                     <!--  Trigger for IsCompatible == false (not compatible)  -->
                                     <DataTrigger Binding="{Binding IsCompatible}" Value="False">
                                         <Setter Property="Template" Value="{DynamicResource CustomCanvasTemplateIncompatible}" />
+                                        <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsIncompatibileVersionTooltip}" />
                                     </DataTrigger>
 
                                     <!--  Trigger for IsCompatible == null (unknown compatibility)  -->
                                     <DataTrigger Binding="{Binding IsCompatible}" Value="{x:Null}">
                                         <Setter Property="Template" Value="{DynamicResource CustomCanvasTemplateUnknown}" />
+                                        <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsUnknownCompatibilityVersionTooltip}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -444,8 +448,28 @@
                                               HorizontalAlignment="Left"
                                               ItemTemplate="{StaticResource VersionInfoTemplate}"
                                               ItemsSource="{Binding Path=VersionInformation, UpdateSourceTrigger=PropertyChanged}"
-                                              SelectedItem="{Binding Path=SelectedVersion, UpdateSourceTrigger=PropertyChanged}"
-                                              Style="{StaticResource PackageManagerSmallComboBox}" />
+                                              SelectedItem="{Binding Path=SelectedVersion, UpdateSourceTrigger=PropertyChanged}">
+                                        <ComboBox.Style>
+                                            <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">
+                                                <Style.Triggers>
+                                                    <!--  Trigger for IsCompatible == true (compatible)  -->
+                                                    <DataTrigger Binding="{Binding SelectedItem.IsCompatible, RelativeSource={RelativeSource Self}}" Value="True">
+                                                        <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsCompatibleVersionTooltip}" />
+                                                    </DataTrigger>
+
+                                                    <!--  Trigger for IsCompatible == false (incompatible)  -->
+                                                    <DataTrigger Binding="{Binding SelectedItem.IsCompatible, RelativeSource={RelativeSource Self}}" Value="False">
+                                                        <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsIncompatibileVersionTooltip}" />
+                                                    </DataTrigger>
+
+                                                    <!--  Trigger for IsCompatible == null (unknown compatibility)  -->
+                                                    <DataTrigger Binding="{Binding SelectedItem.IsCompatible, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                                                        <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsUnknownCompatibilityVersionTooltip}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBox.Style>
+                                    </ComboBox>
                                     <Rectangle Height="5" Style="{StaticResource RectangleStyle}" />
                                 </StackPanel>
                             </StackPanel>

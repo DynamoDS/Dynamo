@@ -5654,6 +5654,15 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This version should be compatible with your current setup.
+        /// </summary>
+        public static string PackageDetailsCompatibleVersionTooltip {
+            get {
+                return ResourceManager.GetString("PackageDetailsCompatibleVersionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copyright Holder.
         /// </summary>
         public static string PackageDetailsCopyRightHolder {
@@ -5704,6 +5713,15 @@ namespace Dynamo.Wpf.Properties
         public static string PackageDetailsHost {
             get {
                 return ResourceManager.GetString("PackageDetailsHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This version may be incompatible with your current setup.
+        /// </summary>
+        public static string PackageDetailsIncompatibileVersionTooltip {
+            get {
+                return ResourceManager.GetString("PackageDetailsIncompatibileVersionTooltip", resourceCulture);
             }
         }
         
@@ -5767,6 +5785,15 @@ namespace Dynamo.Wpf.Properties
         public static string PackageDetailsSize {
             get {
                 return ResourceManager.GetString("PackageDetailsSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The compatibility of this version has not been verified. It may or may not be compatible with your current setup.
+        /// </summary>
+        public static string PackageDetailsUnknownCompatibilityVersionTooltip {
+            get {
+                return ResourceManager.GetString("PackageDetailsUnknownCompatibilityVersionTooltip", resourceCulture);
             }
         }
         

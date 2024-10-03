@@ -306,7 +306,7 @@ namespace Dynamo.PackageDetails
                     // Add each compatibility dynamically based on the name
                     flattenedCompatibilities.Add(new FlattenedCompatibility
                     {
-                        CompatibilityName = versionInformation.name,
+                        CompatibilityName = CapitalizeFirstLetter(versionInformation.name),
                         Versions = FormatVersionString(versionInformation)
                     });
                 }
@@ -314,7 +314,7 @@ namespace Dynamo.PackageDetails
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-            }
+            }   
 
             return flattenedCompatibilities;
         }
@@ -405,6 +405,14 @@ namespace Dynamo.PackageDetails
 
             PythonVersion = pythonEngineVersions.Count > 0 ? string.Join(", ", pythonEngineVersions) : Dynamo.Properties.Resources.NoneString;
             Hosts = hostDependencies.Count > 0 ? string.Join(", ", hostDependencies) : Dynamo.Properties.Resources.NoneString;
+        }
+
+        private static string CapitalizeFirstLetter(string word)
+        {
+            if (string.IsNullOrEmpty(word))
+                return word;
+
+            return char.ToUpper(word[0]) + word.Substring(1);
         }
     }
 }

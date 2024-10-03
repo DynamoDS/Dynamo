@@ -25,6 +25,7 @@
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+            <controls:NullOrEmptyListToVisibilityVisibleConverter x:Key="NullOrEmptyListToVisibilityVisibleConverter" />
             <controls:InverseEmptyListToVisibilityConverter x:Key="InverseEmptyListToVisibilityConverter" />
             <controls:CopyrightInfoTooltipConverter x:Key="CopyrightInfoTooltipConverter" />
             <controls:PackageDetailsLinkCollapseOnEmpty x:Key="PackageDetailsLinkCollapseOnEmpty" />
@@ -32,6 +33,7 @@
             <SolidColorBrush x:Key="HoverBorderGrayBrush" Color="#6d6d6d" />
             <SolidColorBrush x:Key="PressedBorderGrayBrush" Color="#7e7e7e" />
             <SolidColorBrush x:Key="HasVotedBlueBrush" Color="#84D7CE" />
+            <Style BasedOn="{StaticResource GenericToolTipLight}" TargetType="ToolTip" />
             <Style x:Key="LabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}" />
                 <Setter Property="FontWeight" Value="Bold" />
@@ -584,22 +586,26 @@
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateUnknown}" />
+                                                        <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsIncompatibileVersionTooltip}" />
                                                         <!--  Default template  -->
 
                                                         <Style.Triggers>
                                                             <!--  Trigger for IsCompatible == true (compatible)  -->
                                                             <DataTrigger Binding="{Binding IsCompatible}" Value="True">
                                                                 <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateCompatible}" />
+                                                                <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsCompatibleVersionTooltip}" />
                                                             </DataTrigger>
 
                                                             <!--  Trigger for IsCompatible == false (not compatible)  -->
                                                             <DataTrigger Binding="{Binding IsCompatible}" Value="False">
                                                                 <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateIncompatible}" />
+                                                                <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsIncompatibileVersionTooltip}" />
                                                             </DataTrigger>
 
                                                             <!--  Trigger for IsCompatible == null (unknown compatibility)  -->
                                                             <DataTrigger Binding="{Binding IsCompatible}" Value="{x:Null}">
                                                                 <Setter Property="Template" Value="{StaticResource CustomCanvasTemplateUnknown}" />
+                                                                <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDetailsUnknownCompatibilityVersionTooltip}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -719,6 +725,12 @@
                                                                         Header="{x:Static p:Resources.PublishPackageViewPackageVersion}" />
                                                 </DataGrid.Columns>
                                             </DataGrid>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,10" Visibility="{Binding VersionInformation, Converter={StaticResource NullOrEmptyListToVisibilityVisibleConverter}}">
+                                            <TextBlock FontSize="10"
+                                                       Opacity="0.5"
+                                                       Text="{x:Static p:Resources.PackageDetailsUnknownCompatibilityVersionTooltip}"
+                                                       TextWrapping="WrapWithOverflow" />
                                         </StackPanel>
                                     </StackPanel>
                                 </Expander.Content>

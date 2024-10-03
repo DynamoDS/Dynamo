@@ -468,6 +468,10 @@ Dynamo.Controls.NonEmptyStringToCollapsedConverter
 Dynamo.Controls.NonEmptyStringToCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NonEmptyStringToCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NonEmptyStringToCollapsedConverter.NonEmptyStringToCollapsedConverter() -> void
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter.NullOrEmptyListToVisibilityVisibleConverter() -> void
 Dynamo.Controls.NullOrEmptyStringToVisibiltyCollapsedConverter
 Dynamo.Controls.NullOrEmptyStringToVisibiltyCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NullOrEmptyStringToVisibiltyCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object

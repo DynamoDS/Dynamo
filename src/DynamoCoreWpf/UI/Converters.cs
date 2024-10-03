@@ -171,6 +171,24 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
+    /// Returns Visibility.Visible if the collection is empty, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class NullOrEmptyListToVisibilityVisibleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Visible;
+
+            return collection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Returns Visible if the collection is not empty, otherwise returns Collapsed
     /// </summary>
     public class InverseEmptyListToVisibilityConverter : IValueConverter
