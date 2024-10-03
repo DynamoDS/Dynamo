@@ -7,6 +7,8 @@
     <!--Use the property DotNet to set TargetFramework from commandline without forcing it on all projects-->
     <!--Ex. DynamoServices uses TargetFramework netstandard2.0 -->
     <DotNet>net8.0</DotNet>
+      <!--Use LibGVer to tell the CI/CD pipeline what the prefered LIBG version is for testing-->
+    <LIBGVer>libg_231_0_0</LIBGVer>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
     <TargetFramework>$(DotNet)</TargetFramework>
     <FileAlignment>512</FileAlignment>
