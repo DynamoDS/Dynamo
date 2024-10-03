@@ -16,6 +16,8 @@
   <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
+    <!--At this time the nuget package ForgeUnits.NET.Linux is manually built and pushed to dynamo-team-nuget -->
+    <!-- TODO: integrate the linux changes in the ForgeUnits repo and use a single package reference -->
     <PackageReference Condition="$(Platform.Contains('Linux'))" Include="ForgeUnits.NET.Linux" Version="5.3.2" />
     <PackageReference Condition=" $(RuntimeIdentifier.Contains('win')) " Include="ForgeUnits.NET" Version="5.0.5" GeneratePathProperty="true">
         <!--Skip copying the runtime dlls because we only need one (ForgeUnitsManaged.dll) which we copy in a task bellow.-->
