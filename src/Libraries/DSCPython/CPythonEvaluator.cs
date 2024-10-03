@@ -556,7 +556,9 @@ sys.stdout = DynamoStdOut({0})
                                 }
                             }
                             // Special case for big long values: decode them as BigInteger
-                            if (PyInt.IsIntType(pyObj))
+
+                            var unmarshalled = pyObj.AsManagedObject(typeof(object));
+                            if (unmarshalled is PyInt)
                             {
                                 using (var pyLong = PyInt.AsInt(pyObj))
                                 {
@@ -570,8 +572,8 @@ sys.stdout = DynamoStdOut({0})
                                     }
                                 }
                             }
+
                             // Default handling for other Python objects
-                            var unmarshalled = pyObj.AsManagedObject(typeof(object));
                             if (unmarshalled is PyObject)
                             {
                                 using (unmarshalled as PyObject)
