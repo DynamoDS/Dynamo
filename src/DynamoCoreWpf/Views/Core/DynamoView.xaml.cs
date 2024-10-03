@@ -915,6 +915,11 @@ namespace Dynamo.Controls
 
         private void OnRequestPaste()
         {
+            // When focus is at webview2 component Keyboard.FocusedElement returns null so we interrupt the execution
+            // with an early return
+            var FocuseElement = Keyboard.FocusedElement;
+            if (FocuseElement == null) return;
+
             var clipBoard = dynamoViewModel.Model.ClipBoard;
 
             var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
