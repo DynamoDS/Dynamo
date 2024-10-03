@@ -5,9 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using CoreNodeModels.Properties;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Greg.Responses;
 using Prism.Commands;
@@ -289,20 +287,6 @@ namespace Dynamo.PackageManager.ViewModels
         private void OnRequestDownload(bool downloadToCustomPath)
         {
             var version = this.SearchElementModel.Header.versions.First(x => x.version.Equals(SelectedVersion.Version));
-            var compatible = SelectedVersion.IsCompatible;
-
-            if (compatible == null || compatible == false)
-            {
-                var msg = Resources.PackageManagerIncompatibleVersionDownloadMsg;
-                var result = MessageBoxService.Show(msg,
-                    Resources.PackageManagerIncompatibleVersionDownloadTitle,
-                    MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-
-                if (result != MessageBoxResult.OK)
-                {
-                    return;
-                }
-            }
 
             string downloadPath = String.Empty;
 

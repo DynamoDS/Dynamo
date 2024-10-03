@@ -4048,4 +4048,10 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PackageDetailsIncompatibileVersionTooltip" xml:space="preserve">
     <value>This version may be incompatible with your current setup</value>
   </data>
+  <data name="PackageManagerIncompatibleVersionDownloadMsg" xml:space="preserve">
+    <value>This version is incompatible with your current setup (Dynamo and host version, if applicable). It may not work properly. Do you want to install it anyway?</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadTitle" xml:space="preserve">
+    <value>Incompatible version</value>
+  </data>
 </root>
