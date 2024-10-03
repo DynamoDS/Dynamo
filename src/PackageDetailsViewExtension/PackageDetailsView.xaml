@@ -421,7 +421,7 @@
                                       BorderThickness="4,0,0,0"
                                       FontFamily="{StaticResource ArtifaktElementRegular}"
                                       FontSize="12"
-                                      IsExpanded="False"
+                                      IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                                       PreviewMouseWheel="VersionsDataGrid_OnPreviewMouseWheel"
                                       Template="{StaticResource VersionExpanderTemplate}">
 

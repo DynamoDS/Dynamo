@@ -277,6 +277,7 @@ namespace Dynamo.PackageDetails
                     DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name),
                     IsEnabledForInstall && !IsPackageDeprecated
                 )).ToList();
+            PackageDetailItems.FirstOrDefault(x => x.PackageVersionNumber.Equals(packageManagerSearchElement.SelectedVersion.Version)).IsExpanded = true;
 
             PackageName = packageManagerSearchElement.Name;
             PackageAuthorName = packageManagerSearchElement.Maintainers;

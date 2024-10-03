@@ -204,6 +204,11 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// The currently selected version - need to pass onto the PackageDetailView
+        /// </summary>
+        public VersionInformation SelectedVersion { get; internal set; }
+
         #endregion
 
         /// <summary>

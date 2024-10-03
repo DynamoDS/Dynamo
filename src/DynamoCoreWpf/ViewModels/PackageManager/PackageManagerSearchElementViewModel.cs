@@ -84,6 +84,9 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Keeps track of the currently selected package version in the UI
+        /// </summary>
         public VersionInformation SelectedVersion   
         {
             get { return selectedVersion; }
@@ -95,6 +98,7 @@ namespace Dynamo.PackageManager.ViewModels
 
                     // Update the compatibility info so the icon of the currently selected version is updated
                     IsSelectedVersionCompatible = selectedVersion.IsCompatible;
+                    SearchElementModel.SelectedVersion = selectedVersion;
                 }
             }
         }

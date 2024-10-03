@@ -37,6 +37,7 @@ namespace Dynamo.PackageDetails
         private List<FlattenedCompatibility> versionInformation;
         private bool? isCompatible;
         private string releaseNotes;
+        private bool isExpanded;
 
         private PackageLoader PackageLoader { get; }
 
@@ -239,6 +240,19 @@ namespace Dynamo.PackageDetails
             {
                 releaseNotes = value;
                 RaisePropertyChanged(nameof(ReleaseNotes));
+            }
+        }
+
+        /// <summary>
+        /// Controls the package detail item expanded state
+        /// </summary>
+        public bool IsExpanded
+        {
+            get => isExpanded;
+            set
+            {
+                isExpanded = value;
+                RaisePropertyChanged(nameof(IsExpanded));
             }
         }
 

@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Navigation;
 
@@ -47,7 +46,10 @@ namespace Dynamo.PackageDetails
         /// <param name="e"></param>
         private void FrameworkElement_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            MainScrollViewer.ScrollToTop();
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                MainScrollViewer.ScrollToTop();
+            }), System.Windows.Threading.DispatcherPriority.Loaded);
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
