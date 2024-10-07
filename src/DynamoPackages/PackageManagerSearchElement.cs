@@ -209,6 +209,22 @@ namespace Dynamo.PackageManager
         /// </summary>
         public VersionInformation SelectedVersion { get; internal set; }
 
+        // Compatibility mapping for host and versions (to be replaced - fetch from the '/host_map' route)
+        private static Dictionary<string, Dictionary<string, string>> compatibilityMap = new Dictionary<string, Dictionary<string, string>> {
+            { "Revit", new Dictionary<string, string> {
+                {"2016", "1.3.2"}, {"2017", "2.0.2"}, {"2018", "2.0.2"}, {"2019", "2.0.2"},
+                {"2020", "2.1.0"}, {"2020.1", "2.2.1"}, {"2020.2", "2.3.0"}, {"2021", "2.5.2"},
+                {"2021.1", "2.6.1"}, {"2022", "2.10.1"}, {"2022.1", "2.12.0"}, {"2023", "2.13.1"},
+                {"2023.1", "2.16.1"}, {"2023.1.3", "2.16.2"}, {"2024", "2.17.0"}, {"2024.1", "2.18.1"},
+                {"2024.2", "2.19.3"}, {"2025", "3.0.3"}, {"2025.1", "3.0.3"}, {"2025.2", "3.2.1"}
+            }},
+            { "Civil3D", new Dictionary<string, string> {
+                {"2020", "2.1.1"}, {"2020.1", "2.2.0"}, {"2020.2", "2.4.1"}, {"2021", "2.5.2"},
+                {"2022", "2.10.1"}, {"2023", "2.13.1"}, {"2024", "2.17.1"}, {"2024.1", "2.18.1"},
+                {"2024.2", "2.18.1"}, {"2024.3", "2.19"}, {"2025", "3.0.3"}, {"2025.1", "3.2.2"}
+            }}
+        };
+
         #endregion
 
         /// <summary>
@@ -320,34 +336,45 @@ namespace Dynamo.PackageManager
 
             // Step 1: Check Dynamo version compatibility
             var dynamoCompatibility = compatibilityMatrix.FirstOrDefault(c => c.name == "Dynamo");
+
+            // If no Dynamo compatibility is found, check if host compatibility exists and use the compatibility map
+            if (dynamoCompatibility == null)
+            {
+                dynamoCompatibility = GetDynamoCompatibilityFromHost(compatibilityMatrix);
+
+                // If dynamoVersion is still null, return null (indeterminate)
+                if (dynamoCompatibility == null)
+                {
+                    return null; // No way to determine compatibility
+                }
+            }
+
+            // Now, with a dynamoVersion, check the Dynamo compatibility
             if (dynamoCompatibility != null)
             {
-                bool isListedInVersions = false;
-                bool isWithinMinMax = false;
-
                 // Check if the Dynamo version is explicitly listed in 'versions'
-                if (dynamoCompatibility.versions != null && dynamoCompatibility.versions.Contains(dynamoVersion.ToString()))
-                {
-                    isListedInVersions = true;
-                }
+                bool isListedInVersions = dynamoCompatibility.versions != null && dynamoCompatibility.versions.Contains(dynamoVersion.ToString());
 
                 // Check if the Dynamo version falls within the min/max range
-                if ((dynamoCompatibility.min == null || dynamoVersion >= Version.Parse(dynamoCompatibility.min)) &&
-                    (dynamoCompatibility.max == null || dynamoVersion <= Version.Parse(dynamoCompatibility.max)))
+                bool isWithinMinMax = true;
+
+                // Check if both min and max are null; if so, it's not valid
+                if (dynamoCompatibility.min == null && dynamoCompatibility.max == null)
                 {
-                    isWithinMinMax = true;
+                    isWithinMinMax = false;  // No version bounds means no compatibility
+                }
+                else
+                {
+                    // Check within min and max range
+                    isWithinMinMax = (dynamoCompatibility.min == null || dynamoVersion >= Version.Parse(dynamoCompatibility.min)) &&
+                                     (dynamoCompatibility.max == null || dynamoVersion <= Version.Parse(dynamoCompatibility.max));
                 }
 
-                // If the version is neither listed nor within the min/max range, it's incompatible
+                // If neither listed nor within min/max, return false (incompatible)
                 if (!isListedInVersions && !isWithinMinMax)
                 {
                     return false;
                 }
-            }
-            else
-            {
-                // No Dynamo compatibility information
-                return null;
             }
 
             // Step 2: Check Host version compatibility (if available)
@@ -366,8 +393,8 @@ namespace Dynamo.PackageManager
                     }
 
                     // Check if the host version falls within the min/max range
-                    if ((hostCompatibility.min == null || hostVersion >= Version.Parse(hostCompatibility.min)) &&
-                        (hostCompatibility.max == null || hostVersion <= Version.Parse(hostCompatibility.max)))
+                    if ((hostCompatibility.min == null || hostVersion >= Version.Parse(NormalizeVersionString(hostCompatibility.min))) &&
+                        (hostCompatibility.max == null || hostVersion <= Version.Parse(NormalizeVersionString(hostCompatibility.max))))
                     {
                         isHostWithinMinMax = true;
                     }
@@ -382,6 +409,69 @@ namespace Dynamo.PackageManager
 
             // If we passed all the checks, the version is compatible
             return true;
+        }
+
+        // Method to find Dynamo compatibility based on other hosts in the compatibilityMatrix
+        internal static Greg.Responses.Compatibility GetDynamoCompatibilityFromHost(List<Greg.Responses.Compatibility> compatibilityMatrix)
+        {
+            foreach (var hostCompatibility in compatibilityMatrix)
+            {
+                // Skip if it's explicitly Dynamo, we're looking for hosts other than Dynamo
+                if (hostCompatibility.name == "Dynamo")
+                    continue;
+
+                // Check if the static compatibility map contains the host
+                if (compatibilityMap.ContainsKey(hostCompatibility.name))
+                {
+                    var matchingHost = compatibilityMap[hostCompatibility.name];
+
+                    string matchingMin = null;
+                    string matchingMax = null;
+
+                    // Only try to get min/max if they are not null
+                    if (hostCompatibility.min != null)
+                    {
+                        matchingHost.TryGetValue(hostCompatibility.min.ToString(), out matchingMin);
+                    }
+
+                    if (hostCompatibility.max != null)
+                    {
+                        matchingHost.TryGetValue(hostCompatibility.max.ToString(), out matchingMax);
+                    }
+
+                    var dynamoVersions = new List<string>();
+
+                    // If specific versions are provided, map them directly to their corresponding Dynamo versions
+                    if (hostCompatibility.versions != null && hostCompatibility.versions.Any())
+                    {
+                        foreach (var hostVersion in hostCompatibility.versions)
+                        {
+                            if (matchingHost.TryGetValue(hostVersion, out var dynamoVersion))
+                            {
+                                dynamoVersions.Add(dynamoVersion);
+                            }
+                        }
+                    }
+
+                    // Return a new compatibility entry for Dynamo with the corresponding min, max, and specific versions (if any)
+                    return new Greg.Responses.Compatibility
+                    {
+                        name = "Dynamo",
+                        min = matchingMin,
+                        max = matchingMax,
+                        versions = dynamoVersions.Any() ? dynamoVersions : null
+                    };
+                }
+            }
+
+            // Return null if no matching host or Dynamo versions were found
+            return null;
+        }
+
+        // Normalize the version strings before parsing to ensure they are valid for Version.Parse()
+        private static string NormalizeVersionString(string version)
+        {
+            return version.Contains('.') ? version : version + ".0";
         }
 
 

@@ -392,7 +392,7 @@ namespace DynamoCoreWpfTests
 
         /// <summary>
         /// Tests whether the extension opens and display package details when a user
-        /// clicks on the 'View Details' button in the package manager searh view.
+        /// clicks on the 'View Details' button in the package manager search view.
         /// </summary>
         [Test]
         public void TestViewPackageDetailsCommand()
@@ -510,6 +510,9 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(string.Empty, item.VersionInformation[1].Versions);
         }
 
+        /// <summary>
+        /// Asserts that the last version in a list of equally compatible versions is the latestCompatibilityVersion assigned in the vm
+        /// </summary>
         [Test]
         public void TestCorrectLatestCompatibleVersionIsFound()
         {
