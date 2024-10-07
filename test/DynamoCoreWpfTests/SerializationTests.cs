@@ -1201,6 +1201,7 @@ namespace DynamoCoreWpfTests
                         Background = annotation.Background.ToString(),
                         FontSize = annotation.FontSize,
                         Nodes = annotation.Nodes.Select(x => x.GUID.ToString()),
+                        Nodes = annotation.Nodes.Where(x => !(x is ConnectorPinModel)).Select(x => x.GUID.ToString()),
                         Title = annotation.AnnotationText,
                         Id = annotation.AnnotationModel.GUID.ToString(),
                         Left = annotation.Left,
