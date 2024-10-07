@@ -752,7 +752,7 @@ namespace Dynamo.ViewModels
             MessageBoxResult result;
 
             var compatible = PackageManagerSearchElement.CalculateCompatibility(package.compatibility_matrix); 
-            if (compatible == null || compatible == false)
+            if (compatible != true)
             {
                 msg = Resources.PackageManagerIncompatibleVersionDownloadMsg;
                 result = MessageBoxService.Show(ViewModelOwner, msg,
@@ -822,7 +822,7 @@ namespace Dynamo.ViewModels
 
                 // local package that conflicts with package itself.
                 Package duplicatePackage = null;
-
+                
                 // list of local packages that conflict (have different versions) with package dependencies.
                 // Does not contain the main package since it is handled separately by duplicatePackage
                 var localPkgsConflictingWithPkgDeps = new List<Package>();
