@@ -715,6 +715,10 @@ namespace Dynamo.ViewModels
             foreach (var query in queries)
             {
                 var nodeSearchElement = tempSearchViewModel.Model.Entries.FirstOrDefault(n => n.Name == query);
+                if(nodeSearchElement == null)
+                {
+                    continue;
+                }
                 var foundNode = tempSearchViewModel.MakeNodeSearchElementVM(nodeSearchElement);
                 if (foundNode != null)
                 {
