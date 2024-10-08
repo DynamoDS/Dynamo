@@ -879,7 +879,7 @@ namespace Dynamo.ViewModels
 
         private PackageInfo GetPythonEnginePackageDependenciesFromName(NodeModel node)
         {
-            var eng = ((PythonNode)node).EngineName;
+            var eng = ((PythonNodeBase)node).EngineName;
             if (Model.PythonEngineExtensionMap?.TryGetValue(eng, out var relatedExt) ?? false)
             {
                 if (relatedExt != null)

@@ -1174,7 +1174,7 @@ namespace Dynamo.Models
         /// <returns>List of available unique python engines</returns>
         private List<string> GetEngineList()
         {
-            return PythonServices.PythonEngineManager.Instance.AvailableEngines.GroupBy(x => x.Name).Select(g => g.FirstOrDefault().Name).ToList();
+            return PythonServices.PythonEngineManager.Instance.AvailableEngines.Select(e => e.Name).Distinct().ToList();
         }
 
         /// <summary>
