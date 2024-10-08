@@ -594,6 +594,12 @@ namespace Dynamo.Graph.Workspaces
         internal event Func<AssemblyName, PackageInfo> CollectingNodePackageDependencies;
 
         /// <summary>
+        /// Event that is fired when the workspace is collecting node package dependencies for a python node
+        /// that may be using an python engine provided by a dynamo package.
+        /// </summary>
+        internal event Func<NodeModel, PackageInfo> CollectingPythonEnginePackageDependencies;
+
+        /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
         /// This is used to construct a full workspace for instrumentation.
         /// </summary>
@@ -2173,6 +2179,11 @@ namespace Dynamo.Graph.Workspaces
                     {
                         throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
                             "Only PackageManagerExtension should subscribe to this event.");
+                    }
+                    //in case of python node, return python engine dependency
+                    if (node.IsPython && CollectingPythonEnginePackageDependencies != null)
+                    {
+                        return CollectingPythonEnginePackageDependencies(node);
                     }
                     var assemblyName = GetNameOfAssemblyReferencedByNode(node);
                     if (assemblyName != null)

@@ -766,7 +766,8 @@ namespace Dynamo.ViewModels
             {
                 SearchDefaultNodeAutocompleteCandidates();
             }
-            
+
+            model.CurrentWorkspace.CollectingPythonEnginePackageDependencies += GetPythonEnginePackageDependenciesFromName;
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
             workspaces.Add(homespaceViewModel);
             currentWorkspaceViewModel = homespaceViewModel;
@@ -874,6 +875,23 @@ namespace Dynamo.ViewModels
             {
                 CrashGracefully(e.ExceptionObject as Exception, fatal: true);
             }
+        }
+
+        private PackageInfo GetPythonEnginePackageDependenciesFromName(NodeModel node)
+        {
+            var eng = ((PythonNode)node).EngineName;
+            if (Model.PythonEngineExtensionMap?.TryGetValue(eng, out var relatedExt) ?? false)
+            {
+                if (relatedExt != null)
+                {
+                    if (Model.GetPackageManagerExtension()?.PackageLoader?.ExtensionPackageMap?.TryGetValue(relatedExt, out var pkg) ?? false)
+                    {
+                        return pkg;
+                    }
+                }
+            }
+            
+            return null;
         }
 
         // CrashGracefully should only be used in the DynamoViewModel class or within tests.
@@ -1065,6 +1083,7 @@ namespace Dynamo.ViewModels
 
             model.WorkspaceAdded -= WorkspaceAdded;
             model.WorkspaceRemoved -= WorkspaceRemoved;
+            model.CurrentWorkspace.CollectingPythonEnginePackageDependencies -= GetPythonEnginePackageDependenciesFromName;
             if (model.LinterManager != null)
             {
                 model.LinterManager.RuleEvaluationResults.CollectionChanged -= OnRuleEvaluationResultsCollectionChanged;
@@ -1757,17 +1776,21 @@ namespace Dynamo.ViewModels
                 }
                 workspaces.Add(newVm);
             }
+            item.CollectingPythonEnginePackageDependencies += GetPythonEnginePackageDependenciesFromName;
         }
 
         private void WorkspaceRemoved(WorkspaceModel item)
         {
             var viewModel = workspaces.First(x => x.Model == item);
             if (currentWorkspaceViewModel == viewModel)
-                if(currentWorkspaceViewModel != null)
+            {
+                if (currentWorkspaceViewModel != null)
                 {
                     currentWorkspaceViewModel.Dispose();
                 }
                 currentWorkspaceViewModel = null;
+            }
+            item.CollectingPythonEnginePackageDependencies -= GetPythonEnginePackageDependenciesFromName;
             workspaces.Remove(viewModel);
         }
 

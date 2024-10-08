@@ -81,6 +81,7 @@ namespace Dynamo.Graph.Nodes
         private ElementState state;
         private readonly ObservableHashSet<Info> infos = new ObservableHashSet<Info>();
         private string description;
+        private bool isPython = false;
 
 
         ///A flag indicating whether the node has been explicitly frozen.
@@ -360,6 +361,26 @@ namespace Dynamo.Graph.Nodes
                 {
                     isSetAsOutput = value;
                     RaisePropertyChanged(nameof(IsSetAsOutput));
+                }
+            }
+        }
+
+        /// <summary>
+        /// This property defines if the node is a PythonNode
+        /// </summary>
+        [JsonIgnore]
+        internal bool IsPython
+        {
+            get
+            {
+                return isPython;
+            }
+
+            set
+            {
+                if (isPython != value)
+                {
+                    isPython = value;
                 }
             }
         }

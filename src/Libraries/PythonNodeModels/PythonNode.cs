@@ -89,6 +89,7 @@ namespace PythonNodeModels
         {
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip)));
             ArgumentLacing = LacingStrategy.Disabled;
+            IsPython = true;
         }
 
         /// <summary>
@@ -99,6 +100,7 @@ namespace PythonNodeModels
         protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            IsPython = true;
         }
 
         protected override string GetInputName(int index)

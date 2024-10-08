@@ -618,7 +618,12 @@ namespace Dynamo.Models
         internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
         [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
         // Token representing the standard library directory
-        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";        
+        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
+
+        /// <summary>
+        /// A map to record python engines and the extensions which loaded them.
+        /// </summary>
+        internal Dictionary<string, IExtension> PythonEngineExtensionMap;
 
         /// <summary>
         /// Default constructor for DynamoModel
@@ -1141,13 +1146,35 @@ namespace Dynamo.Models
             {
                 try
                 {
+                    //check if the extension added a python engine
+                    var pyEngCount = GetEngineList().Count;
                     ext.Ready(readyParams);
+                    var availableEngines = GetEngineList();
+                    if (availableEngines.Count > pyEngCount)
+                    {
+                        //this extension added a python engine, assuming it only added 1 engine
+                        if (PythonEngineExtensionMap == null)
+                        {
+                            PythonEngineExtensionMap = new Dictionary<string, IExtension>();
+                        }
+                        var newEng = availableEngines.Last();
+                        PythonEngineExtensionMap.TryAdd(newEng, ext);
+                    }
                 }
                 catch (Exception ex)
                 {
                     Logger.Log(String.Format(Properties.Resources.FailedToHandleReadyEvent, ext.Name, " ", ex.Message));
                 }
             }
+        }
+
+        /// <summary>
+        /// Get the list of currently available engines, duplicated engines will be grouped by Name so as the list will have unique engine names.
+        /// </summary>
+        /// <returns>List of available unique python engines</returns>
+        private List<string> GetEngineList()
+        {
+            return PythonServices.PythonEngineManager.Instance.AvailableEngines.GroupBy(x => x.Name).Select(g => g.FirstOrDefault().Name).ToList();
         }
 
         /// <summary>

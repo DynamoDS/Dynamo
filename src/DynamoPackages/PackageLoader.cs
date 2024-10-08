@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -32,9 +33,10 @@ namespace Dynamo.PackageManager
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Action<IEnumerable<Assembly>> PackagesLoaded;
-        internal event Func<string, Graph.Workspaces.PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        internal event Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
+        internal event Action<IExtension, PythonServices.PythonEngine> PythonEngineLoadedFromExtension;
 
         /// <summary>
         /// This event is raised when a package is first added to the list of packages this package loader is loading.
@@ -92,6 +94,11 @@ namespace Dynamo.PackageManager
         }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
+
+        /// <summary>
+        /// A map to record Extensions and packages which loaded them.
+        /// </summary>
+        internal Dictionary<IExtension, PackageInfo> ExtensionPackageMap;
 
         private readonly IPathManager pathManager;
 
@@ -263,6 +270,7 @@ namespace Dynamo.PackageManager
                         RequestAddExtension?.Invoke(extension);
                     }
                     requestedExtensions.Add(extension);
+                    AddToExtensionPackageMap(packageInfo, extension);
                 }
 
                 package.SetAsLoaded();
@@ -305,6 +313,15 @@ namespace Dynamo.PackageManager
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
+        }
+
+        private void AddToExtensionPackageMap(PackageInfo pkg, IExtension ext)
+        {
+            if (ExtensionPackageMap == null)
+            {
+                this.ExtensionPackageMap = new Dictionary<IExtension, PackageInfo>();
+            }
+            ExtensionPackageMap.TryAdd(ext, pkg);
         }
 
         /// <summary>
