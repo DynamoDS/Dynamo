@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Extensions;
@@ -145,6 +146,7 @@ namespace Dynamo.PackageManager
             PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
+            PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEngineAdded;
                 
             var dirBuilder = new PackageDirectoryBuilder(
                 new MutatingFileSystem(),
@@ -161,6 +163,40 @@ namespace Dynamo.PackageManager
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
             noNetworkMode = startupParams.NoNetworkMode;
+        }
+
+        /// <summary>
+        /// When a new engine is added from a package, add its dependency to the respective package in the dictionary.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void PythonEngineAdded(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var assem = e.NewItems[0].GetType().Assembly;
+                var assemLoc = assem.Location;
+                foreach (var pkg in PackageLoader.LocalPackages)
+                {
+                    if (assemLoc.StartsWith(pkg.RootDirectory))
+                    {
+                        if (NodePackageDictionary.ContainsKey(assem.FullName))
+                        {
+                            var assemName = AssemblyName.GetAssemblyName(assem.Location);
+                            OnMessageLogged(LogMessage.Info(
+                                string.Format("{0} contains the python engine library {1}, which has already been loaded " +
+                                "by another package. This may cause inconsistent results when determining which " +
+                                "python engine the nodes are dependent on.", pkg.Name, assemName.Name)
+                                ));
+                        }
+                        else
+                        {
+                            NodePackageDictionary[assem.FullName] = new List<PackageInfo>();
+                        }
+                        NodePackageDictionary[assem.FullName].Add(new PackageInfo(pkg.Name, new Version(pkg.VersionName)));
+                    }
+                }
+            }
         }
 
         private PackageInfo handleCustomNodeOwnerQuery(Guid customNodeFunctionID)

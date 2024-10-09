@@ -2174,7 +2174,7 @@ namespace Dynamo.Graph.Workspaces
                         throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
                             "Only PackageManagerExtension should subscribe to this event.");
                     }
-                    var assemblyName = GetNameOfAssemblyReferencedByNode(node);
+                    var assemblyName = node.GetNameOfAssemblyReferencedByNode();
                     if (assemblyName != null)
                     {
                         return CollectingNodePackageDependencies(assemblyName);
