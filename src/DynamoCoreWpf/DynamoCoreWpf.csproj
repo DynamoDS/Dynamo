@@ -1857,11 +1857,9 @@
   </ItemGroup>
  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
-      <ExternTuneUpDll Include="$(SolutionDir)..\extern\TuneUp\**\*.*" />
-      <ExternTuneUpManifest Include="$(SolutionDir)..\extern\TuneUp\extra\TuneUp_ViewExtensionDefinition.xml" />
+      <ExternTuneUpPkg Include="$(SolutionDir)..\extern\TuneUp\**\*.*" />
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
-    <Copy SourceFiles="@(ExternTuneUpDll)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\extra" />
-    <Copy SourceFiles="@(ExternTuneUpManifest)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\extra" />
+    <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
   </Target>
 </Project>
