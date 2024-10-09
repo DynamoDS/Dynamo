@@ -284,6 +284,9 @@ namespace Dynamo.ViewModels
         {
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
             Analytics.TrackEvent(Actions.RemovedFrom, Categories.NodeContextMenuOperations, "ConnectorPin");
+
+            // Update the command's state after the pin is removed from the group
+            RemovePinFromGroupCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
