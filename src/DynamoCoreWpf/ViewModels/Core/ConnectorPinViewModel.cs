@@ -3,6 +3,7 @@ using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Logging;
+using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
@@ -317,12 +318,20 @@ namespace Dynamo.ViewModels
             InitializeCommands();
             model.PropertyChanged += OnPinPropertyChanged;
             ZIndex = ++StaticZIndex; // places the pin on top of all nodes/notes
+
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
         }
 
         public override void Dispose()
         {
             model.PropertyChanged -= OnPinPropertyChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
+        }
+
+        private void SelectionOnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            RemovePinFromGroupCommand.RaiseCanExecuteChanged();
         }
 
         //respond to changes on the model's properties
