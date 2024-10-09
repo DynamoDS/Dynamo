@@ -1855,7 +1855,13 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
-  <Target Name="AfterBuildOps" AfterTargets="Build">
+ <Target Name="AfterBuildOps" AfterTargets="Build">
+    <ItemGroup>
+      <ExternTuneUpDll Include="$(SolutionDir)..\extern\TuneUp\TuneUp.dll" />
+      <ExternTuneUpManifest Include="$(SolutionDir)..\extern\TuneUp\TuneUp_ViewExtensionDefinition.xml" />
+    </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
+    <Copy SourceFiles="@(ExternTuneUpDll)" DestinationFolder="$(OutputPath)\Built-In Packages" />
+    <Copy SourceFiles="@(ExternTuneUpManifest)" DestinationFolder="$(OutputPath)\viewExtensions" />
   </Target>
 </Project>
