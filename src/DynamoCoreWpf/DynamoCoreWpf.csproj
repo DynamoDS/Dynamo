@@ -189,10 +189,10 @@
       <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.2734"/>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
-    <PackageReference Include="Greg" Version="3.0.2.6284" />
+    <PackageReference Include="Greg" Version="3.0.2.5756" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="112.0.0" />
+    <PackageReference Include="RestSharp" Version="108.0.1" />
     <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
@@ -1861,7 +1861,7 @@
       <ExternTuneUpManifest Include="$(SolutionDir)..\extern\TuneUp\TuneUp_ViewExtensionDefinition.xml" />
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
-    <Copy SourceFiles="@(ExternTuneUpDll)" DestinationFolder="$(OutputPath)\Built-In Packages" />
+    <Copy SourceFiles="@(ExternTuneUpDll)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\bin" />
     <Copy SourceFiles="@(ExternTuneUpManifest)" DestinationFolder="$(OutputPath)\viewExtensions" />
   </Target>
 </Project>

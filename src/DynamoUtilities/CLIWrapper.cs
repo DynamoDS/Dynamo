@@ -13,8 +13,8 @@ namespace Dynamo.Utilities
     /// </summary>
     internal abstract class CLIWrapper : IDisposable
     {
-        protected const string endOfDataToken = @"<<<<<Eod>>>>>";
-        protected const string startofDataToken = @"<<<<<Sod>>>>>";
+        protected const string endOfDataToken = @"<<<<<EoD>>>>>";
+        protected const string startofDataToken = @"<<<<<SoD>>>>>";
         protected readonly Process process = new Process();
         protected bool started;
         internal event Action<string> MessageLogged;
