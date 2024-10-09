@@ -558,7 +558,7 @@ namespace DynamoCoreWpfTests
             var latestCompatibleVersion = packageManagerSearchElement.LatestCompatibleVersion;
 
             // Assert
-            Assert.AreEqual(PackageVersions[2].version, latestCompatibleVersion);
+            Assert.AreEqual(PackageVersions[2].version, latestCompatibleVersion.Version);
         }
     }
 }

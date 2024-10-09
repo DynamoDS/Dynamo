@@ -281,6 +281,7 @@ namespace Dynamo.PackageManager
         private List<VersionInformation> TransformVersionsToVersionInformation(Greg.Responses.PackageHeader header)
         {
             var versionInformation = new List<VersionInformation>();
+            if (header.versions == null) return versionInformation;
 
             // Iterate through each version entry in the header
             foreach (var versionEntry in header.versions)
