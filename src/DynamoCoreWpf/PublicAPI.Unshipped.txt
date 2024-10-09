@@ -4861,6 +4861,7 @@ static Dynamo.Wpf.Properties.Resources.MessageFailedToDelete.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToDownloadPackage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToDownloadPackageVersion.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToFindNodeById.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageFailedToFindGroupById.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToOpenCorruptedFile.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToSaveAsImage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToUnload.get -> string

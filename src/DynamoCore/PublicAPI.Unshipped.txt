@@ -2256,7 +2256,7 @@ Dynamo.Selection.ISelectable.IsSelected.set -> void
 Dynamo.Selection.ISelectable.Select() -> void
 Dynamo.Updates.BinaryVersion
 Dynamo.Utilities.LuceneCustomAnalyzer
-Dynamo.Utilities.LuceneCustomAnalyzer.LuceneCustomAnalyzer(Lucene.Net.Util.LuceneVersion matchVersion) -> void
+Dynamo.Utilities.LuceneCustomAnalyzer.LuceneCustomAnalyzer(Lucene.Net.Util.LuceneVersion matchVersion, string language) -> void
 Dynamo.Visualization.DefaultRenderPackage
 Dynamo.Visualization.DefaultRenderPackage.AddLineStripVertex(double x, double y, double z) -> void
 Dynamo.Visualization.DefaultRenderPackage.AddLineStripVertexColor(byte red, byte green, byte blue, byte alpha) -> void

@@ -1324,6 +1324,9 @@ You can always redownload the package.</value>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>
   </data>
+    <data name="MessageFailedToFindGroupById" xml:space="preserve">
+    <value>No group could be found with that Id.</value>
+  </data>
   <data name="MessageFailedToOpenCorruptedFile" xml:space="preserve">
     <value>Error opening corrupted file: {0}</value>
     <comment>Message box content</comment>

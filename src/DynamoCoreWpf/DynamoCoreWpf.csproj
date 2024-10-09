@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UILib>true</UILib>
   </PropertyGroup>
@@ -59,7 +59,7 @@
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>1.0.19</PackageVersion>
+            <PackageVersion>1.0.20</PackageVersion>
             <PackageName>DynamoHome</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
@@ -186,13 +186,13 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.5365" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.2734"/>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
-    <PackageReference Include="Greg" Version="3.0.2.5756" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
+    <PackageReference Include="Greg" Version="3.0.2.6284" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="108.0.1" />
+    <PackageReference Include="RestSharp" Version="112.0.0" />
     <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
@@ -1855,7 +1855,13 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
-  <Target Name="AfterBuildOps" AfterTargets="Build">
+ <Target Name="AfterBuildOps" AfterTargets="Build">
+    <ItemGroup>
+      <ExternTuneUpDll Include="$(SolutionDir)..\extern\TuneUp\TuneUp.dll" />
+      <ExternTuneUpManifest Include="$(SolutionDir)..\extern\TuneUp\TuneUp_ViewExtensionDefinition.xml" />
+    </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
+    <Copy SourceFiles="@(ExternTuneUpDll)" DestinationFolder="$(OutputPath)\Built-In Packages" />
+    <Copy SourceFiles="@(ExternTuneUpManifest)" DestinationFolder="$(OutputPath)\viewExtensions" />
   </Target>
 </Project>

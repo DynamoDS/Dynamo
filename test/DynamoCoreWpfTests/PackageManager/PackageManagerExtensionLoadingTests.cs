@@ -71,6 +71,7 @@ namespace DynamoCoreWpfTests.PackageManager
                         "Properties",
                         "Python Migration",
                         "Sample View Extension",
+                        "TuneUp",
                         "Workspace References",
                     }
                 )
