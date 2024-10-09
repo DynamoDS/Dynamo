@@ -2,6 +2,7 @@
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
 using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
@@ -320,7 +321,9 @@ namespace Dynamo.ViewModels
             ZIndex = ++StaticZIndex; // places the pin on top of all nodes/notes
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-        }
+
+            AddPinToGroupIfConnectedNodesInSameGroup();
+        }        
 
         public override void Dispose()
         {
@@ -353,6 +356,40 @@ namespace Dynamo.ViewModels
                     OnRequestSelect(this, EventArgs.Empty);
                     RaisePropertyChanged(nameof(IsSelected));
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Adds the connector pin to a group if both connected nodes are part of the same group.
+        /// </summary>
+        private void AddPinToGroupIfConnectedNodesInSameGroup()
+        {
+            var workspace = WorkspaceViewModel.Model;
+            if (workspace == null)
+            {
+                return;
+            }
+
+            var groups = workspace.Annotations;
+            var connector = WorkspaceViewModel.Model.Connectors.FirstOrDefault(c => c.GUID == model.ConnectorId);
+            if (connector == null)
+            {
+                return;
+            }
+
+            // Get the start and end nodes of the connector associated with the pin
+            var startNode = connector.Start.Owner;
+            var endNode = connector.End.Owner;
+
+            foreach (var group in groups)
+            {
+                // Check if both nodes (start and end) are part of the same group
+                if (group.Nodes.Contains(startNode) && group.Nodes.Contains(endNode))
+                {
+                    // If both nodes are part of the same group, add the pin to that group
+                    group.AddToTargetAnnotationModel(model);
+                    break;
+                }
             }
         }
     }
