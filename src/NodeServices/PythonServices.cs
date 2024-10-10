@@ -64,6 +64,13 @@ namespace Dynamo.PythonServices
         }
 
         /// <summary>
+        /// Data marshaler for host data used during the execution of a Python node.
+        /// This can be implemented differently across various Python engines due to
+        /// factors such as differing PythonNet APIs or other specific requirements.
+        /// </summary>
+        public object HostDataMarshaler { get; set; }
+
+        /// <summary>
         /// Name of the Python engine
         /// </summary>
         public abstract string Name
