@@ -81,7 +81,7 @@ namespace DynamoFeatureFlags
             if (testMode)
             {
                 MessageLogged?.Invoke($"LD startup: testmode true, no LD connection. ");
-                MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ");
+                MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ms ");
                 AllFlags = LdValue.ObjectFrom(new Dictionary<string,LdValue> { { "TestFlag1",LdValue.Of(true) },
                     { "TestFlag2", LdValue.Of("I am a string") },
                     //in tests we want instancing on so we can test it.
@@ -94,7 +94,7 @@ namespace DynamoFeatureFlags
 
             Init(mobileKey);
             sw.Stop();
-            MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ");
+            MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ms");
             //gather all the user's flags and create a top level ldvalue object containing all of them.
             if (ldClient.Initialized)
             {
