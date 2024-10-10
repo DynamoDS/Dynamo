@@ -174,27 +174,36 @@ namespace Dynamo.PackageManager
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                var assem = e.NewItems[0].GetType().Assembly;
-                var assemLoc = assem.Location;
-                foreach (var pkg in PackageLoader.LocalPackages)
+                try
                 {
-                    if (assemLoc.StartsWith(pkg.RootDirectory))
+                    var assem = e.NewItems[0]?.GetType().Assembly;
+                    if (assem == null) return;
+
+                    var assemLoc = assem.Location;
+                    foreach (var pkg in PackageLoader.LocalPackages)
                     {
-                        if (NodePackageDictionary.ContainsKey(assem.FullName))
+                        if (assemLoc.StartsWith(pkg.RootDirectory))
                         {
-                            var assemName = AssemblyName.GetAssemblyName(assem.Location);
-                            OnMessageLogged(LogMessage.Info(
-                                string.Format("{0} contains the python engine library {1}, which has already been loaded " +
-                                "by another package. This may cause inconsistent results when determining which " +
-                                "python engine the nodes are dependent on.", pkg.Name, assemName.Name)
-                                ));
+                            if (NodePackageDictionary.ContainsKey(assem.FullName))
+                            {
+                                var assemName = AssemblyName.GetAssemblyName(assem.Location);
+                                OnMessageLogged(LogMessage.Info(
+                                    string.Format("{0} contains the python engine library {1}, which has already been loaded " +
+                                    "by another package. This may cause inconsistent results when determining which " +
+                                    "python engine the nodes are dependent on.", pkg.Name, assemName.Name)
+                                    ));
+                            }
+                            else
+                            {
+                                NodePackageDictionary[assem.FullName] = new List<PackageInfo>();
+                            }
+                            NodePackageDictionary[assem.FullName].Add(new PackageInfo(pkg.Name, new Version(pkg.VersionName)));
                         }
-                        else
-                        {
-                            NodePackageDictionary[assem.FullName] = new List<PackageInfo>();
-                        }
-                        NodePackageDictionary[assem.FullName].Add(new PackageInfo(pkg.Name, new Version(pkg.VersionName)));
                     }
+                }
+                catch(Exception ex)
+                {
+                    OnMessageLogged(LogMessage.Info("Error occurred while recording python engine and package mapping. " + ex.Message));
                 }
             }
         }
