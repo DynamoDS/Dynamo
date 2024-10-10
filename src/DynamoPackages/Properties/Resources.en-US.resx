@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -135,10 +135,6 @@
   <data name="InvalidPackageNodeLibraryIsNotSigned" xml:space="preserve">
     <value>"A package called {0} found at {1} could not be verified to have signed dll files.  {2}  Ignoring it."</value>
     <comment>This warning message is shown when the node libraries defined for the package in the pkg.json manifest are invalid or do not have a verified certificate file</comment>
-  </data>
-  <data name="InvalidPackageNoNodeLibrariesDefinedInPackageJson" xml:space="preserve">
-    <value>A package called {0} found at {1} includes dll files but none are defined in node libraries in the package manifest.  Ignoring it.</value>
-    <comment>This warning message is shown when packages are loaded and require verification of their certificate.  Having Dll's and no defined node libararies in the pkg json manifest stops the validation process</comment>
   </data>
   <data name="PackagesDirectorySkipped" xml:space="preserve">
     <value>{0} was not scanned for packages because a preference setting disabled loading from that location."</value>
