@@ -93,6 +93,14 @@ namespace Dynamo.PythonServices
         public abstract object Evaluate(string code,
                         IList bindingNames,
                         [ArbitraryDimensionArrayImport] IList bindingValues);
+
+        /// <summary>
+        /// Add additional data marshalers to handle host data.
+        /// While some data marshalers are specific to the host application,
+        /// they must be implemented at the Dynamo Core level in order to
+        /// avoid host dependencies on the Python runtime.
+        /// </summary>
+        public virtual void RegisterHostDataMarshalers(object dataMarshaler) { }
     }
 
     /// <summary>
