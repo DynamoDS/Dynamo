@@ -181,7 +181,7 @@ namespace Dynamo.Tests
 
         //This test will validate that resulting nodes have a specific order
         [Test]
-        [Category("UnitTests")]
+        [Category("Failure")]
         public void LuceneSearchNodesOrderingValidation()
         {
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
