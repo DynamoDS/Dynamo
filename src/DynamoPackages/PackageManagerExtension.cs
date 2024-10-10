@@ -216,6 +216,7 @@ namespace Dynamo.PackageManager
 
         public void Shutdown()
         {
+            PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEngineAdded;
             //this.Dispose();
         }
 
