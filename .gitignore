@@ -2,12 +2,15 @@
 ###################
 *.com
 *.class
-*.dll
+
 *.exe
 *.msi
 *.o
 *.so
-bin/
+AnyCPU/
+Debug/
+Release/
+originalBinaries/
 obj/
 int/
 packages/
@@ -96,6 +99,7 @@ src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
 /src/Libraries/PythonNodeModelsWpf/*.resources
 /src/Libraries/PythonNodeModels/*.resources
 /test/core/dsevaluation/DSFiles/test.ds
+/test/test_dependencies
 GregStandaloneAuth.dll
 /src/Libraries/Watch3DNodeModels/*.resources
 *.resources
