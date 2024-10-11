@@ -447,7 +447,7 @@
                                     <ComboBox x:Name="VersionComboBox"
                                               HorizontalAlignment="Left"
                                               ItemTemplate="{StaticResource VersionInfoTemplate}"
-                                              ItemsSource="{Binding Path=VersionInformation, UpdateSourceTrigger=PropertyChanged}"
+                                              ItemsSource="{Binding Path=ReversedVersionInformationList, UpdateSourceTrigger=PropertyChanged}"
                                               SelectedItem="{Binding Path=SelectedVersion, UpdateSourceTrigger=PropertyChanged}">
                                         <ComboBox.Style>
                                             <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">

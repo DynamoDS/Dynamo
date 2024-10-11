@@ -752,7 +752,7 @@ namespace Dynamo.ViewModels
             MessageBoxResult result;
 
             var compatible = PackageManagerSearchElement.CalculateCompatibility(package.compatibility_matrix); 
-            if (compatible != true && !DynamoModel.IsTestMode)
+            if (compatible == false && !DynamoModel.IsTestMode)
             {
                 msg = Resources.PackageManagerIncompatibleVersionDownloadMsg;
                 result = MessageBoxService.Show(ViewModelOwner, msg,

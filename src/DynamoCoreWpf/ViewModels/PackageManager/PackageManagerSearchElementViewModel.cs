@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -119,7 +120,7 @@ namespace Dynamo.PackageManager.ViewModels
             // Attempts to show the latest compatible version. If no compatible, will return the latest instead.
             //this.SelectedVersion = this.SearchElementModel.LatestVersion;
             this.SelectedVersion = this.SearchElementModel.LatestCompatibleVersion;
-            this.VersionInformation = this.SearchElementModel.VersionDetails;
+            this.VersionInformationList = this.SearchElementModel.VersionDetails;
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>
                 .AddHandler(this.SearchElementModel, nameof(INotifyPropertyChanged.PropertyChanged), OnSearchElementModelPropertyChanged);
 
@@ -147,7 +148,7 @@ namespace Dynamo.PackageManager.ViewModels
             }
             if (e.PropertyName == nameof(SearchElementModel.VersionDetails))
             {
-                this.VersionInformation = this.SearchElementModel.VersionDetails;
+                this.VersionInformationList = this.SearchElementModel.VersionDetails;
             }
         }
 
@@ -233,6 +234,9 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// A collection of key-value pairs to allow the download of specific package version
+        /// </summary>
         public List<Tuple<PackageVersion, DelegateCommand<object>>> Versions
         {
             get
@@ -245,21 +249,35 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
-        private List<VersionInformation> versionInformation;
+        private List<VersionInformation> versionInformationList;
 
-        public List<VersionInformation> VersionInformation
+        /// <summary>
+        /// A collection containing all package versions
+        /// </summary>
+        public List<VersionInformation> VersionInformationList
         {
-            get { return versionInformation; }
+            get { return versionInformationList; }
             set
             {
-                if (value != versionInformation)
+                if (value != versionInformationList)
                 {
-                    versionInformation = value;
-                    RaisePropertyChanged(nameof(VersionInformation));
+                    versionInformationList = value;
+                    RaisePropertyChanged(nameof(VersionInformationList));
                 }
             }
         }
 
+        /// <summary>
+        /// Display the reversed version list - newest to oldest
+        /// </summary>
+        public ICollectionView ReversedVersionInformationList
+        {
+            get
+            {
+                var reversedList = VersionInformationList?.AsEnumerable().Reverse().ToList();
+                return CollectionViewSource.GetDefaultView(reversedList);
+            }
+        }
 
         private List<String> CustomPackageFolders;
         private bool? isSelectedVersionCompatible;
