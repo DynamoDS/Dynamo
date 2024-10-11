@@ -794,7 +794,7 @@
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="Auto   " />
+                                                        <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
                                                     <ScrollViewer Grid.Column="0"
                                                                   Margin="0,0,150,0"
@@ -806,8 +806,8 @@
                                                             <Button Name="HomeButton"
                                                                     Width="42"
                                                                     Height="42"
-                                                                    Click="HomeButton_Click"
                                                                     BorderThickness="0"
+                                                                    Click="HomeButton_Click"
                                                                     Cursor="Hand">
                                                                 <Button.Template>
                                                                     <ControlTemplate TargetType="Button">
@@ -1055,6 +1055,7 @@
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="MaxWidth" Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" />
                             <Setter Property="MinWidth" Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" />
+                            <EventSetter Event="MouseLeftButtonUp" Handler="TabItem_MouseLeftButtonUp" />
                             <Setter Property="Width">
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource TabSizeConverter}">
@@ -1141,13 +1142,16 @@
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}, Path=IsSelected}" Value="False">
                                                             <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedFalse}" />
-                                                            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushWhite}" />
-                                                            <Setter Property="Margin" Value="0,0,0,-1" />
+                                                            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceTabBorderSelectedFalse}" />
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}, Path=IsSelected}" Value="True">
                                                             <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedTrue}" />
-                                                            <Setter Property="BorderBrush" Value="#ADE4DE" />
-                                                            <Setter Property="Margin" Value="0" />
+                                                            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceTabBorderSelectedTrue}" />
+                                                        </DataTrigger>
+                                                        <!--  Fake deselect when start page is shown  -->
+                                                        <DataTrigger Binding="{Binding DataContext.ShowStartPage, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}}" Value="True">
+                                                            <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedFalse}" />
+                                                            <Setter Property="BorderBrush" Value="{StaticResource WorkspaceTabBorderSelectedFalse}" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -1263,6 +1267,12 @@
                                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}, Path=IsSelected}" Value="False">
                                                     <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}" />
                                                 </DataTrigger>
+
+                                                <!--  Fake Deselect when StartPage is shown  -->
+                                                <DataTrigger Binding="{Binding DataContext.ShowStartPage, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}" />
+                                                </DataTrigger>
+
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:HomeWorkspaceModel}" />

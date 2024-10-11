@@ -145,7 +145,7 @@ namespace Dynamo.Controls
             _timer = new Stopwatch();
             _timer.Start();
 
-            InitializeComponent();
+            InitializeComponent();  
 
             Loaded += DynamoView_Loaded;
             Unloaded += DynamoView_Unloaded;
@@ -2454,6 +2454,7 @@ namespace Dynamo.Controls
 
         private void ToggleWorkspaceTabVisibility(int tabSelected)
         {
+            // Switch off the start page first
             SlideWindowToIncludeTab(tabSelected);
 
             for (int tabIndex = 1; tabIndex < WorkspaceTabs.Items.Count; tabIndex++)
@@ -3008,7 +3009,10 @@ namespace Dynamo.Controls
 
         private void HomeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.dynamoViewModel.ShowStartPage = true;
+            if (!this.dynamoViewModel.ShowStartPage)
+            {
+                this.dynamoViewModel.ShowStartPage = true;
+            }
         }
 
         /// <summary>
@@ -3065,6 +3069,12 @@ namespace Dynamo.Controls
         {
             if(fileTrustWarningPopup != null)
                 fileTrustWarningPopup.ManagePopupActivation(false);
+        }
+
+        private void TabItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (this.dynamoViewModel.ShowStartPage)
+                this.dynamoViewModel.ShowStartPage = false;
         }
 
         public void Dispose()
