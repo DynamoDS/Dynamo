@@ -360,7 +360,7 @@ namespace Dynamo.PackageManager
                 bool isWithinMinMax = true;
 
                 // Check if both min and max are null; if so, it's not valid
-                if (dynamoCompatibility.min == null && dynamoCompatibility.max == null)
+                if (string.IsNullOrEmpty(dynamoCompatibility.min) && string.IsNullOrEmpty(dynamoCompatibility.max))
                 {
                     isWithinMinMax = false;  // No version bounds means no compatibility
                 }
