@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -247,7 +248,7 @@ namespace Dynamo.PackageManager
 
                 // load custom nodes
                 var packageInfo = new Graph.Workspaces.PackageInfo(package.Name, new Version(package.VersionName));
-                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo);
+                var customNodes = File.Exists(package.CustomNodeDirectory)? OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo) : [];
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
