@@ -94,7 +94,7 @@ namespace DynamoFeatureFlags
 
             Init(mobileKey);
             sw.Stop();
-            MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ms");
+            MessageLogged?.Invoke($"Launch Darkly startup time: {sw.ElapsedMilliseconds} ms");
             //gather all the user's flags and create a top level ldvalue object containing all of them.
             if (ldClient.Initialized)
             {

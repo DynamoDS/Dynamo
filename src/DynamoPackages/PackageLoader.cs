@@ -248,6 +248,7 @@ namespace Dynamo.PackageManager
 
                 // load custom nodes
                 var packageInfo = new Graph.Workspaces.PackageInfo(package.Name, new Version(package.VersionName));
+                // skip loding if the CustomNodeDirectory does not exist
                 var customNodes = File.Exists(package.CustomNodeDirectory)? OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo) : [];
                 package.LoadedCustomNodes.AddRange(customNodes);
 
