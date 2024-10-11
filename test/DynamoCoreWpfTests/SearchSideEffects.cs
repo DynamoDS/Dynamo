@@ -181,7 +181,7 @@ namespace Dynamo.Tests
 
         //This test will validate that resulting nodes have a specific order
         [Test]
-        [Category("Failure")]
+        [Category("UnitTests")]
         public void LuceneSearchNodesOrderingValidation()
         {
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
@@ -219,7 +219,7 @@ namespace Dynamo.Tests
 
         //This test will validate that resulting nodes have a specific order when having T-Spline nodes in the nodes list.
         [Test]
-        [Category("UnitTests")]
+        [Category("Failure")]
         public void LuceneSearchTSplineNodesOrderingValidation()
         {
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
