@@ -3005,6 +3005,12 @@ namespace Dynamo.Controls
             ShowGetStartedGuidedTour();
         }
 
+
+        private void HomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.dynamoViewModel.ShowStartPage = true;
+        }
+
         /// <summary>
         /// This method probably will be modified or deleted in the future when the GuideManager and Guide class are created
         /// For now will be used just for testing/demo purposes since the popups will be created probably in the Guide class.
