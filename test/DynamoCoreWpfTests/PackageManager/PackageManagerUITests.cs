@@ -950,7 +950,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
             // This function is called upon addition of new package paths in the UI.
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(1, loader.LocalPackages.Count());
+            Assert.AreEqual(2, loader.LocalPackages.Count());
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
             dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
@@ -1010,7 +1010,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(1, loader.LocalPackages.Count());
+            Assert.AreEqual(2, loader.LocalPackages.Count());
             Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
@@ -1025,9 +1025,11 @@ namespace DynamoCoreWpfTests.PackageManager
 
             ViewModel.PreferencesViewModel.InitPackageListFilters();
             var filters = ViewModel.PreferencesViewModel.Filters;
-            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(3, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
-            Assert.AreEqual(@"Unloaded", filters[1].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+            Assert.AreEqual(@"Unloaded", filters[2].Name);
+
 
             builtInPkgViewModel.LoadCommand.Execute();
 
@@ -1061,7 +1063,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(0, loader.LocalPackages.Count());
+            Assert.AreEqual(1, loader.LocalPackages.Count());
             var vm = new PackagePathViewModel(loader, loadPackageParams, Model.CustomNodeManager);
 
             vm.RequestShowFileDialog += (sender, args) => { args.Path = BuiltinPackagesTestDir; };
