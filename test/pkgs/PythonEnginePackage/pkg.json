@@ -1,31 +1,22 @@
 {
     "license": "MIT",
     "file_hash": null,
-    "name": "DynamoIronPython2.7",
-    "version": "3.2.1",
-    "description": "*** This is the official version of the IronPython Extension which will load the IronPython2 evaluation engine for Dynamo. Due to Dynamo\u0027s framework update from .NET4.8 to .NET8.0, IronPython2 is NOT officially supported for Dynamo versions 3.0 and above *** \r\n\r\nIf you see the following warning \u0027The configured Python engine could not be found\u0027 when you try to run a Python Script node which is set to use IronPython2, the host application for Dynamo (Such as Revit or Civil 3d) will have chosen to exclude IronPython2 as default installed content and you will need to download this extension in order to enable IronPython2 again.\r\n\r\nYou have the ability to either download this IronPython2 Extension or use the alternative out-of-the-box CPython3 engine and migrate your legacy IronPython2 code to CPython3. While there are differences in language the Python basis is the same and we have provided a Migration Assistant to help you migrate your code to Python3.",
+    "name": "TestCP311",
+    "version": "1.0.8",
+    "description": "***This is a test package ***",
     "group": "",
-    "keywords": [
-        "python",
-        "ironpython"
-    ],
+    "keywords": [],
     "dependencies": [],
-    "host_dependencies": [
-        "Revit",
-        "Civil 3D",
-        "Alias",
-        "Advance Steel",
-        "FormIt"
-    ],
+    "host_dependencies": [],
     "contents": "",
-    "engine_version": "3.3.0.5104",
+    "engine_version": "3.3.0.6046",
     "engine": "dynamo",
     "engine_metadata": "",
     "site_url": "https://dynamobim.org/",
     "repository_url": "https://github.com/DynamoDS/Dynamo",
     "contains_binaries": true,
     "node_libraries": [
-        "DSIronPythonEmpty, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+        "DSPythonNet3Empty, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
     ],
     "copyright_holder": "DynamoTeam",
     "copyright_year": "2024"

@@ -126,7 +126,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(pyNode);
             Assert.AreEqual(pyNode.EngineName, PythonEngineManager.CPython3EngineName);
             Assert.AreEqual(PythonEngineManager.Instance.AvailableEngines.Count, 2);
-            UpdatePythonEngineAndRun(pyNode, PythonEngineManager.IronPython2EngineName);
+            UpdatePythonEngineAndRun(pyNode, "PythonNet3");
             currentws.ForceComputeWorkspaceReferences = true;
 
 
@@ -134,7 +134,7 @@ namespace Dynamo.Tests
             var packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             var package = packageDependencies.First();
-            Assert.AreEqual(new PackageDependencyInfo("DynamoIronPython2.7", new Version("3.2.1")), package);
+            Assert.AreEqual(new PackageDependencyInfo("TestCP311", new Version("1.0.8")), package);
             Assert.AreEqual(1, package.Nodes.Count);
 
             Assert.IsTrue(package.IsLoaded);
