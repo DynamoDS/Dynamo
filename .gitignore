@@ -11,6 +11,7 @@ AnyCPU/
 Debug/
 Release/
 originalBinaries/
+runtimeGeneratedExtension/
 obj/
 int/
 packages/
