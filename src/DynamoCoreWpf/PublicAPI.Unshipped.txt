@@ -1246,6 +1246,7 @@ Dynamo.PackageManager.UI.PackageManagerView.PackageManagerView(Dynamo.Controls.D
 Dynamo.PackageManager.UI.PackageManagerView.PackageManagerViewModel.get -> Dynamo.PackageManager.PackageManagerViewModel
 Dynamo.PackageManager.UI.PackageManagerView.PackageManagerViewModel.set -> void
 Dynamo.PackageManager.UI.PackageManagerWizardControl
+Dynamo.PackageManager.UI.PackageManagerWizardControl.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerWizardControl.PackageManagerWizardControl() -> void
 Dynamo.PackageManager.UI.PackageNameLengthValidationRule
 Dynamo.PackageManager.UI.PackageNameLengthValidationRule.PackageNameLengthValidationRule() -> void
@@ -1280,6 +1281,7 @@ Dynamo.PackageManager.UI.SortingConverter.Convert(object value, System.Type targ
 Dynamo.PackageManager.UI.SortingConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.PackageManager.UI.SortingConverter.SortingConverter() -> void
 Dynamo.PackageManager.UI.StepIndicatorControl
+Dynamo.PackageManager.UI.StepIndicatorControl.InitializeComponent() -> void
 Dynamo.PackageManager.UI.StepIndicatorControl.State.get -> Dynamo.PackageManager.UI.StepIndicatorControl.StepState
 Dynamo.PackageManager.UI.StepIndicatorControl.State.set -> void
 Dynamo.PackageManager.UI.StepIndicatorControl.StepIndicatorControl() -> void
