@@ -23,7 +23,7 @@
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <PropertyGroup>
-          <PackageVersion>1.0.19</PackageVersion>
+          <PackageVersion>1.0.20</PackageVersion>
           <PackageName>SplashScreen</PackageName>
       </PropertyGroup>
       <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
@@ -504,7 +504,9 @@
     <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerWizardControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\SearchBoxControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\StepIndicatorControl.xaml.cs" />
     <Compile Include="Views\PackageManager\PackageManagerView.xaml.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
@@ -724,6 +726,10 @@
         <SubType>Designer</SubType>
         <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PackageManager\Controls\StepIndicatorControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Menu\TrustedPathView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -747,6 +753,10 @@
     <Page Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml">
         <Generator>MSBuild:Compile</Generator>
         <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerWizardControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
@@ -1840,6 +1850,12 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Controls\PackageManagerWizardControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Controls\StepIndicatorControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
