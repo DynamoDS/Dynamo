@@ -1471,11 +1471,18 @@ namespace Dynamo.Models
             var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
+                //just bail in service mode.
+                if (IsServiceMode)
+                {
+                    return;
+                }
+
                 if (customNodeSearchRegistry.Contains(info.FunctionId)
                         || !info.IsVisibleInDynamoLibrary)
                     return;
 
-                var elements = SearchModel.Entries.OfType<CustomNodeSearchElement>().
+               
+                var elements = SearchModel?.Entries.OfType<CustomNodeSearchElement>().
                                 Where(x =>
                                 {
                                     // Search for common paths and get rid of empty paths.
@@ -1493,6 +1500,7 @@ namespace Dynamo.Models
                     }
                     return;
                 }
+                
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -1529,6 +1537,7 @@ namespace Dynamo.Models
                     }
                 };
             };
+
             CustomNodeManager.DefinitionUpdated += UpdateCustomNodeDefinition;
         }
 
@@ -2806,7 +2815,7 @@ namespace Dynamo.Models
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(pathManager.LogDirectory, fileName);
 
-            SearchModel.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
+            SearchModel?.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
 
             Logger.Log(string.Format(Resources.LibraryIsDumped, fullFileName));
         }

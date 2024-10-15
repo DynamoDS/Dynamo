@@ -390,7 +390,7 @@ namespace Dynamo.Utilities
                     foreach (string s in searchTerm.Split(' '))
                     {
                         //If is a ByEmptySpace search and the split words match with more than MaxNodeNamesRepeated nodes then the word is skipped (otherwise the results will be polluted with hundred of not related nodes)
-                        int nodesFrequency = dynamoModel.SearchModel.Entries.Where(entry => entry.Name.ToLower().Contains(s) && !string.IsNullOrEmpty(s)).Count();
+                        int? nodesFrequency = dynamoModel.SearchModel?.Entries.Where(entry => entry.Name.ToLower().Contains(s) && !string.IsNullOrEmpty(s)).Count();
                         if (nodesFrequency > MaxNodeNamesRepeated) continue;
 
                         if (string.IsNullOrEmpty(s)) continue;
