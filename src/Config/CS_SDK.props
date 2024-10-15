@@ -36,7 +36,7 @@
     <SelfContained>false</SelfContained>
   </PropertyGroup>
     <PropertyGroup>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
