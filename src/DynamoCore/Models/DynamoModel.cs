@@ -930,6 +930,7 @@ namespace Dynamo.Models
 
             if (extensions.Any())
             {
+                Logger.Log("\nLoading Dynamo extensions:");
                 var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
