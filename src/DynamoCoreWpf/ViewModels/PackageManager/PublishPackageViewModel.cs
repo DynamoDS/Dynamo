@@ -1519,7 +1519,16 @@ namespace Dynamo.PackageManager
                     out def))
                 {
                     defs.Add(def);
-                    defPreviews[x.Name] = x.Path;
+
+                    // Check if the dictionary already contains the key
+                    if (defPreviews.ContainsKey(x.Name))
+                    {
+                        defPreviews[$"{x.Category}.{x.Name}"] = x.Path;
+                    }
+                    else
+                    {
+                        defPreviews[x.Name] = x.Path;
+                    }
                 }
             }
 
