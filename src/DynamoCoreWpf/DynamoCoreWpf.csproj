@@ -504,9 +504,7 @@
     <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\PackageManagerWizardControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\SearchBoxControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\StepIndicatorControl.xaml.cs" />
     <Compile Include="Views\PackageManager\PackageManagerView.xaml.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
@@ -726,10 +724,6 @@
         <SubType>Designer</SubType>
         <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PackageManager\Controls\StepIndicatorControl.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Menu\TrustedPathView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -753,10 +747,6 @@
     <Page Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml">
         <Generator>MSBuild:Compile</Generator>
         <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\PackageManagerWizardControl.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
@@ -1852,12 +1842,6 @@
     <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="Views\PackageManager\Controls\PackageManagerWizardControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Controls\StepIndicatorControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
     <None Update="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -1873,11 +1857,9 @@
   </ItemGroup>
  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
-      <ExternTuneUpDll Include="$(SolutionDir)..\extern\TuneUp\TuneUp.dll" />
-      <ExternTuneUpManifest Include="$(SolutionDir)..\extern\TuneUp\TuneUp_ViewExtensionDefinition.xml" />
+      <ExternTuneUpPkg Include="$(SolutionDir)..\extern\TuneUp\**\*.*" />
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
-    <Copy SourceFiles="@(ExternTuneUpDll)" DestinationFolder="$(OutputPath)\Built-In Packages" />
-    <Copy SourceFiles="@(ExternTuneUpManifest)" DestinationFolder="$(OutputPath)\viewExtensions" />
+    <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
   </Target>
 </Project>
