@@ -38,17 +38,17 @@
     </Compile>
   </ItemGroup>
   <Target Name="CopyFiles" BeforeTargets="Build">
+    <ItemGroup>
+        <UnitSchemas Include="$(PkgForgeUnits_Schemas)\Content\unit\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(UnitSchemas)" DestinationFolder="$(OutDir)unit\%(RecursiveDir)" />
     <Copy SourceFiles="$(ProjectDir)DynamoUnits_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="$(PkgForgeUnits_NET)\lib\net6.0\ForgeUnitsManaged.dll" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="$(PkgForgeUnits_NET)\runtimes\win10-x64\native\Units.dll" DestinationFolder="$(OutputPath)" />
+    <Copy Condition="$(RuntimeIdentifier.Contains('win'))" SourceFiles="$(PkgForgeUnits_NET)\lib\net6.0\ForgeUnitsManaged.dll" DestinationFolder="$(OutputPath)" />
+    <Copy Condition="$(RuntimeIdentifier.Contains('win'))" SourceFiles="$(PkgForgeUnits_NET)\runtimes\win10-x64\native\Units.dll" DestinationFolder="$(OutputPath)" />
   </Target>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" $(RuntimeIdentifier.Contains('win')) ">
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoUnitsImages.resx" OutputResources="$(ProjectDir)DynamoUnitsImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" Version="%(AssemblyInfo.Version)" />
-    <ItemGroup>
-      <UnitSchemas Include="$(PkgForgeUnits_Schemas)\Content\unit\**\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(UnitSchemas)" DestinationFolder="$(OutDir)unit\%(RecursiveDir)" />
   </Target>
 </Project>

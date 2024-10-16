@@ -930,6 +930,7 @@ namespace Dynamo.Models
 
             if (extensions.Any())
             {
+                Logger.Log("\nLoading Dynamo extensions:");
                 var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
@@ -2732,8 +2733,12 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
+                                if (model is ConnectorPinModel pinModel)
+                                {
+                                    annotation.MarkPinAsRemoved(pinModel);
+                                }
                                 annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();
+                                annotation.UpdateBoundaryFromSelection();                               
                             }
                         }
                         else

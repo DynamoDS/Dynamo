@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UILib>true</UILib>
   </PropertyGroup>
@@ -23,7 +23,7 @@
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <PropertyGroup>
-          <PackageVersion>1.0.19</PackageVersion>
+          <PackageVersion>1.0.20</PackageVersion>
           <PackageName>SplashScreen</PackageName>
       </PropertyGroup>
       <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
@@ -186,7 +186,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.6246"/>
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.2734"/>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.6284" />
@@ -1855,7 +1855,11 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
-  <Target Name="AfterBuildOps" AfterTargets="Build">
+ <Target Name="AfterBuildOps" AfterTargets="Build">
+    <ItemGroup>
+      <ExternTuneUpPkg Include="$(SolutionDir)..\extern\TuneUp\**\*.*" />
+    </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
+    <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
   </Target>
 </Project>
