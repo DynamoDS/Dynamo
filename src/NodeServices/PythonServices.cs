@@ -68,7 +68,7 @@ namespace Dynamo.PythonServices
         /// This can be implemented differently across various Python engines due to
         /// factors such as differing PythonNet APIs or other specific requirements.
         /// </summary>
-        public object HostDataMarshaler { get; set; }
+        internal object HostDataMarshaler { get; set; }
 
         /// <summary>
         /// Name of the Python engine
@@ -107,7 +107,7 @@ namespace Dynamo.PythonServices
         /// they must be implemented at the Dynamo Core level in order to
         /// avoid host dependencies on the Python runtime.
         /// </summary>
-        public virtual void RegisterHostDataMarshalers(object dataMarshaler) { }
+        internal virtual void RegisterHostDataMarshalers() { }
     }
 
     /// <summary>

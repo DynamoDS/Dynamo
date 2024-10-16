@@ -451,12 +451,11 @@ sys.stdout = DynamoStdOut({0})
         /// Add additional data marshalers to handle host data.
         /// </summary>
         [SupressImportIntoVM]
-        public override void RegisterHostDataMarshalers(object dataMarshaler)
+        internal override void RegisterHostDataMarshalers()
         {
-            DataMarshaler dataMarshalerToUse = dataMarshaler as DataMarshaler;
+            DataMarshaler dataMarshalerToUse = HostDataMarshaler as DataMarshaler;
             dataMarshalerToUse?.RegisterMarshaler((PyObject pyObj) =>
             {
-                IntPtr gs = PythonEngine.AcquireLock();
                 try
                 {
                     using (Py.GIL())
@@ -484,10 +483,6 @@ sys.stdout = DynamoStdOut({0})
                 {
                     DynamoLogger?.Log($"error marshaling python object {pyObj.Handle} {e.Message}");                    
                     return pyObj;
-                }
-                finally
-                {
-                    PythonEngine.ReleaseLock(gs);
                 }
             });
         }
