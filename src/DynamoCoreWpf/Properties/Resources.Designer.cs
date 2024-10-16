@@ -4562,6 +4562,17 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file is currently in use by another application.
+        ///	
+        ///Please close the file before trying to overwrite it..
+        /// </summary>
+        public static string MessageFileInUseByApplication {
+            get {
+                return ResourceManager.GetString("MessageFileInUseByApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
         ///    
         ///Do you wish to continue installing it while keeping the packages that are already installed?
@@ -10035,6 +10046,15 @@ namespace Dynamo.Wpf.Properties {
         public static string TermsOfUseViewTitle {
             get {
                 return ResourceManager.GetString("TermsOfUseViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File in use.
+        /// </summary>
+        public static string TitleFileInUse {
+            get {
+                return ResourceManager.GetString("TitleFileInUse", resourceCulture);
             }
         }
         

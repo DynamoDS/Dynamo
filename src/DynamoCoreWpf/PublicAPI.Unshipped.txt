@@ -1762,17 +1762,22 @@ Dynamo.ViewModels.ConnectorPinViewModel.IsHoveredOver.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.IsSelected.get -> bool
 Dynamo.ViewModels.ConnectorPinViewModel.IsTemporarilyVisible.get -> bool
 Dynamo.ViewModels.ConnectorPinViewModel.IsTemporarilyVisible.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.IsInGroup.get -> bool
+Dynamo.ViewModels.ConnectorPinViewModel.IsInGroup.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.Left.get -> double
 Dynamo.ViewModels.ConnectorPinViewModel.Left.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.Model.get -> Dynamo.Graph.ConnectorPinModel
 Dynamo.ViewModels.ConnectorPinViewModel.Model.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.RequestRedraw -> System.EventHandler
 Dynamo.ViewModels.ConnectorPinViewModel.RequestRemove -> System.EventHandler
+Dynamo.ViewModels.ConnectorPinViewModel.RequestRemoveFromGroup -> System.EventHandler
 Dynamo.ViewModels.ConnectorPinViewModel.RequestSelect -> System.EventHandler
 Dynamo.ViewModels.ConnectorPinViewModel.Top.get -> double
 Dynamo.ViewModels.ConnectorPinViewModel.Top.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.UnpinConnectorCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.ConnectorPinViewModel.UnpinConnectorCommand.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.RemovePinFromGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorPinViewModel.RemovePinFromGroupCommand.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.ZIndex.get -> int
 Dynamo.ViewModels.ConnectorPinViewModel.ZIndex.set -> void
 Dynamo.ViewModels.ConnectorViewModel
@@ -4878,6 +4883,7 @@ static Dynamo.Wpf.Properties.Resources.MessageFailedToOpenCorruptedFile.get -> s
 static Dynamo.Wpf.Properties.Resources.MessageFailedToSaveAsImage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToUnload.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailToUninstallPackage.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageFileInUseByApplication.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageForceInstallOrUninstallToContinue.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageForceInstallOrUninstallUponRestart.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageGettingNodeError.get -> string
@@ -5476,6 +5482,7 @@ static Dynamo.Wpf.Properties.Resources.TabFileNameReadOnlyPrefix.get -> string
 static Dynamo.Wpf.Properties.Resources.TermsOfUseAcceptButton.get -> string
 static Dynamo.Wpf.Properties.Resources.TermsOfUseDeclineButton.get -> string
 static Dynamo.Wpf.Properties.Resources.TermsOfUseViewTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.TitleFileInUse.get -> string
 static Dynamo.Wpf.Properties.Resources.TitlePackageTargetOtherHost.get -> string
 static Dynamo.Wpf.Properties.Resources.TooltipCurrentIndex.get -> string
 static Dynamo.Wpf.Properties.Resources.TourLabelProgressText.get -> string
@@ -5685,6 +5692,7 @@ virtual Dynamo.ViewModels.ConnectorAnchorViewModel.OnRequestDispose(object sende
 virtual Dynamo.ViewModels.ConnectorContextMenuViewModel.OnRequestDispose(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestRedraw(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestRemove(object sender, System.EventArgs e) -> void
+virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestRemoveFromGroup(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestSelect(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.DynamoViewModel.OnEnableShortcutBarItems(bool enable) -> void
 virtual Dynamo.ViewModels.DynamoViewModel.OnRequestAboutWindow(Dynamo.ViewModels.DynamoViewModel vm) -> void

@@ -1267,6 +1267,14 @@ Would you like to save your changes?</value>
 
 Would you like to save your changes?</value>
   </data>
+  <data name="MessageFileInUseByApplication" xml:space="preserve">
+    <value>The file is currently in use by another application.
+	
+Please close the file before trying to overwrite it.</value>
+  </data>
+  <data name="TitleFileInUse" xml:space="preserve">
+    <value>File in use</value>
+  </data>
   <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
     <value>You have unsaved changes to {0}.
 

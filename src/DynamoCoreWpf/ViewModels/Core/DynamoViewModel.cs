@@ -714,7 +714,12 @@ namespace Dynamo.ViewModels
             var queries = new List<string>() { "String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script" };
             foreach (var query in queries)
             {
-                var foundNode = tempSearchViewModel.Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
+                var nodeSearchElement = tempSearchViewModel.Model.Entries.FirstOrDefault(n => n.Name == query);
+                if(nodeSearchElement == null)
+                {
+                    continue;
+                }
+                var foundNode = tempSearchViewModel.MakeNodeSearchElementVM(nodeSearchElement);
                 if (foundNode != null)
                 {
                     DefaultAutocompleteCandidates.Add(foundNode.Name, foundNode);
