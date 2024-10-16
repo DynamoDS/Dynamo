@@ -35,8 +35,12 @@
     <DebugSymbols>true</DebugSymbols>
     <SelfContained>false</SelfContained>
   </PropertyGroup>
-    <PropertyGroup>
-    <DebugType>full</DebugType>
+    <!--generate windows pdbs on windows and portable pdbs for linux builds - CER currently does not support portable-->
+    <PropertyGroup Condition="!$(Platform.Contains('Linux'))">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
+        <DebugType>portable</DebugType>
     </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
