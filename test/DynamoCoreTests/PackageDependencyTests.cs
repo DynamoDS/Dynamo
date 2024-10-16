@@ -120,6 +120,7 @@ namespace Dynamo.Tests
 
             OpenModel(path);
 
+            //TO-DO: Force load binaries or mock the python engine instead of loading a package
             //assert that default python engine was selected, and 2 different engines are loaded
             var currentws = CurrentDynamoModel.CurrentWorkspace;
             var pyNode = currentws.Nodes.OfType<PythonNode>().FirstOrDefault();
