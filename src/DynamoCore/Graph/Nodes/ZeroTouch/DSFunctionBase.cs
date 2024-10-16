@@ -79,6 +79,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
 
         /// <summary>
         /// The method returns the assembly name from which the node originated.
+        /// Only if the node was added from a package
         /// </summary>
         /// <returns>Assembly Name</returns>
         internal override AssemblyName GetNameOfAssemblyReferencedByNode()
