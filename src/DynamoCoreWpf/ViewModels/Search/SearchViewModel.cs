@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
@@ -18,6 +19,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.ViewModels
@@ -73,6 +75,9 @@ namespace Dynamo.ViewModels
             set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
+        private int PotentiallyConfigurableSearchDelayTimeout = 150;
+        private ActionDebouncer SearchDebouncer = null;
+
         private string searchText;
         /// <summary>
         ///     SearchText property
@@ -85,11 +90,16 @@ namespace Dynamo.ViewModels
             get { return searchText; }
             set
             {
+                if (SearchDebouncer == null)
+                    SearchDebouncer = new ActionDebouncer(Dispatcher.CurrentDispatcher);
                 searchText = value;
-                OnSearchTextChanged(this, EventArgs.Empty);
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("BrowserRootCategories");
                 RaisePropertyChanged("CurrentMode");
+                SearchDebouncer.Debounce(PotentiallyConfigurableSearchDelayTimeout, () =>
+                {
+                    OnSearchTextChanged(this, EventArgs.Empty);
+                });
             }
         }
 
