@@ -118,6 +118,9 @@ namespace Dynamo.Tests
                 Assert.IsEmpty(json[WorkspaceReadConverter.NodeLibraryDependenciesPropString]);
             }
 
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\PythonEnginePackage");
+            LoadPackage(packageDirectory);
+
             OpenModel(path);
 
             //TO-DO: Force load binaries or mock the python engine instead of loading a package
