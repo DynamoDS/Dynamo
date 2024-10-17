@@ -210,20 +210,21 @@ namespace Dynamo.PackageManager
         public VersionInformation SelectedVersion { get; internal set; }
 
         // Compatibility mapping for host and versions (to be replaced - fetch from the '/host_map' route)
-        private static Dictionary<string, Dictionary<string, string>> compatibilityMap = new Dictionary<string, Dictionary<string, string>> {
-            { "Revit", new Dictionary<string, string> {
-                {"2016", "1.3.2"}, {"2017", "2.0.2"}, {"2018", "2.0.2"}, {"2019", "2.0.2"},
-                {"2020", "2.1.0"}, {"2020.1", "2.2.1"}, {"2020.2", "2.3.0"}, {"2021", "2.5.2"},
-                {"2021.1", "2.6.1"}, {"2022", "2.10.1"}, {"2022.1", "2.12.0"}, {"2023", "2.13.1"},
-                {"2023.1", "2.16.1"}, {"2023.1.3", "2.16.2"}, {"2024", "2.17.0"}, {"2024.1", "2.18.1"},
-                {"2024.2", "2.19.3"}, {"2025", "3.0.3"}, {"2025.1", "3.0.3"}, {"2025.2", "3.2.1"}
-            }},
-            { "Civil3D", new Dictionary<string, string> {
-                {"2020", "2.1.1"}, {"2020.1", "2.2.0"}, {"2020.2", "2.4.1"}, {"2021", "2.5.2"},
-                {"2022", "2.10.1"}, {"2023", "2.13.1"}, {"2024", "2.17.1"}, {"2024.1", "2.18.1"},
-                {"2024.2", "2.18.1"}, {"2024.3", "2.19"}, {"2025", "3.0.3"}, {"2025.1", "3.2.2"}
-            }}
-        };
+        private static Dictionary<string, Dictionary<string, string>> compatibilityMap;
+        //private static Dictionary<string, Dictionary<string, string>> compatibilityMap = new Dictionary<string, Dictionary<string, string>> {
+        //    { "Revit", new Dictionary<string, string> {
+        //        {"2016", "1.3.2"}, {"2017", "2.0.2"}, {"2018", "2.0.2"}, {"2019", "2.0.2"},
+        //        {"2020", "2.1.0"}, {"2020.1", "2.2.1"}, {"2020.2", "2.3.0"}, {"2021", "2.5.2"},
+        //        {"2021.1", "2.6.1"}, {"2022", "2.10.1"}, {"2022.1", "2.12.0"}, {"2023", "2.13.1"},
+        //        {"2023.1", "2.16.1"}, {"2023.1.3", "2.16.2"}, {"2024", "2.17.0"}, {"2024.1", "2.18.1"},
+        //        {"2024.2", "2.19.3"}, {"2025", "3.0.3"}, {"2025.1", "3.0.3"}, {"2025.2", "3.2.1"}
+        //    }},
+        //    { "Civil3D", new Dictionary<string, string> {
+        //        {"2020", "2.1.1"}, {"2020.1", "2.2.0"}, {"2020.2", "2.4.1"}, {"2021", "2.5.2"},
+        //        {"2022", "2.10.1"}, {"2023", "2.13.1"}, {"2024", "2.17.1"}, {"2024.1", "2.18.1"},
+        //        {"2024.2", "2.18.1"}, {"2024.3", "2.19"}, {"2025", "3.0.3"}, {"2025.1", "3.2.2"}
+        //    }}
+        //};
 
         #endregion
 
@@ -247,6 +248,34 @@ namespace Dynamo.PackageManager
             }
             this.Votes = header.votes;
             this.VersionDetails = TransformVersionsToVersionInformation(header);
+        }
+
+        /// <summary>
+        /// An alternative constructor which allows the loading of a compatibility map
+        /// </summary>
+        /// <param name="header"></param>
+        /// <param name="map"></param>
+        public PackageManagerSearchElement(PackageHeader header, Dictionary<string, Dictionary<string, string>> map)
+        {
+            this.IsExpanded = false;
+            this.Header = header;
+            this.Weight = header.deprecated ? 0.1 : 1;
+
+            if (header.keywords != null && header.keywords.Count > 0)
+            {
+                this.Keywords = String.Join(" ", header.keywords);
+            }
+            else
+            {
+                this.Keywords = "";
+            }
+            this.Votes = header.votes;
+            this.VersionDetails = TransformVersionsToVersionInformation(header);
+
+            if (compatibilityMap == null)
+            {
+                compatibilityMap = map;
+            }
         }
 
         public PackageManagerSearchElement(PackageVersion infectedVersion)
@@ -415,6 +444,12 @@ namespace Dynamo.PackageManager
         // Method to find Dynamo compatibility based on other hosts in the compatibilityMatrix
         internal static Greg.Responses.Compatibility GetDynamoCompatibilityFromHost(List<Greg.Responses.Compatibility> compatibilityMatrix)
         {
+            // Check if the static compatibility map is null or empty
+            if (compatibilityMap == null || compatibilityMap.Count == 0)
+            {
+                throw new InvalidOperationException("The compatibility map is not initialized.");
+            }
+
             foreach (var hostCompatibility in compatibilityMatrix)
             {
                 // Skip if it's explicitly Dynamo, we're looking for hosts other than Dynamo

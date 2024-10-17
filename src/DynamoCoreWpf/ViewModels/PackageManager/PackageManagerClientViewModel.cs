@@ -487,13 +487,15 @@ namespace Dynamo.ViewModels
 
         public List<PackageManagerSearchElement> ListAll()
         {
+            this.LoadCompatibilityMap();  // Ensure the map is loaded
+
             CachedPackageList = new List<PackageManagerSearchElement>();
 
             // Calls to Model.UserVotes and Model.ListAll might take a long time to run (so do not use them syncronously in the UI thread)
             Uservotes = this.Model.UserVotes();
             foreach (var header in Model.ListAll())
             {
-                var ele = new PackageManagerSearchElement(header);
+                var ele = new PackageManagerSearchElement(header, GetCompatibilityMap());
 
                 ele.UpvoteRequested += this.Model.Upvote;
                 if (Uservotes != null)
@@ -1115,6 +1117,54 @@ namespace Dynamo.ViewModels
                 Process.Start(sInfo);
             }
         }
+
+
+        #region Compatibility Map
+
+        // Store the compatibility map as a static property
+        private static Dictionary<string, Dictionary<string, string>> compatibilityMap;
+
+        /// <summary>
+        /// A static access to the CompatibilityMap
+        /// </summary>
+        /// <returns></returns>
+        private static Dictionary<string, Dictionary<string, string>> GetCompatibilityMap()
+        {
+            return compatibilityMap;
+        }
+
+        /// <summary>
+        /// Method to load the map once, making it accessible to all elements
+        /// </summary>
+        private void LoadCompatibilityMap()
+        {
+            if (compatibilityMap == null)  // Load only if not already loaded
+            {
+                compatibilityMap = new Dictionary<string, Dictionary<string, string>>();
+                var compatibilityMapList = this.Model.CompatibilityMap();
+
+                foreach (var host in compatibilityMapList)
+                {
+                    foreach (var property in host.Properties())
+                    {
+                        string hostName = property.Name;
+                        var versionMapping = property.Value.ToObject<Dictionary<string, string>>();
+
+                        if (!compatibilityMap.ContainsKey(hostName))
+                        {
+                            compatibilityMap[hostName] = new Dictionary<string, string>();
+                        }
+
+                        foreach (var version in versionMapping)
+                        {
+                            compatibilityMap[hostName][version.Key] = version.Value;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
     }
 
 }

@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.PackageManager
 {
@@ -76,6 +78,21 @@ namespace Dynamo.PackageManager
             }, null);
 
             return votes?.has_upvoted;
+        }
+
+        internal List<JObject> CompatibilityMap()
+        {
+            var compatibilityMap = FailFunc.TryExecute(() =>
+            {
+                var cm = new GetCompatibilityMap();
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<object>(cm);
+
+                // Serialize the response to JSON and parse it
+                var content = JsonSerializer.Serialize(pkgResponse.content);
+                return JArray.Parse(content).Cast<JObject>().ToList();
+            }, null);
+
+            return compatibilityMap;
         }
 
         internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)
