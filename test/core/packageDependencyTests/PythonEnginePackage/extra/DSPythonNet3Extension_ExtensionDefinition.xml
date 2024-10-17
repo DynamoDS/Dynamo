@@ -1,0 +1,4 @@
+﻿<ExtensionDefinition>
+	<AssemblyPath>DSPythonNet3Extension.dll</AssemblyPath>
+	<TypeName>DSPythonNet3Extension.DSPythonNet3Extension</TypeName>
+</ExtensionDefinition>
