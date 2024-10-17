@@ -18,7 +18,7 @@ namespace Dynamo.PackageDetails
         /// A reference to the ViewExtension.
         /// </summary>
         private PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
-        private readonly PackageManagerClientViewModel packageManagerClientViewModel;
+        internal readonly PackageManagerClientViewModel packageManagerClientViewModel;
         private List<PackageDetailItem> packageDetailItems;
         private string license;
         private IPreferences Preferences
@@ -174,6 +174,7 @@ namespace Dynamo.PackageDetails
             if (!(obj is string versionName)) return;
             PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(PackageName);
             if (packageManagerSearchElement == null) return;
+            var compatible = packageManagerSearchElement.VersionDetails?.First(x => x.Version.Equals(versionName))?.IsCompatible;
 
             PackageInfo packageInfo = new PackageInfo(PackageName, Version.Parse(versionName));
             
@@ -270,11 +271,18 @@ namespace Dynamo.PackageDetails
                 .Reverse()
                 .Select(x => new PackageDetailItem
                 (
+                    packageManagerSearchElement.VersionDetails,
                     packageManagerSearchElement.Name,
                     x,
                     DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name),
                     IsEnabledForInstall && !IsPackageDeprecated
                 )).ToList();
+
+            var packageDetailItem = PackageDetailItems.FirstOrDefault(x => x.PackageVersionNumber.Equals(packageManagerSearchElement?.SelectedVersion?.Version)); 
+            if (packageDetailItem != null)
+            {
+                packageDetailItem.IsExpanded = true;
+            }
 
             PackageName = packageManagerSearchElement.Name;
             PackageAuthorName = packageManagerSearchElement.Maintainers;

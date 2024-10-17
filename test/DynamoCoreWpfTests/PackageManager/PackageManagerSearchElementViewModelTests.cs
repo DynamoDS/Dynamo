@@ -162,7 +162,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
         }
 
         /// <summary>
-        /// This unit test will validate that after we set the host filters in the package search, we will get an intersection of the results (instead of a union)
+        /// This unit test will validate that after we set the hostName filters in the package search, we will get an intersection of the results (instead of a union)
         /// </summary>
         [Test]
         public void PackageSearchDialogSearchIntersectAgainstHostFilters()
@@ -702,6 +702,131 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
             //Assert - validate order by Votes
             Assert.IsTrue(isOrderedByVotes && packageManagerSearchVM.SearchResults.Count != 0);
+        }
+
+        [Test]
+        public void TestComputeVersionCompatibility()
+        {
+            //Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "2.0", max = "2.5" },
+                new Greg.Responses.Compatibility { name = "Host", min = "2020", max = "2025" }
+            };
+
+            var compatibilityMatrixNoHost = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "2.0", max = "2.5" },
+            };
+
+            var customDynamoVersion = new Version("2.3");
+            var customHostVersion = new Version("2023.0");
+
+            // Act
+            var result = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customDynamoVersion, customHostVersion);
+            var resultNoHost = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrixNoHost, customDynamoVersion, customHostVersion);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsTrue(resultNoHost);
+        }
+
+        [Test]
+        public void TestComputeIncompatibleVersionCompatibility()
+        {
+            //Arrange
+            var compatibilityMatrixIncompatibleDynamo = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "3.0", max = "3.5" },
+                new Greg.Responses.Compatibility { name = "Host", min = "2020.0", max = "2025.0" }
+            };
+
+            var compatibilityMatrixIncompatibleHost = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "2.0", max = "3.5" },
+                new Greg.Responses.Compatibility { name = "Host", min = "2020.0", max = "2022.0" }
+            };
+
+            var customDynamoVersion = new Version("2.9");
+            var customHostVersion = new Version("2023.0");
+            var customHostName = "Host";
+
+            // Act
+            var resultIncompatibleDynamo = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrixIncompatibleDynamo, customDynamoVersion, customHostVersion, customHostName);
+            var resultIncompatibleHost = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrixIncompatibleHost, customDynamoVersion, customHostVersion, customHostName);
+
+            // Assert
+            Assert.IsFalse(resultIncompatibleDynamo);
+            Assert.IsFalse(resultIncompatibleHost);
+        }
+
+        [Test]
+        public void TestComputeVersionNoDynamoCompatibility()
+        {
+            //Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Revit", min = "2020", max = "2025" }
+            };
+
+            var minValueCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Revit", min = "2020",  }
+            };
+
+
+            var incompleteCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Revit" }
+            };
+
+            var customIncompatibleDynamoVersion = new Version("2.0.2"); // Matches Revit 2019
+            var customCompatibleDynamoVersion = new Version("2.13.1");  // Dynamo 2.13.1 matches Revit 2023.0
+            var customHostVersion = new Version("2023.0");  // Revit 2023.0 matches Dynamo 2.13.1 
+            var hostName = "Revit";
+
+            // Act
+            // True - No dynamo compatibility provided, we extract Dynamo versions from Host and check against the current Dynamo Version
+            var resultNoDynamoCompatibilityUnderDynamo = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customCompatibleDynamoVersion);
+            // True - No dynamo compatibility provided, but we are under a Host
+            var resultNoDynamoCompatibilityUnderHost = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customCompatibleDynamoVersion, customHostVersion, hostName);
+            // True - We will assume that, if we have 'min' value but no 'max' value, anything above that is OK
+            var resultMinValue = PackageManagerSearchElement.CalculateCompatibility(minValueCompatibilityMatrix, customCompatibleDynamoVersion);
+            // False - looking for support for Dynamo 2.0.2 (matching Revit 2019), but the min Revit version is 2020
+            var resultIncompatible = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customIncompatibleDynamoVersion);
+            // Null - Not enough information provided to extract DynamoCompatibility, we return 'null' for unknown compatibility
+            var resultIncomplete = PackageManagerSearchElement.CalculateCompatibility(incompleteCompatibilityMatrix, customIncompatibleDynamoVersion);
+
+            // Assert
+            Assert.IsTrue(resultNoDynamoCompatibilityUnderDynamo);
+            Assert.IsTrue(resultNoDynamoCompatibilityUnderHost);
+            Assert.IsTrue(resultMinValue);
+            Assert.IsFalse(resultIncompatible);
+        }
+
+        [Test]
+        public void TestReverseDynamoCompatibilityFromHost()
+        {
+            //Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Revit", min = "2020", max = "2025", versions = new List<string>() { "2016", "2018" } }
+            };
+
+            var expectedDynamoCompatibility = new Compatibility()
+            {
+                name = "Dynamo",
+                min = "2.1.0",
+                max = "3.0.3",
+                versions = new List<string>() { "1.3.2", "2.0.2" }
+            };
+
+            var result = PackageManagerSearchElement.GetDynamoCompatibilityFromHost(compatibilityMatrix);
+
+            Assert.That(result.name, Is.EqualTo(expectedDynamoCompatibility.name));
+            Assert.That(result.min, Is.EqualTo(expectedDynamoCompatibility.min));
+            Assert.That(result.max, Is.EqualTo(expectedDynamoCompatibility.max));
+            Assert.That(result.versions, Is.EqualTo(expectedDynamoCompatibility.versions));
         }
     }
 }

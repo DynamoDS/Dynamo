@@ -1,4 +1,5 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="clr-namespace:Dynamo.UI">
 
     <ResourceDictionary.MergedDictionaries>
@@ -6,56 +7,56 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 
-    <!-- Colors -->
+    <!--  Colors  -->
     <Color x:Key="BorderColor">#555</Color>
 
     <!--  Brushes  -->
     <SolidColorBrush x:Key="BorderColorBrush" Color="{StaticResource BorderColor}" />
 
-    <!-- DataGrid style -->
+    <!--  DataGrid style  -->
     <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
-        <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
-        <Setter Property="RowStyle" Value="{x:Null}"/>
-        <Setter Property="CellStyle" Value="{DynamicResource CellStyle1}"/>
-        <Setter Property="RowHeaderWidth" Value="0"/>
+        <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}" />
+        <Setter Property="RowStyle" Value="{x:Null}" />
+        <Setter Property="CellStyle" Value="{DynamicResource CellStyle1}" />
+        <Setter Property="RowHeaderWidth" Value="0" />
         <Setter Property="BorderThickness" Value="0.5" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}"/>
-        <Setter Property="ColumnWidth" Value="Auto"/>
-        <Setter Property="GridLinesVisibility" Value="Vertical"/>
-        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BorderColorBrush}"/>
-        <Setter Property="UseLayoutRounding" Value="True"></Setter>
-        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}" />
+        <Setter Property="ColumnWidth" Value="Auto" />
+        <Setter Property="GridLinesVisibility" Value="Vertical" />
+        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BorderColorBrush}" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
 
-    <!-- DataGridColumnHeader style -->
+    <!--  DataGridColumnHeader style  -->
     <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
-        <Setter Property="Height" Value="24"/>
-        <Setter Property="Background" Value="{StaticResource ExtensionBackgroundColor}"/>
-        <Setter Property="Foreground" Value="#bbbbbb"/>
-        <Setter Property="BorderThickness" Value="0 0 0 1"></Setter>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}"></Setter>
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Background" Value="{StaticResource ExtensionBackgroundColor}" />
+        <Setter Property="Foreground" Value="#bbbbbb" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}" />
         <Setter Property="FontSize" Value="10" />
-        <Setter Property="Margin" Value="0"/>
-        <Setter Property="Padding" Value="6 0"/>
-        <Setter Property="UseLayoutRounding" Value="True"></Setter>
-        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
 
-    <!-- DataGridRow style -->
-    <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-        <Setter Property="Background" Value="{StaticResource MainBackgroundColor}"/>
+    <!--  DataGridRow style  -->
+    <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+        <Setter Property="Background" Value="{StaticResource MainBackgroundColor}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="MinHeight" Value="24"></Setter>
-        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}"/>
-        <Setter Property="UseLayoutRounding" Value="True"></Setter>
-        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+        <Setter Property="MinHeight" Value="24" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
         <Style.Triggers>
             <Trigger Property="AlternationIndex" Value="1">
-                <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}"/>
+                <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#434343"/>
+                <Setter Property="Background" Value="#434343" />
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Background" Value="#4a4a4a" />
@@ -63,18 +64,18 @@
         </Style.Triggers>
     </Style>
 
-    <!-- Cell style -->
+    <!--  Cell style  -->
     <Style x:Key="CellStyle1" TargetType="DataGridCell">
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Margin" Value="1 0 0 0" />
-        <Setter Property="MinHeight" Value="24"></Setter>
-        <Setter Property="UseLayoutRounding" Value="True"></Setter>
-        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+        <Setter Property="Margin" Value="1,0,0,0" />
+        <Setter Property="MinHeight" Value="24" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridCell}">
                     <Grid Background="{TemplateBinding Background}">
-                        <ContentPresenter VerticalAlignment="Center" Margin="2 0" />
+                        <ContentPresenter Margin="2,0" VerticalAlignment="Center" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -86,42 +87,42 @@
         </Style.Triggers>
     </Style>
 
-    <!-- Group Style -->
+    <!--  Group Style  -->
     <Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type GroupItem}">
                     <StackPanel>
-                        <TextBlock Text="{Binding Name}"/>
-                        <ItemsPresenter/>
+                        <TextBlock Text="{Binding Name}" />
+                        <ItemsPresenter />
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <!-- Image Style -->
+    <!--  Image Style  -->
     <Style x:Key="ImageStyle" TargetType="Image">
-        <Setter Property="Width" Value="12"></Setter>
-        <Setter Property="Height" Value="12"></Setter>
-        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
-        <Setter Property="UseLayoutRounding" Value="True"></Setter>
-        <Setter Property="Margin" Value="3 0"></Setter>
-        <Setter Property="VerticalAlignment" Value="Center"></Setter>
-        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        <Setter Property="Width" Value="12" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="Margin" Value="3,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
 
-    <!-- Button Style -->
+    <!--  Button Style  -->
     <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
-        <Setter Property="Foreground" Value="{StaticResource DarkThemeBodyMediumBrush}"></Setter> 
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"></Setter>
-        <Setter Property="FontSize" Value="10"></Setter>
+        <Setter Property="Foreground" Value="{StaticResource DarkThemeBodyMediumBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="10" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Background="{TemplateBinding Background}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -138,7 +139,9 @@
                     <BeginStoryboard>
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="0.0" To="1.0" Duration="0:0:0.3"/>
+                                             From="0.0"
+                                             To="1.0"
+                                             Duration="0:0:0.3" />
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>

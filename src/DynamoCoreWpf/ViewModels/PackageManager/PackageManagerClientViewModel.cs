@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -488,13 +487,15 @@ namespace Dynamo.ViewModels
 
         public List<PackageManagerSearchElement> ListAll()
         {
+            this.LoadCompatibilityMap();  // Ensure the map is loaded
+
             CachedPackageList = new List<PackageManagerSearchElement>();
 
             // Calls to Model.UserVotes and Model.ListAll might take a long time to run (so do not use them syncronously in the UI thread)
             Uservotes = this.Model.UserVotes();
             foreach (var header in Model.ListAll())
             {
-                var ele = new PackageManagerSearchElement(header);
+                var ele = new PackageManagerSearchElement(header, GetCompatibilityMap());
 
                 ele.UpvoteRequested += this.Model.Upvote;
                 if (Uservotes != null)
@@ -749,11 +750,28 @@ namespace Dynamo.ViewModels
 
         internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
-            string msg = String.IsNullOrEmpty(installPath) ?
+            string msg;
+            MessageBoxResult result;
+
+            var compatible = PackageManagerSearchElement.CalculateCompatibility(package.compatibility_matrix); 
+            if (compatible == false && !DynamoModel.IsTestMode)
+            {
+                msg = Resources.PackageManagerIncompatibleVersionDownloadMsg;
+                result = MessageBoxService.Show(ViewModelOwner, msg,
+                    Resources.PackageManagerIncompatibleVersionDownloadTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (result != MessageBoxResult.OK)
+                {
+                    return;
+                }
+            }
+
+            msg = String.IsNullOrEmpty(installPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
 
-            var result = MessageBoxService.Show(ViewModelOwner, msg,
+            result = MessageBoxService.Show(ViewModelOwner, msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
@@ -1099,6 +1117,54 @@ namespace Dynamo.ViewModels
                 Process.Start(sInfo);
             }
         }
+
+
+        #region Compatibility Map
+
+        // Store the compatibility map as a static property
+        private static Dictionary<string, Dictionary<string, string>> compatibilityMap;
+
+        /// <summary>
+        /// A static access to the CompatibilityMap
+        /// </summary>
+        /// <returns></returns>
+        private static Dictionary<string, Dictionary<string, string>> GetCompatibilityMap()
+        {
+            return compatibilityMap;
+        }
+
+        /// <summary>
+        /// Method to load the map once, making it accessible to all elements
+        /// </summary>
+        private void LoadCompatibilityMap()
+        {
+            if (compatibilityMap == null)  // Load only if not already loaded
+            {
+                compatibilityMap = new Dictionary<string, Dictionary<string, string>>();
+                var compatibilityMapList = this.Model.CompatibilityMap();
+
+                foreach (var host in compatibilityMapList)
+                {
+                    foreach (var property in host.Properties())
+                    {
+                        string hostName = property.Name;
+                        var versionMapping = property.Value.ToObject<Dictionary<string, string>>();
+
+                        if (!compatibilityMap.ContainsKey(hostName))
+                        {
+                            compatibilityMap[hostName] = new Dictionary<string, string>();
+                        }
+
+                        foreach (var version in versionMapping)
+                        {
+                            compatibilityMap[hostName][version.Key] = version.Value;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
     }
 
 }
