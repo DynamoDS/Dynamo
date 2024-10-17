@@ -9,9 +9,18 @@ using Greg.Responses;
 
 namespace Dynamo.PackageDetails
 {
+    /// <summary>
+    /// A simple utility class to allow an easier display of package version compatibility information
+    /// </summary>
     public class FlattenedCompatibility
     {
+        /// <summary>
+        /// The Dynamo/Host name to be compatible with - "Dynamo", "Revit", "Civil3D" ..
+        /// </summary>
         public string CompatibilityName { get; set; }
+        /// <summary>
+        /// The string representation of the numerical version of the package - "1.0.0"
+        /// </summary>
         public string Versions { get; set; }
     }
 
@@ -261,6 +270,38 @@ namespace Dynamo.PackageDetails
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="packageName"></param>
+        /// <param name="packageVersion"></param>
+        /// <param name="canInstall"></param>
+        /// <param name="isEnabledForInstall">True, if package is not already downloaded, is not deprecated, and package loading is allowed.</param>
+        public PackageDetailItem(string packageName, PackageVersion packageVersion, bool canInstall, bool isEnabledForInstall = true)
+        {
+            this.PackageName = packageName;
+            this.PackageVersion = packageVersion;
+            this.PackageVersionNumber = PackageVersion.version;
+            this.CopyRightHolder = PackageVersion.copyright_holder;
+            this.CopyRightYear = PackageVersion.copyright_year;
+            this.CanInstall = canInstall;
+            this.IsEnabledForInstall = isEnabledForInstall && canInstall;
+            this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
+            this.Created = GetFormattedDate(PackageVersion.created);
+            this.VersionInformation = GetFlattenedCompatibilityInformation(packageVersion.compatibility_matrix);
+            this.ReleaseNotes = PackageVersion.release_notes_url;
+
+            // To avoid displaying package self-dependencies.
+            // For instance, avoiding Clockwork showing that it depends on Clockwork.
+            this.Packages = PackageVersion.full_dependency_ids
+                .Select(x => x.name)
+                .Where(x => x != PackageName)
+                .ToList();
+
+            DetectDependencies();
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="versionDetails"></param>
         /// <param name="packageName"></param>
         /// <param name="packageVersion"></param>
         /// <param name="canInstall"></param>

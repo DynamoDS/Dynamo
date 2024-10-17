@@ -12,7 +12,7 @@
   </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.8.0" />
-        <PackageReference Include="Greg" Version="3.0.2.6334" />
+        <PackageReference Include="Greg" Version="3.0.2.6533" />
         <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.2734"/>
         <PackageReference Include="Greg" Version="3.0.2.6284" />
         <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.6246" />

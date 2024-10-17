@@ -143,35 +143,30 @@ namespace DynamoCoreWpfTests
             // Act
             PackageDetailItem packageDetailItemNoDependencies = new PackageDetailItem
             (
-                null,
                 string.Empty,
                 packageVersionNoDependencies,
                 true
             );
             PackageDetailItem packageDetailWithPython2Dependency = new PackageDetailItem
             (
-                null,
                 string.Empty,
                 packageVersionWithPython2Dependency,
                 true
             );
             PackageDetailItem packageDetailWithPython3Dependency = new PackageDetailItem
             (
-                null,
                 string.Empty,
                 packageVersionWithPython3Dependency,
                 true
             );
             PackageDetailItem packageDetailWithHostDependency = new PackageDetailItem
             (
-                null,
                 string.Empty,
                 packageVersionWithHostDependency,
                 true
             );
             PackageDetailItem packageDetailWithMultipleHostDependencies = new PackageDetailItem
             (
-                null,
                 string.Empty,
                 packageVersionWithMultipleHostDependencies,
                 true

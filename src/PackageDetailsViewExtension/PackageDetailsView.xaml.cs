@@ -58,7 +58,12 @@ namespace Dynamo.PackageDetails
             {
                 System.Diagnostics.Process.Start(new ProcessStartInfo(e.Uri.ToString()) { UseShellExecute = true });
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Have to make packageManagerClientViewModel internal in order to get to the DynamoViewModel/Model/Logger
+                var dataContext = this.DataContext as PackageDetailsViewModel;
+                dataContext?.packageManagerClientViewModel?.DynamoViewModel?.Model.Logger.Log("Error navigating to package url: " + ex.StackTrace);
+            }
             e.Handled = true;
         }
 

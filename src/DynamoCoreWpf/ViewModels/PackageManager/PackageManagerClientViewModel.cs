@@ -822,7 +822,7 @@ namespace Dynamo.ViewModels
 
                 // local package that conflicts with package itself.
                 Package duplicatePackage = null;
-                
+
                 // list of local packages that conflict (have different versions) with package dependencies.
                 // Does not contain the main package since it is handled separately by duplicatePackage
                 var localPkgsConflictingWithPkgDeps = new List<Package>();

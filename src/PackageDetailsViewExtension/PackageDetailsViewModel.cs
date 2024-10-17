@@ -18,7 +18,7 @@ namespace Dynamo.PackageDetails
         /// A reference to the ViewExtension.
         /// </summary>
         private PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
-        private readonly PackageManagerClientViewModel packageManagerClientViewModel;
+        internal readonly PackageManagerClientViewModel packageManagerClientViewModel;
         private List<PackageDetailItem> packageDetailItems;
         private string license;
         private IPreferences Preferences

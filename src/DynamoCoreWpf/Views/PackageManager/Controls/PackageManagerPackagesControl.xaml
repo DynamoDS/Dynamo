@@ -564,8 +564,9 @@
                                        Margin="5,0"
                                        DockPanel.Dock="Left"
                                        Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Hosts, Converter={StaticResource DependencyListToStringConverter}}"
-                                       Visibility="{Binding Path=Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
+                                       Text="{Binding Hosts, Converter={StaticResource DependencyListToStringConverter}}" />
+                            <!--  By keeping this textblock visible at all times we enforce line height consistency between items with and without host information  -->
+                            <!--  Visibility="{Binding Path=Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />  -->
                         </DockPanel>
 
                         <!--  Bottom Row  -->
