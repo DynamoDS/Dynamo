@@ -169,7 +169,6 @@ namespace DynamoCoreWpfTests
             // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
             var nodeNamesResultList = searchViewModel.FilteredResults.Select(x => x.Name).ToList();
-
             Assert.AreEqual(expectedNodes.Count(), nodeNamesResultList.Count(),string.Format("Missing nodes: {0} ", string.Join(", ",expectedNodes.Except(nodeNamesResultList))));
         }
         [Test]
