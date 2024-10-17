@@ -145,7 +145,7 @@ namespace Dynamo.Controls
             _timer = new Stopwatch();
             _timer.Start();
 
-            InitializeComponent();
+            InitializeComponent();  
 
             Loaded += DynamoView_Loaded;
             Unloaded += DynamoView_Unloaded;
@@ -915,6 +915,11 @@ namespace Dynamo.Controls
 
         private void OnRequestPaste()
         {
+            // When focus is at webview2 component Keyboard.FocusedElement returns null so we interrupt the execution
+            // with an early return
+            var FocuseElement = Keyboard.FocusedElement;
+            if (FocuseElement == null) return;
+
             var clipBoard = dynamoViewModel.Model.ClipBoard;
 
             var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
@@ -2449,6 +2454,7 @@ namespace Dynamo.Controls
 
         private void ToggleWorkspaceTabVisibility(int tabSelected)
         {
+            // Switch off the start page first
             SlideWindowToIncludeTab(tabSelected);
 
             for (int tabIndex = 1; tabIndex < WorkspaceTabs.Items.Count; tabIndex++)
@@ -3000,6 +3006,15 @@ namespace Dynamo.Controls
             ShowGetStartedGuidedTour();
         }
 
+
+        private void HomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!this.dynamoViewModel.ShowStartPage)
+            {
+                this.dynamoViewModel.ShowStartPage = true;
+            }
+        }
+
         /// <summary>
         /// This method probably will be modified or deleted in the future when the GuideManager and Guide class are created
         /// For now will be used just for testing/demo purposes since the popups will be created probably in the Guide class.
@@ -3054,6 +3069,12 @@ namespace Dynamo.Controls
         {
             if(fileTrustWarningPopup != null)
                 fileTrustWarningPopup.ManagePopupActivation(false);
+        }
+
+        private void TabItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (this.dynamoViewModel.ShowStartPage)
+                this.dynamoViewModel.ShowStartPage = false;
         }
 
         public void Dispose()

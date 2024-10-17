@@ -454,6 +454,8 @@ namespace DynamoShapeManager
             {
                 case 230:
                     return !ASM230DllNames.Except(fileNames).Any();
+                case 231:
+                    return true;
                 default:
                     // We don't know this version so it's safest to assume it's not complete.
                     return false;

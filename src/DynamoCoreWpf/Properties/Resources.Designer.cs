@@ -4508,6 +4508,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No group could be found with that Id..
+        /// </summary>
+        public static string MessageFailedToFindGroupById {
+            get {
+                return ResourceManager.GetString("MessageFailedToFindGroupById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No node could be found with that Id..
         /// </summary>
         public static string MessageFailedToFindNodeById {
@@ -4549,6 +4558,17 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageFailToUninstallPackage {
             get {
                 return ResourceManager.GetString("MessageFailToUninstallPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file is currently in use by another application.
+        ///	
+        ///Please close the file before trying to overwrite it..
+        /// </summary>
+        public static string MessageFileInUseByApplication {
+            get {
+                return ResourceManager.GetString("MessageFileInUseByApplication", resourceCulture);
             }
         }
         
@@ -9945,6 +9965,15 @@ namespace Dynamo.Wpf.Properties {
         public static string TermsOfUseViewTitle {
             get {
                 return ResourceManager.GetString("TermsOfUseViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File in use.
+        /// </summary>
+        public static string TitleFileInUse {
+            get {
+                return ResourceManager.GetString("TitleFileInUse", resourceCulture);
             }
         }
         

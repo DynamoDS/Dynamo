@@ -1356,11 +1356,11 @@ namespace Dynamo.ViewModels
                 } 
             }
 
-            if (this.NodeModel.IsCustomFunction)
+            if (this.NodeModel.IsCustomFunction || !string.IsNullOrEmpty(this.PackageName))
             {
                 result = nodeCustomColor;
                 if(result != null)
-                {
+                {   
                     if (ImgGlyphOneSource == null)
                     {
                         ImgGlyphOneSource = packageGlyph;
