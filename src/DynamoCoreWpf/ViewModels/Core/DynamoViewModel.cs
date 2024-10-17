@@ -2771,6 +2771,7 @@ namespace Dynamo.ViewModels
             }
             // Center the view on the model
             this.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
+            FitView(false);
         }
 
         private void CancelActiveState(NodeModel node)
