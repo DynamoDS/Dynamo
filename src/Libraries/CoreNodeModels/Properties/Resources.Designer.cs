@@ -304,7 +304,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Data Type.
+        ///   Looks up a localized string similar to Select Types.
         /// </summary>
         public static string DefineDataDisplayValueMessage {
             get {
