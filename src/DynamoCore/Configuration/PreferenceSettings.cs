@@ -28,6 +28,9 @@ namespace Dynamo.Configuration
         private bool isBackgroundGridVisible;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isADPChecked = false;
+        private bool isADPOptedIn = false;
+
         #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
@@ -77,12 +80,23 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
+        /// Note that this property is called often and the inner call to IsADPOptinIn can be slow sometimes
+        /// especially when there is an error involved. And therefore we will only check this once per instance.
         /// </summary>
         [XmlIgnore]
         [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
         public bool IsADPAnalyticsReportingApproved
         {
-            get { return Logging.AnalyticsService.IsADPOptedIn; }
+            get
+            {
+                if (!isADPChecked)
+                {
+                    isADPChecked = true;
+                    isADPOptedIn = AnalyticsService.IsADPOptedIn;
+                }
+
+                return isADPOptedIn;
+            }
             set { throw new Exception("do not use"); }
         }
         #endregion

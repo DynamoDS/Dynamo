@@ -1,4 +1,4 @@
-﻿using Dynamo.Graph.Workspaces;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Analytics.NET.ADP;
 using Autodesk.Analytics.Core;
@@ -66,7 +66,7 @@ namespace Dynamo.Logging
                 {
                     return false;
                 }
-                return adpAnalyticsUI.IsOptedIn(150,200);
+                return adpAnalyticsUI.IsOptedIn(5,500);
             }
             
             set
