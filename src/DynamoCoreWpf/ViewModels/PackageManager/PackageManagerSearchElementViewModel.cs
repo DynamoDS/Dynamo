@@ -118,7 +118,6 @@ namespace Dynamo.PackageManager.ViewModels
             IsEnabledForInstall = isEnabledForInstall;
 
             // Attempts to show the latest compatible version. If no compatible, will return the latest instead.
-            //this.SelectedVersion = this.SearchElementModel.LatestVersion;
             this.SelectedVersion = this.SearchElementModel.LatestCompatibleVersion;
             this.VersionInformationList = this.SearchElementModel.VersionDetails;
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>
