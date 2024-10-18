@@ -448,6 +448,46 @@ sys.stdout = DynamoStdOut({0})
         #region Marshalling
 
         /// <summary>
+        /// Add additional data marshalers to handle host data.
+        /// </summary>
+        [SupressImportIntoVM]
+        internal override void RegisterHostDataMarshalers()
+        {
+            DataMarshaler dataMarshalerToUse = HostDataMarshaler as DataMarshaler;
+            dataMarshalerToUse?.RegisterMarshaler((PyObject pyObj) =>
+            {
+                try
+                {
+                    using (Py.GIL())
+                    {
+                        if (PyDict.IsDictType(pyObj))
+                        {
+                            using (var pyDict = new PyDict(pyObj))
+                            {
+                                var dict = new PyDict();
+                                foreach (PyObject item in pyDict.Items())
+                                {
+                                    dict.SetItem(
+                                        ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(0))),
+                                        ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(1)))
+                                    );
+                                }
+                                return dict;
+                            }
+                        }
+                        var unmarshalled = pyObj.AsManagedObject(typeof(object));
+                        return dataMarshalerToUse.Marshal(unmarshalled);
+                    }
+                }
+                catch (Exception e)
+                {
+                    DynamoLogger?.Log($"error marshaling python object {pyObj.Handle} {e.Message}");                    
+                    return pyObj;
+                }
+            });
+        }
+
+        /// <summary>
         ///     Data Marshaler for all data coming into a Python node.
         /// </summary>
         [SupressImportIntoVM]
