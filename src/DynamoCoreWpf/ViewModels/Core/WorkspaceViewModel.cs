@@ -1156,7 +1156,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X)
                            .Min();
@@ -1164,7 +1164,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y)
                            .Min();
@@ -1172,7 +1172,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X + x.Width)
                            .Max();
@@ -1188,7 +1188,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y + x.Height)
                            .Max();
