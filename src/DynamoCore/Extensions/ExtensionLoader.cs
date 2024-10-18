@@ -136,6 +136,40 @@ namespace Dynamo.Extensions
             }
         }
 
+        /// <summary>
+        /// Get the path to the extension/viewExtension assembly 
+        /// </summary>
+        /// <param name="xmlPath">The path to the extension/viewExtension xml</param>
+        /// <returns></returns>
+        internal static string GetExtensionPath(string xmlPath)
+        {
+            var document = new XmlDocument();
+            document.Load(xmlPath);
+
+            var topNode = document.GetElementsByTagName("ViewExtensionDefinition");
+            if (topNode.Count == 0)
+            {
+                topNode = document.GetElementsByTagName("ExtensionDefinition");
+            }
+
+            if (topNode.Count == 0)
+            {
+                throw new Exception("Could not find any ExtensionDefinition or ViewExtensionDefinition top node.");
+            }
+
+            string extensionPath = string.Empty;
+            foreach (XmlNode item in topNode[0].ChildNodes)
+            {
+                if (item.Name == "AssemblyPath")
+                {
+                    extensionPath = Path.Combine(new DirectoryInfo(xmlPath).Parent.FullName, item.InnerText);
+                    break;
+                }
+            }
+
+            return extensionPath;
+        }
+
         private void Log(string msg)
         {
             Log(LogMessage.Info(msg));
