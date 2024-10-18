@@ -57,6 +57,8 @@ namespace Dynamo.PackageManager
             this.uploadBuilder = builder;
             this.client = client;
             this.packageMaintainers = new Dictionary<string, bool>();
+
+            this.LoadCompatibilityMap();  // Load the compatibility map
         }
 
         internal bool Upvote(string packageId)
@@ -349,5 +351,52 @@ namespace Dynamo.PackageManager
             this.packageMaintainers[package.Name] = value;
             return value;
         }
+
+
+        #region Compatibility Map
+
+        // Store the compatibility map as a static property
+        private static Dictionary<string, Dictionary<string, string>> compatibilityMap;
+
+        /// <summary>
+        /// A static access to the CompatibilityMap
+        /// </summary>
+        /// <returns></returns>
+        internal static Dictionary<string, Dictionary<string, string>> GetCompatibilityMap()
+        {
+            return compatibilityMap;
+        }
+
+        /// <summary>
+        /// Method to load the map once, making it accessible to all elements
+        /// </summary>
+        private void LoadCompatibilityMap()
+        {
+            if (compatibilityMap == null)  // Load only if not already loaded
+            {
+                compatibilityMap = new Dictionary<string, Dictionary<string, string>>();
+                var compatibilityMapList = this.CompatibilityMap();
+
+                foreach (var host in compatibilityMapList)
+                {
+                    foreach (var property in host.Properties())
+                    {
+                        string hostName = property.Name;
+                        var versionMapping = property.Value.ToObject<Dictionary<string, string>>();
+
+                        if (!compatibilityMap.ContainsKey(hostName))
+                        {
+                            compatibilityMap[hostName] = new Dictionary<string, string>();
+                        }
+
+                        foreach (var version in versionMapping)
+                        {
+                            compatibilityMap[hostName][version.Key] = version.Value;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }
