@@ -352,19 +352,23 @@
                             </TextBlock.Style>
                         </TextBlock>
 
-                        <TextBlock Width="Auto"
-                                   Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
-                                   VerticalAlignment="Center"                                                                      
-                                   FontFamily="{StaticResource SourceCodePro}"
-                                   Text="{Binding Path=NodeLabel}"
-                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}" >
+                        <TextBox Width="Auto"
+                                 Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
+                                 VerticalAlignment="Center"
+                                 FontFamily="{StaticResource SourceCodePro}"
+                                 Text="{Binding Path=NodeLabel}"
+                                 Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}"
+                                 IsReadOnly="True"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 TextWrapping="Wrap">
                             <TextBlock.Foreground>
                                 <MultiBinding Converter="{StaticResource ObjectTypeConverter}">
                                     <Binding Path="ValueType" />
                                     <Binding Path="NodeLabel" />
-                                    </MultiBinding>
+                                </MultiBinding>
                             </TextBlock.Foreground>
-                            </TextBlock>
+                        </TextBox>
 
                         <Button Margin="10,2,2,2"
                                 Padding="4,0,4,0"
