@@ -193,8 +193,16 @@ namespace Dynamo.Applications
         public static DynamoModel MakeCLIModel(CommandLineArguments cmdLineArgs)
         {
             var asmPath = String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath;
-            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
+
+            IPathResolver pathResolver = CreatePathResolver(true, string.Empty, cmdLineArgs.UserDataFolder, cmdLineArgs.CommonDataFolder);
             PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
+
+            if (!File.Exists(PathManager.Instance.PreferenceFilePath))
+            {
+                pathResolver = CreatePathResolver(true, string.Empty, string.Empty, cmdLineArgs.CommonDataFolder);
+                PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
+            }
+
             DynamoModel.SetUICulture(PreferenceSettings.Instance.Locale);
             DynamoModel.OnDetectLanguage();
 
