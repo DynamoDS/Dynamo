@@ -183,6 +183,10 @@ Dynamo.Controls.DateToPackageLabelConverter
 Dynamo.Controls.DateToPackageLabelConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.DateToPackageLabelConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.DateToPackageLabelConverter.DateToPackageLabelConverter() -> void
+Dynamo.Controls.DateToPackageTooltipConverter
+Dynamo.Controls.DateToPackageTooltipConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.DateToPackageTooltipConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.DateToPackageTooltipConverter.DateToPackageTooltipConverter() -> void
 Dynamo.Controls.DateToVisibilityCollapsedConverter
 Dynamo.Controls.DateToVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.DateToVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -337,6 +341,10 @@ Dynamo.Controls.InverseBoolToVisibilityConverter
 Dynamo.Controls.InverseBoolToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.InverseBoolToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.InverseBoolToVisibilityConverter.InverseBoolToVisibilityConverter() -> void
+Dynamo.Controls.InverseEmptyListToVisibilityConverter
+Dynamo.Controls.InverseEmptyListToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.InverseEmptyListToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.InverseEmptyListToVisibilityConverter.InverseEmptyListToVisibilityConverter() -> void
 Dynamo.Controls.LacingToAbbreviationConverter
 Dynamo.Controls.LacingToAbbreviationConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LacingToAbbreviationConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -460,6 +468,10 @@ Dynamo.Controls.NonEmptyStringToCollapsedConverter
 Dynamo.Controls.NonEmptyStringToCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NonEmptyStringToCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NonEmptyStringToCollapsedConverter.NonEmptyStringToCollapsedConverter() -> void
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter.NullOrEmptyListToVisibilityVisibleConverter() -> void
 Dynamo.Controls.NullOrEmptyStringToVisibiltyCollapsedConverter
 Dynamo.Controls.NullOrEmptyStringToVisibiltyCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NullOrEmptyStringToVisibiltyCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -1295,6 +1307,8 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Hosts.get 
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsDeprecated.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsEnabledForInstall.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsOnwer.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.get -> bool?
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.LatestVersion.get -> string
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.LatestVersionCreated.get -> string
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Maintainers.get -> string
@@ -1306,11 +1320,14 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PackageSea
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PkgVersion.get -> System.Collections.Generic.IEnumerable<string>
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.RequestDownload -> Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PackageSearchElementDownloadHandler
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.RequestShowFileDialog -> System.EventHandler<Dynamo.ViewModels.PackagePathEventArgs>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.ReversedVersionInformationList.get -> System.ComponentModel.ICollectionView
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SearchElementModel.get -> Dynamo.PackageManager.PackageManagerSearchElement
-Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.get -> string
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.get -> Dynamo.PackageManager.VersionInformation
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.UpvoteCommand.get -> System.Windows.Input.ICommand
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.UpvoteCommand.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInformationList.get -> System.Collections.Generic.List<Dynamo.PackageManager.VersionInformation>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInformationList.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Versions.get -> System.Collections.Generic.List<System.Tuple<Greg.Responses.PackageVersion, Prism.Commands.DelegateCommand<object>>>
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitRepositoryCommand.get -> System.Windows.Input.ICommand
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitRepositoryCommand.set -> void
@@ -4982,17 +4999,24 @@ static Dynamo.Wpf.Properties.Resources.PackageContextMenuUnmarkDeletePackageTool
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuUnmarkUnloadPackageText.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuUnmarkUnloadPackageTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDeprecatedTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsCompatibility.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsCompatibilityWithSetup.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsCompatibleVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsCopyRightHolder.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsCopyRightYear.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsDependsOn.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsHost.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsIncompatibileVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsKeywords.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsLicense.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsLinks.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsPackage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsPython.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsReleaseNotes.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsSize.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsUnknownCompatibilityVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersions.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersionsAndPackageRequirements.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadConfirmMessageBoxTitle.get -> string
@@ -5023,6 +5047,8 @@ static Dynamo.Wpf.Properties.Resources.PackageManagerClearAllButtonText.get -> s
 static Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesPublishedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesUploadedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackagePackagePath.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerIncompatibleVersionDownloadMsg.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerIncompatibleVersionDownloadTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerInstall.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerInstalledPackagesTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerLoadingTimedOutWarningMessage.get -> string

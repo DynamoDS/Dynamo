@@ -2892,7 +2892,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <comment>Header in Package Search 'Sort By' Button  Context Menu</comment>
   </data>
   <data name="PackageSearchResultViewDetails" xml:space="preserve">
-    <value>View Details</value>
+    <value>Info</value>
     <comment>In package search result card.</comment>
   </data>
   <data name="PackageSearchResultRequirements" xml:space="preserve">
@@ -4044,5 +4044,35 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="UpdateAllPythonEngineMainMenuHeader" xml:space="preserve">
     <value>Set Python Engine</value>
+  </data>
+  <data name="PackageDetailsReleaseNotes" xml:space="preserve">
+    <value>Release notes</value>
+  </data>
+  <data name="PackageDetailsDependsOn" xml:space="preserve">
+    <value>Depends on</value>
+  </data>
+  <data name="PackageDetailsCompatibility" xml:space="preserve">
+    <value>COMPATIBILITY</value>
+  </data>
+  <data name="PackageDetailsCompatibilityWithSetup" xml:space="preserve">
+    <value>Compatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="PackageDetailsCompatibleVersionTooltip" xml:space="preserve">
+    <value>This version should be compatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsUnknownCompatibilityVersionTooltip" xml:space="preserve">
+    <value>The compatibility of this version has not been verified. It may or may not be compatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsIncompatibileVersionTooltip" xml:space="preserve">
+    <value>This version may be incompatible with your current setup</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadMsg" xml:space="preserve">
+    <value>This version is incompatible with your current setup (Dynamo and host version, if applicable). It may not work properly. Do you want to install it anyway?</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadTitle" xml:space="preserve">
+    <value>Incompatible version</value>
   </data>
 </root>
