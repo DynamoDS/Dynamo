@@ -44,3 +44,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoApplications")]
 [assembly: InternalsVisibleTo("DynamoUnits")]
 [assembly: InternalsVisibleTo("DSPythonNet3")]
+[assembly: InternalsVisibleTo("DynamoRevitDS")]
