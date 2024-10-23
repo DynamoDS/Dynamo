@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Media.Media3D;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Point = Autodesk.DesignScript.Geometry.Point;
-using Vector = Autodesk.DesignScript.Geometry.Vector;
+using Point = Autodesk.GeometryPrimitives.Dynamo.Geometry.Point;
+using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
 
 namespace Dynamo.Manipulation
 {
@@ -90,10 +90,7 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Physical location of the manipulator lying on the geometry being manipulated
         /// </summary>
-        protected Point ManipulatorOrigin
-        {
-            get { return manipulator.Origin; }
-        }
+        protected Point ManipulatorOrigin => manipulator.Origin;
 
         private string name = "gizmo";
         public string Name 
@@ -117,29 +114,26 @@ namespace Dynamo.Manipulation
         {
             get
             {
-                if(origin != null) origin.Dispose();
+                var cameraPos = cameraPosition != null
+                    ? new Point(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z)
+                    : null;
 
-                using (var cameraPos = cameraPosition != null
-                    ? Point.ByCoordinates(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z)
-                    : null)
+                if (cameraPos == null)
                 {
-
-                    if (cameraPos == null)
-                    {
-                        // cameraPos will be null if HelixWatch3DViewModel is not initialized
-                        // this happens on an out of memory exception in SharpDX probably due to 
-                        // DynamoEffectsManager not being disposed off promptly.
-                        // TODO: revisit to fix this properly later
-                        // For the time being return a default position instead of throwing an exception
-                        // to the effect that camerPos should not be null
-                        return Point.ByCoordinates(ManipulatorOrigin.X, ManipulatorOrigin.Y, ManipulatorOrigin.Z);
-                    }
-
-                    using (var vec = Vector.ByTwoPoints(cameraPos, ManipulatorOrigin).Normalized())
-                    {
-                        origin = cameraPos.Add(vec.Scale(zDepth));
-                    }
+                    // cameraPos will be null if HelixWatch3DViewModel is not initialized
+                    // this happens on an out of memory exception in SharpDX probably due to 
+                    // DynamoEffectsManager not being disposed off promptly.
+                    // TODO: revisit to fix this properly later
+                    // For the time being return a default position instead of throwing an exception
+                    // to the effect that camerPos should not be null
+                    return new Point(ManipulatorOrigin.Position.X, ManipulatorOrigin.Position.Y,
+                        ManipulatorOrigin.Position.Z);
                 }
+
+                var vec = (ManipulatorOrigin.Position - cameraPos.Position).Unit;
+                vec.Scale(zDepth);
+                origin = new Point(cameraPos.Position + vec);
+
                 return origin;
             }
         }
@@ -211,8 +205,6 @@ namespace Dynamo.Manipulation
         public void Dispose()
         {
             Dispose(true);
-
-            if(origin != null) origin.Dispose();
 
             BackgroundPreviewViewModel.ViewCameraChanged -= OnViewCameraChanged;
         }
