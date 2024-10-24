@@ -723,6 +723,69 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.IsTrue(isOrderedByVotes && packageManagerSearchVM.SearchResults.Count != 0);
         }
 
+        /// <summary>
+        /// This unit test will validate that the search for package with whitespace in the name.
+        /// </summary>
+        [Test]
+        public void PackageSearchWithWhitespaceInName()
+        {
+            var packageToBeSearched = "Dynamo Samples";
+            var packagesListNames =  new List<string> { packageToBeSearched, "archi-lab.net", "LunchBox for Dynamo", "DynamoSap", "TuneUp" };
+            string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
+            string packageVersionNumber = "1.0.0.0";
+            string packageCreatedDateString = "2024 - 10 - 02T13:13:20.135000 + 00:00";
+            var packageMaintainer = new User() { username = "DynamoTest", _id = "90-63-17" };
+
+            List<PackageHeader> packageHeaders = new List<PackageHeader>();
+            var mockGreg = new Mock<IGregClient>();
+
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+            List<PackageManagerSearchElement> cachedPackages = new List<PackageManagerSearchElement>();
+            foreach (var packageName in packagesListNames)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, host_dependencies = new List<string> { "FormIt" }, created = packageCreatedDateString };
+                cachedPackages.Add(new PackageManagerSearchElement(new PackageHeader() { name = packageName, versions = new List<PackageVersion> { tmpPackageVersion } }));
+            }
+            pmCVM.SetupProperty(p => p.CachedPackageList, cachedPackages);
+
+            var packageManagerSearchVM = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchVM.RegisterTransientHandlers();
+
+            //Adding packages
+            foreach (var package in packagesListNames)
+            {
+                var tmpPackageVersion = new PackageVersion
+                {
+                    version = packageVersionNumber,
+                    created = packageCreatedDateString
+                };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                    maintainers = new List<User> { packageMaintainer },
+                }), false);
+                packageManagerSearchVM.AddToSearchResults(tmpPackage);
+            }
+
+            foreach (var package in packageManagerSearchVM.SearchResults)
+            {
+                var iDoc = packageManagerSearchVM.LuceneUtility.InitializeIndexDocumentForPackages();
+                packageManagerSearchVM.AddPackageToSearchIndex(package.SearchElementModel, iDoc);
+            }
+
+            packageManagerSearchVM.LuceneUtility.CommitWriterChanges();
+
+            var packagesSearchResult = packageManagerSearchVM.Search(packageToBeSearched, true);
+
+            //Validates that the Search returned results and that the first one is "Dynamo Samples"
+            Assert.IsTrue(packagesSearchResult != null);
+            Assert.IsTrue(packagesSearchResult.Count() == 1);
+            Assert.IsTrue(packagesSearchResult.FirstOrDefault().Name == packageToBeSearched);
+        }
+
         [Test]
         public void TestComputeVersionCompatibility()
         {
