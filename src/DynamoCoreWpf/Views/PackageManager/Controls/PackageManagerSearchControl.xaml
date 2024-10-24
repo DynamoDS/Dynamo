@@ -249,11 +249,25 @@
                         <!--  When clicked, the filter button displays a ContextMenu of options to the user  -->
                         <Button.ContextMenu>
                             <ContextMenu Name="HostFilter"
+                                         Width="180"
                                          Background="{StaticResource GenericBorderBackgroundColorBrush}"
                                          DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
+                                         DisplayMemberPath="FilterName"
                                          StaysOpen="True"
                                          Style="{StaticResource ContextMenuStyle}">
                                 <ContextMenu.Resources>
+                                    <Style BasedOn="{StaticResource ContextMenuItemStyle}" TargetType="{x:Type MenuItem}">
+                                        <Setter Property="IsCheckable" Value="True" />
+                                        <Setter Property="StaysOpenOnClick" Value="True" />
+                                        <Setter Property="Command" Value="{Binding FilterCommand}" />
+                                        <Setter Property="CommandParameter" Value="{Binding FilterName}" />
+                                        <Setter Property="IsChecked" Value="{Binding OnChecked, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Setter Property="ToolTip">
+                                            <Setter.Value>
+                                                <ToolTip Content="{Binding Tooltip}" Style="{StaticResource GenericToolTipLight}" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
                                     <CollectionViewSource x:Key="HostItems" Source="{Binding HostFilter}" />
                                     <CollectionViewSource x:Key="CompatibilityItems"
                                                           Filter="CompatibilityItem_OnFilter"

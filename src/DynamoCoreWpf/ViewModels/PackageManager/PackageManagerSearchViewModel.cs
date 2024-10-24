@@ -1304,6 +1304,7 @@ namespace Dynamo.PackageManager
                 results = Search(query, true);
                 results = ApplyNonHostFilters(results);
                 results = ApplyHostFilters(results);
+                results = ApplyCompatibilityFilters(results);
             }
 
             this.ClearSearchResults();
@@ -1400,6 +1401,7 @@ namespace Dynamo.PackageManager
             var initialResults = LastSync?.Select(x => GetSearchElementViewModel(x));
             list = ApplyNonHostFilters(initialResults);
             list = ApplyHostFilters(list).ToList();
+            list = ApplyCompatibilityFilters(list).ToList();
 
             Sort(list, this.SortingKey);
 
