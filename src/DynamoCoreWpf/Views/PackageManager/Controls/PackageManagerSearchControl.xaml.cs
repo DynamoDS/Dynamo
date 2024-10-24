@@ -84,6 +84,12 @@ namespace Dynamo.PackageManager.UI
             PkgSearchVM.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
         }
 
+        private void CompatibilityItem_OnFilter(object sender, FilterEventArgs e)
+        {
+            var item = e.Item as PackageManagerSearchViewModel.FilterEntry;
+            e.Accepted = item.GroupName.Equals(Wpf.Properties.Resources.PackageFilterByCompatibility);
+        }
+
         private void StatusItem_OnFilter(object sender, FilterEventArgs e)
         {
             var item = e.Item as PackageManagerSearchViewModel.FilterEntry;
