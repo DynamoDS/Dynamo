@@ -1724,5 +1724,5 @@ namespace Dynamo.PackageManager
             ClearMySearchResults();
 
         }
-    }        
+    }
 }

@@ -4991,6 +4991,8 @@ static Dynamo.Wpf.Properties.Resources.OnboardingWorkspaceTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.OnlyTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.OpenDynamoDefinitionDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageCompatible.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageCompatibleFilterTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuDeletePackageCustomNodesInUseTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuDeletePackageText.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuDeletePackageTooltip.get -> string
@@ -5032,6 +5034,7 @@ static Dynamo.Wpf.Properties.Resources.PackageDownloadStateInstalling.get -> str
 static Dynamo.Wpf.Properties.Resources.PackageDownloadStateStarting.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDuplicateAssemblyWarning.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDuplicateAssemblyWarningTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageFilterByCompatibility.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageFilterByDependency.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageFilterByHost.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageFilterByStatus.get -> string
@@ -5045,6 +5048,8 @@ static Dynamo.Wpf.Properties.Resources.PackageFolderNotAccessible.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageHostDependencyFilter.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageHostDependencyFilterContextItem.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageHostDependencyTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageIncompatible.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageIncompatibleFilterTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerClearAllButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesPublishedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesUploadedMessage.get -> string
@@ -5184,6 +5189,8 @@ static Dynamo.Wpf.Properties.Resources.PackageStateUnknown.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageStateUnloaded.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageStateUnloadedTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageTypeShortString.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageUnknownCompatibility.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageUnknownCompatibilityFilterTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadNoDependency.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateCompressing.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateCopying.get -> string
