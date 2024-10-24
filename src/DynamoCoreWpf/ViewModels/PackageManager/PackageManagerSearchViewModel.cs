@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -25,8 +23,6 @@ using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
@@ -70,27 +66,6 @@ namespace Dynamo.PackageManager
         };
         #endregion enums
 
-        public class YearItem : NotificationObject
-        {
-            public string Year { get; set; }
-
-            private bool _onChecked;
-
-            public bool OnChecked
-            {
-                get { return _onChecked; }
-                set
-                {
-                    _onChecked = value;
-                    RaisePropertyChanged(nameof(OnChecked));
-                }
-            }
-
-            public YearItem(string year)
-            {
-                Year = year;
-            }
-        }
         /// <summary>
         /// Package Manager filter entry, binded to the host filter context menu
         /// </summary>
@@ -110,8 +85,6 @@ namespace Dynamo.PackageManager
             /// The tooltip associated with the filter entry
             /// </summary>
             public string Tooltip { get; set; }
-
-            public List<YearItem> Years { get; set; }
 
             /// <summary>
             /// Filter entry click command, notice this is a dynamic command
@@ -383,15 +356,6 @@ namespace Dynamo.PackageManager
         /// </value>
         public ObservableCollection<PackageManagerSearchElementViewModel> SearchResults { get; internal set; }
 
-        private ObservableCollection<PackageManagerSearchElementViewModel> searchJsonResults;
-
-        public ObservableCollection<PackageManagerSearchElementViewModel> SearchJsonResults
-        {
-            get { return searchJsonResults; }
-            set { searchJsonResults = value; }
-        }
-
-
         /// <summary>
         /// Returns a new filtered collection of packages based on the current user
         /// </summary>
@@ -631,40 +595,9 @@ namespace Dynamo.PackageManager
             NonHostFilter = new List<FilterEntry>();
             CompatibilityFilter = new List<FilterEntry>();
             SelectedHosts = new List<string>();
-
-            SearchJsonResults = DeserializeLocalPackagesFromJson();
         }
 
-        private List<PackageManagerSearchElementViewModel> DeserializePackages(string json)
-        {
-            var settings = new JsonSerializerSettings
-            {
-                Converters = new List<JsonConverter> { new PackageManagerSearchElementViewModelConverter() },
-                NullValueHandling = NullValueHandling.Ignore
-            };
 
-            var viewModelList = JsonConvert.DeserializeObject<List<PackageManagerSearchElementViewModel>>(json, settings);
-
-            return viewModelList;
-        }
-
-        public string ReadEmbeddedResource(string resourceName)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
-        private ObservableCollection<PackageManagerSearchElementViewModel> DeserializeLocalPackagesFromJson()
-        {
-            string json = ReadEmbeddedResource("Dynamo.Wpf.packages.json");
-            var packages = DeserializePackages(json);
-
-            return new ObservableCollection<PackageManagerSearchElementViewModel> ( packages );
-        }
 
         /// <summary>
         /// Add package information to Lucene index
@@ -829,17 +762,6 @@ namespace Dynamo.PackageManager
                 foreach (var host in PackageManagerClientViewModel.Model?.GetKnownHosts())
                 {
                     hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
-                }
-
-                foreach(var filter in hostFilter)
-                {
-                    filter.Years = new List<YearItem>
-                    {
-                        new YearItem("2021"),
-                        new YearItem("2022"),
-                        new YearItem("2023"),
-                        new YearItem("2024")
-                    };
                 }
             }
             catch (Exception ex)
@@ -1800,137 +1722,5 @@ namespace Dynamo.PackageManager
             ClearMySearchResults();
 
         }
-    }
-
-    public class PackageManagerSearchElementViewModelConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return typeof(PackageManagerSearchElementViewModel).IsAssignableFrom(objectType);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            // Load the entire JSON object
-            JObject jsonObject = JObject.Load(reader);
-
-            // Deserialize the "Header" part
-            var header = jsonObject["SearchElementModel"]?["Header"]?.ToObject<PackageHeader>(serializer);
-
-            // Create the search element model and view model, but don't set properties yet
-            var searchElementModel = header != null ? new PackageManagerSearchElement(header) : null;
-            var viewModel = new PackageManagerSearchElementViewModel(searchElementModel, true, true);
-
-            // If necessary, manually adjust or clean up the VersionInfos here
-            if (searchElementModel != null)
-            {
-                // Avoid duplicating versions or ensure versions are populated correctly
-                var infos = jsonObject["SearchElementModel"]?["Header"]?["versions"]?.ToObject<List<VersionInfo>>(serializer)
-                                                 ?? new List<VersionInfo>();
-
-                foreach (var item in infos)
-                {
-                    if (item.Compatibility == null)
-                    {
-                        item.IsCompatible = (bool?)null;
-                    }
-                    else item.IsCompatible = GetVersionCompatibility(DynamoModel.Version, DynamoModel.HostAnalyticsInfo.HostVersion, item.Compatibility);
-                }
-
-                searchElementModel.VersionInfos = infos;
-            }
-
-            return viewModel;
-        }
-
-
-        private bool? GetVersionCompatibility(string dynaVersion, Version hostVersion, Compatibility compatibility)
-        {
-            // Check Dynamo compatibility (always present)
-            if(Version.TryParse(dynaVersion, out var dynamoVersion))
-            {
-
-                var isDynamoCompatible = CheckCompatibility(dynamoVersion, compatibility.Dynamo);
-                // If Dynamo is not compatible, return false immediately
-                if (isDynamoCompatible == false)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return (bool?)null;
-            }
-
-
-            // If there's no host version, compatibility is based solely on Dynamo
-            // and if we are here, it means that Dynamo is compatible
-            if (hostVersion == null)
-            {
-                return true;
-            }
-
-            // Check Host compatibility (if host version is present)
-            var hostCompatibility = compatibility.Revit ?? compatibility.Civil3D ?? compatibility.DotNet; // Choose appropriate host compatibility
-            var isHostCompatible = CheckCompatibility(hostVersion, hostCompatibility);
-
-            // If both Dynamo and Host are compatible, return true. Otherwise, return null or false based on the checks
-            return isHostCompatible.HasValue && isHostCompatible.Value ? true : (bool?)null;
-        }
-
-        // Helper method to check if a version is compatible based on CompatibilityDetail
-        private bool? CheckCompatibility(Version version, CompatibilityDetail detail)
-        {
-            if (detail == null)
-            {
-                // No compatibility detail available
-                return null;
-            }
-
-            // Check Min-Max range
-            if (!string.IsNullOrEmpty(detail.Min) && !string.IsNullOrEmpty(detail.Max))
-            {
-                if (IsVersionInRange(version, detail.Min, detail.Max))
-                {
-                    return true;
-                }
-            }
-
-            // Check if the version is in the list
-            if (detail.Versions != null)
-            {
-                // Extract Major.Minor from the current version and compare with the list
-                string majorMinorVersion = $"{version.Major}.{version.Minor}";
-
-                // Compare the Major.Minor version with the versions in the list
-                if (detail.Versions.Any(v => v.StartsWith(majorMinorVersion)))
-                {
-                    return true;
-                }
-            }
-
-            // If no match, return false
-            return false;
-        }
-
-        // Helper method to check if the version is within the Min-Max range
-        private bool IsVersionInRange(Version currentVersion, string min, string max)
-        {
-            if (Version.TryParse(min, out var minVersion) &&
-                Version.TryParse(max, out var maxVersion))
-            {
-                return currentVersion >= minVersion && currentVersion <= maxVersion;
-            }
-
-            return false;
-        }
-
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            JObject jsonObject = JObject.FromObject(value, serializer);
-            jsonObject.WriteTo(writer);
-        }
-    }
-        
+    }        
 }
