@@ -210,7 +210,6 @@ namespace Dynamo.PackageManager
                     package.AssemblyLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, package.RootDirectory);
                 }
                 
-                List<Assembly> blockedAssemblies = [];
                 // Try to load node libraries from all assemblies
                 foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
                 {
