@@ -898,8 +898,11 @@ namespace Dynamo.ViewModels
             nodeViewModel.Dispose();
 
             PostNodeChangeActions();
+
+            StopAnimations = Nodes.Count > MaxNodesBeforeAnimationStops;
         }
 
+        private const int MaxNodesBeforeAnimationStops = 150;
         void Model_NodeAdded(NodeModel node)
         {
             var nodeViewModel = new NodeViewModel(this, node);
@@ -914,7 +917,7 @@ namespace Dynamo.ViewModels
 
             PostNodeChangeActions();
 
-            StopAnimations = Nodes.Count > 10;
+            StopAnimations = Nodes.Count > MaxNodesBeforeAnimationStops;
         }
 
         void PostNodeChangeActions()

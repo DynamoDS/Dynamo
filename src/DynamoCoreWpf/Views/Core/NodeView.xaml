@@ -572,7 +572,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Canvas.ZIndex="4"
-            Style="{StaticResource SZoomFadeOutFrameworkElement}"
+            Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
             FlowDirection="LeftToRight"
             Orientation="Horizontal">
             <Grid
@@ -776,7 +776,7 @@
                                   RelativeSource={RelativeSource FindAncestor, 
                                   AncestorType={x:Type controls:WorkspaceView}}, 
                                   Converter={StaticResource ZoomToOpacityConverter}}"
-            Style="{StaticResource SZoomFadeOutPreview}"
+            Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeOutPreview}}"
             Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is below 0.4 -->
@@ -791,7 +791,7 @@
             CornerRadius="8,8,0,0"
             IsHitTestVisible="False"
             Opacity="0.5"
-            Style="{StaticResource SZoomFadeInPreview}"
+            Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeInPreview}}"
             Visibility="{Binding Path=DataContext.Zoom, 
                                      RelativeSource={RelativeSource FindAncestor, 
                                      AncestorType={x:Type controls:WorkspaceView}}, 
@@ -809,7 +809,7 @@
             Margin="0 5 0 0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Style="{StaticResource SZoomFadeInFrameworkElement}"
+            Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeInControl}}"
             Visibility="{Binding Path=DataContext.Zoom, 
                                          RelativeSource={RelativeSource FindAncestor, 
                                          AncestorType={x:Type controls:WorkspaceView}}, 
