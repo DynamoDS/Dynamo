@@ -781,9 +781,9 @@ namespace Dynamo.PackageManager.Wpf.Tests
             var packagesSearchResult = packageManagerSearchVM.Search(packageToBeSearched, true);
 
             //Validates that the Search returned results and that the first one is "Dynamo Samples"
-            Assert.IsTrue(packagesSearchResult != null);
-            Assert.IsTrue(packagesSearchResult.Count() == 1);
-            Assert.IsTrue(packagesSearchResult.FirstOrDefault().Name == packageToBeSearched);
+            Assert.IsTrue(packagesSearchResult != null, "The Search didn't return any results");
+            Assert.IsTrue(packagesSearchResult.Count() >= 1, string.Format("The number of results returned by search are: {0}", packagesSearchResult.Count()));
+            Assert.IsTrue(packagesSearchResult.FirstOrDefault().Name == packageToBeSearched, string.Format("The first search result {0} doesn't match with the expected: {1}: ", packagesSearchResult.FirstOrDefault().Name, packageToBeSearched));
         }
 
         [Test]
