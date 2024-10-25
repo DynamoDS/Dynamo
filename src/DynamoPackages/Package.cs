@@ -231,6 +231,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal bool RequiresSignedEntryPoints { get; set; }
 
+        internal AssemblyLoadContext AssemblyLoadContext { get; set; } = AssemblyLoadContext.Default;
         #endregion
 
         public Package(string directory, string name, string versionName, string license)
@@ -354,7 +355,7 @@ namespace Dynamo.PackageManager
         ///     I.E. Builtin Packages.
         /// </summary>
         /// <returns>The list of all node library assemblies</returns>
-        internal IEnumerable<PackageAssembly> EnumerateAndLoadAssembliesInBinDirectory(AssemblyLoadContext alc)
+        internal IEnumerable<PackageAssembly> EnumerateAndLoadAssembliesInBinDirectory()
         {
             var assemblies = new List<PackageAssembly>();
 
@@ -377,7 +378,7 @@ namespace Dynamo.PackageManager
                 if (shouldLoadFile)
                 {
                     // dll files may be un-managed, skip those
-                    var result = PackageLoader.TryLoadFrom(alc, assemFile.FullName, out assem);
+                    var result = PackageLoader.TryLoadFrom(AssemblyLoadContext, assemFile.FullName, out assem);
                     if (result)
                     {
                         // IsNodeLibrary may fail, we store the warnings here and then show
@@ -575,20 +576,6 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
-        AssemblyLoadContext GetPackageALC()
-        {
-            if (LoadedAssemblies.Any())
-            {
-                if (LoadedAssemblies.All(x => AssemblyLoadContext.GetLoadContext(x.Assembly) != AssemblyLoadContext.Default))
-                {
-                    return AssemblyLoadContext.GetLoadContext(LoadedAssemblies[0].Assembly);
-                }
-            }
-            return AssemblyLoadContext.Default;
-        }
-
-
-
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
         {
             if (LoadedAssemblies.Any())
@@ -598,7 +585,7 @@ namespace Dynamo.PackageManager
 
                 if (unloadAnyPackage || unloadThisPackage)
                 {
-                    var alc = GetPackageALC();
+                    var alc = AssemblyLoadContext;
                     if (alc != AssemblyLoadContext.Default)
                     {
                         void Alc_Unloading(AssemblyLoadContext obj)

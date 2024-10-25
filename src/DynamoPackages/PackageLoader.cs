@@ -202,45 +202,16 @@ namespace Dynamo.PackageManager
             {
                 var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
 
-                package.EnumerateAdditionalFiles();
-
-                // If the additional files contained an extension manifest, then request it be loaded.
-                var extensions = package.AdditionalFiles.Where(
-                    file => file.Model.Name.Contains("ExtensionDefinition.xml") || file.Model.Name.Contains("ViewExtensionDefinition.xml")).ToList();
-
-                AssemblyLoadContext pkgLoadContext = AssemblyLoadContext.Default;
-
                 bool isolateAnyPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolateAnyPackage", false) ?? false;
                 bool isolateThisPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolatePackage_" + package.Name, false) ?? false;
-                if (isolateAnyPackage || isolateThisPackage)
+                if (isolateAnyPackage || isolateThisPackage || true)
                 {
-                    if (extensions.Count() == 1)
-                    {
-                        var ext = extensions[0];
-                        string entryPoint = string.Empty;
-                        try
-                        {
-                            entryPoint = ExtensionLoader.GetExtensionPath(ext.Model.FullName);
-                            if (!string.IsNullOrEmpty(entryPoint))
-                            {
-                                pkgLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, Path.Combine(package.RootDirectory, entryPoint));
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Log(ex);
-                        }
-                    }
-                    else if (package.Header.node_libraries.Any())
-                    {
-                        string entryPoint = new AssemblyName(package.Header.node_libraries.First()).Name + ".dll";
-                        pkgLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, Path.Combine(package.BinaryDirectory, entryPoint));
-                    }
+                    package.AssemblyLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, package.RootDirectory);
                 }
-
-                List<Assembly> blockedAssemblies = new List<Assembly>();
+                
+                List<Assembly> blockedAssemblies = [];
                 // Try to load node libraries from all assemblies
-                foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory(pkgLoadContext))
+                foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
                 {
                     if (assem.IsNodeLibrary)
                     {
@@ -287,6 +258,8 @@ namespace Dynamo.PackageManager
                 var packageInfo = new Graph.Workspaces.PackageInfo(package.Name, new Version(package.VersionName));
                 var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo);
                 package.LoadedCustomNodes.AddRange(customNodes);
+
+                package.EnumerateAdditionalFiles();
 
                 // If the additional files contained an extension manifest, then request it be loaded.
                 var extensionManifests = package.AdditionalFiles.Where(
@@ -784,6 +757,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Attempt to load a managed assembly in to LoadFrom context. 
         /// </summary>
+        /// <param name="alc"></param>
         /// <param name="filename">The filename of a DLL</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns true if success, false if BadImageFormatException (i.e. not a managed assembly)</returns>
