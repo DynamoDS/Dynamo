@@ -730,10 +730,11 @@ namespace Dynamo.PackageManager.Wpf.Tests
         public void PackageSearchWithWhitespaceInName()
         {
             var packageToBeSearched = "Dynamo Samples";
-            var packagesListNames =  new List<string> { packageToBeSearched, "archi-lab.net", "LunchBox for Dynamo", "DynamoSap", "TuneUp" };
+            var packagesListNames =  new List<string> { "Dynamo Samples", "archi-lab.net", "LunchBox for Dynamo", "DynamoSap", "TuneUp" };
             string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
             string packageVersionNumber = "1.0.0.0";
-            string packageCreatedDateString = "2024 - 10 - 02T13:13:20.135000 + 00:00";
+            string packageCreatedDateString = "2016 - 10 - 02T13:13:20.135000 + 00:00";
+            string formItFilterName = "FormIt";
             var packageMaintainer = new User() { username = "DynamoTest", _id = "90-63-17" };
 
             List<PackageHeader> packageHeaders = new List<PackageHeader>();
@@ -744,7 +745,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<PackageManagerSearchElement> cachedPackages = new List<PackageManagerSearchElement>();
             foreach (var packageName in packagesListNames)
             {
-                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, host_dependencies = new List<string> { "FormIt" }, created = packageCreatedDateString };
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, host_dependencies = new List<string> { formItFilterName }, created = packageCreatedDateString };
                 cachedPackages.Add(new PackageManagerSearchElement(new PackageHeader() { name = packageName, versions = new List<PackageVersion> { tmpPackageVersion } }));
             }
             pmCVM.SetupProperty(p => p.CachedPackageList, cachedPackages);
@@ -758,6 +759,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 var tmpPackageVersion = new PackageVersion
                 {
                     version = packageVersionNumber,
+                    host_dependencies = new List<string> { formItFilterName },
                     created = packageCreatedDateString
                 };
                 var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
@@ -765,6 +767,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
                     _id = packageId,
                     name = package,
                     versions = new List<PackageVersion> { tmpPackageVersion },
+                    host_dependencies = new List<string> { formItFilterName },
                     maintainers = new List<User> { packageMaintainer },
                 }), false);
                 packageManagerSearchVM.AddToSearchResults(tmpPackage);
