@@ -183,6 +183,10 @@ Dynamo.Controls.DateToPackageLabelConverter
 Dynamo.Controls.DateToPackageLabelConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.DateToPackageLabelConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.DateToPackageLabelConverter.DateToPackageLabelConverter() -> void
+Dynamo.Controls.DateToPackageTooltipConverter
+Dynamo.Controls.DateToPackageTooltipConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.DateToPackageTooltipConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.DateToPackageTooltipConverter.DateToPackageTooltipConverter() -> void
 Dynamo.Controls.DateToVisibilityCollapsedConverter
 Dynamo.Controls.DateToVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.DateToVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -337,6 +341,10 @@ Dynamo.Controls.InverseBoolToVisibilityConverter
 Dynamo.Controls.InverseBoolToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.InverseBoolToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.InverseBoolToVisibilityConverter.InverseBoolToVisibilityConverter() -> void
+Dynamo.Controls.InverseEmptyListToVisibilityConverter
+Dynamo.Controls.InverseEmptyListToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.InverseEmptyListToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.InverseEmptyListToVisibilityConverter.InverseEmptyListToVisibilityConverter() -> void
 Dynamo.Controls.LacingToAbbreviationConverter
 Dynamo.Controls.LacingToAbbreviationConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LacingToAbbreviationConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -460,6 +468,10 @@ Dynamo.Controls.NonEmptyStringToCollapsedConverter
 Dynamo.Controls.NonEmptyStringToCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NonEmptyStringToCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NonEmptyStringToCollapsedConverter.NonEmptyStringToCollapsedConverter() -> void
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NullOrEmptyListToVisibilityVisibleConverter.NullOrEmptyListToVisibilityVisibleConverter() -> void
 Dynamo.Controls.NullOrEmptyStringToVisibiltyCollapsedConverter
 Dynamo.Controls.NullOrEmptyStringToVisibiltyCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NullOrEmptyStringToVisibiltyCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -1295,6 +1307,8 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Hosts.get 
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsDeprecated.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsEnabledForInstall.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsOnwer.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.get -> bool?
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.LatestVersion.get -> string
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.LatestVersionCreated.get -> string
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Maintainers.get -> string
@@ -1306,11 +1320,14 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PackageSea
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PkgVersion.get -> System.Collections.Generic.IEnumerable<string>
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.RequestDownload -> Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PackageSearchElementDownloadHandler
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.RequestShowFileDialog -> System.EventHandler<Dynamo.ViewModels.PackagePathEventArgs>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.ReversedVersionInformationList.get -> System.ComponentModel.ICollectionView
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SearchElementModel.get -> Dynamo.PackageManager.PackageManagerSearchElement
-Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.get -> string
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.get -> Dynamo.PackageManager.VersionInformation
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.UpvoteCommand.get -> System.Windows.Input.ICommand
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.UpvoteCommand.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInformationList.get -> System.Collections.Generic.List<Dynamo.PackageManager.VersionInformation>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInformationList.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Versions.get -> System.Collections.Generic.List<System.Tuple<Greg.Responses.PackageVersion, Prism.Commands.DelegateCommand<object>>>
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitRepositoryCommand.get -> System.Windows.Input.ICommand
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitRepositoryCommand.set -> void
@@ -1494,6 +1511,7 @@ Dynamo.UI.Controls.StartPageViewModel.RecentFiles.get -> System.Collections.Obje
 Dynamo.UI.Controls.StartPageViewModel.References.get -> System.Collections.Generic.IEnumerable<Dynamo.UI.Controls.StartPageListItem>
 Dynamo.UI.Controls.StartPageViewModel.SampleFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.SampleFileEntry>
 Dynamo.UI.Controls.StartPageViewModel.SampleFolderPath.get -> string
+Dynamo.UI.Controls.StartPageViewModel.SampleDatasetsPath.get -> string
 Dynamo.UI.Controls.StateChangedEventHandler
 Dynamo.UI.Controls.ToolTipWindow
 Dynamo.UI.Controls.ToolTipWindow.CopyIconMouseClick(object sender, System.Windows.Input.MouseButtonEventArgs e) -> void
@@ -1592,9 +1610,10 @@ Dynamo.UI.Views.ScriptHomeObject.NewWorkspace() -> void
 Dynamo.UI.Views.ScriptHomeObject.OpenFile(string path) -> void
 Dynamo.UI.Views.ScriptHomeObject.OpenWorkspace() -> void
 Dynamo.UI.Views.ScriptHomeObject.SaveSettings(string settings) -> void
-Dynamo.UI.Views.ScriptHomeObject.ScriptHomeObject(System.Action<string> requestOpenFile, System.Action requestNewWorkspace, System.Action requestOpenWorkspace, System.Action requestNewCustomNodeWorkspace, System.Action requestApplicationLoaded, System.Action<string> requestShowGuidedTour, System.Action requestShowSampleFilesInFolder, System.Action requestShowBackupFilesInFolder, System.Action requestShowTemplate, System.Action<string> requestSaveSettings) -> void
+Dynamo.UI.Views.ScriptHomeObject.ScriptHomeObject(System.Action<string> requestOpenFile, System.Action requestNewWorkspace, System.Action requestOpenWorkspace, System.Action requestNewCustomNodeWorkspace, System.Action requestApplicationLoaded, System.Action<string> requestShowGuidedTour, System.Action requestShowSampleFilesInFolder, System.Action requestShowSampleDatasetsInFolder, System.Action requestShowBackupFilesInFolder, System.Action requestShowTemplate, System.Action<string> requestSaveSettings) -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowBackupFilesInFolder() -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowSampleFilesInFolder() -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowSampleDatasetsInFolder() -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowTempalte() -> void
 Dynamo.UI.Views.ScriptHomeObject.StartGuidedTour(string path) -> void
 Dynamo.UI.Views.ScriptObject
@@ -1743,17 +1762,22 @@ Dynamo.ViewModels.ConnectorPinViewModel.IsHoveredOver.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.IsSelected.get -> bool
 Dynamo.ViewModels.ConnectorPinViewModel.IsTemporarilyVisible.get -> bool
 Dynamo.ViewModels.ConnectorPinViewModel.IsTemporarilyVisible.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.IsInGroup.get -> bool
+Dynamo.ViewModels.ConnectorPinViewModel.IsInGroup.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.Left.get -> double
 Dynamo.ViewModels.ConnectorPinViewModel.Left.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.Model.get -> Dynamo.Graph.ConnectorPinModel
 Dynamo.ViewModels.ConnectorPinViewModel.Model.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.RequestRedraw -> System.EventHandler
 Dynamo.ViewModels.ConnectorPinViewModel.RequestRemove -> System.EventHandler
+Dynamo.ViewModels.ConnectorPinViewModel.RequestRemoveFromGroup -> System.EventHandler
 Dynamo.ViewModels.ConnectorPinViewModel.RequestSelect -> System.EventHandler
 Dynamo.ViewModels.ConnectorPinViewModel.Top.get -> double
 Dynamo.ViewModels.ConnectorPinViewModel.Top.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.UnpinConnectorCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.ConnectorPinViewModel.UnpinConnectorCommand.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.RemovePinFromGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorPinViewModel.RemovePinFromGroupCommand.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.ZIndex.get -> int
 Dynamo.ViewModels.ConnectorPinViewModel.ZIndex.set -> void
 Dynamo.ViewModels.ConnectorViewModel
@@ -1892,6 +1916,8 @@ Dynamo.ViewModels.DynamoViewModel.DisplayStartPageCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.DoGraphAutoLayout(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.DumpLibraryToXmlCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.DumpLibraryToXmlCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.DynamoViewModel(Dynamo.ViewModels.DynamoViewModel.StartConfiguration startConfiguration) -> void
 Dynamo.ViewModels.DynamoViewModel.EditName.get -> string
 Dynamo.ViewModels.DynamoViewModel.EditName.set -> void
@@ -1924,6 +1950,9 @@ Dynamo.ViewModels.DynamoViewModel.GoHomeView(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToDictionary(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWebsite(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.GoToSourceCode(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToSourceCodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GoToSourceCodeCommand.set -> void
@@ -2137,6 +2166,8 @@ Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScale(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScaleCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScaleCommand.set -> void
@@ -2985,6 +3016,8 @@ Dynamo.ViewModels.WorkspaceViewModel.CanFindNodesFromElements.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.CanPaste.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanRunNodeToCode.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanShowInfoBubble.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.CanUpdateAllPythonEngine.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.CanUpdatePythonEngine.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanZoomIn.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.CanZoomOut.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.Checksum.get -> string
@@ -4506,7 +4539,9 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewContextMenuClearLog.get -> stri
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuCheckDailyBuild.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDebugModes.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpData.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpLibrary.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpNodeHelpData.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuForceReExecute.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuForceUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuRunMutationTest.get -> string
@@ -4563,6 +4598,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewHelpDictionary.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuDisplayStartPage.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuGotoWebsite.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuGotoRepo.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuGotoWiki.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuReportBug.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuShowInFolder.get -> string
@@ -4842,10 +4878,12 @@ static Dynamo.Wpf.Properties.Resources.MessageFailedToDelete.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToDownloadPackage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToDownloadPackageVersion.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToFindNodeById.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageFailedToFindGroupById.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToOpenCorruptedFile.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToSaveAsImage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToUnload.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailToUninstallPackage.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageFileInUseByApplication.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageForceInstallOrUninstallToContinue.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageForceInstallOrUninstallUponRestart.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageGettingNodeError.get -> string
@@ -4900,6 +4938,7 @@ static Dynamo.Wpf.Properties.Resources.NodeContextMenuIsOutput.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuPreview.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuRenameNode.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuShowLabels.get -> string
+static Dynamo.Wpf.Properties.Resources.NodeHelpIsDumped.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeCategory.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeInput.get -> string
@@ -4960,17 +4999,24 @@ static Dynamo.Wpf.Properties.Resources.PackageContextMenuUnmarkDeletePackageTool
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuUnmarkUnloadPackageText.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuUnmarkUnloadPackageTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDeprecatedTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsCompatibility.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsCompatibilityWithSetup.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsCompatibleVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsCopyRightHolder.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsCopyRightYear.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsDependsOn.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsHost.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsIncompatibileVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsKeywords.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsLicense.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsLinks.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsPackage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsPython.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsReleaseNotes.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsSize.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsUnknownCompatibilityVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersions.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersionsAndPackageRequirements.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadConfirmMessageBoxTitle.get -> string
@@ -5001,6 +5047,8 @@ static Dynamo.Wpf.Properties.Resources.PackageManagerClearAllButtonText.get -> s
 static Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesPublishedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesUploadedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackagePackagePath.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerIncompatibleVersionDownloadMsg.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerIncompatibleVersionDownloadTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerInstall.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerInstalledPackagesTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerLoadingTimedOutWarningMessage.get -> string
@@ -5439,6 +5487,7 @@ static Dynamo.Wpf.Properties.Resources.TabFileNameReadOnlyPrefix.get -> string
 static Dynamo.Wpf.Properties.Resources.TermsOfUseAcceptButton.get -> string
 static Dynamo.Wpf.Properties.Resources.TermsOfUseDeclineButton.get -> string
 static Dynamo.Wpf.Properties.Resources.TermsOfUseViewTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.TitleFileInUse.get -> string
 static Dynamo.Wpf.Properties.Resources.TitlePackageTargetOtherHost.get -> string
 static Dynamo.Wpf.Properties.Resources.TooltipCurrentIndex.get -> string
 static Dynamo.Wpf.Properties.Resources.TourLabelProgressText.get -> string
@@ -5481,6 +5530,9 @@ static Dynamo.Wpf.Properties.Resources.UnknowDateFormat.get -> string
 static Dynamo.Wpf.Properties.Resources.UnloadFailureMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UnpinNodeTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineMainMenuHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineWarning.get -> string
+static Dynamo.Wpf.Properties.Resources.UpdateAllPythonEngineWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.UpdateNodeIconsDebugMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.UsageReportPromptDialogTitle.get -> string
@@ -5645,6 +5697,7 @@ virtual Dynamo.ViewModels.ConnectorAnchorViewModel.OnRequestDispose(object sende
 virtual Dynamo.ViewModels.ConnectorContextMenuViewModel.OnRequestDispose(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestRedraw(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestRemove(object sender, System.EventArgs e) -> void
+virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestRemoveFromGroup(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestSelect(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.DynamoViewModel.OnEnableShortcutBarItems(bool enable) -> void
 virtual Dynamo.ViewModels.DynamoViewModel.OnRequestAboutWindow(Dynamo.ViewModels.DynamoViewModel vm) -> void

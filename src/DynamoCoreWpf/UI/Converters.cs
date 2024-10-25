@@ -170,6 +170,42 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Returns Visibility.Visible if the collection is empty, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class NullOrEmptyListToVisibilityVisibleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Visible;
+
+            return collection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Returns Visible if the collection is not empty, otherwise returns Collapsed
+    /// </summary>
+    public class InverseEmptyListToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            return collection.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageSearchStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -1541,6 +1577,40 @@ namespace Dynamo.Controls
                 return difference.TotalDays >= 30 ? "" : Resources.PackageManagerPackageUpdated;
             }
             return Resources.PackageManagerPackageNew;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Used to determine the tooltip which appears next to a package when it's either
+    /// brand new, recently updated, or deprecated.
+    /// If the package was updated in the last 30 days it says 'Updated'.
+    /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
+    /// </summary>
+    public class DateToPackageTooltipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is Dynamo.PackageManager.PackageManagerSearchElement packageManagerSearchElement)) return String.Empty;
+            if (packageManagerSearchElement.IsDeprecated) return Resources.PackageDeprecatedTooltip;
+
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
+
+            // For testing purposes
+            var test = DateTime.TryParse((string)parameter, out DateTime testDate);
+            TimeSpan difference = test ? testDate - dateLastUpdated : DateTime.Now - dateLastUpdated;
+
+            int numberVersions = packageManagerSearchElement.Header.num_versions;
+
+            if (numberVersions > 1)
+            {
+                return difference.TotalDays >= 30 ? "" : Resources.PackageFilterUpdatedTooltip;
+            }
+            return Resources.PackageFilterNewTooltip;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

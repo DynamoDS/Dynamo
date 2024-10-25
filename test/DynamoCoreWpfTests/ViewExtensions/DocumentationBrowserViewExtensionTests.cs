@@ -829,7 +829,7 @@ namespace DynamoCoreWpfTests
             var dynFileName = Path.GetFileNameWithoutExtension(docsViewModel.Link.AbsolutePath) + ".dyn";
 
             //This will return a path with the pkg doc + dyn file name
-            var sharedFilesPath = Path.Combine(DocumentationBrowserView.SharedDocsDirectoryName, dynFileName);
+            var sharedFilesPath = Path.Combine(Configurations.DynamoNodeHelpDocs, dynFileName);
 
             Assert.IsNotNull(graphPathValue);
             Assert.IsTrue(!string.IsNullOrEmpty(graphPathValue.ToString()));

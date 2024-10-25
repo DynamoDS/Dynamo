@@ -1451,11 +1451,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Dump Data.
+        /// </summary>
+        public static string DynamoViewDebugMenuDumpData {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDumpData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Dump Library.
         /// </summary>
         public static string DynamoViewDebugMenuDumpLibrary {
             get {
                 return ResourceManager.GetString("DynamoViewDebugMenuDumpLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Dump Node Help Data.
+        /// </summary>
+        public static string DynamoViewDebugMenuDumpNodeHelpData {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDumpNodeHelpData", resourceCulture);
             }
         }
         
@@ -1951,6 +1969,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewHelpMenuDisplayStartPage {
             get {
                 return ResourceManager.GetString("DynamoViewHelpMenuDisplayStartPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo _Repository.
+        /// </summary>
+        public static string DynamoViewHelpMenuGotoRepo {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpMenuGotoRepo", resourceCulture);
             }
         }
         
@@ -4481,6 +4508,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No group could be found with that Id..
+        /// </summary>
+        public static string MessageFailedToFindGroupById {
+            get {
+                return ResourceManager.GetString("MessageFailedToFindGroupById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No node could be found with that Id..
         /// </summary>
         public static string MessageFailedToFindNodeById {
@@ -4522,6 +4558,17 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageFailToUninstallPackage {
             get {
                 return ResourceManager.GetString("MessageFailToUninstallPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file is currently in use by another application.
+        ///	
+        ///Please close the file before trying to overwrite it..
+        /// </summary>
+        public static string MessageFileInUseByApplication {
+            get {
+                return ResourceManager.GetString("MessageFileInUseByApplication", resourceCulture);
             }
         }
         
@@ -5041,6 +5088,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeContextMenuShowLabels {
             get {
                 return ResourceManager.GetString("NodeContextMenuShowLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Help Data is dumped to \&quot;{0}\&quot;..
+        /// </summary>
+        public static string NodeHelpIsDumped {
+            get {
+                return ResourceManager.GetString("NodeHelpIsDumped", resourceCulture);
             }
         }
         
@@ -5591,6 +5647,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to COMPATIBILITY.
+        /// </summary>
+        public static string PackageDetailsCompatibility {
+            get {
+                return ResourceManager.GetString("PackageDetailsCompatibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compatible with your current setup.
+        /// </summary>
+        public static string PackageDetailsCompatibilityWithSetup {
+            get {
+                return ResourceManager.GetString("PackageDetailsCompatibilityWithSetup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This version should be compatible with your current setup.
+        /// </summary>
+        public static string PackageDetailsCompatibleVersionTooltip {
+            get {
+                return ResourceManager.GetString("PackageDetailsCompatibleVersionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copyright Holder.
         /// </summary>
         public static string PackageDetailsCopyRightHolder {
@@ -5605,6 +5688,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageDetailsCopyRightYear {
             get {
                 return ResourceManager.GetString("PackageDetailsCopyRightYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Depends on.
+        /// </summary>
+        public static string PackageDetailsDependsOn {
+            get {
+                return ResourceManager.GetString("PackageDetailsDependsOn", resourceCulture);
             }
         }
         
@@ -5632,6 +5724,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageDetailsHost {
             get {
                 return ResourceManager.GetString("PackageDetailsHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This version may be incompatible with your current setup.
+        /// </summary>
+        public static string PackageDetailsIncompatibileVersionTooltip {
+            get {
+                return ResourceManager.GetString("PackageDetailsIncompatibileVersionTooltip", resourceCulture);
             }
         }
         
@@ -5681,11 +5782,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Release notes.
+        /// </summary>
+        public static string PackageDetailsReleaseNotes {
+            get {
+                return ResourceManager.GetString("PackageDetailsReleaseNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Size.
         /// </summary>
         public static string PackageDetailsSize {
             get {
                 return ResourceManager.GetString("PackageDetailsSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The compatibility of this version has not been verified. It may or may not be compatible with your current setup.
+        /// </summary>
+        public static string PackageDetailsUnknownCompatibilityVersionTooltip {
+            get {
+                return ResourceManager.GetString("PackageDetailsUnknownCompatibilityVersionTooltip", resourceCulture);
             }
         }
         
@@ -5957,6 +6076,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerFinishedPackagePackagePath {
             get {
                 return ResourceManager.GetString("PackageManagerFinishedPackagePackagePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This version is incompatible with your current setup (Dynamo and host version, if applicable). It may not work properly. Do you want to install it anyway?.
+        /// </summary>
+        public static string PackageManagerIncompatibleVersionDownloadMsg {
+            get {
+                return ResourceManager.GetString("PackageManagerIncompatibleVersionDownloadMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incompatible version.
+        /// </summary>
+        public static string PackageManagerIncompatibleVersionDownloadTitle {
+            get {
+                return ResourceManager.GetString("PackageManagerIncompatibleVersionDownloadTitle", resourceCulture);
             }
         }
         
@@ -6456,7 +6593,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View Details.
+        ///   Looks up a localized string similar to Info.
         /// </summary>
         public static string PackageSearchResultViewDetails {
             get {
@@ -9913,6 +10050,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File in use.
+        /// </summary>
+        public static string TitleFileInUse {
+            get {
+                return ResourceManager.GetString("TitleFileInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Host Error.
         /// </summary>
         public static string TitlePackageTargetOtherHost {
@@ -10289,6 +10435,33 @@ namespace Dynamo.Wpf.Properties {
         public static string UnsavedChangesMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UnsavedChangesMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Python Engine.
+        /// </summary>
+        public static string UpdateAllPythonEngineMainMenuHeader {
+            get {
+                return ResourceManager.GetString("UpdateAllPythonEngineMainMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update all {0} python nodes in the current workspace to use {1} engine?.
+        /// </summary>
+        public static string UpdateAllPythonEngineWarning {
+            get {
+                return ResourceManager.GetString("UpdateAllPythonEngineWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update All Python Nodes.
+        /// </summary>
+        public static string UpdateAllPythonEngineWarningTitle {
+            get {
+                return ResourceManager.GetString("UpdateAllPythonEngineWarningTitle", resourceCulture);
             }
         }
         

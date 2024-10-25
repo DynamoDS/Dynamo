@@ -239,7 +239,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <param name="text">text to be added to clipboard</param>
         internal void OnCopyToClipboard(string text)
         {
-            dynamoViewModel.Model.ClipBoard.Clear();
             Clipboard.SetText(text);
         }
 

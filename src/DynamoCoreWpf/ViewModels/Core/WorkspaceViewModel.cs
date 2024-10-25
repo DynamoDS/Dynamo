@@ -1156,7 +1156,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X)
                            .Min();
@@ -1164,7 +1164,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y)
                            .Min();
@@ -1172,7 +1172,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X + x.Width)
                            .Max();
@@ -1188,7 +1188,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y + x.Height)
                            .Max();
@@ -1646,6 +1646,25 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
+
+            try
+            {
+                var group = DynamoViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID.ToString() == id.ToString());
+
+                if (group != null)
+                {
+                    //select the element
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(group);
+
+                    //focus on the element
+                    DynamoViewModel.ShowElement(group);
+                }
+            }
+            catch
+            {
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindGroupById);
+            }
         }
 
         private static bool CanFindById(object id)
@@ -1780,7 +1799,8 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
-            RaisePropertyChanged("SelectionArgumentLacing");            
+            RaisePropertyChanged("SelectionArgumentLacing");
+            RaisePropertyChanged("CanUpdatePythonEngine");
         }
 
         /// <summary>
