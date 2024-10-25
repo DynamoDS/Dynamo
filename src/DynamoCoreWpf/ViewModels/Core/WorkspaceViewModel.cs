@@ -209,29 +209,29 @@ namespace Dynamo.ViewModels
         {
             get
             {
-              bool hasRunWithoutCrash = false;
-              string runType = RunType.Manual.ToString();
-              string runPeriod = RunSettings.DefaultRunPeriod.ToString();
-              HomeWorkspaceModel homeWorkspace = Model as HomeWorkspaceModel;
-              if (homeWorkspace != null)
-              {
-                hasRunWithoutCrash = homeWorkspace.HasRunWithoutCrash;
-                runType = homeWorkspace.RunSettings.RunType.ToString();
-                runPeriod = homeWorkspace.RunSettings.RunPeriod.ToString();
-              }
+                bool hasRunWithoutCrash = false;
+                string runType = RunType.Manual.ToString();
+                string runPeriod = RunSettings.DefaultRunPeriod.ToString();
+                HomeWorkspaceModel homeWorkspace = Model as HomeWorkspaceModel;
+                if (homeWorkspace != null)
+                {
+                    hasRunWithoutCrash = homeWorkspace.HasRunWithoutCrash;
+                    runType = homeWorkspace.RunSettings.RunType.ToString();
+                    runPeriod = homeWorkspace.RunSettings.RunPeriod.ToString();
+                }
 
-              bool isVisibleInDynamoLibrary = true;
-              CustomNodeWorkspaceModel customNodeWorkspace = Model as CustomNodeWorkspaceModel;
-              if (customNodeWorkspace != null)
-                isVisibleInDynamoLibrary = customNodeWorkspace.IsVisibleInDynamoLibrary;
+                bool isVisibleInDynamoLibrary = true;
+                CustomNodeWorkspaceModel customNodeWorkspace = Model as CustomNodeWorkspaceModel;
+                if (customNodeWorkspace != null)
+                    isVisibleInDynamoLibrary = customNodeWorkspace.IsVisibleInDynamoLibrary;
 
-              return new DynamoPreferencesData(
-                Model.ScaleFactor,
-                hasRunWithoutCrash,
-                isVisibleInDynamoLibrary,
-                AssemblyHelper.GetDynamoVersion().ToString(),
-                runType,
-                runPeriod);
+                return new DynamoPreferencesData(
+                  Model.ScaleFactor,
+                  hasRunWithoutCrash,
+                  isVisibleInDynamoLibrary,
+                  AssemblyHelper.GetDynamoVersion().ToString(),
+                  runType,
+                  runPeriod);
             }
         }
 
@@ -379,7 +379,7 @@ namespace Dynamo.ViewModels
                 {
                     var connectorModel = connector.ConnectorModel;
 
-                    var startingPort= connectorModel.Start;
+                    var startingPort = connectorModel.Start;
                     var endingPort = connectorModel.End;
 
                     // node info connections has a unique id in the format: startnodeid[outputindex]endnodeid[outputindex].
@@ -397,10 +397,10 @@ namespace Dynamo.ViewModels
                     CurrentCheckSum = string.Empty;
                     return string.Empty;
                 }
-            }            
+            }
         }
 
-        Tuple<string,int> GetNodeByInputId(string inputId, JObject jsonWorkspace)
+        Tuple<string, int> GetNodeByInputId(string inputId, JObject jsonWorkspace)
         {
             var nodes = jsonWorkspace["Nodes"];
 
@@ -434,7 +434,7 @@ namespace Dynamo.ViewModels
                         }
                         connectedInputIndex++;
                     }
-                }                
+                }
             }
 
             return new Tuple<string, int>(nodeId, connectedInputIndex);
@@ -471,6 +471,10 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Zoom");
             }
         }
+
+        [JsonIgnore]
+        public bool StopAnimations { get => stopAnimations; set { stopAnimations = value; RaisePropertyChanged(nameof(StopAnimations)); } }
+        private bool stopAnimations = false;
 
         [JsonIgnore]
         public bool CanZoomIn
@@ -549,7 +553,7 @@ namespace Dynamo.ViewModels
             var errorsColl = new CollectionContainer { Collection = Errors };
             WorkspaceElements.Add(errorsColl);
 
-            var annotationsColl = new CollectionContainer {Collection = Annotations};
+            var annotationsColl = new CollectionContainer { Collection = Annotations };
             WorkspaceElements.Add(annotationsColl);
 
             //respond to collection changes on the model by creating new view models
@@ -572,7 +576,7 @@ namespace Dynamo.ViewModels
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
             Model.PopulateJSONWorkspace += Model_PopulateJSONWorkspace;
-            
+
             DynamoSelection.Instance.Selection.CollectionChanged += RefreshViewOnSelectionChange;
 
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
@@ -599,7 +603,7 @@ namespace Dynamo.ViewModels
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-            
+
             NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
             {
                 Visible = true
@@ -615,8 +619,8 @@ namespace Dynamo.ViewModels
         /// <returns>workspace model with view block in string format</returns>
         private string Model_PopulateJSONWorkspace(JObject modelData)
         {
-             var jsonData = AddViewBlockToJSON(modelData);
-             return jsonData.ToString();
+            var jsonData = AddViewBlockToJSON(modelData);
+            return jsonData.ToString();
         }
 
         public override void Dispose()
@@ -715,7 +719,7 @@ namespace Dynamo.ViewModels
 
                 // Stage 2: Save
                 string saveContent;
-                if(saveContext == SaveContext.SaveAs && !isBackup)
+                if (saveContext == SaveContext.SaveAs && !isBackup)
                 {
                     // For intentional SaveAs either through UI or API calls, replace workspace elements' Guids and workspace Id
                     jo["Uuid"] = Guid.NewGuid().ToString();
@@ -735,15 +739,15 @@ namespace Dynamo.ViewModels
                             }
                         }
                     }
-                    saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());                    
+                    saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());
                 }
                 else
                 {
                     saveContent = jo.ToString();
-                }                
+                }
 
                 File.WriteAllText(filePath, saveContent);
-                
+
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
                 // The assignation of the JsonRepresentation and Guid is only for the checksum flow, it will grab info only from .dyn files
@@ -763,7 +767,7 @@ namespace Dynamo.ViewModels
                 if (this.Model is CustomNodeWorkspaceModel customNodeWorkspaceModel)
                 {
                     //If the custom node Name is already set and the FileName is already set then we don't need to change the Name with "backup"
-                    if(string.IsNullOrEmpty(customNodeWorkspaceModel.Name) && string.IsNullOrEmpty(customNodeWorkspaceModel.FileName))
+                    if (string.IsNullOrEmpty(customNodeWorkspaceModel.Name) && string.IsNullOrEmpty(customNodeWorkspaceModel.FileName))
                         customNodeWorkspaceModel.SetInfo(Path.GetFileNameWithoutExtension(filePath));
                 }
             }
@@ -845,7 +849,7 @@ namespace Dynamo.ViewModels
             var matchingAnnotation = Annotations.First(x => x.AnnotationModel == annotation);
             Annotations.Remove(matchingAnnotation);
             matchingAnnotation.Dispose();
-           
+
         }
 
         private void Model_AnnotationsCleared()
@@ -909,6 +913,8 @@ namespace Dynamo.ViewModels
                 Errors.Add(nodeViewModel.ErrorBubble);
 
             PostNodeChangeActions();
+
+            StopAnimations = Nodes.Count > 10;
         }
 
         void PostNodeChangeActions()
@@ -924,7 +930,7 @@ namespace Dynamo.ViewModels
         /// <param name="obj">The object.</param>
         public virtual void OnNodeModified(NodeModel obj)
         {
-            
+
         }
 
         internal void CheckAndSetPeriodicRunCapability()
@@ -941,7 +947,7 @@ namespace Dynamo.ViewModels
         {
             switch (portViewModel.EventType)
             {
-                case PortEventType.MouseEnter:                    
+                case PortEventType.MouseEnter:
                     IsSnapping = this.CheckActiveConnectorCompatibility(portViewModel);
                     this.portViewModel = portViewModel;
                     break;
@@ -1050,7 +1056,7 @@ namespace Dynamo.ViewModels
             var selection = DynamoSelection.Instance.Selection;
             var childlessModels = Model.Nodes
                 .Concat<ModelBase>(Model.Notes)
-                .Concat<ModelBase>(Pins.Select(c=>c.Model));
+                .Concat<ModelBase>(Pins.Select(c => c.Model));
 
             foreach (var n in childlessModels)
             {
@@ -1219,10 +1225,10 @@ namespace Dynamo.ViewModels
             switch (alignType)
             {
                 case "HorizontalCenter":
-                {
-                    var xAll = GetSelectionAverageX();
-                    toAlign.ForEach((x) => { x.CenterX = xAll; });
-                }
+                    {
+                        var xAll = GetSelectionAverageX();
+                        toAlign.ForEach((x) => { x.CenterX = xAll; });
+                    }
                     break;
                 case "HorizontalLeft":
                     {
@@ -1257,10 +1263,10 @@ namespace Dynamo.ViewModels
                     }
                     break;
                 case "VerticalCenter":
-                {
-                    var yAll = GetSelectionAverageY();
-                    toAlign.ForEach((x) => { x.CenterY = yAll; });
-                }
+                    {
+                        var yAll = GetSelectionAverageY();
+                        toAlign.ForEach((x) => { x.CenterY = yAll; });
+                    }
                     break;
                 case "VerticalTop":
                     {
@@ -1285,7 +1291,7 @@ namespace Dynamo.ViewModels
                         {
                             if (x is ConnectorPinModel pin)
                             {
-                                x.Y = yAll - ConnectorPinViewModel.OneThirdWidth*2;
+                                x.Y = yAll - ConnectorPinViewModel.OneThirdWidth * 2;
                             }
                             else
                             {
@@ -1295,67 +1301,67 @@ namespace Dynamo.ViewModels
                     }
                     break;
                 case "VerticalDistribute":
-                {
-                    var nodesSelected = DynamoSelection.Instance.Selection.Where(node => !(node is AnnotationModel) && node is ILocatable);
-                    if (nodesSelected.Count() <= 2) return;
-
-                    var yMin = GetSelectionMinY();
-                    var yMax = GetSelectionMaxY();
-
-                    var spacing = 0.0;
-                    var span = yMax - yMin;
-
-                    var nodeHeightSum =
-                        nodesSelected.Where(y => y is ILocatable)
-                            .Cast<ILocatable>()
-                            .Sum((y) => y.Height);
-
-                    if (span > nodeHeightSum)
                     {
-                        spacing = (span - nodeHeightSum)
-                            /(nodesSelected.Count() - 1);
-                    }
+                        var nodesSelected = DynamoSelection.Instance.Selection.Where(node => !(node is AnnotationModel) && node is ILocatable);
+                        if (nodesSelected.Count() <= 2) return;
 
-                    var cursor = yMin;
-                    foreach (var node in toAlign.OrderBy(y => y.Y))
-                    {
-                        node.Y = cursor;
-                        cursor += node.Height + spacing;
+                        var yMin = GetSelectionMinY();
+                        var yMax = GetSelectionMaxY();
+
+                        var spacing = 0.0;
+                        var span = yMax - yMin;
+
+                        var nodeHeightSum =
+                            nodesSelected.Where(y => y is ILocatable)
+                                .Cast<ILocatable>()
+                                .Sum((y) => y.Height);
+
+                        if (span > nodeHeightSum)
+                        {
+                            spacing = (span - nodeHeightSum)
+                                / (nodesSelected.Count() - 1);
+                        }
+
+                        var cursor = yMin;
+                        foreach (var node in toAlign.OrderBy(y => y.Y))
+                        {
+                            node.Y = cursor;
+                            cursor += node.Height + spacing;
+                        }
                     }
-                }
                     break;
                 case "HorizontalDistribute":
-                {
-                    var nodesSelected = DynamoSelection.Instance.Selection.Where(node => !(node is AnnotationModel) && node is ILocatable);
-                    if (nodesSelected.Count() <= 2) return;
-
-                    var xMin = GetSelectionMinX();
-                    var xMax = GetSelectionMaxX();
-
-                    var spacing = 0.0;
-                    var span = xMax - xMin;
-                    var nodeWidthSum =
-                        nodesSelected.Where((x) => x is ILocatable)
-                            .Cast<ILocatable>()
-                            .Sum((x) => x.Width);
-
-                    // If there is more span than total node width,
-                    // distribute the nodes with a gap. If not, leave
-                    // the spacing at 0 and the nodes will distribute
-                    // up against each other.
-                    if (span > nodeWidthSum)
                     {
-                        spacing = (span - nodeWidthSum)
-                            /(nodesSelected.Count() - 1);
-                    }
+                        var nodesSelected = DynamoSelection.Instance.Selection.Where(node => !(node is AnnotationModel) && node is ILocatable);
+                        if (nodesSelected.Count() <= 2) return;
 
-                    var cursor = xMin;
-                    foreach (var node in toAlign.OrderBy(x => x.X))
-                    {
-                        node.X = cursor;
-                        cursor += node.Width + spacing;
+                        var xMin = GetSelectionMinX();
+                        var xMax = GetSelectionMaxX();
+
+                        var spacing = 0.0;
+                        var span = xMax - xMin;
+                        var nodeWidthSum =
+                            nodesSelected.Where((x) => x is ILocatable)
+                                .Cast<ILocatable>()
+                                .Sum((x) => x.Width);
+
+                        // If there is more span than total node width,
+                        // distribute the nodes with a gap. If not, leave
+                        // the spacing at 0 and the nodes will distribute
+                        // up against each other.
+                        if (span > nodeWidthSum)
+                        {
+                            spacing = (span - nodeWidthSum)
+                                / (nodesSelected.Count() - 1);
+                        }
+
+                        var cursor = xMin;
+                        foreach (var node in toAlign.OrderBy(x => x.X))
+                        {
+                            node.X = cursor;
+                            cursor += node.Width + spacing;
+                        }
                     }
-                }
                     break;
             }
 
@@ -1366,7 +1372,7 @@ namespace Dynamo.ViewModels
         {
             return DynamoSelection.Instance.Selection.Count > 1;
         }
-        
+
         private void Paste(object param)
         {
             var point = InCanvasSearchViewModel.InCanvasSearchPosition;
@@ -1383,10 +1389,10 @@ namespace Dynamo.ViewModels
                 return;
 
             var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                modelGuids, "IsVisible", (string) parameter);
+                modelGuids, "IsVisible", (string)parameter);
 
             DynamoViewModel.Model.ExecuteCommand(command);
-            RefreshViewOnSelectionChange(this,null);
+            RefreshViewOnSelectionChange(this, null);
         }
 
         private void SetArgumentLacing(object parameter)
@@ -1400,7 +1406,7 @@ namespace Dynamo.ViewModels
                 return;
 
             var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                modelGuids, "ArgumentLacing", (string) parameter);
+                modelGuids, "ArgumentLacing", (string)parameter);
 
             DynamoViewModel.Model.ExecuteCommand(command);
             RaisePropertyChanged("SelectionArgumentLacing");
@@ -1481,7 +1487,7 @@ namespace Dynamo.ViewModels
 
         private bool CanZoom(double zoom)
         {
-            return (!(zoom < 0) || !(this.Zoom <= WorkspaceViewModel.ZOOM_MINIMUM)) && (!(zoom > 0) 
+            return (!(zoom < 0) || !(this.Zoom <= WorkspaceViewModel.ZOOM_MINIMUM)) && (!(zoom > 0)
                 || !(this.Zoom >= WorkspaceViewModel.ZOOM_MAXIMUM));
         }
 
@@ -1520,7 +1526,7 @@ namespace Dynamo.ViewModels
                 maxY = GetSelectionMaxY();
             }
             else
-            {   
+            {
                 // no selection, fitview all nodes and notes
                 var nodes = Nodes.Select(x => x.NodeModel);
                 var notes = Notes.Select(x => x.Model);
@@ -1544,7 +1550,7 @@ namespace Dynamo.ViewModels
                     minY = Math.Min(model.Y, minY);
                     maxY = Math.Max(model.Y + model.Height, maxY);
                 }
-                
+
             }
 
             var offset = new Point2D(minX, minY);
@@ -1587,7 +1593,7 @@ namespace Dynamo.ViewModels
             try
             {
                 var node = DynamoViewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == id.ToString());
-              
+
                 //select the element
                 DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.Add(node);
@@ -1774,13 +1780,13 @@ namespace Dynamo.ViewModels
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
-            SetArgumentLacingCommand.RaiseCanExecuteChanged();     
+            SetArgumentLacingCommand.RaiseCanExecuteChanged();
             ShowAllWiresCommand.RaiseCanExecuteChanged();
             HideAllWiresCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
-            RaisePropertyChanged("SelectionArgumentLacing");            
+            RaisePropertyChanged("SelectionArgumentLacing");
         }
 
         /// <summary>
@@ -1817,7 +1823,7 @@ namespace Dynamo.ViewModels
             return foundModels;
         }
 
-        
+
     }
 
     public class ViewModelEventArgs : EventArgs

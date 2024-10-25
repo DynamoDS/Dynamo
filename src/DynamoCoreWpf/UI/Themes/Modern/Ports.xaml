@@ -3,6 +3,7 @@
                     xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
                     xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
                     xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore"
+                    xmlns:controlsWpf="clr-namespace:Dynamo.Views;assembly=DynamoCoreWpf"
                     xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
                     xmlns:fa="http://schemas.fontawesome.io/icons/"
@@ -112,20 +113,21 @@
                     <Grid Name="useLevelArrowGrid"
                           HorizontalAlignment="Right"
                           Visibility="{Binding Path=UseLevelVisibility}">
-                        <Label x:Name="useLevelArrow"
-                               Height="{Binding Path=Height}"
-                               Margin="0,0,0,8"
-                               Padding="0"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="&gt;"
-                               FontSize="16px"
-                               FontWeight="Medium"
-                               Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                               IsHitTestVisible="False"
-                               Style="{StaticResource SZoomFadeLabel}" />
+                        <Label
+                            x:Name="useLevelArrow"
+                            Height="{Binding Path=Height}"
+                            Margin="0,0,0,8"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Content="&gt;"
+                            FontSize="16px"
+                            FontWeight="Medium"
+                            Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                            IsHitTestVisible="False"
+                            Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controlsWpf:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}" />
                         <Grid.Style>
                             <Style TargetType="Grid">
                                 <Setter Property="Height" Value="{Binding Path=Height}" />
@@ -314,20 +316,21 @@
                         </Style>
                     </Rectangle.Style>
                 </Rectangle>
-                <TextBlock Name="fakePortNameTb"
-                           Width="Auto"
-                           Margin="13,0,10,5"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           DockPanel.Dock="Left"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           FontSize="12px"
-                           FontWeight="Medium"
-                           Foreground="Transparent"
-                           IsHitTestVisible="False"
-                           Opacity="0.4"
-                           Style="{StaticResource SZoomFadeText}"
-                           Text="{Binding Path=PortName}" />
+                <TextBlock
+                    Name="fakePortNameTb"
+                    Width="Auto"
+                    Margin="13,0,10,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left"
+                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                    FontSize="12px"
+                    FontWeight="Medium"
+                    Foreground="Transparent"
+                    IsHitTestVisible="False"
+                    Opacity="0.4"
+                    Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controlsWpf:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}""
+                    Text="{Binding Path=PortName}" />
                 <dynui:UseLevelSpinner x:Name="useLevelControl"
                                        Width="50"
                                        Height="25"

@@ -17,183 +17,278 @@
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove">
 
-    <Grid Name="grid"
-          HorizontalAlignment="Left"
-          x:FieldModifier="public"
-          ContextMenuService.IsEnabled="false"
-          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+    <UserControl.Resources>
+        <BitmapImage
+            RenderOptions.BitmapScalingMode="LowQuality"
+            x:Key="defaultIcon"
+            UriSource="/DynamoCoreWpf;component/UI/Images/default-node-icon.png" />
+    </UserControl.Resources>
+
+    <Grid
+        Name="grid"
+        HorizontalAlignment="Left"
+        x:FieldModifier="public"
+        ContextMenuService.IsEnabled="false"
+        Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityConverter}}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" MinHeight="24" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto"
+                MinHeight="24" />
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" MinWidth="10" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition
+                Width="Auto" />
+            <ColumnDefinition
+                Width="*"
+                MinWidth="10" />
+            <ColumnDefinition
+                Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <!--  CONTEXT MENU  -->
         <Grid.ContextMenu>
-            <ContextMenu Name="MainContextMenu"
-                         x:FieldModifier="public"
-                         Background="{StaticResource NodeContextMenuBackground}"
-                         Closed="MainContextMenu_OnClosed"
-                         Style="{StaticResource ContextMenuStyle}">
+            <ContextMenu
+                Name="MainContextMenu"
+                x:FieldModifier="public"
+                Background="{StaticResource NodeContextMenuBackground}"
+                Closed="MainContextMenu_OnClosed"
+                Style="{StaticResource ContextMenuStyle}">
                 <ContextMenu.Resources>
                     <ResourceDictionary>
                         <ResourceDictionary.MergedDictionaries>
-                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                            <ui:SharedResourceDictionary
+                                Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                            <ui:SharedResourceDictionary
+                                Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                            <ui:SharedResourceDictionary
+                                Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                         </ResourceDictionary.MergedDictionaries>
-                        <Style TargetType="{x:Type MenuItem}">
-                            <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
-                            <Setter Property="Height" Value="30" />
-                            <Setter Property="Width" Value="240" />
-                            <Setter Property="Padding" Value="20,0,20,0" />
-                            <Setter Property="Template">
+                        <Style
+                            TargetType="{x:Type MenuItem}">
+                            <Setter
+                                Property="IsChecked"
+                                Value="{DynamicResource IsChecked}" />
+                            <Setter
+                                Property="Height"
+                                Value="30" />
+                            <Setter
+                                Property="Width"
+                                Value="240" />
+                            <Setter
+                                Property="Padding"
+                                Value="20,0,20,0" />
+                            <Setter
+                                Property="Template">
                                 <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                                        <DockPanel x:Name="dockPanel"
-                                                   HorizontalAlignment="Stretch"
-                                                   Background="Transparent"
-                                                   SnapsToDevicePixels="true">
-                                            <Label x:Name="checkBox"
-                                                   Margin="2,0,-20,0"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalContentAlignment="Center"
-                                                   VerticalContentAlignment="Center"
-                                                   Content="✓"
-                                                   DockPanel.Dock="Left"
-                                                   FontSize="9px"
-                                                   Foreground="White"
-                                                   Visibility="Collapsed" />
-                                            <ContentPresenter x:Name="ContentPresenter"
-                                                              Margin="{TemplateBinding Padding}"
-                                                              VerticalAlignment="Center"
-                                                              ContentSource="Header"
-                                                              DockPanel.Dock="Left"
-                                                              RecognizesAccessKey="True"
-                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                              TextBlock.Foreground="{StaticResource NodeContextMenuForeground}">
+                                    <ControlTemplate
+                                        TargetType="{x:Type MenuItem}">
+                                        <DockPanel
+                                            x:Name="dockPanel"
+                                            HorizontalAlignment="Stretch"
+                                            Background="Transparent"
+                                            SnapsToDevicePixels="true">
+                                            <Label
+                                                x:Name="checkBox"
+                                                Margin="2,0,-20,0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                Content="✓"
+                                                DockPanel.Dock="Left"
+                                                FontSize="9px"
+                                                Foreground="White"
+                                                Visibility="Collapsed" />
+                                            <ContentPresenter
+                                                x:Name="ContentPresenter"
+                                                Margin="{TemplateBinding Padding}"
+                                                VerticalAlignment="Center"
+                                                ContentSource="Header"
+                                                DockPanel.Dock="Left"
+                                                RecognizesAccessKey="True"
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                TextBlock.Foreground="{StaticResource NodeContextMenuForeground}">
                                                 <ContentPresenter.Resources>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="MaxWidth" Value="200"></Setter>
-                                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+                                                    <Style
+                                                        TargetType="TextBlock">
+                                                        <Setter
+                                                            Property="MaxWidth"
+                                                            Value="200"></Setter>
+                                                        <Setter
+                                                            Property="TextTrimming"
+                                                            Value="CharacterEllipsis"></Setter>
                                                     </Style>
                                                 </ContentPresenter.Resources>
                                             </ContentPresenter>
-                                            <Border x:Name="dismissedAlertsBadge"
-                                                    Height="15"
-                                                    MinWidth="15"
-                                                    Margin="-15,0,0,1"
-                                                    HorizontalAlignment="Left"
+                                            <Border
+                                                x:Name="dismissedAlertsBadge"
+                                                Height="15"
+                                                MinWidth="15"
+                                                Margin="-15,0,0,1"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
+                                                CornerRadius="7.5"
+                                                DockPanel.Dock="Left"
+                                                Visibility="Hidden">
+                                                <Label
+                                                    Padding="2,2,2,0"
+                                                    HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
-                                                    CornerRadius="7.5"
-                                                    DockPanel.Dock="Left"
-                                                    Visibility="Hidden">
-                                                <Label Padding="2,2,2,0"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalContentAlignment="Center"
-                                                       VerticalContentAlignment="Center"
-                                                       Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
-                                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                       FontSize="9px"
-                                                       Foreground="{StaticResource NodeDismissedWarningsGlyphForeground}" />
+                                                    HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
+                                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                    FontSize="9px"
+                                                    Foreground="{StaticResource NodeDismissedWarningsGlyphForeground}" />
                                             </Border>
-                                            <Label x:Name="subMenuArrow"
-                                                   Margin="0,0,20,7"
-                                                   Padding="0"
-                                                   VerticalAlignment="Center"
-                                                   Content="&gt;"
-                                                   DockPanel.Dock="Right"
-                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                   FontSize="13px"
-                                                   Foreground="{StaticResource Blue300Brush}">
+                                            <Label
+                                                x:Name="subMenuArrow"
+                                                Margin="0,0,20,7"
+                                                Padding="0"
+                                                VerticalAlignment="Center"
+                                                Content="&gt;"
+                                                DockPanel.Dock="Right"
+                                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                FontSize="13px"
+                                                Foreground="{StaticResource Blue300Brush}">
                                                 <Label.RenderTransform>
-                                                    <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                                                    <ScaleTransform
+                                                        ScaleX="1"
+                                                        ScaleY="1.5" />
                                                 </Label.RenderTransform>
                                                 <Label.Style>
-                                                    <Style TargetType="{x:Type Label}">
-                                                        <Setter Property="Visibility" Value="Hidden" />
+                                                    <Style
+                                                        TargetType="{x:Type Label}">
+                                                        <Setter
+                                                            Property="Visibility"
+                                                            Value="Hidden" />
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
-                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            <DataTrigger
+                                                                Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}"
+                                                                Value="True">
+                                                                <Setter
+                                                                    Property="Visibility"
+                                                                    Value="Visible" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Label.Style>
                                             </Label>
-                                            <TextBlock x:Name="InputGestureText"
-                                               Margin="0,2,2,2"
-                                               DockPanel.Dock="Right"
-                                               HorizontalAlignment="Right"
-                                               VerticalAlignment="Center"
-                                               Text="{TemplateBinding InputGestureText}"
-                                               TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               TextBlock.FontSize="13px" />
-                                            <Popup x:Name="PART_Popup"
-                                                   AllowsTransparency="true"
-                                                   Focusable="false"
-                                                   HorizontalOffset="0"
-                                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                                   Placement="Right"
-                                                   VerticalOffset="-2">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        BorderBrush="Transparent"
-                                                        BorderThickness="0">
-                                                    <ScrollViewer x:Name="SubMenuScrollViewer"
-                                                                  CanContentScroll="true"
-                                                                  Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                            <TextBlock
+                                                x:Name="InputGestureText"
+                                                Margin="0,2,2,2"
+                                                DockPanel.Dock="Right"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Text="{TemplateBinding InputGestureText}"
+                                                TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                TextBlock.FontSize="13px" />
+                                            <Popup
+                                                x:Name="PART_Popup"
+                                                AllowsTransparency="true"
+                                                Focusable="false"
+                                                HorizontalOffset="0"
+                                                IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                                Placement="Right"
+                                                VerticalOffset="-2">
+                                                <Border
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="Transparent"
+                                                    BorderThickness="0">
+                                                    <ScrollViewer
+                                                        x:Name="SubMenuScrollViewer"
+                                                        CanContentScroll="true"
+                                                        Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
                                                                                                                 TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                                        <Grid RenderOptions.ClearTypeHint="Enabled">
-                                                            <ItemsPresenter x:Name="ItemsPresenter"
-                                                                            Grid.IsSharedSizeScope="true"
-                                                                            KeyboardNavigation.DirectionalNavigation="Cycle"
-                                                                            KeyboardNavigation.TabNavigation="Cycle"
-                                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                        <Grid
+                                                            RenderOptions.ClearTypeHint="Enabled">
+                                                            <ItemsPresenter
+                                                                x:Name="ItemsPresenter"
+                                                                Grid.IsSharedSizeScope="true"
+                                                                KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                                KeyboardNavigation.TabNavigation="Cycle"
+                                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                                         </Grid>
                                                     </ScrollViewer>
                                                 </Border>
                                             </Popup>
                                         </DockPanel>
                                         <ControlTemplate.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                                            <Trigger
+                                                Property="IsEnabled"
+                                                Value="False">
+                                                <Setter
+                                                    TargetName="ContentPresenter"
+                                                    Property="TextBlock.Opacity"
+                                                    Value="0.5" />
                                             </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                                                <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                            <Trigger
+                                                Property="IsMouseOver"
+                                                Value="True">
+                                                <Setter
+                                                    TargetName="ContentPresenter"
+                                                    Property="TextBlock.Foreground"
+                                                    Value="White" />
+                                                <Setter
+                                                    TargetName="dockPanel"
+                                                    Property="Background"
+                                                    Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
                                             </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="False">
-                                                <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                                            <Trigger
+                                                Property="IsMouseOver"
+                                                Value="False">
+                                                <Setter
+                                                    TargetName="dockPanel"
+                                                    Property="Background"
+                                                    Value="{StaticResource NodeContextMenuBackground}" />
                                             </Trigger>
-                                            <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="{x:Static p:Resources.NodeInformationalStateDismissedAlerts}">
-                                                <Setter TargetName="dismissedAlertsBadge" Property="Visibility" Value="Visible" />
+                                            <DataTrigger
+                                                Binding="{Binding ElementName=ContentPresenter, Path=Content}"
+                                                Value="{x:Static p:Resources.NodeInformationalStateDismissedAlerts}">
+                                                <Setter
+                                                    TargetName="dismissedAlertsBadge"
+                                                    Property="Visibility"
+                                                    Value="Visible" />
                                             </DataTrigger>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                                            <Trigger
+                                                Property="IsChecked"
+                                                Value="True">
+                                                <Setter
+                                                    TargetName="checkBox"
+                                                    Property="Visibility"
+                                                    Value="Visible" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                        <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
-                            <Setter Property="OverridesDefaultStyle" Value="true" />
-                            <Setter Property="Template">
+                        <Style
+                            x:Key="{x:Static MenuItem.SeparatorStyleKey}"
+                            TargetType="Separator">
+                            <Setter
+                                Property="OverridesDefaultStyle"
+                                Value="true" />
+                            <Setter
+                                Property="Template">
                                 <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Separator}">
-                                        <Border Height="1"
-                                                Margin="20,8,20,8"
-                                                Background="{StaticResource NodeContextMenuSeparatorColor}" />
+                                    <ControlTemplate
+                                        TargetType="{x:Type Separator}">
+                                        <Border
+                                            Height="1"
+                                            Margin="20,8,20,8"
+                                            Background="{StaticResource NodeContextMenuSeparatorColor}" />
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -204,91 +299,114 @@
         </Grid.ContextMenu>
 
         <!--  Graphical Styling of Custom Nodes  -->
-        <Border Name="customNodeBorder0"
-                Grid.Row="0"
-                Grid.ColumnSpan="3"
-                Height="8"
-                Margin="16,0"
-                VerticalAlignment="Bottom"
-                Background="#959595"
-                Canvas.ZIndex="0"
-                CornerRadius="6,6,0,0">
+        <Border
+            Name="customNodeBorder0"
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            Height="8"
+            Margin="16,0"
+            VerticalAlignment="Bottom"
+            Background="#959595"
+            Canvas.ZIndex="0"
+            CornerRadius="6,6,0,0">
             <Border.Visibility>
-                <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
-                         Mode="OneWay"
-                         Path="IsCustomFunction"
-                         UpdateSourceTrigger="PropertyChanged" />
+                <Binding
+                    Converter="{StaticResource BooleanToVisibilityConverter}"
+                    Mode="OneWay"
+                    Path="IsCustomFunction"
+                    UpdateSourceTrigger="PropertyChanged" />
             </Border.Visibility>
         </Border>
-        <Border Name="customNodeBorder1"
-                Grid.Row="0"
-                Grid.ColumnSpan="3"
-                Height="4"
-                Margin="8,0"
-                VerticalAlignment="Bottom"
-                Background="#747474"
-                Canvas.ZIndex="0"
-                CornerRadius="6,6,0,0">
+        <Border
+            Name="customNodeBorder1"
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            Height="4"
+            Margin="8,0"
+            VerticalAlignment="Bottom"
+            Background="#747474"
+            Canvas.ZIndex="0"
+            CornerRadius="6,6,0,0">
             <Border.Visibility>
-                <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
-                         Mode="OneWay"
-                         Path="IsCustomFunction"
-                         UpdateSourceTrigger="PropertyChanged" />
+                <Binding
+                    Converter="{StaticResource BooleanToVisibilityConverter}"
+                    Mode="OneWay"
+                    Path="IsCustomFunction"
+                    UpdateSourceTrigger="PropertyChanged" />
             </Border.Visibility>
         </Border>
 
         <!--  Node Body Background  -->
-        <Border Name="nodeBackground"
-                Grid.Row="1"
-                Grid.RowSpan="4"
-                Grid.ColumnSpan="3"
-                Canvas.ZIndex="1"
-                CornerRadius="8,8,0,0">
+        <Border
+            Name="nodeBackground"
+            Grid.Row="1"
+            Grid.RowSpan="4"
+            Grid.ColumnSpan="3"
+            Canvas.ZIndex="1"
+            CornerRadius="8,8,0,0">
             <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}" />
+                <Style
+                    TargetType="Border">
+                    <Setter
+                        Property="Background"
+                        Value="{StaticResource DarkerGreyBrush}" />
                 </Style>
             </Border.Style>
         </Border>
 
         <!--  Node Header Background  -->
-        <Border Name="nameBackground"
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Height="46px"
-                Canvas.ZIndex="2"
-                CornerRadius="8,8,0,0">
-            <Rectangle Fill="Transparent"
-                       IsHitTestVisible="True"
-                       MouseDown="NameBlock_OnMouseDown"
-                       ToolTipService.ShowDuration="60000">
+        <Border
+            Name="nameBackground"
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Height="46px"
+            Canvas.ZIndex="2"
+            CornerRadius="8,8,0,0">
+            <Rectangle
+                Fill="Transparent"
+                IsHitTestVisible="True"
+                MouseDown="NameBlock_OnMouseDown"
+                ToolTipService.ShowDuration="60000">
                 <Rectangle.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <dynui:DynamoToolTip
+                        AttachmentSide="Top"
+                        Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
-                            <StackPanel MaxWidth="320"
-                                        Margin="10"
-                                        Orientation="Vertical">
+                            <StackPanel
+                                MaxWidth="320"
+                                Margin="10"
+                                Orientation="Vertical">
                                 <StackPanel>
-                                    <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               FontWeight="Medium"
-                                               TextWrapping="Wrap">
-                                        <Run Text="{x:Static p:Resources.NodeTooltipOriginalName}" />
-                                        <Run Text="{Binding Path=OriginalName, Mode=OneWay}" />
+                                    <TextBlock
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        FontWeight="Medium"
+                                        TextWrapping="Wrap">
+                                        <Run
+                                            Text="{x:Static p:Resources.NodeTooltipOriginalName}" />
+                                        <Run
+                                            Text="{Binding Path=OriginalName, Mode=OneWay}" />
                                     </TextBlock>
-                                    <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               FontWeight="Light"
-                                               TextWrapping="Wrap"
-                                               Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                        <Run Text="{x:Static p:Resources.NodeTooltipPackage}" />
-                                        <Run Text="{Binding Path=PackageName, Mode=OneWay}" />
+                                    <TextBlock
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        FontWeight="Light"
+                                        TextWrapping="Wrap"
+                                        Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <Run
+                                            Text="{x:Static p:Resources.NodeTooltipPackage}" />
+                                        <Run
+                                            Text="{Binding Path=PackageName, Mode=OneWay}" />
                                     </TextBlock>
-                                    <TextBlock Text="&#x0a;" />
-                                    <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               FontWeight="Medium"
-                                               TextWrapping="Wrap">
-                                        <Run Text="{x:Static p:Resources.NodeTooltipDescription}" />
-                                        <Run Text="{Binding Path=Description, Mode=OneWay}" />
+                                    <TextBlock
+                                        Text="&#x0a;" />
+                                    <TextBlock
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        FontWeight="Medium"
+                                        TextWrapping="Wrap">
+                                        <Run
+                                            Text="{x:Static p:Resources.NodeTooltipDescription}" />
+                                        <Run
+                                            Text="{Binding Path=Description, Mode=OneWay}" />
                                     </TextBlock>
                                 </StackPanel>
                             </StackPanel>
@@ -297,96 +415,96 @@
                 </Rectangle.ToolTip>
             </Rectangle>
             <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Background" Value="{StaticResource DarkMidGreyBrush}" />
+                <Style
+                    TargetType="Border">
+                    <Setter
+                        Property="Background"
+                        Value="{StaticResource DarkMidGreyBrush}" />
                 </Style>
             </Border.Style>
         </Border>
 
         <!--  Displays the node's header content, such as its icon, name and whether it's been renamed  -->
-        <DockPanel Name="nodeHeaderContent"
-                   Grid.Row="1"
-                   Grid.ColumnSpan="3"
-                   Margin="6"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Top"
-                   Panel.ZIndex="3"
-                   FlowDirection="LeftToRight">
+        <DockPanel
+            Name="nodeHeaderContent"
+            Grid.Row="1"
+            Grid.ColumnSpan="3"
+            Margin="6"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            Panel.ZIndex="3"
+            FlowDirection="LeftToRight">
             <!--  The Icon for this Node  -->
-            <Rectangle Name="nodeIcon"
-                     Width="34"
-                     Height="34">
-                <Rectangle.Style>
-                    <Style TargetType="Rectangle">
-                        <Setter Property="Fill">
-                            <Setter.Value>
-                                <ImageBrush ImageSource="{Binding ImageSource}" Stretch="UniformToFill" />
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <!--  If no icon can be found, use default icon  -->
-                            <DataTrigger Binding="{Binding ImageSource, UpdateSourceTrigger=PropertyChanged}" Value="{x:Null}">
-                                <Setter Property="Fill">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/default-node-icon.png" Stretch="UniformToFill" />
-                                    </Setter.Value>
-                                </Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Rectangle.Style>
+            <Rectangle
+                Name="nodeIcon"
+                Width="34"
+                Height="34">
+                <Rectangle.Fill>
+                    <ImageBrush
+                        RenderOptions.BitmapScalingMode="LowQuality"
+                        ImageSource="{Binding ImageSource, FallbackValue={StaticResource defaultIcon}, TargetNullValue={StaticResource defaultIcon}}"
+                        Stretch="UniformToFill" />
+                </Rectangle.Fill>
             </Rectangle>
 
-            <TextBlock Name="NameBlock"
-                       Margin="6,3,6,0"
-                       VerticalAlignment="Center"
-                       Background="{x:Null}"
-                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                       FontSize="16px"
-                       FontWeight="Medium"
-                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                       IsHitTestVisible="False"
-                       Style="{StaticResource SZoomFadeText}"
-                       Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                       Visibility="Visible"
-                       TextAlignment="Center" />
-            <TextBox Name="EditableNameBox"
-                     Margin="6,3,6,0"
-                     VerticalAlignment="Center"
-                     Background="{x:Null}"
-                     FontFamily="{StaticResource ArtifaktElementRegular}"
-                     FontSize="16px"
-                     FontWeight="Medium"
-                     Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                     SelectionBrush="{StaticResource NodeSelectionTextColor}" SelectionOpacity="0.2"
-                     IsHitTestVisible="True"
-                     BorderThickness="0"
-                     LostFocus="EditableNameBox_OnLostFocus"
-                     KeyDown="EditableNameBox_KeyDown"
-                     Visibility="Collapsed"
-                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock
+                Name="NameBlock"
+                Margin="6,3,6,0"
+                VerticalAlignment="Center"
+                Background="{x:Null}"
+                FontFamily="{StaticResource ArtifaktElementRegular}"
+                FontSize="16px"
+                FontWeight="Medium"
+                Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                IsHitTestVisible="False"
+                Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
+                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="Visible"
+                TextAlignment="Center" />
+            <TextBox
+                Name="EditableNameBox"
+                Margin="6,3,6,0"
+                VerticalAlignment="Center"
+                Background="{x:Null}"
+                FontFamily="{StaticResource ArtifaktElementRegular}"
+                FontSize="16px"
+                FontWeight="Medium"
+                Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                SelectionBrush="{StaticResource NodeSelectionTextColor}"
+                SelectionOpacity="0.2"
+                IsHitTestVisible="True"
+                BorderThickness="0"
+                LostFocus="EditableNameBox_OnLostFocus"
+                KeyDown="EditableNameBox_KeyDown"
+                Visibility="Collapsed"
+                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
             <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
-            <Grid HorizontalAlignment="Right"
-                  VerticalAlignment="Center"
-                  Panel.ZIndex="5"
-                  Background="Transparent"
-                  DockPanel.Dock="Right">
-                <Ellipse Name="nodeRenamedBlueDot"
-                         Width="8"
-                         Height="8"
-                         Margin="0,2,6,0"
-                         Fill="{StaticResource Blue300Brush}"
-                         Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <Grid
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Panel.ZIndex="5"
+                Background="Transparent"
+                DockPanel.Dock="Right">
+                <Ellipse
+                    Name="nodeRenamedBlueDot"
+                    Width="8"
+                    Height="8"
+                    Margin="0,2,6,0"
+                    Fill="{StaticResource Blue300Brush}"
+                    Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Grid.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <dynui:DynamoToolTip
+                        AttachmentSide="Top"
+                        Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
-                            <TextBlock Padding="8,10"
-                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       FontSize="14"
-                                       FontWeight="Medium"
-                                       Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat={x:Static p:Resources.NodeTooltipRenamed}}"
-                                       TextAlignment="Center"
-                                       TextWrapping="Wrap" />
+                            <TextBlock
+                                Padding="8,10"
+                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                FontSize="14"
+                                FontWeight="Medium"
+                                Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat={x:Static p:Resources.NodeTooltipRenamed}}"
+                                TextAlignment="Center"
+                                TextWrapping="Wrap" />
                         </Grid>
                     </dynui:DynamoToolTip>
                 </Grid.ToolTip>
@@ -394,158 +512,219 @@
         </DockPanel>
 
         <!--  INPUT PORTS  -->
-        <ItemsControl Name="inputPortControl"
-                      Grid.Row="2"
-                      Grid.Column="0"
-                      Margin="-25,3,0,0"
-                      VerticalAlignment="Top"
-                      HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="6"
-                      ItemsSource="{Binding Path=InPorts}"
-                      Style="{StaticResource InOutPortControlStyle}" />
+        <ItemsControl
+            Name="inputPortControl"
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="-25,3,0,0"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Stretch"
+            Canvas.ZIndex="6"
+            ItemsSource="{Binding Path=InPorts}"
+            Style="{StaticResource InOutPortControlStyle}" />
 
         <!--  OUTPUT PORTS  -->
-        <ItemsControl Name="outputPortControl"
-                      Grid.Row="2"
-                      Grid.Column="2"
-                      Margin="{Binding OriginalName, Converter={StaticResource NodeOriginalNameToMarginConverter}}"
-                      VerticalAlignment="Top"
-                      HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="4"
-                      ItemsSource="{Binding Path=OutPorts}"
-                      Style="{StaticResource InOutPortControlStyle}" />
+        <ItemsControl
+            Name="outputPortControl"
+            Grid.Row="2"
+            Grid.Column="2"
+            Margin="{Binding OriginalName, Converter={StaticResource NodeOriginalNameToMarginConverter}}"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Stretch"
+            Canvas.ZIndex="4"
+            ItemsSource="{Binding Path=OutPorts}"
+            Style="{StaticResource InOutPortControlStyle}" />
 
-        <Grid Name="centralGrid"
-              Grid.Row="2"
-              Grid.Column="1"
-              Margin="6,6,6,3"
-              VerticalAlignment="Top"
-              Canvas.ZIndex="4">
+        <Grid
+            Name="centralGrid"
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="6,6,6,3"
+            VerticalAlignment="Top"
+            Canvas.ZIndex="4">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
+                <RowDefinition
+                    Height="auto" />
+                <RowDefinition
+                    Height="*" />
+                <RowDefinition
+                    Height="*" />
             </Grid.RowDefinitions>
 
             <!--  INPUT GRID  -->
-            <Grid Name="inputGrid"
-                  MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                  x:FieldModifier="public"
-                  Canvas.ZIndex="5"
-                  IsEnabled="{Binding Path=IsInteractionEnabled}" />
+            <Grid
+                Name="inputGrid"
+                MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                x:FieldModifier="public"
+                Canvas.ZIndex="5"
+                IsEnabled="{Binding Path=IsInteractionEnabled}" />
         </Grid>
 
-        <StackPanel Name="GlyphStackPanel"
-                    Grid.Row="3"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    Margin="0,0,2,2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Canvas.ZIndex="4"
-                    Style="{StaticResource SZoomFadeOutFrameworkElement}"
-                    FlowDirection="LeftToRight"
-                    Orientation="Horizontal">
-            <Grid x:Name="FrozenGlyph" 
-                  Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
-                <Image x:Name="FrozenImage"
-                       Width="16px"
-                       Height="16px"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
-                       Stretch="UniformToFill" />
+        <StackPanel
+            Name="GlyphStackPanel"
+            Grid.Row="3"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Margin="0,0,2,2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Canvas.ZIndex="4"
+            Style="{StaticResource SZoomFadeOutFrameworkElement}"
+            FlowDirection="LeftToRight"
+            Orientation="Horizontal">
+            <Grid
+                x:Name="FrozenGlyph"
+                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <Image
+                    x:Name="FrozenImage"
+                    RenderOptions.BitmapScalingMode="LowQuality"
+                    Width="16px"
+                    Height="16px"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
+                    Stretch="UniformToFill" />
             </Grid>
-            <Grid x:Name="HiddenEyeGlyph" 
-                  Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, Mode=OneWay}">
-                <Image x:Name="HiddenEyeImage"
-                       Width="16px"
-                       Height="16px"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Source="/DynamoCoreWpf;component/UI/Images/hidden.png"
-                       Stretch="UniformToFill" />
+            <Grid
+                x:Name="HiddenEyeGlyph"
+                Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <Image
+                    x:Name="HiddenEyeImage"
+                    RenderOptions.BitmapScalingMode="LowQuality"
+                    Width="16px"
+                    Height="16px"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Source="/DynamoCoreWpf;component/UI/Images/hidden.png"
+                    Stretch="UniformToFill" />
             </Grid>
-            <Label x:Name="LacingIconGlyph"
-                   Margin="0,1,2,-1"
-                   HorizontalContentAlignment="Center"
-                   VerticalContentAlignment="Center"
-                   Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
-                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                   FontSize="10px"
-                   Foreground="{StaticResource NodeLacingGlyphBackground}"
-                   Style="{StaticResource SZoomFadeLabel}"
-                   ToolTipService.ShowDuration="30000"
-                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
+            <Label
+                x:Name="LacingIconGlyph"
+                Margin="0,1,2,-1"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
+                FontFamily="{StaticResource ArtifaktElementRegular}"
+                FontSize="10px"
+                Foreground="{StaticResource NodeLacingGlyphBackground}"
+                Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
+                ToolTipService.ShowDuration="30000"
+                Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
                 <Label.ToolTip>
-                    <ToolTip Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}" Style="{StaticResource GenericToolTipLight}"/>
+                    <ToolTip
+                        Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
+                        Style="{StaticResource GenericToolTipLight}" />
                 </Label.ToolTip>
             </Label>
-            <Grid Name="AlertsGlyph"
-                  Width="Auto"
-                  Height="16">
-                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}" CornerRadius="8">
-                    <Label Padding="3,2,3,0"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           HorizontalContentAlignment="Center"
-                           VerticalContentAlignment="Center"
-                           Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           FontSize="10px"
-                           Foreground="Black"
-                           Style="{StaticResource SZoomFadeLabel}" />
+            <Grid
+                Name="AlertsGlyph"
+                Width="Auto"
+                Height="16">
+                <Border
+                    Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
+                    CornerRadius="8">
+                    <Label
+                        Padding="3,2,3,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
+                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                        FontSize="10px"
+                        Foreground="Black"
+                        Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}" />
                 </Border>
                 <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Visible" />
-                        <Setter Property="MinWidth" Value="16" />
-                        <Setter Property="Margin" Value="0,0,3,0" />
+                    <Style
+                        TargetType="Grid">
+                        <Setter
+                            Property="Visibility"
+                            Value="Visible" />
+                        <Setter
+                            Property="MinWidth"
+                            Value="16" />
+                        <Setter
+                            Property="Margin"
+                            Value="0,0,3,0" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
-                                <Setter Property="Grid.MinWidth" Value="0" />
-                                <Setter Property="Grid.Margin" Value="0" />
-                                <Setter Property="Visibility" Value="Collapsed" />
+                            <DataTrigger
+                                Binding="{Binding NumberOfDismissedAlerts}"
+                                Value="0">
+                                <Setter
+                                    Property="Grid.MinWidth"
+                                    Value="0" />
+                                <Setter
+                                    Property="Grid.Margin"
+                                    Value="0" />
+                                <Setter
+                                    Property="Visibility"
+                                    Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
             </Grid>
-            <Button x:Name="OptionsButton"
-                    Click="DisplayNodeContextMenu">
+            <Button
+                x:Name="OptionsButton"
+                Click="DisplayNodeContextMenu">
                 <Button.ToolTip>
-                    <ToolTip Content="{x:Static p:Resources.ContextMenu}" Style="{StaticResource GenericToolTipLight}"/>
+                    <ToolTip
+                        Content="{x:Static p:Resources.ContextMenu}"
+                        Style="{StaticResource GenericToolTipLight}" />
                 </Button.ToolTip>
                 <Button.Style>
-                    <Style TargetType="{x:Type Button}">
-                        <Setter Property="Template">
+                    <Style
+                        TargetType="{x:Type Button}">
+                        <Setter
+                            Property="Template">
                             <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type Button}">
+                                <ControlTemplate
+                                    TargetType="{x:Type Button}">
                                     <Grid>
-                                        <Border x:Name="DotsBackgroundBorder"
-                                                Width="24"
-                                                Height="24"
-                                                Background="Transparent"
-                                                CornerRadius="2" />
-                                        <Image x:Name="DotsImage"
-                                               Width="16px"
-                                               Height="16px"
-                                               Margin="1.5,0,0,0"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Stretch="UniformToFill" />
+                                        <Border
+                                            x:Name="DotsBackgroundBorder"
+                                            Width="24"
+                                            Height="24"
+                                            Background="Transparent"
+                                            CornerRadius="2" />
+                                        <Image
+                                            x:Name="DotsImage"
+                                            RenderOptions.BitmapScalingMode="LowQuality"
+                                            Width="16px"
+                                            Height="16px"
+                                            Margin="1.5,0,0,0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Stretch="UniformToFill" />
                                     </Grid>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="DotsBackgroundBorder" Property="Background" Value="{StaticResource NodeOptionsButtonBackground}" />
-                                            <Setter TargetName="DotsImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png" />
+                                        <Trigger
+                                            Property="IsMouseOver"
+                                            Value="True">
+                                            <Setter
+                                                TargetName="DotsBackgroundBorder"
+                                                Property="Background"
+                                                Value="{StaticResource NodeOptionsButtonBackground}" />
+                                            <Setter
+                                                TargetName="DotsImage"
+                                                Property="Source"
+                                                Value="/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png" />
                                         </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="False">
-                                            <Setter TargetName="DotsBackgroundBorder" Property="Background" Value="Transparent" />
-                                            <Setter TargetName="DotsImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/more-vertical.png" />
+                                        <Trigger
+                                            Property="IsMouseOver"
+                                            Value="False">
+                                            <Setter
+                                                TargetName="DotsBackgroundBorder"
+                                                Property="Background"
+                                                Value="Transparent" />
+                                            <Setter
+                                                TargetName="DotsImage"
+                                                Property="Source"
+                                                Value="/DynamoCoreWpf;component/UI/Images/more-vertical.png" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -556,140 +735,166 @@
             </Button>
         </StackPanel>
 
-        <Grid Name="PresentationGrid"
-              Grid.Row="2"
-              Grid.Column="1"
-              Margin="6,6,6,3"
-              HorizontalAlignment="Left"
-              VerticalAlignment="Bottom"
-              x:FieldModifier="public"
-              Visibility="Collapsed"
-              ZIndex="3">
+        <Grid
+            Name="PresentationGrid"
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="6,6,6,3"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            x:FieldModifier="public"
+            Visibility="Collapsed"
+            ZIndex="3">
             <!--  DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.  -->
         </Grid>
 
-        <Border Name="nodeBorder"
-                Grid.Row="1"
-                Grid.RowSpan="4"
-                Grid.ColumnSpan="3"
-                Margin="-1"
-                BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
-                BorderThickness="1"
-                Canvas.ZIndex="5"
-                CornerRadius="8,8,0,0"
-                IsHitTestVisible="False"
-                SnapsToDevicePixels="True" />
+        <Border
+            Name="nodeBorder"
+            Grid.Row="1"
+            Grid.RowSpan="4"
+            Grid.ColumnSpan="3"
+            Margin="-1"
+            BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
+            BorderThickness="1"
+            Canvas.ZIndex="5"
+            CornerRadius="8,8,0,0"
+            IsHitTestVisible="False"
+            SnapsToDevicePixels="True" />
 
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is above 0.4 -->
-        <Border Name="nodeColorOverlayZoomIn"
-                Grid.Row="1"
-                Grid.RowSpan="4"
-                Grid.ColumnSpan="3"
-                Margin="-8"
-                Background="{StaticResource NodeFrozenOverlayColor}"
-                Canvas.ZIndex="6"
-                CornerRadius="8,8,0,0"
-                IsHitTestVisible="False"
-                Opacity="{Binding Path=DataContext.Zoom, 
+        <Border
+            Name="nodeColorOverlayZoomIn"
+            Grid.Row="1"
+            Grid.RowSpan="4"
+            Grid.ColumnSpan="3"
+            Margin="-8"
+            Background="{StaticResource NodeFrozenOverlayColor}"
+            Canvas.ZIndex="6"
+            CornerRadius="8,8,0,0"
+            IsHitTestVisible="False"
+            Opacity="{Binding Path=DataContext.Zoom, 
                                   RelativeSource={RelativeSource FindAncestor, 
                                   AncestorType={x:Type controls:WorkspaceView}}, 
                                   Converter={StaticResource ZoomToOpacityConverter}}"
-                Style="{StaticResource SZoomFadeOutPreview}"
-                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+            Style="{StaticResource SZoomFadeOutPreview}"
+            Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is below 0.4 -->
-        <Border Name="nodeColorOverlayZoomOut"
-                Grid.Row="1"
-                Grid.RowSpan="4"
-                Grid.ColumnSpan="3"
-                Margin="-8"
-                Background="{Binding NodeOverlayColor, UpdateSourceTrigger=PropertyChanged}"
-                Canvas.ZIndex="6"
-                CornerRadius="8,8,0,0"
-                IsHitTestVisible="False"
-                Opacity="0.5"
-                Style="{StaticResource SZoomFadeInPreview}"
-                Visibility="{Binding Path=DataContext.Zoom, 
+        <Border
+            Name="nodeColorOverlayZoomOut"
+            Grid.Row="1"
+            Grid.RowSpan="4"
+            Grid.ColumnSpan="3"
+            Margin="-8"
+            Background="{Binding NodeOverlayColor, UpdateSourceTrigger=PropertyChanged}"
+            Canvas.ZIndex="6"
+            CornerRadius="8,8,0,0"
+            IsHitTestVisible="False"
+            Opacity="0.5"
+            Style="{StaticResource SZoomFadeInPreview}"
+            Visibility="{Binding Path=DataContext.Zoom, 
                                      RelativeSource={RelativeSource FindAncestor, 
                                      AncestorType={x:Type controls:WorkspaceView}}, 
                                      Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" />
 
         <!-- Grid containing the State overlay Glyphs in Zoomed Out state -->
-        <Grid Name="zoomGlyphsGrid"
-                    Grid.Row="0"
-                    Grid.RowSpan="4"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    Canvas.ZIndex="7" 
-                    IsHitTestVisible="False"
-                    Margin="0 5 0 0"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                    Style="{StaticResource SZoomFadeInFrameworkElement}"                    
-                    Visibility="{Binding Path=DataContext.Zoom, 
+        <Grid
+            Name="zoomGlyphsGrid"
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Canvas.ZIndex="7"
+            IsHitTestVisible="False"
+            Margin="0 5 0 0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Style="{StaticResource SZoomFadeInFrameworkElement}"
+            Visibility="{Binding Path=DataContext.Zoom, 
                                          RelativeSource={RelativeSource FindAncestor, 
                                          AncestorType={x:Type controls:WorkspaceView}}, 
-                                         Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" 
-                    MinWidth="48">
+                                         Converter={StaticResource ZoomToVisibilityCollapsedConverter}}"
+            MinWidth="48">
             <Grid.RowDefinitions>
-                <RowDefinition Height="{Binding ImgGlyphThreeSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                <RowDefinition
+                    Height="{Binding ImgGlyphThreeSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <UniformGrid  Grid.Row="0"
-                          Margin="0 10 0 -10"
-                          Columns="1" Rows="1" Name="ZoomGlyphRowZero" 
-                          HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                          Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
-                <Image Stretch="Uniform"  HorizontalAlignment="Center" VerticalAlignment="Bottom" 
-                       x:Name="ZoomStateImgOne"
-                       Width="64"
-                       Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
-                       Visibility="{Binding ImgGlyphThreeSource,Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            <UniformGrid
+                Grid.Row="0"
+                Margin="0 10 0 -10"
+                Columns="1"
+                Rows="1"
+                Name="ZoomGlyphRowZero"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
+                <Image
+                    RenderOptions.BitmapScalingMode="LowQuality"
+                    Stretch="Uniform"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    x:Name="ZoomStateImgOne"
+                    Width="64"
+                    Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                    Visibility="{Binding ImgGlyphThreeSource,Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </UniformGrid>
-            <Grid Grid.Row="1" 
-                  Margin="0 0 0 0"
-                  Name="ZoomGlyphRowOne" 
-                  HorizontalAlignment="Center" VerticalAlignment="Stretch">
+            <Grid
+                Grid.Row="1"
+                Margin="0 0 0 0"
+                Name="ZoomGlyphRowOne"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding ImgGlyphOneSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                    <ColumnDefinition Width="{Binding ImgGlyphTwoSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                    <ColumnDefinition
+                        Width="{Binding ImgGlyphOneSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                    <ColumnDefinition
+                        Width="{Binding ImgGlyphTwoSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0"
-                       x:Name="ZoomStateImgTwo"
-                       Stretch="Uniform" 
-                       HorizontalAlignment="Left" VerticalAlignment="Center"
-                       Margin="5 0 "
-                       Width="64"
-                       Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
-                       Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
-                <Image Grid.Column="1"
-                       x:Name="ZoomStateImgThree"
-                       Stretch="Uniform"  
-                       HorizontalAlignment="Right" VerticalAlignment="Center" 
-                       Margin="5 0"
-                       Width="64"
-                       Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
-                       Visibility="{Binding ImgGlyphTwoSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                <Image
+                    RenderOptions.BitmapScalingMode="LowQuality"
+                    Grid.Column="0"
+                    x:Name="ZoomStateImgTwo"
+                    Stretch="Uniform"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="5 0 "
+                    Width="64"
+                    Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                    Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                <Image
+                    RenderOptions.BitmapScalingMode="LowQuality"
+                    Grid.Column="1"
+                    x:Name="ZoomStateImgThree"
+                    Stretch="Uniform"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="5 0"
+                    Width="64"
+                    Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                    Visibility="{Binding ImgGlyphTwoSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </Grid>
 
-
         <!--  Displays when the node is selected  -->
-        <Border Name="selectionBorder"
-                Grid.Row="1"
-                Grid.RowSpan="4"
-                Grid.ColumnSpan="3"
-                Margin="-3"
-                Background="Transparent"
-                BorderBrush="{StaticResource Blue300Brush}"
-                BorderThickness="4"
-                Canvas.ZIndex="6"
-                CornerRadius="10,10,0,0"
-                IsHitTestVisible="False">
+        <Border
+            Name="selectionBorder"
+            Grid.Row="1"
+            Grid.RowSpan="4"
+            Grid.ColumnSpan="3"
+            Margin="-3"
+            Background="Transparent"
+            BorderBrush="{StaticResource Blue300Brush}"
+            BorderThickness="4"
+            Canvas.ZIndex="6"
+            CornerRadius="10,10,0,0"
+            IsHitTestVisible="False">
             <Border.Visibility>
-                <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
-                         Mode="OneWay"
-                         Path="IsSelected"
-                         UpdateSourceTrigger="PropertyChanged" />
+                <Binding
+                    Converter="{StaticResource BooleanToVisibilityConverter}"
+                    Mode="OneWay"
+                    Path="IsSelected"
+                    UpdateSourceTrigger="PropertyChanged" />
             </Border.Visibility>
         </Border>
 
@@ -699,23 +904,21 @@
         The visibility of this is controlled by the NodeViewModel property 'NodeHoveringState'
         which is set in the StateMachine.
         -->
-        <Border x:Name="nodeHoveringStateBorder"
-                Grid.Row="1"
-                Grid.RowSpan="4"
-                Grid.ColumnSpan="3"
-                Margin="-3"
-                Background="Transparent"
-                IsHitTestVisible="False"
-                Canvas.ZIndex="41"
-                CornerRadius="10,10,0,0"
-                BorderBrush="#CCCCCC"
-                BorderThickness="6px"
-                Visibility="{Binding NodeHoveringState,
+        <Border
+            x:Name="nodeHoveringStateBorder"
+            Grid.RowSpan="6"
+            Grid.ColumnSpan="3"
+            Margin="-3,7,-3,-1"
+            Background="Transparent"
+            IsHitTestVisible="False"
+            Canvas.ZIndex="41"
+            CornerRadius="10,10,0,0"
+            BorderBrush="#CCCCCC"
+            BorderThickness="6px"
+            Visibility="{Binding NodeHoveringState,
                     Converter={StaticResource BooleanToVisibilityConverter},
                     Mode=OneWay,
-                    UpdateSourceTrigger=PropertyChanged}"
-                >
-        </Border>
+                    UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  DO NOT ERASE. THIS IS FOR DEBUGGING  -->
         <!--<Rectangle Name="ForceReexecBorder"
@@ -740,36 +943,45 @@
         </Rectangle>-->
 
         <!--  Warning Bar: Displays when node is in Info/Warning/Error state  -->
-        <Rectangle Name="warningBar"
-                   Grid.Row="4"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="3"
-                   Height="12"
-                   Canvas.ZIndex="1"
-                   Fill="{Binding WarningBarColor, UpdateSourceTrigger=PropertyChanged}"
-                   Visibility="{Binding NodeWarningBarVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+        <Rectangle
+            Name="warningBar"
+            Grid.Row="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Height="12"
+            Canvas.ZIndex="1"
+            Fill="{Binding WarningBarColor, UpdateSourceTrigger=PropertyChanged}"
+            Visibility="{Binding NodeWarningBarVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
-        <Canvas Name="expansionBay"
-                Grid.Row="5"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Margin="0,4,0,0"
-                HorizontalAlignment="Left"
-                Background="Blue" />
+        <Canvas
+            Name="expansionBay"
+            Grid.Row="5"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Margin="0,4,0,0"
+            HorizontalAlignment="Left"
+            Background="Blue" />
 
-        <Canvas Grid.Row="5"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                ClipToBounds="False"
-                Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-            <Label HorizontalContentAlignment="Center" Content="{Binding ASTText}" />
+        <Canvas
+            Grid.Row="5"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            ClipToBounds="False"
+            Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Label
+                HorizontalContentAlignment="Center"
+                Content="{Binding ASTText}" />
 
         </Canvas>
-        <Canvas Grid.Row="3" Canvas.ZIndex="51" 
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-            <Polygon Points="0,-15 15,0 0,0" Fill="#E3E3E3"/>
+        <Canvas
+            Grid.Row="3"
+            Canvas.ZIndex="51"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Polygon
+                Points="0,-15 15,0 0,0"
+                Fill="#E3E3E3" />
         </Canvas>
     </Grid>
 </UserControl>

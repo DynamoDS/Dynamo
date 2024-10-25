@@ -1428,7 +1428,7 @@ namespace Dynamo.Controls
         {
             if (value is int zero)
             {
-                return zero == 0 ? Visibility.Collapsed : Visibility.Visible;   
+                return zero == 0 ? Visibility.Collapsed : Visibility.Visible;
             }
 
             return Visibility.Collapsed; // If not int or int not zero, return collapsed.
@@ -1756,7 +1756,7 @@ namespace Dynamo.Controls
             throw new NotSupportedException();
         }
     }
-    
+
     public class ZoomToOpacityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1787,12 +1787,37 @@ namespace Dynamo.Controls
             if (number > Configurations.ZoomThreshold)
                 return Visibility.Collapsed;
 
-            return Visibility.Visible;    
+            return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
+        }
+    }
+
+    public class BooleanStyleConverter : IValueConverter
+    {
+        public Style TrueStyle { get; set; }
+        public Style FalseStyle { get; set; }
+
+        //public static readonly DependencyProperty TestValueProperty = DependencyProperty
+        //    .Register(nameof(TestValue), typeof(bool), typeof(BooleanStyleConverter));
+
+        //public bool TestValue { get => (bool)GetValue(TestValueProperty); set => SetValue(TestValueProperty, value); }
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is bool v && v)
+            {
+                return TrueStyle;
+            }
+            return FalseStyle;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return false;
         }
     }
 
@@ -2113,7 +2138,7 @@ namespace Dynamo.Controls
             if (values != null && values.Count() > 0)
             {
                 if (!string.IsNullOrEmpty((string)values[0]) || !string.IsNullOrEmpty((string)values[1]))
-                return Visibility.Visible; ;
+                    return Visibility.Visible; ;
             }
             return Visibility.Collapsed;
         }
@@ -2710,7 +2735,7 @@ namespace Dynamo.Controls
 
             catch (Exception e)
             {
-                Console.WriteLine($"problem attempting to parse fontsize or param {value} {parameter} { e.Message}");
+                Console.WriteLine($"problem attempting to parse fontsize or param {value} {parameter} {e.Message}");
                 return false;
             }
 
@@ -2789,7 +2814,7 @@ namespace Dynamo.Controls
             //just use defaults, this will enable the text editor.
             catch (Exception e)
             {
-                Console.WriteLine($"problem attempting to parse fontsize or zoom {values[1]} {values[0]}. { e.Message}");
+                Console.WriteLine($"problem attempting to parse fontsize or zoom {values[1]} {values[0]}. {e.Message}");
             }
 
             var factor = zoom * fontsize;
@@ -3465,7 +3490,7 @@ namespace Dynamo.Controls
         {
             throw new NotImplementedException();
         }
-    }    
+    }
 
     /// <summary>
     /// Converts the object type to forground color for the object.
@@ -3491,7 +3516,7 @@ namespace Dynamo.Controls
                     case nameof(TypeCode.String):
                         return resourceDictionary["stringLabelBackground"] as SolidColorBrush;
                     case nameof(TypeCode.Boolean):
-                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;                                        
+                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;
                     default:
                         if (values[1].ToString() == "List")
                         {
@@ -3508,7 +3533,7 @@ namespace Dynamo.Controls
                 return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
             }
         }
-        
+
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
@@ -3561,9 +3586,9 @@ namespace Dynamo.Controls
             if (value.Equals(parameter))
             {
                 return new SolidColorBrush(Color.FromRgb(217, 217, 217));
-            }          
+            }
             return new SolidColorBrush(Color.FromRgb(71, 71, 71));
-            
+
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -3927,7 +3952,7 @@ namespace Dynamo.Controls
             CultureInfo culture)
         {
             if (value is string nullOrEmptyString && String.IsNullOrEmpty(nullOrEmptyString)) return Visibility.Visible;
-            
+
             return Visibility.Collapsed;
         }
 
