@@ -739,8 +739,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<PackageHeader> packageHeaders = new List<PackageHeader>();
             var mockGreg = new Mock<IGregClient>();
 
-            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object) { CallBase = true };
             List<PackageManagerSearchElement> cachedPackages = new List<PackageManagerSearchElement>();
             foreach (var packageName in packagesListNames)
             {
