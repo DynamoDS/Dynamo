@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -74,6 +75,24 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             {
                 return base.GetAstIdentifierForOutputIndex(outputIndex); 
             }
+        }
+
+        /// <summary>
+        /// The method returns the assembly name from which the node originated.
+        /// Only if the node was added from a package
+        /// </summary>
+        /// <returns>Assembly Name</returns>
+        internal override AssemblyName GetNameOfAssemblyReferencedByNode()
+        {
+            AssemblyName assemblyName = null;
+
+            var descriptor = this.Controller.Definition;
+            if (descriptor.IsPackageMember)
+            {
+                assemblyName = AssemblyName.GetAssemblyName(descriptor.Assembly);
+            }
+
+            return assemblyName;
         }
 
         /// <summary>
