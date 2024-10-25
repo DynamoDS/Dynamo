@@ -6,27 +6,20 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 
-namespace DynamoPackages
+namespace Dynamo.PackageManager
 {
     internal class PkgAssemblyLoadContext : AssemblyLoadContext
     {
-        private string pkgRoot;
+        private readonly string RootDir;
         private IEnumerable<FileInfo> pkgAssemblies = null;
         public PkgAssemblyLoadContext(string name, string pkgRoot, bool unloadable = true) : base(name, unloadable)
         {
-            this.pkgRoot = pkgRoot;
+            this.RootDir = pkgRoot;
         }
 
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            var oldAssem = Default.Assemblies.FirstOrDefault(x => x.GetName().Equals(assemblyName));
-            if (oldAssem != null)
-            {
-                // not sure about this. Hoping we can avoid loading assemblies that are alrady loaded in the default context.
-                return null;
-            }
-
-            pkgAssemblies ??= new DirectoryInfo(pkgRoot).EnumerateFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true });
+            pkgAssemblies ??= new DirectoryInfo(RootDir).EnumerateFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true });
 
             var targetAssemName = assemblyName.Name + ".dll";
             var targetAssembly = pkgAssemblies.FirstOrDefault(x => x.Name == targetAssemName);
@@ -39,7 +32,7 @@ namespace DynamoPackages
 
         protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
         {
-            pkgAssemblies ??= new DirectoryInfo(pkgRoot).EnumerateFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true });
+            pkgAssemblies ??= new DirectoryInfo(RootDir).EnumerateFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true });
 
             var targetAssemName = unmanagedDllName  + ".dll";
             var targetAssembly = pkgAssemblies.FirstOrDefault(x => x.Name == targetAssemName);
