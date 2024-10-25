@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -16,7 +15,6 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
-using Greg.Responses;
 using Newtonsoft.Json;
 using String = System.String;
 
@@ -584,11 +582,6 @@ namespace Dynamo.PackageManager
                 return;
             }
 
-            RemovePackage(customNodeManager, packageLoader, prefs);
-        }
-
-        private void RemovePackage(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
-        {
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
