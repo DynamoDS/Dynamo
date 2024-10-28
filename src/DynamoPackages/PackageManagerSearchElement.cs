@@ -297,11 +297,12 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         internal static bool? CalculateCompatibility(List<Greg.Responses.Compatibility> compatibilityMatrix, Version dynamoVersion = null, Dictionary<string, Dictionary<string, string>> map = null, Version hostVersion = null, string host = null)
         {
+
             // Parse Dynamo and Host versions/name from the model
             // Use the optional parameters for Testing purposes
             if (dynamoVersion == null)
             {
-                Version.TryParse(DynamoModel.Version, out dynamoVersion);
+                dynamoVersion = VersionUtilities.Parse(DynamoModel.Version);
             }
 
             if (hostVersion == null)
@@ -352,8 +353,8 @@ namespace Dynamo.PackageManager
                 else
                 {
                     // Check within min and max range
-                    isWithinMinMax = (dynamoCompatibility.min == null || dynamoVersion >= Version.Parse(dynamoCompatibility.min)) &&
-                                     (dynamoCompatibility.max == null || dynamoVersion <= Version.Parse(dynamoCompatibility.max));
+                    isWithinMinMax = (dynamoCompatibility.min == null || dynamoVersion >= VersionUtilities.Parse(dynamoCompatibility.min)) &&
+                                     (dynamoCompatibility.max == null || dynamoVersion <= VersionUtilities.Parse(dynamoCompatibility.max));
                 }
 
                 // If neither listed nor within min/max, return false (incompatible)
@@ -379,12 +380,9 @@ namespace Dynamo.PackageManager
                     }
 
                     // Check if the host version falls within the min/max range
-                    if ((hostCompatibility.min == null || hostVersion >= Version.Parse(NormalizeVersionString(hostCompatibility.min))) &&
-                        (hostCompatibility.max == null || hostVersion <= Version.Parse(NormalizeVersionString(hostCompatibility.max))))
-                    {
-                        isHostWithinMinMax = true;
-                    }
-
+                    isHostWithinMinMax = (hostCompatibility.min == null || hostVersion >= VersionUtilities.Parse(hostCompatibility.min)) &&
+                                         (hostCompatibility.max == null || hostVersion <= VersionUtilities.Parse(hostCompatibility.max));
+                    
                     // If the host version is neither listed nor within the min/max range, it's incompatible
                     if (!isHostListedInVersions && !isHostWithinMinMax)
                     {
@@ -465,13 +463,6 @@ namespace Dynamo.PackageManager
             // Return null if no matching host or Dynamo versions were found
             return null;
         }
-
-        // Normalize the version strings before parsing to ensure they are valid for Version.Parse()
-        private static string NormalizeVersionString(string version)
-        {
-            return version.Contains('.') ? version : version + ".0";
-        }
-
 
         private VersionInformation GetLatestCompatibleVersion()
         {
