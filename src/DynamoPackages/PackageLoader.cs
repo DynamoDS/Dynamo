@@ -37,6 +37,38 @@ namespace Dynamo.PackageManager
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
 
+        private HashSet<string> packagesToIsolate = null;
+        internal HashSet<string> PackagesToIsolate
+        {
+            get
+            {
+                if (packagesToIsolate == null)
+                {
+                    packagesToIsolate = [];
+
+                    string pkgs = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolatePackages", string.Empty);
+                    if (!string.IsNullOrEmpty(pkgs))
+                    {
+                        foreach (var x in pkgs.Split(","))
+                        {
+                            packagesToIsolate.Add(x);
+                        }
+                    }
+                     
+
+                    pkgs = DynamoModel.FeatureFlags?.CheckFeatureFlag("DoNotIsolatePackages", string.Empty);
+                    if (!string.IsNullOrEmpty(pkgs))
+                    {
+                        foreach (var x in pkgs.Split(","))
+                        {
+                            packagesToIsolate.Remove(x);
+                        }
+                    }
+                }
+                return packagesToIsolate;
+            }
+        }
+
         /// <summary>
         /// This event is raised when a package is first added to the list of packages this package loader is loading.
         /// This event occurs before the package is fully loaded. 
@@ -201,9 +233,7 @@ namespace Dynamo.PackageManager
             {
                 var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
 
-                bool isolateAnyPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolateAnyPackage", false) ?? false;
-                bool isolateThisPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolatePackage_" + package.Name, false) ?? false;
-                if (isolateAnyPackage || isolateThisPackage)
+                if (packagesToIsolate.Contains(package.Name))
                 {
                     package.AssemblyLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, package.RootDirectory);
                 }
