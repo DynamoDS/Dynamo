@@ -729,7 +729,6 @@ namespace Dynamo.PackageManager.Wpf.Tests
         [Test]
         public void PackageSearchWithWhitespaceInName()
         {
-            var packageToBeSearched = "Dynamo Samples";
             var packagesListNames =  new List<string> { "Dynamo Samples", "archi-lab.net", "LunchBox for Dynamo", "DynamoSap", "TuneUp" };
             string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
             string packageVersionNumber = "1.0.0.0";
@@ -781,12 +780,12 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
             packageManagerSearchVM.LuceneUtility.CommitWriterChanges();
 
-            var packagesSearchResult = packageManagerSearchVM.Search(packageToBeSearched, true);
+            var packagesSearchResult = packageManagerSearchVM.Search("Dynamo Samples", true);
 
             //Validates that the Search returned results and that the first one is "Dynamo Samples"
             Assert.IsTrue(packagesSearchResult != null, "The Search didn't return any results");
             Assert.IsTrue(packagesSearchResult.Count() >= 1, string.Format("The number of results returned by search are: {0}", packagesSearchResult.Count()));
-            Assert.IsTrue(packagesSearchResult.FirstOrDefault().Name == packageToBeSearched, string.Format("The first search result {0} doesn't match with the expected: {1}: ", packagesSearchResult.FirstOrDefault().Name, packageToBeSearched));
+            Assert.IsTrue(packagesSearchResult.FirstOrDefault().Name == "Dynamo Samples", string.Format("The first search result {0} doesn't match with the expected: {1}: ", packagesSearchResult.FirstOrDefault().Name, "Dynamo Samples"));
         }
 
         [Test]
