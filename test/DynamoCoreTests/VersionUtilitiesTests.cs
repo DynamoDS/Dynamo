@@ -44,7 +44,7 @@ namespace Dynamo.Tests
             string version = null;
 
             // Act
-            Version result = VersionUtilities.ParseVersionSafely(version);
+            Version result = VersionUtilities.Parse(version);
 
             // Assert
             Assert.IsNull(result, "Expected null when input is null.");
@@ -57,7 +57,7 @@ namespace Dynamo.Tests
             string version = "not.a.version";
 
             // Act
-            Version result = VersionUtilities.ParseVersionSafely(version);
+            Version result = VersionUtilities.Parse(version);
 
             // Assert
             Assert.IsNull(result, "Expected null when input is an invalid version string.");
@@ -70,7 +70,7 @@ namespace Dynamo.Tests
             string version = "2019";
 
             // Act
-            Version result = VersionUtilities.ParseVersionSafely(version);
+            Version result = VersionUtilities.Parse(version);
 
             // Assert
             Assert.AreEqual(new Version(2019, 0, 0), result, "Expected version '2019.0.0' when input is '2019'.");
@@ -83,7 +83,7 @@ namespace Dynamo.Tests
             string version = "2019.1.2";
 
             // Act
-            Version result = VersionUtilities.ParseVersionSafely(version);
+            Version result = VersionUtilities.Parse(version);
 
             // Assert
             Assert.AreEqual(new Version(2019, 1, 2), result, "Expected version '2019.1.2' when input is '2019.1.2'.");

@@ -302,7 +302,7 @@ namespace Dynamo.PackageManager
             // Use the optional parameters for Testing purposes
             if (dynamoVersion == null)
             {
-                Version.TryParse(DynamoModel.Version, out dynamoVersion);
+                dynamoVersion = VersionUtilities.Parse(DynamoModel.Version);
             }
 
             if (hostVersion == null)
@@ -353,8 +353,8 @@ namespace Dynamo.PackageManager
                 else
                 {
                     // Check within min and max range
-                    isWithinMinMax = (dynamoCompatibility.min == null || dynamoVersion >= VersionUtilities.ParseVersionSafely(dynamoCompatibility.min)) &&
-                                     (dynamoCompatibility.max == null || dynamoVersion <= VersionUtilities.ParseVersionSafely(dynamoCompatibility.max));
+                    isWithinMinMax = (dynamoCompatibility.min == null || dynamoVersion >= VersionUtilities.Parse(dynamoCompatibility.min)) &&
+                                     (dynamoCompatibility.max == null || dynamoVersion <= VersionUtilities.Parse(dynamoCompatibility.max));
                 }
 
                 // If neither listed nor within min/max, return false (incompatible)
@@ -380,8 +380,8 @@ namespace Dynamo.PackageManager
                     }
 
                     // Check if the host version falls within the min/max range
-                    isHostWithinMinMax = (hostCompatibility.min == null || hostVersion >= VersionUtilities.ParseVersionSafely(hostCompatibility.min)) &&
-                                         (hostCompatibility.max == null || hostVersion <= VersionUtilities.ParseVersionSafely(hostCompatibility.max));
+                    isHostWithinMinMax = (hostCompatibility.min == null || hostVersion >= VersionUtilities.Parse(hostCompatibility.min)) &&
+                                         (hostCompatibility.max == null || hostVersion <= VersionUtilities.Parse(hostCompatibility.max));
                     
                     // If the host version is neither listed nor within the min/max range, it's incompatible
                     if (!isHostListedInVersions && !isHostWithinMinMax)

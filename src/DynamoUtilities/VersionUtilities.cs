@@ -26,7 +26,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="version">The string representation of the version to be parsed.</param>
         /// <returns></returns>
-        public static Version ParseVersionSafely(string version)
+        public static Version Parse(string version)
         {
             // If the version string is null or empty, return null
             if (string.IsNullOrEmpty(version))
