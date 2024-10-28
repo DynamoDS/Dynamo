@@ -233,7 +233,7 @@ namespace Dynamo.PackageManager
             {
                 var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
 
-                if (packagesToIsolate.Contains(package.Name))
+                if (PackagesToIsolate.Contains(package.Name) || PackagesToIsolate.Contains("All"))
                 {
                     package.AssemblyLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, package.RootDirectory);
                 }
