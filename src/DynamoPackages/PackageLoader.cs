@@ -203,7 +203,7 @@ namespace Dynamo.PackageManager
 
                 bool isolateAnyPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolateAnyPackage", false) ?? false;
                 bool isolateThisPackage = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolatePackage_" + package.Name, false) ?? false;
-                if (isolateAnyPackage || isolateThisPackage || true)
+                if (isolateAnyPackage || isolateThisPackage)
                 {
                     package.AssemblyLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, package.RootDirectory);
                 }
