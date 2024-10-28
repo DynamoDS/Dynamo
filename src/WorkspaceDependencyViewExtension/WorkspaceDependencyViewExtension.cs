@@ -243,8 +243,7 @@ namespace Dynamo.WorkspaceDependency
                                 {
                                     var pyNode = GetNodeFromGUID(ws, pyNodes.FirstOrDefault()) as PythonNodeBase;
                                     var currPkgVer = GetLoadedPackageVersion(packageDependencyInfo.Name);
-                                    var result = MessageBoxService.Show(
-                                        null,
+                                    var result = MessageBoxService.Show(DependencyView.loadedParams.DynamoWindow,
                                         string.Format(Resources.PythonPackageVersionMismatchDialogMessage, pyNode.EngineName, packageDependencyInfo.Name, packageDependencyInfo.Version.ToString(), currPkgVer),
                                         Resources.PythonPackageVersionMismatchDialogTitle,
                                         MessageBoxButton.YesNo,
