@@ -1548,7 +1548,7 @@ namespace Dynamo.ViewModels
             }
 
             // Add padding to the calculated bounding box for better visibility
-            double paddingFactor = 1.5;
+            double paddingFactor = 3.5;
 
             double focusWidth = (maxX - minX) * paddingFactor;
             double focusHeight = (maxY - minY) * paddingFactor;
