@@ -393,7 +393,7 @@ namespace Dynamo.PackageManager
 
             // If we passed all the checks, the version is compatible
             return true;
-        }        
+        }
 
         // Method to find Dynamo compatibility based on other hosts in the compatibilityMatrix
         internal static Greg.Responses.Compatibility GetDynamoCompatibilityFromHost(List<Greg.Responses.Compatibility> compatibilityMatrix, Dictionary<string, Dictionary<string, string>> map = null)
