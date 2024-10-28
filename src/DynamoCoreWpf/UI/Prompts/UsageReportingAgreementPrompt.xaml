@@ -4,7 +4,7 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:views="clr-namespace:Dynamo.UI.Views"
-        Title="Agreements for Data Collection"
+        Title="{x:Static p:Resources.UsageReportPromptDialogTitle}"
         Name="AgreementsForDataCollection"
         WindowStyle="None"
         MinWidth="530"
