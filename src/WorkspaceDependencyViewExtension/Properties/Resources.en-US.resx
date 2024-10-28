@@ -527,4 +527,11 @@
         Jy6qCG480QRXpgmuTBNcmSKCx/r47iWy5T/CbF78BXy1ufYowzbZAAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="PythonPackageVersionMismatchDialogMessage" xml:space="preserve">
+    <value>Some Python nodes in this graph use {0} engine from package {1} version {2}, but version {3} is currently installed. This version mismatch may cause warnings or errors when running the graph.
+Update the Python nodes to use the current package version?</value>
+  </data>
+  <data name="PythonPackageVersionMismatchDialogTitle" xml:space="preserve">
+    <value>Update Python nodes to newer engine?</value>
+  </data>
 </root>

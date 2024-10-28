@@ -7,9 +7,12 @@ using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
+using Dynamo.Utilities;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
+using PythonNodeModels;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -86,6 +89,7 @@ namespace Dynamo.WorkspaceDependency
             this.MessageLogged?.Invoke(msg);
         }
 
+        private Boolean PythonPackageVersionMismatchWarningDismissed = false;
         private Boolean hasDependencyIssue = false;
         /// <summary>
         /// Property to raise to author's attention, if the Dynamo active workspace has any missing dependencies.
@@ -229,6 +233,31 @@ namespace Dynamo.WorkspaceDependency
                         {
                             packageDependencyInfo.Path = targetInfo.RootDirectory;
                         }
+                        if (!PythonPackageVersionMismatchWarningDismissed)
+                        {
+                            if (packageDependencyInfo.State == PackageDependencyState.IncorrectVersion)
+                            {
+                                //check if a version mismatch for a python node engine has been detected
+                                var pyNodes = packageDependencyInfo.Nodes.Where(x => GetNodeFromGUID(ws,x) is PythonNodeBase);
+                                if (pyNodes.Count() > 0)
+                                {
+                                    var pyNode = GetNodeFromGUID(ws, pyNodes.FirstOrDefault()) as PythonNodeBase;
+                                    var currPkgVer = GetLoadedPackageVersion(packageDependencyInfo.Name);
+                                    var result = MessageBoxService.Show(
+                                        null,
+                                        string.Format(Resources.PythonPackageVersionMismatchDialogMessage, pyNode.EngineName, packageDependencyInfo.Name, packageDependencyInfo.Version.ToString(), currPkgVer),
+                                        Resources.PythonPackageVersionMismatchDialogTitle,
+                                        MessageBoxButton.YesNo,
+                                        MessageBoxImage.Exclamation);
+                                    if (result == MessageBoxResult.Yes)
+                                    {
+                                        packageDependencyInfo.Nodes.ToList().ForEach(x => ws.VoidNodeDependency(x));
+                                        ws.HasUnsavedChanges = true;
+                                    }
+                                }
+                            }
+                            PythonPackageVersionMismatchWarningDismissed = true;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -256,6 +285,15 @@ namespace Dynamo.WorkspaceDependency
             {
                 OnMessageLogged(LogMessage.Info(string.Format(Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
             }
+        }
+
+        private Graph.Nodes.NodeModel GetNodeFromGUID(WorkspaceModel ws, Guid guid)
+        {
+            return ws.Nodes.FirstOrDefault(x => x.GUID == guid);
+        }
+        private string GetLoadedPackageVersion(string pkg)
+        {
+            return pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == pkg).FirstOrDefault().VersionName;
         }
 
         public override void Closed()
