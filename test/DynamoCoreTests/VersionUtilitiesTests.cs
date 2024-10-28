@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Dynamo.Utilities;
 
@@ -35,6 +35,58 @@ namespace Dynamo.Tests
             Assert.Throws(typeof(FormatException), () => VersionUtilities.PartialParse("0.0.a"));
             Assert.Throws(typeof(FormatException), () => VersionUtilities.PartialParse("0.0"));
             Assert.Throws(typeof(FormatException), () => VersionUtilities.PartialParse(""));
+        }
+
+        [Test]
+        public void ParseVersionSafely_NullInput_ReturnsNull()
+        {
+            // Arrange
+            string version = null;
+
+            // Act
+            Version result = VersionUtilities.ParseVersionSafely(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input is null.");
+        }
+
+        [Test]
+        public void ParseVersionSafely_JibberishInput_ReturnsNull()
+        {
+            // Arrange
+            string version = "not.a.version";
+
+            // Act
+            Version result = VersionUtilities.ParseVersionSafely(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input is an invalid version string.");
+        }
+
+        [Test]
+        public void ParseVersionSafely_ShortVersion_ReturnsPaddedVersion()
+        {
+            // Arrange
+            string version = "2019";
+
+            // Act
+            Version result = VersionUtilities.ParseVersionSafely(version);
+
+            // Assert
+            Assert.AreEqual(new Version(2019, 0, 0), result, "Expected version '2019.0.0' when input is '2019'.");
+        }
+
+        [Test]
+        public void ParseVersionSafely_FullVersion_ReturnsParsedVersion()
+        {
+            // Arrange
+            string version = "2019.1.2";
+
+            // Act
+            Version result = VersionUtilities.ParseVersionSafely(version);
+
+            // Assert
+            Assert.AreEqual(new Version(2019, 1, 2), result, "Expected version '2019.1.2' when input is '2019.1.2'.");
         }
 
     }

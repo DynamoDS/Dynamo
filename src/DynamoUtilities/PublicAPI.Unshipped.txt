@@ -211,6 +211,7 @@ static Dynamo.Utilities.TypeExtensions.GetInstance<TArg1, TArg2, TArg3>(this Sys
 static Dynamo.Utilities.TypeExtensions.GetInstance<TArg1, TArg2>(this System.Type type, TArg1 argument1, TArg2 argument2) -> object
 static Dynamo.Utilities.TypeExtensions.GetInstance<TArg>(this System.Type type, TArg argument) -> object
 static Dynamo.Utilities.TypeExtensions.ImplementsGeneric(System.Type generic, System.Type toCheck) -> bool
+static Dynamo.Utilities.VersionUtilities.ParseVersionSafely(string version) -> System.Version
 static Dynamo.Utilities.VersionUtilities.PartialParse(string versionString, int numberOfFields = 3) -> System.Version
 static DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(string assemblyPath) -> bool
 static DynamoUtilities.PathHelper.CreateFolderIfNotExist(string folderPath) -> System.Exception
