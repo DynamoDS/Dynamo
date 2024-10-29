@@ -307,12 +307,12 @@ namespace Dynamo.PackageManager
 
             if (hostVersion == null)
             {
-                hostVersion = DynamoModel.HostAnalyticsInfo.HostVersion;
+                hostVersion = DynamoModel.HostAnalyticsInfo.HostProductVersion;
             }
 
             if (host == null)
             {
-                host = DynamoModel.HostAnalyticsInfo.HostName;
+                host = DynamoModel.HostAnalyticsInfo.HostProductName;
             }
 
             // If there is no compatibility matrix, we cannot determine anything
