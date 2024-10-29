@@ -144,6 +144,8 @@ DynamoUtilities.CertificateVerification.UnTrustedAssemblyException
 DynamoUtilities.CertificateVerification.UnTrustedAssemblyException.UnTrustedAssemblyException(string assemblyPath) -> void
 DynamoUtilities.PathHelper
 DynamoUtilities.PathHelper.PathHelper() -> void
+DynamoUtilities.StringUtilities
+DynamoUtilities.StringUtilities.StringUtilities() -> void
 DynamoUtilities.SmartObservableCollection<T>
 DynamoUtilities.SmartObservableCollection<T>.SmartObservableCollection() -> void
 DynamoUtilities.SmartObservableCollection<T>.SmartObservableCollection(System.Collections.Generic.IEnumerable<T> collection) -> void
