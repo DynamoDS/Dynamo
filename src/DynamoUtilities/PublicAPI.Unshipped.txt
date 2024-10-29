@@ -230,7 +230,7 @@ static DynamoUtilities.PathHelper.isValidJson(string path, out string fileConten
 static DynamoUtilities.PathHelper.IsValidPath(string filePath) -> bool
 static DynamoUtilities.PathHelper.isValidXML(string path, out System.Xml.XmlDocument xmlDoc, out System.Exception ex) -> bool
 static DynamoUtilities.PathHelper.LoadEmbeddedResourceAsString(string resourcePath, System.Reflection.Assembly assembly) -> string
-static DynamoUtilities.StringUtilities.CapitalizeFirstLetter(string s) -> string
+static DynamoUtilities.StringUtilities.CapitalizeFirstLetter(string word) -> string
 static DynamoUtilities.TypeSwitch.Case<T>(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo
 static DynamoUtilities.TypeSwitch.Case<T>(System.Action<T> action) -> DynamoUtilities.TypeSwitch.CaseInfo
 static DynamoUtilities.TypeSwitch.Default(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo
