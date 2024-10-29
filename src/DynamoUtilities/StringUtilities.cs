@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace DynamoUtilities
 {
+    /// <summary>
+    /// String utilities
+    /// </summary>
     public class StringUtilities
     {
+        /// <summary>
+        /// Return the string with the first letter capitalized
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns></returns>
         public static string CapitalizeFirstLetter(string word)
         {
             if (string.IsNullOrEmpty(word))

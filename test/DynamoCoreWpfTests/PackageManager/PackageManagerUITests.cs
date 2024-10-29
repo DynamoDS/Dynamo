@@ -1389,7 +1389,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
             // Host is Revit
             // This will not produce a warning dialog
-            pmMock.Setup(x => x.Host).Returns("Revit"); // Use a different property here
+            pmMock.Setup(x => x.Host).Returns("Revit");
 
             //actually perform the download & install operations
             pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
