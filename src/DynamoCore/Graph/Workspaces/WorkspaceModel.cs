@@ -2007,7 +2007,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal bool HasInfos
         {
-            get { return Nodes.Any(n => n.State == ElementState.Info); }
+            get { return Nodes.Any(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo); }
         }
 
         /// <summary>
