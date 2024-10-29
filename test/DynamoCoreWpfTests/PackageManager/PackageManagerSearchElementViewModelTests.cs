@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
 using Dynamo.PackageManager.ViewModels;
+using Dynamo.Search;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
 using Greg;
@@ -730,7 +731,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
         public void PackageSearchWithWhitespaceInName()
         {
             var packagesListNames =  new List<string> { "Dynamo Samples", "archi-lab.net", "LunchBox for Dynamo", "DynamoSap", "TuneUp" };
-            string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
+            string packageId = Guid.NewGuid().ToString();
             string packageVersionNumber = "1.0.0.0";
             string packageCreatedDateString = "2016 - 10 - 02T13:13:20.135000 + 00:00";
             string formItFilterName = "FormIt";
@@ -749,6 +750,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             }
             pmCVM.SetupProperty(p => p.CachedPackageList, cachedPackages);
 
+            LuceneSearch.LuceneUtilityPackageManager = null;
             var packageManagerSearchVM = new PackageManagerSearchViewModel(pmCVM.Object);
             packageManagerSearchVM.RegisterTransientHandlers();
 
