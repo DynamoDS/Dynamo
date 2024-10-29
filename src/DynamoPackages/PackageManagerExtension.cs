@@ -53,7 +53,7 @@ namespace Dynamo.PackageManager
         }
 
         // Current host, empty if sandbox, null when running tests
-        internal virtual string Host => DynamoModel.HostAnalyticsInfo.HostName;
+        internal virtual string Host => DynamoModel.HostAnalyticsInfo.HostProductName;
 
         /// <summary>
         ///     Manages loading of packages (property meant solely for tests)

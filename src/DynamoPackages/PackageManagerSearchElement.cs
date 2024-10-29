@@ -307,12 +307,12 @@ namespace Dynamo.PackageManager
 
             if (hostVersion == null)
             {
-                hostVersion = DynamoModel.HostAnalyticsInfo.HostVersion;
+                hostVersion = DynamoModel.HostAnalyticsInfo.HostProductVersion;
             }
 
             if (host == null)
             {
-                host = DynamoModel.HostAnalyticsInfo.HostName;
+                host = DynamoModel.HostAnalyticsInfo.HostProductName;
             }
 
             // If there is no compatibility matrix, we cannot determine anything
@@ -417,9 +417,9 @@ namespace Dynamo.PackageManager
                     continue;
 
                 // Check if the static compatibility map contains the host
-                if (compatibilityMap.ContainsKey(hostCompatibility.name))
+                if (compatibilityMap.ContainsKey(DynamoUtilities.StringUtilities.CapitalizeFirstLetter(hostCompatibility.name)))
                 {
-                    var matchingHost = compatibilityMap[hostCompatibility.name];
+                    var matchingHost = compatibilityMap[DynamoUtilities.StringUtilities.CapitalizeFirstLetter(hostCompatibility.name)];
 
                     string matchingMin = null;
                     string matchingMax = null;
