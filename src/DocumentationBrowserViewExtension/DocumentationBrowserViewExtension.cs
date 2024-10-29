@@ -178,7 +178,7 @@ namespace Dynamo.DocumentationBrowser
 
         public override void Shutdown()
         {
-            Dispose();
+            // Do nothing for now
         }
 
         private void OnInsertFile(object sender, InsertDocumentationLinkEventArgs e)
@@ -208,13 +208,19 @@ namespace Dynamo.DocumentationBrowser
 
             if (!DynamoSelection.Instance.Selection.Any()) return;
 
-            GroupInsertedGraph(existingGroups, e.Name);
-            DoEvents();
-
-            // We have selected all the nodes and notes from the inserted graph
-            // Now is the time to auto layout the inserted nodes
-            this.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
-            this.DynamoViewModel.FitViewCommand.Execute(false);
+            Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+            {
+                GroupInsertedGraph(existingGroups, e.Name);
+            });
+            //we want to wait for the new group to be inserted and actually rendered, so we add the layout command
+            //as a background priority task on the ui dispatcher.
+            Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+            {
+                // We have selected all the nodes and notes from the inserted graph
+                // Now is the time to auto layout the inserted nodes
+                this.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
+                this.DynamoViewModel.FitViewCommand.Execute(false);
+            },DispatcherPriority.Background);
         }
 
 
@@ -245,7 +251,14 @@ namespace Dynamo.DocumentationBrowser
                 var annotationViewModel = DynamoViewModel.CurrentSpaceViewModel.Annotations
                         .First(x => x.AnnotationModel == annotation);
 
-                var styleItem = annotationViewModel.GroupStyleList.First(x => x.Name.Equals(DynamoProperties.Resources.GroupStyleDefaultReview));
+                GroupStyleItem styleItem = null;
+                //This will try to find the GroupStyle review 
+                styleItem =  annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().FirstOrDefault(x => x.Name.Equals(DynamoProperties.Resources.GroupStyleDefaultReview));
+                if(styleItem == null)
+                {
+                    //If no GroupStyle is found matching the specific criteria we will use the first one
+                    styleItem = annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().First();
+                }
                 var groupStyleItem = new GroupStyleItem {Name = styleItem.Name, HexColorString = styleItem.HexColorString};
                 annotationViewModel.UpdateGroupStyle(groupStyleItem);
 
@@ -436,6 +449,8 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.pmExtension.PackageLoader.PackgeLoaded -= OnPackageLoaded;
             }
+
+            PackageDocumentationManager.Instance.MessageLogged -= OnMessageLogged;
             PackageDocumentationManager.Instance.Dispose();
         }
 
@@ -520,33 +535,5 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowserMenuItem.IsChecked = false;
             }
         }
-
-        #region helper methods
-
-        /// <summary>
-        ///     Force the Dispatcher to empty it's queue
-        /// </summary>
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        public static void DoEvents()
-        {
-            var frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
-                new DispatcherOperationCallback(ExitFrame), frame);
-            Dispatcher.PushFrame(frame);
-        }
-
-        /// <summary>
-        ///     Helper method for DispatcherUtil
-        /// </summary>
-        /// <param name="frame"></param>
-        /// <returns></returns>
-        private static object ExitFrame(object frame)
-        {
-            ((DispatcherFrame)frame).Continue = false;
-            return null;
-        }
-
-        #endregion
-
     }
 }

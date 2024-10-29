@@ -6,17 +6,6 @@ namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
     {
-        [Obsolete("This event will be removed, do not use. It does nothing.")]
-        public event EventHandler RequestManagePackagesDialog;
-        [Obsolete("This method will be removed do not use. It does nothing.")]
-        public virtual void OnRequestManagePackagesDialog(Object sender, EventArgs e)
-        {
-            if (RequestManagePackagesDialog != null)
-            {
-                RequestManagePackagesDialog(this, e);
-            }
-        }
-
         public event RequestPackagePublishDialogHandler RequestPackagePublishDialog;
         public void OnRequestPackagePublishDialog(PublishPackageViewModel vm)
         {
@@ -43,17 +32,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-
-        [Obsolete("This event will be removed, do not use. It does nothing.")]
-        public event EventHandler RequestPackagePathsDialog;
-        [Obsolete("This method will be removed do not use. It does nothing.")]
-        public virtual void OnRequestPackagePathsDialog(object sender, EventArgs e)
-        {
-            var handler = RequestPackagePathsDialog;
-            if (handler != null)
-                handler(sender, e);
-        }
-
         public event ImageSaveEventHandler RequestSaveImage;
         public virtual void OnRequestSaveImage(Object sender, ImageSaveEventArgs e)
         {
@@ -70,18 +48,6 @@ namespace Dynamo.ViewModels
             if (RequestSave3DImage != null)
             {
                 RequestSave3DImage(this, e);
-            }
-        }
-        [Obsolete("This event will be removed later, now the Scaling Factor functionality is implemented in PreferencesViewModel.cs")]
-        public event EventHandler RequestScaleFactorDialog;
-
-        [Obsolete("This method will be removed later, now the Scaling Factor functionality is implemented in PreferencesViewModel.cs")]
-        public virtual void OnRequestScaleFactorDialog(object sender, EventArgs e)
-        {
-            var handler = RequestScaleFactorDialog;
-            if (handler != null)
-            {
-                handler(sender, e);
             }
         }
 
@@ -159,6 +125,24 @@ namespace Dynamo.ViewModels
             if (RequestPaste != null)
             {
                 RequestPaste();
+            }
+        }
+
+        internal event Action RequestCloseHomeWorkSpace;
+        private void OnRequestCloseHomeWorkSpace()
+        {
+            if (RequestCloseHomeWorkSpace != null)
+            {
+                RequestCloseHomeWorkSpace();
+            }
+        }
+
+        internal event Action<double> RequestShorcutToolbarLoaded;
+        public void OnRequestShorcutToolbarLoaded(double rightMenuActualWidth)
+        {
+            if (RequestShorcutToolbarLoaded != null)
+            {
+                RequestShorcutToolbarLoaded(rightMenuActualWidth);
             }
         }
 

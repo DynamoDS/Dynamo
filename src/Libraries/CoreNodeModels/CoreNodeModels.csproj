@@ -23,11 +23,6 @@
   <ItemGroup>
     <None Remove="CoreNodeModelsImages.resources" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-      <Reference Include="System.Web" />
-      <Reference Include="System.Windows" />
-      <Reference Include="System.Xaml" />
-  </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
@@ -88,9 +83,9 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" $(RuntimeIdentifier.Contains('win')) " >
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsImages.resources" References="$(SystemDrawingDllPath)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsImages.resources" OutputAssembly="$(OutDir)CoreNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />
    </Target>
 </Project>

@@ -551,6 +551,27 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanOpenTemplateAsNewWorkspace()
+        {
+            // get empty workspace
+            var dynamoModel = ViewModel.Model;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+
+            // set description
+            dynamoModel.CurrentWorkspace.Description = "dummy description";
+
+            // save
+            var newPath = GetNewFileNameOnTempPath("dyn");
+            dynamoModel.CurrentWorkspace.Save(newPath);
+
+            // load as template
+            ViewModel.Model.OpenTemplateFromPath(newPath);
+            Assert.AreEqual(string.Empty, ViewModel.Model.CurrentWorkspace.FileName);
+            Assert.AreEqual("dummy description", ViewModel.Model.CurrentWorkspace.Description);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CanSaveAndReadWorkspaceName()
         {
             // get empty workspace
@@ -646,6 +667,62 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(legacyConnectorId, newConnectorId);
             Assert.AreEqual(legacyGroupStyleId, newGroupStyleId);
             Assert.AreEqual(legacyLinterId, newLinterId);
+        }
+
+        [Test]
+        public void RemovePIIDataFromWorkspace()
+        {
+            string graphWithPIIDataPath = Path.Combine(TestDirectory, (@"UI\GraphWithPIIData.dyn"));
+            ViewModel.OpenCommand.Execute(graphWithPIIDataPath);
+
+            var noteWithEmailId = "75ccaa00c10c4aedab9250a6d9720951";
+            var nodeWithWebPageId = "cd09502288c448348bd2d0bcd0a3c088";
+            var nodeWithDirectoryId = "5e1f42a0cc8d427cbd7fde969a988d5f";
+            var noteWithCreditCardsId = "2126a32c0f474a5887205bd1b3061d8a";
+            var noteWithSSNsId = "5bcdbd22f679417cb7e3bd19b2d984d3";
+            var nodeWithIPAddressId = "8d58c36ff11d4eb89025f73b4527d55a";
+            var nodeWithDatesId = "7d471f2e3b7a4cc8946aa4101fbf348a";
+
+            JObject workspaceWithPIIData = ViewModel.CurrentSpaceViewModel.GetJsonRepresentation();
+
+            var valueWhitEmail = PIIDetector.GetNoteValue(workspaceWithPIIData, noteWithEmailId);
+            var valueWithWebPage = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithWebPageId, "Code");
+            var valueWithDirectory = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithDirectoryId, "InputValue");
+            var valueWithDirectory2 = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithDirectoryId, "HintPath");
+            var valueWithCreditCards = PIIDetector.GetNoteValue(workspaceWithPIIData, noteWithCreditCardsId);
+            var valueWithSSNs = PIIDetector.GetNoteValue(workspaceWithPIIData, noteWithSSNsId);
+            var valueWithIPAddress = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithIPAddressId, "InputValue");
+            var valueWithDates = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithDatesId, "InputValue");
+
+            Tuple<JObject, bool> workspaceWithoutPIIDataResult = PIIDetector.RemovePIIData(ViewModel.CurrentSpaceViewModel.GetJsonRepresentation());
+            Assert.IsTrue(workspaceWithoutPIIDataResult.Item2);
+
+            var valueWithoutEmail = PIIDetector.GetNoteValue(workspaceWithoutPIIDataResult.Item1, noteWithEmailId);
+            var valueWithoutWebPage = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithWebPageId, "Code");
+            var valueWithoutDirectory = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithDirectoryId, "InputValue");
+            var valueWithoutDirectory2 = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithDirectoryId, "HintPath");
+            var valueWithoutCreditCards = PIIDetector.GetNoteValue(workspaceWithoutPIIDataResult.Item1, noteWithCreditCardsId);
+            var valueWithoutSSNs = PIIDetector.GetNoteValue(workspaceWithoutPIIDataResult.Item1, noteWithSSNsId);
+            var valueWithoutIPAddress = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithIPAddressId, "InputValue");
+            var valueWithoutDates = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithDatesId, "InputValue");
+
+            Assert.IsTrue(PIIDetector.ContainsEmail((string)valueWhitEmail));
+            Assert.IsTrue(PIIDetector.ContainsWebsite((string)valueWithWebPage));
+            Assert.IsTrue(PIIDetector.ContainsDirectory((string)valueWithDirectory));
+            Assert.IsTrue(PIIDetector.ContainsDirectory((string)valueWithDirectory2));
+            Assert.IsTrue(PIIDetector.ContainsCreditCard((string)valueWithCreditCards));
+            Assert.IsTrue(PIIDetector.ContainsSSN((string)valueWithSSNs));
+            Assert.IsTrue(PIIDetector.ContainsIpAddress((string)valueWithIPAddress));
+            Assert.IsTrue(PIIDetector.ContainsDate((string)valueWithDates));
+
+            Assert.IsFalse(PIIDetector.ContainsEmail((string)valueWithoutEmail));
+            Assert.IsFalse(PIIDetector.ContainsWebsite((string)valueWithoutWebPage));
+            Assert.IsFalse(PIIDetector.ContainsDirectory((string)valueWithoutDirectory));
+            Assert.IsFalse(PIIDetector.ContainsDirectory((string)valueWithoutDirectory2));
+            Assert.IsFalse(PIIDetector.ContainsCreditCard((string)valueWithoutCreditCards));
+            Assert.IsFalse(PIIDetector.ContainsSSN((string)valueWithoutSSNs));
+            Assert.IsFalse(PIIDetector.ContainsIpAddress((string)valueWithoutIPAddress));
+            Assert.IsFalse(PIIDetector.ContainsDate((string)valueWithoutDates));
         }
 
         [Test]
@@ -1342,7 +1419,7 @@ namespace Dynamo.Tests
 
             def.Save(tempPath2);
 
-            var count = dynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
+            var count = dynamoModel.SearchModel.Entries.OfType<CustomNodeSearchElement>().Where(
                             x => string.CompareOrdinal(x.Name, nodeName) == 0).Count();
             Assert.AreEqual(count, 2);
         }
@@ -1367,7 +1444,7 @@ namespace Dynamo.Tests
             //assert that package has been loaded.
             var foundPackage = loader.LocalPackages.Where(x => x.Name == "PackageThatWillBeModified").FirstOrDefault();
             Assert.IsNotNull(package);
-            Assert.IsTrue(package.Loaded);
+            Assert.IsTrue(package.LoadState.State == PackageLoadState.StateTypes.Loaded);
             //find our custom node
             var customNodeInfo = this.ViewModel.Model.CustomNodeManager.NodeInfos.Where(x => x.Value.Name == "ANodeToModify").FirstOrDefault();
             Assert.IsNotNull(customNodeInfo);
@@ -1462,6 +1539,21 @@ namespace Dynamo.Tests
             //Verify that the CustomNode name remains in the same value that was created previously
             Assert.True(initialNodeName == customNodeInstance.Name);
             Assert.False(Path.GetFileNameWithoutExtension(savePath) == customNodeInstance.Name);
+        }
+
+        /// <summary>
+        /// Workspace checksum test.
+        /// </summary>
+        [Test]
+        public void WorkapceChecksumTest()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var checksumString = ViewModel.CurrentSpaceViewModel.Checksum;
+
+            Assert.AreEqual("65b395b9874b9d82e088093f30234c496704006030ecf35471404f62b62a6442", checksumString);
         }
         #endregion
     }

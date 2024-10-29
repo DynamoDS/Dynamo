@@ -131,13 +131,6 @@ namespace DSCPython
         }
     }
 
-    [SupressImportIntoVM]
-    [Obsolete("Deprecated. Please use Dynamo.PythonServices.EvaluationState instead.")]
-    public enum EvaluationState { Begin, Success, Failed }
-
-    [SupressImportIntoVM]
-    [Obsolete("Deprecated. Please use evaluation handlers from Dynamo.PythonServices instead.")]
-    public delegate void EvaluationEventHandler(EvaluationState state, PyScope scope, string code, IList bindingValues);
 
     /// <summary>
     ///     Evaluates a Python script in the Dynamo context.
@@ -455,6 +448,46 @@ sys.stdout = DynamoStdOut({0})
         #region Marshalling
 
         /// <summary>
+        /// Add additional data marshalers to handle host data.
+        /// </summary>
+        [SupressImportIntoVM]
+        internal override void RegisterHostDataMarshalers()
+        {
+            DataMarshaler dataMarshalerToUse = HostDataMarshaler as DataMarshaler;
+            dataMarshalerToUse?.RegisterMarshaler((PyObject pyObj) =>
+            {
+                try
+                {
+                    using (Py.GIL())
+                    {
+                        if (PyDict.IsDictType(pyObj))
+                        {
+                            using (var pyDict = new PyDict(pyObj))
+                            {
+                                var dict = new PyDict();
+                                foreach (PyObject item in pyDict.Items())
+                                {
+                                    dict.SetItem(
+                                        ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(0))),
+                                        ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(1)))
+                                    );
+                                }
+                                return dict;
+                            }
+                        }
+                        var unmarshalled = pyObj.AsManagedObject(typeof(object));
+                        return dataMarshalerToUse.Marshal(unmarshalled);
+                    }
+                }
+                catch (Exception e)
+                {
+                    DynamoLogger?.Log($"error marshaling python object {pyObj.Handle} {e.Message}");                    
+                    return pyObj;
+                }
+            });
+        }
+
+        /// <summary>
         ///     Data Marshaler for all data coming into a Python node.
         /// </summary>
         [SupressImportIntoVM]
@@ -628,22 +661,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Deprecated. Please use EvaluationStarted instead")]
-        public static event EvaluationEventHandler EvaluationBegin;
-
-
-        /// <summary>
-        ///     Emitted immediately before execution begins
-        /// </summary>
-        [SupressImportIntoVM]
         public override event EvaluationStartedEventHandler EvaluationStarted;
-
-        /// <summary>
-        ///     Emitted immediately after execution ends or fails
-        /// </summary>
-        [SupressImportIntoVM]
-        [Obsolete("Deprecated. Please use EvaluationFinished instead.")]
-        public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
@@ -661,9 +679,6 @@ sys.stdout = DynamoStdOut({0})
                                               string code,
                                               IList bindingValues)
         {
-            // Call deprecated events until they are completely removed.
-            EvaluationBegin?.Invoke(EvaluationState.Begin, scope, code, bindingValues);
-
             if (EvaluationStarted != null)
             {
                 EvaluationStarted(code, bindingValues, (n, v) => { scope.Set(n, InputMarshaler.Marshal(v).ToPython()); });
@@ -686,11 +701,6 @@ sys.stdout = DynamoStdOut({0})
                                             string code,
                                             IList bindingValues)
         {
-            // Call deprecated events until they are completely removed.
-            EvaluationEnd?.Invoke(isSuccessful ? 
-                EvaluationState.Success : 
-                EvaluationState.Failed, scope, code, bindingValues);
-
             if (EvaluationFinished != null)
             {
                 EvaluationFinished(isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 

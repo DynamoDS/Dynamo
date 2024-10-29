@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
+using DesignScript.Builtin;
 using Dynamo.Configuration;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -21,11 +25,6 @@ namespace Dynamo.Tests
             get { return Analytics.IsEnabled; }
         }
 
-        public static void Disable()
-        {
-            Analytics.ShutDown();
-        }
-
         public static void Throw<T>() where T : Exception, new()
         {
             throw new T();
@@ -44,7 +43,7 @@ namespace Dynamo.Tests
         }
     }
 
-    public class AnalyticsTests : DynamoModelTestBase
+    public class AnalyticsTestsBase : DynamoModelTestBase
     {
         protected Mock<IAnalyticsClient> clientMoq;
 
@@ -76,50 +75,64 @@ namespace Dynamo.Tests
         protected virtual void VerifyEventTracking(Times times)
         {
             Analytics.TrackEvent(Actions.New, Categories.NodeOperations, "New Node", 5);
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackEvent(Actions.New, Categories.NodeOperations, "New Node", 5), times);
 
             Analytics.TrackScreenView("TestScreen");
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackScreenView("TestScreen"), times);
 
+            Analytics.TrackActivityStatus("User");
+            Thread.Sleep(100);
+            clientMoq.Verify(c => c.TrackActivityStatus("User"), times);
+
             TestAnalytics.TrackException<InvalidOperationException>(false);
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackException(It.IsAny<InvalidOperationException>(), false), times);
 
             var time = TimeSpan.FromMinutes(3);
             var variable = "TimeVariable";
             var description = "Some description";
             Analytics.TrackTimedEvent(Categories.Stability, variable, time, description);
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackTimedEvent(Categories.Stability, variable, time, description), times);
 
-            using (var x = Analytics.CreateTimedEvent(Categories.Performance, variable, description))
+            using (var x = Analytics.CreateTaskTimedEvent(Categories.Performance, variable, description).Result)
             {
-                clientMoq.Verify(c => c.CreateTimedEvent(Categories.Performance, variable, description, null), times);
+                clientMoq.Verify(c => c.CreateTaskTimedEvent(Categories.Performance, variable, description, null), times);
             }
 
-            var e = Analytics.TrackCommandEvent("TestCommand");
-            clientMoq.Verify(c => c.CreateCommandEvent("TestCommand", "", null), times);
+            var e = Analytics.TrackTaskCommandEvent("TestCommand").Result;
+            clientMoq.Verify(c => c.CreateTaskCommandEvent("TestCommand", "", null, null), times);
+
+            e = Analytics.TrackTaskCommandEvent("TestCommand", "TestCommand description", null, new Dictionary<string, object>() { } ).Result;
+            clientMoq.Verify(c => c.CreateTaskCommandEvent("TestCommand", "", null, null), times);
 
             e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5);
+            Thread.Sleep(100);
             clientMoq.Verify(c => c.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5, ""), times);
-
-            Analytics.LogPiiInfo("tag", "data");
-            clientMoq.Verify(c => c.LogPiiInfo("tag", "data"), times);
         }
+    }
 
-        [Test]
+    public class AnalyticsTests : AnalyticsTestsBase
+    {
+        [Test, Order(1)]
         public void EventTrackingEnabled()
         {
             VerifyEventTracking(Times.Exactly(1));
         }
 
-        [Test]
+        [Test, Order(2)]
         public void EventTrackingDisabled()
         {
-            TestAnalytics.Disable(); //Disable analytics tracking.
+            Analytics.ShutDown();
+            Thread.Sleep(100);
+
             VerifyEventTracking(Times.Never());
         }
     }
 
-    public class DynamoAnalyticsTests : AnalyticsTests
+    public class DynamoAnalyticsTests : AnalyticsTestsBase
     {
         protected Mock<TrackerFactory> factoryMoq;
         protected Mock<IEventTracker> trackerMoq;
@@ -128,12 +141,12 @@ namespace Dynamo.Tests
 
         public DynamoAnalyticsTests()
         {
-            dynamoSettings = new PreferenceSettings() { IsAnalyticsReportingApproved = true, IsUsageReportingApproved = true };
+            dynamoSettings = new PreferenceSettings();
         }
 
         protected override Mock<IAnalyticsClient> MockClient()
         {
-            var client = new Mock<DynamoAnalyticsClient>(CurrentDynamoModel) { CallBase = true };
+            var client = new Mock<DynamoAnalyticsClient>(DynamoModel.HostAnalyticsInfo) { CallBase = true };
             var session = MockAnalyticsSession();
             client.Setup(c => c.Session).Returns(session);
             return client.As<IAnalyticsClient>();
@@ -144,7 +157,7 @@ namespace Dynamo.Tests
             var session = new Mock<IAnalyticsSession>();
             session.Setup(s => s.UserId).Returns("DynamoTestUser");
             session.Setup(s => s.SessionId).Returns("UniqueSession");
-            session.Setup(s => s.Start(It.IsAny<DynamoModel>())).Callback(SetupServices);
+            session.Setup(s => s.Start()).Callback(SetupServices);
             return session.Object;
         }
 
@@ -157,11 +170,6 @@ namespace Dynamo.Tests
             factoryMoq.Object.Register<AnalyticsEvent>(trackerMoq.Object);
 
             Service.Instance.Register(factoryMoq.Object);
-
-            Service.Instance.AddTrackerFactoryFilter(factoryName, () => {
-                return CurrentDynamoModel.PreferenceSettings.IsAnalyticsReportingApproved;
-                }
-            );
         }
 
         public override void Cleanup()
@@ -171,7 +179,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void AnalyticsTrackingEnabled()
         {
             VerifyEventTracking(Times.Exactly(1));
@@ -180,88 +187,29 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
-        public void AnalyticsTrackingDisabled()
-        {
-            //Modify preferences
-            dynamoSettings.IsAnalyticsReportingApproved = false;
-            dynamoSettings.IsUsageReportingApproved = false;
-
-            //Trigger events and tracks
-            VerifyEventTracking(Times.Exactly(1));
-            
-            //Reset preferences
-            dynamoSettings.IsAnalyticsReportingApproved = true;
-            dynamoSettings.IsUsageReportingApproved = true;
-
-            //1 startup + 1 analytics optin status event
-            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(2));
-        }
-
-        [Test]
-        [Category("Failure")]
         public void CreateDisposableEvents()
         {
             var variable = "TimeVariable";
             var description = "Some description";
-            
-            var e = Analytics.CreateTimedEvent(Categories.Performance, variable, description);
+
+            IDisposable e = Analytics.CreateTaskTimedEvent(Categories.Performance, variable, description).Result;
             Assert.IsInstanceOf<TimedEvent>(e);
             e.Dispose();
             //1 Dispose, Timed event is not tracked for creation.
             trackerMoq.Verify(t => t.Track(e as TimedEvent, factoryMoq.Object), Times.Exactly(1));
 
-            e = Analytics.TrackCommandEvent("TestCommand");
+            e = Analytics.TrackTaskCommandEvent("TestCommand").Result;
             Assert.IsInstanceOf<CommandEvent>(e);
             e.Dispose();
             //1 Create + 1 Dispose
             trackerMoq.Verify(t => t.Track(e as CommandEvent, factoryMoq.Object), Times.Exactly(2));
 
-            e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Save, 5);
+            e = Analytics.TrackTaskFileOperationEvent(this.TempFolder, Actions.Save, 5).Result;
             Assert.IsInstanceOf<FileOperationEvent>(e);
             e.Dispose();
 
             //1 Create + 1 Dispose
             trackerMoq.Verify(t => t.Track(e as FileOperationEvent, factoryMoq.Object), Times.Exactly(2));
-        }
-
-        [Test]
-        [Category("Failure")]
-        public void DummyDisposableEvents()
-        {
-            //Modify preferences
-            dynamoSettings.IsAnalyticsReportingApproved = false;
-            var variable = "TimeVariable";
-            var description = "Some description";
-            
-            Analytics.DisableAnalytics = true;
-            var e = Analytics.CreateTimedEvent(Categories.Performance, variable, description);
-            Assert.IsNotInstanceOf<TimedEvent>(e);
-            e.Dispose();
-
-            Analytics.DisableAnalytics = false;
-
-            //1 ApplicationLifecycle Start
-            trackerMoq.Verify(t => t.Track(It.IsAny<TimedEvent>(), factoryMoq.Object), Times.Exactly(1));
-
-            e = Analytics.TrackCommandEvent("TestCommand");
-            // CommandEvent will be created unless DisableAnalytics is on (because Dynamo does not know the ADP opted-in status)
-            Assert.IsInstanceOf<CommandEvent>(e);
-            e.Dispose();
-            
-            trackerMoq.Verify(t => t.Track(It.IsAny<CommandEvent>(), factoryMoq.Object), Times.Never());
-
-            e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Save, 5);
-            // CommandEvent will be created unless DisableAnalytics is on (because Dynamo does not know the ADP opted-in status)
-            Assert.IsInstanceOf<FileOperationEvent>(e);
-            e.Dispose();
-
-            dynamoSettings.IsAnalyticsReportingApproved = false;
-
-            trackerMoq.Verify(t => t.Track(It.IsAny<FileOperationEvent>(), factoryMoq.Object), Times.Never());
-
-            //Reset preferences
-            dynamoSettings.IsAnalyticsReportingApproved = true;
         }
     }
 }

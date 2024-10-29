@@ -64,12 +64,12 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Search Description matching weight
         /// </summary>
-        internal static int SearchDescriptionWeight = 6;
+        internal static int SearchDescriptionWeight = 4;
 
         /// <summary>
         /// Search tags matching weight
         /// </summary>
-        internal static int SearchTagsWeight = 6;
+        internal static int SearchTagsWeight = 4;
 
         /// <summary>
         /// other fields search matching weight
@@ -143,9 +143,19 @@ namespace Dynamo.Configuration
             Name,
 
             /// <summary>
+            /// NameSplitted - The name of the node splitted using just the last part (e.g. List.Chop we will be using just Chop)
+            /// </summary>
+            NameSplitted,
+
+            /// <summary>
             /// FullCategoryName - The category of the node
             /// </summary>
             FullCategoryName,
+
+            /// <summary>
+            /// CategorySplitted - For this case we will be using just the last Category (the last word after the dot separator in FullCategoryName)
+            /// </summary>
+            CategorySplitted,
 
             /// <summary>
             /// Description - The description of the node
@@ -175,14 +185,21 @@ namespace Dynamo.Configuration
             /// <summary>
             /// Node Input Parameters as string (there are nodes with same name and category but different parameters)
             /// </summary>
-            Parameters
+            Parameters,
+
+            /// <summary>
+            /// Package author name
+            /// </summary>
+            Author
         }
 
         /// <summary>
         /// Nodes Fields to be indexed by Lucene Search
         /// </summary>
         public static string[] NodeIndexFields = { nameof(NodeFieldsEnum.Name),
+                                                   nameof(NodeFieldsEnum.NameSplitted),                                  
                                                    nameof(NodeFieldsEnum.FullCategoryName),
+                                                   nameof(NodeFieldsEnum.CategorySplitted),
                                                    nameof(NodeFieldsEnum.Description),
                                                    nameof(NodeFieldsEnum.SearchKeywords),
                                                    nameof(NodeFieldsEnum.DocName),
@@ -196,6 +213,7 @@ namespace Dynamo.Configuration
         public static string[] PackageIndexFields = { nameof(NodeFieldsEnum.Name),
                                                       nameof(NodeFieldsEnum.Description),
                                                       nameof(NodeFieldsEnum.SearchKeywords),
-                                                      nameof(NodeFieldsEnum.Hosts)};
+                                                      nameof(NodeFieldsEnum.Hosts),
+                                                      nameof(NodeFieldsEnum.Author)};
     }
 }

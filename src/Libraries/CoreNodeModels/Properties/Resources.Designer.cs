@@ -295,6 +295,42 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Validates the data type of an input and returns it.
+        /// </summary>
+        public static string DefineDataDescription {
+            get {
+                return ResourceManager.GetString("DefineDataDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Types.
+        /// </summary>
+        public static string DefineDataDisplayValueMessage {
+            get {
+                return ResourceManager.GetString("DefineDataDisplayValueMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input data to be validated. Refer to drop-down for list of allowed types.
+        /// </summary>
+        public static string DefineDataInputTooltip {
+            get {
+                return ResourceManager.GetString("DefineDataInputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validated data.
+        /// </summary>
+        public static string DefineDataOutputTooltip {
+            get {
+                return ResourceManager.GetString("DefineDataOutputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a directory object from the given path.
         /// </summary>
         public static string DirectoryFromPathDescription {
@@ -661,6 +697,44 @@ namespace CoreNodeModels.Properties {
         public static string FunctionComposeDescription {
             get {
                 return ResourceManager.GetString("FunctionComposeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.
+        ///
+        ///In Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit.
+        /// </summary>
+        public static string GateDescription {
+            get {
+                return ResourceManager.GetString("GateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data to pass to a downstream node with gated controls..
+        /// </summary>
+        public static string GateInPortToolTip {
+            get {
+                return ResourceManager.GetString("GateInPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string GateOutPortToolTip {
+            get {
+                return ResourceManager.GetString("GateOutPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to gate;stop;data.
+        /// </summary>
+        public static string GateSearchTags {
+            get {
+                return ResourceManager.GetString("GateSearchTags", resourceCulture);
             }
         }
         
@@ -1075,6 +1149,33 @@ namespace CoreNodeModels.Properties {
         public static string ReducePortDataSeedToolTip {
             get {
                 return ResourceManager.GetString("ReducePortDataSeedToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store data passing through this node to the Dynamo file. Return the stored data if the input is null..
+        /// </summary>
+        public static string RememberDescription {
+            get {
+                return ResourceManager.GetString("RememberDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data to sample and store in the file..
+        /// </summary>
+        public static string RememberInputToolTip {
+            get {
+                return ResourceManager.GetString("RememberInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string RememberOuputToolTip {
+            get {
+                return ResourceManager.GetString("RememberOuputToolTip", resourceCulture);
             }
         }
         

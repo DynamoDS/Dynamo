@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -9,4 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("976bdb58-dbbb-42cb-88c5-4ac66aa5b9ef")]
+[assembly: InternalsVisibleTo("CoreNodeModels")]
+[assembly: InternalsVisibleTo("DynamoCoreTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
 [assembly: InternalsVisibleTo("DSCoreNodesTests")]

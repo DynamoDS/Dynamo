@@ -6,15 +6,10 @@
 Greg.dll
 Analytics.Net.ADP.dll
 Analytics.NET.Core.dll
-LibG.Interface.dll
 ProtoGeometry.customization.dll
-ProtoGeometry.dll
 .\en-US\ProtoGeometry.resources.dll
-
-.\libg_228_0_0\LibG.AsmPreloader.Managed.dll
-.\libg_228_0_0\LibG.AsmPreloader.Unmanaged.dll
-.\libg_228_0_0\LibG.dll
-.\libg_228_0_0\LibG.Managed.dll
-.\libg_228_0_0\LibG.ProtoInterface.dll
-.\libg_228_0_0\LibGCore.dll
+Python.Included.dll
+Python.Included.SciPy.dll
+Python.Runtime.dll
+Dynamo.Microsoft.Xaml.Behaviors.dll
 

@@ -103,8 +103,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCoreTests", "..\test\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFITarget", "..\test\Engine\FFITarget\FFITarget.csproj", "{C70FE632-5500-4C57-B3D6-9B5574137551}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCrypto", "DynamoCrypto\DynamoCrypto.csproj", "{96643E77-C786-498C-AAA9-80E449854CE9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoTestFx", "..\test\Engine\ProtoTestFx\ProtoTestFx.csproj", "{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoTest", "..\test\Engine\ProtoTest\ProtoTest.csproj", "{6E1177DB-5E4F-4E2E-82E7-902437E56AED}"
@@ -202,6 +200,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewExtensionLibraryTests", "..\test\ViewExtensionLibraryTests\ViewExtensionLibraryTests.csproj", "{AE7F2579-104A-4AF4-AA7B-614AE9E79279}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfVisualizationTests", "..\test\VisualizationTests\WpfVisualizationTests.csproj", "{C4964946-B367-44EE-9ED2-451FF2A83D32}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoPythonTests", "..\test\Libraries\DynamoPythonTests\DynamoPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoMLDataPipeline", "DynamoMLDataPipeline\DynamoMLDataPipeline.csproj", "{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -341,10 +343,6 @@ Global
 		{C70FE632-5500-4C57-B3D6-9B5574137551}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C70FE632-5500-4C57-B3D6-9B5574137551}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C70FE632-5500-4C57-B3D6-9B5574137551}.Release|Any CPU.Build.0 = Release|Any CPU
-		{96643E77-C786-498C-AAA9-80E449854CE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{96643E77-C786-498C-AAA9-80E449854CE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{96643E77-C786-498C-AAA9-80E449854CE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{96643E77-C786-498C-AAA9-80E449854CE9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -524,6 +522,14 @@ Global
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -602,6 +608,7 @@ Global
 		{7DD8077A-201E-4C56-96C5-3C901A51BDF3} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
 		{AE7F2579-104A-4AF4-AA7B-614AE9E79279} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
 		{C4964946-B367-44EE-9ED2-451FF2A83D32} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
+		{773988FE-EDF6-45CB-A63F-482955EB3553} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}

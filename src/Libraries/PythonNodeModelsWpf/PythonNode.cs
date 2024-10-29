@@ -1,10 +1,13 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -20,6 +23,36 @@ using PythonNodeModelsWpf.Controls;
 
 namespace PythonNodeModelsWpf
 {
+    internal static class PythonNodeUtils
+    {
+        /// <summary>
+        /// Returns unique set of names from loaded and deserialized engines.
+        /// </summary>
+        /// <param name="nodeModel"></param>
+        /// <returns></returns>
+        internal static List<string> GetEngineNames(NodeModel nodeModel)
+        {
+            var engineName = string.Empty;
+            switch (nodeModel)
+            {
+                case PythonNode pyNode:
+                    engineName = pyNode.EngineName;
+                    break;
+                case PythonStringNode pyNode:
+                    engineName = pyNode.EngineName;
+                    break;
+            }
+
+            var availableEngineNames = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
+            // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
+            if (!availableEngineNames.Contains(engineName))
+            {
+                availableEngineNames.Add(engineName);
+            }
+            return availableEngineNames.Distinct().ToList();
+        }
+    }
+
     public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
     {       
         private DynamoViewModel dynamoViewModel;
@@ -61,19 +94,13 @@ namespace PythonNodeModelsWpf
 
             learnMoreItem.Click += OpenPythonLearningMaterial;
 
-            var availableEngineNames = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
-            // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
-            if (!availableEngineNames.Contains(nodeModel.EngineName))
-            {
-                availableEngineNames.Add(nodeModel.EngineName);
-            }
-            availableEngineNames.ForEach(x => AddPythonEngineToMenuItems(x));
+            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => dynamoViewModel.AddPythonEngineToMenuItems(
+                new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, engineName, true));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
             nodeView.MainContextMenu.Items.Add(learnMoreItem);
-
-            nodeView.UpdateLayout();
+            
 
             nodeView.MouseDown += View_MouseDown;
             nodeModel.DeletionStarted += NodeModel_DeletionStarted;
@@ -88,6 +115,8 @@ namespace PythonNodeModelsWpf
             Grid.SetColumn(engineLabel, 0);
             Grid.SetRow(engineLabel, 3);
         }
+
+       
 
         /// <summary>
         /// Check if the script editor is saved.
@@ -183,7 +212,7 @@ namespace PythonNodeModelsWpf
         {
             try
             {
-                using (var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("PythonEdit"))
+                using (var cmd = Dynamo.Logging.Analytics.TrackTaskCommandEvent("PythonEdit"))
                 {
                     if (editWindow != null)
                     {
@@ -273,10 +302,7 @@ namespace PythonNodeModelsWpf
         {
             if (sender is MenuItem menuItem)
             {
-                dynamoViewModel.ExecuteCommand(
-                   new DynamoModel.UpdateModelValueCommand(
-                       Guid.Empty, pythonNodeModel.GUID, nameof(pythonNodeModel.EngineName), (string)menuItem.Header));
-                pythonNodeModel.OnNodeModified();
+                dynamoViewModel.UpdatePythonNodeEngine(pythonNodeModel, (string)menuItem.Header);
             }
         }
 
@@ -286,25 +312,12 @@ namespace PythonNodeModelsWpf
             {
                 foreach (var item in e.NewItems)
                 {
-                    AddPythonEngineToMenuItems((item as PythonEngine).Name);
+                    if(item is PythonEngine newEngine)
+                    {
+                        dynamoViewModel.AddPythonEngineToMenuItems(new List<PythonNodeBase>() { pythonNodeModel }, pythonEngineVersionMenu, UpdateEngine, newEngine.Name, true);
+                    }
                 }   
             }
-        }
-
-        /// <summary>
-        /// Adds python engine to MenuItems
-        /// </summary>
-        private void AddPythonEngineToMenuItems(string engineName)
-        {
-            var pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
-            pythonEngineItem.Click += UpdateEngine;
-            pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.EngineName))
-            {
-                Source = pythonNodeModel,
-                Converter = new CompareToParameterConverter(),
-                ConverterParameter = engineName
-            });
-            pythonEngineVersionMenu.Items.Add(pythonEngineItem);
         }
     }
 }

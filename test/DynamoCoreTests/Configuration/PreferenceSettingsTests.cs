@@ -1,13 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Dynamo.Configuration;
-using Dynamo.Models;
-using NUnit.Framework;
 using System.Linq;
-using System;
-using Dynamo.Interfaces;
 using System.Reflection;
+using Dynamo.Configuration;
+using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Utilities;
+using NUnit.Framework;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -70,7 +70,8 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
-            Assert.AreEqual(settings.Locale, "en-US");
+            Assert.AreEqual(settings.EnableDynamoPlayerRenamedWatchAsOutput, false);
+            Assert.AreEqual(settings.Locale, "Default");
 
             // Save
             settings.Save(tempPath);
@@ -89,7 +90,8 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
-            Assert.AreEqual(settings.Locale, "en-US");
+            Assert.AreEqual(settings.EnableDynamoPlayerRenamedWatchAsOutput, false);
+            Assert.AreEqual(settings.Locale, "Default");
 
             // Change setting values
             settings.SetIsBackgroundPreviewActive("MyBackgroundPreview", false);
@@ -136,6 +138,7 @@ namespace Dynamo.Tests.Configuration
                     }
                 }
             });
+            settings.EnableDynamoPlayerRenamedWatchAsOutput = true;
             settings.Locale = "zh-CN";
 
 
@@ -173,6 +176,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(styleItemsList.HexColorString, "000000");
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 1);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups[0].Folders.Count, 1);
+            Assert.AreEqual(settings.EnableDynamoPlayerRenamedWatchAsOutput, true);
             Assert.AreEqual(settings.Locale, "zh-CN");
         }
 
@@ -375,7 +379,7 @@ namespace Dynamo.Tests.Configuration
         }
 
         [Test]
-        [Category("UnitTests"), Category("FailureNET6")]
+        [Category("UnitTests")]
         public void TestImportCopySettings()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
@@ -391,10 +395,14 @@ namespace Dynamo.Tests.Configuration
             var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
             int diffProps = checkDifference.DifferentPropertyValues.Count;
             int totProps = checkDifference.Properties.Count;
-            string firstPropertyWithSameValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
+            string firstPropertyWithSameOrNewValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
             string defSettNumberFormat = defaultSettings.NumberFormat;
             string newSettNumberFormat = newSettings.NumberFormat;
-            string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} | DiffProps: {diffProps.ToString()} | TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} | New Sett NumberFormat: {newSettNumberFormat} | First Property with the same value {firstPropertyWithSameValue}";
+            string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} " +
+                                 $"| DiffProps: {diffProps.ToString()} " +
+                                 $"| TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} " +
+                                 $"| New Sett NumberFormat: {newSettNumberFormat} " +
+                                 $"| First Property with the same value {firstPropertyWithSameOrNewValue}";
 
             // checking if the new Setting are completely different from the Default
             Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count, failMessage);
@@ -470,6 +478,27 @@ namespace Dynamo.Tests.Configuration
             }
 
             Assert.IsTrue(allTheGroupStylesHaveAValidFontSize, $"All the GroupStyles have a valid Font size : {allTheGroupStylesHaveAValidFontSize}");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSerializingHomePageSettings()
+        {
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "homePagePreference.xml");
+
+            PreferenceSettings settings = new PreferenceSettings();
+
+            // Assert defaults
+            Assert.IsEmpty(settings.HomePageSettings);
+
+            settings.HomePageSettings = new List<string> { { String.Concat("greeting", "Hello World") } };
+
+            // Save
+            settings.Save(tempPath);
+            settings = PreferenceSettings.Load(tempPath);
+
+            Assert.IsTrue(settings.HomePageSettings.Contains(String.Concat("greeting", "Hello World")));
         }
     }
 }

@@ -1,8 +1,8 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
@@ -12,13 +12,16 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Scheduler;
 using Dynamo.Wpf.Extensions;
-using Microsoft.CSharp;
+using DynamoCoreWpfTests.Utility;
+using DynamoServices;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Moq;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests.PackageManager
 {
-    [TestFixture, Category("Failure")]
+    [TestFixture]
     class PackageManagerViewExtensionTests : DynamoTestUIBase
     {
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs"); } }
@@ -98,40 +101,52 @@ namespace DynamoCoreWpfTests.PackageManager
         /// </summary>
         public virtual void GenerateNewExtension()
         {
-            var provider = new CSharpCodeProvider();
-            var options = new CompilerParameters
-            {
-                GenerateExecutable = false,
-                OutputAssembly = "TestViewExtension.dll",
-            };
-            options.ReferencedAssemblies.Add("DynamoCore.dll");
-            options.ReferencedAssemblies.Add("DynamoCoreWPF.dll");
-            string source = testViewExtensionSource;
+            var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+            var compilation = CSharpCompilation.Create("TestViewExtension", new[] { CSharpSyntaxTree.ParseText(testViewExtensionSource) }, GetGlobalReferences(), options);
 
-            var results = provider.CompileAssemblyFromSource(options, new[] { source });
-            if (results.Errors.Count > 0)
+
+            var results = compilation.Emit("TestViewExtension.dll");
+            if (results.Diagnostics.Count() > 0)
             {
                 Console.WriteLine("Compile ERROR");
-                foreach (CompilerError error in results.Errors)
+                foreach (var error in results.Diagnostics)
                 {
-                    Console.WriteLine(error.ErrorText);
+                    Console.WriteLine(error.GetMessage());
                 }
             }
             else
             {
                 Console.WriteLine("Compile OK");
-                Console.WriteLine("Assembly Path:" + results.PathToAssembly);
-                Console.WriteLine("Assembly Name:" + results.CompiledAssembly.FullName);
 
                 //move the new assembly into the package directory/bin folder.
                 extensionPath = Path.Combine(PackagesDirectory, "subPackageDirectory", "runtimeGeneratedExtension", "bin", "TestViewExtension.dll");
-                File.Copy(results.CompiledAssembly.Location, extensionPath, true);
+                File.Copy("TestViewExtension.dll", extensionPath, true);
 
                 //copy the manifest as well.
                 manifestPath = Path.Combine(PackagesDirectory, "subPackageDirectory", "runtimeGeneratedExtension",
                     "extra", "TestViewExtension_ViewExtensionDefinition.xml");
                 File.WriteAllText(manifestPath, extensionManifest);
             }
+        }
+
+        private static PortableExecutableReference[] GetGlobalReferences()
+        {
+            var assemblies = new[]
+            {
+        typeof(object).Assembly,
+        typeof(Console).Assembly
+    };
+            var returnList = assemblies
+                .Select(a => MetadataReference.CreateFromFile(a.Location))
+                .ToList();
+            //The location of the .NET assemblies
+            var assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
+            returnList.Add(MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Runtime.dll")));
+
+            returnList.Add(MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DynamoCore.dll")));
+            returnList.Add(MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DynamoCoreWpf.dll")));
+
+            return returnList.ToArray();
         }
 
         [Test]
@@ -144,11 +159,11 @@ namespace DynamoCoreWpfTests.PackageManager
         public void PackageManagerViewExtensionHasCorrectNumberOfRequestedExtensions()
         {
             var pkgViewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
-            Assert.AreEqual(pkgViewExtension.RequestedExtensions.Count(), 1);
+            Assert.AreEqual(pkgViewExtension.RequestedExtensions.Count(), 2);
         }
 
         [Test]
-        async public void LateLoadedViewExtensionsHaveMethodsCalled()
+        public void LateLoadedViewExtensionsHaveMethodsCalled()
         {
             var pkgviewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension");
@@ -193,7 +208,7 @@ namespace DynamoCoreWpfTests.PackageManager
                 var pkg = loader.ScanPackageDirectory(pkgDir);
                 loader.LoadPackages(new List<Package> { pkg });
                 Assert.AreEqual(0, loader.RequestedExtensions.Count());
-                Assert.AreEqual(2, View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
+                Assert.AreEqual(3, View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
                 Assert.IsTrue(viewExtensionLoadStart);
                 Assert.IsTrue(viewExtensionAdd);
                 Assert.IsTrue(viewExtensionLoaded);
@@ -271,6 +286,7 @@ namespace DynamoCoreWpfTests.PackageManager
                 count = count + 1;
             }
         }
+
         [Test]
         public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost_AtLatePackageLoad()
         {
@@ -300,7 +316,49 @@ namespace DynamoCoreWpfTests.PackageManager
             }
         }
 
+        [Test]
+        public void TestCrashInPackage()
+        {
+            var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension_Crash");
+            var currentDynamoModel = ViewModel.Model;
+            var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+            Assert.IsNotNull(pkg);
+
+            loader.LoadPackages(new List<Package>() { pkg });
+     
+            Exception expectedEx = null;
+            var assem = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name == "TestCrash").FirstOrDefault();
+            Assert.IsNotNull(assem);
+
+            try
+            {
+                assem.GetType("TestCrash.Class1").GetMethod("TestCrash").Invoke(null, new object[] { });
+            }
+            catch (Exception ex)
+            {
+                expectedEx = ex;
+            }
+
+            int count = 0;
+            void DynamoConsoleLogger_LogErrorToDynamoConsole(string obj)
+            {
+                if (obj.Contains($"Unhandled exception coming from package {pkg.Name} was handled"))
+                {
+                    count++;
+                }
+            }
+
+            DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
+
+            ViewModel.CrashGracefully(expectedEx);
+
+            DynamoConsoleLogger.LogErrorToDynamoConsole -= DynamoConsoleLogger_LogErrorToDynamoConsole;
+
+            ViewModel.CrashGracefully(expectedEx);
+            Assert.AreEqual(1, count);
+        }
 
         [OneTimeTearDown]
         /// <summary>

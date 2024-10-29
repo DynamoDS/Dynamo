@@ -45,11 +45,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
         private DirectoryInfo tempDirectory = null;
 
-#if NET6_0_OR_GREATER
         [OneTimeSetUp]
-#elif NETFRAMEWORK
-        [TestFixtureSetUp]
-#endif
         public void FixtureSetup()
         {
             try
@@ -64,11 +60,8 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 Console.WriteLine(e.StackTrace);
             }
         }
-#if NET6_0_OR_GREATER
+
         [OneTimeTearDown]
-#elif NETFRAMEWORK
-        [TestFixtureTearDown]
-#endif
         public void FixtureTearDown()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
@@ -171,15 +164,9 @@ namespace NodeDocumentationMarkdownGeneratorTests
             FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
-            //assert count is correct.
-            //TODO this should be 684 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
-            // Net6 can make longer file names
-#if NET6_0_OR_GREATER
-            Assert.AreEqual(684, generatedFileNames.Count());
-#else
-            Assert.AreEqual(682, generatedFileNames.Count());
-#endif
+            Assert.AreEqual(707, generatedFileNames.Count());
         }
+
         [Test]
         public void ProducesCorrectOutputFromCoreDirectory_dsFiles()
         {
@@ -534,6 +521,62 @@ namespace NodeDocumentationMarkdownGeneratorTests
         }
 
         [Test]
+        public void CanRenameFileLongName()
+        {
+            // Arrange
+            var originalOutDirName = "fallback_docs";
+            var filesDirectory = "LongNameFiles";
+            var emptySpaceChar = "%20";
+            var originalOutDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, originalOutDirName, filesDirectory));
+
+            tempDirectory = CreateTempOutputDirectory();
+            Assert.That(tempDirectory.Exists);
+
+            CopyFilesRecursively(originalOutDir, tempDirectory);
+
+            var originalMdFile = tempDirectory.GetFiles("*.md", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name).FirstOrDefault();
+            Assert.IsNotNull(originalMdFile);
+
+            //Check that the original MD file contains space characters URL encoded
+            var originalMdFileContent = Path.Combine(tempDirectory.FullName, originalMdFile);
+            Assert.IsTrue(File.ReadAllText(originalMdFileContent).Contains(emptySpaceChar));
+
+            // Act
+            var opts = new RenameOptions
+            {
+                InputMdDirectory = tempDirectory.FullName,
+                MaxLength = 90
+            };
+
+            //Rename all the files in the temp directory
+            RenameCommand.HandleRename(opts);
+
+            // Assert
+            var finalMdFile = tempDirectory.GetFiles("*.md", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name).FirstOrDefault();
+            Assert.IsNotNull(finalMdFile);
+
+            var hashedName = Path.GetFileNameWithoutExtension(finalMdFile); 
+
+            //Validates that all the renamed files start with the hashed name
+            var allFiles = tempDirectory.GetFiles("*.*", SearchOption.TopDirectoryOnly).Select(x => x.Name);
+            foreach(var file in allFiles)
+            {
+                Assert.IsTrue(file.StartsWith(hashedName));
+            }
+
+            //Get the image file name renamed
+            var imageFile = tempDirectory.GetFiles("*.jpg", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name).FirstOrDefault();
+            Assert.IsNotNull(imageFile);
+
+            //Validates that the image file name is present inside the md file content.
+            var finalMdFileContent = Path.Combine(tempDirectory.FullName, finalMdFile);
+            Assert.IsTrue(File.ReadAllText(finalMdFileContent).Contains(imageFile));
+        }
+
+        [Test]
         public void CanRenameFilesInADirectory()
         {
             // Arrange
@@ -596,7 +639,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
         protected static void SaveCoreLayoutSpecToPath(Assembly assembly, string savePath)
         {
-            var resource = "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json";
+            var resource = "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS.layoutSpecs.json";
             assembly = assembly == null ? Assembly.GetExecutingAssembly() : assembly;
             var stream = assembly.GetManifestResourceStream(resource);
             var fs = File.Create(savePath);

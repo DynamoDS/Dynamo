@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
              mc:Ignorable="d"
+             UseLayoutRounding="True"
              d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
              d:DesignHeight="450"
              d:DesignWidth="800">
@@ -21,7 +21,9 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter" />
+            <controls:ReadyToPublishToVisibilityCollapsedConverter x:Key="ReadyToPublishToVisibilityCollapsedConverter" />            
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <SolidColorBrush x:Key="DetailsButtonBorderColorBrush" Color="#808080" Opacity="0.5"/>
             <ControlTemplate x:Key="ComboBoxToggleButton"
                              TargetType="{x:Type ToggleButton}">
                 <Grid Height="29px"
@@ -87,26 +89,16 @@
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
-            <Style x:Key="ComboBoxStyle"
-                   TargetType="{x:Type ComboBox}">
-                <Setter Property="OverridesDefaultStyle"
-                        Value="true" />
-                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="ScrollViewer.CanContentScroll"
-                        Value="true" />
-                <Setter Property="Margin"
-                        Value="-6,0,0,0" />
-                <Setter Property="Height"
-                        Value="29px" />
-                <Setter Property="Foreground"
-                        Value="#DCDCDC" />
-                <Setter Property="FontSize"
-                        Value="12px" />
-                <Setter Property="FontFamily"
-                        Value="{StaticResource ArtifaktElementRegular}" />
+            <Style x:Key="ComboBoxStyle" TargetType="{x:Type ComboBox}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+                <Setter Property="Margin" Value="-6,0,0,0" />
+                <Setter Property="Height" Value="29px" />
+                <Setter Property="Foreground" Value="#DCDCDC" />
+                <Setter Property="FontSize" Value="12px" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ComboBox}">
@@ -204,259 +196,101 @@
                 </Setter>
             </Style>
 
-            <!--  DataGrid  -->
-            <Style x:Key="DataGridCellStyle"
-                   TargetType="DataGridCell">
-                <Setter Property="Padding"
-                        Value="6,0" />
+            <!-- TabControl -->
+            <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Background" Value="{StaticResource TabItem.Selected.Background}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource TabItem.Selected.Border}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type DataGridCell}">
-                            <Border Padding="{TemplateBinding Padding}"
-                                    BorderThickness="0"
-                                    SnapsToDevicePixels="True">
-                                <ContentPresenter Margin="2,3,2,0"
-                                                  HorizontalAlignment="Stretch"
-                                                  VerticalAlignment="Center"
-                                                  TextElement.FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                  TextElement.FontSize="10px"
-                                                  TextElement.FontWeight="Regular"
-                                                  TextElement.Foreground="Blue"
-                                                  ToolTipService.ShowDuration="30000">
-                                    <ContentPresenter.ToolTip>
-                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"
-                                                 Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                                    </ContentPresenter.ToolTip>
-                                </ContentPresenter>
+                        <ControlTemplate TargetType="{x:Type TabControl}">
+                            <Grid x:Name="templateRoot" ClipToBounds="true" SnapsToDevicePixels="true" KeyboardNavigation.TabNavigation="Local">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition x:Name="ColumnDefinition0"/>
+                                    <ColumnDefinition x:Name="ColumnDefinition1" Width="0"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition x:Name="RowDefinition0" Height="Auto"/>
+                                    <RowDefinition x:Name="RowDefinition1" Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TabPanel x:Name="headerPanel" Background="Transparent" Grid.Column="0" IsItemsHost="true" Margin="0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"/>
+                                <Border x:Name="contentPanel" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
+                                    <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Border>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="TabStripPlacement" Value="Bottom">
+                                    <Setter Property="Grid.Row" TargetName="headerPanel" Value="1"/>
+                                    <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition1" Value="Auto"/>
+                                    <Setter Property="Margin" TargetName="headerPanel" Value="2,0,2,2"/>
+                                </Trigger>
+                                <Trigger Property="TabStripPlacement" Value="Left">
+                                    <Setter Property="Grid.Row" TargetName="headerPanel" Value="0"/>
+                                    <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Grid.Column" TargetName="headerPanel" Value="0"/>
+                                    <Setter Property="Grid.Column" TargetName="contentPanel" Value="1"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition1" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                                    <Setter Property="Margin" TargetName="headerPanel" Value="2,2,0,2"/>
+                                </Trigger>
+                                <Trigger Property="TabStripPlacement" Value="Right">
+                                    <Setter Property="Grid.Row" TargetName="headerPanel" Value="0"/>
+                                    <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Grid.Column" TargetName="headerPanel" Value="1"/>
+                                    <Setter Property="Grid.Column" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition0" Value="*"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition1" Value="Auto"/>
+                                    <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                                    <Setter Property="Margin" TargetName="headerPanel" Value="0,2,2,2"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <!-- TabItem -->
+            <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
+                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Foreground" Value="#F5F5F5"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontFamily" Value="{DynamicResource ArtifaktElementRegular}"/>
+                <Setter Property="UseLayoutRounding" Value="True"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border BorderThickness="{TemplateBinding BorderThickness}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    Padding="10 5"
+                                    Background="{TemplateBinding Background}">
+                                <ContentPresenter Content="{TemplateBinding Header}"/>
                             </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsSelected"
-                             Value="True">
-                        <Setter Property="Foreground"
-                                Value="White" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <Style x:Key="DataGridRowStyle"
-                   TargetType="DataGridRow">
-                <Setter Property="HorizontalAlignment"
-                        Value="Left" />
-                <Setter Property="VerticalAlignment"
-                        Value="Center" />
-                <Setter Property="VerticalContentAlignment"
-                        Value="Center" />
-                <Setter Property="Margin"
-                        Value="0" />
-                <Setter Property="Padding"
-                        Value="0" />
-                <Setter Property="FontFamily"
-                        Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="Foreground"
-                        Value="#F5F5F5" />
-                <Setter Property="Height"
-                        Value="25" />
-                <Setter Property="Background"
-                        Value="#353535" />
-                <Setter Property="IsEnabled"
-                        Value="True" />
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver"
-                             Value="True">
-                        <Setter Property="Background"
-                                Value="#444444" />
-                    </Trigger>
-                    <Trigger Property="IsSelected"
-                             Value="True">
-                        <Setter Property="Background"
-                                Value="#888888" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <Style x:Key="DataGridColumnHeaderText"
-                   TargetType="DataGridColumnHeader">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="DataGridColumnHeader">
-                            <Grid>
-                                <TextBlock Name="DataGridColumnHeader"
-                                           Height="26"
-                                           Padding="10,8,10,0"
-                                           VerticalAlignment="Center"
-                                           Background="#434343"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="10px"
-                                           FontWeight="Regular"
-                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                           Text="{TemplateBinding Content}" />
-                                <Thumb x:Name="PART_RightHeaderGripper"
-                                       Width="2"
-                                       HorizontalAlignment="Right"
-                                       BorderBrush="#5E5E5E"
-                                       BorderThickness="1,0,0,0"
-                                       Cursor="SizeWE" />
-                            </Grid>
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter TargetName="DataGridColumnHeader"
-                                            Property="Background"
-                                            Value="#666666" />
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#434343"/>
+                                    <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter Property="Background" Value="Transparent"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style x:Key="DataGridColumnHeaderLast"
-                   TargetType="DataGridColumnHeader">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="DataGridColumnHeader">
-                            <TextBlock Name="DataGridColumnHeader"
-                                       Height="26"
-                                       Padding="10,8,10,0"
-                                       VerticalAlignment="Center"
-                                       Background="#434343"
-                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       FontSize="10px"
-                                       FontWeight="Regular"
-                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                       Text="{TemplateBinding Content}" />
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter TargetName="DataGridColumnHeader"
-                                            Property="Background"
-                                            Value="#666666" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="DataGrid"
-                   TargetType="{x:Type DataGrid}">
-                <Setter Property="BorderThickness"
-                        Value="0" />
-                <Setter Property="BorderBrush"
-                        Value="Transparent" />
-                <Setter Property="Margin"
-                        Value="0,0,0,10" />
-                <Setter Property="Padding"
-                        Value="0,0,0,0" />
-                <Setter Property="AutoGenerateColumns"
-                        Value="False" />
-                <Setter Property="IsReadOnly"
-                        Value="False" />
-                <Setter Property="IsEnabled"
-                        Value="True" />
-                <Setter Property="Background"
-                        Value="#353535" />
-                <Setter Property="CanUserAddRows"
-                        Value="False" />
-                <Setter Property="CanUserReorderColumns"
-                        Value="True" />
-                <Setter Property="CanUserDeleteRows"
-                        Value="False" />
-                <Setter Property="CanUserResizeColumns"
-                        Value="True" />
-                <Setter Property="CanUserResizeRows"
-                        Value="False" />
-                <Setter Property="FocusVisualStyle"
-                        Value="{x:Null}" />
-                <Setter Property="FontSize"
-                        Value="10px" />
-                <Setter Property="CellStyle"
-                        Value="{DynamicResource DataGridCellStyle}" />
-                <Setter Property="RowStyle"
-                        Value="{DynamicResource DataGridRowStyle}" />
-                <Setter Property="HeadersVisibility"
-                        Value="Column" />
-                <Setter Property="GridLinesVisibility"
-                        Value="None" />
-                <Setter Property="SelectionMode"
-                        Value="Extended" />
-                <Setter Property="HorizontalScrollBarVisibility"
-                        Value="Visible" />
-                <Setter Property="VerticalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="EnableRowVirtualization"
-                        Value="False" />
-            </Style>
-            <Style x:Key="CheckBoxStyle"
-                   TargetType="CheckBox">
-                <Setter Property="FontFamily"
-                        Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="Foreground"
-                        Value="{StaticResource DarkGreyBrush}" />
-                <Setter Property="Margin"
-                        Value="0" />
-                <Setter Property="FontSize"
-                        Value="14px" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type CheckBox}">
-                            <Grid Margin="0,0,0,1">
-                                <Rectangle x:Name="outerRectangle"
-                                           Grid.Column="0"
-                                           Width="16px"
-                                           Height="16px"
-                                           Fill="Transparent"
-                                           Stroke="White"
-                                           StrokeThickness="1" />
-                                <Rectangle x:Name="highlightRectangle"
-                                           Grid.Column="0"
-                                           Width="16px"
-                                           Height="16px"
-                                           Fill="Transparent"
-                                           Stroke="White"
-                                           StrokeThickness="1" />
-                                <Path x:Name="tick"
-                                      Grid.Column="0"
-                                      Width="14px"
-                                      Height="14px"
-                                      Data="M3,7 l3,3 l5,-6"
-                                      Opacity="0"
-                                      Stretch="None"
-                                      Stroke="White"
-                                      StrokeThickness="2" />
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter TargetName="highlightRectangle"
-                                            Property="Fill"
-                                            Value="#666666" />
-                                </Trigger>
-                                <Trigger Property="IsChecked"
-                                         Value="True">
-                                    <Setter TargetName="tick"
-                                            Property="Opacity"
-                                            Value="1.0" />
-                                </Trigger>
-                                <Trigger Property="IsChecked"
-                                         Value="False">
-                                    <Setter TargetName="outerRectangle"
-                                            Property="Fill"
-                                            Value="Transparent" />
-                                    <Setter TargetName="tick"
-                                            Property="Opacity"
-                                            Value="0.0" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled"
-                                         Value="False">
-                                    <Setter TargetName="highlightRectangle"
-                                            Property="Stroke"
-                                            Value="LightGray" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -466,548 +300,249 @@
 
         <Grid Name="mainGrid">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="66px" />
             </Grid.RowDefinitions>
 
-            <!--  Mid-Section: Details + Datagrid  -->
-            <Grid Name="midSectionGrid"
-                  Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="265" />
-                    <ColumnDefinition Width="1" />
-                    <ColumnDefinition Width="*"
-                                      MinWidth="360" />
-                </Grid.ColumnDefinitions>
-
-                <!--  Background Border  -->
-                <Border Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        BorderBrush="#7E7E7E"
-                        BorderThickness="0,0,0,1"
-                        Focusable="False" />
-
-                <!--  Left: Details  -->
-                <ScrollViewer Grid.Row="1"
-                              Grid.Column="0"
-                              Margin="0,5"
-                              VerticalScrollBarVisibility="Visible">
-                    <StackPanel Margin="25,11,10,16"
-                                Orientation="Vertical">
-
-                        <!--  Name  -->
-                        <TextBlock Name="packageNameLabel"
-                                   Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackageViewPackageName}">
-                            <TextBlock.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageNameTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Name="packageNameInput"
-                                 Style="{StaticResource InputStyleWithIcon}"
-                                 Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
-                                 IsEnabled="{Binding Path=CanEditName}"
-                                 Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 TabIndex="0" />
-
-                        <!--  Description  -->
-                        <TextBlock Name="descriptionLabel"
-                                   Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackageViewPackageDescription}">
-                            <TextBlock.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageDescriptionTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Name="descriptionInput"
-                                 MinHeight="81px"
-                                 Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}"
-                                 Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 TabIndex="1" />
-
-                        <!--  Version  -->
-                        <TextBlock Name="versionLabel"
-                                   Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackageViewPackageVersion}">
-                            <TextBlock.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageVersionTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <StackPanel Margin="0,0,0,12"
-                                    Orientation="Horizontal">
-                            <TextBox Name="versionMajorInput"
-                                     Margin="0,0,6,0"
-                                     MaxLength="4"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}"
-                                     Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     TabIndex="2" />
-                            <TextBox Name="versionMinorInput"
-                                     Margin="0,0,6,0"
-                                     MaxLength="4"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}"
-                                     Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     TabIndex="3" />
-                            <TextBox Name="versionBuildInput"
-                                     Margin="0,0,6,0"
-                                     MaxLength="4"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}"
-                                     Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     TabIndex="4" />
-                        </StackPanel>
-
-                        <!--  External Dependency  -->
-                        <TextBlock Name="hostLabel"
-                                   Margin="0,0,0,10"
-                                   Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackageViewPackageHostDependency}">
-                            <TextBlock.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageHostDependencyTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <ComboBox Margin="0,0,0,20"
-                                  IsEditable="False"
-                                  ItemsSource="{Binding KnownHosts}"
-                                  OverridesDefaultStyle="True"
-                                  Style="{StaticResource ComboBoxStyle}"
-                                  TabIndex="5">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox Name="HostEntry"
-                                                  Checked="HostEntry_CheckStateChanged"
-                                                  Content="{Binding HostName}"
-                                                  IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                  Tag="{RelativeSource FindAncestor,
-                                                                   AncestorType={x:Type ComboBox}}"
-                                                  Unchecked="HostEntry_CheckStateChanged" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                            <ComboBox.Template>
-                                <ControlTemplate TargetType="ComboBox">
-                                    <Grid>
-                                        <ToggleButton Name="ToggleButton"
-                                                      ClickMode="Press"
-                                                      Focusable="false"
-                                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                                      Template="{StaticResource ComboBoxToggleButton}" />
-                                        <ContentPresenter Name="ContentSite"
-                                                          Margin="3,3,23,3"
-                                                          HorizontalAlignment="Left"
-                                                          VerticalAlignment="Center"
-                                                          Content="{Binding Path=SelectedHostsString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                          IsHitTestVisible="False" />
-                                        <Popup Name="Popup"
-                                               MinWidth="{TemplateBinding ActualWidth}"
-                                               MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                               Focusable="False"
-                                               IsOpen="{TemplateBinding IsDropDownOpen}"
-                                               Placement="Bottom"
-                                               PopupAnimation="Slide">
-                                            <Grid Name="DropDown"
-                                                  SnapsToDevicePixels="True">
-                                                <Border Name="DropDownBorder"
-                                                        Background="#353535"
-                                                        BorderBrush="#444444"
-                                                        BorderThickness="1,0,1,1" />
-                                                <ScrollViewer Margin="4,6,4,6"
-                                                              DataContext="{Binding}"
-                                                              SnapsToDevicePixels="True">
-                                                    <StackPanel IsItemsHost="True"
-                                                                KeyboardNavigation.DirectionalNavigation="Contained" />
-                                                </ScrollViewer>
-                                            </Grid>
-                                        </Popup>
-                                    </Grid>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="HasItems"
-                                                 Value="false">
-                                            <Setter TargetName="DropDownBorder"
-                                                    Property="MinHeight"
-                                                    Value="95" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </ComboBox.Template>
-                        </ComboBox>
-
-                        <!--  Group  -->
-                        <TextBlock Name="groupLabel"
-                                   Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackageViewPackageGroup}">
-                            <TextBlock.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Name="groupInput"
-                                 Style="{StaticResource InputStyle}"
-                                 Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Tag="{x:Static p:Resources.PublishPackageGroupWatermark}"
-                                 TabIndex="6" />
-
-                        <!--  Keywords  -->
-                        <TextBlock Name="keywordsLabel"
-                                   Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackageViewPackageKeywords}">
-                            <TextBlock.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageKeywordsTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Name="keywordsInput"
-                                 Style="{StaticResource InputStyle}"
-                                 Text="{Binding Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Tag="{x:Static p:Resources.PublishPackageKeywordsWatermark}"
-                                 TabIndex="7" />
-
-                        <!--  More  -->
-                        <Expander x:Name="detailsExpander"
-                                  Margin="-2,6"
-                                  Header="{x:Static p:Resources.MoreButton}"
-                                  Style="{StaticResource MenuExpanderStyle}"
-                                  KeyboardNavigation.TabNavigation="Local"
-                                  TabIndex="8">
-                            <StackPanel Margin="-10,10,0,0"
-                                        KeyboardNavigation.TabNavigation="Local">
-
-                                <!--  Website URL  -->
-                                <TextBlock Name="websiteUrlLabel"
-                                           Style="{StaticResource LabelStyle}"
-                                           Text="{x:Static p:Resources.PublishPackageViewPublisherWebSite}" />
-                                <TextBox Name="websiteUrlInput"
-                                         Style="{StaticResource InputStyle}"
-                                         Text="{Binding SiteUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}"
-                                         TabIndex="9" />
-
-                                <!--  Repository URL  -->
-                                <TextBlock Name="repositoryUrlLabel"
-                                           Style="{StaticResource LabelStyle}"
-                                           Text="{x:Static p:Resources.PublishPackageViewRepositoryUrl}" />
-                                <TextBox Name="repositoryUrlInput"
-                                         Style="{StaticResource InputStyle}"
-                                         Text="{Binding RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}"
-                                         TabIndex="10" />
-
-                                <!--  License  -->
-                                <TextBlock Name="licenseLabel"
-                                           Style="{StaticResource LabelStyle}"
-                                           Text="{x:Static p:Resources.PublishPackageViewLicense}" />
-                                <TextBlock Name="licenseSubLabel"
-                                           Style="{StaticResource SubLabelStyle}"
-                                           TextWrapping="Wrap">
-                                <Run Text="{x:Static p:Resources.PublishPackageViewLicenseSubLabel}" />
-                                <Hyperlink Cursor="Hand"
-                                           NavigateUri="https://opensource.org/licenses/MIT"
-                                           RequestNavigate="Hyperlink_RequestNavigate"
-                                           KeyboardNavigation.TabIndex="11">
-                                    MIT
-                                    <Hyperlink.Style>
-                                        <Style TargetType="Hyperlink">
-                                            <Setter Property="Foreground"
-                                                    Value="#6AC0E7" />
-                                            <Setter Property="FontFamily"
-                                                    Value="{StaticResource ArtifaktElementRegular}" />
-                                            <Setter Property="FontSize"
-                                                    Value="12px" />
+            <StackPanel UseLayoutRounding="True"
+                        Margin="2">
+                <ItemsControl ItemsSource="{Binding Path=Breadcrumbs, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                              Name="breadcrumbsNavigation"
+                              Visibility="Collapsed">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="/"
+                                           FontSize="12"
+                                           Margin="5,0,5,0"
+                                           Foreground="#F5F5F5">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}"
+                                                             Value="{x:Null}">
+                                                    <Setter Property="Visibility"
+                                                            Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
                                         </Style>
-                                    </Hyperlink.Style>
-                                </Hyperlink>
+                                    </TextBlock.Style>
                                 </TextBlock>
-                                <TextBox Name="licenseInput"
-                                         Text="{Binding License, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputStyle}"
-                                         Tag="{x:Static p:Resources.PublishPackageViewLicenseWatermark}"
-                                         TabIndex="12" />
-
-                                <!--  Copyright Holder  -->
-                                <TextBlock Name="copyrightHolderLabel"
-                                           Style="{StaticResource LabelStyle}"
-                                           Text="{x:Static p:Resources.PublishPackageViewCopyrightHolder}" />
-                                <TextBlock Name="copyrightHolderSubLabel"
-                                           Style="{StaticResource SubLabelStyle}"
-                                           Text="{x:Static p:Resources.PublishPackageViewCopyrightHolderSubLabel}" />
-                                <TextBox Name="CopyrightHolder"
-                                         Style="{StaticResource InputStyle}"
-                                         Text="{Binding CopyrightHolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Tag="{x:Static p:Resources.PublishPackageViewCopyrightHolderWatermark}"
-                                         TabIndex="13" />
-
-                                <!--  Copyright Year  -->
-                                <TextBlock Name="copyrightYearLabel"
-                                           Style="{StaticResource LabelStyle}"
-                                           Text="{x:Static p:Resources.PublishPackageViewCopyrightYear}" />
-                                <TextBlock Name="copyrightYearSubLabel"
-                                           Style="{StaticResource SubLabelStyle}"
-                                           Text="{x:Static p:Resources.PublishPackageViewCopyrightYearSubLabel}" />
-                                <TextBox Name="CopyrightYear"
-                                         Margin="0,0,0,-20"
-                                         Style="{StaticResource InputStyle}"
-                                         Text="{Binding CopyrightYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Tag="{x:Static p:Resources.PublishPackageViewCopyrightYearWatermark}"
-                                         TabIndex="14" />
+                                <Button Content="{Binding}"
+                                        Tag="{Binding}"
+                                        Click="BreadcrumbButton_Click"
+                                        Foreground="#F5F5F5"
+                                        FontSize="12"
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
                             </StackPanel>
-                        </Expander>
-                    </StackPanel>
-                </ScrollViewer>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
 
-                <!--  Right: DataGrid  -->
-                <Grid Name="packageContentsGrid"
-                      Grid.Column="2"
-                      Margin="25,16,25,15"
-                      VerticalAlignment="Top">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+            <!-- Main navigation frame hosting the pages -->
+            <Frame x:Name="mainFrame"
+                   Grid.Row="1" 
+                   NavigationUIVisibility="Hidden"
+                   Navigated="mainFrame_Navigated"/>
 
-                    <!--  Top Row: Buttons and Label  -->
-                    <DockPanel Grid.Row="0">
-                        <!--  Add Directory  -->
-                        <Button Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
-                                Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
-                                DockPanel.Dock="Right"
-                                Style="{StaticResource TextButtonStyle}"
-                                TabIndex="16">
-                            <Button.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                            </Button.ToolTip>
-                        </Button>
+            <!--  Bottom Section: Publish Buttons + Status Label    -->
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"
+                       x:Name="PublishPageButtonStack"
+                       Margin="25,0">
 
-                        <!--  Add Files  -->
-                        <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
-                                Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
-                                DockPanel.Dock="Right"
-                                Style="{StaticResource TextButtonStyle}"
-                                TabIndex="15">
-                            <Button.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                            </Button.ToolTip>
-                        </Button>
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Horizontal">
 
-                        <!--  Package Contents Label  -->
-                        <TextBlock DockPanel.Dock="Left"
-                                   Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackagePackageContent}" />
-                    </DockPanel>
+                    <!--  Cancel  -->
+                    <Button Click="CancelButton_Click"
+                            Content="{x:Static p:Resources.PublishPackageResetButton}"
+                            IsEnabled="{Binding HasChanges}"
+                            DockPanel.Dock="Right"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+                    
+                    <!--  Publish Online  -->
+                    <Button Command="{Binding Path=SubmitCommand}"
+                            Content="{x:Static p:Resources.PublishPackage}"
+                            x:Name="publishButton"
+                            DockPanel.Dock="Right"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
 
-                    <!--  Middle: DataGrid  -->
-                    <DataGrid Grid.Row="1"
-                              Height="370"
-                              Margin="0,0,0,15"
-                              VerticalAlignment="Stretch"
-                              CanUserReorderColumns="False"
-                              ItemsSource="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged}"
-                              Style="{StaticResource DataGrid}">
-                        <DataGrid.Columns>
-                            <DataGridCheckBoxColumn MinWidth="85"
-                                                    MaxWidth="130"
-                                                    Binding="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                    ElementStyle="{StaticResource CheckBoxStyle}"
-                                                    Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
-                                                    HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                                    IsReadOnly="False"
-                                                    IsThreeState="False" />
-                            <DataGridTextColumn MinWidth="50"
-                                                Binding="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
-                                                Header="{x:Static p:Resources.PublishPackageViewPackageName}"
-                                                HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                                IsReadOnly="True" />
-                            <DataGridTemplateColumn MinWidth="90"
-                                                    Width="*"
-                                                    Header="{x:Static p:Resources.PublishPackageViewFilePath}"
-                                                    HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
-                                                    IsReadOnly="True">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <DockPanel>
-                                            <Button Name="removeItemButton"
-                                                    Width="16"
-                                                    Height="16"
-                                                    Margin="5,-1,0,0"
-                                                    Command="{Binding ElementName=packageContentsGrid, Path=DataContext.RemoveItemCommand}"
-                                                    CommandParameter="{Binding}"
-                                                    Cursor="Hand"
-                                                    DockPanel.Dock="Right">
-                                                <Button.ToolTip>
-                                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewRemoveItemToolTip}"
-                                                             Style="{StaticResource GenericToolTipLight}" />
-                                                </Button.ToolTip>
-                                                <Button.Template>
-                                                    <ControlTemplate>
-                                                        <Rectangle Width="16"
-                                                                   Height="16">
-                                                            <Rectangle.Fill>
-                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove - default.png" />
-                                                            </Rectangle.Fill>
-                                                        </Rectangle>
-                                                    </ControlTemplate>
-                                                </Button.Template>
-                                            </Button>
-                                            <TextBlock Margin="0"
-                                                       Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
-                                                       TextTrimming="CharacterEllipsis">
-                                                <TextBlock.ToolTip>
-                                                    <ToolTip Content="{Binding FilePath}"
-                                                             Style="{StaticResource GenericToolTipLight}" />
-                                                </TextBlock.ToolTip>
-                                            </TextBlock>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <!--  Bottom: Markdown Files & Dependencies  -->
-                    <StackPanel Grid.Row="2"
-                                Margin="0,0,0,0"
-                                VerticalAlignment="Top">
-
-                        <!--  Markdown Files Directory  -->
-                        <DockPanel>
-                            <DockPanel.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PreferencesViewMarkdownDirectoryTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}" />
-                            </DockPanel.ToolTip>
-                            <TextBlock Style="{StaticResource LabelStyle}"
-                                       Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
-                            <Image Width="16px"
-                                   Height="16px"
-                                   Margin="5,0,0,0"
-                                   VerticalAlignment="Top"
-                                   DockPanel.Dock="Left"
-                                   Source="/DynamoCoreWpf;component/UI/Images/info-grey.png" />
-                            <Button Command="{Binding Path=ClearMarkdownDirectoryCommand}"
-                                    Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButton}"
-                                    DockPanel.Dock="Right"
-                                    IsEnabled="{Binding Path=MarkdownFilesDirectory, Converter={StaticResource EmptyStringToFalseConverter}}"
-                                    Style="{StaticResource TextButtonStyle}"
-                                    TabIndex="17">
-                                <Button.ToolTip>
-                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButtonToolTip}"
-                                             Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                                </Button.ToolTip>
-                            </Button>
-                        </DockPanel>
-                        <Grid Margin="0,0,0,10"
-                              Background="#353535">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0"
-                                     Margin="0"
-                                     HorizontalAlignment="Stretch"
-                                     Background="Transparent"
-                                     IsHitTestVisible="False"
-                                     IsReadOnly="True"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.NoneString}"
-                                     Text="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button Name="markdownFilesDirectoryButton"
-                                    Grid.Column="1"
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,10,10,10"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Top"
-                                    BorderThickness="0"
-                                    Command="{Binding SelectMarkdownDirectoryCommand}"
-                                    Cursor="Hand"
-                                    DockPanel.Dock="Right"
-                                    IsHitTestVisible="True"
-                                    TabIndex="18">
-                                <Button.ToolTip>
-                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectoryToolTip}"
-                                             Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                                </Button.ToolTip>
-                                <Button.Template>
-                                    <ControlTemplate>
-                                        <Rectangle Width="16"
-                                                   Height="16">
-                                            <Rectangle.Fill>
-                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Folder.png" />
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-                        </Grid>
-
-                        <!--  External Package Dependencies  -->
-                        <TextBlock Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackageExternalPackageDependencies}" />
-                        <TextBlock Style="{StaticResource SubLabelStyle}"
-                                   Text="{Binding DependencyNames, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
-                </Grid>
-
-                <!--  Grid Splitter  -->
-                <GridSplitter Grid.Column="1"
-                              Margin="-3,1"
-                              HorizontalAlignment="Stretch"
-                              BorderBrush="Transparent"
-                              BorderThickness="3,0"
-                              Opacity="0.3"
-                              ResizeBehavior="PreviousAndNext"
-                              ResizeDirection="Columns"
-                              Focusable="False" />
-            </Grid>
-
-            <!--  Bottom Section: Publish Buttons + Status Label  -->
-            <DockPanel Grid.Row="1"
-                       Margin="25,0"
-                       VerticalAlignment="Center">
-
-                <!--  Publish Online  -->
-                <Button Command="{Binding Path=SubmitCommand}"
-                        Content="{x:Static p:Resources.PublishPackage}"
-                        DockPanel.Dock="Right"
-                        Background="#0696D7"
-                        Foreground="White"
-                        BorderBrush="#0696D7"
-                        Margin="0,0,-5,0"
-                        Style="{StaticResource CtaButtonStyle}"
-                        TabIndex="20" />
-
-                <!--  Publish Locally  -->
-                <Button Command="{Binding Path=PublishLocallyCommand}"
-                        Content="{x:Static p:Resources.PublishPackageLocally}"
-                        DockPanel.Dock="Right"
-                        Margin="0,0,2,0"
-                        Background="#0696D7"
-                        Foreground="White"
-                        BorderBrush="#0696D7"
-                        Style="{StaticResource CtaButtonStyle}"
-                        TabIndex="19" />
+                    <!--  Publish Locally  -->
+                    <Button Command="{Binding Path=PublishLocallyCommand}"
+                            Content="{x:Static p:Resources.PublishPackageLocally}"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
 
                 <!--  Status Label  -->
-                <TextBlock Name="statusLabel"
-                           Margin="0,4,0,0"
-                           VerticalAlignment="Center"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           Style="{StaticResource LabelStyle}"
-                           Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
-                           TextTrimming="CharacterEllipsis">
+                <Image Width="18px"
+                        Height="18px"
+                        Margin="5,0"
+                        UseLayoutRounding="True"
+                        HorizontalAlignment="Center"    
+                        VerticalAlignment="Center"
+                        Visibility="{Binding ErrorString, Converter={StaticResource ReadyToPublishToVisibilityCollapsedConverter}}"
+                        Source="/DynamoCoreWpf;component/UI/Images/checkmark_16px.png" />
+                <TextBlock Margin="0,4,0,0"
+                            VerticalAlignment="Center"
+                            x:Name="statusLabel"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource LabelStyle}"
+                            Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
+                            TextTrimming="CharacterEllipsis">
                     <TextBlock.ToolTip>
                         <ToolTip Content="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource GenericToolTipLight}" />
+                                    Style="{StaticResource GenericToolTipLight}" />
                     </TextBlock.ToolTip>
+                </TextBlock>  
+                
+            </DockPanel>
+
+            <!-- Select --> 
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"
+                       x:Name="SelectPageButtonStack"
+                       Visibility="Collapsed"
+                       Margin="25,0">
+
+                <StackPanel DockPanel.Dock="Right"
+                        Orientation="Horizontal">
+
+                    <!--  Back to Details -->
+                    <Button Content="Back to Package Details"
+                            Tag="Back"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+
+                    <!--  Next  -->
+                    <Button Content="Next"
+                            Tag="Next"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+                
+                <TextBlock Margin="0,4,0,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource LabelStyle}"
+                            Text="{x:Static p:Resources.PublishPackageSelectPackageContentsMessage}"
+                            TextTrimming="CharacterEllipsis">
+                </TextBlock>
+
+            </DockPanel>
+
+            <!--  Preview  -->
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"
+                       x:Name="PreviewPageButtonStack"
+                       Visibility="Collapsed"
+                       Margin="25,0">
+
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Horizontal">
+
+                    <!--  Back to Selection -->
+                    <Button Content="Back to File Selection"
+                            Tag="Back"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+
+                    <!--  Finish  -->
+                    <Button Content="Finish"
+                            Tag="Finish"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+
+
+                <!--  Status Label  -->
+                <Image Width="18px"
+                        Height="18px"
+                        Margin="5,0"
+                        UseLayoutRounding="True"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Source="/DynamoCoreWpf;component/UI/Images/info.png" />
+                <TextBlock Margin="0,4,0,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource LabelStyle}"
+                            Text="{x:Static p:Resources.PublishPackagePreviewPackageContentsMessage}"
+                            TextTrimming="CharacterEllipsis">
                 </TextBlock>
             </DockPanel>
+
+            <!--  Done  -->
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"                       
+                       x:Name="FinishPageButtonStack"
+                       Visibility="Collapsed"
+                       LastChildFill="False"
+                       Margin="25,0">
+
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Horizontal">
+                    <Button Content="Done"
+                            Tag="Done"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+            </DockPanel>
+
         </Grid>
     </Border>
 </UserControl>

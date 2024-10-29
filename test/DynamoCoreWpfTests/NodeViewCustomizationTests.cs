@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -50,12 +50,6 @@ namespace DynamoCoreWpfTests
         {
             var path = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Process) + ";" + Model.PathManager.DynamoCoreDirectory;
             Environment.SetEnvironmentVariable("Path", path, EnvironmentVariableTarget.Process);
-
-            var renderingTier = (System.Windows.Media.RenderCapability.Tier >> 16);
-            if (renderingTier < 2)
-            {
-                Assert.Inconclusive("Hardware rendering is not available. Watch3D is not created.");
-            }
 
             Open(@"UI\CoreUINodes.dyn");
             var nodeView = NodeViewWithGuid("6869c998-b819-4686-8849-6f36162c4182"); // NodeViewOf<Watch3D>();
@@ -298,8 +292,12 @@ namespace DynamoCoreWpfTests
             var tree = nodeView.ChildrenOfType<WatchTree>();
             Assert.AreEqual(1, tree.Count());
 
-            var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
-            Assert.AreEqual(8, items.Count());
+            // text block for list indexes
+            var textBlocks = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(4, textBlocks.Count());
+            // text boxes for list items
+            var textBoxes = tree.First().treeView1.ChildrenOfType<TextBox>();
+            Assert.AreEqual(4, textBoxes.Count());
         }
 
         [Test, Category("DisplayHardwareDependent")]
@@ -443,7 +441,12 @@ namespace DynamoCoreWpfTests
 
             var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
             // watch is computed with cbn and has its value
-            Assert.AreEqual(8, items.Count());
+            // text block for list indexes
+            var textBlocks = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(4, textBlocks.Count());
+            // text boxes for list items
+            var textBoxes = tree.First().treeView1.ChildrenOfType<TextBox>();
+            Assert.AreEqual(4, textBoxes.Count());
 
             // disconnect watch
             Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
@@ -470,8 +473,10 @@ namespace DynamoCoreWpfTests
             Run();
             DispatcherUtil.DoEvents();
             tree = nodeView.ChildrenOfType<WatchTree>();
-            items = tree.First().treeView1.ChildrenOfType<TextBlock>();
-            Assert.AreEqual(8, items.Count());
+            textBlocks = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(4, textBlocks.Count());
+            textBoxes = tree.First().treeView1.ChildrenOfType<TextBox>();
+            Assert.AreEqual(4, textBoxes.Count());
         }
 
         [Test]

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using Autodesk.DesignScript.Runtime;
@@ -36,44 +37,9 @@ namespace PythonNodeModels
     {
         private string engine = string.Empty;
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
         [DefaultValue("IronPython2")]
-
-        // When removing this property also replace the serialized property in EngineName
-        // (i.e remove XmlIgnore and add [JsonProperty("Engine", DefaultValueHandling = DefaultValueHandling.Populate)]
-        /// <summary>
-        /// Return the user selected python engine enum.
-        /// </summary>
-        [Obsolete("This property will be deprecated in Dynamo 3.0. Please use EngineName instead")]
-        public PythonEngineVersion Engine
-        {
-            get
-            {
-                if (!Enum.TryParse(engine, out PythonEngineVersion engineVersion) ||
-                    engineVersion == PythonEngineVersion.Unspecified)
-                {
-                    //if this is a valid dynamically loaded engine, return unknown, and serialize the name.
-                    if (PythonEngineManager.Instance.AvailableEngines.Any(x=>x.Name == engine))
-                    {
-                        return PythonEngineVersion.Unknown;
-                    }
-                    // This is a first-time case for newly created nodes only
-                    SetEngineByDefault();
-                }
-                return engineVersion;
-            }
-            set
-            {
-                engine = value.ToString();
-                RaisePropertyChanged(nameof(EngineName));
-            }
-        }
-
-        [XmlIgnore]
-        // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
-        [DefaultValue("IronPython2")]
+        [JsonProperty("Engine", DefaultValueHandling = DefaultValueHandling.Populate)]
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
@@ -94,22 +60,25 @@ namespace PythonNodeModels
                 {
                     engine = value;
                     RaisePropertyChanged(nameof(EngineName));
-                }
+                }   
             }
         }
 
         /// <summary>
-        /// Available Python engines.
+        /// The method returns the assembly name from which the node originated.
         /// </summary>
-        [Obsolete(@"This method will be removed in future versions of Dynamo.
-        Please use PythonEngineManager.Instance.AvailableEngines instead")]
-        public static ObservableCollection<PythonEngineVersion> AvailableEngines
+        /// <returns>Assembly Name</returns>
+        internal override AssemblyName GetNameOfAssemblyReferencedByNode()
         {
-            get
+            AssemblyName assemblyName = null;
+
+            var pyEng = PythonEngineManager.Instance.AvailableEngines.Where(x => x.Name.Equals(this.EngineName)).FirstOrDefault();
+            if (pyEng != null)
             {
-                return new ObservableCollection<PythonEngineVersion>(PythonEngineManager.Instance.AvailableEngines.
-                    Select(x => Enum.TryParse(x.Name, out PythonEngineVersion version) ? version : PythonEngineVersion.Unspecified));
+                assemblyName = AssemblyName.GetAssemblyName(pyEng.GetType().Assembly.Location);
             }
+
+            return assemblyName;
         }
 
         /// <summary>

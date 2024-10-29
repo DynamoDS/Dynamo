@@ -277,12 +277,22 @@ namespace Dynamo.Tests
             {
                 var valueA = kvp.Value;
                 var valueB = b.NodeDataMap[kvp.Key];
+                var valANodeName = a.NodeTypeMap[kvp.Key].FullName;
 
                 // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
                 // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
-                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                if (valANodeName == "CoreNodeModels.Input.IntegerSlider")
                 {
                     Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[kvp.Key].FullName);
+                    continue;
+                }
+                //ignore file name/object nodes - the result is dependent on where the graph was run.
+                //which is modified during this test.
+
+                if (valANodeName.ToLower() == "corenodemodels.input.filename" ||
+                    valANodeName.ToLower()== "corenodemodels.input.fileobject"||
+                    valANodeName.ToLower() == "corenodemodels.input.directory")
+                {
                     continue;
                 }
 
@@ -293,12 +303,7 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
-#if NET6_0_OR_GREATER
                     Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
-
-#elif NETFRAMEWORK
-                    Assert.That(valueA, Is.EqualTo(valueB),
-#endif
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
@@ -394,12 +399,23 @@ namespace Dynamo.Tests
                 //convert the old guid to the new guid
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, modelGuidsToIDmap[kvp.Key]);
                 var valueB = b.NodeDataMap[newGuid];
+                var valANodeName = a.NodeTypeMap[kvp.Key].FullName;
 
                 // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
                 // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
-                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                if (valANodeName == "CoreNodeModels.Input.IntegerSlider")
                 {
                     Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[newGuid].FullName);
+                    continue;
+                }
+
+                //ignore file name/object nodes - the result is dependent on where the graph was run.
+                //which is modified during this test.
+
+                if (valANodeName.ToLower() == "corenodemodels.input.filename" ||
+                    valANodeName.ToLower() == "corenodemodels.input.fileobject" ||
+                    valANodeName.ToLower() == "corenodemodels.input.directory")
+                {
                     continue;
                 }
 
@@ -410,12 +426,8 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
-#if NET6_0_OR_GREATER
                     Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
 
-#elif NETFRAMEWORK
-                    Assert.That(valueA, Is.EqualTo(valueB),
-#endif
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
@@ -608,11 +620,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-#if NETFRAMEWORK
-        [TestFixtureSetUp]
-#elif NET6_0_OR_GREATER
         [OneTimeSetUp]
-#endif
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
@@ -651,11 +659,7 @@ namespace Dynamo.Tests
             }
         }
 
-#if NETFRAMEWORK
-        [TestFixtureTearDown]
-#elif NET6_0_OR_GREATER
         [OneTimeTearDown]
-#endif
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;

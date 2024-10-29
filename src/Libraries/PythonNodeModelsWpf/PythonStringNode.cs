@@ -1,9 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.PythonServices;
@@ -33,13 +32,8 @@ namespace PythonNodeModelsWpf
             pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
 
-            var availableEngineNames = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
-            // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
-            if (!availableEngineNames.Contains(nodeModel.EngineName))
-            {
-                availableEngineNames.Add(nodeModel.EngineName);
-            }
-            availableEngineNames.ForEach(x => AddPythonEngineToMenuItems(x));
+            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => dynamoViewModel.AddPythonEngineToMenuItems(
+                new List<PythonNodeBase>() { pythonStringNodeModel }, pythonEngineVersionMenu, UpdateEngine, engineName, true));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
@@ -107,28 +101,15 @@ namespace PythonNodeModelsWpf
         private void PythonEnginesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
-            {
                 foreach (var item in e.NewItems)
                 {
-                    AddPythonEngineToMenuItems((item as PythonEngine).Name);
+                    if (item is PythonEngine newEngine)
+                    {
+                        dynamoViewModel.AddPythonEngineToMenuItems(
+                            new List<PythonNodeBase>() { pythonStringNodeModel }, pythonEngineVersionMenu,UpdateEngine,newEngine.Name);
+                    }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Adds python engine to MenuItems
-        /// </summary>
-        private void AddPythonEngineToMenuItems(string engineName)
-        {
-            var pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
-            pythonEngineItem.Click += UpdateEngine;
-            pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonStringNodeModel.EngineName))
-            {
-                Source = pythonStringNodeModel,
-                Converter = new CompareToParameterConverter(),
-                ConverterParameter = engineName
-            });
-            pythonEngineVersionMenu.Items.Add(pythonEngineItem);
         }
     }
 }
+

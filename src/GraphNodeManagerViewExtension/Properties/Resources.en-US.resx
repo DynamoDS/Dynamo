@@ -241,4 +241,13 @@
   <data name="ToolTip_ExportToExcelFiltered" xml:space="preserve">
     <value>Export filtered node data</value>
   </data>
+  <data name="Title_IsOutputSingleItem" xml:space="preserve">
+    <value>Single item</value>
+  </data>
+  <data name="Title_Package" xml:space="preserve">
+    <value>Package</value>
+  </data>
+  <data name="Title_TopLevelItemsNumber" xml:space="preserve">
+    <value>Number of top level items</value>
+  </data>
 </root>

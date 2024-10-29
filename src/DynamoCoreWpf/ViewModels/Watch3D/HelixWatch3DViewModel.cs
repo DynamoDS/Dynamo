@@ -43,6 +43,8 @@ using Matrix = SharpDX.Matrix;
 using MeshBuilder = HelixToolkit.SharpDX.Core.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.SharpDX.Core.MeshGeometry3D;
 using TextInfo = HelixToolkit.SharpDX.Core.TextInfo;
+using Dynamo.Configuration;
+using Dynamo.UI.Prompts;
 
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
@@ -168,6 +170,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private static readonly float defaultDeadAlphaScale = 0.2f;
         private const float defaultLabelOffset = 0.025f;
 
+        /// <summary>
+        /// Color4Collection to represent axes when drawn
+        /// </summary>
+        private readonly Color4Collection DefaultAxesColors = new Color4Collection
+        {
+            Color.Red, Color.Red,
+            Color.Blue, Color.Blue,
+            Color.Green, Color.Green
+        };
+
+        /// <summary>
+        /// Color4Collection to represent axes when hidden
+        /// </summary>
+        private readonly Color4Collection TransparentAxesColors = new Color4Collection
+        {
+            Color.Transparent, Color.Transparent,
+            Color.Transparent, Color.Transparent,
+            Color.Transparent, Color.Transparent
+        };
+
         internal const string DefaultGridName = "Grid";
         internal const string DefaultAxesName = "Axes";
         internal const string DefaultLightName = "DirectionalLight";
@@ -176,6 +198,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private const string PointsKey = ":points";
         private const string LinesKey = ":lines";
         private const string MeshKey = ":mesh";
+        private const string InstanceKey = "_instance";
         private const string TextKey = ":text";
 
         private const int FrameUpdateSkipCount = 200;
@@ -220,11 +243,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 try
                 {
-
-                    if (Environment.Is64BitProcess)
-                        NativeMethods.LoadNvApi64();
-                    else
-                        NativeMethods.LoadNvApi32();
+                    NativeMethods.LoadNvApi64();
                 }
                 catch { } // will always fail since 'fake' entry point doesn't exists
             }
@@ -359,7 +378,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             set
             {
                 worldAxes = value;
-                RaisePropertyChanged("Axes");
+                RaisePropertyChanged(DefaultAxesName);
             }
         }
 
@@ -442,6 +461,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        internal bool IsAxesVisible
+        {
+            get { return Axes.Colors == TransparentAxesColors ? false : true;  }
+        }
 
         /// <summary>
         /// Sets the scale of the Grid helper
@@ -771,7 +794,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         Console.WriteLine(args.ErrorContext.Error);
                     },
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    TypeNameHandling = TypeNameHandling.Auto,
+                    TypeNameHandling = TypeNameHandling.None,
                     Formatting = Newtonsoft.Json.Formatting.Indented,
                     Culture = CultureInfo.InvariantCulture
                 };
@@ -924,6 +947,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 string summary = Resources.RenderingMemoryOutageSummary;
                 var description = Resources.RenderingMemoryOutageDescription;
                 (dynamoModel as DynamoModel).Report3DPreviewOutage(summary, description);
+            }
+            catch (InstancingRenderFailureException)
+            {
+                //Notify the user of an issue impacting the background preview but do not disable the background preview.
+                var title = Resources.PartialRenderFailureTitle;
+                var description = Resources.InstancingRenderFailureDescription;
+
+                var result = DynamoMessageBox.Show(description, title, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 #if DEBUG
             // Defer stopping the timer until after the rendering has occurred
@@ -1422,7 +1453,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // Create the headlight singleton and add it to the dictionary
-
             headLight = new DirectionalLight3D
             {
                 Color = System.Windows.Media.Color.FromRgb(230, 230, 230),
@@ -1445,7 +1475,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // Create the grid singleton and add it to the dictionary
-
             gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
@@ -1465,7 +1494,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // Create the axes singleton and add it to the dictionary
-
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
@@ -1512,33 +1540,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Axes = new LineGeometry3D();
             var axesPositions = new Vector3Collection();
             var axesIndices = new IntCollection();
-            var axesColors = new Color4Collection();
 
             // Draw the coordinate axes
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(50 * scale, 0, 0));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(Color.Red);
-            axesColors.Add(Color.Red);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(0, 5 * scale, 0));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(Color.Blue);
-            axesColors.Add(Color.Blue);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(0, 0, -50 * scale));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(Color.Green);
-            axesColors.Add(Color.Green);
 
             Axes.Positions = axesPositions;
             Axes.Indices = axesIndices;
-            Axes.Colors = axesColors;
+            Axes.Colors = DefaultAxesColors;            
         }
 
         private void SetGridVisibility()
@@ -1546,8 +1567,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var visibility = isGridVisible ? Visibility.Visible : Visibility.Hidden;
             //return if there is nothing to change
             if (gridModel3D.Visibility == visibility) return;
-            
+
+            // set axes colors and grid visibility based on grid visibility
+            Axes.Colors = isGridVisible ? DefaultAxesColors : TransparentAxesColors;
             gridModel3D.Visibility = visibility;
+
             OnRequestViewRefresh();
         }
 
@@ -1790,6 +1814,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
 
+            //Track if there is a failure processing data related to instancing
+            var instancingRenderFailure = false;
+
             lock (element3DDictionaryMutex)
             {
                 //TODO add try/catch
@@ -1878,22 +1905,43 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         id = baseId + LinesKey;
 
-                        //If we are using IInstancingRenderPackage data then we need to create a unique Geometry3D object
-                        //for each instancable item and add instance transforms.
-                        //If we have any line geometry that was not associated with an instance,
-                        //remove the previously added line data from the render package so the remaining lines can be added to the scene.
-                        if (rp.LineVertexRangesAssociatedWithInstancing.Any() 
-                            && DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing", false))
+                        //In the render package, all line geometry information (vertices, colors, indices) are stored together in the same arrays
+                        //regardless if the information is associated with an instancing transform or a line to be rendered directly to the scene.
+                        //If we are using IInstancingRenderPackage and there is vertex data associated with instancing transforms, then we need
+                        //handle the line data differently for each case.
+                        //For each instancable item, we need to create a unique Geometry3D object and add its instance transforms.
+                        //
+                        //Example: One Render package with a line, a rectangle (via instance transform) and another line
+                        //
+                        //Positions [P0,P1,P2,P3,P4,P5,P6,P7,P8] (line 1 (2 Positions), rectangle (5 Positions), line 2 (2 Positions))
+                        //Colors    [C0,C1,C2,C3,C4,C5,C6,C7,C8] (line 1 (2 Colors), rectangle (5 Colors), line 2 (2 Colors))
+                        //Indices [0,1,2,3,3,4,4,5,5,6,7,8] -> [(line 1) 1,2, (rectangle) 2,3,3,4,4,5,5,6 (line 2) 7,8]
+                        //
+                        //Note, the Indices array is always bound by the number of Positions. Values in Indices[] should not be less than 0 and should be less than count of Positions.
+                        //
+                        //In the example we have geometry data for the rectangle associated with an instance transform (ie rp.LineVertexRangesAssociatedWithInstancing.Any() == true)
+                        //LineVertexRangesAssociatedWithInstancing = {GuidForRectangle:(start:2,6)} -> meaning vertices 2-6 are associated with the rectangle.
+                        //
+                        //In Helix we need to create a unique Geometry3D object for the rectangle so that we can apply the instance transform.
+                        //This code will gather the data and transforms needed to call AddLineData for the rectangle.
+                        if (rp.LineVertexRangesAssociatedWithInstancing.Any())
                         {
-                            //For each range of line vertices add the line data and instances to the scene
-                            var j = 0;
+                            //For each range of line vertices associated with an instance we will add the line data and instances to the scene
+                            //From the example above we would want to gather the data for the rectangle.
+                            //
+                            //For Positions [P0,P1,P2,P3,P4,P5,P6,P7,P8]
+                            //we know from LineVertexRangesAssociatedWithInstancing that the rectangle is associated with vertices 2-6
+                            //We get the startIndex which is 2 and the count which is 6-2+1 = 5
                             foreach (var item in rp.LineVertexRangesAssociatedWithInstancing)
                             {
+                                //Gather the data required for calling AddLineData
                                 var range = item.Value;
                                 var startIndex = range.Item1; //Start line vertex index
                                 var count = range.Item2 - range.Item1 + 1; //Count of line vertices
-                                var uniqueId = baseId + ":" + j + LinesKey + "_instance";
+                                //uniqueId is built with the renderPackage baseID and the base tessellation guid which is unique per type of geometry (ie rectangle vs circle)
+                                var uniqueId = baseId + ":" + item.Key.ToString() + LinesKey + InstanceKey;
 
+                                //Get all the associated instances for this range of line vertices
                                 List<Matrix> instances;
                                 if (rp.instanceTransforms.TryGetValue(item.Key, out instances))
                                 {
@@ -1901,29 +1949,53 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                                 }
 
                                 //Track cumulative total of line vertices added.
+                                //We use this to determine if all the line data in the array has already been processed as a shortcut.
                                 processedLineVertexCount += count;
-                                j++;
                             }
 
                             //Add ranges of line geometry to exclude for regions already generated related to instancing.
                             lineVertexRangesToRemove.AddRange(rp.LineVertexRangesAssociatedWithInstancing.Values.ToList());
                         }
 
+                        //If we have any line geometry that was not associated with an instance, we need to remove the previously processed data (vertices, colors, indices) so the remaining lines can be added to the scene.
+
                         //If all the line vertex data has been processed we move on to mesh data.
                         if (processedLineVertexCount != l.Positions.Count)
-                        { 
-                            //If line vertex ranges have been utilized previously for instantiating instanced geometry or multiple texture maps only process the remaining line data
-                            //We clone the line object so that we do not modify the render package data.
+                        {
+                            //If line vertex ranges have been utilized previously for instantiating instanced geometry we want to only process the remaining line data
+                            //From the example above we would want to gather the data for the two lines. RemoveLineGeometryByRange will remove the rectangle data.
+                            //
+                            //Start Point:
+                            //Positions [P0,P1,P2,P3,P4,P5,P6,P7,P8] (line 1 (2 Positions), rectangle (5 Positions), line 2 (2 Positions))
+                            //Colors    [C0,C1,C2,C3,C4,C5,C6,C7,C8] (line 1 (2 Colors), rectangle (5 Colors), line 2 (2 Colors))
+                            //Indices [0,1,2,3,3,4,4,5,5,6,7,8] -> [(line 1) 1,2, (rectangle) 2,3,3,4,4,5,5,6 (line 2) 7,8]
+                            //
+                            //End State to pass to AddLineData
+                            //Positions [P0,P1,P7,P8] (line 1 (2 Positions), line 2 (2 Positions))
+                            //Colors    [C0,C1,C7,C8] (line 1 (2 Colors), line 2 (2 Colors))
+                            //Indices [0,1,2,3] -> [(line 1) 1,2, (line 2) 3,4]
                             if (lineVertexRangesToRemove.Any())
                             {
+                                //We clone the line object so that we do not mutate the render package data.
                                 var lCopy = CloneLineGeometry(l);
-                               
-                                RemoveLineGeometryByRange(lineVertexRangesToRemove, lCopy);
 
-                                AddLineData(id, lCopy, 0, lCopy.Positions.Count, drawDead, baseId, rp.Transform, rp.IsSelected, rp.Mesh.Positions.Any());
+                                //We Process the copy to remove the line data associated with instance geometry that has already been added to the scene.
+                                var success = RemoveLineGeometryByRange(lineVertexRangesToRemove, lCopy);
+
+                                //We add the remaining line data to the scene.
+                                if (success)
+                                {
+                                    AddLineData(id, lCopy, 0, lCopy.Positions.Count, drawDead, baseId, rp.Transform, rp.IsSelected, rp.Mesh.Positions.Any());
+                                }
+                                else
+                                {
+                                    instancingRenderFailure = true;
+                                }
                             }
                             else
                             {
+                                //This is the handler for the case where no instanced geometry was associated with the line data.
+                                //In this case we process the line data as normal.
                                 AddLineData(id, l, 0, l.Positions.Count, drawDead, baseId, rp.Transform, rp.IsSelected, rp.Mesh.Positions.Any());
                             }
                         }
@@ -1975,17 +2047,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     //for each instancable item and add instance transforms.  
                     //If we have any mesh geometry that was not associated with an instance, remove the previously added
                     //mesh data from the render package so the remaining mesh can be added to the scene.
-                    if (rp.MeshVertexRangesAssociatedWithInstancing.Any() 
-                        && DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing", false))
+                    if (rp.MeshVertexRangesAssociatedWithInstancing.Any())
                     {
                         //For each range of mesh vertices add the mesh data and instances to the scene
-                        var j = 0;
                         foreach (var item in rp.MeshVertexRangesAssociatedWithInstancing)
                         {
                             var range = item.Value;
                             var startIndex = range.start; //Start mesh vertex index
                             var count = range.end - range.start + 1; //Count of mesh vertices
-                            var uniqueId = baseId + ":" + j + MeshKey + "_instance";
+                            //uniqueId is built with the renderPackage baseID and the base tessellation guid which is unique per type of geometry (ie cube vs sphere)
+                            var uniqueId = baseId + ":" + item.Key.ToString() + MeshKey + InstanceKey;
 
                             List<Matrix> instances;
                             if (rp.instanceTransforms.TryGetValue(item.Key, out instances))
@@ -1996,7 +2067,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                             //Track cumulative total of mesh vertices added.
                             processedMeshVertexCount += count;
-                            j++;
                         }
 
                         //If all the mesh regions had instance data then we are done with mesh data and this Renderpackage.
@@ -2026,6 +2096,29 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             rp.Transform, rp.RequiresPerVertexColoration);
                     }
                 }
+
+                //Pass failure to the calling function try catch.
+                if (instancingRenderFailure)
+                {
+                    throw new InstancingRenderFailureException();
+                }
+            }
+        }
+
+        internal class InstancingRenderFailureException : Exception
+        {
+            public InstancingRenderFailureException()
+            {
+            }
+
+            public InstancingRenderFailureException(string message)
+                : base(message)
+            {
+            }
+
+            public InstancingRenderFailureException(string message, Exception inner)
+                : base(message, inner)
+            {
             }
         }
 
@@ -2099,33 +2192,87 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         /// <param name="verticesRange">List of vertices ranges to remove</param>
         /// <param name="l">line object</param>
-        private static void RemoveLineGeometryByRange(List<(int start, int end)> verticesRange, LineGeometry3D l)
+        private static bool RemoveLineGeometryByRange(List<(int start, int end)> verticesRange, LineGeometry3D l)
         {
-            //First sort the range data
+            //This function is designed to remove data from the Line geometry for a specific range of vertices.
+            //This function processes the Positions, Color and Indices arrays of the LineGeometry3D object.
+
+            //Example with data from a line, a rectangle, and another line.  In this case the data would look like this:
+            //
+            //Positions [P0,P1,P2,P3,P4,P5,P6,P7,P8] (line 1 (2 Positions), rectangle (5 Positions), line 2 (2 Positions))
+            //Colors    [C0,C1,C2,C3,C4,C5,C6,C7,C8] (line 1 (2 Colors), rectangle (5 Colors), line 2 (2 Colors))
+            //Indices [0,1,2,3,3,4,4,5,5,6,7,8] -> [(line 1) 1,2, (rectangle) 2,3,3,4,4,5,5,6 (line 2) 7,8]
+            //
+            //In this example we want to remove the rectangle so the verticeRange would be [(2,6)]
+            //
+            //End State to pass to AddLineData
+            //Positions [P0,P1,P7,P8] (line 1 (2 Positions), line 2 (2 Positions))
+            //Colors    [C0,C1,C7,C8] (line 1 (2 Colors), line 2 (2 Colors))
+            //Indices [0,1,2,3] -> [(line 1) 1,2, (line 2) 3,4]
+            //
+            //Note that while the Position and Color arrays are simple range remove operations, The Indices require both a remove and a normalization operation.
+            //The Indices array is always bound by the number of Positions.Values in Indices[] should not be less than 0 and should be less than count of Positions.
+
+            //First sort and reverse the range data so that we remove the ranges from the end of the array first.
+            //This ensures that all the ranges to remove stay correct.
             verticesRange.Sort();
             verticesRange.Reverse();
 
-            //track removed vertices to renumber indices index
-            var totalRemoved = 0;
-            
-            //Remove already generated line geometry from render package
+            //Remove specific vertice ranges from the LineGeometry3D object
             foreach (var range in verticesRange)
             {
+                //Process Position and Color arrays
+                //In the example above we will be removing the rectangle data.
+                //We get the i (start index) which is 2 and the count to remove which is 6-2+1 = 5
                 var i = range.start;
-                var c = range.end - range.start + 1;
-                l.Positions.RemoveRange(i, c);
-                l.Colors.RemoveRange(i, c);
-                totalRemoved += c;
+                var count = range.end - range.start + 1;
+                l.Positions.RemoveRange(i, count);
+                l.Colors.RemoveRange(i, count);
 
+                //Now we need determine the first index and count of the range to remove in indices
+                //This is found via lookup by value associated with Position indexes.
+                //In the example, for Indices [0,1,2,3,3,4,4,5,5,6,7,8] we would find the firstIndicesIndex = 2 (ie first time we see 2)
+                //For indicesCount = 8 -> first time we see 6 is the 10 index -> 10-2+1 = 8
                 var firstIndicesIndex = l.Indices.IndexOf(range.start);
                 var indicesCount = l.Indices.IndexOf(range.end) - firstIndicesIndex + 1;
                 l.Indices.RemoveRange(firstIndicesIndex, indicesCount);
+
+                //At this point we have removed the data from the Position, Color and Indices arrays.
+                //Last step is to normalize the indices array so that it is correct for the remaining data.
+                //from the example above the data now looks like this:
+                //
+                //Positions [P0,P1,P7,P8] (line 1 (2 Positions), line 2 (2 Positions))
+                //Colors    [C0,C1,C7,C8] (line 1 (2 Colors), line 2 (2 Colors))
+                //Indices [0,1,7,8] -> [(line 1) 1,2, (line 2) 7,8]
+                //
+                //The Indices array values are incorrect as they point to vertices that no longer exist in the Position Array.
+                //The end state of the Indices array should be this: Indices [0,1,2,3] -> [(line 1) 1,2, (line 2) 3,4] so we need to reset the larger index values.
+                //
+                //We need to start with is the first index of the range we just removed -> firstIndicesIndex which is 2 in this example.  Values before this in the array are already correct.
+                //We also know the number or vertices we removed from Positions -> count which is 5 in this example
+                //Next we loop through the array staring with the firstIndicesIndex and adjust the values.
+                //
+                //Indices [0,1,7-5,8-5] -> [0,1,2,3]
+
+                //Reset the Indices values for the indices that were after the removed region
+                var positionCount = l.Positions.Count;
+                for (int j = firstIndicesIndex; j < l.Indices.Count; j++)
+                {
+                    var value = l.Indices[j];
+                    value -= count;
+
+                    //assert value is within the bounds of the positions array
+                    //exit if this is not the case
+                    if (value < 0 || value >= positionCount)
+                    {
+                        return false;
+                    }
+
+                    l.Indices[j] = value;
+                }
             }
 
-            for (int i = 0; i < l.Indices.Count; i++)
-            {
-                l.Indices[i] -= totalRemoved;
-            }
+            return true;
         }
 
         /// <summary>
@@ -2173,6 +2320,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (Element3DDictionary.TryGetValue(id, out element3D))
             {
                 meshGeometry3D = element3D as DynamoGeometryModel3D;
+
+                //If the base instance already exists then we only need to add the new instances transforms
+                if (id.Contains(InstanceKey))
+                {
+                    if (instances != null)
+                    {
+                        foreach (var item in instances)
+                        {
+                            meshGeometry3D.Instances.Add(item);
+                        }
+                    }
+
+                    return;
+                }
             }
             else
             {
@@ -2257,11 +2418,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 lIndices = l.Indices.GetRange(firstIndicesIndex, indicesCount);
             }
 
+            
             LineGeometryModel3D lineGeometry3D;
 
             if (Element3DDictionary.ContainsKey(id))
             {
                 lineGeometry3D = Element3DDictionary[id] as LineGeometryModel3D;
+
+                //If the base instance already exists then we only need to add the new instances transforms
+                if (id.Contains(InstanceKey))
+                {
+                    if (instances != null)
+                    {
+                        foreach (var item in instances)
+                        {
+                            lineGeometry3D.Instances.Add(item);
+                        }
+                    }
+
+                    return;
+                }
             }
             else
             {
@@ -3010,27 +3186,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <returns>A <see cref="BoundingBox"/> object encapsulating the geometry.</returns>
         internal static BoundingBox Bounds(this GeometryModel3D geom, float defaultBoundsSize = 5.0f)
         {
-            if (geom.Geometry.Positions == null || geom.Geometry.Positions.Count == 0)
+            var bounds = geom.Bounds;
+
+            //if the actual bounds diagonal are smaller than the default bounds diagonal then return
+            //a new default bounds centered on the actual bounds center.
+            if(bounds.Size.LengthSquared() < defaultBoundsSize * defaultBoundsSize * 3)
             {
-                return new BoundingBox();
+                var pos = bounds.Center();
+                var min = pos + new Vector3(-defaultBoundsSize, -defaultBoundsSize, -defaultBoundsSize);
+                var max = pos + new Vector3(defaultBoundsSize, defaultBoundsSize, defaultBoundsSize);
+                return new BoundingBox(min, max);
             }
 
-            if (geom.Geometry.Positions.Count > 1)
-            {
-                return BoundingBox.FromPoints(geom.Geometry.Positions.ToArray());
-            }
-
-            var pos = geom.Geometry.Positions.First();
-            var min = pos + new Vector3(-defaultBoundsSize, -defaultBoundsSize, -defaultBoundsSize);
-            var max = pos + new Vector3(defaultBoundsSize, defaultBoundsSize, defaultBoundsSize);
-            return new BoundingBox(min, max);
+            return bounds;
         }
 
         public static Vector3 Center(this BoundingBox bounds)
         {
             return (bounds.Maximum + bounds.Minimum)/2;
         }
-
     }
 
     internal static class Vector3Extensions

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -141,6 +141,21 @@
   <data name="EnumDateOfWeekWednesday" xml:space="preserve">
     <value>Wednesday</value>
   </data>
+  <data name="Exception_Deserialize_Bad_Format" xml:space="preserve">
+    <value>The json for the type {0} was not formatted correctly</value>
+  </data>
+  <data name="Exception_Deserialize_Unsupported_Cache" xml:space="preserve">
+    <value>The stored data can not be loaded.</value>
+  </data>
+  <data name="Exception_Serialize_Depth_Unsupported" xml:space="preserve">
+    <value>Depth {0} Exceeds MaxDepth {1} at path "{2}"</value>
+  </data>
+  <data name="Exception_Serialize_DesignScript_Unsupported" xml:space="preserve">
+    <value>This type of Geometry is not able to be serialized.</value>
+  </data>
+  <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
+    <value>Cannot store data of type {0}.</value>
+  </data>
   <data name="ExportToCSVObsolete" xml:space="preserve">
     <value>Use Data.ExportCSV node instead</value>
   </data>
@@ -206,5 +221,17 @@
   </data>
   <data name="WriteImageObsolete" xml:space="preserve">
     <value>Use Image.WriteToFile node instead</value>
+  </data>
+  <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
+    <value>This node expected a {0} input but received a {1} input. Please provide the expected input, or pick a new type in the node’s drop-down menu.</value>
+  </data>
+  <data name="DefineDataUnsupportedCombinationOfDataTypesExceptionMessage" xml:space="preserve">
+    <value>This node does not support the combination of data types in the current input list {0}. Ensure the input list contains items of the same data type, or a mix of types with a common parent type</value>
+  </data>
+  <data name="DefineDataUnsupportedDataTypeExceptionMessage" xml:space="preserve">
+    <value>This node does not support the current input data type ({0}). View the supported data types in the drop-down menu.</value>
+  </data>
+  <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
+    <value>Input must be a single value or a non-nested list.</value>
   </data>
 </root>

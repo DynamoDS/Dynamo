@@ -244,8 +244,8 @@
     },
     {
       "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
-      "Engine": "CPython3",
       "EngineName": "CPython3",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "45073da27bc84c689246c0a66bf70784",
       "NodeType": "ExtensionNode",
@@ -311,15 +311,15 @@
       "Description": "Runs a Python script from a string."
     },
     {
-      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "Id": "21f4468bd349414b8fe513c7dff82364",
-      "NodeType": "ExtensionNode",
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "Id": "4a5a5a408a1f4ec1be8970cde56cced7",
+      "NodeType": "StringInputNode",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "23dc7c05278b4216beffb9a08f774965",
+          "Id": "5e1fd8d09fac49328649619b57e5092c",
           "Name": "",
-          "Description": "File Path",
+          "Description": "String",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -327,39 +327,8 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows you to select a file on the system and returns its file path",
-      "HintPath": "C:\\Users\\roberto.tellez\\Downloads\\PythonScript.txt",
-      "InputValue": ".\\PythonScript.txt"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "1fe8ed1a07c447b4aa55a3061eec8e68",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "b313720131d5439d9a4e8642644fa871",
-          "Name": "file",
-          "Description": "File object to read text from\n\nvar",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "784541b637634e64948818d1fe9c595e",
-          "Name": "string",
-          "Description": "Contents of the text file.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "DSCore.IO.FileSystem.ReadText@var",
-      "Replication": "Auto",
-      "Description": "Reads a text file and returns the contents as a string.\n\nFileSystem.ReadText (file: var): string"
+      "Description": "Creates a string",
+      "InputValue": "import clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom System.Reflection import *\r\nimport System\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\nsolid = IN[0]\r\nseed = IN[1]\r\nxCount = IN[2]\r\nyCount = IN[3]\r\n\r\nsolids = []\r\ncrvs = []\r\n\r\nedges = solid.Edges\r\nfor edge in edges:\r\n    crvs.append(edge.CurveGeometry)\r\n\r\nbbox = BoundingBox.ByGeometry(crvs)\r\nyDist = bbox.MaxPoint.Y - bbox.MinPoint.Y\r\nxDist = bbox.MaxPoint.X - bbox.MinPoint.X\r\n\r\nxRange = list(range(xCount))\r\nyRange = list(range(yCount))\r\n\r\nfromCoord = solid.ContextCoordinateSystem\r\n\r\n# Loop through xRange and yRange\r\nfor i in xRange:\r\n    for j in yRange:\r\n        # Rotate and translate the coordinate system\r\n        toCoord = fromCoord.Rotate(solid.ContextCoordinateSystem.Origin, Vector.ByCoordinates(0, 0, 1), (90 * (i + j % seed)))\r\n        # Creating an Array type in .NET\r\n        arrayObj = Array[System.Object]\r\n        # Instantiating an object of that type with Length 1\r\n        array1 = arrayObj.CreateInstance(System.Object, 1)\r\n        # Creating our Vector to put into the array\r\n        vec = Vector.ByCoordinates((xDist * i), (yDist * j), 0)\r\n        # Adding our vector to the array at index zero\r\n        array1[0] = vec\r\n        # Letting .NET figure out what function to call instead of PythonNET - Note: Problems exist today in PythonNET 2\r\n        toCoord = toCoord.GetType().InvokeMember(\"Translate\", BindingFlags.InvokeMethod, None, toCoord, array1)\r\n        # Transform the solid from the source coordinate system to the target coordinate system and append to the list\r\n        solids.append(solid.Transform(fromCoord, toCoord))\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = solids\r\n"
     }
   ],
   "Connectors": [
@@ -412,28 +381,14 @@
       "IsHidden": "False"
     },
     {
-      "Start": "23dc7c05278b4216beffb9a08f774965",
-      "End": "b313720131d5439d9a4e8642644fa871",
-      "Id": "8ee7d5ce94214b85b52f16b410a93136",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "784541b637634e64948818d1fe9c595e",
+      "Start": "5e1fd8d09fac49328649619b57e5092c",
       "End": "044eb95418b84143affd5bf5e036d717",
-      "Id": "9c084356009b4df79f2bd759ce74d6af",
+      "Id": "160ba766cbc94c70aa42db624965ee8e",
       "IsHidden": "False"
     }
   ],
   "Dependencies": [],
-  "NodeLibraryDependencies": [
-    {
-      "Name": "PythonScript.txt",
-      "ReferenceType": "External",
-      "Nodes": [
-        "21f4468bd349414b8fe513c7dff82364"
-      ]
-    }
-  ],
+  "NodeLibraryDependencies": [],
   "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
@@ -463,20 +418,20 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.19.0.4746",
+      "Version": "3.0.0.6570",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
       "Name": "_Background Preview",
-      "EyeX": -14.117652893066406,
-      "EyeY": 14.245914459228516,
-      "EyeZ": 0.193756103515625,
+      "EyeX": -5.592674732208252,
+      "EyeY": 14.589745044708252,
+      "EyeZ": 5.339345932006836,
       "LookX": 6.4563751220703125,
-      "LookY": -8.1206436157226563,
+      "LookY": -8.120643615722656,
       "LookZ": -10.154024124145508,
       "UpX": -0.011704959906637669,
-      "UpY": 0.99976205825805664,
+      "UpY": 0.9997620582580566,
       "UpZ": 0.018408771604299545
     },
     "ConnectorPins": [],
@@ -488,8 +443,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2524.2691177135894,
-        "Y": 3464.3486554804153
+        "X": 2453.5898052565262,
+        "Y": 5487.3548666771
       },
       {
         "Id": "917f00ef16324bff952d6d99bc610bf7",
@@ -498,8 +453,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2524.2691177135894,
-        "Y": 3611.3486554804153
+        "X": 2453.5898052565262,
+        "Y": 5635.3548666771
       },
       {
         "Id": "62fabdca0fcf4102931718d04b68f30d",
@@ -508,8 +463,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": false,
-        "X": 2090.2691177135894,
-        "Y": 3126.5211554804155
+        "X": 2018.5898052565262,
+        "Y": 5025.527366677101
       },
       {
         "Id": "670fae8e8dc845db85f80c2ac642aafd",
@@ -518,8 +473,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": false,
-        "X": 2524.2691177135894,
-        "Y": 3126.5211554804155
+        "X": 2453.5898052565262,
+        "Y": 5227.527366677101
       },
       {
         "Id": "b59411eabb6745f3975e04a87771469e",
@@ -528,8 +483,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2090.2691177135894,
-        "Y": 3315.5211554804155
+        "X": 2018.5898052565262,
+        "Y": 5214.527366677101
       },
       {
         "Id": "1df42fffd0f147269d40e2fb32ed97a1",
@@ -538,8 +493,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2090.2691177135894,
-        "Y": 3611.3486554804153
+        "X": 2018.5898052565262,
+        "Y": 5510.3548666771
       },
       {
         "Id": "323319373726422db7ee65515c87c879",
@@ -548,8 +503,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2090.2691177135894,
-        "Y": 3464.3486554804153
+        "X": 2018.5898052565262,
+        "Y": 5363.3548666771
       },
       {
         "Id": "45073da27bc84c689246c0a66bf70784",
@@ -558,33 +513,23 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2992.2787927977247,
-        "Y": 2959.8560666739718
+        "X": 2800.5898052565262,
+        "Y": 4698.527366677101
       },
       {
-        "Id": "21f4468bd349414b8fe513c7dff82364",
-        "Name": "File Path",
+        "Id": "4a5a5a408a1f4ec1be8970cde56cced7",
+        "Name": "String",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2090.2691177135894,
-        "Y": 2960.9936339747524
-      },
-      {
-        "Id": "1fe8ed1a07c447b4aa55a3061eec8e68",
-        "Name": "FileSystem.ReadText",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 2524.2691177135894,
-        "Y": 2960.9936339747524
+        "X": 1656.3141180896075,
+        "Y": 4680.709679906147
       }
     ],
     "Annotations": [],
-    "X": -1584.9716347871172,
-    "Y": -2541.1688487861684,
-    "Zoom": 0.87906886855275546
+    "X": -692.6377427650598,
+    "Y": -2087.851842880719,
+    "Zoom": 0.45294270134228193
   }
 }

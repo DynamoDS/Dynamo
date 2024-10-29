@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -24,7 +25,7 @@ namespace Dynamo.UI.Controls
     /// Notice this control shares a lot of logic with InCanvasSearchControl for now
     /// But they will diverge eventually because of UI improvements to auto complete.
     /// </summary>
-    public partial class NodeAutoCompleteSearchControl
+    public partial class NodeAutoCompleteSearchControl : IDisposable
     {
         ListBoxItem HighlightedItem;
 
@@ -42,21 +43,28 @@ namespace Dynamo.UI.Controls
         public NodeAutoCompleteSearchControl()
         {
             InitializeComponent();
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated += CurrentApplicationDeactivated;
-                Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
+                if (Application.Current?.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
+                }
             }
             HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
         }
 
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
-                Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
+                if (Application.Current?.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
+                }
             }
+            HomeWorkspaceModel.WorkspaceClosed -= this.CloseAutoCompletion;
         }
 
         private void CurrentApplicationDeactivated(object sender, EventArgs e)
@@ -206,6 +214,19 @@ namespace Dynamo.UI.Controls
                 SearchTextBox.Focus();
                 ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
+
+            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
+        }
+
+        //Removes nodeautocomplete menu when the associated parent node is removed.
+        private void OnParentNodeRemoved(NodeModel node)
+        {
+            NodeModel parent_node = ViewModel.PortViewModel?.PortModel.Owner;
+            if (node == parent_node)
+            {
+                OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+            }
         }
 
         private void OnMembersListBoxUpdated(object sender, DataTransferEventArgs e)
@@ -344,12 +365,13 @@ namespace Dynamo.UI.Controls
 
         internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
         {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            CloseAutoCompletion();
         }
 
         internal void CloseAutoCompletion()
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            ViewModel?.OnNodeAutoCompleteWindowClosed();
         }
 
         /// <summary>
@@ -378,8 +400,16 @@ namespace Dynamo.UI.Controls
             MenuItem selectedSuggestion = sender as MenuItem;
             if (selectedSuggestion.Name.Contains(nameof(Models.NodeAutocompleteSuggestion.MLRecommendation)))
             {
-                ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
-                Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
+                if(ViewModel.IsMLAutocompleteTOUApproved)
+                {
+                    ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
+                    Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
+                }
+                else
+                {
+                    ViewModel.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
+                    // Do nothing for now, do not report analytics since the switch did not happen
+                }
             }
             else
             {
@@ -387,6 +417,14 @@ namespace Dynamo.UI.Controls
                 Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
             }
             ViewModel.PopulateAutoCompleteCandidates();
+        }
+
+        /// <summary>
+        /// Dispose the control
+        /// </summary>
+        public void Dispose()
+        {
+            NodeAutoCompleteSearchControl_Unloaded(this,null);
         }
     }
 }

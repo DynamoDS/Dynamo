@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -37,6 +38,9 @@ namespace DynamoUtilities
         {
             try
             {
+                // Do not even try when folder path is null or empty.
+                // This usually happens when system folder dialog is initialized with empty path
+                if (string.IsNullOrEmpty(folderPath)) return null;
                 // When network path is access denied, the Directory.Exits however still 
                 // return true.
                 // EnumerateDirectories operation is additional check
@@ -60,6 +64,26 @@ namespace DynamoUtilities
         public static bool IsValidPath(string filePath)
         {
             return (!string.IsNullOrEmpty(filePath) && (File.Exists(filePath)));
+        }
+
+        /// <summary>
+        /// Utility method to get the last time a file has been modified
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static string GetDateModified(string filePath)
+        {
+            FileInfo fileInfo = new(filePath);
+
+            if (fileInfo.Exists)
+            {
+                DateTime lastModified = fileInfo.LastWriteTime;
+                return lastModified.ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         /// <summary>
@@ -279,19 +303,6 @@ namespace DynamoUtilities
             return false;
         }
 
-        /// <summary>
-        /// This is a utility method for generating a default name to the snapshot image. 
-        /// </summary>
-        /// <param name="filePath">File path</param>
-        /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
-        [Obsolete("This function will be removed in future version of Dynamo - please use the version with more parameters")]
-        public static String GetScreenCaptureNameFromPath(String filePath)
-        {
-            FileInfo fileInfo = new FileInfo(filePath);
-            String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
-            String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
-            return snapshotName;
-        }
 
         /// <summary>
         /// This is a utility method for generating a default name to the snapshot image. 
@@ -462,7 +473,7 @@ namespace DynamoUtilities
         /// <param name="serviceKey">Service or feature for which the address is being requested. 
         /// It should match the key specified in the config file.</param>
         /// <returns>Path that will be used to fetch resources</returns>
-        public static string getServiceBackendAddress(object o, string serviceKey)
+        public static string GetServiceBackendAddress(object o, string serviceKey)
         {
             string url = null;
             if (o != null)
@@ -507,6 +518,64 @@ namespace DynamoUtilities
                 }
             }
             return val;
+        }
+
+        /// <summary>
+        /// Loads embedded resources such as HTML and JS files and returns the content as a string.
+        /// </summary>
+        /// <param name="resourcePath">The resource path to return.</param>
+        /// <param name="assembly">The assembly containing the resource.</param>
+        /// <returns>The embedded resource as a string.</returns>
+        public static string LoadEmbeddedResourceAsString(string resourcePath, Assembly assembly)
+        {
+            if (string.IsNullOrEmpty(resourcePath))
+                throw new ArgumentNullException(nameof(resourcePath), "The resource path cannot be null or empty.");
+
+            if (assembly == null)
+                throw new ArgumentNullException(nameof(assembly), "The assembly cannot be null.");
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream == null)
+                    throw new FileNotFoundException("The specified resource was not found in the assembly.", resourcePath);
+
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        /// <summary>
+        /// This function will extract the embedded font file and save it to a specified directory
+        /// </summary>
+        /// <param name="resourcePath">The location of the font resource</param>
+        /// <param name="outputPath">The temporary path to save the resource to</param>
+        /// <param name="outputFileName">The name of the temporary resource file</param>
+        /// <param name="assembly">The assembly containing the resource</param>
+        public static void ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, Assembly assembly)
+        {
+            if (string.IsNullOrEmpty(resourcePath) || string.IsNullOrEmpty(outputPath) || string.IsNullOrEmpty(outputFileName))
+                throw new ArgumentNullException($"One of the input arguments is null or empty.");
+
+            if (assembly == null)
+                throw new ArgumentNullException($"The assembly cannot be null.");
+
+            using (var stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream != null)
+                {
+                    var fontData = new byte[stream.Length];
+                    stream.Read(fontData, 0, fontData.Length);
+
+                    // Create the output directory if it doesn't exist
+                    Directory.CreateDirectory(outputPath);
+
+                    // Write the font file to the output directory
+                    var fontFilePath = Path.Combine(outputPath, outputFileName);
+                    File.WriteAllBytes(fontFilePath, fontData);
+                }
+            }
         }
     }
 }

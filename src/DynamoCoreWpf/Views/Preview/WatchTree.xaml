@@ -352,19 +352,23 @@
                             </TextBlock.Style>
                         </TextBlock>
 
-                        <TextBlock Width="Auto"
-                                   Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
-                                   VerticalAlignment="Center"                                                                      
-                                   FontFamily="{StaticResource SourceCodePro}"
-                                   Text="{Binding Path=NodeLabel}"
-                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}" >
+                        <TextBox Width="Auto"
+                                 Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
+                                 VerticalAlignment="Center"
+                                 FontFamily="{StaticResource SourceCodePro}"
+                                 Text="{Binding Path=NodeLabel}"
+                                 Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}"
+                                 IsReadOnly="True"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 TextWrapping="Wrap">
                             <TextBlock.Foreground>
                                 <MultiBinding Converter="{StaticResource ObjectTypeConverter}">
                                     <Binding Path="ValueType" />
                                     <Binding Path="NodeLabel" />
-                                    </MultiBinding>
+                                </MultiBinding>
                             </TextBlock.Foreground>
-                            </TextBlock>
+                        </TextBox>
 
                         <Button Margin="10,2,2,2"
                                 Padding="4,0,4,0"
@@ -389,24 +393,17 @@
                 BorderBrush="#D3D3D3"
                 CornerRadius="0,0,2,2"
                 BorderThickness="0">
+            <Grid Name="ListLevelsGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <DockPanel Name="ListLevelsDisplay" Height="27px" Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-
-                <!--  A draggable control to resize the Watch window  -->
-                <Thumb Name="resizeThumb"
-                       DockPanel.Dock="Right"
-                       Margin="1,3,5,3"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       Cursor="SizeNWSE"
-                       DragDelta="ThumbResizeThumbOnDragDeltaHandler"
-                       Visibility="Hidden">
-                    <Thumb.Template>
-                        <ControlTemplate>
-                            <Polygon Fill="#AFAFAF" Points="0,8 8,8 8,0" />
-                        </ControlTemplate>
-                    </Thumb.Template>
-                </Thumb>
+                <!--  Left Column display List Levels  -->
+                <DockPanel Name="ListLevelsDisplay"
+                       Height="27px"
+                       Grid.Column="0"
+                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                 <!--  Shows counts of all items in List  -->
                 <TextBlock Name="ListItems"
@@ -466,7 +463,25 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-            </DockPanel>
+                </DockPanel>
+
+                <!--  Left Column display a draggable control to resize the Watch window  -->
+                <Thumb Name="resizeThumb"
+                       Grid.Column="1"
+                       DockPanel.Dock="Right"
+                       Margin="1,3,5,3"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Cursor="SizeNWSE"
+                       DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+                       Visibility="Collapsed">
+                    <Thumb.Template>
+                        <ControlTemplate>
+                            <Polygon Fill="#AFAFAF" Points="0,8 8,8 8,0" />
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

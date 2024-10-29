@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -177,7 +177,7 @@ namespace DSCore
         /// <returns name="hour">Numeric representation of the hour (0-23)</returns>
         /// <returns name="minute">Numeric representation of minutes (0-59)</returns>
         /// <returns name="second">Numeric representation of seconds(0-59)</returns>
-        /// <returns name="millisecond">Numeric representation of seconds(0-999)</returns>
+        /// <returns name="millisecond">Numeric representation of milliseconds(0-999)</returns>
         [MultiReturn("year", "month", "day", "hour", "minute", "second", "millisecond")]
         public static Dictionary<string, int> Components(System.DateTime dateTime)
         {

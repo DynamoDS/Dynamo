@@ -34,4 +34,4 @@ The version is parameterized in the nuspec file and the parameter is set to the 
 To post them as pre-release packages into NuGet Gallery and Artifactory, skip the above step and run PostNugetPackages.bat or PostArtifactoryPackages.bat.
 Supply the NuGet Gallery API Key as the first parameter and the Artifactory API Key as the second parameter for this batch file.
 
-`template-net60_linux/` contains a template .nuspec for a dynamo core build intended for deployment as an engine.
+`template-service-core/` contains a template .nuspec for a dynamo core build intended for deployment as an engine.

@@ -1,4 +1,4 @@
-﻿using Autodesk.DesignScript.Runtime;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes.NodeLoaders;
@@ -546,7 +546,7 @@ namespace Dynamo.Graph.Nodes
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{

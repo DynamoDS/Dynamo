@@ -7,7 +7,7 @@
         WindowStyle="None"
         MinWidth="530"
         MaxWidth="650"
-        Height="310"
+        Height="500"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         AllowsTransparency="True"
@@ -97,7 +97,9 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="145"></RowDefinition>
+                    <RowDefinition Height="140"></RowDefinition>
+                    <RowDefinition Height="165"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="50"></RowDefinition>
@@ -178,36 +180,53 @@
                                             Background="Transparent" 
                                             OpenLinksInBrowser="True"
                                             BorderThickness="0" />
+
+                    </ScrollViewer>
+                </Border>
+                <Border Background="#E6E6E6"
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2" 
+                        Margin="0 15 3 0" 
+                        Padding="0">
+                    <ScrollViewer 
+                              Padding="0"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Margin="0 0 -18 0">
+
+                        <views:RichTextFile x:Name="MLNodeAutocompleteConsent"
+                                            Padding="5 5 15 10"
+                                            IsReadOnly="True"
+                                            IsEnabled="True"
+                                            IsDocumentEnabled="True"
+                                            Margin="0 5"
+                                            Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}" 
+                                            Background="Transparent" 
+                                            OpenLinksInBrowser="True"
+                                            BorderThickness="0" />
+
                     </ScrollViewer>
                 </Border>
 
                 <StackPanel Orientation="Vertical" 
-                            Grid.Row="2"
+                            Grid.Row="3"
                             Grid.Column="0"
                             Grid.ColumnSpan="2">
 
                     <Rectangle Style="{StaticResource DividerRectangleStyle}" Margin="-15 15 -15 0"/>
 
-                    <!--The instrumentation checkbox will be hidden and unchecked by default-->
-                    <CheckBox x:Name="AcceptUsageReportingCheck"
-                              Click="ToggleIsUsageReportingChecked"
-                              Visibility="Collapsed"
-                              Margin="-2 -10 0 15"
-                              VerticalAlignment="Center"
-                              FontSize="13.333"
-                              Background="White">
-                        <TextBlock FontWeight="SemiBold"
-                                   FontSize="12"
-                                   Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}" 
-                                   TextWrapping="Wrap"
-                                   Visibility="Collapsed"
-                                   Text="Test"
-                                   Name="AcceptUsageReportingTextBlock"/>
-                    </CheckBox>
+                </StackPanel>
 
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,20,0,10"
+                            Grid.Row="4">
+                    <CheckBox x:Name="AgreeToMLAutocompleteTOUCheckbox"/>
+                    <TextBlock x:Name="AgreeToMLAutocompleteTOUTextbox"
+                               Margin="0,1,0,0"
+                               Text="{x:Static p:Resources.AgreeToMLAutocompleteTOUText}"/>
                 </StackPanel>
                 <!--Configure ADP Consent-->
-                <Button Grid.Row="3"
+                <Button Grid.Row="5"
                         Grid.Column="0"
                         x:Name="configure_adp_button"
                         Background="White"
@@ -222,7 +241,7 @@
                         Click="configure_adp_button_Click" />
 
                 <!--Continue Button-->
-                <Button Grid.Row="3"
+                <Button Grid.Row="5"
                         Grid.Column="1"
                         x:Name="okButton"
                         BorderBrush="#0696D7"

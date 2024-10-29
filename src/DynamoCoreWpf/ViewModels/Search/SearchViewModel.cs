@@ -327,7 +327,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         public NodeSearchElementViewModel FindViewModelForNode(string nodeName)
         {
-            var result = Model.SearchEntries.Where(e => {
+            var result = Model.Entries.Where(e => {
                 if (e.CreationName.Equals(nodeName))
                 {
                     return true;
@@ -403,6 +403,7 @@ namespace Dynamo.ViewModels
             {
                 cate.DisposeTree();
             }
+            Model.EntryAdded -= AddEntry;
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
@@ -425,19 +426,20 @@ namespace Dynamo.ViewModels
             searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             // When Library changes, sync up
-            Model.EntryAdded += entry =>
-            {
-                InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
-                RaisePropertyChanged("BrowserRootCategories");
-            };
-             
+            Model.EntryAdded += AddEntry;
             Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
-            LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
+            LibraryRootCategories.AddRange(CategorizeEntries(Model.Entries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
+        }
+
+        private void AddEntry(NodeSearchElement entry)
+        {
+            InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
+            RaisePropertyChanged("BrowserRootCategories");
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
@@ -883,7 +885,7 @@ namespace Dynamo.ViewModels
                 return;
 
             //Passing the second parameter as true will search using Lucene.NET
-            var foundNodes = Search(query, true);
+            var foundNodes = Search(query);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
             FilteredResults = searchResults;
@@ -926,29 +928,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Performs a search using the given string as query and subset, if provided.
+        ///     Performs a search using the given string as query and subset, if provided. Uses Lucene search.
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>   
-        internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
-        {
-            var foundNodes = Model.Search(search, 0, subset);
-            return foundNodes.Select(MakeNodeSearchElementVM);
-        }
-
-        /// <summary>
-        ///     Performs a search using the given string as query and subset, if provided.
-        /// </summary>
-        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
-        /// <param name="search"> The search query </param>
-        /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
-        internal IEnumerable<NodeSearchElementViewModel> Search(string search, bool useLucene)
+        internal IEnumerable<NodeSearchElementViewModel> Search(string search)
         {
             if (LuceneUtility != null)
             {
                 var searchElements = Model.Search(search, LuceneUtility);
-                return searchElements.Select(MakeNodeSearchElementVM);
+                if (searchElements != null)
+                {
+                    return searchElements.Select(MakeNodeSearchElementVM);
+                }
             }
             return null;
         }
@@ -962,7 +954,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         internal NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
         {
-            var result = Model.SearchEntries.Where(e => {
+            var result = Model.Entries.Where(e => {
                 if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
                     //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)

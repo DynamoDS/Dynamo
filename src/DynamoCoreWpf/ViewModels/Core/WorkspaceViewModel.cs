@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -20,6 +19,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -356,6 +356,90 @@ namespace Dynamo.ViewModels
             get { return Model == DynamoViewModel.HomeSpace; }
         }
 
+        /// <summary>
+        /// Returns the Json representation of the current graph
+        /// </summary>
+        [JsonIgnore]
+        internal JObject JsonRepresentation { get; set; }
+
+        [JsonIgnore]
+        internal string CurrentCheckSum { get; set; }
+
+        /// <summary>
+        /// Returns the stringified representation of the node connections in the workspace.
+        /// </summary>
+        [JsonIgnore]
+        public string Checksum
+        {
+            get
+            {
+                List<string> nodeInfoConnections = new List<string>();
+
+                foreach (var connector in Connectors)
+                {
+                    var connectorModel = connector.ConnectorModel;
+
+                    var startingPort= connectorModel.Start;
+                    var endingPort = connectorModel.End;
+
+                    // node info connections has a unique id in the format: startnodeid[outputindex]endnodeid[outputindex].
+                    nodeInfoConnections.Add(startingPort.Owner.AstIdentifierGuid + "[" + startingPort.Index.ToString() + "]" + endingPort.Owner.AstIdentifierGuid + "[" + endingPort.Index.ToString() + "]");
+                }
+
+                if (nodeInfoConnections.Count > 0)
+                {
+                    var checksumhash = Hash.ToSha256String(String.Join(",", nodeInfoConnections));
+                    CurrentCheckSum = checksumhash;
+                    return checksumhash;
+                }
+                else
+                {
+                    CurrentCheckSum = string.Empty;
+                    return string.Empty;
+                }
+            }            
+        }
+
+        Tuple<string,int> GetNodeByInputId(string inputId, JObject jsonWorkspace)
+        {
+            var nodes = jsonWorkspace["Nodes"];
+
+            string nodeId = string.Empty;
+            int connectedInputIndex = 1;
+            bool foundNode = false;
+
+            foreach (var node in nodes)
+            {
+                if (!foundNode)
+                {
+                    nodeId = string.Empty;
+                    connectedInputIndex = 1;
+
+                    var nodeProperties = node.Children<JProperty>();
+                    JProperty nodeProperty = nodeProperties.FirstOrDefault(x => x.Name == "Id");
+                    nodeId = (String)nodeProperty.Value;
+
+                    JProperty nodeInputs = nodeProperties.FirstOrDefault(x => x.Name == "Inputs");
+                    var inputs = (JArray)nodeInputs.Value;
+
+                    foreach (JObject input in inputs)
+                    {
+                        var inputProperties = input.Children<JProperty>();
+                        JProperty connectedNodeInputId = inputProperties.FirstOrDefault(x => x.Name == "Id");
+
+                        if ((String)connectedNodeInputId.Value == inputId)
+                        {
+                            foundNode = true;
+                            break;
+                        }
+                        connectedInputIndex++;
+                    }
+                }                
+            }
+
+            return new Tuple<string, int>(nodeId, connectedInputIndex);
+        }
+
         [JsonIgnore]
         public bool HasUnsavedChanges
         {
@@ -572,6 +656,7 @@ namespace Dynamo.ViewModels
             Errors.Clear();
             Annotations.Clear();
             InCanvasSearchViewModel?.Dispose();
+            NodeAutoCompleteSearchViewModel.LuceneUtility?.DisposeAll();
             NodeAutoCompleteSearchViewModel?.Dispose();
         }
 
@@ -589,6 +674,16 @@ namespace Dynamo.ViewModels
             ResetFitViewToggle(null);
         }
 
+        internal JObject GetJsonRepresentation(EngineController engine = null)
+        {
+            // Step 1: Serialize the workspace.
+            var json = Model.ToJson(engine);
+            var json_parsed = JObject.Parse(json);
+
+            // Step 2: Add the View.
+            return AddViewBlockToJSON(json_parsed);
+        }
+
         /// <summary>
         /// WorkspaceViewModel's Save method does a two-part serialization. First, it serializes the Workspace,
         /// then adds a View property to serialized Workspace, and sets its value to the serialized ViewModel.
@@ -598,7 +693,7 @@ namespace Dynamo.ViewModels
         /// <param name="engine"></param>
         /// <param name="saveContext"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
+        internal bool Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -614,31 +709,52 @@ namespace Dynamo.ViewModels
 
                 //set the name before serializing model.
                 this.Model.setNameBasedOnFileName(filePath, isBackup);
-                // Stage 1: Serialize the workspace.
-                var json = Model.ToJson(engine);
-                var json_parsed = JObject.Parse(json);
 
-                // Stage 2: Add the View.
-                var jo = AddViewBlockToJSON(json_parsed);
+                // Stage 1: Serialize the workspace and the View
+                var jo = GetJsonRepresentation(engine);
 
-                // Stage 3: Save
+                // Stage 2: Save
                 string saveContent;
                 if(saveContext == SaveContext.SaveAs && !isBackup)
                 {
                     // For intentional SaveAs either through UI or API calls, replace workspace elements' Guids and workspace Id
                     jo["Uuid"] = Guid.NewGuid().ToString();
-                    saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());
+                    if (jo["Bindings"] != null && jo["Bindings"].Any())
+                    {
+                        jo["Bindings"] = JToken.Parse("[]");
+
+                        if (!DynamoModel.IsTestMode)
+                        {
+                            var result = DynamoMessageBox.Show(Wpf.Properties.Resources.ElementBindingWarningMessage,
+                                Wpf.Properties.Resources.ElementBindingWarningTitle, MessageBoxButton.OKCancel,
+                                MessageBoxImage.Warning, Wpf.Properties.Resources.ElementBindingDesc);
+
+                            if (result == MessageBoxResult.Cancel)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());                    
                 }
                 else
                 {
                     saveContent = jo.ToString();
-                }
-                File.WriteAllText(filePath, saveContent);
+                }                
 
+                File.WriteAllText(filePath, saveContent);
+                
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
+                // The assignation of the JsonRepresentation and Guid is only for the checksum flow, it will grab info only from .dyn files
                 if (!isBackup)
                 {
+                    if (Path.GetExtension(filePath).Equals(".dyn"))
+                    {
+                        JsonRepresentation = JObject.Parse(saveContent);
+                        DynamoViewModel.Workspaces[0].Model.Guid = new Guid(JsonRepresentation.Properties().First(p => p.Name == "Uuid").Value.ToString());
+                    }
+
                     Model.FileName = filePath;
                     Model.OnSaved();
                 }
@@ -658,6 +774,8 @@ namespace Dynamo.ViewModels
                 throw ex;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
             }
+
+            return true;
         }
         /// <summary>
         /// This function appends view block to the model json
@@ -669,34 +787,6 @@ namespace Dynamo.ViewModels
             modelData.Add("View", token);
 
             return modelData;
-        }
-
-        /// <summary>
-        /// Load the extra view information required to fully construct a WorkspaceModel object 
-        /// </summary>
-        /// <param name="json"></param>
-        static public ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
-        {
-            JsonReader reader = new JsonTextReader(new StringReader(json));
-            var obj = JObject.Load(reader);
-            var viewBlock = obj["View"];
-            if (viewBlock == null)
-              return null;
-
-           var settings = new JsonSerializerSettings
-           {
-               Error = (sender, args) =>
-               {
-                   args.ErrorContext.Handled = true;
-                   Console.WriteLine(args.ErrorContext.Error);
-               },
-               ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-               TypeNameHandling = TypeNameHandling.Auto,
-               Formatting = Newtonsoft.Json.Formatting.Indented,
-               Culture = CultureInfo.InvariantCulture
-           };
-
-            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         void CopyPasteChanged(object sender, EventArgs e)
@@ -795,7 +885,8 @@ namespace Dynamo.ViewModels
             lock (Nodes)
             {
                 nodeViewModel = Nodes.First(x => x.NodeLogic == node);
-                Errors.Remove(nodeViewModel.ErrorBubble);
+                if (nodeViewModel.ErrorBubble != null)
+                    Errors.Remove(nodeViewModel.ErrorBubble);
                 Nodes.Remove(nodeViewModel);
             }
             //unsub the events we attached below in NodeAdded.
@@ -814,8 +905,9 @@ namespace Dynamo.ViewModels
             {
                 Nodes.Add(nodeViewModel);
             }
-            Errors.Add(nodeViewModel.ErrorBubble);
-            
+            if (nodeViewModel.ErrorBubble != null)
+                Errors.Add(nodeViewModel.ErrorBubble);
+
             PostNodeChangeActions();
         }
 
@@ -1064,7 +1156,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X)
                            .Min();
@@ -1072,7 +1164,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y)
                            .Min();
@@ -1080,7 +1172,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X + x.Width)
                            .Max();
@@ -1096,7 +1188,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y + x.Height)
                            .Max();
@@ -1554,6 +1646,25 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
+
+            try
+            {
+                var group = DynamoViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID.ToString() == id.ToString());
+
+                if (group != null)
+                {
+                    //select the element
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(group);
+
+                    //focus on the element
+                    DynamoViewModel.ShowElement(group);
+                }
+            }
+            catch
+            {
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindGroupById);
+            }
         }
 
         private static bool CanFindById(object id)
@@ -1576,7 +1687,7 @@ namespace Dynamo.ViewModels
             Model.DoGraphAutoLayout();
             DynamoViewModel.RaiseCanExecuteUndoRedo();
 
-            Dynamo.Logging.Analytics.TrackCommandEvent("GraphLayout");
+            Dynamo.Logging.Analytics.TrackTaskCommandEvent("GraphLayout");
         }
 
         private static bool CanDoGraphAutoLayout(object o)
@@ -1630,6 +1741,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event ViewEventHandler UnpinAllPreviewBubblesTriggered;
+        /// <summary>
+        /// Triggers unpinning of all preview bubbles in the workspace
+        /// </summary>
+        /// <param name="o"></param>
+        internal void UnpinAllPreviewBubbles(object o)
+        {
+            RaisePropertyChanged("UnpinAllPreviewBubbles");
+
+            UnpinAllPreviewBubblesTriggered?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal bool CanUnpinAllPreviewBubbles(object o)
+        {
+            return true;
+        }
+
         /// <summary>
         /// Collapse a set of nodes and notes currently selected in workspace
         /// </summary>
@@ -1648,7 +1776,7 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.Model.CustomNodeManager.Collapse(selectedNodes,
                 selectedNotes, Model, DynamoModel.IsTestMode, args));
 
-            Dynamo.Logging.Analytics.TrackCommandEvent("NewCustomNode",
+            Dynamo.Logging.Analytics.TrackTaskCommandEvent("NewCustomNode",
                 "NodeCount", selectedNodes.Count());
         }
 
@@ -1671,7 +1799,8 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
-            RaisePropertyChanged("SelectionArgumentLacing");            
+            RaisePropertyChanged("SelectionArgumentLacing");
+            RaisePropertyChanged("CanUpdatePythonEngine");
         }
 
         /// <summary>

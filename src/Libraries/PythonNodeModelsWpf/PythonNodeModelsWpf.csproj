@@ -32,6 +32,8 @@
     <None Remove="Resources\reset_hover.png" />
     <None Remove="Resources\save.png" />
     <None Remove="Resources\save_hover.png" />
+    <None Remove="Resources\tabs.png" />
+    <None Remove="Resources\tabs_hover.png" />
     <None Remove="Resources\undo.png" />
     <None Remove="Resources\undo_hover.png" />
     <None Remove="Resources\zoom-in.png" />
@@ -42,20 +44,6 @@
   <ItemGroup>
 	<PackageReference Include="FontAwesome5" Version="2.1.11" />
 	<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="PresentationCore">
-        <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationFramework">
-        <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-        <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -99,6 +87,8 @@
     <Resource Include="Resources\reset_hover.png" />
     <Resource Include="Resources\save.png" />
     <Resource Include="Resources\save_hover.png" />
+    <Resource Include="Resources\tabs.png" />
+    <Resource Include="Resources\tabs_hover.png" />
     <Resource Include="Resources\undo.png" />
     <Resource Include="Resources\undo_hover.png" />
     <Resource Include="Resources\zoom-in.png" />

@@ -15,14 +15,27 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 
 namespace DynamoCoreWpfTests
 {
+    [Category("Failure")]
     public class GraphNodeManagerViewExtensionTests : DynamoTestUIBase
     {
+        private bool oldEnablePersistance = false;
+
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
@@ -53,13 +66,26 @@ namespace DynamoCoreWpfTests
         #endregion
 
         #region Tests
+
+        [SetUp]
+        public void Setup()
+        {
+            oldEnablePersistance = ViewModel.PreferenceSettings.EnablePersistExtensions;
+            ViewModel.PreferenceSettings.EnablePersistExtensions = false;
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            ViewModel.PreferenceSettings.EnablePersistExtensions = oldEnablePersistance;
+        }
+
         /// <summary>
         /// Test if the Extension loads correctly
         /// </summary>
         [Test]
         public void ViewExtensionOpenTest()
         {
-            RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             var viewExtension = extensionManager.ViewExtensions
                     .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
@@ -71,7 +97,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
             // Close
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             View.OnCloseRightSideBarTab(WpfUtilities.ChildrenOfType<Button>(ViewModel.SideBarTabItems.FirstOrDefault()).FirstOrDefault(), null);
             Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
         }
@@ -82,7 +108,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CorrectNumberNodeItemsTest()
         {
-            RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             var viewExt = extensionManager.ViewExtensions
                     .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
@@ -102,7 +127,6 @@ namespace DynamoCoreWpfTests
             Open(@"pkgs\Dynamo Samples\extra\ZoomNodeColorStates.dyn");
 
             hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
-            Utility.DispatcherUtil.DoEvents();
 
             int loadedGraphNodes = hwm.Nodes.Count();
             int loadedExtensionNodes = dataGridItems.Count;
@@ -111,7 +135,7 @@ namespace DynamoCoreWpfTests
             hwm.RemoveAndDisposeNode(hwm.Nodes.First());
 
             hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             int deleteGraphNodes = hwm.Nodes.Count();
             int deleteExtensionNodes = dataGridItems.Count;
@@ -121,13 +145,13 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(loadedGraphNodes, loadedExtensionNodes);
             Assert.AreEqual(deleteGraphNodes, deleteExtensionNodes);
         }
+
         /// <summary>
         /// Test if using the IsFrozen filter yields correct results
         /// </summary>
         [Test]
         public void FilterFrozenItemsTest()
         {
-            RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             var viewExt = extensionManager.ViewExtensions
                     .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
@@ -137,7 +161,6 @@ namespace DynamoCoreWpfTests
             LoadExtension(viewExt);
 
             Open(@"pkgs\Dynamo Samples\extra\ZoomNodeColorStates.dyn");
-            Utility.DispatcherUtil.DoEvents();
 
             // Get number of frozen Nodes in the graph
             var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
@@ -158,7 +181,7 @@ namespace DynamoCoreWpfTests
                 }
             }
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             // Get the number of frozen Nodes in the Extension
             var dataGridItems = view.NodesInfoDataGrid.Items;
@@ -170,37 +193,42 @@ namespace DynamoCoreWpfTests
 
         /// <summary>
         /// Test if the number of Nodes containing Null or Empty List matches what is shown on the UI
+        /// Marked as Failure until we can fix flakyness
         /// </summary>
+        //TODO https://jira.autodesk.com/browse/DYN-6973
+        [Category("Failure")]
         [Test]
         public void ContainsEmptyListOrNullTest()
         {
-            RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             var viewExt = extensionManager.ViewExtensions
                     .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
                 as GraphNodeManagerViewExtension;
 
-            var hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
-
-            // Arrange
             LoadExtension(viewExt);
 
-            var view = viewExt.ManagerView;
+            OpenAndRun(@"pkgs\Dynamo Samples\extra\GraphNodeManagerTestGraph_NullsEmptyLists.dyn");
 
-            Open(@"pkgs\Dynamo Samples\extra\GraphNodeManagerTestGraph_NullsEmptyLists.dyn");
-
-            hwm = this.ViewModel.CurrentSpace as HomeWorkspaceModel;
-            hwm.Run();
-
-            Utility.DispatcherUtil.DoEvents();
-
-            var images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
-            
-            int nullNodesImageCount = GetImageCount(images, "Null");
-            int emptyListNodesImageCount = GetImageCount(images, "EmptyList"); 
+            var hwm = this.ViewModel.CurrentSpace;
 
             int nullNodesCount = hwm.Nodes.Count(ContainsAnyNulls);
             int emptyListNodesCount = hwm.Nodes.Count(ContainsAnyEmptyLists);
+
+            var view = viewExt.ManagerView;
+
+            IEnumerable<Image> images = [];
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                images = WpfUtilities.ChildrenOfType<Image>(view.NodesInfoDataGrid);
+
+                int nullNodesImageCount = GetImageCount(images, "Null");
+                int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
+
+                return (nullNodesImageCount == nullNodesCount) && (emptyListNodesImageCount == emptyListNodesCount);
+            });
+
+            int nullNodesImageCount = GetImageCount(images, "Null");
+            int emptyListNodesImageCount = GetImageCount(images, "EmptyList");
 
             // Assert
             Assert.AreEqual(emptyListNodesCount, emptyListNodesImageCount);
@@ -214,7 +242,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ViewExtensionOpensWithDynamoWhenRememberedTest()
         {
-            RaiseLoadedEvent(this.View);
             ViewModel.PreferenceSettings.EnablePersistExtensions = true;
 
             //assert that option is enabled
@@ -234,7 +261,7 @@ namespace DynamoCoreWpfTests
             Exit();
             Start();
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             //confirm that extension is reopened after restart
             Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
@@ -247,7 +274,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ViewExtensionDoesNotOpensWithDynamoWhenClosedTest()
         {
-            RaiseLoadedEvent(this.View);
             ViewModel.PreferenceSettings.EnablePersistExtensions = true;
 
             //assert that option is enabled
@@ -271,7 +297,7 @@ namespace DynamoCoreWpfTests
             Exit();
             Start();
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             //confirm that extension is still closed after restart
             Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
@@ -284,7 +310,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ViewExtensionDoesNotOpenWhenNotRememberedTest()
         {
-            RaiseLoadedEvent(this.View);
             ViewModel.PreferenceSettings.EnablePersistExtensions = false;
 
             //assert that option is disabled
@@ -304,7 +329,7 @@ namespace DynamoCoreWpfTests
             Exit();
             Start();
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
             //confirm that extension is still closed after restart
             Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);

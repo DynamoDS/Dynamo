@@ -13,6 +13,7 @@ using Dynamo.Utilities;
 using Dynamo.WorkspaceDependency;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -119,7 +120,7 @@ namespace DynamoCoreWpfTests
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
             Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             View.OnCloseRightSideBarTab(WpfUtilities.ChildrenOfType<Button>(ViewModel.SideBarTabItems.FirstOrDefault()).FirstOrDefault(), null);
             Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
         }
@@ -195,6 +196,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void DependencyRegenCrashingDynamoTest()
         {
+            this.View.WindowState = WindowState.Maximized;
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             extensionManager.Add(viewExtension);

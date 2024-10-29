@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Dynamo.PackageManager.ViewModels;
+using Dynamo.UI;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
@@ -66,7 +68,7 @@ namespace Dynamo.PackageManager.UI
             var searchItems = (IEnumerable<PackageManagerSearchElementViewModel>)newValue;
             if(searchItems != null)
             {
-                myPackagesListBox.ItemsSource = searchItems;
+                packagesListBox.ItemsSource = searchItems;
             }
         }
 
@@ -81,7 +83,7 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
         }
 
-        /// <summary>
+        /// <summary>   
         ///     Executes a command that opens the package details view extension.
         /// </summary>
         /// <param name="sender"></param>
@@ -91,15 +93,30 @@ namespace Dynamo.PackageManager.UI
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
-            var PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+            var pkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
 
+            ExecuteOpenPackageDetails(packageManagerSearchElementViewModel, pkgSearchVM);
+        }
+
+        private void PackageName_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!(sender is TextBlock textBlock)) return;
+            if (!(textBlock.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
+
+            var pkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+
+            ExecuteOpenPackageDetails(packageManagerSearchElementViewModel, pkgSearchVM);
+        }
+
+        private void ExecuteOpenPackageDetails(PackageManagerSearchElementViewModel packageManagerSearchElementViewModel, PackageManagerSearchViewModel pkgSearchVM)
+        {
             var name = this.Name;
             if (name.Equals(packageManagerSearchPackagesName))
             {
                 var parent = WpfUtilities.FindUpVisualTree<PackageManagerSearchControl>(this) as PackageManagerSearchControl;
                 if (parent == null) return;
 
-                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                packageManagerSearchElementViewModel.SearchElementModel.UIParent = parent.packageDetailsGrid;
                 if (parent.packageDetailsGrid.Width.Value <= 1.0)
                 {
                     var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
@@ -111,7 +128,7 @@ namespace Dynamo.PackageManager.UI
                 var parent = WpfUtilities.FindUpVisualTree<PackageManagerView>(this) as PackageManagerView;
                 if (parent == null) return;
 
-                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                packageManagerSearchElementViewModel.SearchElementModel.UIParent = parent.packageDetailsGrid;
                 if (parent.packageDetailsGrid.Width.Value <= 1.0)
                 {
                     var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
@@ -119,8 +136,102 @@ namespace Dynamo.PackageManager.UI
                 }
             }
 
-            PkgSearchVM.IsDetailPackagesExtensionOpened = true;
-            PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+            pkgSearchVM.IsDetailPackagesExtensionOpened = true;
+            pkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
+        }
+
+
+        /// <summary>
+        /// Fires when the user clicks the 'X' button to dismiss a package toast notification.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseToastButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+            if (PkgSearchVM == null) { return; }
+
+            Button button = sender as Button;
+
+            if (button.DataContext is PackageDownloadHandle packageDownloadHandle)
+            {
+                PkgSearchVM.ClearToastNotificationCommand.Execute(packageDownloadHandle);
+            }
+            else if (button.DataContext is PackageManagerSearchElement packageSearchElement)
+            {
+                PkgSearchVM.ClearToastNotificationCommand.Execute(packageSearchElement);
+            }
+            return;
+        }
+
+
+        private void DropDownInstallButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button == null || button.DataContext == null) { return; }
+
+            var contextMenu = new ContextMenu();
+            var commandBinding = new Binding("DownloadLatestToCustomPathCommand");
+            commandBinding.Source = button.DataContext;
+            var commandParameterBinding = new Binding("LatestVersion");
+            commandParameterBinding.Source = button.DataContext;
+
+            var contextMenuStyle = new Style(typeof(ContextMenu));
+            contextMenuStyle.BasedOn = (Style)SharedDictionaryManager.DynamoModernDictionary["ContextMenuStyle"];
+
+            //Apply the Style to the ContextMenu
+            contextMenu.Style = contextMenuStyle;
+            contextMenu.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(60, 60, 60));
+
+            // Create and add menu items to the ContextMenu
+            var menuItem = new MenuItem 
+            {
+                Header = Dynamo.Wpf.Properties.Resources.PackageSearchViewInstallLatestVersionTo,
+                MinWidth = 60,
+                MinHeight = 30,
+                Cursor = System.Windows.Input.Cursors.Hand
+            };
+
+            contextMenu.Items.Add(menuItem);
+            BindingOperations.SetBinding(menuItem, MenuItem.CommandProperty, commandBinding);
+            BindingOperations.SetBinding(menuItem, MenuItem.CommandParameterProperty, commandParameterBinding);
+                
+            // Attach the ContextMenu to the button
+            button.ContextMenu = contextMenu;
+
+            // Open the context menu when the left mouse button is pressed
+            contextMenu.IsOpen = true;            
+        }
+
+        // Attach the 'context menu' button to the parent button
+        private void DropDownInstallButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            var installButton = sender as Button;
+            if (installButton != null)
+            {
+                var dropDownInstallButton = installButton.Template.FindName("dropDownInstallButton", installButton) as Button;
+                if (dropDownInstallButton != null)
+                {
+                    dropDownInstallButton.Click -= DropDownInstallButton_OnClick;
+
+                    // Now that the parent button is loaded, we can assign the Click event to the context menu button
+                    dropDownInstallButton.Click += DropDownInstallButton_OnClick;
+                }
+            }
+        }
+
+        // Dispose of DropDownInstallButton_OnClick when the parent button is unloaded
+        private void DropDownInstallButton_Unloaded(object sender, RoutedEventArgs e)
+        {
+            var installButton = sender as Button;
+            if (installButton != null)
+            {
+                var dropDownInstallButton = installButton.Template.FindName("dropDownInstallButton", installButton) as Button;
+                if (dropDownInstallButton != null)
+                {
+                    dropDownInstallButton.Click -= DropDownInstallButton_OnClick;
+                }
+            }
         }
     }
 }

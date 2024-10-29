@@ -1,0 +1,4 @@
+﻿<ViewExtensionDefinition>
+  <AssemblyPath>..\bin\SampleViewExtensionCrash.dll</AssemblyPath>
+  <TypeName>SampleViewExtension.SampleViewExtension</TypeName>
+</ViewExtensionDefinition>

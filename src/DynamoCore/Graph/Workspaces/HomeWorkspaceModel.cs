@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Events;
 using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -122,6 +120,25 @@ namespace Dynamo.Graph.Workspaces
 
                 graphDocumentationURL = value;
                 RaisePropertyChanged(nameof(GraphDocumentationURL));
+            }
+        }
+
+        private bool? enableLegacyPolyCurveBehavior;
+        /// <summary>
+        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
+        /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
+        /// A workspace setting if exists, overrides the default preference setting. 
+        /// </summary>
+        [JsonProperty]
+        internal bool? EnableLegacyPolyCurveBehavior
+        {
+            get { return enableLegacyPolyCurveBehavior; }
+            set
+            {
+                if(value == null) return;
+
+                enableLegacyPolyCurveBehavior = value;
+                WorkspaceEvents.OnWorkspaceSettingsChanged(enableLegacyPolyCurveBehavior.GetValueOrDefault());
             }
         }
 
@@ -277,32 +294,6 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="factory">Node factory to create nodes</param>
         /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
         /// <param name="isTestMode">Indicates if current code is running in tests</param>
-        /// <param name="fileName">Name of file where the workspace is saved</param>
-        [Obsolete("please use the version with linterManager parameter.")]
-        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler,
-            NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName = "")
-            : this(engine,
-                scheduler,
-                factory,
-                Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(),
-                Enumerable.Empty<NodeModel>(),
-                Enumerable.Empty<NoteModel>(),
-                Enumerable.Empty<AnnotationModel>(),
-                Enumerable.Empty<PresetModel>(),
-                new ElementResolver(),
-                new WorkspaceInfo() { FileName = fileName, Name = "Home" },
-                verboseLogging,
-                isTestMode) { }
-
-        /// <summary>
-        /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class
-        /// </summary>
-        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
-        /// to coordinate the interactions between some DesignScript sub components.</param>
-        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
-        /// <param name="factory">Node factory to create nodes</param>
-        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
-        /// <param name="isTestMode">Indicates if current code is running in tests</param>
         /// <param name="linterManager">The linter manager from the DynamoModel that owns this workspace</param>
         /// <param name="fileName">Name of file where the workspace is saved</param>
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler,
@@ -322,22 +313,6 @@ namespace Dynamo.Graph.Workspaces
                 linterManager)
         { }
 
-        [Obsolete("please use the version with linterManager parameter.")]
-        public HomeWorkspaceModel(Guid guid, EngineController engine,
-            DynamoScheduler scheduler,
-            NodeFactory factory,
-            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData,
-            IEnumerable<NodeModel> nodes,
-            IEnumerable<NoteModel> notes,
-            IEnumerable<AnnotationModel> annotations,
-            IEnumerable<PresetModel> presets,
-            ElementResolver resolver,
-            WorkspaceInfo info,
-            bool verboseLogging,
-            bool isTestMode):this(engine, scheduler, factory, traceData, nodes, notes, 
-                annotations, presets, resolver, info, verboseLogging, isTestMode)
-        { Guid = guid; }
-
         public HomeWorkspaceModel(Guid guid, EngineController engine,
             DynamoScheduler scheduler,
             NodeFactory factory,
@@ -353,42 +328,6 @@ namespace Dynamo.Graph.Workspaces
             LinterManager linterManager) : this(engine, scheduler, factory, traceData, nodes, notes,
                 annotations, presets, resolver, info, verboseLogging, isTestMode, linterManager)
         { Guid = guid; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class
-        /// by given information about it and specified item collections
-        /// </summary>
-        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
-        /// to coordinate the interactions between some DesignScript sub components.</param>
-        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
-        /// <param name="factory">Node factory to create nodes</param>
-        /// <param name="traceData">Preloaded trace data</param>
-        /// <param name="nodes">Node collection of the workspace</param>
-        /// <param name="notes">Note collection of the workspace</param>
-        /// <param name="annotations">Group collection of the workspace</param>
-        /// <param name="presets">Preset collection of the workspace</param>
-        /// <param name="resolver">ElementResolver responsible for resolving 
-        /// a partial class name to its fully resolved name</param>
-        /// <param name="info">Information for creating custom node workspace</param>
-        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
-        /// <param name="isTestMode">Indicates if current code is running in tests</param>
-        [Obsolete("please use the version with linterManager parameter.")]
-        public HomeWorkspaceModel(EngineController engine, 
-            DynamoScheduler scheduler, 
-            NodeFactory factory,
-            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData, 
-            IEnumerable<NodeModel> nodes, 
-            IEnumerable<NoteModel> notes, 
-            IEnumerable<AnnotationModel> annotations,
-            IEnumerable<PresetModel> presets,
-            ElementResolver resolver,
-            WorkspaceInfo info, 
-            bool verboseLogging,
-            bool isTestMode)
-            : base(nodes, notes,annotations, info, factory,presets, resolver)
-        {
-            InitializeHomeWorkspace(engine, traceData, scheduler, info, verboseLogging, isTestMode);
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class
@@ -644,24 +583,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         #endregion
-
-        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
-        protected override bool PopulateXmlDocument(XmlDocument document)
-        {
-            if (!base.PopulateXmlDocument(document))
-                return false;
-
-            var root = document.DocumentElement;
-            if (root == null)
-                return false;
-
-            root.SetAttribute("RunType", RunSettings.RunType.ToString());
-            root.SetAttribute("RunPeriod", RunSettings.RunPeriod.ToString(CultureInfo.InvariantCulture));
-            root.SetAttribute("HasRunWithoutCrash", HasRunWithoutCrash.ToString(CultureInfo.InvariantCulture));
-
-            return true;
-        }
-
+        
         private void PulseMakerRunStarted()
         {
             var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
@@ -737,7 +659,7 @@ namespace Dynamo.Graph.Workspaces
             // Runtime warnings take precedence over build warnings.
             foreach (var warning in updateTask.RuntimeWarnings)
             {
-                var message = string.Join(Environment.NewLine, warning.Value.Select(w => w.Message));
+                var message = string.Join(Environment.NewLine + Environment.NewLine, warning.Value.Select(w => w.Message));
                 warnings.Add(warning.Key, message);
             }
 
@@ -776,11 +698,18 @@ namespace Dynamo.Graph.Workspaces
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
-                using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+
+                // Block Infos updates during the many errors/warnings/notifications added here
+                // InfoBubbles will be updated on NodeViewModel's EvaluationCompleted handler.
+                using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                using (Disposable.Create(() => { node.BlockInfoBubbleUpdates = true; }, () => { node.BlockInfoBubbleUpdates = false; }))
                 {
                     node.Warning(warning.Value); // Update node warning message.
                 }
             }
+
+            // All nodes that have runtime warnings or infos
+            HashSet<Guid> nodesWithInfos = [.. warnings.Keys];
 
             // Update node info message.
             foreach (var info in updateTask.RuntimeInfos)
@@ -789,7 +718,13 @@ namespace Dynamo.Graph.Workspaces
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
-                using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+
+                nodesWithInfos.Add(guid);
+
+                // Block Infos updates during the many errors/warnings/notifications added here
+                // InfoBubbles will be updated on NodeViewModel's EvaluationCompleted handler.
+                using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                using (Disposable.Create(() => { node.BlockInfoBubbleUpdates = true; }, () => { node.BlockInfoBubbleUpdates = false; }))
                 {
                     node.Info(string.Join(Environment.NewLine, info.Value.Select(w => w.Message)));
                 }
@@ -805,8 +740,8 @@ namespace Dynamo.Graph.Workspaces
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true,warnings.Keys,null)
-                : new EvaluationCompletedEventArgs(true, warnings.Keys, task.Exception);
+                ? new EvaluationCompletedEventArgs(true, nodesWithInfos, null)
+                : new EvaluationCompletedEventArgs(true, nodesWithInfos, task.Exception);
 
             EvaluationCount ++;
 
@@ -941,13 +876,13 @@ namespace Dynamo.Graph.Workspaces
         #endregion
 
         /// <summary>
-        /// Returns a list of ISerializable items which exist in the preloaded 
+        /// Returns a list of string items which exist in the preloaded 
         /// trace data but do not exist in the current CallSite data.
         /// </summary>
         /// <returns></returns>
-        internal IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
+        internal IList<string> GetOrphanedSerializablesAndClearHistoricalTraceData()
         {
-            var orphans = new List<ISerializable>();
+            var orphans = new List<string>();
 
             if (historicalTraceData == null) return orphans;
 

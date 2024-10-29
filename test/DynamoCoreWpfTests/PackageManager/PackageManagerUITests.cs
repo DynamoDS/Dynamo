@@ -5,10 +5,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Dynamo.Extensions;
+using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.PackageManager.Interfaces;
+using Dynamo.PackageManager.Tests;
 using Dynamo.PackageManager.UI;
 using Dynamo.Tests;
 using Dynamo.UI.Prompts;
@@ -64,6 +68,10 @@ namespace DynamoCoreWpfTests.PackageManager
                 yield return (Window)enumerator.Current;
             }
         }
+        public static bool ComparePaths(string path1, string path2)
+        {
+            return PackageDirectoryBuilder.NormalizePath(path1) == PackageDirectoryBuilder.NormalizePath(path2);
+        }
 
         public void AssertWindowOwnedByDynamoView<T>()
         {
@@ -103,10 +111,10 @@ namespace DynamoCoreWpfTests.PackageManager
             var l = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(l);
 
-            AssertWindowOwnedByDynamoView<PublishPackageView>();
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
         }
 
-        [Test, Ignore("Unknown reason")]
+        [Test]
         public void CannotCreateDuplicatePackagePublishDialogs()
         {
             var l = new PublishPackageViewModel(ViewModel);
@@ -115,7 +123,7 @@ namespace DynamoCoreWpfTests.PackageManager
                 ViewModel.OnRequestPackagePublishDialog(l);
             }
 
-            AssertWindowOwnedByDynamoView<PublishPackageView>();
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
         }
 
         [Test]
@@ -124,9 +132,138 @@ namespace DynamoCoreWpfTests.PackageManager
             var l = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(l);
 
-            AssertWindowOwnedByDynamoView<PublishPackageView>();
-            AssertWindowClosedWithDynamoView<PublishPackageView>();
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
+            AssertWindowClosedWithDynamoView<PackageManagerView>();
 
+        }
+
+        [Test]
+        public void PackagePublishKeywordPropertyAllowsSpaces()
+        {
+            // Arrange
+            var singleSpace = " ";
+            var doubleSpace = "  ";
+            var singleWord = "support";
+            var doubleWord = "support mep";
+            var doubleWordMultipleSpaces = "support    mep";
+            var commaDelimetedWords = "support,mep";
+
+            var l = new PublishPackageViewModel(ViewModel);
+
+            // Act/Assert
+            l.Keywords = singleSpace;
+            Assert.AreEqual(singleSpace, l.Keywords);
+            Assert.AreEqual(0, l.KeywordList.Count());
+
+            l.Keywords = doubleSpace;
+            Assert.AreEqual(singleSpace, l.Keywords);
+            Assert.AreEqual(0, l.KeywordList.Count());
+
+            l.Keywords = singleWord;
+            Assert.AreEqual(singleWord, l.Keywords);
+            Assert.AreEqual(1, l.KeywordList.Count());
+
+            l.Keywords = doubleWord;
+            Assert.AreEqual(doubleWord, l.Keywords);
+            Assert.AreEqual(2, l.KeywordList.Count());
+
+            l.Keywords = doubleWordMultipleSpaces;
+            Assert.AreEqual(doubleWord, l.Keywords);
+            Assert.AreEqual(2, l.KeywordList.Count());
+
+            l.Keywords = commaDelimetedWords;
+            Assert.AreEqual(commaDelimetedWords.Replace(',', ' '), l.Keywords);
+            Assert.AreEqual(2, l.KeywordList.Count());
+        }
+
+        [Test]
+        public void PackagePublishNumericUpDownAllowsOnlyPositiveIntegerValues()
+        {
+            // Arrange
+            var updownControl = new NumericUpDownControl();
+
+            // Assert negavie
+            var isValidOutput = updownControl.IsValidInput("l");
+            Assert.IsFalse(isValidOutput, "Should not allow letters in numeric input.");
+
+            isValidOutput = updownControl.IsValidInput("-1");
+            Assert.IsFalse(isValidOutput, "Should not allow negative integers in numeric input.");
+
+            isValidOutput = updownControl.IsValidInput("1.0");
+            Assert.IsFalse(isValidOutput, "Should not allow fractional input.");
+
+            isValidOutput = updownControl.IsValidInput(" ");
+            Assert.IsFalse(isValidOutput, "Should not allow space input values.");
+
+            isValidOutput = updownControl.IsValidInput(" 1");
+            Assert.IsFalse(isValidOutput, "Should not allow space input values.");
+
+            // Assert positive
+            isValidOutput = updownControl.IsValidInput("0");
+            Assert.IsTrue(isValidOutput, "Should allow 0 in numeric input.");
+
+            isValidOutput = updownControl.IsValidInput("1");
+            Assert.IsTrue(isValidOutput, "Should allow positive integers in numeric input.");
+        }
+
+        [Test]
+        public void TestAscendingSpinnerClickEvent()
+        {
+            // Arrange
+            var updownControl = new NumericUpDownControl();
+            var up = updownControl.spinnerUp;
+            var down = updownControl.spinnerDown;
+            var inputField = updownControl.inputField;
+            var watermark = updownControl.Watermark;
+
+            // Act
+            watermark = "0";
+            up.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+
+            // Assert
+            Assert.AreEqual(inputField.Text, "1");
+
+            up.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(inputField.Text, "2");
+
+            down.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(inputField.Text, "1");
+
+            down.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(inputField.Text, "0");
+
+            down.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(inputField.Text, "0");
+        }
+
+        [Test]
+        public void TestDescendingSpinnerClickEvent()
+        {
+            // Arrange
+            var updownControl = new NumericUpDownControl();
+            var up = updownControl.spinnerUp;
+            var down = updownControl.spinnerDown;
+            var inputField = updownControl.inputField;
+            var watermark = updownControl.Watermark;
+
+            // Act
+            watermark = "1";
+            down.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+
+            // Assert
+            Assert.AreEqual(inputField.Text, "0");
+
+            down.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(inputField.Text, "0");
+
+            up.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(inputField.Text, "1");
+
+            up.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(inputField.Text, "2");
+
+            down.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(inputField.Text, "1");
         }
         #endregion
 
@@ -813,7 +950,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
             // This function is called upon addition of new package paths in the UI.
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(1, loader.LocalPackages.Count());
+            Assert.AreEqual(2, loader.LocalPackages.Count());
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
             dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
@@ -838,9 +975,10 @@ namespace DynamoCoreWpfTests.PackageManager
 
             Assert.IsTrue(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
 
-            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(3, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
-            Assert.AreEqual(@"Scheduled for Unload", filters[1].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+            Assert.AreEqual(@"Scheduled for Unload", filters[2].Name);
 
             builtInPkgViewModel.UnmarkForUninstallationCommand.Execute();
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
@@ -873,7 +1011,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(1, loader.LocalPackages.Count());
+            Assert.AreEqual(2, loader.LocalPackages.Count());
             Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
@@ -888,9 +1026,11 @@ namespace DynamoCoreWpfTests.PackageManager
 
             ViewModel.PreferencesViewModel.InitPackageListFilters();
             var filters = ViewModel.PreferencesViewModel.Filters;
-            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(3, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
-            Assert.AreEqual(@"Unloaded", filters[1].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+            Assert.AreEqual(@"Unloaded", filters[2].Name);
+
 
             builtInPkgViewModel.LoadCommand.Execute();
 
@@ -898,7 +1038,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
             Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
-            Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+            Assert.IsTrue(currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
 
             Assert.AreEqual(2, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
@@ -924,7 +1064,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(0, loader.LocalPackages.Count());
+            Assert.AreEqual(1, loader.LocalPackages.Count());
             var vm = new PackagePathViewModel(loader, loadPackageParams, Model.CustomNodeManager);
 
             vm.RequestShowFileDialog += (sender, args) => { args.Path = BuiltinPackagesTestDir; };
@@ -937,7 +1077,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var pkg = loader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(pkg, "Expected Signed package to be valid");
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, pkg.LoadState.State);
-            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // remove the path to SignedPackage2
             vm.DeletePathCommand.Execute(vm.RootLocations.Count - 1);
@@ -946,7 +1086,7 @@ namespace DynamoCoreWpfTests.PackageManager
             vm.SaveSettingCommand.Execute(null);
 
             Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
-            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // re-add the path to SignedPackage2
             vm.AddPathCommand.Execute(null);
@@ -955,7 +1095,7 @@ namespace DynamoCoreWpfTests.PackageManager
             vm.SaveSettingCommand.Execute(null);
 
             Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
-            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
         }
 
         public void PackageContainingNodeViewOnlyCustomization_AddsCustomizationToCustomizationLibrary()
@@ -1052,6 +1192,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
             var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
             var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+            var sharedEngineVersion = DynamoModel.Version;
 
 
             //when we attempt a download - it returns a valid download path, also record order
@@ -1085,7 +1226,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var dep_pkgVer = new PackageVersion()
             {
                 version = dep_version,
-                engine_version = "2.1.1",
+                engine_version = sharedEngineVersion,
                 name = dep_name,
                 id = dep_id,
                 full_dependency_ids = dep_deps,
@@ -1101,7 +1242,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var pkgVer = new PackageVersion()
             {
                 version = version,
-                engine_version = "2.1.1",
+                engine_version = sharedEngineVersion,
                 name = name,
                 id = id,
                 full_dependency_ids = deps,
@@ -1132,8 +1273,12 @@ namespace DynamoCoreWpfTests.PackageManager
                 .Returns(MessageBoxResult.OK);
             MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
 
-            //actually perform the download & install operations
-            pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
+            Task.Run(() => {
+                // This test runs on a single thread (using DispatcherSyncronizationContext)
+                // We need to run the async ExecutePackageDownload function in a separate thread so that the Thread.Sleep does not mess up the other awaiting tasks.
+                //actually perform the download & install operations
+                pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
+            }).Wait();
 
             //wait a bit.
             Thread.Sleep(500);
@@ -1278,7 +1423,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Description("User tries to download packages that might conflict with an unloaded builtIn package")]
         public void PackageManagerConflictsUnloadedWithBltInPackage()
         {
@@ -1293,7 +1438,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(bltInPackage);
 
-            string expectedDownloadPath = "download/" + bltInPackage.Name + "/" + bltInPackage.VersionName;
+            string expectedDownloadPath = "download/" + bltInPackage.ID + "/" + bltInPackage.VersionName;
             // Simulate the user downloading the same package from PM
             var mockGreg = new Mock<IGregClient>();
             mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Callback((Request x) =>
@@ -1313,8 +1458,7 @@ namespace DynamoCoreWpfTests.PackageManager
             // 1. User downloads the exact version of a builtIn package
             //
             {
-                var id = "test-123";
-                var deps = new List<Dependency>() { new Dependency() { _id = id, name = bltInPackage.Name } };
+                var deps = new List<Dependency>() { new Dependency() { _id = bltInPackage.ID, name = bltInPackage.Name } };
                 var depVers = new List<string>() { bltInPackage.VersionName };
 
                 mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
@@ -1325,7 +1469,7 @@ namespace DynamoCoreWpfTests.PackageManager
                         version = bltInPackage.VersionName,
                         engine_version = bltInPackage.EngineVersion,
                         name = bltInPackage.Name,
-                        id = id,
+                        id = bltInPackage.ID,
                         full_dependency_ids = deps,
                         full_dependency_versions = depVers
                     },
@@ -1413,6 +1557,60 @@ namespace DynamoCoreWpfTests.PackageManager
                 dlgMock.Verify(x => x.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
                 dlgMock.ResetCalls();
             }
+        }
+
+        [Test]
+        [Description("User tries to download package in Dynamo 3.x which was published in Dynamo 2.x")]
+        public void PackageManagerShowsWarningWhenDownloadingLegacyPackage()
+        {
+            var pathMgr = ViewModel.Model.PathManager;
+            var pkgLoader = GetPackageLoader();
+
+            // Simulate the user downloading the same package from PM
+            var mockGreg = new Mock<IGregClient>();
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var pkgVer = new Version(1, 0, 0).ToString();
+            var pkgEngineVersion = new Version(2, 0, 0).ToString();
+            var id = "test-123";
+            var name = "test-123-name";
+            var deps = new List<Dependency>() { new Dependency() { _id = id, name = name } };
+            var depVers = new List<string>() { pkgVer };
+
+            var pkgVersionObject = new PackageVersion()
+            {
+                version = pkgVer,
+                engine_version = pkgEngineVersion,
+                name = name,
+                id = id,
+                full_dependency_ids = deps,
+                full_dependency_versions = depVers
+            };
+
+            mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = pkgVersionObject,
+                    success = true
+                });
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+            pmVm.ExecutePackageDownload(id, pkgVersionObject, "");
+
+            // Users should get 2 warnings :
+            // 1. To confirm that they want to download the specified package.
+            // 2. That this package is a legacy package.
+            dlgMock.Verify(x => x.Show(null,
+                       $"{string.Format(Dynamo.Wpf.Properties.Resources.MessagePackageOlderDynamo, ViewModel.BrandingResourceProvider.ProductName)} {Dynamo.Wpf.Properties.Resources.MessagePackOlderDynamoLink}",
+                       string.Format(Dynamo.Wpf.Properties.Resources.PackageUseOlderDynamoMessageBoxTitle, ViewModel.BrandingResourceProvider.ProductName),
+                       true,
+                        MessageBoxButton.OKCancel,MessageBoxImage.Exclamation), Times.Exactly(1));
+
         }
         #endregion
 
@@ -1613,7 +1811,648 @@ namespace DynamoCoreWpfTests.PackageManager
             AssertWindowClosedWithDynamoView<PackageManagerView>();
         }
 
+        [Test]
+        public void SearchBoxInactiveOnWindowOpened()
+        {
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+
+            var windows = GetWindowEnumerable(View.OwnedWindows);
+            var packageManagerView = windows.First(x => x is PackageManagerView) as PackageManagerView;
+
+            Assert.IsNotNull(packageManagerView);
+
+            var searchBox = LogicalTreeHelper.FindLogicalNode(packageManagerView, "SearchBox") as UserControl;
+            Assert.IsNotNull(searchBox);
+            Assert.IsFalse(searchBox.IsEnabled);
+
+            packageManagerView.PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded = true;
+            Assert.IsTrue(searchBox.IsEnabled);
+        }
+
+        [Test]
+        public void PackageManagerDialogDoesNotThrowExceptions()
+        {
+            Assert.DoesNotThrow(() => ViewModel.OnRequestPackageManagerDialog(null, null), "Package Manager View did not open without exceptions");
+
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
+        }
+
+
+        /// <summary>
+        ///     Asserts that the filter context menu will stay open while the user interacts with it
+        /// </summary>
+        [Test]
+        public void FiltersContextMenuStaysOpen()
+        {
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+            Thread.Sleep(500);
+
+            var windows = GetWindowEnumerable(View.OwnedWindows);
+            var pacakgeManager = windows.First(x => x is PackageManagerView) as PackageManagerView;
+            var pacakgeManagerSearchControl = pacakgeManager.packageManagerSearch;
+            Assert.IsNotNull(pacakgeManagerSearchControl);
+
+            var button = pacakgeManager.packageManagerSearch.filterResultsButton;
+            button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            var hostFilterContextMenu = pacakgeManagerSearchControl.HostFilter;
+            Assert.IsTrue(hostFilterContextMenu.IsOpen);
+
+            var menuItemOne = hostFilterContextMenu.Items[1] as PackageManagerSearchViewModel.FilterEntry;
+            Assert.IsNotNull(menuItemOne);
+
+            menuItemOne.FilterCommand.Execute(null);
+            Assert.IsTrue(hostFilterContextMenu.IsOpen);
+        }
+
         #endregion
 
+        #region PackageViewModel Interaction
+
+        [Test]
+        public void AddsFilesAndFoldersFromFilePathsCorrectly()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var allFolders = Directory.GetDirectories(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            // Arrange
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            var assemblies = vm.Assemblies;
+            var additionalFiles = vm.AdditionalFiles;
+
+            // Assert number of files PackageContents items is the one we expect
+            Assert.AreEqual(assemblies.Count, allFiles.Count(f => f.EndsWith(".dll")));
+            Assert.AreEqual(additionalFiles.Count, allFiles.Count(f => !f.EndsWith(".dll")));
+
+            var packageContents = vm.PackageContents;
+            Assert.AreEqual(1, packageContents.Count); // We expect only 1 root item here
+
+            // Assert that the PackageContents contains the correct number of items
+            var allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
+            Assert.AreEqual(allFilesAndFoldres.Count, allFiles.Count + allFolders.Count + 1);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + 1);
+
+            // Arrange - try to add the same files again
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+            packageContents = vm.PackageContents;
+
+            // Assert that the PackageContents still contains the correct number of items
+            allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
+            //since we donot skip loading asemblies which are already loaded..
+            Assert.AreEqual(allFilesAndFoldres.Count, allFiles.Count + allFolders.Count + 1);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + 1);
+        }
+
+        [Test]
+        public void RemoveMultipleRootItemsCorrectly()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            string duplicateNodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\DuplicatePackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var allDuplicateFiles = Directory.GetFiles(duplicateNodePath, "*", SearchOption.AllDirectories).ToList();
+
+            // Arrange
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            vm.AddAllFilesAfterSelection(allFiles);
+            vm.AddAllFilesAfterSelection(allDuplicateFiles);
+
+            var packageContents = vm.PackageContents;
+            Assert.AreEqual(packageContents.Count, 2); // We expect 2 separate root item here
+
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(packageContents.First()));
+        }
+
+        [Test]
+        public void AddsFilesAndFoldersFromMultipleFilePathsCorrectly()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            string duplicateNodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\DuplicatePackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var allFolders = Directory.GetDirectories(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var allDuplicateFiles = Directory.GetFiles(duplicateNodePath, "*", SearchOption.AllDirectories).ToList();
+            var allDuplicateFolders = Directory.GetDirectories(duplicateNodePath, "*", SearchOption.AllDirectories).ToList();
+
+            // Arrange
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            vm.AddAllFilesAfterSelection(allFiles);
+            vm.AddAllFilesAfterSelection(allDuplicateFiles);
+
+            var additionalFiles = vm.AdditionalFiles;
+
+            var packageContents = vm.PackageContents;
+            Assert.AreEqual(packageContents.Count, 2); // We expect 2 separate root item here
+
+            // Assert
+            // that the PackageContents contains the correct number of items
+            var allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.ToList());
+
+            // add 2 root folders
+            Assert.AreEqual(allFilesAndFoldres.Count, allFiles.Count + allFolders.Count + (allDuplicateFiles.Count) + (allDuplicateFolders.Count) + 2);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
+
+            // add 2 root folders
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + (allDuplicateFolders.Count) + 2);
+
+            // Arrange
+            // try to add the folder one level above the two root folders
+            string commonRootPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder");
+            var commonRootFiles = Directory.GetFiles(commonRootPath, "*", SearchOption.AllDirectories).ToList();
+            var commonRootFolders = Directory.GetDirectories(commonRootPath, "*", SearchOption.AllDirectories).ToList();
+
+            vm.AddAllFilesAfterSelection(commonRootFiles, commonRootPath);
+            packageContents = vm.PackageContents;
+
+            Assert.AreEqual(packageContents.Count, 1); // We expect only 1 common root item now
+
+            // Assert
+            // that the PackageContents still contains the correct number of items
+            allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
+
+            // add 1 root folder
+            Assert.AreEqual(allFilesAndFoldres.Count, (commonRootFiles.Count) + (commonRootFolders.Count) + 1);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
+
+            // add 1 root folder1
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), (commonRootFolders.Count) + 1);
+        }
+
+
+        [Test]
+        public void GetAllFilesReturnsEqualsPackageContents()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            int packageContentsCount = 0;
+
+            foreach (var rootItem in vm.PackageContents)
+            {
+                var items = PackageItemRootViewModel.GetFiles(rootItem).Where(x => !x.DependencyType.Equals(DependencyType.Folder)).ToList();
+                packageContentsCount += items.Count;
+            }
+
+            var files = vm.GetAllFiles();
+
+            // check if GetAllFiles return the same number of files as stored inside the PackageContents
+            Assert.AreEqual(packageContentsCount, files.Count());
+        }
+
+        [Test]
+        public void AssertGetPreBuildRootItemViewModelReturnsCorrectItem()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            var testPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\", "TestPath");
+            var testPkgName = @"Test Package";
+
+            var rootItemPreview = vm.GetPreBuildRootItemViewModel(testPath, testPkgName, allFiles);
+            var allRootItems = PackageItemRootViewModel.GetFiles(rootItemPreview);
+
+            var folders = allRootItems.Count(x => x.DependencyType.Equals(DependencyType.Folder));
+            var files = allRootItems.Count(x => !x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(5, folders);
+            Assert.AreEqual(4, files);
+        }
+
+
+        [Test]
+        public void AssertGetExistingRootItemViewModelReturnsCorrectItem()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            var testPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\", "TestPath");
+            var testPkgName = @"Test Package";
+
+            // We expect a single root item for this test
+            var rootItem = vm.PackageContents.First();
+            var allRootItems = PackageItemRootViewModel.GetFiles(vm.PackageContents.First());
+
+            var rootItemPreview = vm.GetExistingRootItemViewModel(testPath, testPkgName);
+            var testRootItems = PackageItemRootViewModel.GetFiles(rootItemPreview);
+
+
+            Assert.AreNotEqual(testPkgName, rootItem.DisplayName);
+            Assert.AreEqual(testPkgName, rootItemPreview.DisplayName);
+
+            var foldersCount = allRootItems.Count(x => x.DependencyType.Equals(DependencyType.Folder));
+            var filesCount = allRootItems.Count(x => !x.DependencyType.Equals(DependencyType.Folder));
+
+            var testFoldersCount = testRootItems.Count(x => x.DependencyType.Equals(DependencyType.Folder));
+            var testFilesCount = testRootItems.Count(x => !x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(foldersCount, testFoldersCount);
+            Assert.AreEqual(filesCount, testFilesCount);
+        }
+
+
+        [Test]
+        public void RemoveFilesUpdatesPerviewContentItem()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            Assert.AreEqual(1, vm.PackageContents.Count);
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+            var rootItem = vm.PackageContents.First();
+
+
+            // Assert
+            vm.RemoveItemCommand.Execute(rootItem);
+            Assert.AreEqual(0, vm.PackageContents.Count);
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+        }
+
+
+        [Test]
+        public void RemoveAllChildrenFilesUpdatesContentItem()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            Assert.AreEqual(1, vm.PackageContents.Count);
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+            var childItems = vm.PackageContents.First().ChildItems;
+
+            // Assert
+            foreach (var child in childItems)
+            {
+                vm.RemoveItemCommand.Execute(child);
+            }
+
+            Assert.AreEqual(0, vm.PackageContents.Count);
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+        }
+
+
+        [Test]
+        public void CanRemoveCustomDefinitionDependencyTypes()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\_AllFileTypesPackageDocs");
+            string dyfPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\_AllFileTypesPackageDocs\\dyf\\3DView by BoundingBox.dyf");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            // One root folder, one custom definition 
+            Assert.AreEqual(2, vm.PackageContents.Count);
+
+            var customDefinition = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.CustomNode));
+            var rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(1, customDefinition.Count());
+            Assert.AreEqual(1, rootFolder.Count());
+
+            var childItems = PackageItemRootViewModel.GetFiles(rootFolder.First());
+            var customPreviewDefinition = childItems.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+
+            Assert.AreEqual(1, customPreviewDefinition.Count());
+
+            // Assert
+            // Remove using the custom definition
+            vm.RemoveItemCommand.Execute(customDefinition.First());
+
+            var updatedCustomDefinitionCount = vm.PackageContents.Count(x => x.DependencyType.Equals(DependencyType.CustomNode));
+            var updatedCustomPreviewDefinitionCount = PackageItemRootViewModel.GetFiles(rootFolder.First()).
+                Count(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+
+            Assert.AreEqual(0, updatedCustomDefinitionCount, updatedCustomPreviewDefinitionCount);
+
+            // Add 
+            vm.AddAllFilesAfterSelection(new List<string>() { dyfPath });
+
+            updatedCustomDefinitionCount = vm.PackageContents.Count(x => x.DependencyType.Equals(DependencyType.CustomNode));
+            updatedCustomPreviewDefinitionCount = PackageItemRootViewModel.GetFiles(rootFolder.First()).
+                Count(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+
+            Assert.AreEqual(1, updatedCustomDefinitionCount, updatedCustomPreviewDefinitionCount);
+
+            // Remove using the preview
+            vm.RemoveItemCommand.Execute(customPreviewDefinition.First());
+
+            updatedCustomDefinitionCount = vm.PackageContents.Count(x => x.DependencyType.Equals(DependencyType.CustomNode));
+            updatedCustomPreviewDefinitionCount = PackageItemRootViewModel.GetFiles(rootFolder.First()).
+                Count(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+
+            Assert.AreEqual(0, updatedCustomDefinitionCount, updatedCustomPreviewDefinitionCount);
+        }
+
+        [Test]
+        public void CanRemoveAllDependencyTypes()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\_AllFileTypesPackageDocs");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            var rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(1, rootFolder.Count());
+
+            var childItems = PackageItemRootViewModel.GetFiles(rootFolder.First());
+
+            var files = childItems.Where(x => x.DependencyType.Equals(DependencyType.File));
+            var dyfPreviewFiles = childItems.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+            var folders = childItems.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(4, files.Count());
+            Assert.AreEqual(1, dyfPreviewFiles.Count());
+            Assert.AreEqual(4, folders.Count());
+
+            // Assert
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(dyfPreviewFiles.First()));
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".json"))));
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".xml"))));
+
+            // At this point, only one root item remains, not the original one but the 'doc' folder
+            // The original root item no longer contains a file, therefore it was removed
+            // This makes sense as we don't want to try to establish 'common parent' for folders that maybe too far apart in a tree structure
+            rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+            Assert.AreEqual(1, rootFolder.Count());
+            Assert.AreEqual(3, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());  // the 'doc' folder + the 2 files inside of it
+
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(rootFolder.First()));
+            Assert.IsFalse(vm.PackageContents.Any());
+        }
+
+        // This test asserts CancelCommand, which is currently disabled under testing environment
+        // as it is causing a tread affinity crash. The test will be disabled for the time being
+        [Test, Category("Failure")]
+        public void CancelCommandClearsAllData()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            Assert.AreEqual(0, vm.PackageContents.Count);
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            Assert.AreEqual(1, vm.PackageContents.Count);
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+
+            vm.CancelCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(0, vm.PackageContents.Count);
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+        }
+
+        [Test]
+        public void AssertPreviewPackageDefaultFolderStructureEqualsPublishLocalPackageResults()
+        {
+            var packageName = "SingleFolderPublishPackage";
+            var publishPath = Path.Combine(Path.GetTempPath(), packageName);
+
+            var nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\SingleFolderPublishPackageDocs");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            // now lets publish this package.
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+
+            newPkgVm.AddAllFilesAfterSelection(allFiles);
+
+            var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
+            var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            // Arrange - mockup the whole logic
+            var pkg = new Package(publishPath, packageName, "1.0.0", "MIT");    // The Package 
+            var files = newPkgVm.BuildPackage();    // We get the files as we would do in the process
+            var pkgsDir = Path.GetTempPath();   // The folder to install the package into
+
+            var fs = new RecordedFileSystem((fn) => files.Contains(fn));
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
+
+            // Act
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
+
+            // Assert
+            Assert.AreEqual(fs.CopiedFiles.Count(), previewFiles.Count() - 1); // The original pkg.json will be skipped
+            Assert.AreEqual(fs.DirectoriesCreated.Count(), previewFolders.Count()); 
+        }
+
+        [Test]
+        public void AssertPreviewPackageRetainFolderStructureEqualsPublishLocalPackageResults()
+        {
+            var packageName = "SingleFolderPublishPackage";
+            var publishPath = Path.Combine(Path.GetTempPath(), packageName);
+
+            var nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\SingleFolderPublishPackageDocs");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            // now lets publish this package.
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+            newPkgVm.RetainFolderStructureOverride = true;
+            newPkgVm.AddAllFilesAfterSelection(allFiles);
+
+            var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
+            var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            // Arrange - mockup the whole logic
+            var pkg = new Package(publishPath, packageName, "1.0.0", "MIT");    // The Package 
+            var files = newPkgVm.BuildPackage();    // We get the files as we would do in the process
+            var updatedFiles = newPkgVm.UpdateFilesForRetainFolderStructure(files); // We update the files as we would do in the process
+            var pkgsDir = Path.GetTempPath();   // The folder to install the package into
+            var roots = newPkgVm.GetCommonPaths(files.ToArray());   // We use the same function the process is using to create the roots
+
+            var fs = new RecordedFileSystem((fn) => updatedFiles.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
+
+            // Act
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, updatedFiles, Enumerable.Empty<string>());
+
+            Assert.IsTrue(Directory.Exists(publishPath));
+
+            var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
+
+            // Assert
+            Assert.AreEqual(fs.CopiedFiles.Count(), previewFiles.Count());
+            Assert.AreEqual(0, createdFolders.Count());
+
+            // Clean up
+            Directory.Delete(publishPath, true);
+        }
+
+        [Test]
+        public void AssertPreviewPackageRetainFolderStructureEqualsPublishLocalPackageResultsForNestedFolders()
+        {
+            var packageName = "NestedPackage";
+            var publishPath = Path.Combine(Path.GetTempPath(), packageName);
+            var nodePath = Path.Combine(TestDirectory, "pkgs", packageName);
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            // now lets publish this package.
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+            newPkgVm.RetainFolderStructureOverride = true;
+            newPkgVm.AddAllFilesAfterSelection(allFiles);
+
+            var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
+            var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            // Arrange - mockup the whole logic
+            var pkg = new Package(publishPath, packageName, "1.0.0", "MIT");    // The Package 
+            var files = newPkgVm.BuildPackage();    // We get the files as we would do in the process
+            var updatedFiles = newPkgVm.UpdateFilesForRetainFolderStructure(files); // We update the files as we would do in the process
+            var pkgsDir = Path.GetTempPath();   // The folder to install the package into
+            var roots = newPkgVm.GetCommonPaths(files.ToArray());   // We use the same function the process is using to create the roots
+
+            var fs = new RecordedFileSystem((fn) => updatedFiles.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
+
+            // Act
+            db.BuildRetainDirectory(pkg, pkgsDir, roots, updatedFiles, Enumerable.Empty<string>());
+
+            Assert.IsTrue(Directory.Exists(publishPath));
+
+            var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
+
+            // Assert
+            Assert.AreEqual(fs.CopiedFiles.Count(), previewFiles.Count());
+            Assert.AreEqual(3, createdFolders.Count());
+
+            // Clean up
+            Directory.Delete(publishPath, true);
+        }
+
+        [Test]
+        [Ignore("This is testing a very obvious side effect of the publish routine, it's not worth installing a package for it. + no clean up.")]
+        public void AssertPublishLocalHandleType()
+        {
+            var packageName = "SingleFolderPublishPackage";
+
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\SingleFolderPublishPackageDocs");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            //now lets publish this package.
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+            newPkgVm.RetainFolderStructureOverride = true;
+            newPkgVm.AddAllFilesAfterSelection(allFiles);
+
+            var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
+            var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            newPkgVm.Name = "SingleFolderPublishPackage";
+            newPkgVm.MajorVersion = "0";
+            newPkgVm.MinorVersion = "0";
+            newPkgVm.BuildVersion = "1";
+            newPkgVm.PublishLocallyCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(PackageUploadHandle.UploadType.Local, newPkgVm.UploadType);
+        }
+
+        [Test]
+        public void AssertPublishNewPackageVersion_SuccessfulForLoadedPackages()
+        {
+            var packageName = "Package";
+            var pkgLoader = GetPackageLoader();
+            var publishPath = Path.Combine(Path.GetTempPath(), packageName);
+            Directory.CreateDirectory(publishPath);
+
+            // Load a package
+            string packageLocation = Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs", packageName);
+            pkgLoader.ScanPackageDirectory(packageLocation);
+
+            var package = pkgLoader.LocalPackages.Where(x => x.Name == packageName).FirstOrDefault();
+            package.SetAsLoaded();
+            Assert.IsNotNull(package);
+
+            PublishPackageViewModel vm = null;
+            Assert.DoesNotThrow(() =>
+            {
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package, true);
+            });
+            vm.MajorVersion = "0";
+            vm.MinorVersion = "0";
+            vm.BuildVersion = "99";
+
+            var allFiles = vm.BuildPackage();
+            Assert.IsNotNull(allFiles);
+
+            var updatedFiles = vm.UpdateFilesForRetainFolderStructure(allFiles);
+            Assert.IsNotNull(updatedFiles);
+
+            var roots = vm.GetCommonPaths(allFiles.ToArray());
+            Assert.IsNotNull(roots);
+
+
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
+            var fs = new RecordedFileSystem((fn) => updatedFiles.SelectMany(files => files).ToList().Any((x) => ComparePaths(x, fn)));
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
+
+            var zipper = new Mock<IFileCompressor>();
+            zipper.Setup((x) => x.Zip(It.IsAny<IDirectoryInfo>())).Returns((new Mock<IFileInfo>()).Object);
+            var m = new PackageUploadBuilder(db, zipper.Object);
+
+            // Assert
+            Assert.DoesNotThrow(() =>
+            {
+                m.NewPackageVersionRetainUpload(package, publishPath, roots, updatedFiles, Enumerable.Empty<string>(), handle);
+            });
+            Assert.AreNotEqual(PackageUploadHandle.State.Error, handle.UploadState);
+
+            // Clean up
+            Directory.Delete(publishPath, true);
+        }
+        #endregion
     }
 }

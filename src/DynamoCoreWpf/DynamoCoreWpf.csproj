@@ -22,22 +22,26 @@
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-      <!--This command gets the latest build from the splash screen-->
-      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
-      <Exec Command="npm pack @dynamods/splash-screen@latest" />
+      <PropertyGroup>
+          <PackageVersion>1.0.20</PackageVersion>
+          <PackageName>SplashScreen</PackageName>
+      </PropertyGroup>
+      <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
+          <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+      </Exec>
+      <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high" />
+      <!--This command updates the npm registry configuration if necessary-->
+      <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)setnpmreg.ps1&quot;" Condition="$(ShouldInstall)" />
+      <!--This command gets a specific splash screen build from npm-->
+      <Exec Command="npm pack @dynamods/splash-screen@$(PackageVersion)" Condition="$(ShouldInstall)" />
   </Target>
 
-    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">        
+    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">      
         <!--Locates the .tgz files-->
         <ItemGroup>
             <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
         </ItemGroup>
 
-        <!--Reverse the order of the files to get the higher version-->
-        <ItemGroup>
-            <Reversed Include="@(TGZFiles-&gt;Reverse())" />
-        </ItemGroup>
-        
         <PropertyGroup>
             <Last>%(TGZFiles.Filename)</Last>
         </PropertyGroup>
@@ -46,37 +50,93 @@
         <MakeDir Directories="Packages/SplashScreen" />
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/SplashScreen"></Exec>
+        <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/SplashScreen&quot;" />
 
         <!--Deletes the tgz file-->
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
-    </Target>    
-   
-  <ItemGroup>
+    </Target>
+
+
+    <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
+        <PropertyGroup>
+            <PackageVersion>1.0.20</PackageVersion>
+            <PackageName>DynamoHome</PackageName>
+        </PropertyGroup>
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
+            <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+        </Exec>
+        <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high"></Message>
+        <!--This command updates the npm registry configuration if necessary-->
+        <Exec Command="&quot;$(PowerShellCommand)&quot; -ExecutionPolicy ByPass -Command &quot;&amp; '$(SolutionDir)setnpmreg.ps1'&quot;" Condition="$(ShouldInstall)" />
+        <!--Download a specific build of the Dynamo Home package from npm-->
+        <Exec Command="npm pack @dynamods/dynamo-home@$(PackageVersion)" Condition="$(ShouldInstall)" />
+    </Target>
+
+    <Target Name="ExtractTGZFileDynamoHome" DependsOnTargets="NpmRunBuildHomePage" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
+        <!--Locate the .tgz files for the Dynamo Home package-->
+        <ItemGroup>
+            <TGZFilesDynamoHome Include="./dynamods-dynamo-home-*.tgz" />
+        </ItemGroup>
+
+        <PropertyGroup>
+            <Last>%(TGZFilesDynamoHome.Filename)</Last>
+        </PropertyGroup>
+
+        <!--Create the folder for the Dynamo Home package-->
+        <MakeDir Directories="Packages/DynamoHome" />
+
+        <!--Extract the file to the specified directory-->
+        <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/DynamoHome&quot;" />
+
+        <!--Delete the tgz file-->
+        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
+    </Target>
+
+    <ItemGroup>
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
+    <None Remove="Packages\DynamoHome\build\index.bundle.js" />
+    <None Remove="Packages\DynamoHome\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="UI\Images\checkmark_16px.png" />
+    <None Remove="UI\Images\close_16px.png" />
+    <None Remove="UI\Images\caret_drop_down.png" />
+    <None Remove="UI\Images\error_48px.png" />
+    <None Remove="UI\Images\file-generic-16px.png" />
+    <None Remove="UI\Images\finished_checkmark_30px.png" />
+    <None Remove="UI\Images\folder-generic-16px.png" />
+    <None Remove="UI\Images\help-16px.png" />
+    <None Remove="UI\Images\info_48px.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
     <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <None Remove="UI\Images\search_icon_20px.png" />
     <None Remove="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
+    <None Remove="UI\Images\warning_48px.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
+    <None Remove="Views\Core\UpdateIconWindow.xaml" />
     <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
     <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
     <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageFinishPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackagePublishPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageSelectPage.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
+    <EmbeddedResource Include="Packages\DynamoHome\build\index.bundle.js" />
+    <EmbeddedResource Include="Packages\DynamoHome\build\index.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -126,16 +186,16 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2416" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.2734"/>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
-    <PackageReference Include="Greg" Version="2.5.0.5076" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	<PackageReference Include="RestSharp" Version="106.12.0" />
-	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-	<PackageReference Include="SharpDX" Version="4.2.0" />
-	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
+    <PackageReference Include="Greg" Version="3.0.2.6533" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="RestSharp" Version="112.0.0" />
+    <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
+    <PackageReference Include="SharpDX" Version="4.2.0" />
+    <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
 	  <IncludeAssets>none</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0">
@@ -145,10 +205,14 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="8.0.0" />
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
-      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
+      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\net6.0-windows\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference> 
-  
+      <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
@@ -229,6 +293,7 @@
       <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Prompts\PortPropertiesEditPrompt.xaml.cs" />
+    <Compile Include="Utilities\CerDLL.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -305,9 +370,6 @@
     <Compile Include="Commands\PortCommands.cs" />
     <Compile Include="Commands\SearchCommands.cs" />
     <Compile Include="Commands\WorkspaceCommands.cs" />
-    <Compile Include="Controls\GraphUpdateNotificationControl.xaml.cs">
-      <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ImageBasedControls.cs" />
     <Compile Include="Controls\ShortcutToolbar.xaml.cs">
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
@@ -397,6 +459,9 @@
       <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\CustomColorPicker.xaml.cs" />
+    <Compile Include="Views\Debug\UpdateNodeIconsWindow.xaml.cs">
+      <DependentUpon>UpdateNodeIconsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
@@ -429,8 +494,12 @@
     <Compile Include="Views\GuidedTour\SurveyPopupWindow.xaml.cs">
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\HomePage\HomePage.xaml.cs" />
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\NumericUpDownControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
@@ -442,6 +511,10 @@
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml.cs" />
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
     </Compile>
@@ -477,6 +550,9 @@
     </Compile>
     <Compile Include="Views\SplashScreen\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HomePage\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
@@ -548,10 +624,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\GraphUpdateNotificationControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <None Include="UI\Themes\Modern\InPorts.xaml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -575,6 +647,10 @@
     <Page Include="UI\Prompts\PortPropertiesEditPrompt.xaml"></Page>
     <Page Include="Views\Core\CustomColorPicker.xaml">
       <CopyToOutputDirectory></CopyToOutputDirectory>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Debug\UpdateNodeIconsWindow.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Core\GeometryScalingPopup.xaml">
@@ -628,6 +704,10 @@
         <SubType>Designer</SubType>
         <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -635,6 +715,14 @@
     <Page Include="Views\PackageManager\Controls\SearchBoxControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\CustomBrowserControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\FilterTagControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Menu\TrustedPathView.xaml">
       <SubType>Designer</SubType>
@@ -663,6 +751,22 @@
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>      
+    <Page Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -778,8 +882,11 @@
     <Resource Include="UI\Images\Alignment\align_y_average.png" />
     <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
     <Resource Include="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <Resource Include="UI\Images\caret_drop_down.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
+    <Resource Include="UI\Images\checkmark_16px.png" />
+    <Resource Include="UI\Images\close_16px.png" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -912,6 +1019,12 @@
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
+    <Resource Include="UI\Images\error_48px.png" />
+    <Resource Include="UI\Images\file-generic-16px.png" />
+    <Resource Include="UI\Images\finished_checkmark_30px.png" />
+    <Resource Include="UI\Images\folder-generic-16px.png" />
+    <Resource Include="UI\Images\help-16px.png" />
+    <Resource Include="UI\Images\info_48px.png" />
     <Resource Include="UI\Images\maximize_16px_blue.png" />
     <Resource Include="UI\Images\minimize_16px_blue.png" />
     <Resource Include="UI\Images\minus_16px_blue.png" />
@@ -943,6 +1056,7 @@
     <Resource Include="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <Resource Include="UI\Images\warning_16px.png" />
     <Resource Include="UI\Images\font-size.png" />
+    <Resource Include="UI\Images\warning_48px.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\whiteclosetab.png" />
@@ -1499,6 +1613,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\HomePage\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -1508,6 +1628,11 @@
       <Name>DynamoPackages</Name>
       <Private>False</Private>
     </ProjectReference>
+	<ProjectReference Include="..\DynamoMLDataPipeline\DynamoMLDataPipeline.csproj">
+	  <Project>{F2FCFD49-84BC-4C0E-90C1-5A327D017C4E}</Project>
+	  <Name>DynamoMLDataPipeline</Name>
+	  <Private>False</Private>
+	</ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
@@ -1704,7 +1829,37 @@
     <Resource Include="UI\Images\no-recommendations.png" />
     <Resource Include="UI\Images\not-authenticated.png" />
   </ItemGroup>
-  <Target Name="AfterBuildOps" AfterTargets="Build">
+  <ItemGroup>
+    <None Update="Views\HomePage\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Controls\CustomBrowserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Controls\FilterTagControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+ <Target Name="AfterBuildOps" AfterTargets="Build">
+    <ItemGroup>
+      <ExternTuneUpPkg Include="$(SolutionDir)..\extern\TuneUp\**\*.*" />
+    </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
+    <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
   </Target>
 </Project>

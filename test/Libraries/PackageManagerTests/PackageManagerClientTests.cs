@@ -7,6 +7,7 @@ using Greg;
 using Greg.Requests;
 using Greg.Responses;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Tests
@@ -59,57 +60,6 @@ namespace Dynamo.PackageManager.Tests
 
             var pl = m.ListAll();
             Assert.AreEqual(0, pl.Count());
-        }
-
-        #endregion
-
-        #region DownloadPackageHeader
-
-        [Test]
-        public void DownloadPackageHeader_SucceedsForValidPackage()
-        {
-            var id = "1";
-
-            // Returned content
-            var mp = new ResponseWithContentBody<PackageHeader>
-            {
-                content = new PackageHeader()
-                {
-                    _id = id
-                },
-                success = true
-            };
-
-            // Returns mock for any arguments
-            var c = new Mock<IGregClient>();
-            c.Setup(x =>
-                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
-                .Returns(mp);
-
-            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            PackageHeader header;
-            var res = pc.DownloadPackageHeader(id, out header);
-
-            Assert.AreEqual(id, header._id);
-            Assert.IsTrue(res.Success);
-        }
-
-        [Test]
-        public void DownloadPackageHeader_ReturnsFailureObjectWhenDownloadThrowsAnException()
-        {
-            // Returns mock for any arguments
-            var c = new Mock<IGregClient>();
-            c.Setup(x =>
-                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
-                .Throws<Exception>();
-
-            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            PackageHeader header;
-            var res = pc.DownloadPackageHeader("1", out header);
-
-            Assert.IsFalse(res.Success);
         }
 
         #endregion
@@ -378,7 +328,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>());
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -398,7 +348,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>());
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -414,7 +364,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>());
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }
@@ -433,7 +383,95 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), true, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), true, handle, Enumerable.Empty<string>());
+
+            Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
+        }
+
+        #endregion
+
+        #region PublishRetainingFolderStructure
+
+        [Test]
+        public void PublishRetain_SetsHandleToDoneWhenNewPackagePublishSucceeds()
+        {
+            var gc = new Mock<IGregClient>();
+            gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<PackageUpload>()))
+                .Returns(new ResponseBody()
+                {
+                    success = true
+                });
+
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+
+            var pkg = new Package("", "Package", "0.1.0", "MIT");
+
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
+            var listOfEmptyEnumerables = Enumerable.Range(1, 5)
+                                                   .Select(_ => Enumerable.Empty<string>());
+
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>(), true);
+
+            Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
+        }
+
+        [Test]
+        public void PublishRetain_SetsHandleToDoneWhenNewPackageVersionPublishSucceeds()
+        {
+            var gc = new Mock<IGregClient>();
+            gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<PackageVersionUpload>()))
+                .Returns(new ResponseBody()
+                {
+                    success = true
+                });
+
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+
+            var pkg = new Package("", "Package", "0.1.0", "MIT");
+
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
+            var listOfEmptyEnumerables = Enumerable.Range(1, 5)
+                                                   .Select(_ => Enumerable.Empty<string>());
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>(), true);
+
+            Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
+        }
+
+        [Test]
+        public void PublishRetain_SetsErrorStatusWhenRequestThrowsAnException()
+        {
+            var gc = new Mock<IGregClient>();
+            gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<PackageUpload>())).Throws<Exception>();
+
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+
+            var pkg = new Package("", "Package", "0.1.0", "MIT");
+
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
+            var listOfEmptyEnumerables = Enumerable.Range(1, 5)
+                                                   .Select(_ => Enumerable.Empty<string>());
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), false, handle, Enumerable.Empty<string>(), true);
+
+            Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
+        }
+
+        [Test]
+        public void PublishRetain_SetsErrorStatusWhenResponseIsNull()
+        {
+            var gc = new Mock<IGregClient>();
+            var rb = new ResponseBody();
+            rb.success = false;
+
+            gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<PackageUpload>())).Returns(rb);
+
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+
+            var pkg = new Package("", "Package", "0.1.0", "MIT");
+
+            var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
+            var listOfEmptyEnumerables = Enumerable.Range(1, 5)
+                                                   .Select(_ => Enumerable.Empty<string>());
+            pc.Publish(pkg, listOfEmptyEnumerables, Enumerable.Empty<string>(), true, handle, Enumerable.Empty<string>(), true);
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }
@@ -590,6 +628,70 @@ namespace Dynamo.PackageManager.Tests
             var res = pc.Undeprecate("id");
 
             Assert.IsFalse(res.Success);
+        }
+
+        #endregion
+
+        #region Compatibility Map
+
+        [Test]
+        public void CompatibilityMap_ReturnsValidMap()
+        {
+            // Mocking the response
+            var responseContent = new List<JObject>
+            {
+                new JObject
+                {
+                    { "Revit", new JObject { { "2021", "2.5.2" }, { "2022", "2.10.1" } } }
+                },
+                new JObject
+                {
+                    { "Civil3D", new JObject { { "2021", "2.5.2" }, { "2022", "2.10.1" } } }
+                }
+            };
+
+            var pkgResponse = new ResponseWithContentBody<object>
+            {
+                content = responseContent,
+                success = true
+            };
+
+            // Mocking the IGregClient
+            var mockClient = new Mock<IGregClient>();
+            mockClient
+                .Setup(c => c.ExecuteAndDeserializeWithContent<object>(It.IsAny<GetCompatibilityMap>()))
+                .Returns(pkgResponse);
+
+            // Instantiate the PackageManagerClient with the mocked IGregClient
+            var packageManagerClient = new PackageManagerClient(mockClient.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+
+            // Call CompatibilityMap
+            var result = packageManagerClient.CompatibilityMap();
+
+            // Assert that the result is not null and contains data
+            Assert.NotNull(result);
+            Assert.AreEqual(2, result.Count); // We expect 2 entries in the compatibility map
+
+            // Check that specific hosts are included
+            Assert.IsTrue(result.Any(r => r.ContainsKey("Revit")));
+            Assert.IsTrue(result.Any(r => r.ContainsKey("Civil3D")));
+        }
+
+        [Test]
+        public void CompatibilityMap_ThrowsException_ReturnsNull()
+        {
+            // Mock IGregClient to throw an exception
+            var mockClient = new Mock<IGregClient>();
+            mockClient
+                .Setup(c => c.ExecuteAndDeserializeWithContent<object>(It.IsAny<GetCompatibilityMap>()))
+                .Throws(new Exception("Error fetching compatibility map"));
+
+            // Instantiate the PackageManagerClient with the mocked IGregClient
+            var packageManagerClient = new PackageManagerClient(mockClient.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
+
+            // Call CompatibilityMap and ensure it catches the exception and returns null
+            var result = packageManagerClient.CompatibilityMap();
+            Assert.IsNull(result);
         }
 
         #endregion

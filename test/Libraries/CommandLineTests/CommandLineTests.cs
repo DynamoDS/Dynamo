@@ -95,7 +95,7 @@ namespace Dynamo.Tests
             string commandstring = $"-o {openpath} --HostName {hostName}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
+            Assert.AreEqual(Dynamo.Models.DynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace Dynamo.Tests
             string commandstring = $"-o {openpath} -p {parentId}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.ParentId, "RVT&2022&MUI64&22.0.2.392");
+            Assert.AreEqual(Dynamo.Models.DynamoModel.HostAnalyticsInfo.ParentId, "RVT&2022&MUI64&22.0.2.392");
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Dynamo.Tests
             string commandstring = $"-o {openpath} -s {sessionId}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.SessionId, "ABCDEFG");
+            Assert.AreEqual(Dynamo.Models.DynamoModel.HostAnalyticsInfo.SessionId, "ABCDEFG");
         }
 
         [Test]
@@ -223,12 +223,8 @@ namespace Dynamo.Tests
         // DynamoWPFCLI Tests
         //
 
-#if NET6_0_OR_GREATER
         [Test]
         [Apartment(ApartmentState.STA)]
-#else
-        [Test, RequiresSTA]
-#endif
         public void CanOpenAndRunDynamoModelWithWPFCommandLineRunner()
         {
             string openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
@@ -251,12 +247,8 @@ namespace Dynamo.Tests
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
         }
 
-#if NET6_0_OR_GREATER
         [Test]
         [Apartment(ApartmentState.STA)]
-#else
-        [Test, RequiresSTA]
-#endif
         public void CanOpenAndRunFileWihtListsCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simplelists.dyn");
@@ -273,12 +265,8 @@ namespace Dynamo.Tests
                 output);
         }
 
-#if NET6_0_OR_GREATER
         [Test]
         [Apartment(ApartmentState.STA)]
-#else
-        [Test, RequiresSTA]
-#endif
         public void CanOpenAndRunFileWithDictionaryCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simpleDict.dyn");
@@ -301,12 +289,8 @@ namespace Dynamo.Tests
                 }, output);
         }
 
-#if NET6_0_OR_GREATER
         [Test]
         [Apartment(ApartmentState.STA)]
-#else
-        [Test, RequiresSTA]
-#endif
         public void CanOpenAndRunFileWithCustomNodeAndOutputGeometryFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\GeometryTest.dyn");

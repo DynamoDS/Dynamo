@@ -123,7 +123,7 @@ namespace Dynamo.PackageManager.UI
             foreach (var package in packages)
             {
                 //if package was previously loaded then additional files are already cached.
-                if (package.Loaded)
+                if (package.LoadState.State == PackageLoadState.StateTypes.Loaded)
                 {
                     var vieweExtensionManifests = package.AdditionalFiles.Where(file => file.Model.Name.Contains("ViewExtensionDefinition.xml")).ToList();
                     foreach (var extPath in vieweExtensionManifests)
@@ -157,7 +157,6 @@ namespace Dynamo.PackageManager.UI
                         Resources.TitlePackageTargetOtherHost));
                 }
             }
-
         }
 
         private void RequestLoadLayoutSpecs(IEnumerable<Package> packages)

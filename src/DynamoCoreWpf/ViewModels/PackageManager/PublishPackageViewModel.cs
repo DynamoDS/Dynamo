@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -20,20 +22,51 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Greg.Requests;
+using Prism.Commands;
 using PythonNodeModels;
 using Double = System.Double;
-using String = System.String;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-using Microsoft.Practices.Prism.Commands;
-#else
 using NotificationObject = Dynamo.Core.NotificationObject;
-using Prism.Commands;
-#endif
+using String = System.String;
 
 namespace Dynamo.PackageManager
 {
     public delegate void PublishSuccessHandler(PublishPackageViewModel sender);
+
+
+    /// <summary>
+    /// Keyword tag displaying under the keyword input text box
+    /// </summary>
+    public class KeywordTag : NotificationObject
+    {
+        /// <summary>
+        /// Name of the host
+        /// </summary>
+        public string Name { get; set; }
+
+        private bool _onChecked;
+        /// <summary>
+        /// Triggers the remove action
+        /// </summary>
+        public bool OnChecked
+        {
+            get { return _onChecked; }
+            set
+            {
+                _onChecked = value;
+
+                RaisePropertyChanged(nameof(OnChecked));
+            }
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param Name="name">Keyword name</param>
+        public KeywordTag(string name)
+        {
+            Name = name;
+        }
+    }
 
     /// <summary>
     /// The ViewModel for Package publishing </summary>
@@ -59,7 +92,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Package Publish entry, binded to the host multi-selection option
         /// </summary>
-        public class HostComboboxEntry
+        public class HostComboboxEntry : NotificationObject
         {
             /// <summary>
             /// Name of the host
@@ -69,7 +102,16 @@ namespace Dynamo.PackageManager
             /// <summary>
             /// Boolean indicates if the host entry is selected
             /// </summary>
-            public bool IsSelected { get; set; }
+            private bool _isSelected;
+            public bool IsSelected
+            {
+                get { return _isSelected; }
+                set
+                {
+                    _isSelected = value;
+                    RaisePropertyChanged(nameof(IsSelected));
+                }
+            }
 
             /// <summary>
             /// Constructor
@@ -80,9 +122,17 @@ namespace Dynamo.PackageManager
                 HostName = hostName;
                 IsSelected = false;
             }
+
+            /// <summary>
+            /// Reset the state of the `IsSelected` property without raising update
+            /// </summary>
+            internal void ResetState()
+            {
+                this._isSelected = false;
+            }
         }
 
-        public PublishPackageView Owner { get; set; }
+        public Window Owner { get; set; }
 
         /// <summary>
         /// A event called when publishing was a success
@@ -111,11 +161,15 @@ namespace Dynamo.PackageManager
                 {
                     _uploading = value;
                     RaisePropertyChanged("Uploading");
-                    BeginInvoke(() =>
-                    {
-                        SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
-                    });
+                    // Can we try commenting out the can execute?
+                    // The way async works here, when an error is returned from the response
+                    // The Uploadling flag is set back to 'false' before the CanExecute code has reached it,
+                    // as a result the error message is overriden.
+                    //BeginInvoke(() =>
+                    //{
+                    //    SubmitCommand.RaiseCanExecuteChanged();   
+                    //    PublishLocallyCommand.RaiseCanExecuteChanged();
+                    //});
                 }
             }
 
@@ -130,7 +184,7 @@ namespace Dynamo.PackageManager
             get { return _uploadHandle; }
             set
             {
-                if (_uploadHandle != value)
+                if (value != null && _uploadHandle != value)
                 {
                     _uploadHandle = value;
                     _uploadHandle.PropertyChanged += UploadHandleOnPropertyChanged;
@@ -153,10 +207,11 @@ namespace Dynamo.PackageManager
                 {
                     _isNewVersion = value;
                     RaisePropertyChanged("IsNewVersion");
+                    RaisePropertyChanged("CanEditName");
                 }
             }
         }
-        
+
         /// <summary>
         /// CanEditName property </summary>
         /// <value>
@@ -186,6 +241,25 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// UploadType property </summary>
+        /// <value>
+        /// The type of the upload - local or online    
+        /// </value>
+        private PackageUploadHandle.UploadType _uploadType = PackageUploadHandle.UploadType.Local;
+        public PackageUploadHandle.UploadType UploadType
+        {
+            get { return _uploadType; }
+            set
+            {
+                if (_uploadType != value)
+                {
+                    _uploadType = value;
+                    RaisePropertyChanged("UploadType");
+                }
+            }
+        }
+
+        /// <summary>
         /// Name property </summary>
         /// <value>
         /// The name of the node to be uploaded </value>
@@ -199,6 +273,7 @@ namespace Dynamo.PackageManager
                 {
                     _group = value;
                     RaisePropertyChanged("Group");
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -217,6 +292,7 @@ namespace Dynamo.PackageManager
                 {
                     _Description = value;
                     RaisePropertyChanged("Description");
+                    RaisePropertyChanged(nameof(HasChanges));
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
@@ -238,15 +314,32 @@ namespace Dynamo.PackageManager
             {
                 if (_Keywords != value)
                 {
-                    value = value.Replace(',', ' ').ToLower().Trim();
+                    value = value.Replace(',', ' ').ToLower();
                     var options = RegexOptions.None;
                     var regex = new Regex(@"[ ]{2,}", options);
                     value = regex.Replace(value, @" ");
 
                     _Keywords = value;
                     RaisePropertyChanged("Keywords");
+                    RaisePropertyChanged(nameof(HasChanges));
                     KeywordList = value.Split(' ').Where(x => x.Length > 0).ToList();
                 }
+            }
+        }
+
+        private ObservableCollection<KeywordTag> keywordsCollection = new ObservableCollection<KeywordTag>();
+
+        /// <summary>
+        /// A collection of dynamic non-hosted filters
+        /// such as New, Updated, Deprecated, Has/HasNoDependencies
+        /// </summary>
+        public ObservableCollection<KeywordTag> KeywordsCollection
+        {
+            get { return keywordsCollection; }
+            set
+            {
+                keywordsCollection = value;
+                RaisePropertyChanged(nameof(KeywordsCollection));
             }
         }
 
@@ -254,7 +347,7 @@ namespace Dynamo.PackageManager
         /// KeywordList property </summary>
         /// <value>
         /// A list of keywords, usually produced by parsing Keywords</value>
-        public List<string> KeywordList { get; set; }
+        public List<string> KeywordList { get; set; } = new List<string>();
 
         /// <summary>
         /// FullVersion property </summary>
@@ -269,7 +362,7 @@ namespace Dynamo.PackageManager
         /// MinorVersion property </summary>
         /// <value>
         /// The second element of the version</value>
-        private string _MinorVersion = "";
+        private string _MinorVersion = "0";
         public string MinorVersion
         {
             get { return _MinorVersion; }
@@ -282,6 +375,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _MinorVersion = value;
                     RaisePropertyChanged("MinorVersion");
+                    RaisePropertyChanged(nameof(HasChanges));
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
@@ -295,7 +389,7 @@ namespace Dynamo.PackageManager
         /// BuildVersion property </summary>
         /// <value>
         /// The third element of the version</value>
-        private string _BuildVersion = "";
+        private string _BuildVersion = "0";
         public string BuildVersion
         {
             get { return _BuildVersion; }
@@ -308,6 +402,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _BuildVersion = value;
                     RaisePropertyChanged("BuildVersion");
+                    RaisePropertyChanged(nameof(HasChanges));
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
@@ -321,7 +416,7 @@ namespace Dynamo.PackageManager
         /// MajorVersion property </summary>
         /// <value>
         /// The first element of the version</value>
-        private string _MajorVersion = "";
+        private string _MajorVersion = "0";
         public string MajorVersion
         {
             get { return _MajorVersion; }
@@ -334,6 +429,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _MajorVersion = value;
                     RaisePropertyChanged("MajorVersion");
+                    RaisePropertyChanged(nameof(HasChanges));
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
@@ -357,6 +453,7 @@ namespace Dynamo.PackageManager
                 {
                     _license = value;
                     RaisePropertyChanged(nameof(License));
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -372,6 +469,7 @@ namespace Dynamo.PackageManager
             {
                 copyrightHolder = value;
                 RaisePropertyChanged(nameof(CopyrightHolder));
+                RaisePropertyChanged(nameof(HasChanges));
             }
         }
 
@@ -386,6 +484,7 @@ namespace Dynamo.PackageManager
             {
                 copyrightYear = value;
                 RaisePropertyChanged(nameof(CopyrightYear));
+                RaisePropertyChanged(nameof(HasChanges));
             }
         }
 
@@ -403,6 +502,7 @@ namespace Dynamo.PackageManager
                 {
                     _siteUrl = value;
                     RaisePropertyChanged("SiteUrl");
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -421,6 +521,7 @@ namespace Dynamo.PackageManager
                 {
                     _repositoryUrl = value;
                     RaisePropertyChanged("RepositoryUrl");
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -444,6 +545,8 @@ namespace Dynamo.PackageManager
                         SubmitCommand.RaiseCanExecuteChanged();
                         PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
+
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -507,8 +610,9 @@ namespace Dynamo.PackageManager
                     }
                     // Format string since it will be displayed
                     SelectedHostsString = SelectedHostsString.Trim().TrimEnd(',');
-                    RaisePropertyChanged( nameof(SelectedHosts));
-                    RaisePropertyChanged( nameof(SelectedHostsString));
+                    RaisePropertyChanged(nameof(SelectedHosts));
+                    RaisePropertyChanged(nameof(SelectedHostsString));
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -526,6 +630,7 @@ namespace Dynamo.PackageManager
                 {
                     selectedHostsString = value;
                     RaisePropertyChanged(nameof(SelectedHostsString));
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -536,15 +641,6 @@ namespace Dynamo.PackageManager
         public bool HasDependencies
         {
             get { return Dependencies.Count > 0; }
-        }
-
-        /// <summary>
-        /// This property seems dup with HasDependencies
-        /// TODO: Remove in Dynamo 3.0
-        /// </summary>
-        public bool HasNoDependencies
-        {
-            get { return !HasDependencies; }
         }
 
         private string markdownFilesDirectory;
@@ -568,6 +664,12 @@ namespace Dynamo.PackageManager
         /// <value>
         /// A command which, when executed, submits the current package</value>
         public DelegateCommand SubmitCommand { get; private set; }
+
+        /// <summary>
+        /// CancelCommand property </summary>
+        /// <value>
+        /// A command which will clear the user interface and all underlaying data</value>
+        public DelegateCommand CancelCommand { get; private set; }
 
         /// <summary>
         /// PublishLocallyCommand property </summary>
@@ -611,6 +713,11 @@ namespace Dynamo.PackageManager
         public DelegateCommand ToggleMoreCommand { get; private set; }
 
         /// <summary>
+        /// Sets the keywords tags based on the current KeywordList items
+        /// </summary>
+        public DelegateCommand SetKeywordsCommand { get; private set; }
+
+        /// <summary>
         /// The package used for this submission
         /// </summary>
         public Package Package { get; set; }
@@ -619,6 +726,24 @@ namespace Dynamo.PackageManager
         /// PackageContents property 
         /// </summary>
         public ObservableCollection<PackageItemRootViewModel> PackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
+        public ObservableCollection<PackageItemRootViewModel> PreviewPackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
+
+        private ObservableCollection<PackageItemRootViewModel> _rootContents;
+        /// <summary>
+        /// A dedicated container for the files located under the current selected folder
+        /// </summary>
+        public ObservableCollection<PackageItemRootViewModel> RootContents
+        {
+            get { return _rootContents; }
+            set
+            {
+                if (_rootContents != value)
+                {
+                    _rootContents = value;
+                    RaisePropertyChanged(nameof(RootContents));
+                }
+            }
+        }
 
         /// <summary>
         /// CustomNodeDefinitions property 
@@ -641,6 +766,8 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private Dictionary<string, string> CustomDyfFilepaths { get; set; } = new Dictionary<string, string>();
+
         public List<PackageAssembly> Assemblies { get; set; }
 
         /// <summary>
@@ -656,6 +783,7 @@ namespace Dynamo.PackageManager
                 {
                     _additionalFiles = value;
                     RaisePropertyChanged("AdditionalFiles");
+                    RaisePropertyChanged(nameof(HasChanges));
                 }
             }
         }
@@ -679,8 +807,9 @@ namespace Dynamo.PackageManager
             get => dependencyNames;
             set
             {
-                dependencyNames = value; 
+                dependencyNames = value;
                 RaisePropertyChanged(nameof(DependencyNames));
+                RaisePropertyChanged(nameof(HasChanges));
             }
         }
 
@@ -743,6 +872,83 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private bool _retainFolderStructureOverride;
+        /// <summary>
+        /// Controls if the automatic folder structure should be used, or retain existing one
+        /// </summary>
+        public bool RetainFolderStructureOverride
+        {
+            get
+            {
+                return _retainFolderStructureOverride;
+            }
+            set
+            {
+                if (_retainFolderStructureOverride != value)
+                {
+                    _retainFolderStructureOverride = value;
+                    RaisePropertyChanged(nameof(RetainFolderStructureOverride));
+                    PreviewPackageBuild();
+                }
+            }
+        }
+        /// <summary>
+        /// The root directory of the package
+        /// </summary>
+        private IEnumerable<string> CurrentPackageRootDirectories { get; set; }
+        private static MetadataLoadContext sharedMetaDataLoadContext = null;
+
+        /// <summary>
+        /// A shared MetaDataLoadContext that is used for assembly inspection during package publishing.
+        /// This member is shared so the behavior is similar to the ReflectionOnlyLoadContext this is replacing.
+        /// TODO - eventually it would be good to move to separate publish load contexts that are cleaned up at the appropriate time(?).
+        /// </summary>
+        private static MetadataLoadContext SharedPublishLoadContext
+        {
+            get
+            {
+                try
+                {
+                    sharedMetaDataLoadContext = sharedMetaDataLoadContext == null || sharedMetaDataLoadContext.CoreAssembly == null ? PackageLoader.InitSharedPublishLoadContext() : sharedMetaDataLoadContext;
+                }
+                catch (ObjectDisposedException)
+                {
+                    // This can happen if the shared context has been disposed before.
+                    // In this case, we create a new one.
+                    sharedMetaDataLoadContext = PackageLoader.InitSharedPublishLoadContext();
+                }
+                return sharedMetaDataLoadContext;
+            }
+        }
+
+        private string _rootFolder;
+        /// <summary>
+        /// The publish folder for the current package
+        /// </summary>
+        public string RootFolder
+        {
+            get { return _rootFolder; }
+            set
+            {
+                _rootFolder = value;
+                RaisePropertyChanged(nameof(RootFolder));
+                RaisePropertyChanged(nameof(HasChanges));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the user has made any changes to the current publish package form
+        /// </summary>
+        public bool HasChanges
+        {
+            get { return AnyUserChanges(); }
+        }
+
+        /// <summary>
+        /// Indicates if this view model is created during a FromLocalPackage routine
+        /// </summary>
+        private bool IsPublishFromLocalPackage = false;
+
         #endregion
 
         internal PublishPackageViewModel()
@@ -754,23 +960,27 @@ namespace Dynamo.PackageManager
             SelectDirectoryAndAddFilesRecursivelyCommand = new DelegateCommand(SelectDirectoryAndAddFilesRecursively);
             SelectMarkdownDirectoryCommand = new DelegateCommand(SelectMarkdownDirectory);
             ClearMarkdownDirectoryCommand = new DelegateCommand(ClearMarkdownDirectory);
+            CancelCommand = new DelegateCommand(Cancel);
             RemoveItemCommand = new Dynamo.UI.Commands.DelegateCommand(RemoveItem);
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
+            SetKeywordsCommand = new DelegateCommand(SetKeywords, CanSetKeywords);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
             Assemblies = new List<PackageAssembly>();
             MarkdownFiles = new List<string>();
+            RootContents = new ObservableCollection<PackageItemRootViewModel>();
             PropertyChanged += ThisPropertyChanged;
             RefreshPackageContents();
             RefreshDependencyNames();
         }
 
         private void DependenciesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RefreshDependencyNames();
-        
+
         private void RefreshDependencyNames()
         {
             if (Dependencies.Count < 1)
             {
-                DependencyNames = Properties.Resources.NoneString;
+                var textInfo = CultureInfo.CurrentUICulture.TextInfo;
+                DependencyNames = textInfo.ToTitleCase(Properties.Resources.NoneString);
                 return;
             }
             DependencyNames = string.Join(", ", Dependencies.Select(x => x.name));
@@ -779,15 +989,236 @@ namespace Dynamo.PackageManager
         private void RefreshPackageContents()
         {
             PackageContents.Clear();
-            
+
             var itemsToAdd = CustomNodeDefinitions
                 .Select(def => new PackageItemRootViewModel(def))
                 .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
                 .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
+                .Concat(CustomDyfFilepaths.Select((s) => new PackageItemRootViewModel((string)s.Key, (string)s.Value)))
                 .ToList()
                 .ToObservableCollection();
 
-            foreach (var item in itemsToAdd) PackageContents.Add(item);
+            var items = new Dictionary<string, PackageItemRootViewModel>();
+
+            if (!String.IsNullOrEmpty(RootFolder))
+            {
+                var root = new PackageItemRootViewModel(RootFolder);
+                items[RootFolder] = root;
+                RootFolder = String.Empty;
+            }
+
+            foreach (var item in itemsToAdd)
+            {
+                if (String.IsNullOrEmpty(item.DirectoryName)) continue;
+                if (!items.ContainsKey(item.DirectoryName))
+                {
+                    // Custom nodes don't have folders, we have introduced CustomNodePreview item instead
+                    if (item.DependencyType.Equals(DependencyType.CustomNode)) continue;
+                    if (items.Values.Any(x => IsDuplicateFile(x, item))) continue;
+                    var root = new PackageItemRootViewModel(item.DirectoryName);
+
+                    root.ChildItems.Add(item);
+                    items[item.DirectoryName] = root;
+                }
+                else
+                {
+                    items[item.DirectoryName].ChildItems.Add(item);
+                }
+            }
+
+            var updatedItems = BindParentToChild(items);
+
+            updatedItems.AddRange(itemsToAdd.Where(pa => pa.DependencyType.Equals(DependencyType.CustomNode)));
+
+            foreach (var item in updatedItems) PackageContents.Add(item);
+
+            PreviewPackageBuild();
+        }
+
+        private bool IsDuplicateFile(PackageItemRootViewModel item1, PackageItemRootViewModel item2)
+        {
+            // We know that item2 is a file
+            switch (item1.DependencyType)
+            {
+                case DependencyType.Folder:
+                    return item1.ChildItems.Any(x => IsDuplicateFile(x, item2));
+                case DependencyType.File:
+                case DependencyType.Assembly:
+                case DependencyType.CustomNodePreview:
+                    return item1.FilePath.Equals(item2.FilePath);
+                case DependencyType.CustomNode:
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to recreate the file/folder content structure 
+        /// </summary>
+        /// <param name="items">A dictionary of the content items</param>
+        /// <returns></returns>
+        internal List<PackageItemRootViewModel> BindParentToChild(Dictionary<string, PackageItemRootViewModel> items)
+        {
+            foreach (var parent in items)
+            {
+                foreach (var child in items)
+                {
+                    if (parent.Value.Equals(child.Value)) continue;
+                    if (IsSubPathOfDeep(parent.Value, child.Value))
+                    {
+                        if (child.Value.isChild) continue; // if this was picked up already, don't add it again
+                        parent.Value.AddChildRecursively(child.Value);
+                        child.Value.isChild = true;
+                    }
+                }
+            }
+
+            // Only add the folder items, they contain the files
+            var updatedItems = OrganizePackageRootItems(items);
+            return updatedItems;
+        }
+
+        /// <summary>
+        /// Organizes package items into root items based on common paths and hierarchical structure.
+        /// This includes determining root items, establishing parent-child relationships, and collecting all child items.
+        /// </summary>
+        /// <param name="items">A dictionary of package item keys and their corresponding PackageItemRootViewModel objects.</param>
+        /// <returns>A list of PackageItemRootViewModel items representing the organized root items and their child items.</returns>
+        private List<PackageItemRootViewModel> OrganizePackageRootItems(Dictionary<string, PackageItemRootViewModel> items)
+        {
+            var rootItems = items.Values.Where(x => !x.isChild).ToList();
+            if (!rootItems.Any()) return rootItems;
+
+            var roots = new List<PackageItemRootViewModel>();
+                      
+            var commonPaths = GetCommonPaths(items.Keys.ToArray());
+            if (commonPaths == null) return null;
+
+            CurrentPackageRootDirectories = commonPaths;
+
+            // Add a new root item for each common path found
+            commonPaths.ForEach(p => roots.Add(new PackageItemRootViewModel(p)));
+
+            // Check each root item and create any missing connections
+            foreach (var item in rootItems)
+            {
+                bool itemAssigned = false;
+                var itemDir = new DirectoryInfo(item.DirectoryName);
+
+                foreach (var root in roots)
+                {
+                    var rootDir = new DirectoryInfo(root.DirectoryName);
+
+                    if (itemDir.FullName.StartsWith(rootDir.FullName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (itemDir.Parent.FullName.Equals(rootDir.FullName))
+                        {
+                            root.ChildItems.Add(item);
+                        }
+                        else
+                        {
+                            root.AddChildRecursively(item);
+                        }
+                        itemAssigned = true;
+                        break;
+                    }
+                }
+
+                // If the item does not belong to any existing root, create a new root for it
+                if (!itemAssigned)
+                {
+                    var newRoot = new PackageItemRootViewModel(item.DirectoryName);
+                    newRoot.ChildItems.Add(item);
+                    roots.Add(newRoot);
+                }
+            }
+
+            // Collect all child items from all roots
+            var allChildItems = roots.SelectMany(r => r.ChildItems).ToList();
+
+            return allChildItems;
+        }
+
+        /// <summary>
+        /// Test if path2 is subpath of path1
+        /// </summary>
+        /// <param name="path1"></param>
+        /// <param name="path2"></param>
+        /// <returns></returns>
+        internal bool IsSubPathOfDeep(PackageItemRootViewModel path1, PackageItemRootViewModel path2)
+        {
+            var di1 = new DirectoryInfo(path1.DirectoryName);
+            var di2 = new DirectoryInfo(path2.DirectoryName);
+
+            while (di2.Parent != null)
+            {
+                if (di2.Parent.FullName == di1.FullName)
+                {
+                    return true;
+                }
+                else
+                {
+                    if (di2.Parent.FullName.Length < di1.FullName.Length) return false;
+                    di2 = di2.Parent;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Utility method to get the common file path, this may fail for files with the same partial name.
+        /// </summary>
+        /// <param name="paths">A collection of file paths</param>
+        /// <returns></returns>
+        internal List<string> GetCommonPaths(string[] paths)
+        {
+            if (paths == null || paths.Length == 0)
+                return new List<string>();
+
+            // Group paths by their root (drive letter)
+            var groupedPaths = paths.GroupBy(p => Path.GetPathRoot(p)).ToList();
+            List<string> commonPaths = new List<string>();
+
+            foreach (var group in groupedPaths)
+            {
+                var pathArray = group.ToArray();
+                if (pathArray.Length == 1)
+                {
+                    commonPaths.Add(Path.GetDirectoryName(pathArray[0]));
+                    continue;
+                }
+
+                var k = pathArray[0].Length;
+                for (var i = 1; i < pathArray.Length; i++)
+                {
+                    k = Math.Min(k, pathArray[i].Length);
+                    for (var j = 0; j < k; j++)
+                    {
+                        if (pathArray[i][j] != pathArray[0][j])
+                        {
+                            k = j;
+                            break;
+                        }
+                    }
+                }
+
+                var commonPrefix = pathArray[0].Substring(0, k);
+                var commonDir = Path.GetDirectoryName(commonPrefix);
+
+                if (string.IsNullOrEmpty(commonDir))
+                {
+                    // Special case for the root directory
+                    commonDir = Path.GetPathRoot(commonPrefix);
+                }
+
+                if (!string.IsNullOrEmpty(commonDir))
+                {
+                    commonPaths.Add(commonDir);
+                }
+            }
+
+            return commonPaths.Distinct().ToList();
         }
 
         /// <summary>
@@ -798,9 +1229,16 @@ namespace Dynamo.PackageManager
         private List<HostComboboxEntry> initializeHostSelections()
         {
             var hostSelections = new List<HostComboboxEntry>();
-            foreach (var host in dynamoViewModel.PackageManagerClientViewModel.Model.GetKnownHosts())
+            try
             {
-                hostSelections.Add(new HostComboboxEntry(host));
+                foreach (var host in dynamoViewModel.PackageManagerClientViewModel.Model?.GetKnownHosts())
+                {
+                    hostSelections.Add(new HostComboboxEntry(host));
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Could not fetch hosts: " + ex.Message);
             }
             return hostSelections;
         }
@@ -814,7 +1252,7 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// The class constructor. </summary>
-        public PublishPackageViewModel( DynamoViewModel dynamoViewModel ) : this()
+        public PublishPackageViewModel(DynamoViewModel dynamoViewModel) : this()
         {
             this.dynamoViewModel = dynamoViewModel;
             KnownHosts = initializeHostSelections();
@@ -823,6 +1261,15 @@ namespace Dynamo.PackageManager
 
         private void ClearAllEntries()
         {
+            if (DynamoModel.IsTestMode) return;
+
+            try
+            {
+                this.KnownHosts.ForEach(host => host.ResetState());
+                this.KnownHosts.ForEach(host => host.IsSelected = false);
+            }
+            catch { Exception ex; }
+
             // this function clears all the entries of the publish package dialog
             this.Name = string.Empty;
             this.RepositoryUrl = string.Empty;
@@ -836,28 +1283,88 @@ namespace Dynamo.PackageManager
             this.BuildVersion = "0";
             this.ErrorString = string.Empty;
             this.Uploading = false;
-            this.UploadHandle = null;
+            // Clearing the UploadHandle when using Submit currently throws - when testing? - check trheading
+            try
+            {
+                if (this._uploadHandle != null)
+                {
+                    this._uploadHandle.PropertyChanged -= UploadHandleOnPropertyChanged;
+                    this.UploadHandle = null;
+                }
+            }
+            catch { Exception ex; }
             this.IsNewVersion = false;
             this.MoreExpanded = false;
-            this.ClearPackageContents();
-            this.ClearMarkdownDirectory();
             this.UploadState = PackageUploadHandle.State.Ready;
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<PackageAssembly>();
-            this.SelectedHosts = new List<String>();
             this.SelectedHostsString = string.Empty;
+            this.SelectedHosts = new List<String>();
             this.copyrightHolder = string.Empty;
             this.copyrightYear = string.Empty;
+            this.RootFolder = string.Empty;
+            this.ClearMarkdownDirectory();
+            this.ClearPackageContents();
+            this.KeywordsCollection?.Clear();
+        }
+
+        /// <summary>
+        /// Decides if any user changes have been made in the current packge publish session
+        /// </summary>
+        /// <returns>true if any changes have been made, otherwise false</returns>
+        internal bool AnyUserChanges()
+        {
+            if (!String.IsNullOrEmpty(this.Name)) return true;
+            if (!String.IsNullOrEmpty(this.RepositoryUrl)) return true;
+            if (!String.IsNullOrEmpty(this.SiteUrl)) return true;
+            if (!String.IsNullOrEmpty(this.License)) return true;
+            if (!String.IsNullOrEmpty(this.Keywords)) return true;
+            if (!String.IsNullOrEmpty(this.Description)) return true;
+            if (!String.IsNullOrEmpty(this.Group)) return true;
+            if (!String.IsNullOrEmpty(this.MajorVersion) && !(this.MajorVersion.Equals("0"))) return true;
+            if (!String.IsNullOrEmpty(this.MinorVersion) && !(this.MinorVersion.Equals("0"))) return true;
+            if (!String.IsNullOrEmpty(this.BuildVersion) && !(this.BuildVersion.Equals("0"))) return true;
+            if (this.AdditionalFiles.Any()) return true;
+            if (this.Dependencies.Any()) return true;
+            if (this.Assemblies.Any()) return true;
+            if (this.SelectedHosts.Any()) return true;
+            if (!String.IsNullOrEmpty(this.SelectedHostsString)) return true;
+            if (!String.IsNullOrEmpty(this.copyrightHolder)) return true;
+            if (!String.IsNullOrEmpty(this.copyrightYear)) return true;
+            if (!String.IsNullOrEmpty(this.RootFolder)) return true;
+
+            return false;
         }
 
         private void ClearPackageContents()
         {
             //  this method clears the package contents in the publish package dialog
+            if (this.Package != null) this.Package = null;
 
-            this.Package = null;
+            // Make changes to your ObservableCollection or other UI-bound collection here.
+            if (this.PackageContents.Any())
+            {
+                this.PackageContents.Clear();
+                RaisePropertyChanged(nameof(PackageContents));
+            }
+            if (this.PreviewPackageContents.Any())
+            {
+                this.PreviewPackageContents.Clear();
+                RaisePropertyChanged(nameof(PreviewPackageContents));
+            }
+            if (this.RootContents.Any())
+            {
+                this.RootContents.Clear();
+                RaisePropertyChanged(nameof(RootContents));
+            }
+            if (this.CustomDyfFilepaths.Any())
+            {
+                this.CustomDyfFilepaths.Clear();
+                RaisePropertyChanged(nameof(CustomDyfFilepaths));
+            }
+
             this.CustomNodeDefinitions = new List<CustomNodeDefinition>();
-            RaisePropertyChanged("PackageContents");
         }
 
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -865,16 +1372,41 @@ namespace Dynamo.PackageManager
             if (e.PropertyName == "PackageContents")
             {
                 CanSubmit();
-               SubmitCommand.RaiseCanExecuteChanged();
-               PublishLocallyCommand.RaiseCanExecuteChanged();
+                SubmitCommand.RaiseCanExecuteChanged();
+                PublishLocallyCommand.RaiseCanExecuteChanged();
             }
         }
 
-        public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package l)
+        private bool CanSetKeywords()
+        {
+            return KeywordList.Count() > 0;
+        }
+
+        private void SetKeywords()
+        {
+            KeywordsCollection = KeywordList.Select(x => new KeywordTag(x)).ToObservableCollection();
+            foreach (var keyword in KeywordsCollection)
+            {
+                keyword.PropertyChanged += Keyword_PropertyChanged;
+            }
+        }
+
+        private void Keyword_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!(sender is KeywordTag keyword)) return;
+            if (e.PropertyName == nameof(KeywordTag.OnChecked))
+            {
+                keyword.PropertyChanged -= Keyword_PropertyChanged;
+                KeywordsCollection.Remove(keyword);
+            }
+        }
+
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
+        public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg)
         {
             var defs = new List<CustomNodeDefinition>();
 
-            foreach (var x in l.LoadedCustomNodes)
+            foreach (var x in pkg.LoadedCustomNodes)
             {
                 CustomNodeDefinition def;
                 if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(
@@ -886,44 +1418,43 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            var vm = new PublishPackageViewModel(dynamoViewModel)
+            var pkgViewModel = new PublishPackageViewModel(dynamoViewModel)
             {
-                Group = l.Group,
-                Description = l.Description,
-                Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
+                Group = pkg.Group,
+                Description = pkg.Description,
+                Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : "",
                 CustomNodeDefinitions = defs,
-                Name = l.Name,
-                RepositoryUrl = l.RepositoryUrl ?? "",
-                SiteUrl = l.SiteUrl ?? "",
-                Package = l,
-                License = l.License,
-                SelectedHosts = l.HostDependencies as List<string>,
-                CopyrightHolder = l.CopyrightHolder,
-                CopyrightYear = l.CopyrightYear
+                Name = pkg.Name,
+                RepositoryUrl = pkg.RepositoryUrl ?? "",
+                SiteUrl = pkg.SiteUrl ?? "",
+                Package = pkg,
+                License = pkg.License,
+                SelectedHosts = pkg.HostDependencies as List<string>,
+                CopyrightHolder = pkg.CopyrightHolder,
+                CopyrightYear = pkg.CopyrightYear
             };
 
             // add additional files
-            l.EnumerateAdditionalFiles();
-            foreach (var file in l.AdditionalFiles)
+            pkg.EnumerateAdditionalFiles();
+            foreach (var file in pkg.AdditionalFiles)
             {
-                vm.AdditionalFiles.Add(file.Model.FullName);
+                pkgViewModel.AdditionalFiles.Add(file.Model.FullName);
             }
 
-            var nodeLibraryNames = l.Header.node_libraries;
+            var nodeLibraryNames = pkg.Header.node_libraries;
 
             var assembliesLoadedTwice = new List<string>();
-            // load assemblies into reflection only context
-            foreach (var file in l.EnumerateAssemblyFilesInBinDirectory())
+            foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
             {
                 Assembly assem;
-                var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
+                var result = PackageLoader.TryMetaDataContextLoad(string.Empty, file, SharedPublishLoadContext, out assem);
 
                 switch (result)
                 {
                     case AssemblyLoadingState.Success:
                         {
                             var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
-                            vm.Assemblies.Add(new PackageAssembly()
+                            pkgViewModel.Assemblies.Add(new PackageAssembly()
                             {
                                 IsNodeLibrary = isNodeLibrary,
                                 Assembly = assem
@@ -933,7 +1464,7 @@ namespace Dynamo.PackageManager
                     case AssemblyLoadingState.NotManagedAssembly:
                         {
                             // if it's not a .NET assembly, we load it as an additional file
-                            vm.AdditionalFiles.Add(file);
+                            pkgViewModel.AdditionalFiles.Add(file);
                             break;
                         }
                     case AssemblyLoadingState.AlreadyLoaded:
@@ -945,25 +1476,177 @@ namespace Dynamo.PackageManager
             }
 
             //after dependencies are loaded refresh package contents
-            vm.RefreshPackageContents();
-            vm.UpdateDependencies();
+            pkgViewModel.RefreshPackageContents();
+            pkgViewModel.UpdateDependencies();
 
             if (assembliesLoadedTwice.Any())
             {
-                vm.UploadState = PackageUploadHandle.State.Error;
-                vm.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);
+                pkgViewModel.UploadState = PackageUploadHandle.State.Error;
+                pkgViewModel.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);
             }
 
-            if (l.VersionName == null) return vm;
+            if (pkg.VersionName == null) return pkgViewModel;
 
-            var parts = l.VersionName.Split('.');
-            if (parts.Count() != 3) return vm;
+            var parts = pkg.VersionName.Split('.');
+            if (parts.Count() != 3) return pkgViewModel;
 
-            vm.MajorVersion = parts[0];
-            vm.MinorVersion = parts[1];
-            vm.BuildVersion = parts[2];
-            return vm;
+            pkgViewModel.MajorVersion = parts[0];
+            pkgViewModel.MinorVersion = parts[1];
+            pkgViewModel.BuildVersion = parts[2];
+            return pkgViewModel;
 
+        }
+
+        /// <summary>
+        /// The method is used to create a PublishPackageViewModel from a Package object.
+        /// If retainFolderStructure is set to true, the folder structure of the package will be retained. Else, the default folder structure will be imposed.
+        /// </summary>
+        /// <param name="dynamoViewModel"></param>
+        /// <param name="pkg">The package to be loaded</param>
+        /// <param name="retainFolderStructure">If true, the folder structure of the package will be retained as set by the user</param>
+        /// <returns></returns>
+        internal static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg, bool retainFolderStructure)
+        {
+            var defs = new List<CustomNodeDefinition>();
+            var defPreviews = new Dictionary<string, string>();
+
+            foreach (var x in pkg.LoadedCustomNodes)
+            {
+                CustomNodeDefinition def;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(
+                    x.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out def))
+                {
+                    defs.Add(def);
+
+                    // Check if the dictionary already contains the key
+                    if (defPreviews.ContainsKey(x.Name))
+                    {
+                        defPreviews[$"{x.Category}.{x.Name}"] = x.Path;
+                    }
+                    else
+                    {
+                        defPreviews[x.Name] = x.Path;
+                    }
+                }
+            }
+
+            var pkgViewModel = new PublishPackageViewModel(dynamoViewModel)
+            {
+                Group = pkg.Group,
+                Description = pkg.Description,
+                Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : string.Empty,
+                CustomNodeDefinitions = defs,
+                CustomDyfFilepaths = defPreviews,
+                Name = pkg.Name,
+                RepositoryUrl = pkg.RepositoryUrl ?? string.Empty,
+                SiteUrl = pkg.SiteUrl ?? string.Empty,
+                Package = pkg,
+                License = pkg.License,
+                SelectedHosts = pkg.HostDependencies as List<string>,
+                CopyrightHolder = pkg.CopyrightHolder,
+                CopyrightYear = pkg.CopyrightYear,
+                IsPublishFromLocalPackage = true,
+                CurrentPackageRootDirectories = new List<string> { pkg.RootDirectory },
+                //default retain folder structure to true when publishing a new version from local.
+                RetainFolderStructureOverride = retainFolderStructure
+            };
+
+            // add additional files
+            pkg.EnumerateAdditionalFiles();
+            foreach (var file in pkg.AdditionalFiles)
+            {
+                pkgViewModel.AdditionalFiles.Add(file.Model.FullName);
+            }
+
+            var nodeLibraryNames = pkg.Header.node_libraries;
+
+            var assembliesLoadedTwice = new List<string>();
+            foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
+            {
+                Assembly assem;
+                var result = PackageLoader.TryMetaDataContextLoad(pkg.RootDirectory, file, SharedPublishLoadContext, out assem);
+
+                switch (result)
+                {
+                    case AssemblyLoadingState.Success:
+                        {
+                            pkgViewModel.Assemblies.Add(GetPackageAssembly(nodeLibraryNames, assem));
+                            break;
+                        }
+                    case AssemblyLoadingState.NotManagedAssembly:
+                        {
+                            // if it's not a .NET assembly, we load it as an additional file
+                            pkgViewModel.AdditionalFiles.Add(file);
+                            break;
+                        }
+                    case AssemblyLoadingState.AlreadyLoaded:
+                        {
+                            // When retaining the folder structure, we bypass this check as users are in full control of the folder structure.
+                            if (pkgViewModel.RetainFolderStructureOverride)
+                            {
+                                if (assem == null)
+                                {
+                                    pkgViewModel.AdditionalFiles.Add(file);
+                                }
+                                else
+                                {
+                                    if (!pkgViewModel.Assemblies.Any(x => x.Assembly == assem))
+                                    {
+                                        pkgViewModel.Assemblies.Add(GetPackageAssembly(nodeLibraryNames, assem));
+                                    }
+                                    else
+                                    {
+                                        pkgViewModel.AdditionalFiles.Add(file);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                assembliesLoadedTwice.Add(file);
+                            }
+                            break;
+                        }
+                }
+            }
+
+            //after dependencies are loaded refresh package contents
+            pkgViewModel.RefreshPackageContents();
+            pkgViewModel.UpdateDependencies();
+
+            if (!pkgViewModel.RetainFolderStructureOverride && assembliesLoadedTwice.Any())
+            {
+                pkgViewModel.UploadState = PackageUploadHandle.State.Error;
+                pkgViewModel.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);
+            }
+
+            if (pkg.VersionName == null) return pkgViewModel;
+
+            var parts = pkg.VersionName.Split('.');
+            if (parts.Count() != 3) return pkgViewModel;
+
+            pkgViewModel.MajorVersion = parts[0];
+            pkgViewModel.MinorVersion = parts[1];
+            pkgViewModel.BuildVersion = parts[2];
+            return pkgViewModel;
+
+        }
+
+        /// <summary>
+        /// Gets a Package Assembly object, if the assembly exist in the node libraries list, the IsNodeLibrary flag will be set to true.
+        /// </summary>
+        /// <param name="nodeLibraries">List of existing node libraries</param>
+        /// <param name="assem">Assembly file</param>
+        /// <returns>Package Assembly</returns>
+        internal static PackageAssembly GetPackageAssembly(IEnumerable<string> nodeLibraries, Assembly assem)
+        {
+            var isNodeLibrary = nodeLibraries == null || nodeLibraries.Contains(assem.FullName);
+            return new PackageAssembly()
+            {
+                IsNodeLibrary = isNodeLibrary,
+                Assembly = assem
+            };
         }
 
         public void OnPublishSuccess()
@@ -974,17 +1657,21 @@ namespace Dynamo.PackageManager
 
         private void UploadHandleOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName == "UploadState")
+            if (propertyChangedEventArgs.PropertyName == nameof(PackageUploadHandle.UploadState))
             {
                 UploadState = ((PackageUploadHandle)sender).UploadState;
 
                 if (((PackageUploadHandle)sender).UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    OnPublishSuccess();
+                    BeginInvoke(() =>
+                    {
+                        OnPublishSuccess();
+                        ClearAllEntries();
+                    });
                 }
 
             }
-            else if (propertyChangedEventArgs.PropertyName == "ErrorString")
+            else if (propertyChangedEventArgs.PropertyName == nameof(PackageUploadHandle.ErrorString))
             {
                 UploadState = PackageUploadHandle.State.Error;
                 ErrorString = ((PackageUploadHandle)sender).ErrorString;
@@ -1076,9 +1763,10 @@ namespace Dynamo.PackageManager
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select(ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
-                throw new Exception(Wpf.Properties.Resources.MessageUnsavedChanges0 +
+                if (!DynamoModel.IsTestMode) MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, Resources.MessageUnsavedChanges0, Resources.UnsavedChangesMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                throw new Exception(Resources.MessageUnsavedChanges0 +
                                     String.Join(", ", unsavedWorkspaceNames) +
-                                    Wpf.Properties.Resources.MessageUnsavedChanges1);
+                                    Resources.MessageUnsavedChanges1);
             }
 
             var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
@@ -1093,7 +1781,11 @@ namespace Dynamo.PackageManager
 
             // union with additional files
             files = files.Union(AdditionalFiles);
-            files = files.Union(Assemblies.Select(x => x.Assembly.Location));
+            // if we retain the folder structure, we don't want to lose assemblies in sub-folders
+            // otherwise we need to delete duplicate assemblies which will end up in the same `dll` folder
+            files = RetainFolderStructureOverride && !IsPublishFromLocalPackage ?
+                files.Union(Assemblies.Select(x => x.LocalFilePath)) :
+                files.Union(Assemblies.Select(x => x.Assembly.Location));
 
             return files;
         }
@@ -1101,12 +1793,13 @@ namespace Dynamo.PackageManager
         private void UpdateDependencies()
         {
             Dependencies.Clear();
-            GetAllDependencies().ToList().ForEach(Dependencies.Add);
+            GetAllDependencies()?.ToList().ForEach(Dependencies.Add);
         }
 
         private IEnumerable<PackageDependency> GetAllDependencies()
         {
             var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            if (pmExtension == null) return null;
             var pkgLoader = pmExtension.PackageLoader;
 
             // all workspaces
@@ -1240,7 +1933,7 @@ namespace Dynamo.PackageManager
                 var fi = new FileInfo(currentFileName);
                 fDialog.CustomPlaces.Add(fi.DirectoryName);
             }
-            
+
             // add the definitions directory to shortcuts as well
             var pathManager = dynamoViewModel.Model.PathManager;
             if (Directory.Exists(pathManager.DefaultUserDefinitions))
@@ -1250,15 +1943,7 @@ namespace Dynamo.PackageManager
 
             if (fDialog.ShowDialog() != DialogResult.OK) return;
 
-            UploadState = PackageUploadHandle.State.Ready;
-
-            foreach (var file in fDialog.FileNames)
-            {
-                AddFile(file);
-            }
-            RefreshPackageContents();
-            RaisePropertyChanged(nameof(PackageContents));
-            RefreshDependencyNames();
+            AddAllFilesAfterSelection(fDialog.FileNames.ToList());
         }
 
         /// <summary>
@@ -1280,6 +1965,14 @@ namespace Dynamo.PackageManager
 
             string directoryPath = packagePathEventArgs.Path;
 
+            if (!IsDirectoryWritable(directoryPath))
+            {
+                ErrorString = String.Format(Resources.FolderNotWritableError, directoryPath);
+                var ErrorMessage = ErrorString + "\n" + Resources.SolutionToFolderNotWritatbleError;
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(Owner, ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             List<string> filePaths = Directory
                 .GetFiles
                 (
@@ -1290,7 +1983,20 @@ namespace Dynamo.PackageManager
 
             if (filePaths.Count < 1) return;
 
-            List<string> existingPackageContents = PackageContents
+            AddAllFilesAfterSelection(filePaths);
+        }
+
+        /// <summary>
+        /// Combines adding files from single file prompt and files in folders prompt
+        /// </summary>
+        /// <param name="filePaths"></param>
+        internal void AddAllFilesAfterSelection(List<string> filePaths, string rootFolder = null)
+        {
+            this.RootFolder = rootFolder ?? string.Empty;
+
+            UploadState = PackageUploadHandle.State.Ready;
+
+            List<string> existingPackageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList())
                 .Where(x => x.FileInfo != null)
                 .Select(x => x.FileInfo.FullName)
                 .ToList();
@@ -1330,7 +2036,7 @@ namespace Dynamo.PackageManager
                 ErrorString = String.Format(Resources.FolderNotWritableError, directoryPath);
                 string errorMessage = ErrorString + Environment.NewLine + Resources.SolutionToFolderNotWritatbleError;
                 if (DynamoModel.IsTestMode) return;
-                MessageBoxService.Show(errorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBoxService.Show(Owner, errorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             MarkdownFilesDirectory = directoryPath;
@@ -1358,27 +2064,76 @@ namespace Dynamo.PackageManager
         {
             if (!(parameter is PackageItemRootViewModel packageItemRootViewModel)) return;
 
-            string fileName = packageItemRootViewModel.FileInfo == null ? packageItemRootViewModel.Name : packageItemRootViewModel.FileInfo.FullName;
+            RemoveItemRecursively(packageItemRootViewModel);
+            RefreshPackageContents();
+            RaisePropertyChanged(nameof(PackageContents));
+            RaisePropertyChanged(nameof(PreviewPackageContents));
+
+            return;
+        }
+
+        /// <summary>
+        /// The Cancel command to clear all package data and user interface
+        /// </summary>
+        private void Cancel()
+        {
+            this.ClearAllEntries();
+        }
+
+        private void RemoveItemRecursively(PackageItemRootViewModel packageItemRootViewModel)
+        {
             DependencyType fileType = packageItemRootViewModel.DependencyType;
 
-            if (fileName.ToLower().EndsWith(".dll") || fileType.Equals(DependencyType.Assembly))
+            if (fileType == DependencyType.Folder)
             {
-                Assemblies.Remove(Assemblies
-                    .First(x => x.Name == Path.GetFileNameWithoutExtension(fileName)));
-            }
-            else if (fileType.Equals(DependencyType.CustomNode))
-            {
-                CustomNodeDefinitions.Remove(CustomNodeDefinitions
-                    .First(x => x.DisplayName == fileName));
+                var nestedFiles = PackageItemRootViewModel.GetFiles(packageItemRootViewModel)
+                                                          .Where(x => !x.DependencyType.Equals(DependencyType.Folder))
+                                                          .ToList();
+
+                foreach (var file in nestedFiles)
+                {
+                    RemoveItemRecursively(file);
+                }
             }
             else
             {
+                RemoveSingleItem(packageItemRootViewModel, fileType);
+            }
+        }
+
+        private void RemoveSingleItem(PackageItemRootViewModel vm, DependencyType fileType)
+        {
+            var fileName = vm.DisplayName;
+
+            if (fileType.Equals(DependencyType.Assembly))
+            {
+                Assemblies.Remove(Assemblies
+                    .First(x => x.Name == fileName));
+            }
+            else if (fileName.ToLower().EndsWith(".dll"))
+            {
+                fileName = vm.FilePath;
+                AdditionalFiles.Remove(AdditionalFiles
+                    .First(x => x == fileName));
+
+            }
+            else if (fileType.Equals(DependencyType.CustomNode) || fileType.Equals(DependencyType.CustomNodePreview))
+            {
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+                CustomNodeDefinitions.Remove(CustomNodeDefinitions
+                    .First(x => x.DisplayName == fileName));
+
+                var keyToRemove = CustomDyfFilepaths.Keys
+                                    .FirstOrDefault(k => Path.GetFileNameWithoutExtension(k) == fileName);
+
+                if (keyToRemove != null) CustomDyfFilepaths.Remove(keyToRemove);
+            }
+            else
+            {
+                fileName = vm.FilePath;
                 AdditionalFiles.Remove(AdditionalFiles
                     .First(x => x == fileName));
             }
-                        
-            RefreshPackageContents();
-            return;
         }
 
         private bool CanShowAddFileDialogAndAdd()
@@ -1419,12 +2174,12 @@ namespace Dynamo.PackageManager
                 // and start publishing with the new copied file.
                 // Since the loadedworkspace node info location is update, the issue is fixed.
 
-                foreach(var node in dynamoViewModel.Model.CustomNodeManager.LoadedWorkspaces)
+                foreach (var node in dynamoViewModel.Model.CustomNodeManager.LoadedWorkspaces)
                 {
-                    if(node.CustomNodeId == dynamoViewModel.Model.CustomNodeManager.GuidFromPath(filename))
+                    if (node.CustomNodeId == dynamoViewModel.Model.CustomNodeManager.GuidFromPath(filename))
                     {
                         var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
-                        node.SetInfo(fileNameWithoutExtension,null,null,filename);
+                        node.SetInfo(fileNameWithoutExtension, null, null, filename);
                     }
                 }
 
@@ -1432,6 +2187,7 @@ namespace Dynamo.PackageManager
                     && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                 {
                     CustomNodeDefinitions.Add(funcDef);
+                    CustomDyfFilepaths.TryAdd(Path.GetFileName(filename), filename);
                     RaisePropertyChanged("PackageContents");
                 }
             }
@@ -1452,6 +2208,10 @@ namespace Dynamo.PackageManager
             }
         }
 
+        // A boolean flag used to trigger only once the message prompt
+        // When the user has attempted to load an existing dll from another path
+        private bool duplicateAssemblyWarningTriggered = false;
+
         private void AddDllFile(string filename)
         {
             try
@@ -1465,27 +2225,28 @@ namespace Dynamo.PackageManager
 
                     // The user has attempted to load an existing dll from another path. This is not allowed 
                     // as the existing assembly cannot be modified while Dynamo is active.
-                    if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name))
+                    if (!this.RetainFolderStructureOverride && this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name) && !duplicateAssemblyWarningTriggered)
                     {
-                        MessageBoxService.Show(string.Format(Resources.PackageDuplicateAssemblyWarning, 
+                        MessageBoxService.Show(Owner, string.Format(Resources.PackageDuplicateAssemblyWarning,
                                         dynamoViewModel.BrandingResourceProvider.ProductName),
-                                        Resources.PackageDuplicateAssemblyWarningTitle, 
-                                        MessageBoxButton.OK, 
+                                        Resources.PackageDuplicateAssemblyWarningTitle,
+                                        MessageBoxButton.OK,
                                         MessageBoxImage.Stop);
-                        return; // skip loading assembly
+                        duplicateAssemblyWarningTriggered = true;
+                        return;
                     }
 
                     Assemblies.Add(new PackageAssembly()
                     {
                         Assembly = assem,
-                        IsNodeLibrary = true // assume is node library when first added
+                        LocalFilePath = filename
                     });
                     RaisePropertyChanged("PackageContents");
                 }
                 else
                 {
                     AddAdditionalFile(filename);
-                }               
+                }
             }
             catch (Exception e)
             {
@@ -1504,18 +2265,28 @@ namespace Dynamo.PackageManager
             {
                 return;
             }
+
+            UploadType = PackageUploadHandle.UploadType.Submit;
+
             var contentFiles = BuildPackage();
+
+            //if buildPackage() returns no files then the package
+            //is empty so we should return
+            if (!contentFiles.Any()) return;
+
+            //do not create the updatedFiles used for retain folder route unless needed
+            IEnumerable<IEnumerable<string>> updatedFiles = null;
+            if (RetainFolderStructureOverride)
+            {
+                updatedFiles = UpdateFilesForRetainFolderStructure(contentFiles);
+                if (!updatedFiles.Any()) return;
+            }
+
             try
             {
-                //if buildPackage() returns no files then the package
-                //is empty so we should return
-                if (contentFiles == null || contentFiles.Count() < 1)
-                {
-                    return;
-                }
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, contentFiles, MarkdownFiles, IsNewVersion);
+                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, RetainFolderStructureOverride ? updatedFiles : contentFiles, MarkdownFiles, IsNewVersion, CurrentPackageRootDirectories, RetainFolderStructureOverride);
 
                 // start upload
                 Uploading = true;
@@ -1557,12 +2328,15 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Delegate used to publish the element to a local folder</summary>
+        /// Delegate used to publish the element to a local folder
+        /// </summary>
         private void PublishLocally()
         {
             var publishPath = GetPublishFolder();
             if (string.IsNullOrEmpty(publishPath))
                 return;
+
+            UploadType = PackageUploadHandle.UploadType.Local;
 
             var files = BuildPackage();
 
@@ -1576,7 +2350,7 @@ namespace Dynamo.PackageManager
                 // This is caused by the package file is not existed or it has already been in a package.
                 // files.Count() is also checking for the exception that was caught in BuildPackage().
                 // The scenario can be user trying to publish unsaved workspace.
-                if (files == null || files.Count() < 1 || unqualifiedFiles.Count() > 0) 
+                if (files == null || files.Count() < 1 || unqualifiedFiles.Count() > 0)
                 {
                     string filesCannotBePublished = null;
                     foreach (var file in unqualifiedFiles)
@@ -1585,7 +2359,7 @@ namespace Dynamo.PackageManager
                     }
                     string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
                     UploadState = PackageUploadHandle.State.Error;
-                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
 
                     if (response == MessageBoxResult.OK)
                     {
@@ -1598,37 +2372,32 @@ namespace Dynamo.PackageManager
 
                 UploadState = PackageUploadHandle.State.Copying;
                 Uploading = true;
-                // begin publishing to local directory
-                var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
-                    DynamoModel.IsTestMode);
-                var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
-                builder.BuildDirectory(Package, publishPath, files, MarkdownFiles);
-                UploadState = PackageUploadHandle.State.Uploaded;
 
-                // Once upload is successful, a display message will appear to ask
-                // whether user wants to continue uploading another file or not.
+                if (RetainFolderStructureOverride)
+                {
+                    var updatedFiles = UpdateFilesForRetainFolderStructure(files);
+
+                    // begin publishing to local directory retaining the folder structure
+                    var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
+                        DynamoModel.IsTestMode);
+                    var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
+                    builder.BuildRetainDirectory(Package, publishPath, CurrentPackageRootDirectories, updatedFiles, MarkdownFiles);
+                    UploadState = PackageUploadHandle.State.Uploaded;
+                }
+                else
+                {
+                    // begin publishing to local directory
+                    var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
+                        DynamoModel.IsTestMode);
+                    var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
+                    builder.BuildDirectory(Package, publishPath, files, MarkdownFiles);
+                    UploadState = PackageUploadHandle.State.Uploaded;
+                }
+
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    // For test mode, presume the dialog input to be No and proceed.
-                    MessageBoxResult dialogResult = DynamoModel.IsTestMode ? MessageBoxResult.No : MessageBoxService.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButton.YesNo, MessageBoxImage.Information); ;
-
-                    if (dialogResult == MessageBoxResult.Yes)
-                    { 
-                        this.ClearAllEntries();
-                        Uploading = false;
-                        UploadState = PackageUploadHandle.State.Ready;
-                    }
-                    else
-                    {
-                        Uploading = true;
-                        System.Threading.Timer timer = null;
-                        timer = new System.Threading.Timer((obj) =>
-                        {
-                            OnPublishSuccess();
-                            timer.Dispose();
-                        },
-                            null, 1200, System.Threading.Timeout.Infinite);
-                    }
+                    OnPublishSuccess();
+                    ClearAllEntries();
                 }
             }
             catch (Exception e)
@@ -1639,8 +2408,60 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// Allocate files in lists by folder
+        /// When we are calling this method, we have chosen the 'retain folder structure' path
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        internal IEnumerable<IEnumerable<string>> UpdateFilesForRetainFolderStructure(IEnumerable<string> files)
+        {
+            if (!files.Any() || !PreviewPackageContents.Any())
+            {
+                return Enumerable.Empty<IEnumerable<string>>();
+            }
+
+            if (PreviewPackageContents.Count() > 1)
+            {
+                // we cannot have more than 1 root folder at this stage
+                return Enumerable.Empty<IEnumerable<string>>();
+            }
+
+            var updatedFileStructure = new List<IEnumerable<string>>();
+            var packageFolderItem = PreviewPackageContents.First();
+
+            foreach (var root in packageFolderItem.ChildItems)
+            {
+                var updatedFolder = new List<string>();
+                if (root.DependencyType.Equals(DependencyType.Folder))
+                {
+                    var folderContents = PackageItemRootViewModel.GetFiles(root);
+                    foreach (var item in folderContents)
+                    {
+                        if (item.DependencyType.Equals(DependencyType.Folder) || item.DependencyType.Equals(DependencyType.CustomNode)) continue;
+                        if (files.Contains(item.FilePath))
+                        {
+                            updatedFolder.Add(item.FilePath);
+                        }
+                    }
+                }
+                else if (root.DependencyType.Equals(DependencyType.CustomNode))
+                {
+                    continue;
+                }
+                else
+                {
+                    updatedFolder.Add(root.FilePath);
+                }
+
+                updatedFileStructure.Add(updatedFolder);
+            }
+
+            return updatedFileStructure;
+        }
+
         // build the package
-        private IEnumerable<string> BuildPackage()
+        internal IEnumerable<string> BuildPackage()
         {
             try
             {
@@ -1661,13 +2482,13 @@ namespace Dynamo.PackageManager
                 AppendPackageContents();
 
                 Package.Dependencies.Clear();
-                GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
+                GetAllDependencies()?.ToList().ForEach(Package.Dependencies.Add);
 
                 Package.HostDependencies = Enumerable.Empty<string>();
                 Package.HostDependencies = SelectedHosts;
-                foreach (string py in GetPythonDependency()) 
+                foreach (string py in GetPythonDependency())
                 {
-                    if (!Package.HostDependencies.Contains(py)) 
+                    if (!Package.HostDependencies.Contains(py))
                     {
                         Package.HostDependencies = Package.HostDependencies.Concat(new[] { py });
                     }
@@ -1683,6 +2504,8 @@ namespace Dynamo.PackageManager
 
                 Package.AddAssemblies(Assemblies);
                 Package.LoadState.SetAsLoaded();
+                //clean shared load context when publishing package
+                PackageLoader.CleanSharedPublishLoadContext(SharedPublishLoadContext);
                 return files;
             }
             catch (Exception e)
@@ -1693,7 +2516,7 @@ namespace Dynamo.PackageManager
                 Package?.LoadState.SetAsError(ErrorString);
             }
 
-            return new string[] {};
+            return new string[] { };
         }
 
         private bool IsDirectoryWritable(string dirPath, bool throwIfFails = false)
@@ -1741,7 +2564,7 @@ namespace Dynamo.PackageManager
             {
                 ErrorString = String.Format(Resources.FolderNotWritableError, folder);
                 var ErrorMessage = ErrorString + "\n" + Resources.SolutionToFolderNotWritatbleError;
-                Dynamo.Wpf.Utilities.MessageBoxService.Show(ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(Owner, ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return string.Empty;
             }
 
@@ -1772,6 +2595,7 @@ namespace Dynamo.PackageManager
 
             }
 
+            RootFolder = folder;
             return folder;
         }
 
@@ -1788,7 +2612,7 @@ namespace Dynamo.PackageManager
             // be active when there is no authenticator
             if (dynamoViewModel == null || !dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
             {
-                ErrorString = string.Format(Resources.CannotSubmitPackage,dynamoViewModel.BrandingResourceProvider.ProductName);
+                ErrorString = string.Format(Resources.CannotSubmitPackage, dynamoViewModel.BrandingResourceProvider.ProductName);
                 return false;
             }
 
@@ -1804,6 +2628,8 @@ namespace Dynamo.PackageManager
 
         private bool CheckPackageValidity()
         {
+            if (ErrorString.StartsWith(Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage)) return false;
+
             if (!string.IsNullOrEmpty(Name) && Name.IndexOfAny(PathHelper.SpecialAndInvalidCharacters()) >= 0)
             {
                 ErrorString = Resources.PackageNameCannotContainTheseCharacters + " " + new String(PathHelper.SpecialAndInvalidCharacters());
@@ -1813,6 +2639,37 @@ namespace Dynamo.PackageManager
             else
             {
                 IsWarningEnabled = false;
+            }
+
+            if (Name.Length <= 0 && !PackageContents.Any())
+            {
+                ErrorString = Resources.PackageManagerProvidePackageNameAndFiles;
+                return false;
+            }
+            else if (Name.Length <= 0 && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            {
+                ErrorString = Resources.PackageManagerProvidePackageNameAndVersion;
+                return false;
+            }
+            else if (!PackageContents.Any() && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            {
+                ErrorString = Resources.PackageManagerProvideVersionAndFiles;
+                return false;
+            }
+            else if (Name.Length <= 0)
+            {
+                ErrorString = Resources.PackageManagerProvidePackageName;
+                return false;
+            }
+            else if (Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            {
+                ErrorString = Resources.PackageManagerProvideVersion;
+                return false;
+            }
+            else if (!PackageContents.Any())
+            {
+                ErrorString = Resources.PackageManagerProvideFiles;
+                return false;
             }
 
             if (Name.Length < 3)
@@ -1845,12 +2702,6 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
-            if (Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
-            {
-                ErrorString = Resources.VersionValueGreaterThan0;
-                return false;
-            }
-
             if (!PackageContents.Any())
             {
                 ErrorString = Resources.PackageNeedAtLeastOneFile;
@@ -1861,6 +2712,7 @@ namespace Dynamo.PackageManager
 
             if (Uploading) return false;
 
+            this.ErrorString = Resources.PackageManagerReadyToPublish;
             return true;
         }
 
@@ -1872,6 +2724,151 @@ namespace Dynamo.PackageManager
         {
             CurrentWarningMessage = warningMessage;
             IsWarningEnabled = true;
+        }
+
+        private void PreviewPackageBuild()
+        {
+            if (PreviewPackageContents == null) PreviewPackageContents = new ObservableCollection<PackageItemRootViewModel>();
+            else PreviewPackageContents.Clear();
+
+            if (PackageContents?.Count == 0) return;
+
+            var publishPath = !String.IsNullOrEmpty(RootFolder) ? RootFolder : new FileInfo("Publish Path").FullName;
+            if (string.IsNullOrEmpty(publishPath))
+                return;
+
+            var files = GetAllFiles().ToList();
+            if (!RetainFolderStructureOverride)
+            {
+                //Look for duplicate filenames to alert user
+                var duplicateFiles = files.GroupBy(x => Path.GetFileName(x))
+                    .Where(x => x.Count() > 1)
+                    .ToList();
+                if (duplicateFiles.Count > 0)
+                {
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        var DialogOptions = new Dictionary<Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags, bool>() { { Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags.Scrollable, true } };
+                        MessageBoxService.Show(System.Windows.Application.Current?.MainWindow, string.Format(Resources.DuplicateFilesInPublishWarningMessage.Replace("\\n", Environment.NewLine), duplicateFiles.Count, string.Join("\n", duplicateFiles.Select(x => x.Key).ToList())), Resources.DuplicateFilesInPublishWarningTitle, DialogOptions, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+            }
+
+            // Removes duplicate file names, retaining  only the first encounter file path for each unique file name
+            files = files.GroupBy(file => Path.GetFileName(file), StringComparer.OrdinalIgnoreCase)
+                         .Select(group => group.First())
+                         .ToList();
+            try
+            {
+                // Generate the Package Name, either based on the user 'Description', or the root path name, if no 'Description' yet
+                var packageName = !string.IsNullOrEmpty(Name) ? Name : Path.GetFileName(publishPath);
+                var rootItemPreview = RetainFolderStructureOverride ?
+                    GetExistingRootItemViewModel(publishPath, packageName) :
+                    GetPreBuildRootItemViewModel(publishPath, packageName, files);
+
+                PreviewPackageContents.Add(rootItemPreview);
+
+                RaisePropertyChanged(nameof(PreviewPackageContents));
+            }
+            catch (Exception e)
+            {
+                UploadState = PackageUploadHandle.State.Error;
+                ErrorString = e.Message;
+                dynamoViewModel.Model.Logger.Log(e);
+            }
+        }
+
+        internal PackageItemRootViewModel GetExistingRootItemViewModel(string publishPath, string packageName)
+        {
+            if (!PackageContents.Any()) return null;
+            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1) {
+                // If there is only one root item, this root item becomes the new folder
+                var item = PackageContents.First(x => x.DependencyType.Equals(DependencyType.Folder));
+
+                item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
+                item.AddChildren( PackageContents.First().ChildItems.ToList() );
+
+                return item;
+            }
+
+            // It means we have more than 1 root item, in which case we need to combine them
+            var rootItem = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
+            foreach (var item in PackageContents)
+            {
+                // Skip 'bare' custom nodes, they will be represented by their CustomNodePreview counterparts
+                if(item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
+
+                item.isChild = true;
+                rootItem.AddChildren(item);
+            }
+            return rootItem;
+        }
+
+        internal PackageItemRootViewModel GetPreBuildRootItemViewModel(string publishPath, string packageName, List<string> files)
+        {
+            PackageDirectoryBuilder.PreBuildDirectory(packageName, publishPath,
+                    out string rootDir, out string dyfDir, out string binDir, out string extraDir, out string docDir);
+
+            var rootItemPreview = new PackageItemRootViewModel(rootDir);
+            var dyfItemPreview = new PackageItemRootViewModel(dyfDir) { isChild = true };
+            var binItemPreview = new PackageItemRootViewModel(binDir) { isChild = true };
+            var extraItemPreview = new PackageItemRootViewModel(extraDir) { isChild = true };
+            var docItemPreview = new PackageItemRootViewModel(docDir) { isChild = true };
+
+            var pkg = new PackageItemRootViewModel(new FileInfo(Path.Combine(rootDir, "pkg.json")));
+            rootItemPreview.AddChildRecursively(pkg);
+
+            foreach (var file in files)
+            {
+                if (!File.Exists(file)) continue;
+                var fileName = Path.GetFileName(file);
+
+                if (Path.GetDirectoryName(file).EndsWith(PackageDirectoryBuilder.DocumentationDirectoryName))
+                {
+                    var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(docDir, fileName)));
+                    docItemPreview.AddChildRecursively(doc);
+                }
+                else if (file.ToLower().EndsWith(".dyf"))
+                {
+                    var dyfPreview = new PackageItemRootViewModel(fileName, Path.Combine(dyfDir, fileName));
+                    dyfItemPreview.AddChildRecursively(dyfPreview);
+                }
+                else if (file.ToLower().EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
+                {
+                    // Assemblies carry the information if they are NodeLibrary or not  
+                    if (Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName))))
+                    {
+                        var packageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList());
+                        var dll = packageContents.First(x => x.DependencyType.Equals(DependencyType.Assembly) && x.DisplayName.Equals(Path.GetFileNameWithoutExtension(fileName)));
+                        if (dll != null)
+                            binItemPreview.AddChildren(dll);
+                    }
+                    else
+                    {
+                        var dll = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
+                        binItemPreview.AddChildRecursively(dll);
+                    }
+                }
+                else
+                {
+                    var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(extraDir, fileName)));
+                    extraItemPreview.AddChildRecursively(extra);
+                }
+            }
+
+            foreach (var docFile in MarkdownFiles)
+            {
+                var fileName = Path.GetFileName(docFile);
+                var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(docDir, fileName)));
+                docItemPreview.AddChildRecursively(doc);
+            }
+
+            rootItemPreview.AddChildRecursively(dyfItemPreview);
+            rootItemPreview.AddChildRecursively(binItemPreview);
+            rootItemPreview.AddChildRecursively(extraItemPreview);
+            rootItemPreview.AddChildRecursively(docItemPreview);
+
+            return rootItemPreview;
         }
     }
 }

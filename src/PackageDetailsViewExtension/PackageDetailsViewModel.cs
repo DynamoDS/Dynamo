@@ -18,7 +18,7 @@ namespace Dynamo.PackageDetails
         /// A reference to the ViewExtension.
         /// </summary>
         private PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
-        private readonly PackageManagerClientViewModel packageManagerClientViewModel;
+        internal readonly PackageManagerClientViewModel packageManagerClientViewModel;
         private List<PackageDetailItem> packageDetailItems;
         private string license;
         private IPreferences Preferences
@@ -29,6 +29,8 @@ namespace Dynamo.PackageDetails
             }
         }
 
+        private int numberVotes;
+        private bool hasVoted;
         #endregion
 
         #region Public Properties
@@ -54,7 +56,7 @@ namespace Dynamo.PackageDetails
             get => license;
             set
             {
-                license = value ?? "MIT";
+                license = string.IsNullOrEmpty(value) ? "MIT" : value;
                 RaisePropertyChanged(nameof(License));
             }
         }
@@ -77,7 +79,15 @@ namespace Dynamo.PackageDetails
         /// <summary>
         /// How many votes this package has received.
         /// </summary>
-        public int NumberVotes { get; }
+        public int NumberVotes
+        {
+            get => numberVotes;
+            set
+            {
+                if (value != numberVotes) { numberVotes = value; }
+                RaisePropertyChanged(nameof(NumberVotes));
+            }
+        }
 
         /// <summary>
         /// How many times this package has been downloaded.
@@ -105,10 +115,33 @@ namespace Dynamo.PackageDetails
         public string PackageRepositoryURL { get; }
 
         /// <summary>
+        /// The keywords associated with the package whose details are being inspected.
+        /// </summary>
+        public string Keywords { get; }
+
+        /// <summary>
+        /// The group associated with the package whose details are being inspected.
+        /// </summary>
+        public string Group { get; }
+
+        /// <summary>
         /// Returns, true if custom package paths are not disabled,
         /// False if custom package paths are disabled.
         /// </summary>
         public bool IsEnabledForInstall { get; private set; }
+
+        /// <summary>
+        /// Shows if the current user has voted for this package
+        /// </summary>
+        public bool HasVoted
+        {
+            get => hasVoted;
+            set
+            {
+                if (value != hasVoted) { hasVoted = value; }
+                RaisePropertyChanged(nameof(HasVoted));
+            }
+        }
 
         #endregion
 
@@ -116,6 +149,7 @@ namespace Dynamo.PackageDetails
 
         public DelegateCommand OpenDependencyDetailsCommand { get; set; }
         public DelegateCommand TryInstallPackageVersionCommand { get; set; }
+        public DelegateCommand UpvoteCommand { get; set; }
 
         /// <summary>
         /// Retrieves a package by name and display its details in the PackageDetailsView.
@@ -140,11 +174,35 @@ namespace Dynamo.PackageDetails
             if (!(obj is string versionName)) return;
             PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(PackageName);
             if (packageManagerSearchElement == null) return;
+            var compatible = packageManagerSearchElement.VersionDetails?.First(x => x.Version.Equals(versionName))?.IsCompatible;
 
             PackageInfo packageInfo = new PackageInfo(PackageName, Version.Parse(versionName));
             
             this.PackageDetailsViewExtension.PackageManagerClientViewModel.DownloadAndInstallPackage(packageInfo);
         }
+
+        /// <summary>
+        /// Upvotes a packge
+        /// </summary>
+        /// <param name="obj"></param>
+        private void UpvotePackage(object obj)
+        {
+            PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(this.PackageName);
+            packageManagerSearchElement?.Upvote();
+
+            HasVoted = true;
+            NumberVotes = ++NumberVotes;
+        }
+
+
+        private bool CanUpvotePackage(object obj)
+        {
+            // If any version of the package has been installed locally, 
+            // and if the user has not voted for this package before
+            // then we allow voting
+            return PackageDetailItems.Any(x => !x.CanInstall) && !this.HasVoted;
+        }
+
 
         /// <summary>
         /// After installing a package version, this method sets the CanInstall flag to false for
@@ -158,6 +216,9 @@ namespace Dynamo.PackageDetails
                 if (packageDetailItem.PackageVersion.version != versionName) continue;
                 packageDetailItem.CanInstall = false;
                 RaisePropertyChanged(nameof(packageDetailItem.CanInstall));
+
+                // Also update the 'CanExecute' condition for 'UpvoteCommand' which relies on a package being installed
+                UpvoteCommand.RaiseCanExecuteChanged();  
             }
         }
 
@@ -210,11 +271,18 @@ namespace Dynamo.PackageDetails
                 .Reverse()
                 .Select(x => new PackageDetailItem
                 (
+                    packageManagerSearchElement.VersionDetails,
                     packageManagerSearchElement.Name,
                     x,
                     DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name),
                     IsEnabledForInstall && !IsPackageDeprecated
                 )).ToList();
+
+            var packageDetailItem = PackageDetailItems.FirstOrDefault(x => x.PackageVersionNumber.Equals(packageManagerSearchElement?.SelectedVersion?.Version)); 
+            if (packageDetailItem != null)
+            {
+                packageDetailItem.IsExpanded = true;
+            }
 
             PackageName = packageManagerSearchElement.Name;
             PackageAuthorName = packageManagerSearchElement.Maintainers;
@@ -226,6 +294,9 @@ namespace Dynamo.PackageDetails
             License = packageManagerSearchElement.Header.license;
             PackageSiteURL = packageManagerSearchElement.SiteUrl;
             PackageRepositoryURL = packageManagerSearchElement.RepositoryUrl;
+            HasVoted = packageManagerSearchElement.HasUpvote;
+            Keywords = packageManagerSearchElement.Keywords;
+            Group = packageManagerSearchElement.Header.group;
 
             if (!Models.DynamoModel.IsTestMode)
             {
@@ -234,6 +305,7 @@ namespace Dynamo.PackageDetails
 
             OpenDependencyDetailsCommand = new DelegateCommand(OpenDependencyDetails);
             TryInstallPackageVersionCommand = new DelegateCommand(TryInstallPackageVersion);
+            UpvoteCommand = new DelegateCommand(UpvotePackage, CanUpvotePackage);
         }
 
         private void PackageLoaderOnPackageAdded(Package obj)
@@ -276,6 +348,7 @@ namespace Dynamo.PackageDetails
         /// </summary>
         internal void Dispose()
         {
+            if (PackageDetailsViewExtension.PackageManagerExtension.PackageLoader == null) return;
             PackageDetailsViewExtension.PackageManagerExtension.PackageLoader.PackageAdded -= PackageLoaderOnPackageAdded;
         }
     }

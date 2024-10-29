@@ -1,0 +1,262 @@
+{
+  "Uuid": "ac4af643-8e4a-4317-b683-dabd4e2674a7",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "d83f3cdf35c346bb955ffef4109381cc",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "fb7c4cefedb74442a23d6b054022b053",
+          "Name": "coordinateSystem",
+          "Description": "Autodesk.DesignScript.Geometry.CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c8482db7b9654c5f8d1f7eb7e41e90ae",
+          "Name": "plane",
+          "Description": "Plane to get normal from\n\nPlane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "254041246ba743ddb926e93567a5545c",
+          "Name": "degrees",
+          "Description": "Rotation value in degrees\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "deda1902488f4cf89653cc97ef74dc94",
+          "Name": "CoordinateSystem",
+          "Description": "Rotated coordinate system",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate@Autodesk.DesignScript.Geometry.Plane,double",
+      "Replication": "Auto",
+      "Description": "Rotates an object around the origin and normal of the given Plane by a specified degree\n\nCoordinateSystem.Rotate (plane: Plane, degrees: double = 0): CoordinateSystem"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "8ad6a2c820ea4c33acd85d6c6b9f7e42",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "bf629aa243374e4fbe7dd36624786535",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "90957b0754744e92b25fc46d261d6471",
+          "Name": "CoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Create a CoordinateSystem with origin at input Point, with X and Y Axes set as WCS X and Y Axes.\n\nCoordinateSystem.ByOrigin (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)): CoordinateSystem"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "600954f1336c496497b3d78c4274732e",
+      "NodeType": "FunctionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "abcb37feac0b4b0e8696ed2271deacdb",
+          "Name": "Plane",
+          "Description": "Plane at YZ plane of world",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.YZ",
+      "Replication": "Auto",
+      "Description": "Creates a plane in the world YZ\n\nPlane.YZ ( ): Plane"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "233a9182edf24a9cb0e04918b22d5ea1",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6902090b147b48e69ba4898d9684a3bb",
+          "Name": "",
+          "Description": "degrees",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "degrees = 135;"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "90957b0754744e92b25fc46d261d6471",
+      "End": "fb7c4cefedb74442a23d6b054022b053",
+      "Id": "f4d6e52809c14409bc0107db90964aea",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "abcb37feac0b4b0e8696ed2271deacdb",
+      "End": "c8482db7b9654c5f8d1f7eb7e41e90ae",
+      "Id": "b6b61eb9ca1647079e31f6c182bedc03",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6902090b147b48e69ba4898d9684a3bb",
+      "End": "254041246ba743ddb926e93567a5545c",
+      "Id": "5da7c279d3d04bbf988fa8210a569aa1",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 100.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 23.126308376732588,
+      "EyeY": 8.7204408155608029,
+      "EyeZ": 7.9356554294069479,
+      "LookX": -23.126308376732588,
+      "LookY": -8.7204408155608029,
+      "LookZ": -7.9356554294069479,
+      "UpX": -0.11936696618795395,
+      "UpY": 0.992004930973053,
+      "UpZ": -0.040960114449262619
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "d83f3cdf35c346bb955ffef4109381cc",
+        "Name": "CoordinateSystem.Rotate",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 767.0533966533327,
+        "Y": 433.65461316390656
+      },
+      {
+        "Id": "8ad6a2c820ea4c33acd85d6c6b9f7e42",
+        "Name": "CoordinateSystem.ByOrigin",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 296.5,
+        "Y": 322.58625
+      },
+      {
+        "Id": "600954f1336c496497b3d78c4274732e",
+        "Name": "Plane.YZ",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 296.5,
+        "Y": 470.58625
+      },
+      {
+        "Id": "233a9182edf24a9cb0e04918b22d5ea1",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 296.5,
+        "Y": 618.41374999999994
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "9fe06b88ed6b4cee9b66b0428de8c6f7",
+        "Title": "Coordinate System rotated around a base YZ plane set at the 0, 0, 0 insertion point by 135 degrees",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 789.85339665333277,
+        "Top": 368.85461316390666,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "d83f3cdf35c346bb955ffef4109381cc"
+      }
+    ],
+    "X": -25.505249382378452,
+    "Y": -149.199263666317,
+    "Zoom": 0.85276592558149733
+  }
+}

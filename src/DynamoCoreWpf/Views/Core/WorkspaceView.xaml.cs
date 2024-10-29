@@ -18,6 +18,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -33,7 +34,7 @@ namespace Dynamo.Views
     /// <summary>
     /// Interaction logic for WorkspaceView.xaml
     /// </summary>
-    public partial class WorkspaceView
+    public partial class WorkspaceView: IDisposable
     {
         public enum CursorState
         {
@@ -142,6 +143,7 @@ namespace Dynamo.Views
             ViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+            ViewModel.UnpinAllPreviewBubblesTriggered -= vm_UnpinAllPreviewBubblesTriggered;
 
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
@@ -170,6 +172,7 @@ namespace Dynamo.Views
             ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+            ViewModel.UnpinAllPreviewBubblesTriggered += vm_UnpinAllPreviewBubblesTriggered;
 
             ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
@@ -221,6 +224,12 @@ namespace Dynamo.Views
                         if (popup == NodeAutoCompleteSearchBar)
                         {
                             if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
+                            // if the MLRecommendation is default but user not accepting TOU, display notification
+                            if (ViewModel.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation && !ViewModel.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved)
+                            {
+                                ViewModel.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NotificationToAgreeMLNodeautocompleteTOU, true);
+                                return;
+                            }
                             // Force the Child visibility to change here because
                             // 1. Popup isOpen change does not necessarily update the child control before it take effect
                             // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
@@ -777,6 +786,22 @@ namespace Dynamo.Views
             }
         }
 
+        /// <summary>
+        /// Handles the event triggered when all preview bubbles in the workspace need to be unpinned
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void vm_UnpinAllPreviewBubblesTriggered(object sender, EventArgs e)
+        {
+            var nodesWithPinnedPreview = this.ChildrenOfType<NodeView>()
+                .Where(view => view.HasPreviewControl && view.PreviewControl.StaysOpen);
+
+            foreach (var node in nodesWithPinnedPreview)
+            {
+                node.PreviewControl.UnpinPreviewBubble();
+            }
+        }
+
         private void OnCanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
             ContextMenuPopup.IsOpen = false;
@@ -1122,6 +1147,34 @@ namespace Dynamo.Views
                 InCanvasSearchBar.IsOpen = false;
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
+            AddPythonEngineOptions(PythonEngineMenu);
+        }
+        private void OnContextMenuClosed(object sender, EventArgs e)
+        {
+            foreach (var item in PythonEngineMenu.Items.Cast<MenuItem>())
+            {
+                item.Click -= UpdateSelectedPythonNodeEngines;
+            }
+            PythonEngineMenu.Items.Clear();
+        }
+
+        private void AddPythonEngineOptions(MenuItem contextMenuItem)
+        {
+            var pythonEngineVersionMenu = contextMenuItem;
+            var selectedNodes = ViewModel.DynamoViewModel.GetSelectedPythonNodes();
+            PythonEngineManager.Instance.AvailableEngines.ToList().ForEach(engineName => ViewModel.DynamoViewModel.AddPythonEngineToMenuItems(selectedNodes, pythonEngineVersionMenu, UpdateSelectedPythonNodeEngines, engineName.Name));
+        }
+
+        private void UpdateSelectedPythonNodeEngines(object sender, EventArgs e)
+        {
+            if (sender is MenuItem menuItem)
+            {
+                var selectedNodes = ViewModel.DynamoViewModel.GetSelectedPythonNodes();
+                selectedNodes.ForEach(pythonNodeModel =>
+                {
+                    ViewModel.DynamoViewModel.UpdatePythonNodeEngine(pythonNodeModel, (string)menuItem.Header);
+                });
+            }
         }
 
         private void OnGeometryScaling_Click(object sender, RoutedEventArgs e)
@@ -1133,6 +1186,11 @@ namespace Dynamo.Views
                 GeoScalingPopup.PlacementTarget = geometryScalingButton;
             }
             GeoScalingPopup.IsOpen = true;
+        }
+
+        public void Dispose()
+        {
+            RemoveViewModelsubscriptions(ViewModel);
         }
     }
 }

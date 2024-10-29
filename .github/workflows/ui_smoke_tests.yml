@@ -1,0 +1,115 @@
+name: UI Smoke Tests
+
+on:
+  workflow_run:
+    workflows:
+      - Build DynamoAll.sln
+    types:
+      - completed
+
+env:
+  TEST_EXECUTE_DOWNLOAD_URL: https://downloads.smartbear.com/TestExecute1559SLM.exe
+  WORKFLOW_RUN_WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+  WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+  WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
+  WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
+  CHECK_NAME: UI Smoke Tests
+
+jobs:
+  ui_smoke_tests:
+    name: UI Smoke Tests
+    timeout-minutes: 60
+    runs-on: windows-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        with:
+          repository: DynamoDS/DynamoTestCompleteTests
+          token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
+          ref: master
+      - name: Download TestExecute
+        run: Invoke-WebRequest -Uri $env:TEST_EXECUTE_DOWNLOAD_URL -OutFile ".\TE.exe"
+      - name: Install TestExecute
+        shell: cmd
+        run: .\TE.exe -SilentInstall
+      - name: Download Build Artifact
+        uses: dawidd6/action-download-artifact@595ee515272114bc99adc65ad6a0736f515c52e7 # v5
+        with:
+          name: DynamoSandbox
+          workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
+          run_id: ${{ env.WORKFLOW_RUN_ID }}
+          path: ${{ github.workspace }}\build
+      - name: Download Pull Request Artifact
+        uses: dawidd6/action-download-artifact@595ee515272114bc99adc65ad6a0736f515c52e7 # v5
+        with:
+          name: pr_data
+          workflow: ${{ env.WORKFLOW_RUN_WORKFLOW_ID }}
+          run_id: ${{ env.WORKFLOW_RUN_ID }}
+          path: ${{ github.workspace }}\pr
+      - name: Set Run Details
+        run: |
+          "PR_NUMBER=$(Get-Content -Path ${{ github.workspace }}\pr\pr_number.txt)" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Run Tests
+        shell: cmd
+        run: .\utils\run_tests.bat ${{ secrets.SMARTBEAR_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests ${{ github.workspace }}\build
+      - name: Publish Test Report
+        id: test_report
+        if: always()
+        uses: dorny/test-reporter@31a54ee7ebcacc03a09ea97a7e5465a47b84aea5 # v1.9.1
+        with:
+          name: ${{ env.CHECK_NAME }}
+          path: reports/report.xml
+          reporter: java-junit
+      - name: Add Test Summary
+        if: always()
+        run: |
+          if (Test-Path -Path reports/summary.md) {
+            Get-Content -Path reports/summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          }
+      - name: Add Run Summary
+        if: always()
+        run: |
+          $run_summary=@"
+          ### Run Summary
+          Workflow Run: [$env:WORKFLOW_RUN_NAME]($env:WORKFLOW_RUN_HTML_URL)
+          Check: [$env:CHECK_NAME](${{ steps.test_report.outputs.url_html }})
+          $(if ($env:PR_NUMBER) {
+            "Pull Request: [#$env:PR_NUMBER](${{ format('{0}/{1}/pull/{2}', github.server_url, github.repository, env.PR_NUMBER) }})"
+          })
+          "@
+          $run_summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+      - name: Create Pull Request Comment
+        if: always()
+        id: create_comment
+        run: |
+          $pr_comment=@"
+          ## $env:CHECK_NAME
+          Test: **${{ steps.test_report.outputs.conclusion }}**. ${{ steps.test_report.outputs.passed }} passed, ${{ steps.test_report.outputs.failed }} failed.
+          [TestComplete Test Result]($(Get-Content -Path ${{ github.workspace }}\reports\result.txt))
+          Workflow Run: [${{ github.workflow }}](${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }})
+          Check: [$env:CHECK_NAME](${{ steps.test_report.outputs.url_html }})
+          "@
+          $pr_comment | Out-File -FilePath pr_comment.md
+      - name: Find Comment
+        if: env.PR_NUMBER != ''
+        uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3.1.0
+        id: find_comment
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          comment-author: github-actions[bot]
+          body-includes: ${{ env.CHECK_NAME }}
+          direction: last
+      - name: Create comment
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        with:
+          issue-number: ${{ env.PR_NUMBER }}
+          body-path: pr_comment.md
+      - name: Update comment
+        if: env.PR_NUMBER != '' && steps.find_comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          edit-mode: replace
+          body-path: pr_comment.md

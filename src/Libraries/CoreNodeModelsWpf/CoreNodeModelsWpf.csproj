@@ -26,27 +26,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
-    <PackageReference Include="LiveChartsCore" Version="2.0.0-beta.855" />
-    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.855" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-        <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
+    <PackageReference Include="LiveChartsCore" Version="2.0.0-rc3.3" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc3.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -103,6 +84,7 @@
     <None Remove="Charts\Controls\PieChartControl.xaml" />
     <None Remove="Charts\Controls\ScatterPlotControl.xaml" />
     <None Remove="Charts\Controls\XYLineChartControl.xaml" />
+    <None Remove="Controls\DefineDataControl.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\CoreNodeModelWpfResources.Designer.cs">
@@ -154,7 +136,7 @@
   </ItemGroup>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsWpfImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" References="$(SystemDrawingDllPath)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsWpfImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" OutputAssembly="$(OutDir)CoreNodeModelsWpf.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

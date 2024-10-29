@@ -7,11 +7,7 @@ using System.Text;
 using Dynamo.Wpf.Properties;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-#else
 using NotificationObject = Dynamo.Core.NotificationObject;
-#endif
 using Dynamo.Configuration;
 using CoreNodeModels;
 
@@ -190,8 +186,11 @@ namespace Dynamo.ViewModels
             get { return isCollection; }
             set
             {
-                isCollection = value;
-                RaisePropertyChanged("IsCollection");
+                if (isCollection != value)
+                {
+                    isCollection = value;
+                    RaisePropertyChanged(nameof(IsCollection));
+                }
             }
         }
 
@@ -203,8 +202,11 @@ namespace Dynamo.ViewModels
             get { return levels; }
             set
             {
-                levels = value;
-                RaisePropertyChanged("Levels");
+                if (levels != value)
+                {
+                    levels = value;
+                    RaisePropertyChanged(nameof(Levels));
+                }
             }
         }
 
@@ -260,6 +262,7 @@ namespace Dynamo.ViewModels
                     return ObjectToLabelString(obj);
                 case TypeCode.Double:
                     return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
+                //!!!!carefully consider the consequences of this change before uncommenting.
                 //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
                 //return ((double)obj).ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat, CultureInfo.InvariantCulture);
                 case TypeCode.Int32:

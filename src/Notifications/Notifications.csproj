@@ -15,20 +15,25 @@
 	</PropertyGroup>
 
     <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-        <!--This command gets the latest build from the notifcation center-->
-        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
-        <Exec Command="npm pack @dynamods/notifications-center@latest" />
+        <PropertyGroup>
+            <PackageVersion>0.0.31</PackageVersion>
+            <PackageName>NotificationCenter</PackageName>
+        </PropertyGroup>
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
+            <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+        </Exec>
+        <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high"></Message>
+        
+        <!--This command updates the npm registry configuration if necessary-->
+        <Exec Command="&quot;$(PowerShellCommand)&quot; -ExecutionPolicy ByPass -Command &quot;&amp; '$(SolutionDir)setnpmreg.ps1'&quot;" Condition="$(ShouldInstall)" />
+        <!--This command gets a specific build of the notifcation center from npm-->
+        <Exec Command="npm pack @dynamods/notifications-center@$(PackageVersion)"  Condition="$(ShouldInstall)"/>
     </Target>
 
-    <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild">
+    <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
         <!--Locates the .tgz files-->
         <ItemGroup>
             <TGZFiles Include="./dynamods-notifications-center-*.tgz" />
-        </ItemGroup>
-
-        <!--Reverse the order of the files to get the higher version-->
-        <ItemGroup>
-            <Reversed Include="@(TGZFiles-&gt;Reverse())" />
         </ItemGroup>
 
         <!--Gets the last one-->
@@ -40,7 +45,7 @@
         <MakeDir Directories="Packages/NotificationCenter" />
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/NotificationCenter"></Exec>
+        <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/NotificationCenter&quot;" />
 
         <!--Deletes the tgz file-->
         <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
@@ -58,18 +63,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="FontAwesome5" Version="2.1.11" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
 	</ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <Reference Include="PresentationCore" />
-        <Reference Include="PresentationFramework" />
-        <Reference Include="System.Xaml" />
-        <Reference Include="WindowsBase" />
-        <Reference Include="Microsoft.Practices.Prism">
-            <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
 			<Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>

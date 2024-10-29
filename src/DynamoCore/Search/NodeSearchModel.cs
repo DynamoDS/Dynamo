@@ -9,18 +9,8 @@ using Dynamo.Logging;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using DynamoUtilities;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Br;
-using Lucene.Net.Analysis.Cjk;
-using Lucene.Net.Analysis.Cz;
-using Lucene.Net.Analysis.De;
-using Lucene.Net.Analysis.En;
-using Lucene.Net.Analysis.Es;
-using Lucene.Net.Analysis.Fr;
-using Lucene.Net.Analysis.It;
-using Lucene.Net.Analysis.Ru;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 
@@ -72,7 +62,7 @@ namespace Dynamo.Search
             var document = XmlHelper.CreateDocument("LibraryTree");
 
             var root = SearchCategoryUtil.CategorizeSearchEntries(
-                SearchEntries,
+                Entries,
                 entry => entry.Categories);
 
             foreach (var category in root.SubCategories)
@@ -247,9 +237,7 @@ namespace Dynamo.Search
             if (luceneSearchUtility != null)
             {
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
-                luceneSearchUtility.dirReader = luceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
-                if (luceneSearchUtility.dirReader == null) return null;
-
+                luceneSearchUtility.dirReader = luceneSearchUtility.writer != null ? luceneSearchUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(luceneSearchUtility.indexDir);
                 luceneSearchUtility.Searcher = new IndexSearcher(luceneSearchUtility.dirReader);
 
                 string searchTerm = search.Trim();
@@ -294,8 +282,8 @@ namespace Dynamo.Search
 
         internal NodeSearchElement FindModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
         {
-            var result = SearchEntries.Where(e => {
-                if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
+            var result = Entries.Where(e => {
+                if (e.Name.Replace(" ", string.Empty).Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
                     //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
                     //Then in this case when searching if e.Parameters is null we need to check against empty space

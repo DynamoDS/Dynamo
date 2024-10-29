@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,11 +18,14 @@ using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
+using DynamoUtilities;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
-    [TestFixture, Category("Failure")]
+    [TestFixture]
+    [Apartment(ApartmentState.STA)]
     public class DocumentationBrowserViewExtensionTests : DynamoTestUIBase
     {
         private const string docsTabName = "Documentation Browser";
@@ -76,6 +80,8 @@ namespace DynamoCoreWpfTests
             // simulate clicking the Show docs browser menu item
             ShowDocsBrowser();
 
+            WaitForWebView2Initialization();
+
             // confirm the extension loads a view into the sidebar
             // and get the html content inside
             var docsTab = GetDocsTabItem();
@@ -92,6 +98,9 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             ShowDocsBrowser();
+
+            WaitForWebView2Initialization();
+
             var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
             this.ViewModel.NewHomeWorkspaceCommand.Execute(null);
             var visibilityBeforeShowStartPageEvent = docsView.documentationBrowser.Visibility;
@@ -132,11 +141,10 @@ namespace DynamoCoreWpfTests
                  );
 
             var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
-            node.Name = nodeRename; // Forces original name header to appear 
-            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
+            node.Name = nodeRename;// Forces original name header to appear
 
-            docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
-            var htmlContent = GetSidebarDocsBrowserContents();
+            var htmlContent = RequestNodeDocs(node);
+
             //There are times in which the URL contain characters like backslash (%5C) then they need to be replaced by the normal slash "/"
             htmlContent = htmlContent.Replace(@"%5C", "/");
 
@@ -144,7 +152,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(!string.IsNullOrEmpty(browserView.VirtualFolderPath));
             Assert.IsTrue(Directory.Exists(browserView.VirtualFolderPath));
             //Check that the virtual folder will be created in the Package/doc folder so images will be loaded correctly
-            Assert.IsTrue(browserView.VirtualFolderPath.Replace("\\", "/").Contains(packageDocPath.Replace("\\", "/")));
+            Assert.IsTrue(browserView.VirtualFolderPath.Contains(packageDocPath));
             Assert.IsTrue(htmlContent.Contains(expectedImageContent));
         }
 
@@ -158,6 +166,9 @@ namespace DynamoCoreWpfTests
                 // Act
                 var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(externalEvent);
+                DispatcherUtil.DoEventsLoop();
+
+                Assert.AreEqual(AsyncMethodState.NotStarted, viewExtension.BrowserView.initState);
                 var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
 
                 // Assert
@@ -176,9 +187,8 @@ namespace DynamoCoreWpfTests
             {
                 // Act
                 var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
                 var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
                 Assert.IsFalse(docsEvent.IsRemoteResource);
@@ -197,6 +207,33 @@ namespace DynamoCoreWpfTests
             // Act
             var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
             this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
+
+            WaitForWebView2Initialization();
+
+            var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
+            var htmlContent = GetSidebarDocsBrowserContents();
+
+            // Assert
+            Assert.IsFalse(docsEvent.IsRemoteResource);
+            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+            Assert.IsTrue(htmlContent.Contains(excelDocsFileHtmlHeader));
+        }
+
+        [Test]
+        public void CanHandleDocsEventTriggeredFromDynamoViewModelMultipleTimes()
+        {
+            // Arrange
+            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(localDocsFileLink, UriKind.Relative));
+
+            // Act
+            var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
+            this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
+            this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
+            this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
+
+            WaitForWebView2Initialization();
+
             var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
 
@@ -216,9 +253,8 @@ namespace DynamoCoreWpfTests
             {
                 // Act
                 var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
                 var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
                 Assert.IsFalse(docsEvent.IsRemoteResource);
@@ -242,9 +278,9 @@ namespace DynamoCoreWpfTests
 
                 // Act
                 var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
                 var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                var htmlContent = GetSidebarDocsBrowserContents();
+                
 
                 // Assert
                 Assert.IsFalse(docsEvent.IsRemoteResource);
@@ -269,9 +305,9 @@ namespace DynamoCoreWpfTests
 
                 // Act
                 var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
                 var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                var htmlContent = GetSidebarDocsBrowserContents();
+                
 
                 // Assert
                 Assert.IsFalse(docsEvent.IsRemoteResource);
@@ -302,9 +338,7 @@ namespace DynamoCoreWpfTests
                 var uri = $"{assemblyName};{fileName}";
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
-                // Act
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var htmlContent = GetSidebarDocsBrowserContents();
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
 
                 // Assert
                 StringAssert.Contains("<h3>Division by zero - en-us</h3>", htmlContent);
@@ -336,9 +370,7 @@ namespace DynamoCoreWpfTests
                 var uri = $"{assemblyName};{fileName}";
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
-                // Act
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var htmlContent = GetSidebarDocsBrowserContents();
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
 
                 // Assert
                 StringAssert.Contains("<h3>Division entre cero - es</h3>", htmlContent);
@@ -370,9 +402,7 @@ namespace DynamoCoreWpfTests
                 var uri = $"{assemblyName};{fileName}";
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
-                // Act
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var htmlContent = GetSidebarDocsBrowserContents();
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
 
                 // Assert
                 StringAssert.Contains("<h3>Division by zero - en-us</h3>", htmlContent);
@@ -405,9 +435,7 @@ namespace DynamoCoreWpfTests
                 var uri = $"{assemblyName};{fileName}";
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
-                // Act
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var htmlContent = GetSidebarDocsBrowserContents();
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
 
                 // Assert
                 StringAssert.Contains("<h3>Division by zero - invariant</h3>", htmlContent);
@@ -433,9 +461,9 @@ namespace DynamoCoreWpfTests
 
                 // Act
                 var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
+
                 var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
                 Assert.IsFalse(docsEvent.IsRemoteResource);
@@ -460,9 +488,8 @@ namespace DynamoCoreWpfTests
 
                 // Act
                 var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = RequestDocLink(viewExtension, docsEvent);
                 var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-                var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
                 Assert.IsFalse(docsEvent.IsRemoteResource);
@@ -507,21 +534,21 @@ namespace DynamoCoreWpfTests
             var nodeRename = "New node name";
             var expectedNodeDocumentationTitle = $"<h1>{nodeRename}</h1>";
             var expectedNodeDocumentationNamespace = $"<p><i>{nodeName}</i></p>";
-       
+
             // Act
             this.ViewModel.ExecuteCommand(
                 new DynamoModel.CreateNodeCommand(
                     Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
                 );
 
-            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
-            node.Name = nodeRename; // Forces original name header to appear 
-            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
-
             var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-            docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
+
+            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            node.Name = nodeRename; // Forces original name header to appear
+
+            var htmlContent = RequestNodeDocs(node);
+
             var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-            var htmlContent = GetSidebarDocsBrowserContents();
 
             // Assert
             Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
@@ -549,7 +576,7 @@ namespace DynamoCoreWpfTests
             var nodeName = "Package.Hello";
             var nodeRename = "New node name";
             var expectedNodeDocumentationTitle = $"<h1>{nodeRename}</h1>";
-            var expectedNodeDocumentationNamespace = $"<p><i>Package.{nodeName}</i></p>";
+            var expectedNodeDocumentationNamespace = $"<p><i>PackageWithDocs.{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentationHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
             var expectedAddtionalNodeDocumentationImage = String.Format(@"<img id='drag--img' class='resizable--img'  src=""http://appassets/{0}"" alt=""Dynamo Icon image"" />", Path.GetFileName(localImagePath));
 
@@ -561,14 +588,16 @@ namespace DynamoCoreWpfTests
                      Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
                  );
 
-            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
-            node.Name = nodeRename; // Forces original name header to appear 
-            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
-
             var tabsBeforeExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-            docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
+
+            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+
+            node.Name = nodeRename; // Forces original name header to appear 
+
+            var htmlContent = RequestNodeDocs(node);
+
             var tabsAfterExternalEventTrigger = this.ViewModel.SideBarTabItems.Count;
-            var htmlContent = GetSidebarDocsBrowserContents();
+
             htmlContent = htmlContent.Replace(@"%5C", "/");
 
             // Assert
@@ -590,7 +619,7 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             var packageName = "Package";
-            var nodeWithDocumentation = "Package.Package.Hello";
+            var nodeWithDocumentation = "PackageWithDocs.Package.Hello";
             var nodeWithoutDocumentation = "Package.Package.Package";
 
             // Assert
@@ -626,8 +655,8 @@ namespace DynamoCoreWpfTests
             new DynamoModel.CreateNodeCommand(
               Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
           );
-             node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
-             htmlContent = RequestNodeDocs(node);
+            node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            htmlContent = RequestNodeDocs(node);
 
             Assert.IsTrue(htmlContent.Contains("loopwhile sample docs"));
         }
@@ -653,7 +682,7 @@ namespace DynamoCoreWpfTests
             var htmlContent = RequestNodeDocs(node);
 
             Assert.IsTrue(htmlContent.Contains("list.rank sample docs from host path"));
-        } 
+        }
 
         [Test]
         public void DocsCanBeLoadedForCoreNodeModelNodesFrom_FallBackPath()
@@ -707,12 +736,28 @@ namespace DynamoCoreWpfTests
             var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
             var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
             docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
+
+            WaitForWebView2Initialization(docBrowserviewExtension.BrowserView);
+
+            return GetSidebarDocsBrowserContents();
+        }
+
+        private string RequestDocLink(DocumentationBrowserViewExtension viewExtension, OpenDocumentationLinkEventArgs docsEvent)
+        {
+            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+
+            WaitForWebView2Initialization(viewExtension.BrowserView);
+
             return GetSidebarDocsBrowserContents();
         }
 
         [Test]
         public void AddGraphInSpecificLocationToWorkspace()
         {
+            //TODO see this issue:
+            //https://github.com/nunit/nunit/issues/1200
+            //we somehow need use single threaded sync context to force webview2 async initalization on this thread.
+            //unfortunately it passes locally but then still fails on master-15.
             var testDirectory = GetTestDirectory(ExecutingDirectory);
             var tempDynDirectory = Path.Combine(testDirectory, "Temp Test Path");
             var dynFileName = Path.Combine(testDirectory, @"UI\BasicAddition.dyn");
@@ -744,23 +789,85 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 1);
 
                 var node = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
-                RequestNodeDocs(node);
 
-                // Show the DocumentationBrowser so we can get the DocumentationBrowserViewModel
-                ShowDocsBrowser();
+                RequestNodeDocs(node);
                 var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
                 var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
 
-                //Using reflection change the path of the dyn file for using the created directory (which has empty spaces in the name)
-                FieldInfo fi = typeof(DocumentationBrowserViewModel).GetField("graphPath", BindingFlags.NonPublic | BindingFlags.Instance);
-                fi.SetValue(docsViewModel, insertDynFilePath);
+                docsViewModel.GraphPath = insertDynFilePath;
 
                 //Insert the Graph into the current workspace
                 docsViewModel.InsertGraph();
             }
-   
             //Validates that we have 5 nodes the CurrentWorkspace (after the graph was added)
-            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);         
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);
+            DispatcherUtil.DoEvents();
+        }
+
+        [Test]
+        public void Validate_GetGraphLinkFromMDLocation()
+        {
+            var nodeName = "Number";
+            this.ViewModel.ExecuteCommand(
+            new DynamoModel.CreateNodeCommand(
+                Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+            );
+
+            //Validates that we have just one node in the CurrentWorkspace
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 1);
+
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+
+            //In this call the GetGraphLinkFromMDLocation() method is executed internally
+            RequestNodeDocs(node);
+
+            var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
+            var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
+
+            var graphPathValue = docsViewModel.GraphPath;
+
+            var dynFileName = Path.GetFileNameWithoutExtension(docsViewModel.Link.AbsolutePath) + ".dyn";
+
+            //This will return a path with the pkg doc + dyn file name
+            var sharedFilesPath = Path.Combine(Configurations.DynamoNodeHelpDocs, dynFileName);
+
+            Assert.IsNotNull(graphPathValue);
+            Assert.IsTrue(!string.IsNullOrEmpty(graphPathValue.ToString()));
+
+            //check that the pathPath contains "NodeHelpSharedDocs//dynfilename"
+            Assert.That(graphPathValue.Contains(sharedFilesPath));
+        }
+        [Test]
+        public void Validate_GetGraphLinkFromPackage()
+        {
+            var nodeName = "Package.Hello";
+
+            // Act
+            this.ViewModel.ExecuteCommand(
+                new DynamoModel.CreateNodeCommand(
+                    Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+            );
+
+            //Validates that we have just one node in the CurrentWorkspace
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 1);
+
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+
+            //In this call the GetGraphLinkFromMDLocation() method is executed internally
+            RequestNodeDocs(node);
+
+            var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
+            var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
+
+            var graphPathValue = docsViewModel.GraphPath;
+
+            var dynFileName = Path.GetFileNameWithoutExtension(docsViewModel.Link.AbsolutePath) + ".dyn";
+
+            Assert.IsNotNull(graphPathValue);
+            Assert.IsTrue(!string.IsNullOrEmpty(graphPathValue));
+
+            //check that the path contains "packageWithDocumentation"
+            Assert.That(graphPathValue.Contains(Path.Combine("PackageWithNodeDocumentation", "doc", dynFileName)));
         }
 
         #region Helpers
@@ -791,10 +898,28 @@ namespace DynamoCoreWpfTests
                 .ToList();
         }
 
+        private void WaitForWebView2Initialization(DocumentationBrowserView docView = null)
+        {
+            if (docView == null)
+            {
+                var docsTab = GetDocsTabItem();
+                docView = docsTab.Content as DocumentationBrowserView;
+            }
+            
+            // Wait for the DocumentationBrowserView webview2 control to finish initialization
+            DispatcherUtil.DoEventsLoop(() =>
+            {
+                return docView.initState == AsyncMethodState.Done;
+            });
+
+            Assert.AreEqual(AsyncMethodState.Done, docView.initState);
+        }
+
         private string GetSidebarDocsBrowserContents()
         {
             var docsTab = GetDocsTabItem();
             var docsView = docsTab.Content as DocumentationBrowserView;
+     
             var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
             return docsViewModel.GetContent();
         }
@@ -870,6 +995,61 @@ namespace DynamoCoreWpfTests
             }
         }
 
+        [Test]
+        [TestCase("en-US")]
+        [TestCase("cs-CZ")]
+        [TestCase("ko-KR")]
+        public void CheckThatExtendedCharactersAreCorrectlyInHTML(string language)
+        {
+            var testDirectory = GetTestDirectory(ExecutingDirectory);
+            string mdFile = "Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.md";
+            string resource = Path.Combine(testDirectory, "Tools", "docGeneratorTestFiles", "fallback_docs", language, mdFile);
+
+            Assert.True(File.Exists(resource), "The resource provided {0} doesn't exist in the path {1}", mdFile, resource);
+
+            // Arrange
+            var content = File.ReadAllText(resource, Encoding.UTF8);
+
+            using (var converter = new Md2Html())
+            {
+                // Act
+                var html = converter.ParseMd2Html(content, ExecutingDirectory);
+                var output = converter.SanitizeHtml(html);
+
+                // Assert
+                Assert.IsTrue(string.IsNullOrEmpty(output));
+
+                Regex rxExp = new Regex(@"#+\s[^\n]*\n(.*?)(?=\n##?\s|$)", RegexOptions.Singleline);
+
+                //Apply RegEx expression to the md file to getting the content without headers
+                MatchCollection matches = rxExp.Matches(content);
+                foreach (Match match in matches)
+                {
+                    if (match.Groups.Count == 0) continue;
+
+                    var UTF8Content = match.Groups[1].Value.Trim();
+
+                    //Discard the image due that inside the html is converted to <img .......
+                    if(!UTF8Content.StartsWith("![")) 
+                    {
+                        // Assert
+                        //Clean the content to remove characters also removed by the Md2Html.exe tool
+                        var cleanedContent = UTF8Content.Replace("___", string.Empty).Trim();
+
+                        //Apply a Regular Expresion in the HTML file for getting the first <p> 
+                        Match m = Regex.Match(html, "<p>(.+?)<\\/p>", RegexOptions.IgnoreCase);
+                        string specificHTMLContent = string.Empty;
+                        if (m.Success)
+                        {
+                            specificHTMLContent = m.Groups[1].Value; 
+                        }
+
+                        Assert.IsTrue(specificHTMLContent == cleanedContent, "Part of the MD file content was not found in the HTML File");
+                    }                   
+                }
+            }
+        }
+
         #region Helpers
         private static string[] htmlResources()
         {
@@ -887,6 +1067,12 @@ namespace DynamoCoreWpfTests
             var docsDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"src\DocumentationBrowserViewExtension\Docs");
 
             return Directory.GetFiles(docsDirectory, wildcard);
+        }
+
+        public static string GetTestDirectory(string executingDirectory)
+        {
+            var directory = new DirectoryInfo(executingDirectory);
+            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
         }
 
         #endregion

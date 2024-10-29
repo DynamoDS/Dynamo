@@ -740,6 +740,12 @@ Parameter name: {0}</value>
     <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
     <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
   </data>
+  <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
+    <value>{0} files and {1} folders will be created.</value>
+  </data>
+  <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
+    <value>{0} files and {1} folders loaded.</value>
+  </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored.</value>
   </data>
@@ -900,12 +906,18 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>Example file added to workspace. Run mode changed to Manual.</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node.</value>
   </data>
   <data name="FormulaMigrated" xml:space="preserve">
     <value>Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script.</value>
+  </data>
+  <data name="LegacyTraceDataWarning" xml:space="preserve">
+    <value>This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding data will be saved in the new format the next time you run and save this workspace.</value>
+  </data>
+  <data name="InputNodeRenameHint" xml:space="preserve">
+    <value>default input name, rename me!</value>
   </data>
 </root>

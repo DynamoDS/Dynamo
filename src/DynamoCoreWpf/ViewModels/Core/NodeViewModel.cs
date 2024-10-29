@@ -18,7 +18,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UI;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 using Point = System.Windows.Point;
@@ -118,13 +117,6 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public InfoBubbleViewModel ErrorBubble { get; set; }
-
-        [JsonIgnore]
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
-        public string ToolTipText
-        {
-            get { return nodeLogic.ToolTipText; }
-        }
 
         [JsonIgnore]
         public ObservableCollection<PortViewModel> InPorts
@@ -1084,10 +1076,10 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         void EngineController_AstBuilt(object sender, CompiledEventArgs e)
         {
-            if (e.Node == nodeLogic.GUID)
+            if (e.NodeId == nodeLogic.GUID)
             {
                 var sb = new StringBuilder();
-                sb.AppendLine(string.Format("{0} AST:", e.Node));
+                sb.AppendLine(string.Format("{0} AST:", e.NodeId));
 
                 foreach (var assocNode in e.AstNodes)
                 {
@@ -1183,10 +1175,6 @@ namespace Dynamo.ViewModels
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
                     break;
-                case nameof(NodeModel.ToolTipText):
-                    UpdateBubbleContent();
-                    // TODO Update preview bubble visibility to false
-                    break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
                     HandleColorOverlayChange();
@@ -1268,10 +1256,17 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void BuildErrorBubble()
         {
-            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(this)
+            if (ErrorBubble == null)
             {
-                IsCollapsed = this.IsCollapsed
-            };
+                ErrorBubble = new InfoBubbleViewModel(this)
+                {
+                    IsCollapsed = this.IsCollapsed,
+                    // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
+                    // the node as well and the ErrorBubble needs to display on top of these, the
+                    // ErrorBubble's ZIndex should be the node's ZIndex + 2.
+                    ZIndex = ZIndex + 2
+                };
+            }
 
             ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
@@ -1285,14 +1280,8 @@ namespace Dynamo.ViewModels
                     WorkspaceViewModel.Errors.Add(ErrorBubble);
                 });
             }
-            
-            // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
-            // the node as well and the ErrorBubble needs to display on top of these, the
-            // ErrorBubble's ZIndex should be the node's ZIndex + 2.
-            ErrorBubble.ZIndex = ZIndex + 2;
 
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
-            
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
         }
 
@@ -1349,7 +1338,7 @@ namespace Dynamo.ViewModels
 
             /*
                 Priorities seem to be:
-                Error > Warning > Info ; Frozen > Preview > None
+                Error > Warning > Info ; Frozen > Package > Preview > None
                 Pass through all possible states in reverse order 
                 to assign icon values for each possible scenario
             */
@@ -1358,14 +1347,6 @@ namespace Dynamo.ViewModels
 
             if (this.NodeModel == null) return result;
 
-            if (this.NodeModel.IsCustomFunction)
-            {
-                result = nodeCustomColor;
-                if(result != null)
-                {
-                    ImgGlyphOneSource = packageGlyph;
-                }
-            }
             if (!this.IsVisible)
             {
                 result = nodePreviewColor;
@@ -1374,6 +1355,24 @@ namespace Dynamo.ViewModels
                     ImgGlyphOneSource = previewGlyph;
                 } 
             }
+
+            if (this.NodeModel.IsCustomFunction || !string.IsNullOrEmpty(this.PackageName))
+            {
+                result = nodeCustomColor;
+                if(result != null)
+                {   
+                    if (ImgGlyphOneSource == null)
+                    {
+                        ImgGlyphOneSource = packageGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphOneSource = packageGlyph;
+                        ImgGlyphTwoSource = previewGlyph;
+                    }
+                }
+            }
+
             if (this.IsFrozen)
             {
                 result = nodeFrozenOverlayColor;
@@ -1382,7 +1381,7 @@ namespace Dynamo.ViewModels
                     if (ImgGlyphOneSource == null)
                     {
                         ImgGlyphOneSource = frozenGlyph;
-                    }
+                    }   
                     else
                     {
                         ImgGlyphOneSource = frozenGlyph;
@@ -1466,7 +1465,15 @@ namespace Dynamo.ViewModels
 
         public void UpdateBubbleContent()
         {
-            if (DynamoViewModel == null) return;
+            if (NodeModel.BlockInfoBubbleUpdates)
+            {
+                return;
+            }
+
+            if (DynamoViewModel == null)
+            {
+                return;
+            }
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning; 
             bool isNodeStateInfo = NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo;

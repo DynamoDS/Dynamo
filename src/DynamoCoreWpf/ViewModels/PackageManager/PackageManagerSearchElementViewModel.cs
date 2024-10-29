@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using Greg.Responses;
-#if NETFRAMEWORK
-using Microsoft.Practices.Prism.Commands;
-#else
 using Prism.Commands;
-#endif
 
 namespace Dynamo.PackageManager.ViewModels
 {
@@ -18,14 +17,90 @@ namespace Dynamo.PackageManager.ViewModels
     {
         public ICommand DownloadLatestCommand { get; set; }
         public ICommand UpvoteCommand { get; set; }
-
-        [Obsolete("This UI command will no longer decrease package votes and will be removed in Dynamo 3.0")]
-        public ICommand DownvoteCommand { get; set; }
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
-        public new PackageManagerSearchElement Model { get; internal set; }
+        /// <summary>
+        /// VM IsDeprecated property
+        /// </summary>
+        public bool IsDeprecated { get { return this.SearchElementModel.IsDeprecated; } }
+        /// <summary>
+        /// VM Hosts property
+        /// </summary>
+        public List<string> Hosts { get { return this.SearchElementModel.Hosts; } }
+        /// <summary>
+        /// VM LatestVersionCreated property
+        /// </summary>
+        public string LatestVersionCreated { get { return this.SearchElementModel.LatestVersionCreated; } }
+        /// <summary>
+        /// VM Downloads property
+        /// </summary>
+        public int Downloads { get { return this.SearchElementModel.Downloads; } }
+        /// <summary>
+        /// VM Votes property
+        /// </summary>
+        public int Votes { get { return this.SearchElementModel.Votes; } }
+        /// <summary>
+        /// If the element has an upvote from the current user
+        /// </summary>
+        public bool HasUpvote { get { return this.SearchElementModel.HasUpvote; } }
+        /// <summary>
+        /// VM Package Version property
+        /// </summary>
+        public IEnumerable<string> PkgVersion { get { return this.SearchElementModel.PackageVersions; } }
+        /// <summary>
+        /// VM Maintainers property
+        /// </summary>
+        public string Maintainers { get { return this.SearchElementModel.Maintainers; } }
+        /// <summary>
+        /// VM LatestVersion property
+        /// </summary>
+        public string LatestVersion { get { return this.SearchElementModel.LatestVersion; } }
+        /// <summary>
+        /// VM Name Property
+        /// </summary>
+        public string Name { get { return this.SearchElementModel.Name; } }
+
+        public PackageManagerSearchElement SearchElementModel { get; internal set; }
+
+
+        /// <summary>
+        /// The currently selected version of a package
+        /// </summary>
+        private VersionInformation selectedVersion;
+
+        public bool? IsSelectedVersionCompatible
+        {
+            get { return isSelectedVersionCompatible; }
+            set
+            {
+                if (isSelectedVersionCompatible != value)
+                {
+                    isSelectedVersionCompatible = value;
+                    RaisePropertyChanged(nameof(IsSelectedVersionCompatible));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Keeps track of the currently selected package version in the UI
+        /// </summary>
+        public VersionInformation SelectedVersion   
+        {
+            get { return selectedVersion; }
+            set
+            {
+                if (selectedVersion != value)
+                {
+                    selectedVersion = value;
+
+                    // Update the compatibility info so the icon of the currently selected version is updated
+                    IsSelectedVersionCompatible = selectedVersion.IsCompatible;
+                    SearchElementModel.SelectedVersion = selectedVersion;
+                }
+            }
+        }
 
         /// <summary>
         /// Alternative constructor to assist communication between the 
@@ -38,27 +113,44 @@ namespace Dynamo.PackageManager.ViewModels
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install, bool isEnabledForInstall = true) 
             : base(element)
         {
-            this.Model = element;
+            this.SearchElementModel = element;
             CanInstall = install;
             IsEnabledForInstall = isEnabledForInstall;
 
-            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
+            // Attempts to show the latest compatible version. If no compatible, will return the latest instead.
+            this.SelectedVersion = this.SearchElementModel.LatestCompatibleVersion;
+            this.VersionInformationList = this.SearchElementModel.VersionDetails;
+            WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>
+                .AddHandler(this.SearchElementModel, nameof(INotifyPropertyChanged.PropertyChanged), OnSearchElementModelPropertyChanged);
+
+
+            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.SearchElementModel.IsExpanded = !this.SearchElementModel.IsExpanded);
 
             this.DownloadLatestCommand = new DelegateCommand(
-                () => OnRequestDownload(Model.Header.versions.Last(), false),
-                () => !Model.IsDeprecated && CanInstall);
-            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
+                () => OnRequestDownload(false),
+                () => !SearchElementModel.IsDeprecated && CanInstall);
+            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(true));
 
-            this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
-
-            // TODO: Remove the initialization of the UI command in Dynamo 3.0
-            this.DownvoteCommand = new DelegateCommand(Model.Downvote, () => canLogin);
+            this.UpvoteCommand = new DelegateCommand(SearchElementModel.Upvote, () => canLogin);
 
             this.VisitSiteCommand =
-                new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
+                new DelegateCommand(() => GoToUrl(FormatUrl(SearchElementModel.SiteUrl)), () => !String.IsNullOrEmpty(SearchElementModel.SiteUrl));
             this.VisitRepositoryCommand =
-                new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+                new DelegateCommand(() => GoToUrl(FormatUrl(SearchElementModel.RepositoryUrl)), () => !String.IsNullOrEmpty(SearchElementModel.RepositoryUrl));
         }
+
+        private void OnSearchElementModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SearchElementModel.LatestCompatibleVersion))
+            {
+                this.SelectedVersion = this.SearchElementModel.LatestCompatibleVersion;
+            }
+            if (e.PropertyName == nameof(SearchElementModel.VersionDetails))
+            {
+                this.VersionInformationList = this.SearchElementModel.VersionDetails;
+            }
+        }
+
 
         /// <summary>
         /// PackageManagerSearchElementViewModel Constructor (only used for testing in Dynamo).
@@ -67,6 +159,24 @@ namespace Dynamo.PackageManager.ViewModels
         /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : this(element, canLogin, true)
         {}
+
+        /// <summary>
+        /// A property showing if the currently logged-in user owns the package
+        /// </summary>
+        private bool isOwner = false;
+        public bool IsOnwer
+        {
+            get
+            {
+                return isOwner;
+            }
+
+            internal set
+            {   
+                isOwner = value;
+                RaisePropertyChanged(nameof(IsOnwer));
+            }
+        }
 
         private bool canInstall;
         /// <summary>
@@ -123,20 +233,54 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// A collection of key-value pairs to allow the download of specific package version
+        /// </summary>
         public List<Tuple<PackageVersion, DelegateCommand<object>>> Versions
         {
             get
             {
                 return
-                    Model.Header.versions.Select(
+                    SearchElementModel.Header.versions.Select(
                         x => new Tuple<PackageVersion, DelegateCommand<object>>(
                             x, new DelegateCommand<object>((p) => OnRequestDownload(x, p.Equals("true")))
                         )).Reverse().ToList();
             }
         }
 
+        private List<VersionInformation> versionInformationList;
+
+        /// <summary>
+        /// A collection containing all package versions
+        /// </summary>
+        public List<VersionInformation> VersionInformationList
+        {
+            get { return versionInformationList; }
+            set
+            {
+                if (value != versionInformationList)
+                {
+                    versionInformationList = value;
+                    RaisePropertyChanged(nameof(VersionInformationList));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Display the reversed version list - newest to oldest
+        /// </summary>
+        public ICollectionView ReversedVersionInformationList
+        {
+            get
+            {
+                var reversedList = VersionInformationList?.AsEnumerable().Reverse().ToList();
+                return CollectionViewSource.GetDefaultView(reversedList);
+            }
+        }
+
         private List<String> CustomPackageFolders;
-        
+        private bool? isSelectedVersionCompatible;
+
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
@@ -154,7 +298,25 @@ namespace Dynamo.PackageManager.ViewModels
             }
 
             if (RequestDownload != null)
-                RequestDownload(this.Model, version, downloadPath);
+                RequestDownload(this.SearchElementModel, version, downloadPath);
+        }
+
+        private void OnRequestDownload(bool downloadToCustomPath)
+        {
+            var version = this.SearchElementModel.Header.versions.First(x => x.version.Equals(SelectedVersion.Version));
+
+            string downloadPath = String.Empty;
+
+            if (downloadToCustomPath)
+            {
+                downloadPath = GetDownloadPath();
+
+                if (String.IsNullOrEmpty(downloadPath))
+                    return;
+            }
+
+            if (RequestDownload != null)
+                RequestDownload(this.SearchElementModel, version, downloadPath);
         }
 
         /// <summary>
@@ -166,7 +328,7 @@ namespace Dynamo.PackageManager.ViewModels
         public bool Equals(PackageManagerSearchElementViewModel other)
         {
             if (other == null) return false;
-            return this.Model.Id == other.Model.Id;
+            return this.SearchElementModel.Id == other.SearchElementModel.Id;
         }
 
         /// <summary>
@@ -175,7 +337,7 @@ namespace Dynamo.PackageManager.ViewModels
         /// <returns>HashCode of package</returns>
         public override int GetHashCode()
         {
-            return Model.Id.GetHashCode();
+            return SearchElementModel.Id.GetHashCode();
         }
 
         private string GetDownloadPath()

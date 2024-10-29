@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -17,6 +18,7 @@ using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using static Dynamo.ViewModels.SearchViewModel;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views
@@ -36,7 +38,7 @@ namespace Dynamo.Wpf.Views
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
         // around in a compatible way for now
-        private IDisposable managePackageCommandEvent;
+        private Task<IDisposable> managePackageCommandEvent;
 
         //This list will be passed everytime that we create a new GroupStyle so the custom colors can remain
         internal ObservableCollection<CustomColorItem> stylesCustomColors;
@@ -96,7 +98,7 @@ namespace Dynamo.Wpf.Views
             stylesCustomColors = new ObservableCollection<CustomColorItem>();
             UpdateZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
             UpdateZoomScaleValueLabel(PythonZoomScalingSlider, lblPythonScalingValue);
-            dynamoView.EnableEnvironment(false);
+            dynamoView.EnableOverlayBlocker(true);
         }
 
         /// <summary>
@@ -170,7 +172,7 @@ namespace Dynamo.Wpf.Views
 
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
             dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
-            (this.Owner as DynamoView).EnableEnvironment(true);
+            (this.Owner as DynamoView).EnableOverlayBlocker(false);
 
             Close();
         }
@@ -367,7 +369,7 @@ namespace Dynamo.Wpf.Views
         {
             if (e.OriginalSource == e.Source)
             {
-                managePackageCommandEvent = Analytics.TrackCommandEvent("ManagePackage");
+                managePackageCommandEvent = Analytics.TrackTaskCommandEvent("ManagePackage");
             }
         }
 
@@ -375,7 +377,7 @@ namespace Dynamo.Wpf.Views
         {
             if (e.OriginalSource == e.Source)
             {
-                managePackageCommandEvent?.Dispose();
+                Analytics.EndTaskCommandEvent(managePackageCommandEvent);
             }
         }
 
@@ -511,6 +513,7 @@ namespace Dynamo.Wpf.Views
             var dialog = new DynamoFolderBrowserDialog
             {
                 Title = Res.PreferencesSettingsBackupLocationDialogTitle,
+                SelectedPath = viewModel.BackupLocation,
                 Owner = this
             };
 
@@ -519,7 +522,7 @@ namespace Dynamo.Wpf.Views
                 try
                 {
                     string selectedBackupLocation = dialog.SelectedPath;
-                    if (!viewModel.UpdateBackupLocation(selectedBackupLocation))
+                    if (!dynViewModel.Model.UpdatePreferenceItemLocation(PathManager.PreferenceItem.Backup, selectedBackupLocation))
                     {
                         Wpf.Utilities.MessageBoxService.Show(
                           this,
@@ -527,6 +530,7 @@ namespace Dynamo.Wpf.Views
                           Res.PreferencesSettingsBackupFailedTitle,
                           MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
+                    viewModel.BackupLocation = selectedBackupLocation;
                 }
                 catch (Exception ex)
                 {
@@ -541,11 +545,11 @@ namespace Dynamo.Wpf.Views
 
         private void ResetBackupLocation(object sender, RoutedEventArgs e)
         {
-            viewModel.ResetBackupLocation();
+            viewModel.BackupLocation = dynViewModel.Model.ResetPreferenceItemLocation(PathManager.PreferenceItem.Backup);
         }
 
-            // Show File path dialog
-            private void OnRequestShowFileDialog(object sender, EventArgs e)
+        // Show File path dialog
+        private void OnRequestShowFileDialog(object sender, EventArgs e)
         {
             var args = e as PythonTemplatePathEventArgs;
             args.Cancel = true;
@@ -648,6 +652,57 @@ namespace Dynamo.Wpf.Views
         {
             this.CloseButton_Click(this.CloseButton, e);
             this.dynViewModel.ShowPackageManager(Dynamo.Wpf.Properties.Resources.PackageManagerInstalledPackagesTab);
+        }
+
+        private void RecommendedNodesRadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!viewModel.IsMLAutocompleteTOUApproved)
+            {
+                dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
+                // Reset back to object type recommendations
+                RecommendedNodesRadioButton.IsChecked = false;
+                ObjectTypeRadioButton.IsChecked = true;
+            }
+        }
+
+        private void UpdateTemplateLocationButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new DynamoFolderBrowserDialog
+            {
+                Title = Res.PreferencesSettingsTemplateLocationDialogTitle,
+                SelectedPath = viewModel.TemplateLocation,
+                Owner = this
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    string loc = dialog.SelectedPath;
+                    if (!dynViewModel.Model.UpdatePreferenceItemLocation(PathManager.PreferenceItem.Templates, loc))
+                    {
+                        Utilities.MessageBoxService.Show(
+                          this,
+                          Res.PreferencesSettingsTemplateFailedMessage,
+                          Res.PreferencesSettingsTemplateFailedTitle,
+                          MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                    viewModel.TemplateLocation = loc;
+                }
+                catch (Exception ex)
+                {
+                    Utilities.MessageBoxService.Show(
+                        this,
+                        ex.Message,
+                        Res.PreferencesSettingsTemplateFailedTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+        }
+
+        private void ResetTemplateLocationButton_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.TemplateLocation = dynViewModel.Model.ResetPreferenceItemLocation(PathManager.PreferenceItem.Templates);
         }
     }
 }

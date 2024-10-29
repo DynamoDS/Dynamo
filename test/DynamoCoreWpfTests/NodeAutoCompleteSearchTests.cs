@@ -18,6 +18,8 @@ namespace DynamoCoreWpfTests
     class NodeAutoCompleteSearchTests : DynamoTestUIBase
     {
 
+        private readonly List<string> expectedNodes = new List<string> { "ByFillet", "ByFilletTangentToCurve", "ByGeometry", "ByMinimumVolume", "ByBlendBetweenCurves", "ByTangency", "ByLineAndPoint", "ByJoinedCurves", "ByThickeningCurveNormal", "ByLoft", "ByLoft", "ByLoftGuides", "BySweep", "ByLoft", "ByLoft", "ByRevolve", "BySweep", "BySweep2Rails", "ByLoft", "ByLoft", "ByPatch", "ByRevolve", "ByRuledLoft", "BySweep", "BySweep2Rails", "BuildFromLines", "BuildPipes", "ByExtrude", "ByPlaneLineAndPoint", "ByRevolve", "BySweep", "DoesIntersect", "IsAlmostEqualTo", "DistanceTo", "Intersect", "IntersectAll", "Project", "Project", "ProjectInputOnto", "ProjectInputOnto", "Split", "Trim", "SerializeAsSAB", "ClosestPointTo", "Join", "ByGroupedCurves", "SweepAsSolid", "ExportToSAT", "SweepAsSurface", "LocateSurfacesByLine", "BridgeEdgesToEdges", "BridgeEdgesToFaces", "BridgeFacesToEdges", "BridgeFacesToFaces", "CreateMatch", "ExtrudeEdgesAlongCurve", "ExtrudeFacesAlongCurve", "PullVertices" };
+
         [NodeDescription("This is test node with multiple output ports and types specified.")]
         [NodeName("node with multi type outputs")]
         [InPortNames("input1", "input2")]
@@ -67,6 +69,7 @@ namespace DynamoCoreWpfTests
         public void NodeSuggestions_CanAutoCompleteInCustomNodeWorkspace()
         {
             Open(@"pkgs\EvenOdd2\dyf\EvenOdd.dyf");
+            ViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Pick the % node
             NodeView nodeView = NodeViewWithGuid(Guid.Parse("1ddf4b4cc39f42acadd578db42bcb6d3").ToString());
@@ -165,7 +168,9 @@ namespace DynamoCoreWpfTests
 
             // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(44, searchViewModel.FilteredResults.Count());
+            var nodeNamesResultList = searchViewModel.FilteredResults.Select(x => x.Name).ToList();
+
+            Assert.AreEqual(expectedNodes.Count(), nodeNamesResultList.Count(),string.Format("Missing nodes: {0} ", string.Join(", ",expectedNodes.Except(nodeNamesResultList))));
         }
         [Test]
         public void NodeSuggestions_CanAutoCompleteOnCustomNodesOutPort_WithWhiteSpaceStartingPortName()
@@ -185,13 +190,16 @@ namespace DynamoCoreWpfTests
 
             // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(44, searchViewModel.FilteredResults.Count());
+            var nodeNamesResultList = searchViewModel.FilteredResults.Select(x => x.Name).ToList();
+
+            Assert.AreEqual(expectedNodes.Count(), nodeNamesResultList.Count(), string.Format("Missing nodes: {0} ", string.Join(", ", expectedNodes.Except(nodeNamesResultList))));
         }
 
         [Test]
         public void NodeSuggestions_InputPortZeroTouchNode_AreCorrect()
         {
             Open(@"UI\ffitarget_inputport_suggestion.dyn");
+            ViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Get the node view for a specific node in the graph
             NodeView nodeView = NodeViewWithGuid(Guid.Parse("9aeba33453a34c73823976222b44375b").ToString());
@@ -264,7 +272,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void NodeSuggestions_GeometryNodes_SortedBy_NodeGroup_CreateActionQuery()
         {
-            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("DummyPoint.DirectionTo")).FirstOrDefault(); //returns a dummyPoint.
+            var type1 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("DummyPoint.DirectionTo")).FirstOrDefault(); //returns a dummyPoint.
             var node = type1.CreateNode();
             ViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                node, 0, 0, true, false));
@@ -314,7 +322,7 @@ namespace DynamoCoreWpfTests
 
             // Get the output port type for the node. 
             var outPorts = nodeView.ViewModel.OutPorts;
-            Assert.AreEqual(1, outPorts.Count());
+            Assert.AreEqual(1, outPorts.Count);
 
             var port = outPorts[0].PortModel;
             var type = port.GetOutPortType();
@@ -324,7 +332,7 @@ namespace DynamoCoreWpfTests
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = outPorts[0];
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(44, suggestions.Count());
+            Assert.AreEqual(58, suggestions.Count());
         }
 
         [Test]
@@ -356,8 +364,8 @@ namespace DynamoCoreWpfTests
             var core = Model.LibraryServices.LibraryManagementCore;
             //we'll compare curve to polyCurve and expect the result to be -1 for curve closer to our input type.
             var inputType = "Autodesk.DesignScript.Geometry.Curve";
-            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("Curve.Offset")).FirstOrDefault(); //returns a curve.
-            var type2 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("PolyCurve.ByJoinedCurves")).FirstOrDefault(); //returns a polycurve.
+            var type1 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("Curve.Offset")).FirstOrDefault(); //returns a curve.
+            var type2 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("PolyCurve.ByJoinedCurves")).FirstOrDefault(); //returns a polycurve.
 
             var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
             Assert.AreEqual(-1, comparer.Compare(type1, type2));
@@ -369,8 +377,8 @@ namespace DynamoCoreWpfTests
             var core = Model.LibraryServices.LibraryManagementCore;
             //we'll compare Rect to PolyCurve and expect the result to be 1 for PolyCurve closer to our input type.
             var inputType = "Autodesk.DesignScript.Geometry.Curve";
-            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("Rectangle.ByWidthLength")).FirstOrDefault(); //returns a Rect.
-            var type2 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("PolyCurve.ByJoinedCurves")).FirstOrDefault(); //returns a polycurve.
+            var type1 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("Rectangle.ByWidthLength")).FirstOrDefault(); //returns a Rect.
+            var type2 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("PolyCurve.ByJoinedCurves")).FirstOrDefault(); //returns a polycurve.
 
             var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
             Assert.AreEqual(1, comparer.Compare(type1, type2));
@@ -385,8 +393,8 @@ namespace DynamoCoreWpfTests
 
             //we'll compare polyCurve to our mock node and expect the result to be 1 for the mocknode curve output to be closer to our input type.
             var inputType = "Autodesk.DesignScript.Geometry.Curve";
-            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("MultReturnTypeNode")).FirstOrDefault(); //returns a Curve, and String.
-            var type2 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("PolyCurve.ByJoinedCurves")).FirstOrDefault(); //returns a polycurve.
+            var type1 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("MultReturnTypeNode")).FirstOrDefault(); //returns a Curve, and String.
+            var type2 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("PolyCurve.ByJoinedCurves")).FirstOrDefault(); //returns a polycurve.
 
             var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
             Assert.AreEqual(-1, comparer.Compare(type1, type2));
@@ -401,8 +409,8 @@ namespace DynamoCoreWpfTests
 
             //we'll compare curve to our mock node and expect the result to be 0 since they both match exactly.
             var inputType = "Autodesk.DesignScript.Geometry.Curve";
-            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("MultReturnTypeNode")).FirstOrDefault(); //returns a Curve, and String.
-            var type2 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("Curve.Offset")).FirstOrDefault(); //returns a Curve.
+            var type1 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("MultReturnTypeNode")).FirstOrDefault(); //returns a Curve, and String.
+            var type2 = Model.SearchModel.Entries.Where(x => x.FullName.Contains("Curve.Offset")).FirstOrDefault(); //returns a Curve.
 
             var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
             Assert.AreEqual(0, comparer.Compare(type1, type2));
@@ -495,7 +503,38 @@ namespace DynamoCoreWpfTests
 
             // Filter the node elements using the search field.
             searchViewModel.SearchAutoCompleteCandidates("ar");
-            Assert.AreEqual(5 , searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(4 , searchViewModel.FilteredResults.Count());
+        }
+
+        [Test]
+        public void CloseNodeAutocompleteWhenParentNodeDeleted()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("77aad5875f124bf59a4ece6b30813d3b").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(2, inPorts.Count());
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("DSCore.Color[]", type);
+
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = inPorts[0];
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+
+            // Get the matching node elements for the specific node port.
+            searchViewModel.PopulateAutoCompleteCandidates();
+            // Show Node AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            //remove the parent node
+            searchViewModel.dynamoViewModel.CurrentSpaceViewModel.Model.RemoveAndDisposeNode(nodeView.ViewModel.NodeModel);
+
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            //confirm if the AutoCompleteSearchBar is closed.
+            Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+
         }
 
         [Test]

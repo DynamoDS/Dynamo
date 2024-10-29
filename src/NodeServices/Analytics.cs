@@ -1,4 +1,7 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Dynamo.Logging
 {
@@ -9,9 +12,8 @@ namespace Dynamo.Logging
     {
         /// <summary>
         /// Disables all analytics collection for the lifetime of the process.
-        /// To ensure that no analytics get through, please set set this flag to false before the DynamoModel is constructed.
         /// </summary>
-        public static bool DisableAnalytics;
+        public static bool DisableAnalytics { get; internal set; }
 
         /// <summary>
         /// A dummy IDisposable class
@@ -21,7 +23,7 @@ namespace Dynamo.Logging
             public void Dispose() { }
         }
 
-        internal static IAnalyticsClient client = null;
+        internal static IAnalyticsClient client;
         
         /// <summary>
         /// Starts analytics client
@@ -39,9 +41,6 @@ namespace Dynamo.Logging
         internal static void ShutDown()
         {
             if (client != null) client.ShutDown();
-
-            IDisposable disposable = client as IDisposable;
-            if (disposable != null) disposable.Dispose();
             client = null;
         }
 
@@ -120,6 +119,15 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Tracks user/machine idle and active states while using the application.
+        /// </summary>
+        /// <param name="activityType">Defines the activity type i.e: machine or user</param>
+        public static void TrackActivityStatus(string activityType)
+        {
+            if (client != null) client.TrackActivityStatus(activityType);
+        }
+
+        /// <summary>
         /// Tracks an exception. If the exception is fatal, its recorded as crash.
         /// </summary>
         /// <param name="ex">Exception</param>
@@ -134,8 +142,6 @@ namespace Dynamo.Logging
             sb.AppendLine("Fatal: " + isFatal);
             sb.AppendLine("Message: " + ex.Message);
             sb.AppendLine("StackTrace: " + ex.StackTrace);
-
-            LogPiiInfo("Analytics.TrackException", sb.ToString());
         }
 
         /// <summary>
@@ -155,18 +161,61 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Creates a new task timed event with start state and tracks its start.
+        /// After the task is completed, disposing the returned event will record the event completion.
+        /// </summary>
+        /// <param name="category">Event category</param>
+        /// <param name="variable">Timed varaible name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <returns>Task defined by an IDisposable event</returns>
+        public static Task<IDisposable> CreateTaskTimedEvent(Categories category, string variable, string description = "", int? value = null)
+        {
+            if (client == null)
+            {
+                return Task.FromResult(new Dummy() as IDisposable);
+            }
+
+            return client.CreateTaskTimedEvent(category, variable, description, value);
+        }
+
+        /// <summary>
         /// Creates a new command event of the given name. Start of the 
         /// command is tracked. When the event is disposed, it's completion is tracked.
         /// </summary>
         /// <param name="name">Command name</param>
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
-        /// <returns>Event as IDisposable</returns>
+        /// <returns>Task defined by an IDisposable event</returns>
         public static IDisposable TrackCommandEvent(string name, string description = "", int? value = null)
         {
             if (client == null) return new Dummy();
 
             return client.CreateCommandEvent(name, description, value);
+        }
+
+        /// <summary>
+        /// Creates a new command event task of the given name. Start of the 
+        /// command is tracked. When the task is completed and the event is disposed, it's completion is tracked.
+        /// </summary>
+        /// <param name="name">Command name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        /// <param name="parameters">A dictionary of (string, object) associated with the event</param>
+        /// <returns>Task defined by an IDisposable event</returns>
+        public static Task<IDisposable> TrackTaskCommandEvent(string name, string description = "", int? value = null, IDictionary<string, object> parameters = null)
+        {
+            if (client == null)
+            {
+                return Task.FromResult(new Dummy() as IDisposable);
+            }
+
+            return client.CreateTaskCommandEvent(name, description, value, parameters);
+        }
+
+        public static void EndTaskCommandEvent(Task<IDisposable> taskEvent)
+        {
+            client?.EndEventTask(taskEvent);
         }
 
         /// <summary>
@@ -186,14 +235,22 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Logs usage data
+        /// Creates a new task file operation event and tracks the start of the event.
+        /// After the task is completed, disposing the returned event will record its completion.
         /// </summary>
-        /// <param name="tag">Usage tag</param>
-        /// <param name="data">Usage data</param>
-        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
-        public static void LogPiiInfo(string tag, string data)
+        /// <param name="filepath">File path</param>
+        /// <param name="operation">File operation</param>
+        /// <param name="size">Size parameter</param>
+        /// <param name="description">Event description</param>
+        /// <returns>Task defined by an IDisposable event</returns>
+        public static Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description = "")
         {
-            if (client != null) client.LogPiiInfo(tag, data);
+            if (client == null)
+            {
+                return Task.FromResult(new Dummy() as IDisposable);
+            }
+
+            return client.TrackTaskFileOperationEvent(filepath, operation, size, description);
         }
     }
 }

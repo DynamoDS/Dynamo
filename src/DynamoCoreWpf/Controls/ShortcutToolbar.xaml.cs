@@ -6,22 +6,19 @@ using System.Windows.Media.Imaging;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-#else
 using NotificationObject = Dynamo.Core.NotificationObject;
-#endif
 using Greg.AuthProviders;
 using System.Linq;
 using System.Windows;
 using System.Collections.Generic;
+using System;
 
 namespace Dynamo.UI.Controls
 {
     /// <summary>
     /// An object which provides the data for the shortcut toolbar.
     /// </summary>
-    public partial class ShortcutToolbar : UserControl
+    public partial class ShortcutToolbar : UserControl, IDisposable
     {
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarItems;
         private readonly ObservableCollection<ShortcutBarItem> shortcutBarRightSideItems;
@@ -42,6 +39,7 @@ namespace Dynamo.UI.Controls
             get { return shortcutBarRightSideItems; }
         }
         private readonly Core.AuthenticationManager authManager;
+        public readonly DynamoViewModel DynamoViewModel;
 
         /// <summary>
         /// Construct a ShortcutToolbar.
@@ -49,6 +47,7 @@ namespace Dynamo.UI.Controls
         /// <param name="dynamoViewModel"></param>
         public ShortcutToolbar(DynamoViewModel dynamoViewModel)
         {
+            DynamoViewModel = dynamoViewModel;
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
             shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();
 
@@ -57,12 +56,20 @@ namespace Dynamo.UI.Controls
             var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
             authManager = dynamoViewModel.Model.AuthenticationManager;
-            if (authManager.IsLoggedInInitial())
+            if (authManager != null)
             {
-                authManager.LoginStateChanged += SignOutHandler;
-            }
-            else {
-                logoutOption.Visibility = Visibility.Collapsed;
+                authManager.LoginStateChanged += AuthChangeHandler;
+                if (authManager.LoginState == LoginState.LoggedIn)
+                {
+                    if (loginMenu.Items.Count == 0)
+                    {
+                        loginMenu.Items.Add(logoutOption);
+                    }
+                }
+                else
+                {
+                    loginMenu.Items.Remove(logoutOption);
+                }
             }
 
             this.Loaded += ShortcutToolbar_Loaded;
@@ -72,16 +79,36 @@ namespace Dynamo.UI.Controls
         {
             IsSaveButtonEnabled = false;
             IsExportMenuEnabled = false;
+            DynamoViewModel.OnRequestShorcutToolbarLoaded(RightMenu.ActualWidth);
         }
 
-        private void SignOutHandler(LoginState status)
+        public void Dispose()
+        {
+            if(authManager != null)
+            {
+                authManager.LoginStateChanged -= AuthChangeHandler;
+            }
+            this.Loaded -= ShortcutToolbar_Loaded;
+        }
+
+        private void AuthChangeHandler(LoginState status)
         {
             if (status == LoginState.LoggedOut)
             {
                 LoginButton.ToolTip = Wpf.Properties.Resources.SignInButtonContentToolTip;
                 txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
                 logoutOption.Visibility = Visibility.Collapsed;
-                authManager.LoginStateChanged -= SignOutHandler;
+                loginMenu.Items.Remove(logoutOption);
+            }
+            else if (status == LoginState.LoggedIn)
+            {
+                txtSignIn.Text = authManager.Username;
+                LoginButton.ToolTip = null;
+                if (loginMenu.Items.Count == 0)
+                {
+                    loginMenu.Items.Add(logoutOption);
+                }
+                logoutOption.Visibility = Visibility.Visible;
             }
         }
 
@@ -116,7 +143,18 @@ namespace Dynamo.UI.Controls
                     tb.Text = authManager.Username;
                     logoutOption.Visibility = Visibility.Visible;
                     LoginButton.ToolTip = null;
-                    authManager.LoginStateChanged += SignOutHandler;
+                }
+            }
+        }
+
+        private void LogoutOption_Click(object sender, RoutedEventArgs e)
+        {
+            if (authManager.LoginState == LoginState.LoggedIn)
+            {
+                var result = Wpf.Utilities.MessageBoxService.Show(Application.Current?.MainWindow, Wpf.Properties.Resources.SignOutConfirmationDialogText, Wpf.Properties.Resources.SignOutConfirmationDialogTitle,MessageBoxButton.OKCancel, new List<string>() { "Sign Out", "Cancel"}, MessageBoxImage.Information);
+                if (result == MessageBoxResult.OK)
+                {
+                    authManager.ToggleLoginState(null);
                 }
             }
         }
