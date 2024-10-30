@@ -834,16 +834,15 @@ namespace GraphLayout
             if(StartNode!= null)
             {
                 StartNode.RightEdges.Add(this);
+                NodeStartOffsetY = startY - StartNode.Y;
             }       
 
             EndNode = OwnerGraph.FindNode(endId);
             if (EndNode != null)
             {
                 EndNode.LeftEdges.Add(this);
+                NodeEndOffsetY = endY - EndNode.Y;
             }
-                
-            NodeStartOffsetY = startY - StartNode.Y;
-            NodeEndOffsetY = endY - EndNode.Y;
         }
     }
 }
