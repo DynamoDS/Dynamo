@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -12,7 +14,10 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Scheduler;
 using Dynamo.Search.SearchElements;
+using DynamoUtilities;
 using Moq;
 using NUnit.Framework;
 
@@ -644,6 +649,56 @@ namespace Dynamo.PackageManager.Tests
             loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
         }
 
+        [Test]
+        public void LoadPackagesInAssemblyIsolation()
+        {
+            // Needed for FeatureFlags
+            Assert.IsTrue(DynamoModel.IsTestMode);
+            Assert.AreEqual(DynamoModel.FeatureFlags.CheckFeatureFlag<string>("IsolatePackages", ""), "Package1,Package2");
+
+            var loader = GetPackageLoader();
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+
+            var packageDirectory = Path.Combine(TestDirectory, "testAssemblyIsolation", "Package1");
+            var packageDirectory2 = Path.Combine(TestDirectory, "testAssemblyIsolation", "Package2");
+            var package1 = Package.FromDirectory(packageDirectory, CurrentDynamoModel.Logger);
+            var package2 = Package.FromDirectory(packageDirectory2, CurrentDynamoModel.Logger);
+            loader.LoadPackages([package1, package2]);
+
+            // 2 packages loaded as expected
+            var expectedLoadedPackageNum = 0;
+            foreach (var pkg in loader.LocalPackages)
+            {
+                if (pkg.Name == "Package1" || pkg.Name == "Package2")
+                {
+                    expectedLoadedPackageNum++;
+                }
+            }
+            Assert.AreEqual(2, expectedLoadedPackageNum);
+
+            string openPath = Path.Combine(TestDirectory, @"testAssemblyIsolation\graph.dyn");
+            RunModel(openPath);
+
+            var expectedVersions = 0;
+            var pkgLoadContexts = AssemblyLoadContext.All.Where(x => x.Name.Equals("Package1@1.0.0") || x.Name.Equals("Package2@1.0.0")).ToList();
+            foreach (var pkg in pkgLoadContexts)
+            {
+                var dep = pkg.Assemblies.FirstOrDefault(x => x.GetName().Name == "Newtonsoft.Json");
+                Assert.IsNotNull(dep);
+
+                var ver = dep.GetName().Version.ToString();
+                // Expected both versions of Newtonsoft to be loaded
+                if (ver == "13.0.0.0" || ver == "8.0.0.0")
+                {
+                    expectedVersions++;
+                }
+            }
+            Assert.AreEqual(2, expectedVersions);
+        }
  
         [Test]
         public void LoadingConflictingCustomNodePackageDoesNotGetLoaded()
