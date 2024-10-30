@@ -56,7 +56,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Const used for zoom-to-fit calculations for nodes and groups in the workspace.
         /// </summary>
-        public const double ZoomToFitPaddingFactor = 3.5;
+        public static readonly double ZoomToFitPaddingFactor = 3.5;
 
         #endregion
 
