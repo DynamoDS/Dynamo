@@ -8,6 +8,9 @@ namespace ProtoCore.Utils
 {
     public static class StringUtils
     {
+        internal const string DynamoPreferencesNumberFormat = nameof(DynamoPreferencesNumberFormat);
+        internal const string LEGACYFORMATTING = nameof(LEGACYFORMATTING);
+
         public static int CompareString(StackValue s1, StackValue s2, RuntimeCore runtimeCore)
         {
             if (!s1.IsString || !s2.IsString)
@@ -27,30 +30,41 @@ namespace ProtoCore.Utils
             return mirror.GetStringValue(sv, runtimeCore.RuntimeMemory.Heap, 0, true);
         }
 
+        //used by legacy ToString methods without format specifier.
         public static StackValue ConvertToString(StackValue sv, RuntimeCore runtimeCore, ProtoCore.Runtime.RuntimeMemory rmem)
         {
-            return ConvertToStringInternal(sv, runtimeCore,false);
+            //maintain old behavior of existing string conversion nodes by passing null for formatSpecifier.
+            return ConvertToStringInternal(sv, runtimeCore, null);
         }
+        //used by new ToString methods with format specifier.
         internal static StackValue ConvertToString(IEnumerable<StackValue> args, RuntimeCore runtimeCore, ProtoCore.Runtime.RuntimeMemory rmem)
         {
-            var useNumericFormat = false;
+            //TODO dislike this as a default...
+            var formatSpecifier = DynamoPreferencesNumberFormat;
             var sv = args.ElementAt(0);
             if (args.Count() > 1)
-            {
-                useNumericFormat = args.ElementAt(1).BooleanValue;
+            {   //TODO performance concern?
+                formatSpecifier = GetStringValue(args.ElementAt(1),runtimeCore);
             }
-            return ConvertToStringInternal(sv, runtimeCore, useNumericFormat);
+            return ConvertToStringInternal(sv, runtimeCore, formatSpecifier);
         }
 
-        //TODO support std format strings?
-        private static StackValue ConvertToStringInternal(StackValue sv, RuntimeCore runtimeCore,bool useNumericFormat)
+        private static StackValue ConvertToStringInternal(StackValue sv, RuntimeCore runtimeCore, string formatSpecifier)
         {
             StackValue returnSV;
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror =
                 new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(runtimeCore), runtimeCore);
-            returnSV = ProtoCore.DSASM.StackValue.BuildString(
-                mirror.GetStringValue2(sv, runtimeCore.RuntimeMemory.Heap, 0, true, useNumericFormat), runtimeCore.RuntimeMemory.Heap);
+            if (formatSpecifier == null)
+            {
+                returnSV = ProtoCore.DSASM.StackValue.BuildString(
+               mirror.GetStringValue(sv, runtimeCore.RuntimeMemory.Heap, 0, true), runtimeCore.RuntimeMemory.Heap);
+            }
+            else
+            {
+                returnSV = ProtoCore.DSASM.StackValue.BuildString(
+                    mirror.GetStringValueUsingFormat(sv, formatSpecifier, runtimeCore.RuntimeMemory.Heap, 0, true), runtimeCore.RuntimeMemory.Heap);
+            }
             return returnSV;
         }
 

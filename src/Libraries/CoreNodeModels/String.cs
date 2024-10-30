@@ -32,15 +32,6 @@ namespace CoreNodeModels
         {
             AssociativeNode rhs = null;
 
-            //to avoid needing to add a different builtin function for stringFromObject conversion
-            //we add a default value of false to old node calls, which will only have 1 parameter, the string.
-            //new calls will have 2 parameters. the string and the numeric format option.
-            if (inputAstNodes.Count < 2)
-            {
-                //force to false for use numeric to keep old behavior of this node.
-                inputAstNodes.Add(AstFactory.BuildBooleanNode(false));
-            }
-
             if (IsPartiallyApplied)
             {
                 var connectedInputs = new List<AssociativeNode>();
@@ -71,7 +62,7 @@ namespace CoreNodeModels
         }
     }
 
-    [NodeName("String from Object")]
+    [NodeName("String from Object And Format")]
     [NodeDescription("StringfromObjectDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromObjectSearchTags", typeof(Resources))]
@@ -81,25 +72,26 @@ namespace CoreNodeModels
     {
         [JsonConstructor]
         private StringFromObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
-            base("__ToStringFromObject", inPorts, outPorts)
+            base("__ToStringFromObjectAndFormat", inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             //TODO looks like our nodemodel json constructor base implementation needs some work
             //I see this in a few node model nodes that use default vals.
             if (inPorts?.Count() > 1)
-            {
-                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildBooleanNode(false);
+            {   
+                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("F6");
             }
         }
 
-        public StringFromObject() : base("__ToStringFromObject")
+        public StringFromObject() : base("__ToStringFromObjectAndFormat")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("object", Resources.FromObjectPortDataObjToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this,
-                    new PortData("useNumericFormat",
-                        "should the numeric precision format be used when converting doubles",
-                        AstFactory.BuildBooleanNode(false))));
+                    new PortData("formatSpecifier",
+                    //TODO add more info here in localized form.
+                        "format specifier for numeric values",
+                        AstFactory.BuildStringNode("F6"))));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromObjectPortDataResultToolTip)));
             RegisterAllPorts();
         }
@@ -131,7 +123,7 @@ namespace CoreNodeModels
         }
     }
 
-    [NodeName("String from Array2")]
+    [NodeName("String from Array And Format")]
     [NodeDescription("StringfromArrayDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromArraySearchTags", typeof(Resources))]
@@ -142,25 +134,26 @@ namespace CoreNodeModels
     {
         [JsonConstructor]
         private StringFromArray(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
-            base("__ToStringFromArray", inPorts, outPorts)
+            base("__ToStringFromArrayAndFormat", inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             //TODO looks like our nodemodel json constructor base implementation needs some work
             //I see this in a few node model nodes that use default vals.
-            if(inPorts?.Count()>1)
+            if (inPorts?.Count() > 1)
             {
-                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildBooleanNode(false);
+                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("F6");
             }
         }
 
-        public StringFromArray() : base("__ToStringFromArray")
+        public StringFromArray() : base("__ToStringFromArrayAndFormat")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("array", Resources.FromArrayPortDataArrayToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("useNumericFormat",
-                    "should the numeric precision format be used when converting doubles",
-                    AstFactory.BuildBooleanNode(false))));
+                new PortData("formatSpecifier",
+                        //TODO add more info here in localized form.
+                        "format specifier for numeric values",
+                    AstFactory.BuildStringNode("F6"))));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromArrayPortDataResultToolTip)));
             RegisterAllPorts();
         }

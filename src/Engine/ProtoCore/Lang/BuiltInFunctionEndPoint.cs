@@ -374,9 +374,15 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.ToStringFromObject:
                 case BuiltInMethods.MethodID.ToStringFromArray:
                     {
-                        ret = StringUtils.ConvertToString(formalParameters, runtimeCore, rmem);
+                        ret = StringUtils.ConvertToString(formalParameters[0], runtimeCore, rmem);
+                        break;
                     }
-                    break;
+                case BuiltInMethods.MethodID.ToStringFromObjectAndFormat:
+                case BuiltInMethods.MethodID.ToStringFromArrayAndFormat:
+                    {
+                        ret = StringUtils.ConvertToString(formalParameters, runtimeCore, rmem);
+                        break;
+                    }
                 case BuiltInMethods.MethodID.ImportData:
                     ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], runtimeCore, interpreter, c);
                     break;
