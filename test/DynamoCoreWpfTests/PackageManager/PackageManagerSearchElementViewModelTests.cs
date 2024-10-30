@@ -559,6 +559,121 @@ namespace Dynamo.PackageManager.Wpf.Tests
         }
 
         /// <summary>
+        /// Validates that after setting compatibility filters in the package search,
+        /// we get an intersection of results based on selected compatibility options.
+        /// </summary>
+        [Test]
+        public void PackageSearchDialogSearchTestCompatibilityFilters()
+        {
+            // Arrange
+            int numberOfPackages = 6;
+            string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
+            string packageVersionNumber = "1.0.0.0";
+            string compatibleFilterName = Dynamo.Wpf.Properties.Resources.PackageCompatible;
+            string incompatibleFilterName = Dynamo.Wpf.Properties.Resources.PackageIncompatible;
+            string unknownCompatibilityFilterName = Dynamo.Wpf.Properties.Resources.PackageUnknownCompatibility;
+
+            // Compatible, Incompatible, and Unknown Compatibility Packages
+            List<string> compatiblePackagesName = new List<string> { "DynamoIronPython2.7", "dynamo", "Celery for Dynamo 2.5" };
+            List<string> incompatiblePackagesName = new List<string> { "IncompatPackage1", "IncompatPackage2" };
+            List<string> unknownCompatibilityPackagesName = new List<string> { "DynamoXCompatPackage" };
+
+            var mockGreg = new Mock<IGregClient>();
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+
+            var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchViewModel.RegisterTransientHandlers();
+
+            // Adding Compatibility filters
+            packageManagerSearchViewModel.CompatibilityFilter = new List<FilterEntry>
+            {
+                new FilterEntry(compatibleFilterName, "Filter by compatibility", "Compatible Packages", packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(incompatibleFilterName, "Filter by compatibility", "Incompatible Packages", packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(unknownCompatibilityFilterName, "Filter by compatibility", "Unknown Compatibility Packages", packageManagerSearchViewModel) { OnChecked = false },
+            };
+
+            // Adding compatible packages
+            foreach (var package in compatiblePackagesName)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, created = DateTime.Now.ToString() };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                }), false);
+                tmpPackage.IsSelectedVersionCompatible = true;
+                packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
+            }
+
+            // Adding incompatible packages
+            foreach (var package in incompatiblePackagesName)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, created = DateTime.Now.ToString() };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                }), false);
+                tmpPackage.IsSelectedVersionCompatible = false;
+                packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
+            }
+
+            // Adding unknown compatibility packages
+            foreach (var package in unknownCompatibilityPackagesName)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, created = DateTime.Now.ToString() };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                }), false);
+                tmpPackage.IsSelectedVersionCompatible = null;
+                packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
+            }
+
+            //We need to add the PackageManagerSearchElementViewModel because fitlers act on the LastSync results
+            packageManagerSearchViewModel.LastSync = new List<PackageManagerSearchElement>();
+            foreach (var result in packageManagerSearchViewModel.SearchResults)
+            {
+                var sem = result.SearchElementModel;
+                sem.SelectedVersion.IsCompatible = result.IsSelectedVersionCompatible;
+                packageManagerSearchViewModel.LastSync.Add(sem);
+            }
+
+            // Validate the total added packages match
+            Assert.That(packageManagerSearchViewModel.SearchResults.Count == numberOfPackages);
+
+            // Act & Assert
+            // Check the Compatible filter
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = true;
+            packageManagerSearchViewModel.CompatibilityFilter[0].FilterCommand.Execute(string.Empty);
+            Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
+            Assert.That(packageManagerSearchViewModel.SearchResults.Count == compatiblePackagesName.Count, "Filtered results do not match the compatible packages");
+
+            // Reset (Filters are not mutually exclusive)
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = false;
+
+            // Check the Incompatible filter
+            packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = true;
+            packageManagerSearchViewModel.CompatibilityFilter[1].FilterCommand.Execute(string.Empty);
+            Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
+            Assert.That(packageManagerSearchViewModel.SearchResults.Count == incompatiblePackagesName.Count, "Filtered results do not match the incompatible packages");
+
+            // Reset (Filters are not mutually exclusive)
+            packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = false;
+
+            // Check the Unknown Compatibility filter
+            packageManagerSearchViewModel.CompatibilityFilter[2].OnChecked = true;
+            packageManagerSearchViewModel.CompatibilityFilter[2].FilterCommand.Execute(string.Empty);
+            Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
+            Assert.That(packageManagerSearchViewModel.SearchResults.Count == unknownCompatibilityPackagesName.Count, "Filtered results do not match the unknown compatibility packages");
+        }
+
+        /// <summary>
         /// This unit test will validate that we can search packages in different languages and they will be found.
         /// </summary>
         [Test]

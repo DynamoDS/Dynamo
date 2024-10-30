@@ -238,17 +238,17 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private List<FilterEntry> _compatibilityFilter;
+        private List<FilterEntry> compatibilityFilter;
 
         /// <summary>
         /// Compatibility filters (Compatible, Non-compatible, Unknown)
         /// </summary>
         public List<FilterEntry> CompatibilityFilter
         {
-            get { return _compatibilityFilter; }
+            get { return compatibilityFilter; }
             set
             {
-                _compatibilityFilter = value;
+                compatibilityFilter = value;
                 RaisePropertyChanged(nameof(CompatibilityFilter));
             }
         }
@@ -1707,6 +1707,9 @@ namespace Dynamo.PackageManager
 
             nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
             nonHostFilter.Clear();
+
+            compatibilityFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+            compatibilityFilter.Clear();
 
             if (aTimer != null)
             {
