@@ -49,17 +49,17 @@ namespace Dynamo.Python
 
         internal IronPythonCompletionData(IExternalCodeCompletionData data)
         {
-            Text = data.Text;
+            this.Text = data.Text;
+            this.Description = data.Description;
 
             BuildCompletionTypeToIconMap();
 
             Image = TypeToIcon[ConvertCompletionType(data.CompletionType)];
 
-            description = new Lazy<string>(() => data.Description);
         }
 
         public System.Windows.Media.ImageSource Image { get; }
-
+       
         public string Text { get; private set; }
 
         public string Stub { get; private set; }
@@ -72,8 +72,7 @@ namespace Dynamo.Python
             get { return Text; }
         }
 
-        private readonly Lazy<string> description = null;
-        public object Description => description?.Value ?? "";
+        public object Description { get; private set; }
 
 
         public double Priority { get { return 0; } }
