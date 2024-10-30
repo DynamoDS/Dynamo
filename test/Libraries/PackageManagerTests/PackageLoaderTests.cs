@@ -654,7 +654,7 @@ namespace Dynamo.PackageManager.Tests
         {
             // Needed for FeatureFlags
             Assert.IsTrue(DynamoModel.IsTestMode);
-            Assert.AreEqual(DynamoModel.FeatureFlags.CheckFeatureFlag<string>("IsolatePackages", ""), "Package1,Package2");
+            Assert.AreEqual("Package1,Package2", DynamoModel.FeatureFlags.CheckFeatureFlag<string>("IsolatePackages", ""));
 
             var loader = GetPackageLoader();
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
