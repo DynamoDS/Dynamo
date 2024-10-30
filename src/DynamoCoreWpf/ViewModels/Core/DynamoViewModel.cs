@@ -1438,6 +1438,8 @@ namespace Dynamo.ViewModels
                     new DynamoModel.UpdateModelValueCommand(
                         workspaceGUID, pythonNode.GUID, nameof(pythonNode.EngineName), engine));
                 pythonNode.OnNodeModified();
+                Analytics.TrackEvent(Actions.Switch, Categories.PythonOperations, engine);
+                Model.Logger.Log("Updated python node(" + pythonNode.GUID.ToString() + ") engine to use " + engine, LogLevel.Console);
             }
             catch(Exception ex)
             {
