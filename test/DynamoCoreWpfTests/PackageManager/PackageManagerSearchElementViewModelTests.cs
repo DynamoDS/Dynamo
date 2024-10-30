@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
 using Dynamo.PackageManager.ViewModels;
+using Dynamo.Search;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
 using Greg;
@@ -721,6 +722,72 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
             //Assert - validate order by Votes
             Assert.IsTrue(isOrderedByVotes && packageManagerSearchVM.SearchResults.Count != 0);
+        }
+
+        /// <summary>
+        /// This unit test will validate that the search for package with whitespace in the name.
+        /// </summary>
+        [Test]
+        public void PackageSearchWithWhitespaceInName()
+        {
+            var packagesListNames =  new List<string> { "Dynamo Samples", "archi-lab.net", "LunchBox for Dynamo", "DynamoSap", "TuneUp" };
+            string packageId = Guid.NewGuid().ToString();
+            string packageVersionNumber = "1.0.0.0";
+            string packageCreatedDateString = "2016 - 10 - 02T13:13:20.135000 + 00:00";
+            string formItFilterName = "FormIt";
+            var packageMaintainer = new User() { username = "DynamoTest", _id = "90-63-17" };
+
+            List<PackageHeader> packageHeaders = new List<PackageHeader>();
+            var mockGreg = new Mock<IGregClient>();
+
+            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object) { CallBase = true };
+            List<PackageManagerSearchElement> cachedPackages = new List<PackageManagerSearchElement>();
+            foreach (var packageName in packagesListNames)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, host_dependencies = new List<string> { formItFilterName }, created = packageCreatedDateString };
+                cachedPackages.Add(new PackageManagerSearchElement(new PackageHeader() { name = packageName, versions = new List<PackageVersion> { tmpPackageVersion } }));
+            }
+            pmCVM.SetupProperty(p => p.CachedPackageList, cachedPackages);
+
+            LuceneSearch.LuceneUtilityPackageManager = null;
+            var packageManagerSearchVM = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchVM.RegisterTransientHandlers();
+
+            //Adding packages
+            foreach (var package in packagesListNames)
+            {
+                var tmpPackageVersion = new PackageVersion
+                {
+                    version = packageVersionNumber,
+                    host_dependencies = new List<string> { formItFilterName },
+                    created = packageCreatedDateString
+                };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                    host_dependencies = new List<string> { formItFilterName },
+                    maintainers = new List<User> { packageMaintainer },
+                }), false);
+                packageManagerSearchVM.AddToSearchResults(tmpPackage);
+            }
+
+            foreach (var package in packageManagerSearchVM.SearchResults)
+            {
+                var iDoc = packageManagerSearchVM.LuceneUtility.InitializeIndexDocumentForPackages();
+                packageManagerSearchVM.AddPackageToSearchIndex(package.SearchElementModel, iDoc);
+            }
+
+            packageManagerSearchVM.LuceneUtility.CommitWriterChanges();
+
+            var packagesSearchResult = packageManagerSearchVM.Search("Dynamo Samples", true);
+
+            //Validates that the Search returned results and that the first one is "Dynamo Samples"
+            Assert.IsTrue(packagesSearchResult != null, "The Search didn't return any results");
+            Assert.IsTrue(packagesSearchResult.Count() >= 1, string.Format("The number of results returned by search are: {0}", packagesSearchResult.Count()));
+            Assert.IsTrue(packagesSearchResult.FirstOrDefault().Name == "Dynamo Samples", string.Format("The first search result {0} doesn't match with the expected: {1}: ", packagesSearchResult.FirstOrDefault().Name, "Dynamo Samples"));
         }
 
         [Test]

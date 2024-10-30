@@ -608,7 +608,7 @@ namespace Dynamo.PackageManager
         {
             if (LuceneUtility.addedFields == null) return;
 
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name.Trim().Replace(" ", string.Empty));
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Author), package.Maintainers);
 
@@ -1563,7 +1563,7 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         private PackageManagerSearchElementViewModel GetViewModelForPackageSearchElement(string packageName)
         {
-            var result = PackageManagerClientViewModel.CachedPackageList.Where(e => e.Name.Equals(packageName));
+            var result = PackageManagerClientViewModel.CachedPackageList.Where(e => e.Name.Replace(" ", string.Empty).Equals(packageName));
 
             if (!result.Any())
             {
