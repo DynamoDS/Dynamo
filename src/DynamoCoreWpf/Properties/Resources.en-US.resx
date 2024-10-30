@@ -4075,4 +4075,25 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PackageManagerIncompatibleVersionDownloadTitle" xml:space="preserve">
     <value>Incompatible version</value>
   </data>
+  <data name="PackageFilterByCompatibility" xml:space="preserve">
+    <value>VERSION COMPATIBILITY</value>
+  </data>
+  <data name="PackageCompatible" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="PackageCompatibleFilterTooltip" xml:space="preserve">
+    <value>Versions compatible with the current setup</value>
+  </data>
+  <data name="PackageUnknownCompatibility" xml:space="preserve">
+    <value>Unknown compatibility</value>
+  </data>
+  <data name="PackageUnknownCompatibilityFilterTooltip" xml:space="preserve">
+    <value>Compatibility of package version cannot be verified</value>
+  </data>
+  <data name="PackageIncompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="PackageIncompatibleFilterTooltip" xml:space="preserve">
+    <value>Versions maybe incompatible with the current setup</value>
+  </data>
 </root>
