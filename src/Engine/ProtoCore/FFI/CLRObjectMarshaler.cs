@@ -159,7 +159,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            if (double.IsInfinity(dsObject.DoubleValue))
+            if (double.IsInfinity(dsObject.DoubleValue) || double.IsNaN(dsObject.DoubleValue))
             {
                 return CastToDouble(dsObject.DoubleValue);
             }

@@ -1438,6 +1438,8 @@ namespace Dynamo.ViewModels
                     new DynamoModel.UpdateModelValueCommand(
                         workspaceGUID, pythonNode.GUID, nameof(pythonNode.EngineName), engine));
                 pythonNode.OnNodeModified();
+                Analytics.TrackEvent(Actions.Switch, Categories.PythonOperations, engine);
+                Model.Logger.Log("Updated python node(" + pythonNode.GUID.ToString() + ") engine to use " + engine, LogLevel.Console);
             }
             catch(Exception ex)
             {
@@ -3194,8 +3196,11 @@ namespace Dynamo.ViewModels
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
+                if (this.ShowStartPage)
+                {
+                    OnEnableShortcutBarItems(false);
+                }
                 RunSettings.ForceBlockRun = false;
-                OnEnableShortcutBarItems(false);
                 OnRequestCloseHomeWorkSpace();
             }
         }

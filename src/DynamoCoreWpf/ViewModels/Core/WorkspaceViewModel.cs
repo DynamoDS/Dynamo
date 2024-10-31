@@ -1547,9 +1547,14 @@ namespace Dynamo.ViewModels
                 
             }
 
-            var offset = new Point2D(minX, minY);
-            double focusWidth = maxX - minX;
-            double focusHeight = maxY - minY;
+            // Add padding to the calculated bounding box for better visibility
+            double focusWidth = (maxX - minX) * Configurations.ZoomToFitPaddingFactor;
+            double focusHeight = (maxY - minY) * Configurations.ZoomToFitPaddingFactor;
+
+            // Adjust offset to ensure the view is centered with the padding
+            double offsetX = minX - (focusWidth - (maxX - minX)) / 2.0;
+            double offsetY = minY - (focusHeight - (maxY - minY)) / 2.0;
+            var offset = new Point2D(offsetX, offsetY);
 
             ZoomEventArgs zoomArgs;
 

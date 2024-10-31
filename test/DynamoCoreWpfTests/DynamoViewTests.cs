@@ -113,6 +113,34 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void TestHomeWorkspaceClosedBeforeCustomNode()
+        {
+            Open(@"core\CustomNodes\TestAdd.dyn");
+
+            Open(@"core\CustomNodes\add.dyf");
+
+            ViewModel.UIDispatcher.Invoke(new Action(() =>
+            {
+                DynamoModel.SwitchTabCommand switchCommand =
+                    new DynamoModel.SwitchTabCommand(0);
+
+                ViewModel.ExecuteCommand(switchCommand);
+            }));
+            Assert.AreEqual(ViewModel.Model.Workspaces.Count(), 2);
+
+            DynamoModel.IsTestMode = false;
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+            DynamoModel.IsTestMode = true;  
+
+            //the workspace count is still 2, since the homeworkspace was replaced by default workspace,
+            //and second is custom workspace that is still open.
+            Assert.AreEqual(ViewModel.Model.Workspaces.Count(), 2);
+
+            //assert that save button is still enabled
+            Assert.IsTrue(View.saveButton.IsEnabled);
+        }
+
+        [Test]
         public void ElementBinding_SaveAs()
         {
             var prebindingPathInTestDir = @"core\callsite\trace_test-prebinding.dyn";
