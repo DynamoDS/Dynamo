@@ -685,7 +685,14 @@ namespace Dynamo.Models
 
             if (PreferenceSettings != null)
             {
-                SetUICulture(PreferenceSettings.Locale);
+                // Setting the locale for Dynamo from loaded Preferences only when
+                // In a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
+                // Language is specified, otherwise Default setting means following host locale
+                if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName) || !PreferenceSettings.Locale.Equals(Configuration.Configurations.SupportedLocaleList.First()))
+                {
+                    SetUICulture(PreferenceSettings.Locale);
+                }
+
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
