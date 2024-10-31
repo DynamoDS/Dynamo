@@ -225,7 +225,9 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             // Arrange
             var testOutputDirName = "TestMdOutput_CoreNodeModels";
- 
+            //these are new files/nodes so there is no dictionary content fo them.
+            var filesToSkip = new string[] { "CoreNodeModels.StringFromArray", "CoreNodeModels.StringFromObject" };
+                
             var coreNodeModelsDll = Path.Combine(DynamoCoreNodesDir, CORENODEMODELS_DLL_NAME);
             Assert.That(File.Exists(coreNodeModelsDll));
 
@@ -250,8 +252,8 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             //assert that the generated markdown files all contain an "indepth section" from the dictionary entry, which means
             //they were all found.
-
-            Assert.True(generatedFileNames.Where(x=>Path.GetExtension(x).Contains("md")).All(x => File.ReadAllText(x).ToLower().Contains("in depth")));
+            var generatedFileNamesSubset = generatedFileNames.Where(x => !filesToSkip.Contains(Path.GetFileNameWithoutExtension(x)));
+            Assert.True(generatedFileNamesSubset.Where(x=>Path.GetExtension(x).Contains("md")).All(x => File.ReadAllText(x).ToLower().Contains("in depth")));
           
         }
 
