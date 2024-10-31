@@ -21,7 +21,7 @@ namespace ProtoCore.DSASM.Mirror
         public string SymbolName { get; private set; } 
     }
 
-    //Status: Draft, experiment
+    //Status: Draft, experiment :)
     
     /// <summary>
     /// Provides reflective capabilities over the execution of a DSASM Executable
@@ -112,8 +112,13 @@ namespace ProtoCore.DSASM.Mirror
                 {
                     return val.IntegerValue.ToString();
                 }
+                //TODO I am not sure if it's best to just return null or some message here
+                //or if we should catch the error higher up where we can log a runtime warning.
+                //currently we are doing the latter.
 
+                //return val.IntegerValue.SafeToStringWithFormat(formatSpecifier);
                 return val.IntegerValue.ToString(formatSpecifier);
+
             }
 
             if (val.IsDouble)
@@ -123,6 +128,7 @@ namespace ProtoCore.DSASM.Mirror
                 {
                     return val.DoubleValue.ToString("F6");
                 }
+                //return val.DoubleValue.SafeToStringWithFormat(formatSpecifier);
                 return val.DoubleValue.ToString(formatSpecifier);
             }
 

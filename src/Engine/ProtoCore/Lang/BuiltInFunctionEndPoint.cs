@@ -380,7 +380,17 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.ToStringFromObjectAndFormat:
                 case BuiltInMethods.MethodID.ToStringFromArrayAndFormat:
                     {
-                        ret = StringUtils.ConvertToString(formalParameters, runtimeCore, rmem);
+                        try
+                        {
+                            ret = StringUtils.ConvertToString(formalParameters, runtimeCore, rmem);
+                        }
+                        catch(System.FormatException fe)
+                        {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.InvalidArguments, fe.Message);
+                            //TODO reuse this string instead of allocating a new one each time?
+                            //the message could be different...
+                            ret = StackValue.BuildString(fe.Message,runtimeCore.Heap);
+                        }
                         break;
                     }
                 case BuiltInMethods.MethodID.ImportData:

@@ -24,6 +24,26 @@ namespace ProtoCore.Utils
             return string.Compare(str1, str2);
         }
 
+        /// <summary>
+        /// Wraps ToString(format) in a try catch. Will return empty string if format is not valid for the target type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
+        /// <param name="Format"></param>
+        /// <returns>Will return empty string if format is not valid for the target type.</returns>
+        internal static string SafeToStringWithFormat<T>(this T target, string Format)
+            where T : IFormattable
+        {
+            try
+            {
+                return target.ToString(Format, null);
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         public static string GetStringValue(StackValue sv, RuntimeCore runtimeCore)
         {
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(runtimeCore), runtimeCore);
@@ -57,7 +77,7 @@ namespace ProtoCore.Utils
                 new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(runtimeCore), runtimeCore);
             if (formatSpecifier == null)
             {
-                returnSV = ProtoCore.DSASM.StackValue.BuildString(
+               returnSV = ProtoCore.DSASM.StackValue.BuildString(
                mirror.GetStringValue(sv, runtimeCore.RuntimeMemory.Heap, 0, true), runtimeCore.RuntimeMemory.Heap);
             }
             else

@@ -447,6 +447,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestNumberToString_normal_numericFormat.dyn");
             CurrentDynamoModel.PreferenceSettings.NumberFormat = "f1";
             RunModel(testFilePath);
+            var watch0 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch0").FirstOrDefault().GUID.ToString();
             var watch1 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch1").FirstOrDefault().GUID.ToString();
             var watch2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch2").FirstOrDefault().GUID.ToString();
             var watch3 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch3").FirstOrDefault().GUID.ToString();
@@ -454,28 +455,15 @@ namespace Dynamo.Tests
             var watch5 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch5").FirstOrDefault().GUID.ToString();
             var watch6 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch6").FirstOrDefault().GUID.ToString();
             var watch7 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch7").FirstOrDefault().GUID.ToString();
-            var useNumericFormat = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "Boolean").FirstOrDefault().GUID.ToString();
 
-            AssertPreviewValue(watch1, 123456789);
-            AssertPreviewValue(watch2, -123456789);
-            AssertPreviewValue(watch3, 3.46);
-            AssertPreviewValue(watch4, -3.46);
-            AssertPreviewValue(watch5, "3.460000");
-            AssertPreviewValue(watch6, "-3.460000");
-            AssertPreviewValue(watch7, "{key:0.000000000}");
-
-            //flip use numeric format on.
-            var uvc = new DynamoModel.UpdateModelValueCommand(useNumericFormat, "Value", "true");
-            uvc.Execute(CurrentDynamoModel);
-            RunCurrentModel();
-
-            AssertPreviewValue(watch1, 123456789);
-            AssertPreviewValue(watch2, -123456789);
-            AssertPreviewValue(watch3, 3.5);
-            AssertPreviewValue(watch4, -3.5);
-            AssertPreviewValue(watch5, "3.5");
-            AssertPreviewValue(watch6, "-3.5");
-            AssertPreviewValue(watch7, "{key:0.000000000}");
+            AssertPreviewValue(watch0, "123456789.000000");
+            AssertPreviewValue(watch1, new string[]{ "123456789.000", "123456789.0", "123456789", "111010110111100110100010101" });
+            AssertPreviewValue(watch2, new string[] { "-123456789.000", "-123456789.0", "-123456789", "1111111111111111111111111111111111111000101001000011001011101011" });
+            AssertPreviewValue(watch3, new string[] { "3.460", "3.5", "3.46", "Format specifier was invalid." });
+            AssertPreviewValue(watch4, new string[] { "-3.460", "-3.5", "-3.46", "Format specifier was invalid." });
+            AssertPreviewValue(watch5, new string[] { "5.000", "5.0", "5", "101" });
+            AssertPreviewValue(watch6, new string[] { "{key:0.000000000}", "{key:0.000000000}", "{key:0.000000000}", "{key:0.000000000}" });
+            AssertPreviewValue(watch7, new string[] { "{key:5}", "{key:5}", "{key:5}", "{key:5}" });
         }
 
         #endregion
@@ -909,16 +897,16 @@ namespace Dynamo.Tests
         public void TestStringFromArray2()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestStringFromArrayPreview_numericformat.dyn");
-            CurrentDynamoModel.PreferenceSettings.NumberFormat = "f1";
+            //CurrentDynamoModel.PreferenceSettings.NumberFormat = "f1";
             RunModel(testFilePath);
-            var watch1 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "watch1").FirstOrDefault().GUID.ToString();
-            var watch2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "watch2").FirstOrDefault().GUID.ToString();
-            var watch3 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "watch3").FirstOrDefault().GUID.ToString();
-            var watch4 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "watch4").FirstOrDefault().GUID.ToString();
+            var watch1 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch1").FirstOrDefault().GUID.ToString();
+            var watch2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch2").FirstOrDefault().GUID.ToString();
+            var watch3 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch3").FirstOrDefault().GUID.ToString();
+            var watch4 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch4").FirstOrDefault().GUID.ToString();
 
             AssertPreviewValue(watch1, "[1.000000,1.666667,2.333333,3.000000]");
             AssertPreviewValue(watch2, "[1.000000,1.666667,2.333333,3.000000]");
-            AssertPreviewValue(watch3, "[1.0,1.7,2.3,3.0]");
+            AssertPreviewValue(watch3, new string[] { "[1.0,1.7,2.3,3.0]", "[1,1.6666666666666667,2.3333333333333335,3]", "Format specifier was invalid." });
             AssertPreviewValue(watch4, "Function");
 
         }
