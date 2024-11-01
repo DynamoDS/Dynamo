@@ -607,5 +607,30 @@ import(""FFITarget.dll"");
             thisTest.Verify("b2", new string[]{"1.1","FFITarget.ClassFunctionality"});
             thisTest.Verify("b3", new string[] { "101", "FFITarget.ClassFunctionality","Format specifier was invalid." });
         }
+        [Test]
+        public void TestStringFromObjectFormat_Prefs1()
+        {
+            String code =
+    @"
+                b1 = __ToStringFromObjectAndFormat(1.123456789, ""DynamoPreferencesNumberFormat"");  
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b1", "1.123");
+        }
+        [Test]
+        public void TestStringFromObjectFormat_Prefs2()
+        {
+            var oldpref = ProtoCore.Mirror.MirrorData.PrecisionFormat;
+            ProtoCore.Mirror.MirrorData.PrecisionFormat = "F6";
+            String code =
+    @"
+                b1 = __ToStringFromObjectAndFormat(1.123456789, ""DynamoPreferencesNumberFormat"");  
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b1", "1.123457");
+            //reset
+            ProtoCore.Mirror.MirrorData.PrecisionFormat = oldpref;
+
+        }
     }
 }
