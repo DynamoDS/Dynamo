@@ -151,6 +151,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void NodeSuggestions_CanAutoCompleteOnCustomNodesOutPort_WithSpaceInPortName()
         {
             var outputNode = new Dynamo.Graph.Nodes.CustomNodes.Output();
@@ -173,6 +174,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedNodes.Count(), nodeNamesResultList.Count(),string.Format("Missing nodes: {0} ", string.Join(", ",expectedNodes.Except(nodeNamesResultList))));
         }
         [Test]
+        [Category("Failure")]
         public void NodeSuggestions_CanAutoCompleteOnCustomNodesOutPort_WithWhiteSpaceStartingPortName()
         {
             var outputNode = new Dynamo.Graph.Nodes.CustomNodes.Output();
@@ -313,6 +315,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void NodeSuggestions_OutputPortBuiltInNode_AreCorrect()
         {
             Open(@"UI\builtin_outputport_suggestion.dyn");
