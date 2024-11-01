@@ -5,7 +5,7 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         Title="{x:Static p:Resources.EditWindowTitle}"
         Width="400"
-        Height="250"
+        Height="200"
         MinWidth="300"
         MinHeight="170"
         MaxWidth="{x:Static SystemParameters.PrimaryScreenWidth}"
@@ -125,7 +125,6 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
                 <!--  Title Bar + Close Button  -->
@@ -170,27 +169,12 @@
 
                 <TextBox Name="editText"
                          Grid.Row="1"
-                         Margin="15,1,15,10"
+                         Margin="15,1,15,15"
                          HorizontalAlignment="Stretch"
                          x:FieldModifier="private"
                          IsHitTestVisible="True"
                          PreviewKeyDown="OnEditWindowPreviewKeyDown"
                          Style="{DynamicResource InputStyle}" />
-
-
-                <StackPanel Grid.Row="2"
-                            FlowDirection="RightToLeft"
-                            Orientation="Horizontal">
-                    <Button MinWidth="90"
-                            Margin="11,0,0,12"
-                            Background="#0696D7"
-                            BorderBrush="#0696D7"
-                            Click="OkClick"
-                            Content="{x:Static p:Resources.EditWindowAcceptButton}"
-                            Foreground="White"
-                            Style="{StaticResource CtaButtonStyle}" />
-                </StackPanel>
-
             </Grid>
         </Border>
     </Grid>
