@@ -48,6 +48,8 @@ namespace Dynamo.Wpf.Utilities
             if (disposeCalled) return;
             disposeCalled = true;
 
+            logger?.Invoke($"WebView2 instance with tag {tag} is being disposed");
+
             if (System.Environment.CurrentManagedThreadId != Dispatcher.Thread.ManagedThreadId)
             {
                 logger?.Invoke($"WebView2 instance with tag {tag} is being disposed of on non-UI thread");
