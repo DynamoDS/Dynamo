@@ -37,6 +37,8 @@ namespace Dynamo.Wpf.Utilities
         internal async Task Initialize(Action<string> logFn = null)
         {
             logger = logFn ?? logger;
+
+            logger.Invoke($"Called initialize on webview2 with tag {tag}");
             initTask = EnsureCoreWebView2Async();
             await initTask;
 
