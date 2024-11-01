@@ -31,7 +31,7 @@
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.2.4" />
-    <PackageReference Include="Greg" Version="3.0.2.6284" />
+    <PackageReference Include="Greg" Version="3.0.2.6533" />
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.6246" GeneratePathProperty="true" />
     <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.2734" GeneratePathProperty="true" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
@@ -155,7 +155,7 @@
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(LibGProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(LibG231Deps)" DestinationFolder="$(OutputPath)libg_231_0_0\asm_deps\" />
-    <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
+    <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path '$(LibGProtoGeometryLibGLocale)' -Destination '$(OutputPath)' -Recurse -Force" />
     <Copy SourceFiles="@(LibG230)" DestinationFolder="$(OutputPath)libg_230_0_0\" />
     <Copy SourceFiles="@(LibG231)" DestinationFolder="$(OutputPath)libg_231_0_0\" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />

@@ -26,12 +26,12 @@
           <PackageVersion>1.0.20</PackageVersion>
           <PackageName>SplashScreen</PackageName>
       </PropertyGroup>
-      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
+      <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
           <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
       </Exec>
       <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high" />
       <!--This command updates the npm registry configuration if necessary-->
-      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" Condition="$(ShouldInstall)" />
+      <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)setnpmreg.ps1&quot;" Condition="$(ShouldInstall)" />
       <!--This command gets a specific splash screen build from npm-->
       <Exec Command="npm pack @dynamods/splash-screen@$(PackageVersion)" Condition="$(ShouldInstall)" />
   </Target>
@@ -50,7 +50,7 @@
         <MakeDir Directories="Packages/SplashScreen" />
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/SplashScreen"></Exec>
+        <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/SplashScreen&quot;" />
 
         <!--Deletes the tgz file-->
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
@@ -62,12 +62,12 @@
             <PackageVersion>1.0.20</PackageVersion>
             <PackageName>DynamoHome</PackageName>
         </PropertyGroup>
-        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
             <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
         </Exec>
         <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high"></Message>
         <!--This command updates the npm registry configuration if necessary-->
-        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" Condition="$(ShouldInstall)" />
+        <Exec Command="&quot;$(PowerShellCommand)&quot; -ExecutionPolicy ByPass -Command &quot;&amp; '$(SolutionDir)setnpmreg.ps1'&quot;" Condition="$(ShouldInstall)" />
         <!--Download a specific build of the Dynamo Home package from npm-->
         <Exec Command="npm pack @dynamods/dynamo-home@$(PackageVersion)" Condition="$(ShouldInstall)" />
     </Target>
@@ -86,7 +86,7 @@
         <MakeDir Directories="Packages/DynamoHome" />
 
         <!--Extract the file to the specified directory-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/DynamoHome"></Exec>
+        <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/DynamoHome&quot;" />
 
         <!--Delete the tgz file-->
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
@@ -189,7 +189,7 @@
       <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.2734"/>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
-    <PackageReference Include="Greg" Version="3.0.2.6284" />
+    <PackageReference Include="Greg" Version="3.0.2.6533" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="112.0.0" />

@@ -3015,6 +3015,7 @@ static readonly Dynamo.Configuration.Configurations.TabDefaultWidth -> int
 static readonly Dynamo.Configuration.Configurations.ZoomDirectEditThreshold -> double
 static readonly Dynamo.Configuration.Configurations.ZoomIncrement -> double
 static readonly Dynamo.Configuration.Configurations.ZoomThreshold -> double
+static readonly Dynamo.Configuration.Configurations.ZoomToFitPaddingFactor -> double
 static readonly Dynamo.Configuration.PreferenceSettings.DynamoDefaultTime -> System.DateTime
 virtual Dynamo.Core.CustomNodeManager.OnCustomNodeRemoved(System.Guid functionId) -> void
 virtual Dynamo.Core.CustomNodeManager.OnDefinitionUpdated(Dynamo.CustomNodeDefinition obj) -> void

@@ -1223,6 +1223,20 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// The method returns the assembly name from which the node originated.
+        /// </summary>
+        /// <returns>Assembly Name</returns>
+        internal virtual AssemblyName GetNameOfAssemblyReferencedByNode()
+        {
+            AssemblyName assemblyName = null;
+            
+            var assembly = this.GetType().Assembly;
+            assemblyName = AssemblyName.GetAssemblyName(assembly.Location);
+            
+            return assemblyName;
+        }
+
+        /// <summary>
         /// Here we try to find the correct port names and tooltips.
         /// ideally we'd use the runtime information to correctly update or localize
         /// the port info, if we can't find it for any of the ports of the current node we fallback to the deserialized data

@@ -164,12 +164,22 @@
                                                                             <ColumnDefinition Width="30" />
                                                                         </Grid.ColumnDefinitions>
                                                                         <!--  Displays the warning message  -->
-                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
-                                                                            <TextBlock.Inlines>
-                                                                                <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
-                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
-                                                                            </TextBlock.Inlines>
-                                                                        </TextBlock>
+                                                                        <Grid>
+                                                                            <!-- TextBox for the numbering -->
+                                                                            <TextBox Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                                     FontFamily="{StaticResource ArtifaktElementBold}"
+                                                                                     IsReadOnly="True"
+                                                                                     Background="Transparent"
+                                                                                     BorderThickness="0"/>
+                                                                            <!-- TextBox for the message description -->
+                                                                            <TextBox Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}"
+                                                                                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                                     TextWrapping="Wrap"
+                                                                                     IsReadOnly="True"
+                                                                                     Background="Transparent"
+                                                                                     BorderThickness="0"
+                                                                                     Margin="30,0,0,0"/>
+                                                                        </Grid>
                                                                     </Grid>
                                                                     <Button Name="LearnMoreErrorsButton"
                                                                             Margin="-2,4,0,0"
@@ -221,11 +231,11 @@
                                                                             <ColumnDefinition Width="30" />
                                                                         </Grid.ColumnDefinitions>
                                                                         <!--  Displays the warning message  -->
-                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
-                                                                            <TextBlock.Inlines>
-                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
-                                                                            </TextBlock.Inlines>
-                                                                        </TextBlock>
+                                                                        <TextBox IsReadOnly="True"
+                                                                                 Background="Transparent"
+                                                                                 BorderThickness="0"
+                                                                                 TextWrapping="Wrap"
+                                                                                 Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
                                                                     </Grid>
                                                                     <Button Name="LearnMoreErrorsButton"
                                                                             Margin="-2,4,0,0"
@@ -394,12 +404,22 @@
                                                                             <ColumnDefinition Width="30" />
                                                                         </Grid.ColumnDefinitions>
                                                                         <!--  Displays the warning message  -->
-                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
-                                                                            <TextBlock.Inlines>
-                                                                                <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
-                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
-                                                                            </TextBlock.Inlines>
-                                                                        </TextBlock>
+                                                                        <Grid>
+                                                                            <!-- TextBox for the numbering -->
+                                                                            <TextBox Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                                     FontFamily="{StaticResource ArtifaktElementBold}"
+                                                                                     IsReadOnly="True"
+                                                                                     Background="Transparent"
+                                                                                     BorderThickness="0"/>
+                                                                            <!-- TextBox for the message description -->
+                                                                            <TextBox Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}"
+                                                                                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                                     TextWrapping="Wrap"
+                                                                                     IsReadOnly="True"
+                                                                                     Background="Transparent"
+                                                                                     BorderThickness="0"
+                                                                                     Margin="30,0,0,0"/>
+                                                                        </Grid>
                                                                         <Button Name="DismissMessageButton"
                                                                                 Grid.Column="1"
                                                                                 Width="13"
@@ -466,11 +486,11 @@
                                                                             <ColumnDefinition Width="30" />
                                                                         </Grid.ColumnDefinitions>
                                                                         <!--  Displays the warning message  -->
-                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
-                                                                            <TextBlock.Inlines>
-                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
-                                                                            </TextBlock.Inlines>
-                                                                        </TextBlock>
+                                                                        <TextBox IsReadOnly="True"
+                                                                                 Background="Transparent"
+                                                                                 BorderThickness="0"
+                                                                                 TextWrapping="Wrap"
+                                                                                 Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
                                                                         <Button Name="DismissMessageButton"
                                                                                 Grid.Column="1"
                                                                                 Width="13"
@@ -669,12 +689,22 @@
                                                                             <ColumnDefinition Width="30" />
                                                                         </Grid.ColumnDefinitions>
                                                                         <!--  Displays the warning message  -->
-                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
-                                                                            <TextBlock.Inlines>
-                                                                                <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
-                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
-                                                                            </TextBlock.Inlines>
-                                                                        </TextBlock>
+                                                                        <Grid>
+                                                                            <!-- TextBox for the numbering -->
+                                                                            <TextBox Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}"
+                                                                                     FontFamily="{StaticResource ArtifaktElementBold}"
+                                                                                     IsReadOnly="True"
+                                                                                     Background="Transparent"
+                                                                                     BorderThickness="0"/>
+                                                                            <!-- TextBox for the message description -->
+                                                                            <TextBox Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}"
+                                                                                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                                     TextWrapping="Wrap"
+                                                                                     IsReadOnly="True"
+                                                                                     Background="Transparent"
+                                                                                     BorderThickness="0"
+                                                                                     Margin="30,0,0,0"/>
+                                                                        </Grid>
                                                                         <Button Name="DismissMessageButton"
                                                                                 Grid.Column="1"
                                                                                 Width="13"
@@ -737,11 +767,11 @@
                                                                             <ColumnDefinition Width="30" />
                                                                         </Grid.ColumnDefinitions>
                                                                         <!--  Displays the warning message  -->
-                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
-                                                                            <TextBlock.Inlines>
-                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
-                                                                            </TextBlock.Inlines>
-                                                                        </TextBlock>
+                                                                        <TextBox IsReadOnly="True"
+                                                                                 Background="Transparent"
+                                                                                 BorderThickness="0"
+                                                                                 TextWrapping="Wrap"
+                                                                                 Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
                                                                         <Button Name="DismissMessageButton"
                                                                                 Grid.Column="1"
                                                                                 Width="13"
