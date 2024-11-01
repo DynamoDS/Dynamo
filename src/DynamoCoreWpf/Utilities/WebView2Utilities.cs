@@ -26,6 +26,7 @@ namespace Dynamo.Wpf.Utilities
         public DynamoWebView2() : base()
         {
             tag = TestUtilities.WebView2Tag;
+            logger?.Invoke($"Initializing Webview2 with tag {tag}");
         }
 
         /// <summary>
