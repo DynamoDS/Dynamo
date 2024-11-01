@@ -442,7 +442,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("0afc0a8f-3d8a-4d7c-a2ec-d868cbb29b5f", 123456789);
         }
         [Test]
-        public void TestStringToNumber2()
+        public void TestStringToNumberWithFormat()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestNumberToString_normal_numericFormat.dyn");
             CurrentDynamoModel.PreferenceSettings.NumberFormat = "f1";
@@ -450,8 +450,12 @@ namespace Dynamo.Tests
             var watch0 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch0").FirstOrDefault().GUID.ToString();
             var watch1 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch1").FirstOrDefault().GUID.ToString();
             var watch2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch2").FirstOrDefault().GUID.ToString();
+            var watch3parent = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch3")
+                .FirstOrDefault().ImediateUpstreamNodes().FirstOrDefault().GUID.ToString();
             var watch3 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch3").FirstOrDefault().GUID.ToString();
             var watch4 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch4").FirstOrDefault().GUID.ToString();
+            var watch4parent = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch4")
+              .FirstOrDefault().ImediateUpstreamNodes().FirstOrDefault().GUID.ToString();
             var watch5 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch5").FirstOrDefault().GUID.ToString();
             var watch6 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch6").FirstOrDefault().GUID.ToString();
             var watch7 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch7").FirstOrDefault().GUID.ToString();
@@ -464,6 +468,9 @@ namespace Dynamo.Tests
             AssertPreviewValue(watch5, new string[] { "5.000", "5.0", "5", "101" });
             AssertPreviewValue(watch6, new string[] { "{key:0.000000000}", "{key:0.000000000}", "{key:0.000000000}", "{key:0.000000000}" });
             AssertPreviewValue(watch7, new string[] { "{key:5}", "{key:5}", "{key:5}", "{key:5}" });
+
+            AssertWarning(watch3parent);
+            AssertWarning(watch4parent);
         }
 
         #endregion
@@ -894,10 +901,10 @@ namespace Dynamo.Tests
             AssertPreviewValue("c27d9e05-45f7-4aac-8f53-a9e485e0f9c0", "[1,2,3]");
         }
         [Test]
-        public void TestStringFromArray2()
+        public void TestStringFromArrayWithFormat()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestStringFromArrayPreview_numericformat.dyn");
-            //CurrentDynamoModel.PreferenceSettings.NumberFormat = "f1";
+            
             RunModel(testFilePath);
             var watch1 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch1").FirstOrDefault().GUID.ToString();
             var watch2 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch2").FirstOrDefault().GUID.ToString();
