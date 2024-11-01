@@ -146,6 +146,13 @@ namespace Dynamo.PackageManager.UI
 
             int caretIndex = textBox.CaretIndex; // Store the caret index
 
+            // Allow the Enter key to insert a new line if AcceptsReturn is true
+            if (e.Key == Key.Enter && textBox.AcceptsReturn)
+            {
+                e.Handled = false;
+                return; // Exit to let Enter key be processed by the TextBox
+            }
+
             // Prevents text starting with a space
             if (e.Key == System.Windows.Input.Key.Space && string.IsNullOrWhiteSpace(textBox.Text))
             {
