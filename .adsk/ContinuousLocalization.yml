@@ -26,4 +26,5 @@ common:
       content_owner: N/A
       lang: [csy, deu, esp, fra, ita, jpn, kor, plk, ptb, rus, chs, cht]
       file_rules:
+        - doc\distrib\NodeHelpFiles\en-US\*.md, doc\distrib\NodeHelpFiles\%langMsNet%\*.md
         - src\Libraries\CoreNodes\Properties\Resources.en-US.resx, src\Libraries\CoreNodes\Properties\Resources.%langMsNet%.resx
