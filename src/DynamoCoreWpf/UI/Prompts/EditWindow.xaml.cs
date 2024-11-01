@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,9 +33,17 @@ namespace Dynamo.UI.Prompts
             InitializeComponent();
             this.dynamoViewModel = dynamoViewModel;
 
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;          
-            this.editText.Focus();
-            
+            Owner = dynamoViewModel.Owner;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            this.Loaded += (sender, e) => this.editText.Focus();
+
+            // Center the window again once rendering is complete
+            this.ContentRendered += (sender, e) =>
+            {
+                this.Left = Owner.Left + (Owner.Width - this.ActualWidth) / 2;
+                this.Top = Owner.Top + (Owner.Height - this.ActualHeight) / 2;
+            };
+
             // do not accept value if user closes 
             this.Closing += (sender, args) => this.DialogResult = false;
             if (false != updateSourceOnTextChange)
@@ -97,6 +105,9 @@ namespace Dynamo.UI.Prompts
 
         private void EditText_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            var textBox = sender as TextBox;
+            var caretIndex = textBox.CaretIndex;
+
             EditTextBoxPreviewKeyDown?.Invoke(sender, e);
         }
 
