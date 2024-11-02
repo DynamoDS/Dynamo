@@ -2,7 +2,7 @@
   "Uuid": "5e01d71b-e7d5-488f-b9f1-f7303e084d29",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Autodesk.DesignScript.Geometry.Mesh.ExtrudedPolyCurve(variant with random polycurve)",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.ExtrudePolyCurve(variant with random polycurve)",
   "ElementResolver": {
     "ResolutionMap": {
       "Point": {

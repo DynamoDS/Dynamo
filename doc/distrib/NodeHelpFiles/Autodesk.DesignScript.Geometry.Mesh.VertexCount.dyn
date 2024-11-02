@@ -271,7 +271,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Vertices",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.VertexPositions",
       "Id": "89173f37f40a461f89bf92e7a0758054",
       "Inputs": [
         {
@@ -296,7 +296,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Converts the Mesh vertices to Points, and returns them\n\nMesh.Vertices ( ): Point[]"
+      "Description": "The positions of the vertices\n\nMesh.VertexPositions: Point[]"
     }
   ],
   "Connectors": [
@@ -474,7 +474,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "Mesh.Vertices",
+        "Name": "Mesh.VertexPositions",
         "Id": "89173f37f40a461f89bf92e7a0758054",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,

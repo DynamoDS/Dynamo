@@ -4,4 +4,4 @@ In the example below, `Mesh.ExtrudePolyCurve` is used to create a closed mesh ba
 
 ## Example File
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.ExtrudedPolyCurve_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.ExtrudePolyCurve_img.jpg)
