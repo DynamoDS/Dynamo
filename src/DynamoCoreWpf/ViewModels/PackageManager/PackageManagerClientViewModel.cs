@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -749,11 +748,28 @@ namespace Dynamo.ViewModels
 
         internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
-            string msg = String.IsNullOrEmpty(installPath) ?
+            string msg;
+            MessageBoxResult result;
+
+            var compatible = PackageManagerSearchElement.CalculateCompatibility(package.compatibility_matrix); 
+            if (compatible == false && !DynamoModel.IsTestMode)
+            {
+                msg = Resources.PackageManagerIncompatibleVersionDownloadMsg;
+                result = MessageBoxService.Show(ViewModelOwner, msg,
+                    Resources.PackageManagerIncompatibleVersionDownloadTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (result != MessageBoxResult.OK)
+                {
+                    return;
+                }
+            }
+
+            msg = String.IsNullOrEmpty(installPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
 
-            var result = MessageBoxService.Show(ViewModelOwner, msg,
+            result = MessageBoxService.Show(ViewModelOwner, msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
@@ -1099,6 +1115,7 @@ namespace Dynamo.ViewModels
                 Process.Start(sInfo);
             }
         }
+
     }
 
 }

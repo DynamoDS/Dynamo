@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
 using Dynamo.PackageManager.ViewModels;
+using Dynamo.Search;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
 using Greg;
@@ -16,6 +17,25 @@ namespace Dynamo.PackageManager.Wpf.Tests
 {
     class PackageManagerSearchElementViewModelTests : SystemTestBase
     {
+        /// <summary>
+        /// A mock-up version of the compatibility map received via Greg
+        /// </summary>
+        private static Dictionary<string, Dictionary<string, string>> compatibilityMap = new Dictionary<string, Dictionary<string, string>>
+        {
+            { "Revit", new Dictionary<string, string> {
+                {"2016", "1.3.2"}, {"2017", "2.0.2"}, {"2018", "2.0.2"}, {"2019", "2.0.2"},
+                {"2020", "2.1.0"}, {"2020.1", "2.2.1"}, {"2020.2", "2.3.0"}, {"2021", "2.5.2"},
+                {"2021.1", "2.6.1"}, {"2022", "2.10.1"}, {"2022.1", "2.12.0"}, {"2023", "2.13.1"},
+                {"2023.1", "2.16.1"}, {"2023.1.3", "2.16.2"}, {"2024", "2.17.0"}, {"2024.1", "2.18.1"},
+                {"2024.2", "2.19.3"}, {"2025", "3.0.3"}, {"2025.1", "3.0.3"}, {"2025.2", "3.2.1"}
+            }},
+            { "Civil3D", new Dictionary<string, string> {
+                {"2020", "2.1.1"}, {"2020.1", "2.2.0"}, {"2020.2", "2.4.1"}, {"2021", "2.5.2"},
+                {"2022", "2.10.1"}, {"2023", "2.13.1"}, {"2024", "2.17.1"}, {"2024.1", "2.18.1"},
+                {"2024.2", "2.18.1"}, {"2024.3", "2.19"}, {"2025", "3.0.3"}, {"2025.1", "3.2.2"}
+            }}
+        };
+
         /// <summary>
         /// A test to ensure the CanInstall property of a package updates correctly.
         /// </summary>
@@ -162,7 +182,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
         }
 
         /// <summary>
-        /// This unit test will validate that after we set the host filters in the package search, we will get an intersection of the results (instead of a union)
+        /// This unit test will validate that after we set the hostName filters in the package search, we will get an intersection of the results (instead of a union)
         /// </summary>
         [Test]
         public void PackageSearchDialogSearchIntersectAgainstHostFilters()
@@ -539,6 +559,121 @@ namespace Dynamo.PackageManager.Wpf.Tests
         }
 
         /// <summary>
+        /// Validates that after setting compatibility filters in the package search,
+        /// we get an intersection of results based on selected compatibility options.
+        /// </summary>
+        [Test]
+        public void PackageSearchDialogSearchTestCompatibilityFilters()
+        {
+            // Arrange
+            int numberOfPackages = 6;
+            string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
+            string packageVersionNumber = "1.0.0.0";
+            string compatibleFilterName = Dynamo.Wpf.Properties.Resources.PackageCompatible;
+            string incompatibleFilterName = Dynamo.Wpf.Properties.Resources.PackageIncompatible;
+            string unknownCompatibilityFilterName = Dynamo.Wpf.Properties.Resources.PackageUnknownCompatibility;
+
+            // Compatible, Incompatible, and Unknown Compatibility Packages
+            List<string> compatiblePackagesName = new List<string> { "DynamoIronPython2.7", "dynamo", "Celery for Dynamo 2.5" };
+            List<string> incompatiblePackagesName = new List<string> { "IncompatPackage1", "IncompatPackage2" };
+            List<string> unknownCompatibilityPackagesName = new List<string> { "DynamoXCompatPackage" };
+
+            var mockGreg = new Mock<IGregClient>();
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+
+            var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchViewModel.RegisterTransientHandlers();
+
+            // Adding Compatibility filters
+            packageManagerSearchViewModel.CompatibilityFilter = new List<FilterEntry>
+            {
+                new FilterEntry(compatibleFilterName, "Filter by compatibility", "Compatible Packages", packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(incompatibleFilterName, "Filter by compatibility", "Incompatible Packages", packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(unknownCompatibilityFilterName, "Filter by compatibility", "Unknown Compatibility Packages", packageManagerSearchViewModel) { OnChecked = false },
+            };
+
+            // Adding compatible packages
+            foreach (var package in compatiblePackagesName)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, created = DateTime.Now.ToString() };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                }), false);
+                tmpPackage.IsSelectedVersionCompatible = true;
+                packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
+            }
+
+            // Adding incompatible packages
+            foreach (var package in incompatiblePackagesName)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, created = DateTime.Now.ToString() };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                }), false);
+                tmpPackage.IsSelectedVersionCompatible = false;
+                packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
+            }
+
+            // Adding unknown compatibility packages
+            foreach (var package in unknownCompatibilityPackagesName)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, created = DateTime.Now.ToString() };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                }), false);
+                tmpPackage.IsSelectedVersionCompatible = null;
+                packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
+            }
+
+            //We need to add the PackageManagerSearchElementViewModel because fitlers act on the LastSync results
+            packageManagerSearchViewModel.LastSync = new List<PackageManagerSearchElement>();
+            foreach (var result in packageManagerSearchViewModel.SearchResults)
+            {
+                var sem = result.SearchElementModel;
+                sem.SelectedVersion.IsCompatible = result.IsSelectedVersionCompatible;
+                packageManagerSearchViewModel.LastSync.Add(sem);
+            }
+
+            // Validate the total added packages match
+            Assert.That(packageManagerSearchViewModel.SearchResults.Count == numberOfPackages);
+
+            // Act & Assert
+            // Check the Compatible filter
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = true;
+            packageManagerSearchViewModel.CompatibilityFilter[0].FilterCommand.Execute(string.Empty);
+            Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
+            Assert.That(packageManagerSearchViewModel.SearchResults.Count == compatiblePackagesName.Count, "Filtered results do not match the compatible packages");
+
+            // Reset (Filters are not mutually exclusive)
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = false;
+
+            // Check the Incompatible filter
+            packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = true;
+            packageManagerSearchViewModel.CompatibilityFilter[1].FilterCommand.Execute(string.Empty);
+            Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
+            Assert.That(packageManagerSearchViewModel.SearchResults.Count == incompatiblePackagesName.Count, "Filtered results do not match the incompatible packages");
+
+            // Reset (Filters are not mutually exclusive)
+            packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = false;
+
+            // Check the Unknown Compatibility filter
+            packageManagerSearchViewModel.CompatibilityFilter[2].OnChecked = true;
+            packageManagerSearchViewModel.CompatibilityFilter[2].FilterCommand.Execute(string.Empty);
+            Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
+            Assert.That(packageManagerSearchViewModel.SearchResults.Count == unknownCompatibilityPackagesName.Count, "Filtered results do not match the unknown compatibility packages");
+        }
+
+        /// <summary>
         /// This unit test will validate that we can search packages in different languages and they will be found.
         /// </summary>
         [Test]
@@ -702,6 +837,362 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
             //Assert - validate order by Votes
             Assert.IsTrue(isOrderedByVotes && packageManagerSearchVM.SearchResults.Count != 0);
+        }
+
+        /// <summary>
+        /// This unit test will validate that the search for package with whitespace in the name.
+        /// </summary>
+        [Test]
+        public void PackageSearchWithWhitespaceInName()
+        {
+            var packagesListNames =  new List<string> { "Dynamo Samples", "archi-lab.net", "LunchBox for Dynamo", "DynamoSap", "TuneUp" };
+            string packageId = Guid.NewGuid().ToString();
+            string packageVersionNumber = "1.0.0.0";
+            string packageCreatedDateString = "2016 - 10 - 02T13:13:20.135000 + 00:00";
+            string formItFilterName = "FormIt";
+            var packageMaintainer = new User() { username = "DynamoTest", _id = "90-63-17" };
+
+            List<PackageHeader> packageHeaders = new List<PackageHeader>();
+            var mockGreg = new Mock<IGregClient>();
+
+            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object) { CallBase = true };
+            List<PackageManagerSearchElement> cachedPackages = new List<PackageManagerSearchElement>();
+            foreach (var packageName in packagesListNames)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, host_dependencies = new List<string> { formItFilterName }, created = packageCreatedDateString };
+                cachedPackages.Add(new PackageManagerSearchElement(new PackageHeader() { name = packageName, versions = new List<PackageVersion> { tmpPackageVersion } }));
+            }
+            pmCVM.SetupProperty(p => p.CachedPackageList, cachedPackages);
+
+            LuceneSearch.LuceneUtilityPackageManager = null;
+            var packageManagerSearchVM = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchVM.RegisterTransientHandlers();
+
+            //Adding packages
+            foreach (var package in packagesListNames)
+            {
+                var tmpPackageVersion = new PackageVersion
+                {
+                    version = packageVersionNumber,
+                    host_dependencies = new List<string> { formItFilterName },
+                    created = packageCreatedDateString
+                };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                    host_dependencies = new List<string> { formItFilterName },
+                    maintainers = new List<User> { packageMaintainer },
+                }), false);
+                packageManagerSearchVM.AddToSearchResults(tmpPackage);
+            }
+
+            foreach (var package in packageManagerSearchVM.SearchResults)
+            {
+                var iDoc = packageManagerSearchVM.LuceneUtility.InitializeIndexDocumentForPackages();
+                packageManagerSearchVM.AddPackageToSearchIndex(package.SearchElementModel, iDoc);
+            }
+
+            packageManagerSearchVM.LuceneUtility.CommitWriterChanges();
+
+            var packagesSearchResult = packageManagerSearchVM.Search("Dynamo Samples", true);
+
+            //Validates that the Search returned results and that the first one is "Dynamo Samples"
+            Assert.IsTrue(packagesSearchResult != null, "The Search didn't return any results");
+            Assert.IsTrue(packagesSearchResult.Count() >= 1, string.Format("The number of results returned by search are: {0}", packagesSearchResult.Count()));
+            Assert.IsTrue(packagesSearchResult.FirstOrDefault().Name == "Dynamo Samples", string.Format("The first search result {0} doesn't match with the expected: {1}: ", packagesSearchResult.FirstOrDefault().Name, "Dynamo Samples"));
+        }
+
+        [Test]
+        public void TestComputeVersionCompatibility()
+        {
+            //Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "2.0", max = "2.5" },
+                new Greg.Responses.Compatibility { name = "Host", min = "2020", max = "2025" }
+            };
+
+            var compatibilityMatrixNoHost = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "2.0", max = "2.5" },
+            };
+
+            var customDynamoVersion = new Version("2.3");
+            var customHostVersion = new Version("2023.0");
+
+            // Act
+            var result = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customDynamoVersion, compatibilityMap, customHostVersion);
+            var resultNoHost = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrixNoHost, customDynamoVersion, compatibilityMap, customHostVersion);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsTrue(resultNoHost);
+        }
+
+        [Test]
+        public void TestComputeIncompatibleVersionCompatibility()
+        {
+            // Arrange
+            var compatibilityMatrix_IncompatibleDynamo = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "dynamo", min = "3.0", max = "3.5" },
+                new Greg.Responses.Compatibility { name = "host", min = "2020.0", max = "2025.0" }
+            };
+
+            var compatibilityMatrix_IncompatibleHost = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "dynamo", min = "2.0", max = "3.5" },
+                new Greg.Responses.Compatibility { name = "host", min = "2020.0", max = "2022.0" }
+            };
+
+            var dynamoVersion = new Version("2.9");
+            var hostVersion = new Version("2023.0");
+            var hostName = "host";
+
+            // Act
+            var resultIncompatibleDynamo = PackageManagerSearchElement.CalculateCompatibility(
+                compatibilityMatrix_IncompatibleDynamo, dynamoVersion, compatibilityMap, hostVersion, hostName);
+            var resultIncompatibleHost = PackageManagerSearchElement.CalculateCompatibility(
+                compatibilityMatrix_IncompatibleHost, dynamoVersion, compatibilityMap, hostVersion, hostName);
+
+            // Assert
+            Assert.IsTrue(resultIncompatibleDynamo, "Expected compatibility to be true as under host we don't care about Dynamo version.");
+            Assert.IsFalse(resultIncompatibleHost, "Expected compatibility to be false due to incompatible host version.");
+        }
+
+        [Test]
+        public void TestComputeVersionNoDynamoCompatibility()
+        {
+            // Arrange
+            var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "revit", min = "2020", max = "2025" }
+            };
+
+            var minOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "revit", min = "2023" }
+            };
+
+            var incompleteCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "revit" }
+            };
+
+            var compatibleDynamoVersion = new Version("2.13.1");  // Compatible within Revit 2023.0
+            var incompatibleDynamoVersion = new Version("2.0.2"); // Incompatible version matching Revit 2019
+            var hostVersion = new Version("2023.1");
+            var hostName = "revit";
+
+            // Act
+            // Case 1: No Dynamo-specific compatibility, expect null (no fallback)
+            var resultNoDynamoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, compatibleDynamoVersion, compatibilityMap);
+
+            // Case 2: No Dynamo-specific compatibility but host compatibility is provided
+            var resultWithHostCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, compatibleDynamoVersion, compatibilityMap, hostVersion, hostName);
+
+            // Case 3: Min-only range for compatibility within major version (Dynamo context)
+            var resultMinOnlyCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                minOnlyCompatibilityMatrix, compatibleDynamoVersion, compatibilityMap, hostVersion, hostName);
+
+            // Case 4: Incomplete compatibility information, expect indeterminate result
+            var resultIncompleteCompatibilityInfo = PackageManagerSearchElement.CalculateCompatibility(
+                incompleteCompatibilityMatrix, incompatibleDynamoVersion, compatibilityMap);
+
+            // Case 5: Under host context, but host compatibility is not provided, fall back to Dynamo
+            var resultFallbackToDynamo = PackageManagerSearchElement.CalculateCompatibility(
+                new List<Greg.Responses.Compatibility> { new Greg.Responses.Compatibility { name = "dynamo", min = "2.10", max = "2.13.1" } },
+                compatibleDynamoVersion, compatibilityMap, null, hostName);
+
+            // Assert
+            Assert.IsNull(resultNoDynamoCompatibility, "Expected compatibility to be null when no Dynamo-specific compatibility exists and no fallback is allowed.");
+            Assert.IsTrue(resultWithHostCompatibility, "Expected compatibility to be true when no Dynamo-specific compatibility exists but host compatibility matches.");
+            Assert.IsTrue(resultMinOnlyCompatibility, "Expected compatibility to be true for min-only range within major version.");
+            Assert.IsNull(resultIncompleteCompatibilityInfo, "Expected compatibility to be indeterminate (null) when information is incomplete.");
+            Assert.IsTrue(resultFallbackToDynamo, "Expected compatibility to be true when under host but only Dynamo compatibility is provided.");
+        }
+
+        [Test]
+        public void TestReverseDynamoCompatibilityFromHost()
+        {
+            //Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Revit", min = "2020", max = "2025", versions = new List<string>() { "2016", "2018" } }
+            };
+
+            var expectedDynamoCompatibility = new Compatibility()
+            {
+                name = "Dynamo",
+                min = "2.1.0",
+                max = "3.0.3",
+                versions = new List<string>() { "1.3.2", "2.0.2" }
+            };
+
+            var result = PackageManagerSearchElement.GetDynamoCompatibilityFromHost(compatibilityMatrix, compatibilityMap);
+
+            Assert.That(result.name, Is.EqualTo(expectedDynamoCompatibility.name));
+            Assert.That(result.min, Is.EqualTo(expectedDynamoCompatibility.min));
+            Assert.That(result.max, Is.EqualTo(expectedDynamoCompatibility.max));
+            Assert.That(result.versions, Is.EqualTo(expectedDynamoCompatibility.versions));
+        }
+
+        [Test]
+        public void TestNullCompatibilityMap()
+        {
+            // Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Revit", min = "2020", max = "2025", versions = new List<string>() { "2016", "2018" } }
+            };
+
+            // Act & Assert: Check that an InvalidOperationException is thrown
+            var exception = Assert.Throws<InvalidOperationException>(() =>
+            {
+                var result = PackageManagerSearchElement.GetDynamoCompatibilityFromHost(compatibilityMatrix, null);
+            });
+
+            // Assert the exception message if needed
+            Assert.AreEqual("The compatibility map is not initialized.", exception.Message);
+        }
+
+
+        [Test]
+        public void TestLowerCaseCompatibilityMap()
+        {
+            // Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "revit", min = "2020", max = "2025", versions = new List<string>() { "2016", "2018" } }
+            };
+
+            var expectedDynamoCompatibility = new Compatibility()
+            {
+                name = "Dynamo",
+                min = "2.1.0",
+                max = "3.0.3",
+                versions = new List<string>() { "1.3.2", "2.0.2" }
+            };
+
+            var result = PackageManagerSearchElement.GetDynamoCompatibilityFromHost(compatibilityMatrix, compatibilityMap);
+
+            Assert.That(result.name, Is.EqualTo(expectedDynamoCompatibility.name));
+            Assert.That(result.min, Is.EqualTo(expectedDynamoCompatibility.min));
+            Assert.That(result.max, Is.EqualTo(expectedDynamoCompatibility.max));
+            Assert.That(result.versions, Is.EqualTo(expectedDynamoCompatibility.versions));
+        }
+
+        [Test]
+        public void IsVersionCompatible_ExactVersionInList_ReturnsTrue()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                versions = new List<string> { "2.1.0", "2.2.0", "2.3.0" }
+            };
+            Version version = new Version("2.2.0");
+
+            bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, version);
+
+            Assert.IsTrue(result, "Expected compatibility to be true when version is in the list.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MinOnly_ReturnsTrueForCompatibleVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.1.0"
+            };
+            Version compatibleVersion = new Version("2.1.5");
+            Version incompatibleVersion = new Version("2.0.9");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion),
+                          "Expected compatibility to be true when version is greater than or equal to min.");
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, incompatibleVersion),
+                           "Expected compatibility to be false when version is less than min.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MinOnlyWithinSameMajorVersion_ReturnsTrue()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.1.0"
+            };
+            Version compatibleVersion = new Version("2.1.5"); // Same major version (2.x)
+
+            bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion);
+
+            Assert.IsTrue(result, "Expected compatibility to be true when version is within the same major version and greater than or equal to min.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MinOnlyBeyondMajorVersion_ReturnsFalse()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.1.0"
+            };
+            Version incompatibleVersion = new Version("3.0.0"); // Higher major version (3.x)
+
+            bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, incompatibleVersion);
+
+            Assert.IsFalse(result, "Expected compatibility to be false when version is in a higher major version than min.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MaxOnly_ReturnsFalse()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                max = "2.3.0"
+            };
+            Version compatibleVersion = new Version("2.2.5");
+            Version incompatibleVersion = new Version("2.4.0");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion),
+                           "Expected compatibility to be false when only max is specified, regardless of version.");
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, incompatibleVersion),
+                           "Expected compatibility to be false when only max is specified, regardless of version.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MinAndMax_ReturnsTrueForVersionWithinRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.1.0",
+                max = "2.3.0"
+            };
+            Version inRangeVersion = new Version("2.2.0");
+            Version belowRangeVersion = new Version("2.0.9");
+            Version aboveRangeVersion = new Version("2.4.0");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, inRangeVersion),
+                          "Expected compatibility to be true when version is within the min and max range.");
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, belowRangeVersion),
+                           "Expected compatibility to be false when version is below min.");
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, aboveRangeVersion),
+                           "Expected compatibility to be false when version is above max.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InvalidMinMaxRange_ThrowsArgumentException()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.1.0"
+            };
+            Version version = new Version("2.2.0");
+
+            Assert.Throws<ArgumentException>(() => PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected an ArgumentException when min version is greater than max version.");
         }
     }
 }

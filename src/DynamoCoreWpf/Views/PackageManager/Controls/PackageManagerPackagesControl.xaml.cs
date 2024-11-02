@@ -93,8 +93,23 @@ namespace Dynamo.PackageManager.UI
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
-            var PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+            var pkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
 
+            ExecuteOpenPackageDetails(packageManagerSearchElementViewModel, pkgSearchVM);
+        }
+
+        private void PackageName_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!(sender is TextBlock textBlock)) return;
+            if (!(textBlock.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
+
+            var pkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+
+            ExecuteOpenPackageDetails(packageManagerSearchElementViewModel, pkgSearchVM);
+        }
+
+        private void ExecuteOpenPackageDetails(PackageManagerSearchElementViewModel packageManagerSearchElementViewModel, PackageManagerSearchViewModel pkgSearchVM)
+        {
             var name = this.Name;
             if (name.Equals(packageManagerSearchPackagesName))
             {
@@ -121,8 +136,8 @@ namespace Dynamo.PackageManager.UI
                 }
             }
 
-            PkgSearchVM.IsDetailPackagesExtensionOpened = true;
-            PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
+            pkgSearchVM.IsDetailPackagesExtensionOpened = true;
+            pkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
         }
 
 
