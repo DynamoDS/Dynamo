@@ -1,0 +1,515 @@
+{
+  "Uuid": "15752a3c-895c-470a-b457-7821ae4e526d",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.BooleanUnion",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point.B": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Point.Bycoordinates": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;",
+      "Id": "3256484bf4004a74a7da237996bb259d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "32586a7b18c0477bbab0301a94447291",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "15;",
+      "Id": "8d7adecae5b64ccb8670bfdf062e8f8b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "720d67e6979b4aa7863eb6dbe2acb5d7",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Sphere@Autodesk.DesignScript.Geometry.Point,double,int,bool",
+      "Id": "9c88724425c04b87b100ebfb486b528a",
+      "Inputs": [
+        {
+          "Id": "a0af500019574cc8b482cb20941db42e",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8c0a8b771ab7420c8de05db5dc64a2c1",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "69d5c17b8b1b486fb3c5364bbaaa15bc",
+          "Name": "divisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "df9f9462acd64e38a4cc790f9c4b140a",
+          "Name": "icosphere",
+          "Description": "bool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5c3f2cb63773423795fa2cfa07801801",
+          "Name": "mesh",
+          "Description": "mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a mesh sphere based on the current settings.\n\nMesh.Sphere (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1, divisions: int = 0, icosphere: bool = true): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Cuboid@Autodesk.DesignScript.Geometry.Point,double,double,double,int,int,int",
+      "Id": "a1a0a47cbd8c41e0bf2a831776cc37db",
+      "Inputs": [
+        {
+          "Id": "9b68ee8f5d97460391a18b87fd9fe7d7",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "31ce3646dded43df8b5448312566fa4f",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5a16e15472b04485a92b0189edc2dc20",
+          "Name": "width",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c1941be93bd54c9ab44bd933aca4251e",
+          "Name": "height",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8b49248e77224266bd358eba3dff4a53",
+          "Name": "xDivisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5fd9bbb788bc404ba88b4cb3be2b2cc7",
+          "Name": "yDivisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c8ab4a5eb7f24f27afdc63aa206c0651",
+          "Name": "zDivisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dbd1554e277245b5a74789aae5565bae",
+          "Name": "mesh",
+          "Description": "mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a mesh cuboid based on the current settings.\n\nMesh.Cuboid (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), length: double = 1, width: double = 1, height: double = 1, xDivisions: int = 0, yDivisions: int = 0, zDivisions: int = 0): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "d08d27420b7541d9adac7b6bdacf6067",
+      "Inputs": [
+        {
+          "Id": "184199fa5a67457d9040be370201e600",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b1d2dc3a76974e2cabd3fdd62c993073",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "57d9584922744a5c902fa08bc643c32c",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "159459ae0bc84bc2a294a28847fe0d55",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "7.5;",
+      "Id": "faa427b1a80e4460a4ebe91490166d90",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3625050a0d9c400aa606cfc711342307",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.BooleanUnion@Autodesk.DesignScript.Geometry.Mesh",
+      "Id": "badd2c9564b247ae934d62df3c2fc641",
+      "Inputs": [
+        {
+          "Id": "c566658f4e78430c8da6de240884c745",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bc1f2779305648179602182c8b1e7c8d",
+          "Name": "tool",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f5eb281e48d8440bbd6ad30053063881",
+          "Name": "mesh",
+          "Description": "mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns a new mesh unifying the tool mesh and the original mesh.\n\nMesh.BooleanUnion (tool: Mesh): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Edges",
+      "Id": "70e85a4f91a248eb8971b7ff9b965e41",
+      "Inputs": [
+        {
+          "Id": "18f32e31d7be45748f88d38fc116e3d3",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1b8f817ca22341449108581e4df25c5d",
+          "Name": "Line[]",
+          "Description": "Line[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the Mesh edges to Lines, and returns them\n\nMesh.Edges ( ): Line[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "32586a7b18c0477bbab0301a94447291",
+      "End": "8c0a8b771ab7420c8de05db5dc64a2c1",
+      "Id": "e61fb73599854dbfab5b9f2bf290965a"
+    },
+    {
+      "Start": "720d67e6979b4aa7863eb6dbe2acb5d7",
+      "End": "31ce3646dded43df8b5448312566fa4f",
+      "Id": "38de83b5b1e047e9838f842efb07c214"
+    },
+    {
+      "Start": "720d67e6979b4aa7863eb6dbe2acb5d7",
+      "End": "5a16e15472b04485a92b0189edc2dc20",
+      "Id": "7b9f4f9eb45c49e08283bad0805fee54"
+    },
+    {
+      "Start": "720d67e6979b4aa7863eb6dbe2acb5d7",
+      "End": "c1941be93bd54c9ab44bd933aca4251e",
+      "Id": "4aa0949af1b14674ac6adcc621aec19d"
+    },
+    {
+      "Start": "5c3f2cb63773423795fa2cfa07801801",
+      "End": "c566658f4e78430c8da6de240884c745",
+      "Id": "22e5331d682443268b9cea56c1aa9ab9"
+    },
+    {
+      "Start": "dbd1554e277245b5a74789aae5565bae",
+      "End": "bc1f2779305648179602182c8b1e7c8d",
+      "Id": "d4ea3edc126e46428286edc1faabb54f"
+    },
+    {
+      "Start": "159459ae0bc84bc2a294a28847fe0d55",
+      "End": "a0af500019574cc8b482cb20941db42e",
+      "Id": "13d268994d4d467fa00ec38a22dbd48e"
+    },
+    {
+      "Start": "159459ae0bc84bc2a294a28847fe0d55",
+      "End": "9b68ee8f5d97460391a18b87fd9fe7d7",
+      "Id": "4dcb6388d960427f89cf4fc77248b3b4"
+    },
+    {
+      "Start": "3625050a0d9c400aa606cfc711342307",
+      "End": "57d9584922744a5c902fa08bc643c32c",
+      "Id": "eb4a19900e5f4c5e9b2e8786ecd48959"
+    },
+    {
+      "Start": "f5eb281e48d8440bbd6ad30053063881",
+      "End": "18f32e31d7be45748f88d38fc116e3d3",
+      "Id": "d23e4cbcf1b24ba28366a356057a96c8"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "9c88724425c04b87b100ebfb486b528a",
+        "a1a0a47cbd8c41e0bf2a831776cc37db",
+        "badd2c9564b247ae934d62df3c2fc641",
+        "70e85a4f91a248eb8971b7ff9b965e41"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -25.28308266810965,
+      "EyeY": 20.086016519321685,
+      "EyeZ": -25.439795469848939,
+      "LookX": 15.576304516040526,
+      "LookY": -13.5553904648505,
+      "LookZ": 17.974933477534208,
+      "UpX": 0.19474576312249012,
+      "UpY": 0.95476065356382656,
+      "UpZ": 0.2247358622149728
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "3256484bf4004a74a7da237996bb259d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 145.27298506322973,
+        "Y": 1869.3162111686868
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "8d7adecae5b64ccb8670bfdf062e8f8b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 15.190666934252249,
+        "Y": 2141.1057935564313
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.Sphere",
+        "Id": "9c88724425c04b87b100ebfb486b528a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 291.61073308312677,
+        "Y": 1832.0432627544469
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.Cuboid",
+        "Id": "a1a0a47cbd8c41e0bf2a831776cc37db",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 288.88346186487979,
+        "Y": 2072.7855859172828
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "d08d27420b7541d9adac7b6bdacf6067",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -131.39359707027756,
+        "Y": 1829.6994372025736
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "faa427b1a80e4460a4ebe91490166d90",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -244.8931567364823,
+        "Y": 1885.4498672778943
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.BooleanUnion",
+        "Id": "badd2c9564b247ae934d62df3c2fc641",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 695.97590386813965,
+        "Y": 1954.7172250618376
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Edges",
+        "Id": "70e85a4f91a248eb8971b7ff9b965e41",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1020.9847583326541,
+        "Y": 1955.6184427872347
+      }
+    ],
+    "Annotations": [],
+    "X": 309.88996453059133,
+    "Y": -1314.4039397680256,
+    "Zoom": 0.85330582662236076
+  }
+}

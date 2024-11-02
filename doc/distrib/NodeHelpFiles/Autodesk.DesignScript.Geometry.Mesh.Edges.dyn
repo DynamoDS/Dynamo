@@ -1,0 +1,221 @@
+{
+  "Uuid": "6d35f907-e50e-4804-bb3a-e2b3c1ba7504",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.Edges",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ImportFile@string",
+      "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+      "Inputs": [
+        {
+          "Id": "64c27cbc55714d169140498da271f57c",
+          "Name": "fileName",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "095ab47da7bb401e88a7a8df51c7acc1",
+          "Name": "Mesh[]",
+          "Description": "Mesh[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a file, parsing it into a number of Meshes. Currently supported formats are: .mix -- Meshmixer .obj -- Wavefront\n\nMesh.ImportFile (fileName: string): Mesh[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "P:\\Shared\\Archilizer\\Clients\\Autodesk\\Projects\\23 - Q4\\Nodes Documentation\\Mesh Toolkit Graphs\\Example Bunny\\stanford_bunny_tri.obj",
+      "InputValue": "Example Bunny\\stanford_bunny_tri.obj",
+      "NodeType": "ExtensionNode",
+      "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e52a993d961547979d84b9ae778c88bf",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Edges",
+      "Id": "7f0d4b12659243fc9429bba30b4e2551",
+      "Inputs": [
+        {
+          "Id": "300ff61209e14d9b9b64963cde7a0d7a",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "849836a4baee46a89a8a727b1de53e3f",
+          "Name": "Line[]",
+          "Description": "Line[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the Mesh edges to Lines, and returns them\n\nMesh.Edges ( ): Line[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "b85ec7e6bdfa43a9a5233b7daac8f63e",
+      "Inputs": [
+        {
+          "Id": "bc26a4da05864e19b4034c27b5c337e1",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0d3c09d33ce24643900b798bf5fd4686",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "095ab47da7bb401e88a7a8df51c7acc1",
+      "End": "300ff61209e14d9b9b64963cde7a0d7a",
+      "Id": "ba2dc8fbc1d64628adb4c995f2ac55c1"
+    },
+    {
+      "Start": "e52a993d961547979d84b9ae778c88bf",
+      "End": "64c27cbc55714d169140498da271f57c",
+      "Id": "12819230aeac4d76a2fa263fe23d4d55"
+    },
+    {
+      "Start": "849836a4baee46a89a8a727b1de53e3f",
+      "End": "bc26a4da05864e19b4034c27b5c337e1",
+      "Id": "733410b497cb470283b8ea3aecf1fba0"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "4495c3a892c04b94bfa73c929aaf0a0b",
+        "7f0d4b12659243fc9429bba30b4e2551"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -51.230190277099609,
+      "EyeY": 38.097908020019531,
+      "EyeZ": 71.836051940917969,
+      "LookX": 24.509170532226563,
+      "LookY": -19.897937774658203,
+      "LookZ": -97.651985168457031,
+      "UpX": -0.0050980430096387863,
+      "UpY": 0.99978077411651611,
+      "UpZ": 0.020312346518039703
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.ImportFile",
+        "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 705.29568358666916,
+        "Y": -53.335598315772785
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 399.7972208541413,
+        "Y": -48.907310397782538
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Edges",
+        "Id": "7f0d4b12659243fc9429bba30b4e2551",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1002.0283609089106,
+        "Y": -55.605497451484496
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "b85ec7e6bdfa43a9a5233b7daac8f63e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1353.8380162895076,
+        "Y": -52.91922446107813
+      }
+    ],
+    "Annotations": [],
+    "X": -973.19310951349121,
+    "Y": 177.16460546323447,
+    "Zoom": 1.1167889528406427
+  }
+}
