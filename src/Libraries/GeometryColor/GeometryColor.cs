@@ -210,7 +210,7 @@ namespace Modifiers
 
             if (colors == null)
             {
-                throw new ArgumentException(Resources.NoColorsExceptionMessage);
+                throw new ArgumentNullException(Resources.NoColorsExceptionMessage);
             }
 
             if (!colors.Any())
