@@ -193,11 +193,11 @@ namespace Modifiers
             return new GeometryColor(points, colors);
         }
 
-        /// <summary>
-        /// Display mesh by single color, face colors, vertex colors, unique vertex colors.
+       /// <summary>
+        /// Display mesh by single color, per-face colors, per-vertex colors, or per-face-vertex colors.
         /// </summary>
         /// <param name="mesh"></param>The Mesh on which to apply the colors
-        /// <param name="colors">single color, face colors, vertex colors, unique vertex colors</param>
+        /// <param name="colors">The color count must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex) color, or equal the triangle count multiplied by three (per-face-vertex color)</param>
         /// <returns>A Display object.</returns>
         public static GeometryColor ByMeshColors(
             [KeepReferenceAttribute] Mesh mesh,
@@ -221,10 +221,10 @@ namespace Modifiers
 
             Point[] meshVertexPositions = mesh.VertexPositions;
             IndexGroup[] meshFaceIndices = mesh.FaceIndices;
-            Vector[] meshFaceNormals = mesh.TriangleNormals();
+            Vector[] meshTriangleNormals = mesh.TriangleNormals();
 
             int meshFaceCount = meshFaceIndices.Length;
-            int meshTriangleCount = meshFaceNormals.Length;
+            int meshTriangleCount = meshTriangleNormals.Length;
             int meshVertexCount = meshVertexPositions.Length;
 
             // Flattened vertex data arrays that can be fed directly one-by-one to GPU
@@ -245,9 +245,9 @@ namespace Modifiers
                 vertexPositionsByTriangle[j * 3 + 1] = meshVertexPositions[iB];
                 vertexPositionsByTriangle[j * 3 + 2] = meshVertexPositions[iC];
 
-                vertexNormalsByTriangle[j * 3] = meshFaceNormals[j];
-                vertexNormalsByTriangle[j * 3 + 1] = meshFaceNormals[j];
-                vertexNormalsByTriangle[j * 3 + 2] = meshFaceNormals[j];
+                vertexNormalsByTriangle[j * 3] = meshTriangleNormals[j];
+                vertexNormalsByTriangle[j * 3 + 1] = meshTriangleNormals[j];
+                vertexNormalsByTriangle[j * 3 + 2] = meshTriangleNormals[j];
 
                 j++;
 
@@ -259,9 +259,9 @@ namespace Modifiers
                     vertexPositionsByTriangle[j * 3 + 1] = meshVertexPositions[iD];
                     vertexPositionsByTriangle[j * 3 + 2] = meshVertexPositions[iA];
 
-                    vertexNormalsByTriangle[j * 3] = meshFaceNormals[j];
-                    vertexNormalsByTriangle[j * 3 + 1] = meshFaceNormals[j];
-                    vertexNormalsByTriangle[j * 3 + 2] = meshFaceNormals[j];
+                    vertexNormalsByTriangle[j * 3] = meshTriangleNormals[j];
+                    vertexNormalsByTriangle[j * 3 + 1] = meshTriangleNormals[j];
+                    vertexNormalsByTriangle[j * 3 + 2] = meshTriangleNormals[j];
 
                     j++;
                 }
@@ -280,7 +280,7 @@ namespace Modifiers
                 }
             }
 
-            //Color by vertex (unique verts list)
+            //Color by vertex (each vertex color is shared by surrounding triangles)
             else if (colors.Length == meshVertexCount)
             {
                 var triIndex = 0;
@@ -311,7 +311,7 @@ namespace Modifiers
                 }
             }
 
-            //Color by triangle
+            //Color by face
             else if (colors.Length == meshFaceCount)
             {
                 var triIndex = 0;
@@ -336,7 +336,7 @@ namespace Modifiers
                 }
             }
 
-            //Color by vertex (unique verts list)
+            //Color by unique vertex per triangle (each vertex has a different color for each surrounding face)
             else if (colors.Length == meshTriangleCount * 3)
             {
                 for (int i = 0; i < colors.Length; i++)
