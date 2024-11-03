@@ -193,15 +193,17 @@ namespace Modifiers
             return new GeometryColor(points, colors);
         }
 
-       /// <summary>
+        /// <summary>
         /// Display mesh by single color, per-face colors, per-vertex colors, or per-face-vertex colors.
         /// </summary>
         /// <param name="mesh"></param>The Mesh on which to apply the colors
         /// <param name="colors">The color count must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex) color, or equal the triangle count multiplied by three (per-face-vertex color)</param>
+        /// <param name="smoothShading">If true, shading will look smooth instead of faceted, useful for visualizing smooth continuous surfaces</param>
         /// <returns>A Display object.</returns>
         public static GeometryColor ByMeshColors(
             [KeepReferenceAttribute] Mesh mesh,
-            Color[] colors)
+            Color[] colors,
+            bool smoothShading = false)
         {
             if (mesh == null)
             {
@@ -218,13 +220,11 @@ namespace Modifiers
                 throw new ArgumentException(Resources.NoColorsExceptionMessage);
             }
 
-
             Point[] meshVertexPositions = mesh.VertexPositions;
             IndexGroup[] meshFaceIndices = mesh.FaceIndices;
-            Vector[] meshTriangleNormals = mesh.TriangleNormals();
 
-            int meshFaceCount = meshFaceIndices.Length;
-            int meshTriangleCount = meshTriangleNormals.Length;
+            int meshFaceCount = mesh.FaceIndices.Length;
+            int meshTriangleCount = mesh.TriangleCount;
             int meshVertexCount = meshVertexPositions.Length;
 
             // Flattened vertex data arrays that can be fed directly one-by-one to GPU
@@ -232,40 +232,83 @@ namespace Modifiers
             Vector[] vertexNormalsByTriangle = new Vector[meshTriangleCount * 3];
             Color[] vertexColorsByTriangle = new Color[meshTriangleCount * 3];
 
-            var j = 0;
-            for (int i = 0; i < meshFaceCount; i++)
+            if (smoothShading)
             {
-                IndexGroup indexGroup = meshFaceIndices[i];
-
-                uint iA = indexGroup.A;
-                uint iB = indexGroup.B;
-                uint iC = indexGroup.C;
-
-                vertexPositionsByTriangle[j * 3] = meshVertexPositions[iA];
-                vertexPositionsByTriangle[j * 3 + 1] = meshVertexPositions[iB];
-                vertexPositionsByTriangle[j * 3 + 2] = meshVertexPositions[iC];
-
-                vertexNormalsByTriangle[j * 3] = meshTriangleNormals[j];
-                vertexNormalsByTriangle[j * 3 + 1] = meshTriangleNormals[j];
-                vertexNormalsByTriangle[j * 3 + 2] = meshTriangleNormals[j];
-
-                j++;
-
-                if (indexGroup.Count == 4)
+                Vector[] meshVertexNormals = mesh.VertexNormals;
+                int triIndex = 0;
+                for (int i = 0; i < meshFaceCount; i++)
                 {
-                    uint iD = indexGroup.D;
+                    IndexGroup indexGroup = meshFaceIndices[i];
 
-                    vertexPositionsByTriangle[j * 3] = meshVertexPositions[iC];
-                    vertexPositionsByTriangle[j * 3 + 1] = meshVertexPositions[iD];
-                    vertexPositionsByTriangle[j * 3 + 2] = meshVertexPositions[iA];
+                    uint iA = indexGroup.A;
+                    uint iB = indexGroup.B;
+                    uint iC = indexGroup.C;
 
-                    vertexNormalsByTriangle[j * 3] = meshTriangleNormals[j];
-                    vertexNormalsByTriangle[j * 3 + 1] = meshTriangleNormals[j];
-                    vertexNormalsByTriangle[j * 3 + 2] = meshTriangleNormals[j];
+                    vertexPositionsByTriangle[triIndex * 3] = meshVertexPositions[iA];
+                    vertexPositionsByTriangle[triIndex * 3 + 1] = meshVertexPositions[iB];
+                    vertexPositionsByTriangle[triIndex * 3 + 2] = meshVertexPositions[iC];
 
-                    j++;
+                    vertexNormalsByTriangle[triIndex * 3] = meshVertexNormals[iA];
+                    vertexNormalsByTriangle[triIndex * 3 + 1] = meshVertexNormals[iB];
+                    vertexNormalsByTriangle[triIndex * 3 + 2] = meshVertexNormals[iC];
+
+                    triIndex++;
+
+                    if (indexGroup.Count == 4)
+                    {
+                        uint iD = indexGroup.D;
+
+                        vertexPositionsByTriangle[triIndex * 3] = meshVertexPositions[iC];
+                        vertexPositionsByTriangle[triIndex * 3 + 1] = meshVertexPositions[iD];
+                        vertexPositionsByTriangle[triIndex * 3 + 2] = meshVertexPositions[iA];
+
+                        vertexNormalsByTriangle[triIndex * 3] = meshVertexNormals[iC];
+                        vertexNormalsByTriangle[triIndex * 3 + 1] = meshVertexNormals[iD];
+                        vertexNormalsByTriangle[triIndex * 3 + 2] = meshVertexNormals[iA];
+
+                        triIndex++;
+                    }
                 }
             }
+            else
+            {
+                Vector[] meshTriangleNormals = mesh.TriangleNormals();
+                int triIndex = 0;
+                for (int i = 0; i < meshFaceCount; i++)
+                {
+                    IndexGroup indexGroup = meshFaceIndices[i];
+
+                    uint iA = indexGroup.A;
+                    uint iB = indexGroup.B;
+                    uint iC = indexGroup.C;
+
+                    vertexPositionsByTriangle[triIndex * 3] = meshVertexPositions[iA];
+                    vertexPositionsByTriangle[triIndex * 3 + 1] = meshVertexPositions[iB];
+                    vertexPositionsByTriangle[triIndex * 3 + 2] = meshVertexPositions[iC];
+
+                    vertexNormalsByTriangle[triIndex * 3] = meshTriangleNormals[triIndex];
+                    vertexNormalsByTriangle[triIndex * 3 + 1] = meshTriangleNormals[triIndex];
+                    vertexNormalsByTriangle[triIndex * 3 + 2] = meshTriangleNormals[triIndex];
+
+                    triIndex++;
+
+                    if (indexGroup.Count == 4)
+                    {
+                        uint iD = indexGroup.D;
+
+                        vertexPositionsByTriangle[triIndex * 3] = meshVertexPositions[iC];
+                        vertexPositionsByTriangle[triIndex * 3 + 1] = meshVertexPositions[iD];
+                        vertexPositionsByTriangle[triIndex * 3 + 2] = meshVertexPositions[iA];
+
+                        vertexNormalsByTriangle[triIndex * 3] = meshTriangleNormals[triIndex];
+                        vertexNormalsByTriangle[triIndex * 3 + 1] = meshTriangleNormals[triIndex];
+                        vertexNormalsByTriangle[triIndex * 3 + 2] = meshTriangleNormals[triIndex];
+
+                        triIndex++;
+                    }
+                }
+            }
+
 
             //====================================
             // Fill in data for colors array
