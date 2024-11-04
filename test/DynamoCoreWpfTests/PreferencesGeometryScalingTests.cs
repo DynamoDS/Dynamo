@@ -8,6 +8,7 @@ using Dynamo.Views;
 using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using ViewModels.Core;
 
 namespace DynamoCoreWpfTests
 {
@@ -67,6 +68,26 @@ namespace DynamoCoreWpfTests
             slider.ViewModel.NodeModel.UpdateValue(param);
             // The node info should clear after the change
             Assert.AreEqual(nodeView.ViewModel.State, ElementState.Active);
+        }
+
+        [Test]
+        public void GeoScalingPopup_ShowsCorrectSetting() {
+            var dynamoViewModel = (View.DataContext as DynamoViewModel);
+            Assert.IsNotNull(dynamoViewModel);
+
+            //The PolycurveByPoints.dyn has ScaleFactor set to Extra Large
+            Open(@"core\PolycurveByPoints.dyn");
+
+            //Creates the Geometry Scaling Popup and set the ScaleFactor = 2 ( Medium)
+            var geoScalingPopup = new GeometryScalingPopup(dynamoViewModel);
+            geoScalingPopup.IsOpen = true;
+            DispatcherUtil.DoEvents();
+
+            //Check that the Medium radio button is checked
+            var geoScalingVM = geoScalingPopup.ExtraLarge.DataContext as GeometryScalingViewModel;
+            Assert.NotNull(geoScalingVM);
+
+            Assert.True(geoScalingVM.ScaleValue == 4);
         }
 
         /// <summary>
