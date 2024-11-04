@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autodesk.DesignScript.Runtime;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
@@ -62,16 +61,17 @@ namespace CoreNodeModels
         }
     }
 
-    [NodeName("String from Object And Format")]
+    [NodeName("Formatted String from Object")]
     [NodeDescription("StringfromObjectDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromObjectSearchTags", typeof(Resources))]
     [OutPortTypes("string")]
     [IsDesignScriptCompatible]
-    public class StringFromObject : ToStringNodeBase
+    [System.Diagnostics.CodeAnalysis.Experimental("NEWNODE_FormattedStringFromObject")]
+    public class FormattedStringFromObject : ToStringNodeBase
     {
         [JsonConstructor]
-        private StringFromObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
+        private FormattedStringFromObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
             base("__ToStringFromObjectAndFormat", inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
@@ -83,7 +83,7 @@ namespace CoreNodeModels
             }
         }
 
-        public StringFromObject() : base("__ToStringFromObjectAndFormat")
+        public FormattedStringFromObject() : base("__ToStringFromObjectAndFormat")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("object", Resources.FromObjectPortDataObjToolTip)));
@@ -123,17 +123,17 @@ namespace CoreNodeModels
         }
     }
 
-    [NodeName("String from Array And Format")]
+    [NodeName("Formatted String from Array")]
     [NodeDescription("StringfromArrayDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromArraySearchTags", typeof(Resources))]
     [OutPortTypes("string")]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromArray", "DSCoreNodesUI.FromArray")]
-    public class StringFromArray : ToStringNodeBase
+    [System.Diagnostics.CodeAnalysis.Experimental("NEWNODE_FormattedStringFromArray")]
+    public class FormattedStringFromArray : ToStringNodeBase
     {
         [JsonConstructor]
-        private StringFromArray(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
+        private FormattedStringFromArray(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
             base("__ToStringFromArrayAndFormat", inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
@@ -145,7 +145,7 @@ namespace CoreNodeModels
             }
         }
 
-        public StringFromArray() : base("__ToStringFromArrayAndFormat")
+        public FormattedStringFromArray() : base("__ToStringFromArrayAndFormat")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("array", Resources.FromArrayPortDataArrayToolTip)));

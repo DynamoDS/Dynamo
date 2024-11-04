@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -95,6 +95,9 @@ namespace Dynamo.Graph.Nodes
 
             OutputParameters = Type.GetCustomAttributes<OutPortTypesAttribute>(false)
                 .SelectMany(x => x.PortTypes);
+
+
+            IsExperimental = Type.GetCustomAttributes<System.Diagnostics.CodeAnalysis.ExperimentalAttribute>(false).Any();
         }
 
         /// <summary>
@@ -166,5 +169,9 @@ namespace Dynamo.Graph.Nodes
         /// Indicates output parameters.
         /// </summary>
         public readonly IEnumerable<string> OutputParameters;
+        /// <summary>
+        /// Is this type experimental/unstable.
+        /// </summary>
+        internal readonly bool IsExperimental;
     }
 }

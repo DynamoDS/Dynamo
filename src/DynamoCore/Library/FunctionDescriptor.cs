@@ -145,7 +145,12 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Indicates if the lacing strategy is disabled on the function
         /// </summary>
-        public bool IsLacingDisabled { get; set; } 
+        public bool IsLacingDisabled { get; set; }
+        //TODO - should this somehow contain more info - ExperimentalInfo{IsExperimental, ExperimentalMessage/url}?}
+        /// <summary>
+        /// Experimental/Unstable function
+        /// </summary>
+        internal bool IsExperimental { get; set; }
     }
 
     /// <summary>
@@ -186,7 +191,7 @@ namespace Dynamo.Engine
             var type = funcDescParams.FunctionType;
             var inputParameters = new List<Tuple<string, string>>();
             //Add instance parameter as one of the inputs for instance method as well as properties.
-            if(type == FunctionType.InstanceMethod || type == FunctionType.InstanceProperty)
+            if (type == FunctionType.InstanceMethod || type == FunctionType.InstanceProperty)
                 inputParameters.Add(Tuple.Create(UnqualifedClassName.ToLower(), UnqualifedClassName));
 
             if (Parameters.Any())
@@ -196,7 +201,7 @@ namespace Dynamo.Engine
             }
 
             InputParameters = inputParameters;
-            ReturnType =  funcDescParams.ReturnType;
+            ReturnType = funcDescParams.ReturnType;
             Type = type;
             ReturnKeys = funcDescParams.ReturnKeys;
             IsVarArg = funcDescParams.IsVarArg;
@@ -206,6 +211,7 @@ namespace Dynamo.Engine
             IsBuiltIn = funcDescParams.IsBuiltIn;
             IsPackageMember = funcDescParams.IsPackageMember;
             IsLacingDisabled = funcDescParams.IsLacingDisabled;
+            IsExperimental = funcDescParams.IsExperimental;
         }
 
         /// <summary>
@@ -320,28 +326,28 @@ namespace Dynamo.Engine
             {
                 var categoryBuf = new StringBuilder();
                 categoryBuf.Append(GetRootCategory());
-                
+
                 //if this is not BuiltIn function search NodeCategoryAttribute for it
-                if (ClassName!=null)
+                if (ClassName != null)
                 {
                     //get function assembly
                     var asm = AppDomain.CurrentDomain.GetAssemblies()
                         .Where(x => x.GetName().Name == Path.GetFileNameWithoutExtension(Assembly))
                         .ToArray();
 
-                    if (asm.Any() && asm.First().GetType(ClassName)!=null)
+                    if (asm.Any() && asm.First().GetType(ClassName) != null)
                     {
                         //get class type of function
                         var type = asm.First().GetType(ClassName);
 
                         //get NodeCategoryAttribute for this function if it was been defined
-                        var nodeCat = type.GetMethods().Where(x=>x.Name==FunctionName)
-                            .Select(x => x.GetCustomAttribute(typeof (NodeCategoryAttribute)))
-                            .Where(x=>x!=null)
+                        var nodeCat = type.GetMethods().Where(x => x.Name == FunctionName)
+                            .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
+                            .Where(x => x != null)
                             .Cast<NodeCategoryAttribute>()
-                            .Select(x=>x.ElementCategory)
+                            .Select(x => x.ElementCategory)
                             .FirstOrDefault();
-                    
+
                         //if attribute is found compose node category string with last part from attribute
                         if (!string.IsNullOrEmpty(nodeCat) && (
                             nodeCat == LibraryServices.Categories.Constructors
@@ -353,7 +359,7 @@ namespace Dynamo.Engine
                         }
                     }
                 }
-               
+
                 switch (Type)
                 {
                     case FunctionType.Constructor:
@@ -567,5 +573,6 @@ namespace Dynamo.Engine
 
             return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
         }
+        internal bool IsExperimental {get;}
     }
 }

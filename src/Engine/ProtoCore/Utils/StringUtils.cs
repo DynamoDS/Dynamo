@@ -8,6 +8,7 @@ namespace ProtoCore.Utils
 {
     public static class StringUtils
     {
+        //TODO consider removing this option. It makes sharing harder.
         internal const string DynamoPreferencesNumberFormat = nameof(DynamoPreferencesNumberFormat);
         internal const string LEGACYFORMATTING = nameof(LEGACYFORMATTING);
 

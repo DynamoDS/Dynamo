@@ -19,6 +19,7 @@ namespace Dynamo.Search.SearchElements
         private SearchElementGroup group;
         private string assembly;
         private bool isVisibleInSearch = true;
+        internal virtual bool IsExperimental { get; set; }  
 
         internal AutoCompletionNodeElementInfo AutoCompletionNodeElementInfo { get; set; } = new AutoCompletionNodeElementInfo();
 
@@ -141,7 +142,15 @@ namespace Dynamo.Search.SearchElements
             get
             {
                 if (string.IsNullOrEmpty(description))
+                {
                     return Configurations.NoDescriptionAvailable;
+                }
+                if (IsExperimental)
+                {
+                    //TODO localize
+                    return "This node is marked experimental, it may change frequently!" + Environment.NewLine + Environment.NewLine + description;
+                }
+              
 
                 return description;
             }
