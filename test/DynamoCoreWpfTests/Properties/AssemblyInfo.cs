@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -13,3 +13,4 @@ using NUnit.Framework;
 [assembly: RequiresThread(ApartmentState.STA)]
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
 [assembly: InternalsVisibleTo("CrashReportingTests")]
+[assembly: TypeForwardedToAttribute(typeof(DynamoCoreWpfTests.Utility.DispatcherUtil))]

@@ -714,7 +714,12 @@ namespace Dynamo.ViewModels
             var queries = new List<string>() { "String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script" };
             foreach (var query in queries)
             {
-                var foundNode = tempSearchViewModel.Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
+                var nodeSearchElement = tempSearchViewModel.Model.Entries.FirstOrDefault(n => n.Name == query);
+                if(nodeSearchElement == null)
+                {
+                    continue;
+                }
+                var foundNode = tempSearchViewModel.MakeNodeSearchElementVM(nodeSearchElement);
                 if (foundNode != null)
                 {
                     DefaultAutocompleteCandidates.Add(foundNode.Name, foundNode);
@@ -1433,6 +1438,8 @@ namespace Dynamo.ViewModels
                     new DynamoModel.UpdateModelValueCommand(
                         workspaceGUID, pythonNode.GUID, nameof(pythonNode.EngineName), engine));
                 pythonNode.OnNodeModified();
+                Analytics.TrackEvent(Actions.Switch, Categories.PythonOperations, engine);
+                Model.Logger.Log("Updated python node(" + pythonNode.GUID.ToString() + ") engine to use " + engine, LogLevel.Console);
             }
             catch(Exception ex)
             {
@@ -2736,32 +2743,37 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="e"></param>
         /// <param name="forceShowElement"></param>
-        internal void ShowElement(NodeModel e, bool forceShowElement = true)
+        internal void ShowElement(ModelBase e, bool forceShowElement = true)
         {
             if (HomeSpace.RunSettings.RunType == RunType.Automatic && forceShowElement)
                 return;
 
-            if (!model.CurrentWorkspace.Nodes.Contains(e))
+            // Handle NodeModel
+            if (e is NodeModel node)
             {
-                if (HomeSpace != null && HomeSpace.Nodes.Contains(e))
+                if (!model.CurrentWorkspace.Nodes.Contains(e))
                 {
-                    //Show the homespace
-                    model.CurrentWorkspace = HomeSpace;
-                }
-                else
-                {
-                    foreach (
-                        var customNodeWorkspace in
-                            model.CustomNodeManager.LoadedWorkspaces.Where(
-                                customNodeWorkspace => customNodeWorkspace.Nodes.Contains(e)))
+                    if (HomeSpace != null && HomeSpace.Nodes.Contains(e))
                     {
-                        FocusCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
-                        break;
+                        //Show the homespace
+                        model.CurrentWorkspace = HomeSpace;
+                    }
+                    else
+                    {
+                        foreach (
+                            var customNodeWorkspace in
+                                model.CustomNodeManager.LoadedWorkspaces.Where(
+                                    customNodeWorkspace => customNodeWorkspace.Nodes.Contains(e)))
+                        {
+                            FocusCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
+                            break;
+                        }
                     }
                 }
             }
-
+            // Center the view on the model
             this.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
+            FitView(false);
         }
 
         private void CancelActiveState(NodeModel node)
@@ -3184,8 +3196,11 @@ namespace Dynamo.ViewModels
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
+                if (this.ShowStartPage)
+                {
+                    OnEnableShortcutBarItems(false);
+                }
                 RunSettings.ForceBlockRun = false;
-                OnEnableShortcutBarItems(false);
                 OnRequestCloseHomeWorkSpace();
             }
         }

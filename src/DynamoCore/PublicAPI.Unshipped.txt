@@ -2256,7 +2256,7 @@ Dynamo.Selection.ISelectable.IsSelected.set -> void
 Dynamo.Selection.ISelectable.Select() -> void
 Dynamo.Updates.BinaryVersion
 Dynamo.Utilities.LuceneCustomAnalyzer
-Dynamo.Utilities.LuceneCustomAnalyzer.LuceneCustomAnalyzer(Lucene.Net.Util.LuceneVersion matchVersion) -> void
+Dynamo.Utilities.LuceneCustomAnalyzer.LuceneCustomAnalyzer(Lucene.Net.Util.LuceneVersion matchVersion, string language) -> void
 Dynamo.Visualization.DefaultRenderPackage
 Dynamo.Visualization.DefaultRenderPackage.AddLineStripVertex(double x, double y, double z) -> void
 Dynamo.Visualization.DefaultRenderPackage.AddLineStripVertexColor(byte red, byte green, byte blue, byte alpha) -> void
@@ -3015,6 +3015,7 @@ static readonly Dynamo.Configuration.Configurations.TabDefaultWidth -> int
 static readonly Dynamo.Configuration.Configurations.ZoomDirectEditThreshold -> double
 static readonly Dynamo.Configuration.Configurations.ZoomIncrement -> double
 static readonly Dynamo.Configuration.Configurations.ZoomThreshold -> double
+static readonly Dynamo.Configuration.Configurations.ZoomToFitPaddingFactor -> double
 static readonly Dynamo.Configuration.PreferenceSettings.DynamoDefaultTime -> System.DateTime
 virtual Dynamo.Core.CustomNodeManager.OnCustomNodeRemoved(System.Guid functionId) -> void
 virtual Dynamo.Core.CustomNodeManager.OnDefinitionUpdated(Dynamo.CustomNodeDefinition obj) -> void
