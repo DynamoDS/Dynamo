@@ -78,15 +78,14 @@ namespace DynamoCoreWpfTests
             //The PolycurveByPoints.dyn has ScaleFactor set to Extra Large
             Open(@"core\PolycurveByPoints.dyn");
 
-            //Creates the Geometry Scaling Popup and set the ScaleFactor = 2 ( Medium)
             var geoScalingPopup = new GeometryScalingPopup(dynamoViewModel);
             geoScalingPopup.IsOpen = true;
             DispatcherUtil.DoEvents();
 
-            //Check that the Medium radio button is checked
             var geoScalingVM = geoScalingPopup.ExtraLarge.DataContext as GeometryScalingViewModel;
             Assert.NotNull(geoScalingVM);
 
+            //Check that the Extra Large setting is selected.
             Assert.True(geoScalingVM.ScaleValue == 4);
         }
 
