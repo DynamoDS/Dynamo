@@ -593,6 +593,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 new FilterEntry(unknownCompatibilityFilterName, "Filter by compatibility", "Unknown Compatibility Packages", packageManagerSearchViewModel) { OnChecked = false },
             };
 
+            packageManagerSearchViewModel.CompatibilityFilter.ForEach(f => f.PropertyChanged += packageManagerSearchViewModel.filter_PropertyChanged);
+
             // Adding compatible packages
             foreach (var package in compatiblePackagesName)
             {
@@ -654,17 +656,19 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
             Assert.That(packageManagerSearchViewModel.SearchResults.Count == compatiblePackagesName.Count, "Filtered results do not match the compatible packages");
 
-            // Reset (Filters are not mutually exclusive)
-            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = false;
-
             // Check the Incompatible filter
             packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = true;
             packageManagerSearchViewModel.CompatibilityFilter[1].FilterCommand.Execute(string.Empty);
             Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
             Assert.That(packageManagerSearchViewModel.SearchResults.Count == incompatiblePackagesName.Count, "Filtered results do not match the incompatible packages");
 
-            // Reset (Filters are not mutually exclusive)
-            packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = false;
+            // Asserts that Compatible and Incompatible filters are mutually exclusive
+            Assert.IsFalse(packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked, "Compatible and Incompatible filters should be mutually exclusive");
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = true;
+            Assert.IsFalse(packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked, "Compatible and Incompatible filters should be mutually exclusive");
+
+            // Reset (These filters are not mutually exclusive)
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = false;
 
             // Check the Unknown Compatibility filter
             packageManagerSearchViewModel.CompatibilityFilter[2].OnChecked = true;

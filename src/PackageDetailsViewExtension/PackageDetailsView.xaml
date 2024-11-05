@@ -709,6 +709,7 @@
                                                       IsReadOnly="True"
                                                       IsSynchronizedWithCurrentItem="True"
                                                       ItemsSource="{Binding VersionInformation}"
+                                                      RowBackground="{StaticResource DarkMidGreyBrush}"
                                                       RowDetailsVisibilityMode="Collapsed"
                                                       ScrollViewer.CanContentScroll="True"
                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
