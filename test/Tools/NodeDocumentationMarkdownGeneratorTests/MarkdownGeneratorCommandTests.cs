@@ -226,7 +226,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             // Arrange
             var testOutputDirName = "TestMdOutput_CoreNodeModels";
             //these are new files/nodes so there is no dictionary content fo them.
-            var filesToSkip = new string[] { "CoreNodeModels.StringFromArray", "CoreNodeModels.StringFromObject" };
+            var filesToSkip = new string[] { "CoreNodeModels.FormattedStringFromObject", "CoreNodeModels.FormattedStringFromArray" };
                 
             var coreNodeModelsDll = Path.Combine(DynamoCoreNodesDir, CORENODEMODELS_DLL_NAME);
             Assert.That(File.Exists(coreNodeModelsDll));
