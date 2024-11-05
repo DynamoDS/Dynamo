@@ -215,6 +215,7 @@ static Dynamo.Utilities.TypeExtensions.GetInstance<TArg>(this System.Type type, 
 static Dynamo.Utilities.TypeExtensions.ImplementsGeneric(System.Type generic, System.Type toCheck) -> bool
 static Dynamo.Utilities.VersionUtilities.Parse(string version) -> System.Version
 static Dynamo.Utilities.VersionUtilities.PartialParse(string versionString, int numberOfFields = 3) -> System.Version
+static Dynamo.Utilities.VersionUtilities.WildCardParse(string version) -> System.Version
 static DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(string assemblyPath) -> bool
 static DynamoUtilities.PathHelper.CreateFolderIfNotExist(string folderPath) -> System.Exception
 static DynamoUtilities.PathHelper.ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, System.Reflection.Assembly assembly) -> void

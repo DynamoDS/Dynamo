@@ -63,6 +63,20 @@ namespace Dynamo.Tests
             Assert.IsNull(result, "Expected null when input is an invalid version string.");
         }
 
+
+        [Test]
+        public void ParseVersionSafely_TooManyComponents_ReturnsNull()
+        {
+            // Arrange
+            string version = "1.2.3.4.5";
+
+            // Act
+            Version result = VersionUtilities.Parse(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input has too many components '1.2.3.4.5'.");
+        }
+
         [Test]
         public void ParseVersionSafely_ShortVersion_ReturnsPaddedVersion()
         {
@@ -90,6 +104,19 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ParseVersionSafely_LongVersion_ReturnsParsedVersion()
+        {
+            // Arrange
+            string version = "2019.1.2.0";
+
+            // Act
+            Version result = VersionUtilities.Parse(version);
+
+            // Assert
+            Assert.AreEqual(new Version(2019, 1, 2, 0), result, "Expected version '2019.1.2.0' when input is '2019.1.2.0'.");
+        }
+
+        [Test]
         public void ParseWildCard_ValidVersion_ReturnsNull()
         {
             // Arrange
@@ -99,11 +126,11 @@ namespace Dynamo.Tests
             Version result = VersionUtilities.WildCardParse(version);
 
             // Assert
-            Assert.IsNull(result, "Expected null when input is an invalid version string.");
+            Assert.IsNull(result, "Expected null when input does not end with a wildcard symbol.");
         }
 
         [Test]
-        public void ParseWildCard_InvalidWildcarVersion1_ReturnsNull()
+        public void ParseWildCard_InvalidWildcardVersion1_ReturnsNull()
         {
             // Arrange
             string version = "2019.1.2.*";
@@ -116,7 +143,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ParseWildCard_InvalidWildcarVersion2_ReturnsNull()
+        public void ParseWildCard_InvalidWildcardVersion2_ReturnsNull()
         {
             // Arrange
             string version = "2019.1*";
@@ -129,7 +156,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ParseWildCard_InvalidWildcarVersion3_ReturnsNull()
+        public void ParseWildCard_InvalidWildcardVersion3_ReturnsNull()
         {
             // Arrange
             string version = "2019.*.1";
@@ -142,7 +169,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ParseWildCard_Invalidcharacters1_ReturnsNull()
+        public void ParseWildCard_InvalidCharacters1_ReturnsNull()
         {
             // Arrange
             string version = "a.*";
@@ -155,7 +182,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ParseWildCard_Invalidcharacters2_ReturnsNull()
+        public void ParseWildCard_InvalidCharacters2_ReturnsNull()
         {
             // Arrange
             string version = "a.1.*";
@@ -168,7 +195,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ParseWildCard_Invalidcharacters3_ReturnsNull()
+        public void ParseWildCard_InvalidCharacters3_ReturnsNull()
         {
             // Arrange
             string version = "2016.a.*";
@@ -204,6 +231,31 @@ namespace Dynamo.Tests
 
             // Assert
             Assert.AreEqual(new Version(2019, 1000, 0), result, "Expected version '2019.1000.0' when input is '2019.*'.");
+        }
+
+        [Test]
+        public void ParseWildCard_TwoAndThreePartVersionConsistency_ReturnsParsedVersions()
+        {
+            // Arrange & Act
+            Version twoPartResult = VersionUtilities.WildCardParse("2021.*");
+            Version threePartResult = VersionUtilities.WildCardParse("2021.2.*");
+
+            // Assert
+            Assert.AreEqual(new Version(2021, 1000, 0), twoPartResult, "Expected version '2021.1000.0' for input '2021.*'.");
+            Assert.AreEqual(new Version(2021, 2, 1000), threePartResult, "Expected version '2021.2.1000' for input '2021.2.*'.");
+        }
+
+        [Test]
+        public void ParseWildCard_TooManyComponents_ReturnsNull()
+        {
+            // Arrange
+            string version = "1.2.3.4.*";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input has too many components '1.2.3.4.*'.");
         }
 
     }

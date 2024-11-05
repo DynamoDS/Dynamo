@@ -59,12 +59,18 @@ namespace Dynamo.Utilities
                 versionParts = version.Split('.');
             }
 
-            // Now it should be safe to parse
-            return Version.Parse(version);
+            // Now it should be safe to parse - this catches any other incompatible Versions
+            // Including '1.2.3.4.5'
+            return Version.TryParse(version, out parsedVersion) ? parsedVersion : null;
         }
 
         /// <summary>
-        /// Parse the first n fields of a version string.  Delegates to
+        /// The maximum version we check against when substituting a wildcard
+        /// </summary>
+        private const string WILDCARD_MAX_VERSION = "1000";
+
+        /// <summary>
+        /// Parse the first n fields of a version string. Delegates to
         /// Version.Parse.
         /// </summary>
         public static Version WildCardParse(string version)
@@ -75,7 +81,7 @@ namespace Dynamo.Utilities
                 return null;
             }
 
-            // Check if the version string ends with a wild card.
+            // Check if the version string ends with a wildcard
             if (!version.EndsWith(".*"))
             {
                 return null;
@@ -83,46 +89,44 @@ namespace Dynamo.Utilities
 
             var splitVersion = version.Split('.');
 
-            //CHeck that there are not more then 3 version items specified
+            // Check that there are no more than 3 version items specified
             if (splitVersion.Length > 3)
             {
                 return null;
             }
 
-            // Check that the first number is a valid number
+            // Ensure the first part is a valid number
             if (!int.TryParse(splitVersion[0], out _))
             {
                 return null;
             }
 
+            string newVersion;
             if (splitVersion.Length == 2)
             {
-                var newVersion = splitVersion[0] + ".1000.0";
-                if (Version.TryParse(newVersion, out Version parsedVersion))
-                {
-                    return parsedVersion;
-                }
-
-                return null;
+                // Major and wildcard
+                newVersion = AppendWildcardVersion(splitVersion[0], WILDCARD_MAX_VERSION, "0");
             }
-
-            if(splitVersion.Length == 3)
+            else if (splitVersion.Length == 3)
             {
+                // Major, minor, and wildcard
                 if (!int.TryParse(splitVersion[1], out _))
                 {
                     return null;
                 }
-
-                var newVersion = splitVersion[0] + "." + splitVersion[1] + ".1000";
-                if (Version.TryParse(newVersion, out Version parsedVersion))
-                {
-                    return parsedVersion;
-                }
-
+                newVersion = AppendWildcardVersion(splitVersion[0], splitVersion[1], WILDCARD_MAX_VERSION);
+            }
+            else
+            {
                 return null;
             }
 
-            return null;
+            return Version.TryParse(newVersion, out Version parsedVersion) ? parsedVersion : null;
+        }
+
+        private static string AppendWildcardVersion(string major, string minor = WILDCARD_MAX_VERSION, string patch = "0")
+        {
+            return $"{major}.{minor}.{patch}";
         }
     }
 }
