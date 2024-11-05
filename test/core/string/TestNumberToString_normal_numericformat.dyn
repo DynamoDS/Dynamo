@@ -192,7 +192,7 @@
       "Description": "Visualizes a node's output"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromObject, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromObject, CoreNodeModels",
       "Id": "680caae1a3ea4095803b2493571cce7a",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -352,7 +352,7 @@
       "Code": "{\"key\":\"5\"};"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromObject, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromObject, CoreNodeModels",
       "Id": "f776aa328bd043ee8ec082b49bffe6a3",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -441,7 +441,7 @@
       "Code": "5;"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromObject, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromObject, CoreNodeModels",
       "Id": "9c16d38e96ad477dab6fad80d8f28f74",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -479,7 +479,7 @@
       "Description": "Converts an object to a string representation"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromObject, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromObject, CoreNodeModels",
       "Id": "2451b0dca8e54fa98c17fbb6f5aa9c80",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -517,7 +517,7 @@
       "Description": "Converts an object to a string representation"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromObject, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromObject, CoreNodeModels",
       "Id": "c8801f22da1943cab36bd03806cc20cd",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -555,7 +555,7 @@
       "Description": "Converts an object to a string representation"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromObject, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromObject, CoreNodeModels",
       "Id": "1bbe9fbe696945ab801c0428693a34c1",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -593,7 +593,7 @@
       "Description": "Converts an object to a string representation"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromObject, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromObject, CoreNodeModels",
       "Id": "2194d136e214459b8d04f11e5d39f0db",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -652,7 +652,7 @@
       "InputValue": 123456789.0
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromObject, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromObject, CoreNodeModels",
       "Id": "df29ded8e49c4755be88d57e4bda23d9",
       "NodeType": "ExtensionNode",
       "Inputs": [

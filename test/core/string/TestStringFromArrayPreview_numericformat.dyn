@@ -2,7 +2,7 @@
   "Uuid": "45732322-5b7c-4527-a7ff-2181708d3c04",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "TestStringFromArrayPreview_numericformat",
+  "Name": "TestFormattedStringFromArrayPreview_numericformat",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -110,7 +110,7 @@
       "Code": "[\"F1\",\"G\",\"B\"];"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromArray, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromArray, CoreNodeModels",
       "Id": "74f97ab047fa49eaaa8d77271ecb87e0",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -241,7 +241,7 @@
       "Description": "Visualizes a node's output"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromArray, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromArray, CoreNodeModels",
       "Id": "96271f95253f4524a95db2d7400c4f52",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -279,7 +279,7 @@
       "Description": "Converts an array to a string representation"
     },
     {
-      "ConcreteType": "CoreNodeModels.StringFromArray, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.FormattedStringFromArray, CoreNodeModels",
       "Id": "24cdee3feeb04e09bcad4b0078581347",
       "NodeType": "ExtensionNode",
       "Inputs": [
