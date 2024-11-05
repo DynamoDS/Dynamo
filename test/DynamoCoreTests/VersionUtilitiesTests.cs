@@ -89,6 +89,123 @@ namespace Dynamo.Tests
             Assert.AreEqual(new Version(2019, 1, 2), result, "Expected version '2019.1.2' when input is '2019.1.2'.");
         }
 
+        [Test]
+        public void ParseWildCard_ValidVersion_ReturnsNull()
+        {
+            // Arrange
+            string version = "2019.1.2";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input is an invalid version string.");
+        }
+
+        [Test]
+        public void ParseWildCard_InvalidWildcarVersion1_ReturnsNull()
+        {
+            // Arrange
+            string version = "2019.1.2.*";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input is an invalid version string.");
+        }
+
+        [Test]
+        public void ParseWildCard_InvalidWildcarVersion2_ReturnsNull()
+        {
+            // Arrange
+            string version = "2019.1*";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input is an invalid version string.");
+        }
+
+        [Test]
+        public void ParseWildCard_InvalidWildcarVersion3_ReturnsNull()
+        {
+            // Arrange
+            string version = "2019.*.1";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input is an invalid version string.");
+        }
+
+        [Test]
+        public void ParseWildCard_Invalidcharacters1_ReturnsNull()
+        {
+            // Arrange
+            string version = "a.*";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input is an invalid version string.");
+        }
+
+        [Test]
+        public void ParseWildCard_Invalidcharacters2_ReturnsNull()
+        {
+            // Arrange
+            string version = "a.1.*";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input is an invalid version string.");
+        }
+
+        [Test]
+        public void ParseWildCard_Invalidcharacters3_ReturnsNull()
+        {
+            // Arrange
+            string version = "2016.a.*";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.IsNull(result, "Expected null when input is an invalid version string.");
+        }
+
+        [Test]
+        public void ParseWildCard_ValidString1_ReturnsParsedVersion()
+        {
+            // Arrange
+            string version = "2019.1.*";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.AreEqual(new Version(2019, 1, 1000), result, "Expected version '2019.1.1000' when input is '2019.1.*'.");
+        }
+
+        [Test]
+        public void ParseWildCard_ValidString2_ReturnsParsedVersion()
+        {
+            // Arrange
+            string version = "2019.*";
+
+            // Act
+            Version result = VersionUtilities.WildCardParse(version);
+
+            // Assert
+            Assert.AreEqual(new Version(2019, 1000, 0), result, "Expected version '2019.1000.0' when input is '2019.*'.");
+        }
+
     }
 
 }

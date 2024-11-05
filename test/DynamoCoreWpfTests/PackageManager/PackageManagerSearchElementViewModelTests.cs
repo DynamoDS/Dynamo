@@ -1194,5 +1194,118 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.Throws<ArgumentException>(() => PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
                           "Expected an ArgumentException when min version is greater than max version.");
         }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange1_ReturnsTrueForVersionWithinRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.*"
+            };
+            Version version = new Version("2.4.0");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange2_ReturnsTrueForVersionWithinRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.5.*"
+            };
+            Version version = new Version("2.5.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange_ReturnsFalseForVersionOutsideMajorVersionRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.*"
+            };
+            Version version = new Version("3.1.0");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when version is outside the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange_ReturnsFalseForVersionOutsideMinorVersionRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.5.*"
+            };
+            Version version = new Version("2.6.0");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when version is outside the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxWildCardRange_ReturnsFalseForVersionOutsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2*"
+            };
+            Version version = new Version("3.5.1");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when major version is same as Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxWildCardRange_ReturnsTrueForVersionInsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2*"
+            };
+            Version version = new Version("2.5.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxRange_ReturnsFalseForVersionOutsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "asdfasdfa"
+            };
+            Version version = new Version("3.5.1");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when major version is same as Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxRange_ReturnsTrueForVersionInsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "asdfasdfa"
+            };
+            Version version = new Version("2.5.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
+        }
+
     }
 }

@@ -62,5 +62,67 @@ namespace Dynamo.Utilities
             // Now it should be safe to parse
             return Version.Parse(version);
         }
+
+        /// <summary>
+        /// Parse the first n fields of a version string.  Delegates to
+        /// Version.Parse.
+        /// </summary>
+        public static Version WildCardParse(string version)
+        {
+            // If the version string is null or empty, return null
+            if (string.IsNullOrEmpty(version))
+            {
+                return null;
+            }
+
+            // Check if the version string ends with a wild card.
+            if (!version.EndsWith(".*"))
+            {
+                return null;
+            }
+
+            var splitVersion = version.Split('.');
+
+            //CHeck that there are not more then 3 version items specified
+            if (splitVersion.Length > 3)
+            {
+                return null;
+            }
+
+            // Check that the first number is a valid number
+            if (!int.TryParse(splitVersion[0], out _))
+            {
+                return null;
+            }
+
+            if (splitVersion.Length == 2)
+            {
+                var newVersion = splitVersion[0] + ".1000.0";
+                if (Version.TryParse(newVersion, out Version parsedVersion))
+                {
+                    return parsedVersion;
+                }
+
+                return null;
+            }
+
+            if(splitVersion.Length == 3)
+            {
+                if (!int.TryParse(splitVersion[1], out _))
+                {
+                    return null;
+                }
+
+                var newVersion = splitVersion[0] + "." + splitVersion[1] + ".1000";
+                if (Version.TryParse(newVersion, out Version parsedVersion))
+                {
+                    return parsedVersion;
+                }
+
+                return null;
+            }
+
+            return null;
+        }
     }
 }
