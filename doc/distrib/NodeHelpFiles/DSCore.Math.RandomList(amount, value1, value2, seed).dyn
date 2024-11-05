@@ -1,0 +1,324 @@
+{
+  "Uuid": "a19b2b4a-e4e6-43ab-9b41-f8d218bff28f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Math.RandomList",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int,double,double,int",
+      "Id": "22608925effd41da8276cc1f3fa556e1",
+      "Inputs": [
+        {
+          "Id": "d8f69ad5d57149bdab8deee9c4542573",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8500e786f93c4dc2861ca60d67f1868b",
+          "Name": "value1",
+          "Description": "Lower end of the range for the random number.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7811d2f5d309421681dae748af9f3c68",
+          "Name": "value2",
+          "Description": "Higher end of the range for the random number.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "225f7b146669408297dbca0059f32dc7",
+          "Name": "seed",
+          "Description": "Seed value for the random number generator.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8bc9be80584d4fb9a87c645a2da24c86",
+          "Name": "number",
+          "Description": "List of random numbers in the range [lower_number, higher_number).",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the defined range of [lower_number, higher_number) based on an initial seed value.\n\nMath.RandomList (amount: int, value1: double, value2: double, seed: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 350.0,
+      "Id": "aad45e136f294016b9569e77da6a7495",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4717cfa39bc34971b8973cf14495f109",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 10.0,
+      "Id": "79f82eaf7d774a1fbb495bfac92c963d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "da20c284f29a457a8f0ce542ff0fdf47",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 20.0,
+      "Id": "7a10649ba8fd4cd9bac7edb7bc455342",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1fa7671279284cb5affedbef3b400e08",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 0.0,
+      "Id": "d54d34a2d72a45f5883172a33e47c413",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f54cacf0893149b28513b1443989f417",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "bd376124aaa24d47b6683358c4c541c0",
+      "Inputs": [
+        {
+          "Id": "d6a0a2fc7c7845d68709a31d48d2282c",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5beb431acbe34681a91be3f06cef7f88",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8bc9be80584d4fb9a87c645a2da24c86",
+      "End": "d6a0a2fc7c7845d68709a31d48d2282c",
+      "Id": "b967c8dbdfea4fc9bdff7b1094567e20",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4717cfa39bc34971b8973cf14495f109",
+      "End": "d8f69ad5d57149bdab8deee9c4542573",
+      "Id": "8c2ce4f8aa8540dfbe3bdd3702049aa9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "da20c284f29a457a8f0ce542ff0fdf47",
+      "End": "8500e786f93c4dc2861ca60d67f1868b",
+      "Id": "6d691557d5cb42feaafe7da832e6f3ef",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1fa7671279284cb5affedbef3b400e08",
+      "End": "7811d2f5d309421681dae748af9f3c68",
+      "Id": "af8df28ff4b54bb082d2d0d0ba72fada",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f54cacf0893149b28513b1443989f417",
+      "End": "225f7b146669408297dbca0059f32dc7",
+      "Id": "87734ab8060b49b486e34300a302de95",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.3835",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Math.RandomList",
+        "ShowGeometry": true,
+        "Id": "22608925effd41da8276cc1f3fa556e1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 783.35269177384271,
+        "Y": 424.60951340803547
+      },
+      {
+        "Name": "Number",
+        "ShowGeometry": true,
+        "Id": "aad45e136f294016b9569e77da6a7495",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 550.552691773843,
+        "Y": 254.609513408035
+      },
+      {
+        "Name": "Number",
+        "ShowGeometry": true,
+        "Id": "79f82eaf7d774a1fbb495bfac92c963d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 550.552691773843,
+        "Y": 401.609513408035
+      },
+      {
+        "Name": "Number",
+        "ShowGeometry": true,
+        "Id": "7a10649ba8fd4cd9bac7edb7bc455342",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 550.552691773843,
+        "Y": 549.609513408035
+      },
+      {
+        "Name": "Number",
+        "ShowGeometry": true,
+        "Id": "d54d34a2d72a45f5883172a33e47c413",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 550.552691773843,
+        "Y": 696.609513408035
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "bd376124aaa24d47b6683358c4c541c0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1098.5526917738428,
+        "Y": 424.60951340803547
+      }
+    ],
+    "Annotations": [],
+    "X": -317.7930803135464,
+    "Y": -226.65933619161808,
+    "Zoom": 1.0542982150113263
+  }
+}

@@ -1263,8 +1263,8 @@ namespace Dynamo.Graph.Workspaces
             var startId = obj["Start"].Value<string>();
             var endId = obj["End"].Value<string>();
             var isHiddenExists = obj[nameof(ConnectorModel.IsHidden)];
-
-            var isHidden = isHiddenExists != null && obj[nameof(ConnectorModel.IsHidden)].Value<bool>();
+            // final connector visibility would respect current setting first, if visible then fallback to serialized value
+            var isHidden = !PreferenceSettings.Instance.ShowConnector || isHiddenExists != null && obj[nameof(ConnectorModel.IsHidden)].Value<bool>();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 

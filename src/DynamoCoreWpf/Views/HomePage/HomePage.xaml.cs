@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using Autodesk.DesignScript.Runtime;
@@ -34,6 +36,8 @@ namespace Dynamo.UI.Views
         private static readonly string fontUrl = $"http://{virtualFolderName}/ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderPath = Path.Combine(Path.GetTempPath(), virtualFolderName);
 
+        private const string videoSettingsConfigString = "VideoSettings";
+
         private string fontFilePath;
 
         private StartPageViewModel startPage;
@@ -50,6 +54,7 @@ namespace Dynamo.UI.Views
         internal Action RequestNewCustomNodeWorkspace;
         internal Action RequestApplicationLoaded;
         internal Action RequestShowSampleFilesInFolder;
+        internal Action RequestShowSampleDatasetsInFolder;
         internal Action RequestShowBackupFilesInFolder;
         internal Action RequestShowTemplate;
         internal Action<string> RequestSaveSettings;
@@ -83,13 +88,13 @@ namespace Dynamo.UI.Views
             RequestOpenWorkspace = OpenWorkspace;
             RequestNewCustomNodeWorkspace = NewCustomNodeWorkspace;
             RequestShowSampleFilesInFolder = ShowSampleFilesInFolder;
+            RequestShowSampleDatasetsInFolder = ShowSampleDatasetsInFolder;
             RequestShowBackupFilesInFolder = ShowBackupFilesInFolder;
             RequestShowTemplate = OpenTemplate;
             RequestApplicationLoaded = ApplicationLoaded;
             RequestSaveSettings = SaveSettings;
 
             DataContextChanged += OnDataContextChanged;
-
         }
             
         private void InitializeGuideTourItems()
@@ -120,7 +125,7 @@ namespace Dynamo.UI.Views
 
         private void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(dynWebView?.CoreWebView2 != null && e.PropertyName.Equals(nameof(startPage.DynamoViewModel.ShowStartPage)))
+            if(e.PropertyName == nameof(startPage.DynamoViewModel.ShowStartPage) && dynWebView?.CoreWebView2 != null)
             {
                 dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
             }
@@ -165,7 +170,7 @@ namespace Dynamo.UI.Views
                 this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
                 this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
-                // Load the embeded resources
+                // Load the embedded resources
                 var assembly = Assembly.GetExecutingAssembly();
 
                 htmlString = PathHelper.LoadEmbeddedResourceAsString(htmlEmbeddedFile, assembly);
@@ -198,6 +203,7 @@ namespace Dynamo.UI.Views
                                         RequestApplicationLoaded,
                                         RequestShowGuidedTour,
                                         RequestShowSampleFilesInFolder,
+                                        RequestShowSampleDatasetsInFolder,
                                         RequestShowBackupFilesInFolder,
                                         RequestShowTemplate,
                                         RequestSaveSettings));
@@ -254,6 +260,7 @@ namespace Dynamo.UI.Views
             SendGuidesData();
             SendSamplesData();
             SendRecentGraphsData();
+            SendVideoData();
             SetLocale();
         }
 
@@ -345,6 +352,69 @@ namespace Dynamo.UI.Views
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveInteractiveGuidesDataFromDotNet({jsonData})");
             }
+        }
+
+        /// <summary>
+        /// Utility class with the correct structure for a video object
+        /// </summary>
+        private class Video
+        {
+            [JsonPropertyName("id")]
+            public string Id { get; set; }
+
+            [JsonPropertyName("title")]
+            public string Title { get; set; }
+
+            [JsonPropertyName("videoId")]
+            public string VideoId { get; set; }
+
+            [JsonPropertyName("description")]
+            public string Description { get; set; }
+        }
+
+        /// <summary>
+        /// Send the training videos stored in the config 
+        /// </summary>
+        private async void SendVideoData()
+        {
+            var videoSettingsJson = GetStringResourceFromConfig(this, videoSettingsConfigString);
+            if (string.IsNullOrEmpty(videoSettingsJson))
+            {
+                this.startPage.DynamoViewModel.Model.Logger.Log("No video settings found in the configuration.");
+                return;
+            }
+
+            var videoSettings = JsonSerializer.Deserialize<List<Video>>(videoSettingsJson);
+            string jsonData = JsonSerializer.Serialize(videoSettings);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveTrainingVideoDataFromDotNet({jsonData})");
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a string stored in the app.config file
+        /// </summary>
+        /// <param name="o">The object ref to get the assembly from</param>
+        /// <param name="serviceKey">The resource key</param>
+        /// <returns></returns>
+        private static string GetStringResourceFromConfig(object o, string serviceKey)
+        {
+            string resource = null;
+            if (o != null)
+            {
+                var path = o.GetType().Assembly.Location;
+                var config = ConfigurationManager.OpenExeConfiguration(path);
+                var key = config.AppSettings.Settings[serviceKey];
+
+                if (key != null)
+                {
+                    resource = key.Value;
+                }
+            }
+
+            return resource;
         }
         #endregion
 
@@ -520,7 +590,7 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultCommand.Execute(null);
+            this.startPage?.DynamoViewModel?.ShowOpenDialogAndOpenResultAsyncCommand.Execute(null);
             Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Workspace");
         }
 
@@ -545,11 +615,26 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            Process.Start(new ProcessStartInfo("explorer.exe", "/select,"
-                + this.startPage.SampleFolderPath)
+            // Open the default Explorer location if the Sample folder cannot be found
+            string explorerArg = this.startPage.SampleFolderPath != null ? "/select," + this.startPage.SampleFolderPath : "";
+
+            Process.Start(new ProcessStartInfo("explorer.exe", explorerArg)
             { UseShellExecute = true });
             Logging.Analytics.TrackEvent(Logging.Actions.Show, Logging.Categories.DynamoHomeOperations, "Sample Files");
+        }
+        
+        internal void ShowSampleDatasetsInFolder()
+        {
+            if (this.startPage == null) return;
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(string.Empty);
+                return;
+            }
 
+            Process.Start(new ProcessStartInfo("explorer.exe", this.startPage.SampleDatasetsPath)
+            { UseShellExecute = true });
+            Logging.Analytics.TrackEvent(Logging.Actions.Show, Logging.Categories.DynamoHomeOperations, "Dataset Files");
         }
 
         internal void ShowBackupFilesInFolder()
@@ -575,7 +660,7 @@ namespace Dynamo.UI.Views
             }
 
             // Equivalent to CommandParameter="Template"
-            this.startPage?.DynamoViewModel?.ShowOpenTemplateDialogCommand.Execute("Template");
+            this.startPage?.DynamoViewModel?.ShowOpenTemplateDialogAsyncCommand.Execute("Template");
             Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Template");
         }
 
@@ -660,6 +745,7 @@ namespace Dynamo.UI.Views
         readonly Action RequestApplicationLoaded;
         readonly Action<string> RequestShowGuidedTour;
         readonly Action RequestShowSampleFilesInFolder;
+        readonly Action RequestShowSampleDatasetsInFolder;
         readonly Action RequestShowBackupFilesInFolder;
         readonly Action RequestShowTemplate;
         readonly Action<string> RequestSaveSettings;
@@ -671,6 +757,7 @@ namespace Dynamo.UI.Views
             Action requestApplicationLoaded,
             Action<string> requestShowGuidedTour,
             Action requestShowSampleFilesInFolder,
+            Action requestShowSampleDatasetsInFolder,
             Action requestShowBackupFilesInFolder,
             Action requestShowTemplate,
             Action<string> requestSaveSettings)
@@ -682,6 +769,7 @@ namespace Dynamo.UI.Views
             RequestApplicationLoaded = requestApplicationLoaded;
             RequestShowGuidedTour = requestShowGuidedTour;
             RequestShowSampleFilesInFolder = requestShowSampleFilesInFolder;
+            RequestShowSampleDatasetsInFolder = requestShowSampleDatasetsInFolder;
             RequestShowBackupFilesInFolder = requestShowBackupFilesInFolder;
             RequestShowTemplate = requestShowTemplate;
             RequestSaveSettings = requestSaveSettings;
@@ -717,11 +805,15 @@ namespace Dynamo.UI.Views
             RequestShowSampleFilesInFolder();
         }
         [DynamoJSInvokable]
+        public void ShowSampleDatasetsInFolder()
+        {
+            RequestShowSampleDatasetsInFolder();
+        }
+        [DynamoJSInvokable]
         public void ShowBackupFilesInFolder()
         {
             RequestShowBackupFilesInFolder();
         }
-
         [DynamoJSInvokable]
         public void ShowTempalte()
         {
@@ -761,4 +853,5 @@ namespace Dynamo.UI.Views
             Thumbnail = thumbnail;
         }
     }
+
 }

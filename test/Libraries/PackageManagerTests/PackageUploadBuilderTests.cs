@@ -44,7 +44,7 @@ namespace Dynamo.PackageManager.Tests
             zipper.Setup((x) => x.Zip(It.IsAny<IDirectoryInfo>())).Returns(bigzip.Object);
 
             var pdb = new Mock<IPackageDirectoryBuilder>();
-            pdb.Setup(x => x.BuildRetainDirectory(It.IsAny<Package>(), It.IsAny<string>(), It.IsAny<IEnumerable<IEnumerable<string>>>(), It.IsAny<IEnumerable<string>>()))
+            pdb.Setup(x => x.BuildRetainDirectory(It.IsAny<Package>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<IEnumerable<string>>>(), It.IsAny<IEnumerable<string>>()))
                 .Returns((new Mock<IDirectoryInfo>()).Object);
 
             // this package upload builder will try to return a zip that is too big
@@ -191,7 +191,7 @@ namespace Dynamo.PackageManager.Tests
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
 
-            Assert.Throws<Exception>(() => pub.NewPackageRetainUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<Exception>(() => pub.NewPackageRetainUpload(pkg, pkgsDir, Enumerable.Empty<string>(), files, Enumerable.Empty<string>(), handle));
         }
 
         [Test]
@@ -204,10 +204,10 @@ namespace Dynamo.PackageManager.Tests
 
             var m = new PackageUploadBuilder(MockMaker.Empty<IPackageDirectoryBuilder>(), MockMaker.Empty<IFileCompressor>());
 
-            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(null, pkgsDir, files, Enumerable.Empty<string>(), handle));
-            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(pkg, null, files, Enumerable.Empty<string>(), handle));
-            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(pkg, pkgsDir, null, Enumerable.Empty<string>(), handle));
-            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), null));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(null, pkgsDir, Enumerable.Empty<string>(), files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(pkg, null, Enumerable.Empty<string>(), files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(pkg, pkgsDir, Enumerable.Empty<string>(), null, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageRetainUpload(pkg, pkgsDir, Enumerable.Empty<string>(), files, Enumerable.Empty<string>(), null));
         }
 
         #endregion
@@ -259,7 +259,7 @@ namespace Dynamo.PackageManager.Tests
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
 
-            Assert.Throws<Exception>(() => pub.NewPackageVersionRetainUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<Exception>(() => pub.NewPackageVersionRetainUpload(pkg, pkgsDir, Enumerable.Empty<string>(), files, Enumerable.Empty<string>(), handle));
         }
 
         [Test]
@@ -272,10 +272,10 @@ namespace Dynamo.PackageManager.Tests
 
             var m = new PackageUploadBuilder(MockMaker.Empty<IPackageDirectoryBuilder>(), MockMaker.Empty<IFileCompressor>());
 
-            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(null, pkgsDir, files, Enumerable.Empty<string>(), handle));
-            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(pkg, null, files, Enumerable.Empty<string>(), handle));
-            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(pkg, pkgsDir, null, Enumerable.Empty<string>(), handle));
-            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(pkg, pkgsDir, files, Enumerable.Empty<string>(), null));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(null, pkgsDir, Enumerable.Empty<string>(), files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(pkg, null, Enumerable.Empty<string>(), files, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(pkg, pkgsDir, Enumerable.Empty<string>(), null, Enumerable.Empty<string>(), handle));
+            Assert.Throws<ArgumentNullException>(() => m.NewPackageVersionRetainUpload(pkg, pkgsDir, Enumerable.Empty<string>(), files, Enumerable.Empty<string>(), null));
         }
 
         #endregion

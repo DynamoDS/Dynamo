@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
@@ -22,6 +23,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -712,7 +714,12 @@ namespace Dynamo.ViewModels
             var queries = new List<string>() { "String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script" };
             foreach (var query in queries)
             {
-                var foundNode = tempSearchViewModel.Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
+                var nodeSearchElement = tempSearchViewModel.Model.Entries.FirstOrDefault(n => n.Name == query);
+                if(nodeSearchElement == null)
+                {
+                    continue;
+                }
+                var foundNode = tempSearchViewModel.MakeNodeSearchElementVM(nodeSearchElement);
                 if (foundNode != null)
                 {
                     DefaultAutocompleteCandidates.Add(foundNode.Name, foundNode);
@@ -1394,6 +1401,150 @@ namespace Dynamo.ViewModels
             RaiseCanExecuteUndoRedo();
         }
 
+        internal bool CanUpdatePythonNodeEngine(object parameter)
+        {
+            if (DynamoSelection.Instance.Selection.Count > 0 && SelectionHasPythonNodes())
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool SelectionHasPythonNodes()
+        {
+            if (GetSelectedPythonNodes().Any())
+            {
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Updates the engine for the Python nodes,
+        /// if the nodes belong to another workspace (like custom nodes), they will be opened silently.
+        /// </summary>
+        /// <param name="pythonNode"></param>
+        /// <param name="engine"></param>
+        internal void UpdatePythonNodeEngine(PythonNodeBase pythonNode, string engine)
+        {
+            try
+            {
+                var workspaceGUID = Guid.Empty;
+                var cnWorkspace = GetCustomNodeWorkspace(pythonNode);
+                if (cnWorkspace != null)
+                {
+                    workspaceGUID = cnWorkspace.Guid;
+                    FocusCustomNodeWorkspace(cnWorkspace.CustomNodeId, true);
+                }
+                this.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                        workspaceGUID, pythonNode.GUID, nameof(pythonNode.EngineName), engine));
+                pythonNode.OnNodeModified();
+                Analytics.TrackEvent(Actions.Switch, Categories.PythonOperations, engine);
+                Model.Logger.Log("Updated python node(" + pythonNode.GUID.ToString() + ") engine to use " + engine, LogLevel.Console);
+            }
+            catch(Exception ex)
+            {
+                Model.Logger.Log("Failed to update Python node engine: " + ex.Message, LogLevel.Console);
+            }
+
+        }
+        internal void UpdateAllPythonEngine(object param)
+        {
+            var pNodes = GetSelectedPythonNodes(Model.CurrentWorkspace.Nodes);
+            if (pNodes.Count == 0) return;
+            var result = MessageBoxService.Show(
+                        Owner,
+                        string.Format(Resources.UpdateAllPythonEngineWarning, pNodes.Count, param.ToString()),
+                        Resources.UpdateAllPythonEngineWarningTitle,
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Exclamation);
+            if (result == MessageBoxResult.Yes)
+            {
+                pNodes.ForEach(x => UpdatePythonNodeEngine(x, param.ToString()));
+            }
+        }
+        internal bool CanUpdateAllPythonEngine(object param)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Adds the python engine to the menu items and subscribes to their click event for updating the engine.
+        /// </summary>
+        /// <param name="pythonNodeModel">List of python nodes</param>
+        /// <param name="pythonEngineVersionMenu">context menu item to which the engines will be added to</param>
+        /// <param name="updateEngineDelegate">Update event handler, to trigger engine update for the node</param>
+        /// <param name="engineName">Python engine to be added</param>
+        /// <param name="isBinding">Should be set to true, if you require to bind the passed
+        /// NodeModel engine value with the menu item, works only when a single node is passed in the list.</param>
+        internal void AddPythonEngineToMenuItems(List<PythonNodeBase> pythonNodeModel,
+           MenuItem pythonEngineVersionMenu,
+           RoutedEventHandler updateEngineDelegate,
+           string engineName, bool isBinding = false)
+        {
+            //if all nodes in the selection are set to a specific engine, then that engine will be checked in the list.
+            bool hasCommonEngine = pythonNodeModel.All(x => x.EngineName == engineName);
+            var currentItem = pythonEngineVersionMenu.Items.Cast<MenuItem>().FirstOrDefault(x => x.Header as string == engineName);
+            if (currentItem != null)
+            {
+                if (pythonNodeModel.Count == 1) return;
+                currentItem.IsChecked = hasCommonEngine;
+                return;
+            }
+            MenuItem pythonEngineItem = null;
+            //if single node, then checked property is bound to the engine value, as python node context menu is not recreated
+            if (pythonNodeModel.Count == 1 && isBinding)
+            {
+                var pythonNode = pythonNodeModel.FirstOrDefault(); ;
+                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
+                pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new System.Windows.Data.Binding(nameof(pythonNode.EngineName))
+                {
+                    Source = pythonNode,
+                    Converter = new CompareToParameterConverter(),
+                    ConverterParameter = engineName
+                });
+            }
+            else
+            {
+                //when updating multiple nodes checked value is not bound to any specific node,
+                //rather takes into account all the selected nodes
+                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = true };
+                pythonEngineItem.IsChecked = hasCommonEngine;
+            }
+            pythonEngineItem.Click += updateEngineDelegate;
+            pythonEngineVersionMenu.Items.Add(pythonEngineItem);
+        }
+        /// <summary>
+        /// Gets the Python nodes from the provided list, including python nodes inside custom nodes as well.
+        /// If no list is provided then the current selection will be considered.
+        /// </summary>
+        /// <returns></returns>
+        internal List<PythonNodeBase> GetSelectedPythonNodes(IEnumerable<NodeModel> nodes = null)
+        {
+            if (nodes == null)
+            {
+                nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>();
+            }
+            var selectedPythonNodes = nodes.OfType<PythonNodeBase>().ToList();
+            var customNodes = nodes.Where(x => x.IsCustomFunction).ToList();
+            if (customNodes.Count > 0)
+            {
+                foreach (var cNode in customNodes)
+                {
+                    var customNodeFunction = cNode as Function;
+                    var pythonNodesInCN = customNodeFunction?.Definition.FunctionBody.OfType<PythonNodeBase>().ToList();
+                    if (pythonNodesInCN.Count > 0)
+                    {
+                        selectedPythonNodes.AddRange(pythonNodesInCN);
+                    }
+                }
+            }
+            return selectedPythonNodes;
+        }
+        private CustomNodeWorkspaceModel GetCustomNodeWorkspace(NodeModel node)
+        {
+            var wg = model.CustomNodeManager.LoadedWorkspaces.Where(x => x.Nodes.Contains(node)).FirstOrDefault();
+            return wg ?? null;
+        }
         /// <summary>
         /// After command framework is implemented, this method should now be only 
         /// called from a menu item (i.e. Ctrl + W). It should not be used as a way
@@ -2150,7 +2301,7 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
                 }
             }
-            else // use the samples directory, if it exists
+            else if (string.IsNullOrEmpty(LastSavedLocation)) //If there is no last saved location, use the samples directory(if it exists) 
             {
                 Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
                 string location = Path.GetDirectoryName(dynamoAssembly.Location);
@@ -2183,6 +2334,11 @@ namespace Dynamo.ViewModels
                     }
                 }
             }
+        }
+
+        private async void ShowOpenDialogAndOpenResultAsync(object parameter)
+        {
+            UIDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, () => ShowOpenDialogAndOpenResult(parameter));
         }
 
         private void SetDefaultInitialDirectory(DynamoOpenFileDialog _fileDialog)
@@ -2562,17 +2718,18 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Change the currently visible workspace to a custom node's workspace
+        ///     Change the currently visible workspace to a custom node's workspace, unless the silent flag is set to true.
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void FocusCustomNodeWorkspace(Guid symbol)
+        /// <param name="silent">When true, the focus will not switch to the workspace, but it will be opened silently.</param>
+        internal void FocusCustomNodeWorkspace(Guid symbol, bool silent = false)
         {
             if (symbol == null)
             {
                 throw new Exception(Resources.MessageNodeWithNullFunction);
             }
-
-            if (model.OpenCustomNodeWorkspace(symbol))
+            var res = silent ? model.OpenCustomNodeWorkspaceSilent(symbol) : model.OpenCustomNodeWorkspace(symbol);
+            if (res)
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
@@ -2586,32 +2743,37 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="e"></param>
         /// <param name="forceShowElement"></param>
-        internal void ShowElement(NodeModel e, bool forceShowElement = true)
+        internal void ShowElement(ModelBase e, bool forceShowElement = true)
         {
             if (HomeSpace.RunSettings.RunType == RunType.Automatic && forceShowElement)
                 return;
 
-            if (!model.CurrentWorkspace.Nodes.Contains(e))
+            // Handle NodeModel
+            if (e is NodeModel node)
             {
-                if (HomeSpace != null && HomeSpace.Nodes.Contains(e))
+                if (!model.CurrentWorkspace.Nodes.Contains(e))
                 {
-                    //Show the homespace
-                    model.CurrentWorkspace = HomeSpace;
-                }
-                else
-                {
-                    foreach (
-                        var customNodeWorkspace in
-                            model.CustomNodeManager.LoadedWorkspaces.Where(
-                                customNodeWorkspace => customNodeWorkspace.Nodes.Contains(e)))
+                    if (HomeSpace != null && HomeSpace.Nodes.Contains(e))
                     {
-                        FocusCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
-                        break;
+                        //Show the homespace
+                        model.CurrentWorkspace = HomeSpace;
+                    }
+                    else
+                    {
+                        foreach (
+                            var customNodeWorkspace in
+                                model.CustomNodeManager.LoadedWorkspaces.Where(
+                                    customNodeWorkspace => customNodeWorkspace.Nodes.Contains(e)))
+                        {
+                            FocusCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
+                            break;
+                        }
                     }
                 }
             }
-
+            // Center the view on the model
             this.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
+            FitView(false);
         }
 
         private void CancelActiveState(NodeModel node)
@@ -2782,6 +2944,8 @@ namespace Dynamo.ViewModels
                 if (_fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     SaveAs(_fileDialog.FileName);
+                    if(FileTrustViewModel != null)
+                        FileTrustViewModel.DynFileDirectoryName = _fileDialog.FileName;
                     LastSavedLocation = Path.GetDirectoryName(_fileDialog.FileName);
                     //set the IsTemplate to false, after saving it as a file
                     vm.Model.CurrentWorkspace.IsTemplate = false;
@@ -3032,8 +3196,11 @@ namespace Dynamo.ViewModels
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
+                if (this.ShowStartPage)
+                {
+                    OnEnableShortcutBarItems(false);
+                }
                 RunSettings.ForceBlockRun = false;
-                OnEnableShortcutBarItems(false);
                 OnRequestCloseHomeWorkSpace();
             }
         }
@@ -3310,6 +3477,15 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+        public void GoToWebsite(object parameter)
+        {
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoSiteLink) { UseShellExecute = true });
+        }
+
+        internal bool CanGoToWebsite(object parameter)
+        {
+            return true;
+        }
 
         public void GoToSourceCode(object parameter)
         {
@@ -3489,6 +3665,96 @@ namespace Dynamo.ViewModels
         private static void LoadLibraryEvents_LoadLibraryFailure(string failureMessage, string messageBoxTitle)
         {
             Wpf.Utilities.MessageBoxService.Show(failureMessage, messageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        }
+
+        /// <summary>
+        /// Returns a Minimum Qualified Name for a node, given it's NodeModel object.
+        /// The MQN consist of the node namespace, node category, concatenated by the names of it's input and output ports, in case of overloaded nodes.
+        /// </summary>
+        /// <param name="nodeModel"></param>
+        /// <returns></returns>
+        internal string GetMinimumQualifiedName(NodeModel nodeModel)
+        {
+            switch (nodeModel)
+            {
+                case Graph.Nodes.CustomNodes.Function function:
+                    var category = function.Category;
+                    var name = function.Name;
+                    if (CustomNodeHasCollisons(name, GetMainCategory(nodeModel)))
+                    {
+                        var inputString = GetInputNames(function);
+                        return $"{category}.{name}({inputString})";
+                    }
+                    return $"{category}.{name}";
+
+                case Graph.Nodes.ZeroTouch.DSFunctionBase dSFunction:
+                    var descriptor = dSFunction.Controller.Definition;
+                    if (descriptor.IsOverloaded)
+                    {
+                        var inputString = GetInputNames(nodeModel);
+                        return $"{descriptor.QualifiedName}({inputString})";
+                    }
+
+                    return descriptor.QualifiedName;
+
+                case NodeModel node:
+                    var type = node.GetType();
+                    if (NodeModelHasCollisions(type.FullName))
+                    {
+                        return $"{type.FullName}({GetInputNames(nodeModel)})";
+                    }
+
+                    return type.FullName;
+
+                default:
+                    return string.Empty;
+            }
+        }
+
+        internal bool CustomNodeHasCollisons(string nodeName, string packageName)
+        {
+            var pmExtension = Model.GetPackageManagerExtension();
+            if (pmExtension is null)
+                return false;
+
+            var package = pmExtension.PackageLoader.LocalPackages
+                .Where(x => x.Name == packageName)
+                .FirstOrDefault();
+
+            if (package is null)
+                return false;
+
+            var loadedNodesWithSameName = package.LoadedCustomNodes
+                .Where(x => x.Name == nodeName)
+                .ToList();
+
+            if (loadedNodesWithSameName.Count == 1)
+                return false;
+            return true;
+        }
+
+        internal bool NodeModelHasCollisions(string typeName)
+        {
+            var entries = Model.SearchModel.Entries
+                .Where(x => x.CreationName == typeName)
+                .Select(x => x).ToList();
+
+            if (entries.Count() > 1)
+                return true;
+
+            return false;
+        }
+
+        internal string GetMainCategory(NodeModel node)
+        {
+            return node.Category.Split(new char[] { '.' }).FirstOrDefault();
+        }
+
+        internal string GetInputNames(NodeModel node)
+        {
+            var inputNames = node.InPorts.Select(x => x.Name).ToArray();
+            // Match https://github.com/DynamoDS/Dynamo/blame/master/src/DynamoCore/Search/SearchElements/ZeroTouchSearchElement.cs#L51 
+            return string.Join(", ", inputNames);
         }
 
         public void ImportLibrary(object parameter)
@@ -3694,6 +3960,209 @@ namespace Dynamo.ViewModels
                 defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
                 defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
             }
+        }
+
+        private DirectoryInfo GetFallBackDocPath()
+        {
+            DirectoryInfo fallbackDocPath = null;
+            const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
+            var pathManager = Model.PathManager;
+
+            if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
+            {
+                var docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, System.Threading.Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!docsDir.Exists)
+                {
+                    docsDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
+                fallbackDocPath = docsDir.Exists ? docsDir : null;
+            }
+
+            if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
+            {
+                //when running over any host app like Revit, FormIt, Civil3D... the path to the fallback_docs can change.
+                //e.g. for Revit the variable HostApplicationDirectory = C:\Program Files\Autodesk\Revit 2023\AddIns\DynamoForRevit\Revit
+                //Then we need to remove the last folder from the path so we can find the fallback_docs directory.
+                var hostAppDirectory = Directory.GetParent(pathManager.HostApplicationDirectory).FullName;
+                var docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, System.Threading.Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!docsDir.Exists)
+                {
+                    docsDir = new DirectoryInfo(Path.Combine(hostAppDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
+                fallbackDocPath = docsDir.Exists ? docsDir : null;
+            }
+            return fallbackDocPath;
+        }
+        private DirectoryInfo GetNodeHelpDocPath()
+        {
+            var nodeHelpDocPath = new DirectoryInfo(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
+                    Configurations.DynamoNodeHelpDocs));
+
+            return nodeHelpDocPath;
+        }
+
+        /// <summary>
+        /// Debug method to export missing node help data for core nodes
+        /// </summary>
+        /// <param name="parameter"></param>
+        internal void DumpNodeHelpData(object parameter)
+        {
+            const string CSV_HEADER = "Node Name,Full Name,Hash,MD File,DYN File,IMG File, MD File State";
+            const string IMG_NOT_FOUND = "Image not found in MD file";
+            const string IN_DEPTH_NOT_FOUND = "In Depth section not found in MD file";
+            const string MISSING_MD_FILE = "Missing MD file";
+            const string MISSING_DYN_FILE = "Missing DYN file";
+            const string MISSING_IMG_FILE = "Missing IMG file";
+            string fileName = String.Format("NodeHelpData_{0}.csv", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string fullFileName = Path.Combine(Model.PathManager.LogDirectory, fileName);
+            DirectoryInfo fallbackDocPath = GetFallBackDocPath();
+            DirectoryInfo nodeHelpDocPath = GetNodeHelpDocPath();
+            var csv = new System.Text.StringBuilder();
+            //creating a copy to avoid collection changed exceptions
+            var entriesCopy = Model.SearchModel.Entries.ToList();
+            List<string> mdSuffix = new List<string>() { ".md" };
+            List<string> dynSuffix = new List<string>() { ".dyn" };
+            List<string> imgSuffix = new List<string>() { "_img.jpg", "_img.png", "_img.gif" };
+            Dictionary<string, List<string>> stats = new Dictionary<string, List<string>>
+            {
+                { "MD", new List<string>() },
+                { "IMG", new List<string>() },
+                { "DYN", new List<string>() },
+                { "IMG_A", new List<string>() },
+                { "MD_D", new List<string>() }
+            };
+
+            csv.AppendLine(CSV_HEADER);
+            foreach (var ent in entriesCopy)
+            {
+                var node = ent.CreateNode();
+                var mqn = GetMinimumQualifiedName(node);
+                var hash = Hash.GetHashFilenameFromString(mqn);
+
+                string helpDocPath = string.Empty;
+                string helpImgPath = string.Empty;
+                string helpDynPath = string.Empty;
+                string helpImageAttached = IMG_NOT_FOUND;
+                string helpInDepth = IN_DEPTH_NOT_FOUND;
+                if (fallbackDocPath != null)
+                {
+                    var matchingDoc = GetMatchingDocFromDirectory(mqn, hash, mdSuffix, fallbackDocPath);
+                    if (matchingDoc is null)
+                    {
+                        stats["MD"].Add(mqn);
+                        helpDocPath = MISSING_MD_FILE;
+                        helpImageAttached = string.Empty;
+                        helpInDepth = string.Empty;
+                    }
+                    else
+                    {
+                        helpDocPath = matchingDoc.FullName;
+                        var lines = File.ReadAllLines(matchingDoc.FullName);
+                        bool hasImageFile = false;
+                        bool hasImageHeader = false;
+                        bool hasInDepth = false;
+                        for (var i = 0; i < lines.Length; i++)
+                        {
+                            var line = lines[i];
+                            if (line.Trim().ToLower().Contains("## in depth"))
+                            {
+                                hasInDepth = true;
+                                helpInDepth = string.Empty;
+                                continue;
+                            }
+                            if (line.Trim().ToLower().Contains("## example file"))
+                            {
+                                hasImageHeader = true;
+                                continue;
+                            }
+                            if (imgSuffix.Any(s => line.Trim().ToLower().Contains(s)))
+                            {
+                                hasImageFile = true;
+                            }
+                            if (hasImageFile && hasImageHeader)
+                            {
+                                helpImageAttached = string.Empty;
+                                break;
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(helpImageAttached))
+                        {
+                            stats["IMG_A"].Add(mqn);
+                        }
+                        if (!hasInDepth)
+                        {
+                            stats["MD_D"].Add(mqn);
+                        }
+                    }
+
+                    var matchingDyn = GetMatchingDocFromDirectory(mqn, hash, dynSuffix, nodeHelpDocPath);
+                    if (matchingDyn is null)
+                    {
+                        stats["DYN"].Add(mqn);
+                        helpDynPath = MISSING_DYN_FILE;
+                    }
+                    else { helpDynPath = matchingDyn.FullName; }
+
+                    var matchingSpecialImg = GetMatchingDocFromDirectory(mqn, hash, imgSuffix, nodeHelpDocPath);
+                    if (matchingSpecialImg is null)
+                    {
+                        stats["IMG"].Add(mqn);
+                        helpImgPath = MISSING_IMG_FILE;
+                    }
+                    else { helpImgPath = matchingSpecialImg.FullName; }
+                }
+
+                //replaced ',' with '-' for nodes with overload to be displayed in a single cell
+                var newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", node.Name, mqn.Replace(",", "-"), hash, helpDocPath.Replace(",", "-"), helpDynPath.Replace(",", "-"), helpImgPath.Replace(",", "-"), helpImageAttached, helpInDepth);
+                csv.AppendLine(newLine);
+            }
+            var stat = new System.Text.StringBuilder();
+            stat.AppendLine("Total," + entriesCopy.Count);
+            stat.AppendLine("Missing MD Files (MD)," + stats["MD"].Count);
+            stat.AppendLine("Missing DYN Files (DYN)," + stats["DYN"].Count);
+            stat.AppendLine("Missing IMG Files (IMG)," + stats["IMG"].Count);
+            stat.AppendLine("Missing IMG attached in MD File (IMG_A)," + stats["IMG_A"].Count);
+            stat.AppendLine("Missing In Depth section in MD File (MD_D)," + stats["MD_D"].Count);
+            Model.Logger.Log(string.Format(Resources.NodeHelpIsDumped, fullFileName + Environment.NewLine + stat.ToString()));
+            stat.AppendLine(Environment.NewLine);
+
+            foreach (var k in stats.Keys)
+            {
+                stat.AppendLine(k + Environment.NewLine);
+                foreach (var node in stats[k])
+                {
+                    stat.AppendLine(node.Replace(",", "-"));
+                }
+                stat.AppendLine(Environment.NewLine);
+            }
+
+            stat.AppendLine(csv.ToString());
+
+            File.WriteAllText(fullFileName, stat.ToString());
+        }
+
+        private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
+        {
+            FileInfo matchingFile = null;
+            foreach (var sfx in suffix)
+            {
+                matchingFile = dir.GetFiles($"{hash}{sfx}").FirstOrDefault();
+                if (matchingFile is null && !string.IsNullOrWhiteSpace(nodeName) && !nodeName.Contains("/") && !nodeName.Contains("\\"))
+                {
+                    matchingFile = dir.GetFiles($"{nodeName}{sfx}").FirstOrDefault();
+                }
+                if (matchingFile != null)
+                {
+                    break;
+                }
+            }
+
+            return matchingFile;
+        }
+
+        internal bool CanDumpNodeHelpData(object obj)
+        {
+            return true;
         }
 
         #region Shutdown related methods

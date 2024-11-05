@@ -2,22 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Text;
+using System.Windows.Media;
+using System.Windows.Shapes;
+using System.Windows.Threading;
+using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
-using Dynamo.Utilities;
-using Dynamo.UI.Commands;
-
-using Point = System.Windows.Point;
 using Dynamo.Selection;
-using System.ComponentModel;
-using System.Text;
-using System.Windows.Threading;
-using System.Windows.Shapes;
-using System.Windows.Media;
-using Dynamo.Graph;
+using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Models;
+using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
@@ -1417,11 +1415,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void Redraw()
         {
-            if (this.ConnectorModel.End != null && ConnectorPinViewCollection.Count > 0)
+            if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
             {
                 RedrawBezierManyPoints();
             }
-            else if (this.ConnectorModel.End != null)
+            else if (this.ConnectorModel?.End != null)
             {
                 this.Redraw(this.ConnectorModel.End.Center);
             }
@@ -1452,22 +1450,18 @@ namespace Dynamo.ViewModels
         {
             var p2 = new Point();
 
-            if (parameter is Point)
+            if (parameter is Point point)
             {
-                p2 = (Point)parameter;
+                p2 = point;
             }
-            else if (parameter is Point2D)
+            else if (parameter is Point2D d)
             {
-                p2 = ((Point2D)parameter).AsWindowsType();
+                p2 = d.AsWindowsType();
             }
 
             CurvePoint3 = p2;
-
-            var offset = 0.0;
-            double distance = 0;
-
-            distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
-            offset = .45 * distance;
+            double distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
+            double offset = .45 * distance;
 
             CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
             CurvePoint2 = new Point(p2.X - offset, p2.Y);
@@ -1487,20 +1481,28 @@ namespace Dynamo.ViewModels
             //RaisePropertyChanged(string.Empty);
 
 
-            PathFigure pathFigure = new PathFigure();
-            pathFigure.StartPoint = CurvePoint0;
+            PathFigure pathFigure = new PathFigure
+            {
+                StartPoint = CurvePoint0
+            };
 
             BezierSegment segment = new BezierSegment(CurvePoint1, CurvePoint2, CurvePoint3, true);
-            var segmentCollection = new PathSegmentCollection(1);
-            segmentCollection.Add(segment);
+            var segmentCollection = new PathSegmentCollection(1)
+            {
+                segment
+            };
             pathFigure.Segments = segmentCollection;
             PathFigureCollection pathFigureCollection = new PathFigureCollection();
             pathFigureCollection.Add(pathFigure);
 
-            ComputedBezierPathGeometry = new PathGeometry();
-            ComputedBezierPathGeometry.Figures = pathFigureCollection;
-            ComputedBezierPath = new Path();
-            ComputedBezierPath.Data = ComputedBezierPathGeometry;
+            ComputedBezierPathGeometry = new PathGeometry
+            {
+                Figures = pathFigureCollection
+            };
+            ComputedBezierPath = new Path
+            {
+                Data = ComputedBezierPathGeometry
+            };
         }
 
         private PathFigure DrawSegmentBetweenPointPairs(Point startPt, Point endPt, ref List<Point[]> controlPointList)

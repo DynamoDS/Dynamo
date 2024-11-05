@@ -98,10 +98,14 @@ namespace Dynamo.Models
     /// </summary>
     public struct HostAnalyticsInfo
     {
-        // Dynamo variation identified by host.
+        // Dynamo variation identified by host, e.g. Dynamo Revit
         public string HostName;
         // Dynamo variation version specific to host
         public Version HostVersion;
+        // Dynamo host application name, e.g. Revit
+        public string HostProductName;
+        // Dynamo host application version, e.g. 2025.2.0
+        public Version HostProductVersion;
         // Dynamo host parent id for analytics purpose.
         public string ParentId;
         // Dynamo host session id for analytics purpose.
@@ -712,7 +716,7 @@ namespace Dynamo.Models
             //If network traffic is disabled, analytics should also be disabled - this is already done in
             //our other entry points(CLI,Sandbox etc) - but
             //not all integrators will use those entry points, some may just create a DynamoModel directly.
-            Analytics.DisableAnalytics = NoNetworkMode || Analytics.DisableAnalytics;
+            Analytics.DisableAnalytics = NoNetworkMode || Analytics.DisableAnalytics || IsServiceMode;
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client for web traffic reason.
@@ -798,51 +802,52 @@ namespace Dynamo.Models
             var userCommonPackageFolder = pathManager.CommonPackageDirectory;
             AddPackagePath(userCommonPackageFolder);
 
-            // Load Python Template
-            // The loading pattern is conducted in the following order
-            // 1) Set from DynamoSettings.XML
-            // 2) Set from API via the configuration file
-            // 3) Set from PythonTemplate.py located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
-            // 4) Set from OOTB hard-coded default template
+                // Load Python Template
+                // The loading pattern is conducted in the following order
+                // 1) Set from DynamoSettings.XML
+                // 2) Set from API via the configuration file
+                // 3) Set from PythonTemplate.py located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
+                // 4) Set from OOTB hard-coded default template
 
-            // If a custom python template path doesn't already exists in the DynamoSettings.xml
-            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
-            {
-                // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
-                // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
-                // while passing the config to the 'DynamoModel' constructor.
-                if (config is DefaultStartConfiguration)
+                // If a custom python template path doesn't already exists in the DynamoSettings.xml
+                if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) ||
+                    !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
                 {
-                    var configurationSettings = (DefaultStartConfiguration)config;
-                    var templatePath = configurationSettings.PythonTemplatePath;
-
-                    // If a custom python template path was set in the config apply that template
-                    if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
+                    // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
+                    // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
+                    // while passing the config to the 'DynamoModel' constructor.
+                    if (config is DefaultStartConfiguration)
                     {
-                        PreferenceSettings.PythonTemplateFilePath = templatePath;
+                        var configurationSettings = (DefaultStartConfiguration)config;
+                        var templatePath = configurationSettings.PythonTemplatePath;
+
+                        // If a custom python template path was set in the config apply that template
+                        if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
+                        {
+                            PreferenceSettings.PythonTemplateFilePath = templatePath;
                         Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + PreferenceSettings.PythonTemplateFilePath);
+                        }
+
+                        // Otherwise fallback to the default
+                        else
+                        {
+                            SetDefaultPythonTemplate();
+                        }
                     }
 
-                    // Otherwise fallback to the default
                     else
                     {
+                        // Fallback to the default
                         SetDefaultPythonTemplate();
                     }
                 }
 
                 else
                 {
-                    // Fallback to the default
-                    SetDefaultPythonTemplate();
+                    // A custom python template path already exists in the DynamoSettings.xml
+                    Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
                 }
-            }
-
-            else
-            {
-                // A custom python template path already exists in the DynamoSettings.xml
-                Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
-            }
-
+            
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
@@ -861,6 +866,7 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
+            //don't load linter manager in service mode.
             if (!IsServiceMode)
             {
                 LinterManager = new LinterManager(this.ExtensionManager);
@@ -924,6 +930,7 @@ namespace Dynamo.Models
 
             if (extensions.Any())
             {
+                Logger.Log("\nLoading Dynamo extensions:");
                 var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
@@ -975,18 +982,26 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
-            StartBackupFilesTimer();
+            if (!IsServiceMode)
+            {
+                StartBackupFilesTimer();
+            }
 
             TraceReconciliationProcessor = this;
 
             State = DynamoModelState.StartedUIless;
-            // Write index to disk only once
-            LuceneUtility.CommitWriterChanges();
+
+            if(!IsServiceMode)
+            {
+                // Write index to disk only once
+                LuceneUtility.CommitWriterChanges();
+            }
             //Disposed writer if it is in file system mode so that the index files can be used by other processes (potentially a second Dynamo session)
             if (LuceneUtility.startConfig.StorageType == LuceneSearchUtility.LuceneStorage.FILE_SYSTEM)
             {
-                LuceneUtility.DisposeWriter();
+                    LuceneUtility.DisposeWriter();
             }
+            
 
             GraphChecksumDictionary = new Dictionary<string, List<string>>();
                  
@@ -1457,11 +1472,18 @@ namespace Dynamo.Models
             var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
+                //just bail in service mode.
+                if (IsServiceMode)
+                {
+                    return;
+                }
+
                 if (customNodeSearchRegistry.Contains(info.FunctionId)
                         || !info.IsVisibleInDynamoLibrary)
                     return;
 
-                var elements = SearchModel.Entries.OfType<CustomNodeSearchElement>().
+               
+                var elements = SearchModel?.Entries.OfType<CustomNodeSearchElement>().
                                 Where(x =>
                                 {
                                     // Search for common paths and get rid of empty paths.
@@ -1479,6 +1501,7 @@ namespace Dynamo.Models
                     }
                     return;
                 }
+                
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -1515,6 +1538,7 @@ namespace Dynamo.Models
                     }
                 };
             };
+
             CustomNodeManager.DefinitionUpdated += UpdateCustomNodeDefinition;
         }
 
@@ -2108,7 +2132,7 @@ namespace Dynamo.Models
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture
             };
@@ -2718,8 +2742,12 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
+                                if (model is ConnectorPinModel pinModel)
+                                {
+                                    annotation.MarkPinAsRemoved(pinModel);
+                                }
                                 annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();
+                                annotation.UpdateBoundaryFromSelection();                               
                             }
                         }
                         else
@@ -2788,7 +2816,7 @@ namespace Dynamo.Models
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(pathManager.LogDirectory, fileName);
 
-            SearchModel.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
+            SearchModel?.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
 
             Logger.Log(string.Format(Resources.LibraryIsDumped, fullFileName));
         }
@@ -2931,6 +2959,26 @@ namespace Dynamo.Models
                 }
 
                 CurrentWorkspace = customNodeWorkspace;
+                return true;
+            }
+
+            return false;
+        }
+        /// <summary>
+        ///     Opens an existing custom node workspace.
+        /// </summary>
+        /// <param name="guid">Identifier of the workspace to open</param>
+        /// <returns>True if workspace was found and open</returns>
+        internal bool OpenCustomNodeWorkspaceSilent(Guid guid)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
+            {
+                if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
+                {
+                    AddWorkspace(customNodeWorkspace);
+                }
+
                 return true;
             }
 
@@ -3341,6 +3389,17 @@ namespace Dynamo.Models
             {
                 return null;
             }
+            var namespaces = PreferenceSettings.NamespacesToExcludeFromLibrary;
+            if (namespaces.Any(ns =>
+                {
+                    var namespc = ns.Split(":").LastOrDefault();
+
+                    return namespc != null && namespc.Contains(typeLoadData.Category);
+                }))
+            {
+                return null;
+            }
+
             var node = new NodeModelSearchElement(typeLoadData);
             SearchModel?.Add(node);
             return node;

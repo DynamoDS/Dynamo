@@ -50,6 +50,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(homePage.RequestNewCustomNodeWorkspace);
             Assert.IsNotNull(homePage.RequestApplicationLoaded);
             Assert.IsNotNull(homePage.RequestShowSampleFilesInFolder);
+            Assert.IsNotNull(homePage.RequestShowSampleDatasetsInFolder);
             Assert.IsNotNull(homePage.RequestShowBackupFilesInFolder);
             Assert.IsNotNull(homePage.RequestShowTemplate);
         }
@@ -616,6 +617,23 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(windowClosed, "Dynamo View was not closed correctly.");
         }
         #endregion
+
+        [Test]
+        public void TestDeserializeDynamoGraphProperties()
+        {
+            // Arrange
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\Home.dyn");
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+
+            // Act
+            var properties = startPage.GetFileProperties(filePath);
+
+            // Assert
+            Assert.AreEqual(properties.description, "Test description");
+            Assert.AreEqual(properties.author, "John Doe");
+            Assert.IsFalse(string.IsNullOrEmpty(properties.thumbnail));
+        }
 
         #region helpers
 

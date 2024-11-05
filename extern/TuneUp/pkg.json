@@ -1,0 +1,24 @@
+{
+    "license": "MIT",
+    "file_hash": null,
+    "name": "TuneUp",
+    "version": "1.0.13",
+    "description": "On Dynamo 2.5–2.19 (.NET 4.8), use TuneUp versions up to 1.0.7.\r\nOn Dynamo 3.0+ (.NET 8), use TuneUp versions 1.0.8 and later.\r\n\r\nTuneUp is a view extension for analyzing the performance of Dynamo graphs. TuneUp allows you to see overall graph execution time, per-node execution time, execution time of groups, and other helpful information. With TuneUp, you can rerun all nodes, including ones that are normally skipped for optimization/caching during repeated runs of a graph. This enables you to compare the actual execution times between multiple runs. Read more here: https://dynamobim.org/tuneup-extension-explore-your-node-and-graph-execution-times/. \r\n\r\nKnown issues:\r\n1. TuneUp does not work in a custom node workspace.\r\n2. TuneUp does not work in a custom node workspace.",
+    "group": "",
+    "keywords": [
+        "profiler",
+        "tuneup"
+    ],
+    "dependencies": [],
+    "host_dependencies": [],
+    "contents": "",
+    "engine_version": "3.0.0.7186",
+    "engine": "dynamo",
+    "engine_metadata": "",
+    "site_url": "https://dynamobim.org/",
+    "repository_url": "https://github.com/DynamoDS/TuneUp",
+    "contains_binaries": true,
+    "node_libraries": [],
+    "copyright_holder": "DynamoTeam",
+    "copyright_year": "2024"
+}

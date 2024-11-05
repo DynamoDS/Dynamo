@@ -1,0 +1,4 @@
+﻿<ViewExtensionDefinition>
+  <AssemblyPath>..\bin\TuneUp.dll</AssemblyPath>
+  <TypeName>TuneUp.TuneUpViewExtension</TypeName>
+</ViewExtensionDefinition>

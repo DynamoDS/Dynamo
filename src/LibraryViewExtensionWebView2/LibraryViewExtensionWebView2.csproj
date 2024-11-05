@@ -16,13 +16,21 @@
   </PropertyGroup>
   
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+      <PropertyGroup>
+          <PackageVersion>1.0.6</PackageVersion>
+          <PackageName>LibrarieJS</PackageName>
+      </PropertyGroup>
+      <Exec Command="&quot;$(PowerShellCommand)&quot; -ExecutionPolicy ByPass -Command &quot;&amp; '$(SolutionDir)pkgexist.ps1' '$(PackageName)' '$(PackageVersion)'&quot;" ConsoleToMSBuild="true">
+          <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+      </Exec>
+      <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high"></Message>
         <!--This command updates the npm registry configuration if necessary-->
-        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
-        <!--This command gets a specific build of the notifcation center from npm-->
-        <Exec Command="npm pack @dynamods/librariejs@1.0.5" />
+      <Exec Command="&quot;$(PowerShellCommand)&quot; -ExecutionPolicy ByPass -Command &quot;&amp; '$(SolutionDir)setnpmreg.ps1'&quot;" Condition="$(ShouldInstall)" />
+      <!--This command gets a specific build of the notifcation center from npm-->
+        <Exec Command="npm pack @dynamods/librariejs@$(PackageVersion)"  Condition="$(ShouldInstall)"/>
     </Target>
 
-    <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild">
+    <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
         <!--Locates the .tgz files-->
         <ItemGroup>
             <TGZFiles Include="./dynamods-librariejs-*.tgz" />
@@ -34,7 +42,7 @@
         </PropertyGroup>
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/LibrarieJS"></Exec>
+        <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/LibrarieJS&quot;" />
 
         <!--Deletes the tgz file-->
         <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
@@ -203,7 +211,7 @@
     <EmbeddedResource Include="Packages\LibrarieJS\resources\Tessellation.Voronoi.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">

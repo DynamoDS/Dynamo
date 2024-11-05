@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Globalization;
+using Dynamo.Configuration;
 
 namespace Dynamo.Models
 {
@@ -30,24 +31,6 @@ namespace Dynamo.Models
 
             // See property for more details.
             protected bool redundant = false;
-
-            /// <summary>
-            /// Settings that is used for serializing commands
-            /// </summary>
-            protected static JsonSerializerSettings jsonSettings;
-
-            /// <summary>
-            /// Initialize commands serializing settings
-            /// </summary>
-            static RecordableCommand()
-            {
-                jsonSettings = new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.Objects,
-                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                    Culture = CultureInfo.InvariantCulture
-                };
-            }
 
             #endregion
 
@@ -107,18 +90,6 @@ namespace Dynamo.Models
                 XmlElement element = document.CreateElement(commandName);
                 SerializeCore(element);
                 return element;
-            }
-
-            /// <summary>
-            /// This method serializes the RecordableCommand object in the json form.
-            /// The resulting string contains command type name and all the
-            /// arguments that are required by this command.
-            /// </summary>
-            /// <returns>The string can be used for reconstructing RecordableCommand
-            /// using Deserialize method</returns>
-            internal string Serialize()
-            {
-                return JsonConvert.SerializeObject(this, jsonSettings);
             }
 
             /// <summary>
@@ -220,29 +191,6 @@ namespace Dynamo.Models
                 throw new ArgumentException(message);
             }
 
-            /// <summary>
-            /// Call this static method to reconstruct a RecordableCommand from json
-            /// string that contains command name - name of corresponding class inherited
-            /// from RecordableCommand, - and all the arguments that are required by this
-            /// command.
-            /// </summary>
-            /// <param name="jsonString">Json string that contains command name and all
-            /// its arguments.</param>
-            /// <returns>Reconstructed RecordableCommand</returns>
-            internal static RecordableCommand Deserialize(string jsonString)
-            {
-                RecordableCommand command = null;
-                try
-                {
-                    command = JsonConvert.DeserializeObject(jsonString, jsonSettings) as RecordableCommand;
-                    command.IsInPlaybackMode = true;
-                    return command;
-                }
-                catch
-                {
-                    throw new ApplicationException("Invalid jsonString for creating RecordableCommand");
-                }
-            }
             #endregion
 
             #region Public Command Properties
@@ -1616,15 +1564,16 @@ namespace Dynamo.Models
                 BeginCreateConnections
             }
 
-            void setProperties(int portIndex, PortType portType, Mode mode)
+            void SetProperties(int portIndex, PortType portType, Mode mode)
             {
                 PortIndex = portIndex;
                 Type = portType;
                 ConnectionMode = mode;
+                IsHidden = !PreferenceSettings.Instance.ShowConnector;
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1634,11 +1583,11 @@ namespace Dynamo.Models
             public MakeConnectionCommand(string nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { Guid.Parse(nodeId) })
             {
-                setProperties(portIndex, portType, mode);
+                SetProperties(portIndex, portType, mode);
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1647,11 +1596,11 @@ namespace Dynamo.Models
             public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { nodeId })
             {
-                setProperties(portIndex, portType, mode);
+                SetProperties(portIndex, portType, mode);
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1660,7 +1609,7 @@ namespace Dynamo.Models
             public MakeConnectionCommand(IEnumerable<Guid> nodeId, int portIndex, PortType portType, Mode mode)
                 : base(nodeId)
             {
-                setProperties(portIndex, portType, mode);
+                SetProperties(portIndex, portType, mode);
             }
 
             internal static MakeConnectionCommand DeserializeCore(XmlElement element)
@@ -1669,7 +1618,6 @@ namespace Dynamo.Models
                 int portIndex = helper.ReadInteger("PortIndex");
                 var portType = ((PortType)helper.ReadInteger("Type"));
                 var mode = ((Mode)helper.ReadInteger("ConnectionMode"));
-
                 var modelGuids = DeserializeGuid(element, helper);
 
                 return new MakeConnectionCommand(modelGuids, portIndex, portType, mode);
@@ -1688,6 +1636,9 @@ namespace Dynamo.Models
             [DataMember]
             public Mode ConnectionMode { get; private set; }
 
+            [DataMember]
+            internal bool IsHidden { get; private set; }
+
             #endregion
 
             #region Protected Overridable Methods
@@ -1704,6 +1655,7 @@ namespace Dynamo.Models
                 helper.SetAttribute("PortIndex", PortIndex);
                 helper.SetAttribute("Type", ((int)Type));
                 helper.SetAttribute("ConnectionMode", ((int)ConnectionMode));
+                helper.SetAttribute("IsHidden", IsHidden);
             }
 
             #endregion

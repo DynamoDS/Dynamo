@@ -216,4 +216,7 @@
   <data name="ToastFileNotFoundLocationNotificationText" xml:space="preserve">
     <value>Example file from {0} could not be found</value>
   </data>
+  <data name="InputDefaultValue" xml:space="preserve">
+    <value>default value</value>
+  </data>
 </root>

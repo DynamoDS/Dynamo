@@ -1,5 +1,4 @@
-# Build DynamoAll.sln with .NET 8.0
-name: Build DynamoAll.sln net8.0
+name: Build DynamoAll.sln
 
 on:
   push:
@@ -8,7 +7,8 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build_and_analyze:
+    name: Build and Analyze
     runs-on: windows-latest
     steps:
       - name: Checkout Dynamo Repo
@@ -29,16 +29,17 @@ jobs:
           dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64
       - name: Build Dynamo with MSBuild for Windows
         run: |
-          Write-Output "***Continue with the build, Good luck developer!***"
-          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release
+          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"
           if (Test-Path -Path "${{ github.workspace }}\Dynamo\bin\AnyCPU\Release\DynamoCLI.exe") {
             Write-Output "DynamoCLI.exe exists!"
           } else {
-            Write-Error "DynamoCLI.exe was not found!"
+            Write-Output "::error title=File Not Found::DynamoCLI.exe was not found!"
           }
+      - name: Check File Version
+        run: ${{ github.workspace }}\Dynamo\.github\scripts\check_file_version.ps1 ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:

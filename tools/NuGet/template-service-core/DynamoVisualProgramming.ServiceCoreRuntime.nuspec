@@ -17,6 +17,8 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="**" target="lib\$TargetFramework$\" exclude="en-US\fallback_docs\*"/>
+              <file src="**"
+              target="lib\$TargetFramework$\"
+              exclude="**\*.pdb;**\*.txt;**\*.rtf;en-US\fallback_docs\*;NodeHelpSharedDocs\*;Open Source Licenses\*;samples\** "/>
     </files>
 </package>

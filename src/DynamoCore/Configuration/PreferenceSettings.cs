@@ -1056,6 +1056,15 @@ namespace Dynamo.Configuration
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
                     settings = serializer.Deserialize(fs) as PreferenceSettings;
+                    var namespaces = settings?.NamespacesToExcludeFromLibrary;
+                    for (var index = 0; index < namespaces?.Count; index++)
+                    {
+                        if (namespaces[index] == "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel")
+                        {
+                            namespaces[index] = "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface";
+                        }
+                    }
+
                     fs.Close(); // Release file lock
                 }
             }
@@ -1180,7 +1189,7 @@ namespace Dynamo.Configuration
                 NamespacesToExcludeFromLibrary = new List<string>()
                 {
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel"
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface"
                 };  
                 NamespacesToExcludeFromLibrarySpecified = true;
             }
@@ -1191,14 +1200,11 @@ namespace Dynamo.Configuration
         /// </summary>
         internal void UpdateNamespacesToExcludeFromLibrary()
         {
-            // When the experiment toggle is disabled by feature flag, include the TSpline namespace from the library OOTB.
-            if (!DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false)
-            {
-                NamespacesToExcludeFromLibrary.Remove(
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
-                );
-                return;
-            }
+            // Include the TSpline namespace from the library OOTB.
+            NamespacesToExcludeFromLibrary.Remove(
+                "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
+            );
+            return;
         }
 
         //migrate old path token to new path token

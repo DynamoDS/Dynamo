@@ -157,6 +157,7 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
+                new Version(231,0,0),
                 new Version(230,0,0),
             };
 
@@ -334,7 +335,9 @@ namespace Dynamo.Applications
                 PathResolver = CreatePathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance,
-                NoNetworkMode = noNetworkMode
+                NoNetworkMode = noNetworkMode,
+                //Breaks all Lucene calls. TI enable this would require a lot of refactoring around Lucene usage in Dynamo.
+                //IsHeadless = CLImode
             };
             var model = DynamoModel.Start(config);
             return model;
