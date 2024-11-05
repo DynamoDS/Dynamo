@@ -67,7 +67,7 @@ namespace Dynamo.Utilities
         /// <summary>
         /// The maximum version we check against when substituting a wildcard
         /// </summary>
-        private const string WILDCARD_MAX_VERSION = "99999";
+        private const string WILDCARD_MAX_VERSION = "65535";
 
         /// <summary>
         /// Parse the first n fields of a version string. Delegates to

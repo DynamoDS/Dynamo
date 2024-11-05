@@ -1217,8 +1217,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 min = "2.3.0",
                 max = "2.*"
             };
-            Version compatibleVersion = new Version("2.99999.0");
-            Version incompatibleVersion = new Version("2.99999.1");
+            Version compatibleVersion = new Version("2.65535.0");
+            Version incompatibleVersion = new Version("2.65535.1");
 
             Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion),
                           "Expected compatibility to be true when version is within the min and max wildcard range.");
