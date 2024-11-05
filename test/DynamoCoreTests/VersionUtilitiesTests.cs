@@ -217,7 +217,7 @@ namespace Dynamo.Tests
             Version result = VersionUtilities.WildCardParse(version);
 
             // Assert
-            Assert.AreEqual(new Version(2019, 1, 1000), result, "Expected version '2019.1.1000' when input is '2019.1.*'.");
+            Assert.AreEqual(new Version(2019, 1, 2147483647), result, "Expected version '2019.1.2147483647' when input is '2019.1.*'.");
         }
 
         [Test]
@@ -230,7 +230,7 @@ namespace Dynamo.Tests
             Version result = VersionUtilities.WildCardParse(version);
 
             // Assert
-            Assert.AreEqual(new Version(2019, 1000, 0), result, "Expected version '2019.1000.0' when input is '2019.*'.");
+            Assert.AreEqual(new Version(2019, 2147483647, 0), result, "Expected version '2019.2147483647.0' when input is '2019.*'.");
         }
 
         [Test]
@@ -241,8 +241,8 @@ namespace Dynamo.Tests
             Version threePartResult = VersionUtilities.WildCardParse("2021.2.*");
 
             // Assert
-            Assert.AreEqual(new Version(2021, 1000, 0), twoPartResult, "Expected version '2021.1000.0' for input '2021.*'.");
-            Assert.AreEqual(new Version(2021, 2, 1000), threePartResult, "Expected version '2021.2.1000' for input '2021.2.*'.");
+            Assert.AreEqual(new Version(2021, 2147483647, 0), twoPartResult, "Expected version '2021.2147483647.0' for input '2021.*'.");
+            Assert.AreEqual(new Version(2021, 2, 2147483647), threePartResult, "Expected version '2021.2.2147483647' for input '2021.2.*'.");
         }
 
         [Test]
