@@ -1417,7 +1417,7 @@ namespace Dynamo.Controls
             }
 
             // Load the new HomePage
-            if (IsNewAppHomeEnabled) LoadHomePage();
+            LoadHomePage();
 
             loaded = true;
         }
@@ -2696,13 +2696,14 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// A feature flag controlling the appearance of the Dynamo home navigation page
+        /// A bool controlling the appearance of the Dynamo home navigation page
+        /// TODO: remove this public property and archive the feature flag in Dynamo 4.0
         /// </summary>
         public bool IsNewAppHomeEnabled
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDynamoAppHomeEnabled", false) ?? false;
+                return true;
             }
         }
 
