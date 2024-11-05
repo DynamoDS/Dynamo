@@ -86,7 +86,8 @@ namespace DynamoFeatureFlags
                     { "TestFlag2", LdValue.Of("I am a string") },
                     //in tests we want instancing on so we can test it.
                     { "graphics-primitive-instancing", LdValue.Of(true) },
-                    { "IsolatePackages", LdValue.Of("Package1,Package2") }
+                    { "IsolatePackages", LdValue.Of("Package1,Package2,Package") },
+                    { "DoNotIsolatePackages", LdValue.Of("Package") }
                 });
                 return;
             }

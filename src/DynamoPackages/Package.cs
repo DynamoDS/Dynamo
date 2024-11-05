@@ -244,8 +244,6 @@ namespace Dynamo.PackageManager
             LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
             AdditionalFiles = new ObservableCollection<PackageFileInfo>();
             Header = PackageUploadBuilder.NewRequestBody(this);
-
-            AssemblyLoadContext = new PkgAssemblyLoadContext(Name + "@" + VersionName, RootDirectory);
         }
 
         public static Package FromDirectory(string rootPath, ILogger logger)

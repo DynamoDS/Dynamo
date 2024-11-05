@@ -654,31 +654,35 @@ namespace Dynamo.PackageManager.Tests
         {
             // Needed for FeatureFlags
             Assert.IsTrue(DynamoModel.IsTestMode);
-            Assert.AreEqual("Package1,Package2", DynamoModel.FeatureFlags.CheckFeatureFlag<string>("IsolatePackages", ""));
+            Assert.AreEqual("Package1,Package2,Package", DynamoModel.FeatureFlags.CheckFeatureFlag<string>("IsolatePackages", ""));
+            Assert.AreEqual("Package", DynamoModel.FeatureFlags.CheckFeatureFlag<string>("DoNotIsolatePackages", ""));
+            
 
             var loader = GetPackageLoader();
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
-
-
+     
             var packageDirectory = Path.Combine(TestDirectory, "testAssemblyIsolation", "Package1");
             var packageDirectory2 = Path.Combine(TestDirectory, "testAssemblyIsolation", "Package2");
+            var packageDirectory3 = Path.Combine(TestDirectory, "pkgs", "Package");
             var package1 = Package.FromDirectory(packageDirectory, CurrentDynamoModel.Logger);
             var package2 = Package.FromDirectory(packageDirectory2, CurrentDynamoModel.Logger);
-            loader.LoadPackages([package1, package2]);
+            var package3 = Package.FromDirectory(packageDirectory3, CurrentDynamoModel.Logger);
+            loader.LoadPackages([package1, package2, package3]);
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
 
             // 2 packages loaded as expected
             var expectedLoadedPackageNum = 0;
             foreach (var pkg in loader.LocalPackages)
             {
-                if (pkg.Name == "Package1" || pkg.Name == "Package2")
+                if (pkg.Name == "Package1" || pkg.Name == "Package2" || pkg.Name == "Package")
                 {
                     expectedLoadedPackageNum++;
                 }
             }
-            Assert.AreEqual(2, expectedLoadedPackageNum);
+            Assert.AreEqual(3, expectedLoadedPackageNum);
 
             string openPath = Path.Combine(TestDirectory, @"testAssemblyIsolation\graph.dyn");
             RunModel(openPath);
@@ -698,8 +702,13 @@ namespace Dynamo.PackageManager.Tests
                 }
             }
             Assert.AreEqual(2, expectedVersions);
+
+            // Make sure the "DoNotIsolatePackages" fflag puts the pacakge in the default load context(i.e does not isolate it)
+            var contexts = AssemblyLoadContext.All.Where(l => l.Assemblies.FirstOrDefault(x => x.GetName().Name == "Package") != null).ToList();
+            Assert.AreEqual(1, contexts.Count);
+            Assert.True(contexts[0] == AssemblyLoadContext.Default);
         }
- 
+
         [Test]
         public void LoadingConflictingCustomNodePackageDoesNotGetLoaded()
         {

@@ -38,35 +38,46 @@ namespace Dynamo.PackageManager
         internal event Action<IExtension> RequestAddExtension;
 
         private HashSet<string> packagesToIsolate = null;
-        internal HashSet<string> PackagesToIsolate
+        private HashSet<string> packagesToNotIsolate = null;
+
+        internal bool CanIsolatePackage(string package)
         {
-            get
+            static void populateFlags(string fflagKey, ref HashSet<string> pkgs)
             {
-                if (packagesToIsolate == null)
+                string flags = DynamoModel.FeatureFlags?.CheckFeatureFlag(fflagKey, string.Empty);
+                if (!string.IsNullOrEmpty(flags))
                 {
-                    packagesToIsolate = [];
-
-                    string pkgs = DynamoModel.FeatureFlags?.CheckFeatureFlag("IsolatePackages", string.Empty);
-                    if (!string.IsNullOrEmpty(pkgs))
+                    foreach (var x in flags.Split(","))
                     {
-                        foreach (var x in pkgs.Split(","))
-                        {
-                            packagesToIsolate.Add(x);
-                        }
-                    }
-                     
-
-                    pkgs = DynamoModel.FeatureFlags?.CheckFeatureFlag("DoNotIsolatePackages", string.Empty);
-                    if (!string.IsNullOrEmpty(pkgs))
-                    {
-                        foreach (var x in pkgs.Split(","))
-                        {
-                            packagesToIsolate.Remove(x);
-                        }
+                        pkgs.Add(x);
                     }
                 }
-                return packagesToIsolate;
             }
+
+            if (packagesToIsolate == null)
+            {
+                packagesToIsolate = [];
+                populateFlags("IsolatePackages", ref packagesToIsolate);
+            }
+
+            if (packagesToNotIsolate == null)
+            {
+                packagesToNotIsolate = [];
+                populateFlags("DoNotIsolatePackages", ref packagesToNotIsolate);
+            }
+
+            // NotIsolate has the highest priority.
+            if (packagesToNotIsolate.Contains(package) || packagesToNotIsolate.Contains("All"))
+            {
+                return false;
+            }
+
+            if (packagesToIsolate.Contains(package) || packagesToIsolate.Contains("All"))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -233,7 +244,7 @@ namespace Dynamo.PackageManager
             {
                 var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
 
-                if (PackagesToIsolate.Contains(package.Name) || PackagesToIsolate.Contains("All"))
+                if (CanIsolatePackage(package.Name))
                 {
                     package.AssemblyLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, package.RootDirectory);
                 }
