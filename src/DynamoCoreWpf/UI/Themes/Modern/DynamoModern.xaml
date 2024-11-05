@@ -6480,7 +6480,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource DarkMidGreyBrush}" />
         <Setter Property="ColumnWidth" Value="Auto" />
         <Setter Property="GridLinesVisibility" Value="Vertical" />
-        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource DarkMidGreyBrush}" />
+        <Setter Property="VerticalGridLinesBrush" Value="#646464" />
         <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>

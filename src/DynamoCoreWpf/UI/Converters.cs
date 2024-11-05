@@ -4029,4 +4029,29 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Returns "2019.10.x" from "2019.10.*" input
+    /// </summary>
+    public class VersionStringAsteriskToXConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string version && !string.IsNullOrEmpty(version))
+            {
+                return version.Replace("*", "x");
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string version && !string.IsNullOrEmpty(version))
+            {
+                return version.Replace("x", "*");
+            }
+
+            return value;
+        }
+    }
 }
