@@ -1210,6 +1210,24 @@ namespace Dynamo.PackageManager.Wpf.Tests
         }
 
         [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange1_ReturnsTrueForVersionWithinDomainRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.*"
+            };
+            Version compatibleVersion = new Version("2.1000.0");
+            Version incompatibleVersion = new Version("2.1000.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, incompatibleVersion),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+        }
+
+        [Test]
         public void IsVersionCompatible_ValidMaxWildCardRange2_ReturnsTrueForVersionWithinRange()
         {
             var compatibility = new Greg.Responses.Compatibility
