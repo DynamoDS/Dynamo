@@ -606,7 +606,7 @@ namespace Dynamo.ViewModels
             };
 
             geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
-            geoScalingViewModel.ScaleValue = this.DynamoViewModel.ScaleFactorLog;
+            geoScalingViewModel.ScaleValue = Convert.ToInt32(Math.Log10(Model.ScaleFactor));
         }
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
