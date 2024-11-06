@@ -37,6 +37,8 @@ namespace Dynamo.PackageManager
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
 
+        #region Package Isolation Feature Flags
+        // Remove when we fully enable package isolation
         private HashSet<string> packagesToIsolate = null;
         private HashSet<string> packagesToNotIsolate = null;
 
@@ -79,6 +81,7 @@ namespace Dynamo.PackageManager
 
             return false;
         }
+        #endregion
 
         /// <summary>
         /// This event is raised when a package is first added to the list of packages this package loader is loading.
