@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
+using Dynamo.Properties;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -147,8 +148,8 @@ namespace Dynamo.Search.SearchElements
                 }
                 if (IsExperimental)
                 {
-                    //TODO localize
-                    return "This node is marked experimental, it may change frequently!" + Environment.NewLine + Environment.NewLine + description;
+                    return $"{Resources.DocsExperimentalPrefixMessage}" +
+                        $"{Environment.NewLine}{Environment.NewLine}{description}"; 
                 }
               
 

@@ -95,9 +95,12 @@ namespace Dynamo.Graph.Nodes
 
             OutputParameters = Type.GetCustomAttributes<OutPortTypesAttribute>(false)
                 .SelectMany(x => x.PortTypes);
+            IsExperimental = CheckExperimentalFromAttribute(Type);
+        }
 
-
-            IsExperimental = Type.GetCustomAttributes<System.Diagnostics.CodeAnalysis.ExperimentalAttribute>(false).Any();
+        internal static bool CheckExperimentalFromAttribute(System.Type type)
+        {
+            return type.GetCustomAttributes<System.Diagnostics.CodeAnalysis.ExperimentalAttribute>(false).Any();
         }
 
         /// <summary>
