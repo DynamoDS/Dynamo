@@ -65,9 +65,14 @@ namespace CoreNodeModels
     [NodeDescription("StringfromObjectDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromObjectSearchTags", typeof(Resources))]
-    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [System.Diagnostics.CodeAnalysis.Experimental("NEWNODE_FormattedStringFromObject")]
+    [InPortNames("object","formatSpecifier")]
+    [InPortTypes("var", "string")]
+    [InPortDescriptions(typeof(Resources), "FromObjectPortDataObjToolTip", "FromObjectPortDataFormatToolTip")]
+    [OutPortNames("string")]
+    [OutPortTypes("string")]
+    [OutPortDescriptions(typeof(Resources),"FromObjectPortDataResultToolTip")]
     public class FormattedStringFromObject : ToStringNodeBase
     {
         [JsonConstructor]
@@ -75,24 +80,22 @@ namespace CoreNodeModels
             base("__ToStringFromObjectAndFormat", inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            //TODO looks like our nodemodel json constructor base implementation needs some work
-            //I see this in a few node model nodes that use default vals.
             if (inPorts?.Count() > 1)
             {   
-                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("F6");
+                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("G");
             }
         }
 
         public FormattedStringFromObject() : base("__ToStringFromObjectAndFormat")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("object", Resources.FromObjectPortDataObjToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                    new PortData("formatSpecifier",
-                    //TODO add more info here in localized form.
-                        "format specifier for numeric values",
-                        AstFactory.BuildStringNode("F6"))));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromObjectPortDataResultToolTip)));
+            //TODO figure out how to add an inportDefaultValue attribute.
+            //it's not straightforward because ideally we'd have accesss to the parser.
+            if (InPorts?.Count() > 1)
+            {
+                InPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("G");
+                InPorts.ElementAt(1).UsingDefaultValue = true;
+            }
             RegisterAllPorts();
         }
     }
@@ -104,8 +107,6 @@ namespace CoreNodeModels
     [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromObject", "DSCoreNodesUI.FromObject")]
-    [Obsolete("this node is obsolete, please use the version of string from _ with numeric format option")]
-    [NodeDeprecated]
     public class FromObject: ToStringNodeBase 
     {
         [JsonConstructor]
@@ -127,9 +128,14 @@ namespace CoreNodeModels
     [NodeDescription("StringfromArrayDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromArraySearchTags", typeof(Resources))]
-    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [System.Diagnostics.CodeAnalysis.Experimental("NEWNODE_FormattedStringFromArray")]
+    [InPortNames("object", "formatSpecifier")]
+    [InPortTypes("var", "string")]
+    [InPortDescriptions(typeof(Resources), "FromArrayPortDataArrayToolTip", "FromObjectPortDataFormatToolTip")]
+    [OutPortNames("string")]
+    [OutPortTypes("string")]
+    [OutPortDescriptions(typeof(Resources),"FromArrayPortDataResultToolTip")]
     public class FormattedStringFromArray : ToStringNodeBase
     {
         [JsonConstructor]
@@ -137,25 +143,23 @@ namespace CoreNodeModels
             base("__ToStringFromArrayAndFormat", inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            //TODO looks like our nodemodel json constructor base implementation needs some work
-            //I see this in a few node model nodes that use default vals.
             if (inPorts?.Count() > 1)
             {
-                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("F6");
+                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("G");
             }
         }
 
         public FormattedStringFromArray() : base("__ToStringFromArrayAndFormat")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("array", Resources.FromArrayPortDataArrayToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("formatSpecifier",
-                        //TODO add more info here in localized form.
-                        "format specifier for numeric values",
-                    AstFactory.BuildStringNode("F6"))));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromArrayPortDataResultToolTip)));
             RegisterAllPorts();
+            //TODO figure out how to add an inportDefaultValue attribute.
+            //it's not straightforward because ideally we'd have accesss to the parser.
+            if (InPorts?.Count() > 1)
+            {
+                InPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("G");
+                InPorts.ElementAt(1).UsingDefaultValue = true;
+            }
         }
     }
 
@@ -166,8 +170,6 @@ namespace CoreNodeModels
     [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromArray", "DSCoreNodesUI.FromArray")]
-    [Obsolete("TODO update to resx - please use string from object overload with numeric format option")]
-    [NodeDeprecated]
     public class FromArray : ToStringNodeBase 
     {
         [JsonConstructor]

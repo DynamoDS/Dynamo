@@ -460,7 +460,7 @@ namespace Dynamo.Tests
             var watch6 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch6").FirstOrDefault().GUID.ToString();
             var watch7 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch7").FirstOrDefault().GUID.ToString();
 
-            AssertPreviewValue(watch0, "123456789.000000");
+            AssertPreviewValue(watch0, "123456789");
             AssertPreviewValue(watch1, new string[]{ "123456789.000", "123456789.0", "123456789", "111010110111100110100010101" });
             AssertPreviewValue(watch2, new string[] { "-123456789.000", "-123456789.0", "-123456789", "1111111111111111111111111111111111111000101001000011001011101011" });
             AssertPreviewValue(watch3, new string[] { "3.460", "3.5", "3.46", "Format specifier was invalid." });
@@ -912,7 +912,7 @@ namespace Dynamo.Tests
             var watch4 = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name.ToLower() == "watch4").FirstOrDefault().GUID.ToString();
 
             AssertPreviewValue(watch1, "[1.000000,1.666667,2.333333,3.000000]");
-            AssertPreviewValue(watch2, "[1.000000,1.666667,2.333333,3.000000]");
+            AssertPreviewValue(watch2, "[1,1.6666666666666667,2.3333333333333335,3]");
             AssertPreviewValue(watch3, new string[] { "[1.0,1.7,2.3,3.0]", "[1,1.6666666666666667,2.3333333333333335,3]", "Format specifier was invalid." });
             AssertPreviewValue(watch4, "Function");
 
