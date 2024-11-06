@@ -652,13 +652,21 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void LoadPackagesInAssemblyIsolation()
         {
+            var ff = new Mock<DynamoUtilities.IFFlags>();
+            DynamoModel.FeatureFlags.flags = ff.Object;
+            ff.Setup(x => x.CheckFeatureFlag<string>(DynamoModel.FeatureFlags, "IsolatePackages", "")).Returns(() => "Package1,Package2,Package");
+            ff.Setup(x => x.CheckFeatureFlag<string>(DynamoModel.FeatureFlags, "DoNotIsolatePackages", "")).Returns(() => "Package");
+
             // Needed for FeatureFlags
             Assert.IsTrue(DynamoModel.IsTestMode);
             Assert.AreEqual("Package1,Package2,Package", DynamoModel.FeatureFlags.CheckFeatureFlag<string>("IsolatePackages", ""));
             Assert.AreEqual("Package", DynamoModel.FeatureFlags.CheckFeatureFlag<string>("DoNotIsolatePackages", ""));
-            
 
-            var loader = GetPackageLoader();
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;

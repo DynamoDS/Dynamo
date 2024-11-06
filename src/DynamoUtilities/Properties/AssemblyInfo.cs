@@ -30,3 +30,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Notifications")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
 [assembly: InternalsVisibleTo("PackageManagerTests")]
+//DynamicProxyGenAssembly2 is used by Mock to allow stubbing internal interfaces
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
