@@ -52,6 +52,7 @@ namespace Dynamo.UI.Prompts
             this.ContentRendered += OnContentRendered;
         }
 
+        // Centralize the window correctly after it is rendered
         private void OnContentRendered(object sender, EventArgs e)
         {
             // Unsubscribe immediately, we only call this once on initialization
@@ -61,6 +62,7 @@ namespace Dynamo.UI.Prompts
             editText.Focus(); 
         }
 
+        // Centralize the window relative to another Window
         private void CenterWindowRelativeToOwner()
         {
             if (Owner != null)
