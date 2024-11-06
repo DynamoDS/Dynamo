@@ -2,14 +2,14 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UI.Prompts"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI"
-        mc:Ignorable="d"
         Width="450"
         WindowStartupLocation="CenterOwner"
-        WindowStyle="None">
+        WindowStyle="None"
+        mc:Ignorable="d">
     <Window.Background>
         <SolidColorBrush Opacity="0" />
     </Window.Background>
@@ -31,26 +31,26 @@
                         <ControlTemplate TargetType="TextBox">
                             <Grid>
                                 <TextBox x:Name="InputTextBox"
-                                     Padding="8,10"
-                                     Background="#353535"
-                                     BorderThickness="0"
-                                     CaretBrush="{StaticResource Blue300Brush}"
-                                     Focusable="True"
-                                     FontFamily="{StaticResource ArtifaktElementRegular}"
-                                     FontSize="12px"
-                                     Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                     MaxLength="{TemplateBinding MaxLength}"
-                                     Tag="{TemplateBinding Tag}"
-                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
-                                     TextWrapping="Wrap" />
+                                         Padding="8,10"
+                                         Background="#353535"
+                                         BorderThickness="0"
+                                         CaretBrush="{StaticResource Blue300Brush}"
+                                         Focusable="True"
+                                         FontFamily="{StaticResource ArtifaktElementRegular}"
+                                         FontSize="12px"
+                                         Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                         MaxLength="{TemplateBinding MaxLength}"
+                                         Tag="{TemplateBinding Tag}"
+                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                                         TextWrapping="Wrap" />
                                 <TextBlock x:Name="WatermarkLabel"
-                                       Padding="10"
-                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       FontSize="12px"
-                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                       IsHitTestVisible="False"
-                                       Opacity="0.5"
-                                       Text="{TemplateBinding Tag}">
+                                           Padding="10"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="12px"
+                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                           IsHitTestVisible="False"
+                                           Opacity="0.5"
+                                           Text="{TemplateBinding Tag}">
                                     <TextBlock.Style>
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Setter Property="Visibility" Value="Collapsed" />
@@ -64,11 +64,11 @@
                                 </TextBlock>
                                 <StackPanel Height="4px" VerticalAlignment="Bottom">
                                     <Rectangle Name="Underline"
-                                           Height="1px"
-                                           Fill="Transparent" />
+                                               Height="1px"
+                                               Fill="Transparent" />
                                     <Rectangle Name="UnderlineShadow"
-                                           Height="3px"
-                                           Fill="Transparent" />
+                                               Height="3px"
+                                               Fill="Transparent" />
                                 </StackPanel>
                             </Grid>
                             <ControlTemplate.Triggers>
@@ -90,15 +90,17 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style TargetType="FrameworkElement" x:Key="VisibleAnimation">
-                <Setter Property="Opacity" Value="0"></Setter>
+            <Style x:Key="VisibleAnimation" TargetType="FrameworkElement">
+                <Setter Property="Opacity" Value="0" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Path=IsStatusWarning}" Value="True">
                         <DataTrigger.EnterActions>
                             <BeginStoryboard>
                                 <Storyboard>
                                     <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                     From="0" To="1" Duration="0:0:0.3"/>
+                                                     From="0"
+                                                     To="1"
+                                                     Duration="0:0:0.3" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </DataTrigger.EnterActions>
@@ -106,7 +108,9 @@
                             <BeginStoryboard>
                                 <Storyboard>
                                     <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                     From="1" To="0" Duration="0:0:0.3"/>
+                                                     From="1"
+                                                     To="0"
+                                                     Duration="0:0:0.3" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </DataTrigger.ExitActions>
@@ -115,6 +119,7 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
+
 
     <Grid Name="mainGrid">
         <Grid.RowDefinitions>
@@ -128,6 +133,8 @@
                 Grid.Row="0"
                 Grid.RowSpan="3"
                 Background="{StaticResource DarkMidGreyBrush}"
+                BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
+                BorderThickness="1"
                 CornerRadius="4"
                 MouseDown="FunctionNamePrompt_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
@@ -157,6 +164,7 @@
 
         <!--  Middle Section: Details  -->
         <Border Grid.Row="1"
+                Margin="1,0"
                 Background="{StaticResource DarkMidGreyBrush}"
                 BorderBrush="#7E7E7E"
                 BorderThickness="0,1,0,0">
@@ -185,8 +193,8 @@
                              Style="{StaticResource HintingInputStyle}"
                              TextChanged="NameBox_OnTextChanged" />
                     <StackPanel x:Name="ErrorUnderline"
-                                VerticalAlignment="Bottom"
                                 Grid.Row="0"
+                                VerticalAlignment="Bottom"
                                 Style="{StaticResource VisibleAnimation}">
                         <Rectangle Name="Underline"
                                    Height="1px"
@@ -199,9 +207,9 @@
                     </StackPanel>
                     <StackPanel x:Name="ErrorMessage"
                                 Grid.Row="1"
-                                Orientation="Horizontal"
+                                Margin="0,6,0,0"
                                 VerticalAlignment="Top"
-                                Margin="0 6 0 0"
+                                Orientation="Horizontal"
                                 Style="{StaticResource VisibleAnimation}">
                         <Image x:Name="ErrorIcon"
                                Width="16"
@@ -221,10 +229,10 @@
                                    Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
                                    TextTrimming="CharacterEllipsis">
                             <TextBlock.ToolTip>
-                                <ToolTip Content="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLight}"/>
+                                <ToolTip Content="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLight}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
-                     </StackPanel>
+                    </StackPanel>
                 </Grid>
 
                 <!--  Description  -->
@@ -268,9 +276,9 @@
                     DockPanel.Dock="Right"
                     Foreground="White"
                     IsDefault="True"
+                    IsEnabled="{Binding IsStatusWarning, Converter={StaticResource InverseBooleanConverter}}"
                     Style="{DynamicResource ResourceKey=CtaButtonStyle}"
-                    TabIndex="2"
-                    IsEnabled="{Binding IsStatusWarning, Converter={StaticResource InverseBooleanConverter}}"/>
+                    TabIndex="2" />
         </DockPanel>
     </Grid>
 </Window>
