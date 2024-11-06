@@ -85,8 +85,7 @@ namespace DynamoFeatureFlags
                 AllFlags = LdValue.ObjectFrom(new Dictionary<string,LdValue> { { "TestFlag1",LdValue.Of(true) },
                     { "TestFlag2", LdValue.Of("I am a string") },
                     //in tests we want instancing on so we can test it.
-                    { "graphics-primitive-instancing", LdValue.Of(true) }
-                });
+                    { "graphics-primitive-instancing", LdValue.Of(true) } });
                 return;
             }
 
