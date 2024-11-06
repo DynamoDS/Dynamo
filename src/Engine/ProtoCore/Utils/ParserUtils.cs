@@ -140,7 +140,8 @@ namespace ProtoCore.Utils
             var core = new Core(new Options())
             {
                 ParsingMode = ParseMode.AllowNonAssignment,
-                IsParsingPreloadedAssembly = false
+                IsParsingPreloadedAssembly = false,
+                IsParsingInTestMode = true,
             };
             return core;
         }

@@ -791,7 +791,7 @@ public Node root { get; set; }
 	void DesignScriptParser() {
 		Node node = null; 
 		Hydrogen(out node);
-		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode && !builtinMethodsLoaded)
+		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode && !builtinMethodsLoaded && !core.IsParsingInTestMode)
 		{
 		   CoreUtils.InsertPredefinedAndBuiltinMethods(core, node as CodeBlockNode);
 		   root = node;
