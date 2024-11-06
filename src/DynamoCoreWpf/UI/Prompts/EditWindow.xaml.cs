@@ -35,14 +35,6 @@ namespace Dynamo.UI.Prompts
 
             Owner = dynamoViewModel.Owner;
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            this.Loaded += (sender, e) => this.editText.Focus();
-
-            // Center the window again once rendering is complete
-            this.ContentRendered += (sender, e) =>
-            {
-                this.Left = Owner.Left + (Owner.Width - this.ActualWidth) / 2;
-                this.Top = Owner.Top + (Owner.Height - this.ActualHeight) / 2;
-            };
 
             // do not accept value if user closes 
             this.Closing += (sender, args) => this.DialogResult = false;
@@ -57,8 +49,26 @@ namespace Dynamo.UI.Prompts
             }
             this.editText.PreviewKeyDown += EditText_PreviewKeyDown;
             this.Closed += EditWindow_Closed;
+            this.ContentRendered += OnContentRendered;
         }
 
+        private void OnContentRendered(object sender, EventArgs e)
+        {
+            // Unsubscribe immediately, we only call this once on initialization
+            this.ContentRendered -= OnContentRendered;
+
+            CenterWindowRelativeToOwner(); 
+            editText.Focus(); 
+        }
+
+        private void CenterWindowRelativeToOwner()
+        {
+            if (Owner != null)
+            {
+                this.Left = Owner.Left + (Owner.Width - this.ActualWidth) / 2;
+                this.Top = Owner.Top + (Owner.Height - this.ActualHeight) / 2;
+            }
+        }
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -105,9 +115,6 @@ namespace Dynamo.UI.Prompts
 
         private void EditText_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var textBox = sender as TextBox;
-            var caretIndex = textBox.CaretIndex;
-
             EditTextBoxPreviewKeyDown?.Invoke(sender, e);
         }
 
