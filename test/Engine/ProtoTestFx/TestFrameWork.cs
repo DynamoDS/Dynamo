@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using NUnit.Framework;
-using ProtoCore;
 using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
@@ -15,7 +14,6 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoFFI;
 using ProtoScript.Runners;
-using Type = System.Type;
 
 namespace ProtoTestFx.TD
 {
