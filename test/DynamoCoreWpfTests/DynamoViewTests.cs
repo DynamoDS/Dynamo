@@ -6,26 +6,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shell;
 using Dynamo.Configuration;
-using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
-using DynamoCoreWpfTests.Utility;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using SharpDX.DXGI;
 
 
 namespace DynamoCoreWpfTests
