@@ -155,7 +155,6 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -174,7 +173,6 @@ namespace ProtoTest.LiveRunner
             astList.Add(assign);
 
             // Update graph using AST node input
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(assign);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -207,7 +205,6 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -251,7 +248,6 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -276,7 +272,6 @@ namespace ProtoTest.LiveRunner
                 ProtoCore.DSASM.Operator.assign);
 
             // emit the DS code from the AST tree
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(assign);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -321,7 +316,6 @@ namespace ProtoTest.LiveRunner
             // update graph with ast input
             CodeBlockNode cNode = new CodeBlockNode();
             cNode.Body = astList;
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(cNode);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("b");
@@ -339,8 +333,6 @@ namespace ProtoTest.LiveRunner
             // Adds node => b = a + c;
             // executes it
             ////////////////////////////////////////////////////////////////////
-
-            liveRunner = new ProtoScript.Runners.LiveRunner();
 
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -400,7 +392,6 @@ namespace ProtoTest.LiveRunner
             // executes updated graph
             ////////////////////////////////////////////////////////////////////
 
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
 
             // Build the AST trees
@@ -503,7 +494,6 @@ namespace ProtoTest.LiveRunner
             // execute updated graph (cylcic dependency should not occur)
             ////////////////////////////////////////////////////////////////////
 
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign0 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -642,8 +632,6 @@ namespace ProtoTest.LiveRunner
         [Test]
         public void TestDeltaExpression_02()
         {
-            //liveRunner = new ProtoScript.Runners.LiveRunner();
-
             // emit the DS code from the AST tree
             UpdateDsInterpreter("x=99;");
 
@@ -660,8 +648,6 @@ namespace ProtoTest.LiveRunner
             mirror = liveRunner.InspectNodeValue("x");
             Assert.IsTrue((Int64)mirror.GetData().Data == 99);
 
-            //string o = liveRunner.GetCoreDump();
-
             // emit the DS code from the AST tree
             UpdateDsInterpreter("x = 100;");
 
@@ -675,8 +661,6 @@ namespace ProtoTest.LiveRunner
         [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_01()
         {
-            //liveRunner = new ProtoScript.Runners.LiveRunner();
-
             UpdateDsInterpreter(@"import (""FFITarget.dll"");");
             UpdateDsInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
 
@@ -712,11 +696,6 @@ namespace ProtoTest.LiveRunner
         [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_02()
         {
-            //liveRunner = new ProtoScript.Runners.LiveRunner();
-
-            //string code = @"class Point{ X : double; constructor ByCoordinates(x : double, y : double, z : double){X = x;} def Translate(x : double, y : double, z : double){return = Point.ByCoordinates(11,12,13);} }";
-
-            //liveRunner.UpdateCmdLineInterpreter(code);
             UpdateDsInterpreter(@"import (""FFITarget.dll"");");
             UpdateDsInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
 
@@ -782,7 +761,6 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -819,7 +797,6 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -917,7 +894,6 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             // Execute and verify c = true
@@ -995,7 +971,6 @@ namespace ProtoTest.LiveRunner
             // in which add order, LiveRunner should get the same result.
             for (int i = 0; i < shuffleCount; ++i)
             {
-                ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
                 liveRunner.ResetVMAndResyncGraph(new List<string> { "FFITarget.dll" });
 
                 index = index.OrderBy(_ => randomGen.Next());
@@ -2413,7 +2388,6 @@ r = __Equals(x, [41, 42]);
         [Test]
         public void TestFunctionObjectInApply()
         {
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.ResetVMAndResyncGraph(new List<string> { "DesignScriptBuiltin.dll", "FunctionObject.ds" });
             string code = @"
  def foo(x,y ) { return = x + y; }
