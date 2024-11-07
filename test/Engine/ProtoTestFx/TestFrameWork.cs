@@ -909,7 +909,6 @@ namespace ProtoTestFx.TD
         public static Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
             var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
-            //var cbn = ProtoCore.Utils.ParserUtils.ParseWithCore(code, testCore).CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             subtree.DeltaComputation = false;
             return subtree;
