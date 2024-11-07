@@ -3399,6 +3399,11 @@ namespace Dynamo.Models
             {
                 return null;
             }
+                if(PreferenceSettings.InitialExperimentalLib_Namespaces.
+                Select(x => x.Split(":").LastOrDefault()).Any(x => x.Contains(typeLoadData.Category))){
+                //TODO safer way to set this?
+                typeLoadData.IsExperimental = true;
+            }
 
             var node = new NodeModelSearchElement(typeLoadData);
             SearchModel?.Add(node);

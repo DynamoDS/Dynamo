@@ -112,6 +112,12 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly DateTime DynamoDefaultTime = new DateTime(1977, 4, 12, 12, 12, 0, 0);
 
+        internal static readonly IEnumerable<string> InitialExperimentalLib_Namespaces =
+        [
+            //TODO remove tsplines - it's no longer experimental.
+            "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
+            "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface"
+            ];
         #endregion
 
         // The following settings are persistent between Dynamo sessions and are user-controllable
@@ -1186,11 +1192,7 @@ namespace Dynamo.Configuration
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                NamespacesToExcludeFromLibrary = new List<string>()
-                {
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface"
-                };  
+                NamespacesToExcludeFromLibrary = InitialExperimentalLib_Namespaces.ToList();
                 NamespacesToExcludeFromLibrarySpecified = true;
             }
         }

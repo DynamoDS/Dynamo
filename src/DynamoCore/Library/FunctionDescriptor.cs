@@ -573,6 +573,6 @@ namespace Dynamo.Engine
 
             return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
         }
-        internal bool IsExperimental {get;}
+        internal bool IsExperimental { get; set; }
     }
 }

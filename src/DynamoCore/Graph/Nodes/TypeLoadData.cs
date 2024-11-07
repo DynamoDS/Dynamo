@@ -175,6 +175,6 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Is this type experimental/unstable.
         /// </summary>
-        internal readonly bool IsExperimental;
+        internal bool IsExperimental;
     }
 }
