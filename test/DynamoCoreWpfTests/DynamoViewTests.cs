@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shell;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -147,7 +148,8 @@ namespace DynamoCoreWpfTests
             var prebindingPath = Path.Combine(GetTestDirectory(ExecutingDirectory), prebindingPathInTestDir);
 
             var pathInTestsDir = @"core\callsite\trace_test.dyn";
-            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
+            var filePath = Path.Combine(TempFolder, pathInTestsDir);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
             // Always start with a fresh workspace with no binding data for this test.
             File.Copy(prebindingPath, filePath,true);
