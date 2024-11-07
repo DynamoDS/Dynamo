@@ -825,6 +825,24 @@ namespace Dynamo.PackageManager
                     negateFilter.OnChecked = false;
                     break;
 
+                // Mutually exclusive case for Compatible and Incompatible
+                case var name when name.Equals(Resources.PackageCompatible):
+                    if (!filter.OnChecked)
+                        break;
+                    var incompatibleFilter = CompatibilityFilter.First(x => x.FilterName.Equals(Resources.PackageIncompatible));
+                    if (!incompatibleFilter.OnChecked)
+                        break;
+                    incompatibleFilter.OnChecked = false;
+                    break;
+
+                case var name when name.Equals(Resources.PackageIncompatible):
+                    if (!filter.OnChecked)
+                        break;
+                    var compatibleFilter = CompatibilityFilter.First(x => x.FilterName.Equals(Resources.PackageCompatible));
+                    if (!compatibleFilter.OnChecked)
+                        break;
+                    compatibleFilter.OnChecked = false;
+                    break;
             }
         }
 

@@ -593,6 +593,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 new FilterEntry(unknownCompatibilityFilterName, "Filter by compatibility", "Unknown Compatibility Packages", packageManagerSearchViewModel) { OnChecked = false },
             };
 
+            packageManagerSearchViewModel.CompatibilityFilter.ForEach(f => f.PropertyChanged += packageManagerSearchViewModel.filter_PropertyChanged);
+
             // Adding compatible packages
             foreach (var package in compatiblePackagesName)
             {
@@ -654,17 +656,19 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
             Assert.That(packageManagerSearchViewModel.SearchResults.Count == compatiblePackagesName.Count, "Filtered results do not match the compatible packages");
 
-            // Reset (Filters are not mutually exclusive)
-            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = false;
-
             // Check the Incompatible filter
             packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = true;
             packageManagerSearchViewModel.CompatibilityFilter[1].FilterCommand.Execute(string.Empty);
             Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
             Assert.That(packageManagerSearchViewModel.SearchResults.Count == incompatiblePackagesName.Count, "Filtered results do not match the incompatible packages");
 
-            // Reset (Filters are not mutually exclusive)
-            packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = false;
+            // Asserts that Compatible and Incompatible filters are mutually exclusive
+            Assert.IsFalse(packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked, "Compatible and Incompatible filters should be mutually exclusive");
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = true;
+            Assert.IsFalse(packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked, "Compatible and Incompatible filters should be mutually exclusive");
+
+            // Reset (These filters are not mutually exclusive)
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = false;
 
             // Check the Unknown Compatibility filter
             packageManagerSearchViewModel.CompatibilityFilter[2].OnChecked = true;
@@ -1194,5 +1198,136 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.Throws<ArgumentException>(() => PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
                           "Expected an ArgumentException when min version is greater than max version.");
         }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange1_ReturnsTrueForVersionWithinRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.*"
+            };
+            Version version = new Version("2.4.0");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange1_ReturnsTrueForVersionWithinDomainRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.*"
+            };
+            Version compatibleVersion = new Version("2.2147483647.0");
+            Version incompatibleVersion = new Version("2.2147483647.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, incompatibleVersion),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange2_ReturnsTrueForVersionWithinRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.5.*"
+            };
+            Version version = new Version("2.5.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange_ReturnsFalseForVersionOutsideMajorVersionRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.*"
+            };
+            Version version = new Version("3.1.0");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when version is outside the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange_ReturnsFalseForVersionOutsideMinorVersionRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.5.*"
+            };
+            Version version = new Version("2.6.0");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when version is outside the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxWildCardRange_ReturnsFalseForVersionOutsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2*"
+            };
+            Version version = new Version("3.5.1");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when major version is same as Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxWildCardRange_ReturnsTrueForVersionInsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2*"
+            };
+            Version version = new Version("2.5.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxRange_ReturnsFalseForVersionOutsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "asdfasdfa"
+            };
+            Version version = new Version("3.5.1");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when major version is same as Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxRange_ReturnsTrueForVersionInsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "asdfasdfa"
+            };
+            Version version = new Version("2.5.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
+        }
+
     }
 }
