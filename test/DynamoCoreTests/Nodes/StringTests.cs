@@ -917,6 +917,20 @@ namespace Dynamo.Tests
             AssertPreviewValue(watch4, "Function");
 
         }
+
+        [Test]
+        public void StringFormatNodesAreCurrentlyExperimental()
+        {
+#pragma warning disable NEWNODE_FormattedStringFromObject 
+#pragma warning disable NM_ISEXPERIMENTAL_GLPYH 
+
+            var formatString = new FormattedStringFromObject();
+            Assert.AreEqual(true,formatString.IsExperimental);
+
+#pragma warning restore NM_ISEXPERIMENTAL_GLPYH 
+#pragma warning restore NEWNODE_FormattedStringFromObject
+
+        }
         #endregion
     }
 }

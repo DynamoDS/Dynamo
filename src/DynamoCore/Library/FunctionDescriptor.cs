@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Library;
@@ -211,7 +212,7 @@ namespace Dynamo.Engine
             IsBuiltIn = funcDescParams.IsBuiltIn;
             IsPackageMember = funcDescParams.IsPackageMember;
             IsLacingDisabled = funcDescParams.IsLacingDisabled;
-            IsExperimental = funcDescParams.IsExperimental;
+            IsExperimental = funcDescParams.IsExperimental || CheckIfFunctionIsMarkedExperimentalByPrefs(this);
         }
 
         /// <summary>
@@ -573,6 +574,16 @@ namespace Dynamo.Engine
 
             return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
         }
-        internal bool IsExperimental { get; set; }
+        private bool CheckIfFunctionIsMarkedExperimentalByPrefs(FunctionDescriptor fd)
+        {
+            if (PreferenceSettings.InitialExperimentalLib_Namespaces.
+                Where(x => x.StartsWith(fd.Assembly + ":")).Select(x => x.Split(":").LastOrDefault()).Any(nsp => fd.QualifiedName.StartsWith(nsp)))
+            {
+                return true;
+            }
+            return false;
+        }
+        internal bool IsExperimental { get;}
     }
+
 }

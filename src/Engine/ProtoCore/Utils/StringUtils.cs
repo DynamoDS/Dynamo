@@ -25,26 +25,6 @@ namespace ProtoCore.Utils
             return string.Compare(str1, str2);
         }
 
-        /// <summary>
-        /// Wraps ToString(format) in a try catch. Will return empty string if format is not valid for the target type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="target"></param>
-        /// <param name="Format"></param>
-        /// <returns>Will return empty string if format is not valid for the target type.</returns>
-        internal static string SafeToStringWithFormat<T>(this T target, string Format)
-            where T : IFormattable
-        {
-            try
-            {
-                return target.ToString(Format, null);
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
         public static string GetStringValue(StackValue sv, RuntimeCore runtimeCore)
         {
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(runtimeCore), runtimeCore);
@@ -60,13 +40,12 @@ namespace ProtoCore.Utils
         //used by new ToString methods with format specifier.
         internal static StackValue ConvertToString(IEnumerable<StackValue> args, RuntimeCore runtimeCore, ProtoCore.Runtime.RuntimeMemory rmem)
         {
-            //TODO dislike this as a default...
-            var formatSpecifier = DynamoPreferencesNumberFormat;
-            var sv = args.ElementAt(0);
-            if (args.Count() > 1)
-            {   //TODO performance concern?
-                formatSpecifier = GetStringValue(args.ElementAt(1),runtimeCore);
+            if (args.Count() < 2)
+            {
+                throw new ArgumentException($"format specifier argument not defined while converting string, please report!");
             }
+            var sv = args.ElementAt(0);
+            var formatSpecifier = GetStringValue(args.ElementAt(1),runtimeCore);
             return ConvertToStringInternal(sv, runtimeCore, formatSpecifier);
         }
 
@@ -88,8 +67,6 @@ namespace ProtoCore.Utils
             }
             return returnSV;
         }
-
-      
 
         public static StackValue ConcatString(StackValue op1, StackValue op2, RuntimeCore runtimeCore)
         {

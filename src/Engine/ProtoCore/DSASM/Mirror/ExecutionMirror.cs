@@ -54,7 +54,7 @@ namespace ProtoCore.DSASM.Mirror
         /// <param name="forPrint"></param>
         /// <param name="formatSpecifier"></param>
         /// <returns></returns>
-        public string GetStringValueUsingFormat(StackValue val,string formatSpecifier, Heap heap, int langblock, bool forPrint = false)
+        internal string GetStringValueUsingFormat(StackValue val,string formatSpecifier, Heap heap, int langblock, bool forPrint = false)
         {
             return GetStringValueImplementation(val,formatSpecifier, heap, langblock, -1, -1, forPrint);
         }
@@ -112,11 +112,6 @@ namespace ProtoCore.DSASM.Mirror
                 {
                     return val.IntegerValue.ToString();
                 }
-                //TODO I am not sure if it's best to just return null or some message here
-                //or if we should catch the error higher up where we can log a runtime warning.
-                //currently we are doing the latter.
-
-                //return val.IntegerValue.SafeToStringWithFormat(formatSpecifier);
                 return val.IntegerValue.ToString(formatSpecifier);
 
             }
@@ -128,7 +123,6 @@ namespace ProtoCore.DSASM.Mirror
                 {
                     return val.DoubleValue.ToString("F6");
                 }
-                //return val.DoubleValue.SafeToStringWithFormat(formatSpecifier);
                 return val.DoubleValue.ToString(formatSpecifier);
             }
 

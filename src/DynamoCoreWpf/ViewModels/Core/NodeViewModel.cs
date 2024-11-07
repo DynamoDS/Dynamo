@@ -649,7 +649,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return NodeModel.IsExperimental;
+                return NodeModel.IsExperimental && (DynamoModel.FeatureFlags?.CheckFeatureFlag("experimentalGlyphIsVisible", false) ?? false);
             }
         }
             

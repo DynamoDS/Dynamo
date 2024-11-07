@@ -1086,22 +1086,7 @@ namespace Dynamo.Engine
                 IsLacingDisabled = isLacingDisabled,
                 IsExperimental = (methodAttribute?.IsExperimental).GetValueOrDefault()|| (classAttribute?.IsExperimental).GetValueOrDefault()
             });
-            //TODO //consider moving to funcdescriptor constructor.
-            if(CheckIfFunctionIsMarkedExperimentalByPrefs(function))
-            {
-                function.IsExperimental = true;
-            }
             AddImportedFunctions(library, new[] { function });
-        }
-
-        private bool CheckIfFunctionIsMarkedExperimentalByPrefs(FunctionDescriptor fd)
-        {
-            if (PreferenceSettings.InitialExperimentalLib_Namespaces.
-                Where(x => x.StartsWith(fd.Assembly+":")).Select(x=>x.Split(":").LastOrDefault()).Any(nsp=>fd.QualifiedName.StartsWith(nsp)))
-            {
-                return true;
-            }
-            return false;
         }
 
         private void ImportClass(string library, ClassNode classNode)
