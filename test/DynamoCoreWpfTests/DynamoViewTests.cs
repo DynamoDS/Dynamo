@@ -175,7 +175,7 @@ namespace DynamoCoreWpfTests
             ViewModel.SaveAsCommand.Execute(saveAsPath);
             ViewModel.CloseHomeWorkspaceCommand.Execute(null);
 
-            Open(saveAsPathInTestDir);
+            ViewModel.OpenCommand.Execute(saveAsPath);
 
             // Assert saved as file doesn't have binding data after open.
             DynamoUtilities.PathHelper.isValidJson(saveAsPath, out fileContents, out ex);
