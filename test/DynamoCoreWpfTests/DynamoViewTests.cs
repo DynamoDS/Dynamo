@@ -166,7 +166,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, (obj["Bindings"] as IEnumerable<object>).Count());
 
             var saveAsPathInTestDir = @"core\callsite\trace_test2.dyn";
-            var saveAsPath = Path.Combine(GetTestDirectory(ExecutingDirectory), saveAsPathInTestDir);
+            var saveAsPath = Path.Combine(TempFolder, saveAsPathInTestDir);
+            Directory.CreateDirectory(Path.GetDirectoryName(saveAsPath));
 
             // SaveAs current workspace, close workspace.
             ViewModel.SaveAsCommand.Execute(saveAsPath);
