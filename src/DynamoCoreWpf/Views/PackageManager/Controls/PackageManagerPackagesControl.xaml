@@ -580,9 +580,9 @@
 
                             <Grid VerticalAlignment="Center" DockPanel.Dock="Right">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50" />
-                                    <ColumnDefinition Width="50" />
-                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="68" />
+                                    <ColumnDefinition Width="85" />
+                                    <ColumnDefinition Width="94" />
                                     <ColumnDefinition Width="60" />
                                 </Grid.ColumnDefinitions>
 
