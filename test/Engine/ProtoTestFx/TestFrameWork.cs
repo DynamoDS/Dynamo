@@ -915,15 +915,6 @@ namespace ProtoTestFx.TD
             return subtree;
         }
 
-        public static Subtree CreateSubTreeFromCode(Core core, Guid guid, string code)
-        {
-            //var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
-            var cbn = ProtoCore.Utils.ParserUtils.ParseWithCore(code, core).CodeBlockNode;
-            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
-            subtree.DeltaComputation = false;
-            return subtree;
-        }
-
         public IList<MethodMirror> GetMethods(string className, string methodName)
         {
             ClassMirror classMirror = new ClassMirror(className, testCore);
