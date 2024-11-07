@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using CoreNodeModels;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Graph;
@@ -1798,6 +1799,24 @@ var06 = g;
             // Assert that node throws type mismatch warning
             Assert.IsTrue(codeBlockNodeOne.Infos.Any(x => x.Message.Contains(
                 ProtoCore.Properties.Resources.kConvertNonConvertibleTypes)));
+        }
+
+        [Test]
+        public void ImportStatementInCodeBlock_DoesNotLoadAssemblyIntoProcess()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            var guid = codeBlockNode.GUID.ToString();
+
+            UpdateCodeBlockNodeContent(codeBlockNode, "import(\"FFITarget.dll\")");
+
+            // Check if the assembly is loaded
+            string assemblyName = "FFITarget";
+
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            // Check if the assembly is in the list
+            var ffiTargetAsm = loadedAssemblies.Any(assembly => assembly.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
+            Assert.False(ffiTargetAsm);
         }
 
         [Test]

@@ -314,7 +314,7 @@ namespace ProtoCore.Utils
                 
 
                 bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
-                bool parsingCbnFlag = core.IsParsingPreloadedAssembly;
+                bool parsingCbnFlag = core.IsParsingCodeBlockNode;
                 core.IsParsingPreloadedAssembly = false;
                 core.IsParsingCodeBlockNode = true;
 
@@ -383,7 +383,7 @@ namespace ProtoCore.Utils
                 }
                 catch
                 {
-                    // For class declarations, import statements etc. that are currently ignored
+                    // For class declarations etc. that are currently ignored
                 }
             }
 
