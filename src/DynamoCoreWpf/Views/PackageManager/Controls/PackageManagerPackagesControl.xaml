@@ -74,7 +74,10 @@
 
             <!--  DataTemplate for ComboBox items  -->
             <DataTemplate x:Key="VersionInfoTemplate">
-                <StackPanel MinWidth="111" Orientation="Horizontal">
+                <StackPanel MinWidth="111"
+                            HorizontalAlignment="Stretch"
+                            Background="Transparent"
+                            Orientation="Horizontal">
                     <!--  Compatibility Icon  -->
                     <Button Width="18"
                             Height="18"
@@ -446,6 +449,7 @@
                                             Orientation="Vertical">
                                     <ComboBox x:Name="VersionComboBox"
                                               HorizontalAlignment="Left"
+                                              HorizontalContentAlignment="Stretch"
                                               ItemTemplate="{StaticResource VersionInfoTemplate}"
                                               ItemsSource="{Binding Path=ReversedVersionInformationList, UpdateSourceTrigger=PropertyChanged}"
                                               SelectedItem="{Binding Path=SelectedVersion, UpdateSourceTrigger=PropertyChanged}">
