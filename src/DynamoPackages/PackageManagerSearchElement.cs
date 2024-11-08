@@ -297,102 +297,110 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         internal static bool? CalculateCompatibility(List<Greg.Responses.Compatibility> compatibilityMatrix, Version dynamoVersion = null, Dictionary<string, Dictionary<string, string>> map = null, Version hostVersion = null, string host = null)
         {
-
-            // Parse Dynamo and Host versions/name from the model
-            // Use the optional parameters for Testing purposes
-            if (dynamoVersion == null)
+            try
             {
-                dynamoVersion = VersionUtilities.Parse(DynamoModel.Version);
-            }
+                // Set the defaults if parameters are not provided (for testing)
+                dynamoVersion ??= VersionUtilities.Parse(DynamoModel.Version);
+                hostVersion ??= DynamoModel.HostAnalyticsInfo.HostProductVersion;
+                host ??= DynamoModel.HostAnalyticsInfo.HostProductName;
+                host = host?.ToLowerInvariant();
 
-            if (hostVersion == null)
-            {
-                hostVersion = DynamoModel.HostAnalyticsInfo.HostProductVersion;
-            }
-
-            if (host == null)
-            {
-                host = DynamoModel.HostAnalyticsInfo.HostProductName;
-            }
-
-            // If there is no compatibility matrix, we cannot determine anything
-            if (compatibilityMatrix == null || compatibilityMatrix.Count == 0)
-            {
-                return null; 
-            }
-
-            // Step 1: Check Dynamo version compatibility
-            var dynamoCompatibility = compatibilityMatrix.FirstOrDefault(c => c.name == "Dynamo");
-
-            // If no Dynamo compatibility is found, check if host compatibility exists and use the compatibility map
-            if (dynamoCompatibility == null)
-            {
-                dynamoCompatibility = GetDynamoCompatibilityFromHost(compatibilityMatrix, map);
-
-                // If dynamoVersion is still null, return null (indeterminate)
-                if (dynamoCompatibility == null)
+                // If there is no compatibility matrix, we cannot determine anything
+                if (compatibilityMatrix == null || compatibilityMatrix.Count == 0)
                 {
-                    return null; // No way to determine compatibility
+                    return null; 
                 }
-            }
 
-            // Now, with a dynamoVersion, check the Dynamo compatibility
-            if (dynamoCompatibility != null)
-            {
-                // Check if the Dynamo version is explicitly listed in 'versions'
-                bool isListedInVersions = dynamoCompatibility.versions != null && dynamoCompatibility.versions.Contains(dynamoVersion.ToString());
+                Greg.Responses.Compatibility compatibility = null;
 
-                // Check if the Dynamo version falls within the min/max range
-                bool isWithinMinMax = true;
-
-                // Check if both min and max are null; if so, it's not valid
-                if (string.IsNullOrEmpty(dynamoCompatibility.min) && string.IsNullOrEmpty(dynamoCompatibility.max))
+                // Determine compatibility based on presence of host
+                // We only care about 2 conditions:
+                // 1. If we are under host, we first look at that host compatibility. If that's missing, we still check for Dynamo-only compatibility
+                // 2. If we are not under host, we only care about Dynamo compatibility
+                // ! The opposite to 1. is not true - if there is Host compatibility information, then we NEED to be compatible with the host
+                // (this is to say, we cannot just flip the conditions around to declare 'if Dynamo is compatible, we are already compatible')
+                if (!string.IsNullOrEmpty(host))
                 {
-                    isWithinMinMax = false;  // No version bounds means no compatibility
+                    // Attempt to retrieve compatibility specific to the host
+                    compatibility = compatibilityMatrix.FirstOrDefault(c => c.name.ToLowerInvariant() == host.ToLowerInvariant());
+
+                    // If host compatibility is missing, fallback to Dynamo compatibility
+                    if (compatibility == null)
+                    {
+                        compatibility = compatibilityMatrix.FirstOrDefault(c => c.name.ToLowerInvariant() == "dynamo");
+                    }
                 }
                 else
                 {
-                    // Check within min and max range
-                    isWithinMinMax = (dynamoCompatibility.min == null || dynamoVersion >= VersionUtilities.Parse(dynamoCompatibility.min)) &&
-                                     (dynamoCompatibility.max == null || dynamoVersion <= VersionUtilities.Parse(dynamoCompatibility.max));
+                    // No host specified, so we only check for Dynamo compatibility
+                    compatibility = compatibilityMatrix.FirstOrDefault(c => c.name.ToLowerInvariant() == "dynamo");
                 }
 
-                // If neither listed nor within min/max, return false (incompatible)
-                if (!isListedInVersions && !isWithinMinMax)
+                // If no relevant compatibility info is found, return indeterminate
+                if (compatibility == null)
+                {
+                    return null;
+                }
+
+                // Step 2: Check compatibility based on min/max ranges or specific versions
+                var versionToCheck = (compatibility.name.ToLowerInvariant() == "dynamo") ? dynamoVersion : hostVersion;
+                return versionToCheck != null && IsVersionCompatible(compatibility, versionToCheck);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message.ToString());
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Helper function to validate version compatibility using min, max, and versions array.
+        /// Supports min-only ranges, (in the future: max with asterisk), and schema validation rules.
+        /// </summary>
+        internal static bool IsVersionCompatible(Greg.Responses.Compatibility compatibility, Version version)
+        {
+            // Check if the version is explicitly listed
+            bool isListedInVersions = compatibility.versions?.Contains(version.ToString()) ?? false;
+
+            // Parse min and max values, if provided, and check for valid range
+            bool isWithinMinMax = true;
+            if (!string.IsNullOrEmpty(compatibility.min) || !string.IsNullOrEmpty(compatibility.max))
+            {
+                Version minVersion = VersionUtilities.Parse(compatibility.min);
+                Version maxVersion = VersionUtilities.Parse(compatibility.max);
+
+                // if max is null, try to parse based on wildcard symantics
+                if(maxVersion == null)
+                {
+                    maxVersion = VersionUtilities.WildCardParse(compatibility.max);
+                }
+
+                // If max is specified without min, return false as max-only ranges are unsupported
+                if (minVersion == null && maxVersion != null)
                 {
                     return false;
                 }
-            }
 
-            // Step 2: Check Host version compatibility (if available)
-            if (!string.IsNullOrEmpty(host))
-            {
-                var hostCompatibility = compatibilityMatrix.FirstOrDefault(c => c.name == host);
-                if (hostCompatibility != null)
+                // Validate that min is less than or equal to max if both are specified
+                if (minVersion != null && maxVersion != null && minVersion > maxVersion)
                 {
-                    bool isHostListedInVersions = false;
-                    bool isHostWithinMinMax = false;
+                    throw new ArgumentException("Min version cannot be greater than max version.");
+                }
 
-                    // Check if the host version is explicitly listed in 'versions'
-                    if (hostCompatibility.versions != null && hostCompatibility.versions.Contains(hostVersion.ToString()))
-                    {
-                        isHostListedInVersions = true;
-                    }
-
-                    // Check if the host version falls within the min/max range
-                    isHostWithinMinMax = (hostCompatibility.min == null || hostVersion >= VersionUtilities.Parse(hostCompatibility.min)) &&
-                                         (hostCompatibility.max == null || hostVersion <= VersionUtilities.Parse(hostCompatibility.max));
-                    
-                    // If the host version is neither listed nor within the min/max range, it's incompatible
-                    if (!isHostListedInVersions && !isHostWithinMinMax)
-                    {
-                        return false;
-                    }
+                // Check min-only case: compatibility only extends to the same major version
+                if (minVersion != null && maxVersion == null)
+                {
+                    isWithinMinMax = version >= minVersion && version.Major == minVersion.Major;
+                }
+                else
+                {
+                    // Check within min and max bounds for cases where both are specified
+                    isWithinMinMax = (minVersion == null || version >= minVersion) &&
+                                     (maxVersion == null || version <= maxVersion);
                 }
             }
 
-            // If we passed all the checks, the version is compatible
-            return true;
+            return isListedInVersions || isWithinMinMax;
         }
 
         // Method to find Dynamo compatibility based on other hosts in the compatibilityMatrix

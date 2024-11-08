@@ -1543,7 +1543,10 @@
                       "path": "GeometryColor.Modifiers.GeometryColor.ByGeometryColor"
                     },
                     {
-                      "path": "GeometryColor.Modifiers.GeometryColor.BySurfaceColors"
+                        "path": "GeometryColor.Modifiers.GeometryColor.BySurfaceColors"
+                    },
+                    {
+                        "path": "GeometryColor.Modifiers.GeometryColor.ByMeshColors"
                     }
                   ],
                   "childElements": []

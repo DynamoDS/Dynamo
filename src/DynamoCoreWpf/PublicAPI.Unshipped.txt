@@ -696,6 +696,10 @@ Dynamo.Controls.TreeViewVLineMarginConverter
 Dynamo.Controls.TreeViewVLineMarginConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.TreeViewVLineMarginConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.TreeViewVLineMarginConverter.TreeViewVLineMarginConverter() -> void
+Dynamo.Controls.VersionStringAsteriskToXConverter
+Dynamo.Controls.VersionStringAsteriskToXConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.VersionStringAsteriskToXConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.VersionStringAsteriskToXConverter.VersionStringAsteriskToXConverter() -> void
 Dynamo.Controls.ViewButtonClipRectConverter
 Dynamo.Controls.ViewButtonClipRectConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ViewButtonClipRectConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]

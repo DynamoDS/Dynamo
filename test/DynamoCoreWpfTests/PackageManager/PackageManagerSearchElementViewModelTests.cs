@@ -593,6 +593,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 new FilterEntry(unknownCompatibilityFilterName, "Filter by compatibility", "Unknown Compatibility Packages", packageManagerSearchViewModel) { OnChecked = false },
             };
 
+            packageManagerSearchViewModel.CompatibilityFilter.ForEach(f => f.PropertyChanged += packageManagerSearchViewModel.filter_PropertyChanged);
+
             // Adding compatible packages
             foreach (var package in compatiblePackagesName)
             {
@@ -654,17 +656,19 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
             Assert.That(packageManagerSearchViewModel.SearchResults.Count == compatiblePackagesName.Count, "Filtered results do not match the compatible packages");
 
-            // Reset (Filters are not mutually exclusive)
-            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = false;
-
             // Check the Incompatible filter
             packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = true;
             packageManagerSearchViewModel.CompatibilityFilter[1].FilterCommand.Execute(string.Empty);
             Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "No results found");
             Assert.That(packageManagerSearchViewModel.SearchResults.Count == incompatiblePackagesName.Count, "Filtered results do not match the incompatible packages");
 
-            // Reset (Filters are not mutually exclusive)
-            packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked = false;
+            // Asserts that Compatible and Incompatible filters are mutually exclusive
+            Assert.IsFalse(packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked, "Compatible and Incompatible filters should be mutually exclusive");
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = true;
+            Assert.IsFalse(packageManagerSearchViewModel.CompatibilityFilter[1].OnChecked, "Compatible and Incompatible filters should be mutually exclusive");
+
+            // Reset (These filters are not mutually exclusive)
+            packageManagerSearchViewModel.CompatibilityFilter[0].OnChecked = false;
 
             // Check the Unknown Compatibility filter
             packageManagerSearchViewModel.CompatibilityFilter[2].OnChecked = true;
@@ -935,74 +939,86 @@ namespace Dynamo.PackageManager.Wpf.Tests
         [Test]
         public void TestComputeIncompatibleVersionCompatibility()
         {
-            //Arrange
-            var compatibilityMatrixIncompatibleDynamo = new List<Greg.Responses.Compatibility>
+            // Arrange
+            var compatibilityMatrix_IncompatibleDynamo = new List<Greg.Responses.Compatibility>
             {
-                new Greg.Responses.Compatibility { name = "Dynamo", min = "3.0", max = "3.5" },
-                new Greg.Responses.Compatibility { name = "Host", min = "2020.0", max = "2025.0" }
+                new Greg.Responses.Compatibility { name = "dynamo", min = "3.0", max = "3.5" },
+                new Greg.Responses.Compatibility { name = "host", min = "2020.0", max = "2025.0" }
             };
 
-            var compatibilityMatrixIncompatibleHost = new List<Greg.Responses.Compatibility>
+            var compatibilityMatrix_IncompatibleHost = new List<Greg.Responses.Compatibility>
             {
-                new Greg.Responses.Compatibility { name = "Dynamo", min = "2.0", max = "3.5" },
-                new Greg.Responses.Compatibility { name = "Host", min = "2020.0", max = "2022.0" }
+                new Greg.Responses.Compatibility { name = "dynamo", min = "2.0", max = "3.5" },
+                new Greg.Responses.Compatibility { name = "host", min = "2020.0", max = "2022.0" }
             };
 
-            var customDynamoVersion = new Version("2.9");
-            var customHostVersion = new Version("2023.0");
-            var customHostName = "Host";
+            var dynamoVersion = new Version("2.9");
+            var hostVersion = new Version("2023.0");
+            var hostName = "host";
 
             // Act
-            var resultIncompatibleDynamo = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrixIncompatibleDynamo, customDynamoVersion, compatibilityMap, customHostVersion, customHostName);
-            var resultIncompatibleHost = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrixIncompatibleHost, customDynamoVersion, compatibilityMap, customHostVersion, customHostName);
+            var resultIncompatibleDynamo = PackageManagerSearchElement.CalculateCompatibility(
+                compatibilityMatrix_IncompatibleDynamo, dynamoVersion, compatibilityMap, hostVersion, hostName);
+            var resultIncompatibleHost = PackageManagerSearchElement.CalculateCompatibility(
+                compatibilityMatrix_IncompatibleHost, dynamoVersion, compatibilityMap, hostVersion, hostName);
 
             // Assert
-            Assert.IsFalse(resultIncompatibleDynamo);
-            Assert.IsFalse(resultIncompatibleHost);
+            Assert.IsTrue(resultIncompatibleDynamo, "Expected compatibility to be true as under host we don't care about Dynamo version.");
+            Assert.IsFalse(resultIncompatibleHost, "Expected compatibility to be false due to incompatible host version.");
         }
 
         [Test]
         public void TestComputeVersionNoDynamoCompatibility()
         {
-            //Arrange
-            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            // Arrange
+            var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
             {
-                new Greg.Responses.Compatibility { name = "Revit", min = "2020", max = "2025" }
+                new Greg.Responses.Compatibility { name = "revit", min = "2020", max = "2025" }
             };
 
-            var minValueCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            var minOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
             {
-                new Greg.Responses.Compatibility { name = "Revit", min = "2020",  }
+                new Greg.Responses.Compatibility { name = "revit", min = "2023" }
             };
-
 
             var incompleteCompatibilityMatrix = new List<Greg.Responses.Compatibility>
             {
-                new Greg.Responses.Compatibility { name = "Revit" }
+                new Greg.Responses.Compatibility { name = "revit" }
             };
 
-            var customIncompatibleDynamoVersion = new Version("2.0.2"); // Matches Revit 2019
-            var customCompatibleDynamoVersion = new Version("2.13.1");  // Dynamo 2.13.1 matches Revit 2023.0
-            var customHostVersion = new Version("2023.0");  // Revit 2023.0 matches Dynamo 2.13.1 
-            var hostName = "Revit";
+            var compatibleDynamoVersion = new Version("2.13.1");  // Compatible within Revit 2023.0
+            var incompatibleDynamoVersion = new Version("2.0.2"); // Incompatible version matching Revit 2019
+            var hostVersion = new Version("2023.1");
+            var hostName = "revit";
 
             // Act
-            // True - No dynamo compatibility provided, we extract Dynamo versions from Host and check against the current Dynamo Version
-            var resultNoDynamoCompatibilityUnderDynamo = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customCompatibleDynamoVersion, compatibilityMap);
-            // True - No dynamo compatibility provided, but we are under a Host
-            var resultNoDynamoCompatibilityUnderHost = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customCompatibleDynamoVersion, compatibilityMap, customHostVersion, hostName);
-            // True - We will assume that, if we have 'min' value but no 'max' value, anything above that is OK
-            var resultMinValue = PackageManagerSearchElement.CalculateCompatibility(minValueCompatibilityMatrix, customCompatibleDynamoVersion, compatibilityMap);
-            // False - looking for support for Dynamo 2.0.2 (matching Revit 2019), but the min Revit version is 2020
-            var resultIncompatible = PackageManagerSearchElement.CalculateCompatibility(compatibilityMatrix, customIncompatibleDynamoVersion, compatibilityMap);
-            // Null - Not enough information provided to extract DynamoCompatibility, we return 'null' for unknown compatibility
-            var resultIncomplete = PackageManagerSearchElement.CalculateCompatibility(incompleteCompatibilityMatrix, customIncompatibleDynamoVersion, compatibilityMap);
+            // Case 1: No Dynamo-specific compatibility, expect null (no fallback)
+            var resultNoDynamoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, compatibleDynamoVersion, compatibilityMap);
+
+            // Case 2: No Dynamo-specific compatibility but host compatibility is provided
+            var resultWithHostCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, compatibleDynamoVersion, compatibilityMap, hostVersion, hostName);
+
+            // Case 3: Min-only range for compatibility within major version (Dynamo context)
+            var resultMinOnlyCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                minOnlyCompatibilityMatrix, compatibleDynamoVersion, compatibilityMap, hostVersion, hostName);
+
+            // Case 4: Incomplete compatibility information, expect indeterminate result
+            var resultIncompleteCompatibilityInfo = PackageManagerSearchElement.CalculateCompatibility(
+                incompleteCompatibilityMatrix, incompatibleDynamoVersion, compatibilityMap);
+
+            // Case 5: Under host context, but host compatibility is not provided, fall back to Dynamo
+            var resultFallbackToDynamo = PackageManagerSearchElement.CalculateCompatibility(
+                new List<Greg.Responses.Compatibility> { new Greg.Responses.Compatibility { name = "dynamo", min = "2.10", max = "2.13.1" } },
+                compatibleDynamoVersion, compatibilityMap, null, hostName);
 
             // Assert
-            Assert.IsTrue(resultNoDynamoCompatibilityUnderDynamo);
-            Assert.IsTrue(resultNoDynamoCompatibilityUnderHost);
-            Assert.IsTrue(resultMinValue);
-            Assert.IsFalse(resultIncompatible);
+            Assert.IsNull(resultNoDynamoCompatibility, "Expected compatibility to be null when no Dynamo-specific compatibility exists and no fallback is allowed.");
+            Assert.IsTrue(resultWithHostCompatibility, "Expected compatibility to be true when no Dynamo-specific compatibility exists but host compatibility matches.");
+            Assert.IsTrue(resultMinOnlyCompatibility, "Expected compatibility to be true for min-only range within major version.");
+            Assert.IsNull(resultIncompleteCompatibilityInfo, "Expected compatibility to be indeterminate (null) when information is incomplete.");
+            Assert.IsTrue(resultFallbackToDynamo, "Expected compatibility to be true when under host but only Dynamo compatibility is provided.");
         }
 
         [Test]
@@ -1048,5 +1064,270 @@ namespace Dynamo.PackageManager.Wpf.Tests
             // Assert the exception message if needed
             Assert.AreEqual("The compatibility map is not initialized.", exception.Message);
         }
+
+
+        [Test]
+        public void TestLowerCaseCompatibilityMap()
+        {
+            // Arrange
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "revit", min = "2020", max = "2025", versions = new List<string>() { "2016", "2018" } }
+            };
+
+            var expectedDynamoCompatibility = new Compatibility()
+            {
+                name = "Dynamo",
+                min = "2.1.0",
+                max = "3.0.3",
+                versions = new List<string>() { "1.3.2", "2.0.2" }
+            };
+
+            var result = PackageManagerSearchElement.GetDynamoCompatibilityFromHost(compatibilityMatrix, compatibilityMap);
+
+            Assert.That(result.name, Is.EqualTo(expectedDynamoCompatibility.name));
+            Assert.That(result.min, Is.EqualTo(expectedDynamoCompatibility.min));
+            Assert.That(result.max, Is.EqualTo(expectedDynamoCompatibility.max));
+            Assert.That(result.versions, Is.EqualTo(expectedDynamoCompatibility.versions));
+        }
+
+        [Test]
+        public void IsVersionCompatible_ExactVersionInList_ReturnsTrue()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                versions = new List<string> { "2.1.0", "2.2.0", "2.3.0" }
+            };
+            Version version = new Version("2.2.0");
+
+            bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, version);
+
+            Assert.IsTrue(result, "Expected compatibility to be true when version is in the list.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MinOnly_ReturnsTrueForCompatibleVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.1.0"
+            };
+            Version compatibleVersion = new Version("2.1.5");
+            Version incompatibleVersion = new Version("2.0.9");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion),
+                          "Expected compatibility to be true when version is greater than or equal to min.");
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, incompatibleVersion),
+                           "Expected compatibility to be false when version is less than min.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MinOnlyWithinSameMajorVersion_ReturnsTrue()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.1.0"
+            };
+            Version compatibleVersion = new Version("2.1.5"); // Same major version (2.x)
+
+            bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion);
+
+            Assert.IsTrue(result, "Expected compatibility to be true when version is within the same major version and greater than or equal to min.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MinOnlyBeyondMajorVersion_ReturnsFalse()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.1.0"
+            };
+            Version incompatibleVersion = new Version("3.0.0"); // Higher major version (3.x)
+
+            bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, incompatibleVersion);
+
+            Assert.IsFalse(result, "Expected compatibility to be false when version is in a higher major version than min.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MaxOnly_ReturnsFalse()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                max = "2.3.0"
+            };
+            Version compatibleVersion = new Version("2.2.5");
+            Version incompatibleVersion = new Version("2.4.0");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion),
+                           "Expected compatibility to be false when only max is specified, regardless of version.");
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, incompatibleVersion),
+                           "Expected compatibility to be false when only max is specified, regardless of version.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_MinAndMax_ReturnsTrueForVersionWithinRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.1.0",
+                max = "2.3.0"
+            };
+            Version inRangeVersion = new Version("2.2.0");
+            Version belowRangeVersion = new Version("2.0.9");
+            Version aboveRangeVersion = new Version("2.4.0");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, inRangeVersion),
+                          "Expected compatibility to be true when version is within the min and max range.");
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, belowRangeVersion),
+                           "Expected compatibility to be false when version is below min.");
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, aboveRangeVersion),
+                           "Expected compatibility to be false when version is above max.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InvalidMinMaxRange_ThrowsArgumentException()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.1.0"
+            };
+            Version version = new Version("2.2.0");
+
+            Assert.Throws<ArgumentException>(() => PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected an ArgumentException when min version is greater than max version.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange1_ReturnsTrueForVersionWithinRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.*"
+            };
+            Version version = new Version("2.4.0");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange1_ReturnsTrueForVersionWithinDomainRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.*"
+            };
+            Version compatibleVersion = new Version("2.2147483647.0");
+            Version incompatibleVersion = new Version("2.2147483647.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, compatibleVersion),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, incompatibleVersion),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange2_ReturnsTrueForVersionWithinRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.5.*"
+            };
+            Version version = new Version("2.5.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when version is within the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange_ReturnsFalseForVersionOutsideMajorVersionRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.*"
+            };
+            Version version = new Version("3.1.0");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when version is outside the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_ValidMaxWildCardRange_ReturnsFalseForVersionOutsideMinorVersionRange()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2.5.*"
+            };
+            Version version = new Version("2.6.0");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when version is outside the min and max wildcard range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxWildCardRange_ReturnsFalseForVersionOutsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2*"
+            };
+            Version version = new Version("3.5.1");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when major version is same as Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxWildCardRange_ReturnsTrueForVersionInsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "2*"
+            };
+            Version version = new Version("2.5.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxRange_ReturnsFalseForVersionOutsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "asdfasdfa"
+            };
+            Version version = new Version("3.5.1");
+
+            Assert.IsFalse(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be false when major version is same as Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_InValidMaxRange_ReturnsTrueForVersionInsideOfMajorVersion()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                min = "2.3.0",
+                max = "asdfasdfa"
+            };
+            Version version = new Version("2.5.1");
+
+            Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
+                          "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
+        }
+
     }
 }

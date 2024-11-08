@@ -29,6 +29,7 @@
             <controls:InverseEmptyListToVisibilityConverter x:Key="InverseEmptyListToVisibilityConverter" />
             <controls:CopyrightInfoTooltipConverter x:Key="CopyrightInfoTooltipConverter" />
             <controls:PackageDetailsLinkCollapseOnEmpty x:Key="PackageDetailsLinkCollapseOnEmpty" />
+            <controls:VersionStringAsteriskToXConverter x:Key="VersionStringAsteriskToXConverter" />
             <SolidColorBrush x:Key="ForegroundGrayBrush" Color="#D8D8D8" />
             <SolidColorBrush x:Key="HoverBorderGrayBrush" Color="#6d6d6d" />
             <SolidColorBrush x:Key="PressedBorderGrayBrush" Color="#7e7e7e" />
@@ -693,7 +694,7 @@
                                             <TextBlock Margin="0,5" Text="{x:Static p:Resources.PackageDetailsCompatibilityWithSetup}" />
                                             <DataGrid x:Name="VersionCompatibilityDataGrid"
                                                       Margin="0,0,20,20"
-                                                      AlternatingRowBackground="{StaticResource PMDataGridBackgroundColorBrush}"
+                                                      AlternatingRowBackground="{StaticResource PMDataAltBackgroundColorBrush}"
                                                       AlternationCount="2"
                                                       AutoGenerateColumns="False"
                                                       Background="{StaticResource ExtensionBackgroundColor}"
@@ -709,6 +710,7 @@
                                                       IsReadOnly="True"
                                                       IsSynchronizedWithCurrentItem="True"
                                                       ItemsSource="{Binding VersionInformation}"
+                                                      RowBackground="{StaticResource PMDataGridBackgroundColorBrush}"
                                                       RowDetailsVisibilityMode="Collapsed"
                                                       ScrollViewer.CanContentScroll="True"
                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -721,7 +723,7 @@
                                                                         Binding="{Binding CompatibilityName}"
                                                                         Header="" />
                                                     <DataGridTextColumn Width="3*"
-                                                                        Binding="{Binding Versions}"
+                                                                        Binding="{Binding Versions, Converter={StaticResource VersionStringAsteriskToXConverter}}"
                                                                         Header="{x:Static p:Resources.PublishPackageViewPackageVersion}" />
                                                 </DataGrid.Columns>
                                             </DataGrid>
