@@ -15,6 +15,7 @@ runtimeGeneratedExtension/
 obj/
 int/
 packages/
+bin/
 
 #find -type d -name bin -exec git rm -r {} \;
 
