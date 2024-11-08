@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -140,8 +140,8 @@ namespace ProtoCore.Utils
             var core = new Core(new Options())
             {
                 ParsingMode = ParseMode.AllowNonAssignment,
-                IsParsingPreloadedAssembly = false,
                 IsParsingCodeBlockNode = true,
+                IsParsingPreloadedAssembly = false
             };
             return core;
         }
