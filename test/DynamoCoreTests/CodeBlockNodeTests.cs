@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -2458,10 +2458,13 @@ var06 = g;
             string code = "im";
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
-            // Expected 3 completion items
-            Assert.AreEqual(3, completions.Count());
+            Assert.AreEqual(5, completions.Count());
 
-            string[] expected = { "Imperative", "Minimal", "MinimalTracedClass" };
+            string[] expected = { "ClassWithExperimentalMethod",
+                "ExperimentalClass",
+                "Imperative",
+                "Minimal",
+                "MinimalTracedClass" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);
