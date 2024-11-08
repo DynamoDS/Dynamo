@@ -143,8 +143,9 @@ namespace DynamoCoreWpfTests
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
             // Always start with a fresh workspace with no binding data for this test.
-            File.Copy(prebindingPath, filePath,true);
-            OpenAndRun(pathInTestsDir);
+            File.Copy(prebindingPath, filePath, true);
+            ViewModel.OpenCommand.Execute(filePath);
+            Run();
 
             // Assert that the node doesn't have trace data the first time it's run.
             var hasTraceData = Model.CurrentWorkspace.Nodes.FirstOrDefault(x =>
