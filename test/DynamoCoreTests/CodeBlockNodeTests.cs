@@ -1807,15 +1807,13 @@ var06 = g;
             var codeBlockNode = CreateCodeBlockNode();
             var guid = codeBlockNode.GUID.ToString();
 
-            UpdateCodeBlockNodeContent(codeBlockNode, "import(\"FFITarget.dll\")");
-
-            // Check if the assembly is loaded
             string assemblyName = "FFITarget";
+            UpdateCodeBlockNodeContent(codeBlockNode, $"import(\"{assemblyName}.dll\")");
 
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            // Check if the assembly is in the list
             var ffiTargetAsm = loadedAssemblies.Any(assembly => assembly.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
+
             Assert.False(ffiTargetAsm);
         }
 

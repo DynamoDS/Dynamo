@@ -141,7 +141,7 @@ namespace ProtoCore.Utils
             {
                 ParsingMode = ParseMode.AllowNonAssignment,
                 IsParsingPreloadedAssembly = false,
-                IsParsingInTestMode = true,
+                IsParsingCodeBlockNode = true,
             };
             return core;
         }

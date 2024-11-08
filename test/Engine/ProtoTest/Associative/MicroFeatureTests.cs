@@ -2840,8 +2840,8 @@ r = Minimal.Sqrt(a);
             string s1 = "a = 1;";
             string s2 = "a=(1);";
 
-            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
-            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s1, TestFrameWork.CodeBlockParserCore()).CodeBlockNode; 
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s2, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2851,8 +2851,8 @@ r = Minimal.Sqrt(a);
         {
             string s1 = "a = 1; b=2;";
             string s2 = "a=(1) ; b = (2);";
-            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
-            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s1, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s2, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2862,8 +2862,8 @@ r = Minimal.Sqrt(a);
         {
             string s1 = "a     =   1;  c = a+1;";
             string s2 = "a = 1; c=a +    1;";
-            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
-            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s1, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s2, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2876,13 +2876,13 @@ r = Minimal.Sqrt(a);
             string s3 = "a : A.B.C;";
             string s4 = "a : A.B.C = null;";
             
-            var s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            var s1Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s1, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(s1Root);
             var typedNode = s1Root.Body[0] as TypedIdentifierNode;
             Assert.IsNotNull(typedNode);
             Assert.AreEqual("A", typedNode.datatype.Name);
 
-            s1Root = ProtoCore.Utils.ParserUtils.Parse(s2);
+            s1Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s2, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(s1Root);
             var ben = s1Root.Body[0] as BinaryExpressionNode;
             Assert.IsNotNull(ben);
@@ -2890,13 +2890,13 @@ r = Minimal.Sqrt(a);
             Assert.IsNotNull(typedNode);
             Assert.AreEqual("A", typedNode.datatype.Name);
 
-            s1Root = ProtoCore.Utils.ParserUtils.Parse(s3);
+            s1Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s3, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(s1Root);
             typedNode = s1Root.Body[0] as TypedIdentifierNode;
             Assert.IsNotNull(typedNode);
             Assert.AreEqual("A.B.C", typedNode.datatype.Name);
 
-            s1Root = ProtoCore.Utils.ParserUtils.Parse(s4);
+            s1Root = ProtoCore.Utils.ParserUtils.ParseWithCore(s4, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(s1Root);
             ben = s1Root.Body[0] as BinaryExpressionNode;
             Assert.IsNotNull(ben);
@@ -2918,14 +2918,14 @@ r = Minimal.Sqrt(a);
             string s7 = "a : A.B.C[][];";
             string s8 = "a : A.B.C[][] = null;";
 
-            var root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            var root = ProtoCore.Utils.ParserUtils.ParseWithCore(s1, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(root);
             var typedNode = root.Body[0] as TypedIdentifierNode;
             Assert.IsNotNull(typedNode);
             Assert.AreEqual("A", typedNode.datatype.Name);
             Assert.AreEqual(1, typedNode.datatype.rank);
 
-            root = ProtoCore.Utils.ParserUtils.Parse(s2);
+            root = ProtoCore.Utils.ParserUtils.ParseWithCore(s2, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(root);
             var ben = root.Body[0] as BinaryExpressionNode;
             Assert.IsNotNull(ben);
@@ -2934,14 +2934,14 @@ r = Minimal.Sqrt(a);
             Assert.AreEqual("A", typedNode.datatype.Name);
             Assert.AreEqual(1, typedNode.datatype.rank);
 
-            root = ProtoCore.Utils.ParserUtils.Parse(s3);
+            root = ProtoCore.Utils.ParserUtils.ParseWithCore(s3, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(root);
             typedNode = root.Body[0] as TypedIdentifierNode;
             Assert.IsNotNull(typedNode);
             Assert.AreEqual("A.B.C", typedNode.datatype.Name);
             Assert.AreEqual(1, typedNode.datatype.rank);
 
-            root = ProtoCore.Utils.ParserUtils.Parse(s4);
+            root = ProtoCore.Utils.ParserUtils.ParseWithCore(s4, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(root);
             ben = root.Body[0] as BinaryExpressionNode;
             Assert.IsNotNull(ben);
@@ -2950,14 +2950,14 @@ r = Minimal.Sqrt(a);
             Assert.AreEqual("A.B.C", typedNode.datatype.Name);
             Assert.AreEqual(1, typedNode.datatype.rank);
 
-            root = ProtoCore.Utils.ParserUtils.Parse(s5);
+            root = ProtoCore.Utils.ParserUtils.ParseWithCore(s5, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(root);
             typedNode = root.Body[0] as TypedIdentifierNode;
             Assert.IsNotNull(typedNode);
             Assert.AreEqual("A", typedNode.datatype.Name);
             Assert.AreEqual(2, typedNode.datatype.rank);
 
-            root = ProtoCore.Utils.ParserUtils.Parse(s6);
+            root = ProtoCore.Utils.ParserUtils.ParseWithCore(s6, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(root);
             ben = root.Body[0] as BinaryExpressionNode;
             Assert.IsNotNull(ben);
@@ -2966,14 +2966,14 @@ r = Minimal.Sqrt(a);
             Assert.AreEqual("A", typedNode.datatype.Name);
             Assert.AreEqual(2, typedNode.datatype.rank);
 
-            root = ProtoCore.Utils.ParserUtils.Parse(s7);
+            root = ProtoCore.Utils.ParserUtils.ParseWithCore(s7, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(root);
             typedNode = root.Body[0] as TypedIdentifierNode;
             Assert.IsNotNull(typedNode);
             Assert.AreEqual("A.B.C", typedNode.datatype.Name);
             Assert.AreEqual(2, typedNode.datatype.rank);
 
-            root = ProtoCore.Utils.ParserUtils.Parse(s8);
+            root = ProtoCore.Utils.ParserUtils.ParseWithCore(s8, TestFrameWork.CodeBlockParserCore()).CodeBlockNode;
             Assert.IsNotNull(root);
             ben = root.Body[0] as BinaryExpressionNode;
             Assert.IsNotNull(ben);
