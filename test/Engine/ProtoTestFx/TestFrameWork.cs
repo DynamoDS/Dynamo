@@ -43,7 +43,7 @@ namespace ProtoTestFx.TD
             runner = new ProtoScriptRunner();
         }
 
-        internal static ProtoCore.Core CodeBlockParserCore()
+        internal static ProtoCore.Core TestParserCore()
         {
             var core = new ProtoCore.Core(new ProtoCore.Options())
             {
@@ -917,7 +917,7 @@ namespace ProtoTestFx.TD
 
         public static Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            var cbn = ProtoCore.Utils.ParserUtils.ParseWithCore(code, CodeBlockParserCore()).CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.ParseWithCore(code, TestParserCore()).CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             subtree.DeltaComputation = false;
             return subtree;
