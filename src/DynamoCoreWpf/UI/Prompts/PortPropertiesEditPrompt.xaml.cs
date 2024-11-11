@@ -1,12 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Dynamo.Controls;
-using Dynamo.Utilities;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Utilities;
 
 namespace UI.Prompts
 {
@@ -105,13 +106,50 @@ namespace UI.Prompts
             InitializeComponent();
             
             this.DataContext = this;
-            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            Owner = GetDynamoView();
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
+            this.ContentRendered += OnContentRendered;
+        }
+
+        #region Centralize
+
+        // Centralize the window correctly after it is rendered
+        private void OnContentRendered(object sender, EventArgs e)
+        {
+            // Unsubscribe immediately, we only call this once on initialization
+            this.ContentRendered -= OnContentRendered;
+
+            CenterWindowRelativeToOwner();
             nameBox.Focus();
         }
+
+        // Centralize the window relative to another Window
+        private void CenterWindowRelativeToOwner()
+        {
+            if (Owner != null)
+            {
+                this.Left = Owner.Left + (Owner.Width - this.ActualWidth) / 2;
+                this.Top = Owner.Top + (Owner.Height - this.ActualHeight) / 2;
+            }
+        }
+
+        // A helper method to find DynamoView Window
+        // Contrary to the expectation, DynamoView does not own this prompt window
+        // Upon inspection, both windows are direct children of the Dynamo process with no visual tree relationship
+        private DynamoView GetDynamoView()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is DynamoView dynamoView)
+                {
+                    return dynamoView;
+                }
+            }
+            return null;
+        }
+        #endregion
 
         #region Methods
         void OK_Click(object sender, RoutedEventArgs e)
