@@ -13,6 +13,9 @@ using NUnit.Framework;
 
 using WebRequest = CoreNodeModels.WebRequest;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using System.Threading.Tasks;
+using System.Threading;
+using DynamoCoreWpfTests.Utility;
 
 namespace DynamoCoreWpfTests
 {
@@ -70,7 +73,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void DateTimeNow()
+        public Task DateTimeNow()
         {
             var openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\periodic_update\datetimenow.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -83,19 +86,21 @@ namespace DynamoCoreWpfTests
 
             var time1 = GetPreviewValue(guid).ToString();
 
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-
             // Switch to periodic mode
             ws.RunSettings.RunPeriod = 100;
             ws.RunSettings.RunType = RunType.Periodic;
 
-            while (stopWatch.Elapsed.Seconds <= 1) { }
+            var task = Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+            }).ContinueWith((t) =>
+            {
+                var time2 = GetPreviewValue(guid).ToString();
+                Assert.AreNotEqual(time1, time2);
 
-            stopWatch.Stop();
-            var time2 = GetPreviewValue(guid).ToString();
+            }, TaskScheduler.FromCurrentSynchronizationContext());
 
-            Assert.AreNotEqual(time1, time2);
+            return task;
         }
 
 
