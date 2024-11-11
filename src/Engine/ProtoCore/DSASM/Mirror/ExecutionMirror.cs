@@ -187,8 +187,8 @@ namespace ProtoCore.DSASM.Mirror
             return "null"; // "Value not yet supported for tracing";
         }
 
-        //TODO - use format specifier when converting to string
-        //obsolete this method and introduce another.
+        //TODO - use format specifier when converting classes to string
+        [Obsolete("This will be made internal")]
         public string GetClassTrace(StackValue val, Heap heap, int langblock, bool forPrint)
         {
             if (!formatParams.ContinueOutputTrace())

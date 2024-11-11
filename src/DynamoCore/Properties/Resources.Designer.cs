@@ -498,7 +498,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This node is marked experimental, its behavior, name, and signature may change!.
+        ///   Looks up a localized string similar to This node is currently experimental. Its behavior, name, and signature are subject to change..
         /// </summary>
         public static string DocsExperimentalPrefixMessage {
             get {

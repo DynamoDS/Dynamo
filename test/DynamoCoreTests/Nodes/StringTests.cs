@@ -921,14 +921,22 @@ namespace Dynamo.Tests
         [Test]
         public void StringFormatNodesAreCurrentlyExperimental()
         {
-#pragma warning disable NEWNODE_FormattedStringFromObject 
-#pragma warning disable NM_ISEXPERIMENTAL_GLPYH 
+#pragma warning disable NEWNODE_FormattedStringFromObject
+#pragma warning disable NEWNODE_FormattedStringFromArray
+
+#pragma warning disable NM_ISEXPERIMENTAL_GLPYH
 
             var formatString = new FormattedStringFromObject();
+            var formatStringArr = new FormattedStringFromArray();
             Assert.AreEqual(true,formatString.IsExperimental);
+            Assert.AreEqual(true, formatStringArr.IsExperimental);
+            Assert.IsTrue(formatString.InPorts[1].DefaultValue.Kind == ProtoCore.AST.AssociativeAST.AstKind.String && formatString.InPorts[1].UsingDefaultValue == true);
+            Assert.IsTrue(formatStringArr.InPorts[1].DefaultValue.Kind == ProtoCore.AST.AssociativeAST.AstKind.String && formatStringArr.InPorts[1].UsingDefaultValue == true);
 
-#pragma warning restore NM_ISEXPERIMENTAL_GLPYH 
+#pragma warning restore NM_ISEXPERIMENTAL_GLPYH
 #pragma warning restore NEWNODE_FormattedStringFromObject
+#pragma warning restore NEWNODE_FormattedStringFromArray
+
 
         }
         #endregion

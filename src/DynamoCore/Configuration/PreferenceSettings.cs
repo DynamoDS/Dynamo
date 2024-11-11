@@ -114,8 +114,6 @@ namespace Dynamo.Configuration
 
         internal static readonly IEnumerable<string> InitialExperimentalLib_Namespaces =
         [
-            //TODO remove tsplines - it's no longer experimental.
-            "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline",
             "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface"
             ];
         #endregion

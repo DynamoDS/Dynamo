@@ -8,8 +8,8 @@ format specifiers should be in the form:
 Some commonly used format specifiers are:
 ```
 G : general formatting G 1000.0 -> "1000"
-F : fixed point notation F4 1000.0 -> "1.0000"
-N : number N 1.0 -> 1000 -> "1,000.00"
+F : fixed point notation F4 1000.0 -> "1000.0000"
+N : number N2 1000 -> "1,000.00"
 ```
 
 The default for this node is `G`, which will output a compact, but variable representation.

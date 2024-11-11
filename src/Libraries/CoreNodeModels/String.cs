@@ -89,6 +89,7 @@ namespace CoreNodeModels
         public FormattedStringFromObject() : base("__ToStringFromObjectAndFormat")
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            RegisterAllPorts();
             //TODO figure out how to add an inportDefaultValue attribute.
             //it's not straightforward because ideally we'd have accesss to the parser.
             if (InPorts?.Count() > 1)
@@ -96,7 +97,6 @@ namespace CoreNodeModels
                 InPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("G");
                 InPorts.ElementAt(1).UsingDefaultValue = true;
             }
-            RegisterAllPorts();
         }
     }
 

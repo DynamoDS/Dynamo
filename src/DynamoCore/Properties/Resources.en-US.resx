@@ -921,6 +921,6 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>default input name, rename me!</value>
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
-    <value>This node is marked experimental, its behavior, name, and signature may change!</value>
+    <value>This node is currently experimental. Its behavior, name, and signature are subject to change.</value>
   </data>
 </root>

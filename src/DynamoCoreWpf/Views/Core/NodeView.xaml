@@ -456,10 +456,13 @@
                 <fa:ImageAwesome Icon="Solid_Flask"
                                  Width="16px"
                                  Height="16px"
-                 Foreground="{StaticResource Green300Brush}"
+                 Foreground="{StaticResource Blue400Brush}"
                  VerticalAlignment="Center"
-                 HorizontalAlignment="Center"
-                                 ToolTip="{x:Static dp:Resources.DocsExperimentalPrefixMessage}"/>
+                 HorizontalAlignment="Center">
+                      <fa:ImageAwesome.ToolTip>
+                        <ToolTip Content="{x:Static dp:Resources.DocsExperimentalPrefixMessage}" Style="{StaticResource GenericToolTipLight}"/>
+                    </fa:ImageAwesome.ToolTip>
+                </fa:ImageAwesome>
             </Grid>
             <Grid x:Name="FrozenGlyph" 
                   Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
