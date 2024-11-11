@@ -4057,6 +4057,12 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PackageDetailsCompatibilityWithSetup" xml:space="preserve">
     <value>Compatible with your current setup</value>
   </data>
+    <data name="PackageDetailsIncompatibilityWithSetup" xml:space="preserve">
+    <value>Incompatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsXCompatibilityWithSetup" xml:space="preserve">
+    <value>Unknown compatibility with your current setup</value>
+  </data>
   <data name="PackageDetailsSize" xml:space="preserve">
     <value>Size</value>
   </data>
