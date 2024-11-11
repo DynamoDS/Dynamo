@@ -86,7 +86,7 @@ namespace DynamoCoreWpfTests
 
             var time1 = GetPreviewValue(guid).ToString();
 
-            // Switch to periodic mode
+            // Switch to periodic mode.
             ws.RunSettings.RunPeriod = 100;
             ws.RunSettings.RunType = RunType.Periodic;
 
