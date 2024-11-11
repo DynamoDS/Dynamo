@@ -582,107 +582,117 @@
 
                             <!--  Right-hand side  -->
 
-                            <!--  View Details Button  -->
-                            <Button Name="viewDetailsButton"
-                                    Click="ViewDetailsButton_OnClick"
-                                    Content="{x:Static p:Resources.PackageSearchResultViewDetails}"
-                                    DockPanel.Dock="Right">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <Border Name="ButtonBorder"
-                                                Height="25"
-                                                Padding="5,0"
-                                                BorderThickness="2"
-                                                CornerRadius="2">
-                                            <Grid x:Name="viewDetailsGrid">
-                                                <DockPanel>
-                                                    <TextBlock Name="textBlock"
-                                                               Padding="4,4,4,3"
-                                                               HorizontalAlignment="Right"
-                                                               VerticalAlignment="Center"
-                                                               Cursor="Hand"
-                                                               DockPanel.Dock="Right"
-                                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                               FontSize="10"
-                                                               Foreground="#B8B8B8"
-                                                               Text="{TemplateBinding Content}" />
-                                                    <Viewbox Width="14"
-                                                             Height="14"
-                                                             Margin="0,0,0,0"
-                                                             VerticalAlignment="Center"
-                                                             DockPanel.Dock="Left"
-                                                             UseLayoutRounding="True">
-                                                        <Path Data="M7 0C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14C10.866 14 14 10.866 14 7C14 5.14348 13.2625 3.36301 11.9497 2.05025C10.637 0.737498 8.85652 0 7 0ZM8 11H6V6H8V11ZM7 5.25C6.30964 5.25 5.75 4.69036 5.75 4C5.75 3.30964 6.30964 2.75 7 2.75C7.69036 2.75 8.25 3.30964 8.25 4C8.25 4.33152 8.1183 4.64946 7.88388 4.88388C7.64946 5.1183 7.33152 5.25 7 5.25Z" Fill="#999999" />
-                                                    </Viewbox>
-                                                </DockPanel>
-                                            </Grid>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#4A4A4A" />
-                                            </Trigger>
-                                            <Trigger Property="IsPressed" Value="True">
-                                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
+                            <Grid VerticalAlignment="Center" DockPanel.Dock="Right">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="68" />
+                                    <ColumnDefinition Width="85" />
+                                    <ColumnDefinition Width="94" />
+                                    <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
 
-                            <!--  Date Label  -->
-                            <TextBlock Name="dateLabel"
-                                       Margin="5,0,27,0"
-                                       DockPanel.Dock="Right"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" />
-                            <Rectangle Width="10"
-                                       Height="10"
-                                       Margin="5,0,0,2"
-                                       VerticalAlignment="Center"
-                                       DockPanel.Dock="Right">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Date.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
+                                <!--  Number of Favorites Label  -->
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <Viewbox Width="12"
+                                             Height="12"
+                                             Margin="5,0,0,2"
+                                             VerticalAlignment="Center">
+                                        <Path x:Name="heartIcon"
+                                              VerticalAlignment="Center"
+                                              Data="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"
+                                              Stroke="{StaticResource ForegroundGrayBrush}"
+                                              StrokeThickness="1" />
+                                    </Viewbox>
+                                    <TextBlock Name="noFavoritesLabel"
+                                               Margin="5,0,27,0"
+                                               Style="{StaticResource resultLabelStyle}"
+                                               Text="{Binding Path=Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />
+                                </StackPanel>
 
-                            <!--  Number of Downloads Label  -->
-                            <TextBlock Name="noDownloadsLabel"
-                                       Margin="5,0,27,0"
-                                       DockPanel.Dock="Right"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Downloads}" />
-                            <Rectangle Width="10"
-                                       Height="10"
-                                       Margin="5,0,0,2"
-                                       VerticalAlignment="Center"
-                                       DockPanel.Dock="Right">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Download.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
+                                <!--  Number of Downloads Label  -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Rectangle Width="10"
+                                               Height="10"
+                                               Margin="5,0,0,2"
+                                               VerticalAlignment="Center">
+                                        <Rectangle.Fill>
+                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Download.png" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock Name="noDownloadsLabel"
+                                               Margin="5,0,27,0"
+                                               Style="{StaticResource resultLabelStyle}"
+                                               Text="{Binding Path=Downloads}" />
+                                </StackPanel>
 
-                            <!--  Number of Favorites Label  -->
-                            <TextBlock Name="noFavoritesLabel"
-                                       Margin="5,0,27,0"
-                                       DockPanel.Dock="Right"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />
-                            <Viewbox Width="12"
-                                     Height="12"
-                                     Margin="5,0,0,2"
-                                     VerticalAlignment="Center"
-                                     DockPanel.Dock="Right">
-                                <Path x:Name="heartIcon"
-                                      VerticalAlignment="Center"
-                                      Data="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"
-                                      Stroke="{StaticResource ForegroundGrayBrush}"
-                                      StrokeThickness="1" />
-                            </Viewbox>
+                                <!--  Date Label  -->
+                                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                    <Rectangle Width="10"
+                                               Height="10"
+                                               Margin="5,0,0,2"
+                                               VerticalAlignment="Center">
+                                        <Rectangle.Fill>
+                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Date.png" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock Name="dateLabel"
+                                               Margin="5,0,27,0"
+                                               Style="{StaticResource resultLabelStyle}"
+                                               Text="{Binding Path=LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" />
+                                </StackPanel>
 
+                                <!--  View Details Button  -->
+                                <Button Name="viewDetailsButton"
+                                        Grid.Column="3"
+                                        Width="60"
+                                        HorizontalAlignment="Right"
+                                        Click="ViewDetailsButton_OnClick"
+                                        Content="{x:Static p:Resources.PackageSearchResultViewDetails}">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <Border Name="ButtonBorder"
+                                                    Height="25"
+                                                    Padding="5,0"
+                                                    BorderThickness="2"
+                                                    CornerRadius="2">
+                                                <Grid x:Name="viewDetailsGrid">
+                                                    <DockPanel>
+                                                        <TextBlock Name="textBlock"
+                                                                   Padding="4,4,4,3"
+                                                                   HorizontalAlignment="Right"
+                                                                   VerticalAlignment="Center"
+                                                                   Cursor="Hand"
+                                                                   DockPanel.Dock="Right"
+                                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                   FontSize="10"
+                                                                   Foreground="#B8B8B8"
+                                                                   Text="{TemplateBinding Content}" />
+                                                        <Viewbox Width="14"
+                                                                 Height="14"
+                                                                 Margin="0,0,0,0"
+                                                                 VerticalAlignment="Center"
+                                                                 DockPanel.Dock="Left"
+                                                                 UseLayoutRounding="True">
+                                                            <Path Data="M7 0C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14C10.866 14 14 10.866 14 7C14 5.14348 13.2625 3.36301 11.9497 2.05025C10.637 0.737498 8.85652 0 7 0ZM8 11H6V6H8V11ZM7 5.25C6.30964 5.25 5.75 4.69036 5.75 4C5.75 3.30964 6.30964 2.75 7 2.75C7.69036 2.75 8.25 3.30964 8.25 4C8.25 4.33152 8.1183 4.64946 7.88388 4.88388C7.64946 5.1183 7.33152 5.25 7 5.25Z" Fill="#999999" />
+                                                        </Viewbox>
+                                                    </DockPanel>
+                                                </Grid>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#4A4A4A" />
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
 
+                            </Grid>
 
                             <!--  Left-hand side  -->
                             <Rectangle Width="10"
