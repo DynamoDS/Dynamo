@@ -1274,6 +1274,10 @@ namespace ProtoFFI
                 {
                     PreferredShortName = (attr as PreferredShortNameAttribute).PreferredShortName;
                 }
+                else if (attr is System.Diagnostics.CodeAnalysis.ExperimentalAttribute)
+                {
+                    IsExperimental = true;
+                }
             }
         }
     }
@@ -1431,6 +1435,10 @@ namespace ProtoFFI
                 else if(attr is ArbitraryDimensionArrayImportAttribute)
                 {
                     ArbitraryDimensionArrayImport = true;
+                }
+                else if (attr is System.Diagnostics.CodeAnalysis.ExperimentalAttribute)
+                {
+                    IsExperimental = true;
                 }
             }
         }

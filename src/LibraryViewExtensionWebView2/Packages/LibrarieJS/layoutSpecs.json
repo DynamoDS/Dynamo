@@ -1311,20 +1311,23 @@
               "text": "Generate",
               "iconUrl": "",
               "elementType": "group",
-              "include": [
-                {
-                  "path": "Core.String.String from Object"
-                },
-                {
-                  "path": "Core.String.String from Array"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.String.Concat"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.String.Join"
-                }
-              ],
+                "include": [
+                    {
+                        "path": "Core.String.String from Object"
+                    },
+                    {
+                        "path": "Core.String.String from Array"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.String.Concat"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.String.Join"
+                    },
+                    {
+                        "path": "Core.String"
+                    },
+                ],
               "childElements": []
             }
           ]
