@@ -87,6 +87,22 @@ namespace Dynamo.PackageManager
             public string Tooltip { get; set; }
 
             /// <summary>
+            /// Controls the IsEnabled status of the filter
+            /// </summary>
+            private bool isEnabled = true;
+
+            public bool IsEnabled
+            {
+                get { return isEnabled; }
+                set
+                {
+                    isEnabled = value;
+                    RaisePropertyChanged(nameof(IsEnabled));
+                }
+            }
+
+
+            /// <summary>
             /// Filter entry click command, notice this is a dynamic command
             /// with command param set to FilterName so that the code is robust
             /// in a way UI could handle as many hosts as possible
@@ -410,6 +426,33 @@ namespace Dynamo.PackageManager
         private void SetFilterChange()
         {
             IsAnyFilterOn = HostFilter.Any(f => f.OnChecked) || NonHostFilter.Any(f => f.OnChecked) || CompatibilityFilter.Any(f => f.OnChecked);
+            ApplyFilterRules();
+        }
+
+        /// <summary>
+        /// Executes any additional logic on the filters
+        /// </summary>
+        internal void ApplyFilterRules()
+        {
+            // Enable/disable Compatibility filters if any HostFilter is on
+            if (CompatibilityFilter.Any(f => f.OnChecked))
+            {
+                HostFilter.ForEach(x => x.IsEnabled = false);   
+            }
+            else
+            {
+                HostFilter.ForEach(x => x.IsEnabled = true);
+            }
+
+            // Enable/disable Host filters if any CompatibilityFilter is on
+            if (HostFilter.Any(f => f.OnChecked))
+            {
+                CompatibilityFilter.ForEach(x => x.IsEnabled = false);
+            }
+            else
+            {
+                CompatibilityFilter.ForEach(x => x.IsEnabled = true);
+            }
         }
 
         /// <summary>
