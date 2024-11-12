@@ -16,11 +16,11 @@
   <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
-    <PackageReference Include="ForgeUnits.NET" Version="5.0.5" GeneratePathProperty="true">
+    <PackageReference Include="ForgeUnits.NET" Version="5.3.2" GeneratePathProperty="true">
         <!--Skip copying the runtime dlls because we only need one (ForgeUnitsManaged.dll) which we copy in a task bellow.-->
         <ExcludeAssets>runtime;build</ExcludeAssets>
     </PackageReference>
-	<PackageReference Include="ForgeUnits.Schemas" Version="1.0.1" GeneratePathProperty="true" />
+	<PackageReference Include="ForgeUnits.Schemas" Version="1.0.4" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
