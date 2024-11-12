@@ -5,7 +5,6 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.PackageManager;
 using Dynamo.PythonServices;
-using DynamoUtilities;
 using Greg.Responses;
 
 namespace Dynamo.PackageDetails
@@ -284,7 +283,7 @@ namespace Dynamo.PackageDetails
             this.CopyRightYear = PackageVersion.copyright_year;
             this.CanInstall = canInstall;
             this.IsEnabledForInstall = isEnabledForInstall && canInstall;
-            this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : StringUtilities.SimplifyFileSizeUnit (PackageVersion.size);
+            this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
             this.Created = GetFormattedDate(PackageVersion.created);
             this.VersionInformation = GetFlattenedCompatibilityInformation(packageVersion.compatibility_matrix);
             this.ReleaseNotes = PackageVersion.release_notes_url;
@@ -316,7 +315,7 @@ namespace Dynamo.PackageDetails
             this.CopyRightYear = PackageVersion.copyright_year;
             this.CanInstall = canInstall;
             this.IsEnabledForInstall = isEnabledForInstall && canInstall;
-            this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : StringUtilities.SimplifyFileSizeUnit (PackageVersion.size);
+            this.PackageSize = string.IsNullOrEmpty(PackageVersion.size) ? "--" : PackageVersion.size;
             this.Created = GetFormattedDate(PackageVersion.created);
             this.VersionInformation = GetFlattenedCompatibilityInformation(packageVersion.compatibility_matrix);
             this.IsCompatible = PackageManager.VersionInformation.GetVersionCompatibility(versionDetails, PackageVersionNumber);
