@@ -1380,5 +1380,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
                           "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
         }
 
+        #endregion
+
     }
 }
