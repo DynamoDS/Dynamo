@@ -475,7 +475,7 @@
                                                                 <Binding Path="CopyRightHolder" />
                                                                 <Binding Path="CopyRightYear" />
                                                             </MultiBinding>
-                                                       </ToolTip.Content>
+                                                        </ToolTip.Content>
                                                     </ToolTip>
                                                 </Viewbox.ToolTip>
                                             </Viewbox>
@@ -733,25 +733,42 @@
                                                       FontFamily="{StaticResource ArtifaktElementRegular}"
                                                       Foreground="#ffffff"
                                                       HeadersVisibility="Column"
-                                                      IsHitTestVisible="False"
+                                                      IsHitTestVisible="True"
                                                       IsReadOnly="True"
                                                       IsSynchronizedWithCurrentItem="True"
                                                       ItemsSource="{Binding VersionInformation}"
+                                                      PreviewMouseDown="DataGrid_PreviewMouseDown"
                                                       RowBackground="{StaticResource PMDataGridBackgroundColorBrush}"
                                                       RowDetailsVisibilityMode="Collapsed"
                                                       ScrollViewer.CanContentScroll="True"
                                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                                                       Style="{StaticResource DataGridStyle1}"
+                                                      ToolTipService.IsEnabled="True"
                                                       VirtualizingStackPanel.IsVirtualizing="True"
                                                       VirtualizingStackPanel.VirtualizationMode="Recycling">
                                                 <DataGrid.Columns>
                                                     <DataGridTextColumn Width="*"
                                                                         Binding="{Binding CompatibilityName}"
-                                                                        Header="" />
-                                                    <DataGridTextColumn Width="3*"
-                                                                        Binding="{Binding Versions, Converter={StaticResource VersionStringAsteriskToXConverter}}"
-                                                                        Header="{x:Static p:Resources.PublishPackageViewPackageVersion}" />
+                                                                        Header="{x:Static p:Resources.PublishPackageViewPackageName}" />
+                                                    <DataGridTextColumn Width="3*" Binding="{Binding Versions, Converter={StaticResource VersionStringAsteriskToXConverter}}">
+                                                        <DataGridTextColumn.HeaderTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                                    <TextBlock VerticalAlignment="Center" Text="{x:Static p:Resources.PublishPackageViewPackageVersion}" />
+                                                                    <Image Width="14"
+                                                                           Height="14"
+                                                                           Margin="10,0,0,0"
+                                                                           VerticalAlignment="Center"
+                                                                           Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png">
+                                                                        <Image.ToolTip>
+                                                                            <ToolTip Content="{x:Static p:Resources.PackageVersionTooltip}" />
+                                                                        </Image.ToolTip>
+                                                                    </Image>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </DataGridTextColumn.HeaderTemplate>
+                                                    </DataGridTextColumn>
                                                 </DataGrid.Columns>
                                             </DataGrid>
                                         </StackPanel>
