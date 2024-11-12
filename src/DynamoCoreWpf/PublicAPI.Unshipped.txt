@@ -5017,6 +5017,7 @@ static Dynamo.Wpf.Properties.Resources.PackageDetailsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsHost.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsIncompatibileVersionTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsIncompatibilityWithSetup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsKeywords.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsLicense.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsLinks.get -> string
@@ -5027,6 +5028,7 @@ static Dynamo.Wpf.Properties.Resources.PackageDetailsSize.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsUnknownCompatibilityVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersions.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersionsAndPackageRequirements.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsXCompatibilityWithSetup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadConfirmMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadErrorMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadMessageBoxTitle.get -> string
