@@ -234,6 +234,7 @@ static DynamoUtilities.PathHelper.IsValidPath(string filePath) -> bool
 static DynamoUtilities.PathHelper.isValidXML(string path, out System.Xml.XmlDocument xmlDoc, out System.Exception ex) -> bool
 static DynamoUtilities.PathHelper.LoadEmbeddedResourceAsString(string resourcePath, System.Reflection.Assembly assembly) -> string
 static DynamoUtilities.StringUtilities.CapitalizeFirstLetter(string word) -> string
+static DynamoUtilities.StringUtilities.SimplifyFileSizeUnit(string size) -> string
 static DynamoUtilities.TypeSwitch.Case<T>(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo
 static DynamoUtilities.TypeSwitch.Case<T>(System.Action<T> action) -> DynamoUtilities.TypeSwitch.CaseInfo
 static DynamoUtilities.TypeSwitch.Default(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo
