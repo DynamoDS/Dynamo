@@ -874,6 +874,8 @@ Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.FilterName.get -
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.FilterName.set -> void
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.GroupName.get -> string
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.GroupName.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.IsEnabled.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.IsEnabled.set -> void
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.OnChecked.get -> bool
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.OnChecked.set -> void
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.Tooltip.get -> string
