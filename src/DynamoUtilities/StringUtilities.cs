@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace DynamoUtilities
 {
     /// <summary>
@@ -16,21 +22,6 @@ namespace DynamoUtilities
                 return word;
 
             return char.ToUpper(word[0]) + word.Substring(1);
-        }
-
-        /// <summary>
-        /// Replaces 'i' in a file size string
-        /// </summary>
-        /// <param name="size">The file size string</param>
-        /// <returns></returns>
-        public static string SimplifyFileSizeUnit(string size)
-        {
-            if (string.IsNullOrEmpty(size))
-            {
-                return size;
-            }
-
-            return size.Replace("i", "");
         }
     }
 }
