@@ -1022,6 +1022,57 @@ namespace Dynamo.PackageManager.Wpf.Tests
         }
 
         [Test]
+        public void HostCompatibilityFiltersExclusivity()
+        {
+            var mockGreg = new Mock<IGregClient>();
+
+            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object) { CallBase = true };
+            var pmSVM = new PackageManagerSearchViewModel(pmCVM.Object);
+            pmSVM.RegisterTransientHandlers();
+
+            pmSVM.HostFilter = new List<FilterEntry>
+            {
+                new FilterEntry("host", "group", "tooltip", pmSVM) { OnChecked = false },
+            };
+
+            pmSVM.CompatibilityFilter = new List<FilterEntry>
+            {
+                new FilterEntry("compatibility", "group", "tooltip", pmSVM) { OnChecked = false },
+            };
+
+            pmSVM.HostFilter.ForEach(f => f.PropertyChanged += pmSVM.filter_PropertyChanged);
+            pmSVM.CompatibilityFilter.ForEach(f => f.PropertyChanged += pmSVM.filter_PropertyChanged);
+
+            Assert.IsTrue(pmSVM.HostFilter.All(x => x.IsEnabled), "Expect starting filter state to be enabled");
+            Assert.IsTrue(pmSVM.CompatibilityFilter.All(x => x.IsEnabled), "Expect starting filter state to be enabled");
+
+            // Act/Assert Host -> Compatibility
+            pmSVM.HostFilter.First().OnChecked = true;
+            pmSVM.ApplyFilterRules();
+
+            Assert.IsFalse(pmSVM.CompatibilityFilter.All(x => x.IsEnabled), "Filter groups should be mutually exclusive");
+
+            pmSVM.HostFilter.First().OnChecked = false;
+            pmSVM.ApplyFilterRules();
+
+            Assert.IsTrue(pmSVM.CompatibilityFilter.All(x => x.IsEnabled), "Filter groups should be mutually exclusive");
+
+            // Act/Assert Compatibility -> Host
+            pmSVM.CompatibilityFilter.First().OnChecked = true;
+            pmSVM.ApplyFilterRules();
+
+            Assert.IsFalse(pmSVM.HostFilter.All(x => x.IsEnabled), "Filter groups should be mutually exclusive");
+
+            pmSVM.CompatibilityFilter.First().OnChecked = false;
+            pmSVM.ApplyFilterRules();
+
+            Assert.IsTrue(pmSVM.HostFilter.All(x => x.IsEnabled), "Filter groups should be mutually exclusive");
+        }
+
+        #region Compatibility Tests
+
+        [Test]
         public void TestReverseDynamoCompatibilityFromHost()
         {
             //Arrange
@@ -1328,6 +1379,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
                           "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
         }
+
+        #endregion
 
     }
 }
