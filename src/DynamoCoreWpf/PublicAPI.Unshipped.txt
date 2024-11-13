@@ -5389,6 +5389,7 @@ static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageHostDependencyTo
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageKeywords.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageKeywordsTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageName.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageNameTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageNameWatermark.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageVersion.get -> string
