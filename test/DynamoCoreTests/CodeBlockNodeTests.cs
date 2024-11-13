@@ -1808,14 +1808,14 @@ var06 = g;
             var codeBlockNode = CreateCodeBlockNode();
             var guid = codeBlockNode.GUID.ToString();
 
-            string assemblyName = "FFITarget";
+            string assemblyName = "TestCodeBlockNodeSecurityIssue";
             UpdateCodeBlockNodeContent(codeBlockNode, $"import(\"{assemblyName}.dll\")");
 
             var loadedAssemblies = AssemblyLoadContext.All.SelectMany(context => context.Assemblies);
 
-            var ffiTargetAsm = loadedAssemblies.Any(assembly => assembly.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
+            var asm = loadedAssemblies.Any(assembly => assembly.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
 
-            Assert.False(ffiTargetAsm);
+            Assert.False(asm);
         }
 
         [Test]
