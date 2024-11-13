@@ -4090,6 +4090,6 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Versions maybe incompatible with the current setup</value>
   </data>
   <data name="PackageVersionTooltip" xml:space="preserve">
-    <value>Versions marked with .x include all versions in the specified major release</value>
+    <value>Versions marked with .x include all versions in the specified major or minor release</value>
   </data>
 </root>
