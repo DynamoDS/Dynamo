@@ -1013,12 +1013,18 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 new List<Greg.Responses.Compatibility> { new Greg.Responses.Compatibility { name = "dynamo", min = "2.10", max = "2.13.1" } },
                 compatibleDynamoVersion, compatibilityMap, null, hostName);
 
+            // Case 6: No compatibility information is provided
+            var resultNoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                new List<Greg.Responses.Compatibility> { new Greg.Responses.Compatibility() },
+                compatibleDynamoVersion, compatibilityMap, null, hostName);
+
             // Assert
-            Assert.IsNull(resultNoDynamoCompatibility, "Expected compatibility to be null when no Dynamo-specific compatibility exists and no fallback is allowed.");
+            Assert.IsFalse(resultNoDynamoCompatibility, "Expected compatibility to be incompatible (false) when no Dynamo-specific compatibility exists and we fallback to host.");
             Assert.IsTrue(resultWithHostCompatibility, "Expected compatibility to be true when no Dynamo-specific compatibility exists but host compatibility matches.");
             Assert.IsTrue(resultMinOnlyCompatibility, "Expected compatibility to be true for min-only range within major version.");
-            Assert.IsNull(resultIncompleteCompatibilityInfo, "Expected compatibility to be indeterminate (null) when information is incomplete.");
+            Assert.IsFalse(resultIncompleteCompatibilityInfo, "Expected compatibility to be incompatible (false) when no dynamo information is provided, but any information for host is present.");
             Assert.IsTrue(resultFallbackToDynamo, "Expected compatibility to be true when under host but only Dynamo compatibility is provided.");
+            Assert.IsNull(resultNoCompatibility, "Expected unknown compatibility (null) when no compatibility information is provided.");
         }
 
         [Test]
