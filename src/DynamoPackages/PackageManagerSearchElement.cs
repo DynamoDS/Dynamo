@@ -298,65 +298,59 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         internal static bool? CalculateCompatibility(List<Greg.Responses.Compatibility> compatibilityMatrix, Version dynamoVersion = null, Dictionary<string, Dictionary<string, string>> map = null, Version hostVersion = null, string host = null)
         {
-            try
+            
+            // Set defaults if parameters are not provided
+            dynamoVersion ??= VersionUtilities.Parse(DynamoModel.Version);
+            hostVersion ??= DynamoModel.HostAnalyticsInfo.HostProductVersion;
+            host ??= DynamoModel.HostAnalyticsInfo.HostProductName;
+            host = host?.ToLowerInvariant();
+
+            // If there is no compatibility matrix, we cannot determine anything
+            if (compatibilityMatrix == null || compatibilityMatrix.Count == 0)
             {
-                // Set defaults if parameters are not provided
-                dynamoVersion ??= VersionUtilities.Parse(DynamoModel.Version);
-                hostVersion ??= DynamoModel.HostAnalyticsInfo.HostProductVersion;
-                host ??= DynamoModel.HostAnalyticsInfo.HostProductName;
-                host = host?.ToLowerInvariant();
-
-                // If there is no compatibility matrix, we cannot determine anything
-                if (compatibilityMatrix == null || compatibilityMatrix.Count == 0)
-                {
-                    return null;
-                }
-
-                Greg.Responses.Compatibility compatibility = null;
-
-                // Determine compatibility
-                // 1. If we are under host, we first look at that host compatibility. If that's missing, we still check for Dynamo-only compatibility
-                // 2. If we are not under host, we care about Dynamo compatibility first and foremost. However, we use fallback to Host compatibility if no Dynamo compatibility is found. In this case, we mark as Incompatible
-                // 3. Only if no compatibility information is found, then we mark as 'Unknown Compatibility'
-                if (!string.IsNullOrEmpty(host))
-                {
-                    // Check for host-specific compatibility
-                    compatibility = compatibilityMatrix.FirstOrDefault(c => c.name.ToLowerInvariant() == host.ToLowerInvariant())
-                                    ?? compatibilityMatrix.FirstOrDefault(c => c.name.ToLowerInvariant() == "dynamo");
-                }
-                else
-                {
-                    // No host specified (DynamoCore only)
-                    // Check Dynamo compatibility first; if missing, check for host compatibility
-                    compatibility = compatibilityMatrix.FirstOrDefault(c => c.name.ToLowerInvariant() == "dynamo");
-
-                    if (compatibility == null)
-                    {
-                        // No Dynamo compatibility, fallback to any host compatibility if present
-                        var hostCompatibility = compatibilityMatrix.FirstOrDefault(c => c.name.ToLowerInvariant() != "dynamo");
-                        if (hostCompatibility != null)
-                        {
-                            // Mark as incompatible if host compatibility is present without Dynamo info
-                            return false;
-                        }
-                    }
-                }
-
-                // If no compatibility information is found for both Dynamo and host, return unknown (null)
-                if (compatibility == null)
-                {
-                    return null;
-                }
-
-                // Check compatibility based on min/max ranges or specific versions
-                var versionToCheck = (compatibility.name.ToLowerInvariant() == "dynamo") ? dynamoVersion : hostVersion;
-                return versionToCheck != null && IsVersionCompatible(compatibility, versionToCheck);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message.ToString());
                 return null;
             }
+
+            Greg.Responses.Compatibility compatibility = null;
+
+            // Determine compatibility
+            // 1. If we are under host, we first look at that host compatibility. If that's missing, we still check for Dynamo-only compatibility
+            // 2. If we are not under host, we care about Dynamo compatibility first and foremost. However, we use fallback to Host compatibility if no Dynamo compatibility is found. In this case, we mark as Incompatible
+            // 3. Only if no compatibility information is found, then we mark as 'Unknown Compatibility'
+            if (!string.IsNullOrEmpty(host))
+            {
+                // Check for host-specific compatibility
+                compatibility = compatibilityMatrix.FirstOrDefault(c => c.name?.ToLowerInvariant() == host?.ToLowerInvariant())
+                                ?? compatibilityMatrix.FirstOrDefault(c => c.name?.ToLowerInvariant() == "dynamo");
+            }
+            else
+            {
+                // No host specified (DynamoCore only)
+                // Check Dynamo compatibility first; if missing, check for host compatibility
+                compatibility = compatibilityMatrix.FirstOrDefault(c => c.name?.ToLowerInvariant() == "dynamo");
+
+                if (compatibility == null)
+                {
+                    // No Dynamo compatibility, fallback to any host compatibility if present
+                    var hostCompatibility = compatibilityMatrix.FirstOrDefault(c => c.name?.ToLowerInvariant() != "dynamo");
+                    if (hostCompatibility != null)
+                    {
+                        // Mark as incompatible if host compatibility is present without Dynamo info
+                        return false;
+                    }
+                }
+            }
+
+            // If no compatibility information is found for both Dynamo and host, return unknown (null)
+            if (compatibility == null)
+            {
+                return null;
+            }
+
+            // Check compatibility based on min/max ranges or specific versions
+            var versionToCheck = (compatibility.name.ToLowerInvariant() == "dynamo") ? dynamoVersion : hostVersion;
+            return versionToCheck != null && IsVersionCompatible(compatibility, versionToCheck);
+            
         }
 
         /// <summary>
