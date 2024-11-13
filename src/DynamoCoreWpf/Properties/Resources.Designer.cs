@@ -10,8 +10,8 @@
 
 namespace Dynamo.Wpf.Properties
 {
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -7461,6 +7461,15 @@ namespace Dynamo.Wpf.Properties
         public static string PackageUseOlderDynamoMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageUseOlderDynamoMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Versions marked with .x include all versions in the specified major release.
+        /// </summary>
+        public static string PackageVersionTooltip {
+            get {
+                return ResourceManager.GetString("PackageVersionTooltip", resourceCulture);
             }
         }
         
