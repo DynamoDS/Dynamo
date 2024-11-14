@@ -19,6 +19,6 @@
     <files>
               <file src="**"
               target="lib\$TargetFramework$\"
-              exclude="**\*.pdb;**\*.txt;**\*.rtf;en-US\fallback_docs\*;NodeHelpSharedDocs\*;Open Source Licenses\*;samples\** "/>
+              exclude="**\*.pdb;**\*.txt;**\*.rtf;en-US\fallback_docs\*;NodeHelpSharedDocs\*;Open Source Licenses\*;samples\**;**\*Tests.dll;**\*Tests.runtimeconfig.json;**\*Tests.pdb;FFITarget.*;ProtoTestConsoleRunner.exe;ProtoTest.dll;ProtoTest.pdb;nunit*.dll;NUnit3.TestAdapter.*;TestServices.* "/>
     </files>
 </package>
