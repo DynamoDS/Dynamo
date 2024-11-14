@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using CoreNodeModels;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Graph;
@@ -1807,14 +1808,14 @@ var06 = g;
             var codeBlockNode = CreateCodeBlockNode();
             var guid = codeBlockNode.GUID.ToString();
 
-            string assemblyName = "FFITarget";
+            string assemblyName = "TestCodeBlockNodeSecurityIssue";
             UpdateCodeBlockNodeContent(codeBlockNode, $"import(\"{assemblyName}.dll\")");
 
-            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var loadedAssemblies = AssemblyLoadContext.All.SelectMany(context => context.Assemblies);
 
-            var ffiTargetAsm = loadedAssemblies.Any(assembly => assembly.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
+            var asm = loadedAssemblies.Any(assembly => assembly.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
 
-            Assert.False(ffiTargetAsm);
+            Assert.False(asm);
         }
 
         [Test]
