@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
-
+using DynamoServices;
 using Greg.Responses;
 
 namespace Dynamo.PackageManager
@@ -354,7 +354,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                DynamoConsoleLogger.OnLogMessageToDynamoConsole(ex.ToString());
                 return null;
             }
         }
