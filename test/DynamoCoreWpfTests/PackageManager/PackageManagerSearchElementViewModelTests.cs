@@ -1028,6 +1028,32 @@ namespace Dynamo.PackageManager.Wpf.Tests
         }
 
         [Test]
+        public void TestComputeVersionSingleCompatibility()
+        {
+            // Arrange
+            var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "dynamo", versions = new List<string> { "3.2.2" } }
+            };
+
+            var compatibleDynamoVersion = new Version("3.2.2");  // Compatible with Dynamo 3.2.2
+            var incompatibleDynamoVersion = new Version("3.4.0");  // Incompatible with Dynamo 3.4.0
+
+            // Act
+            // Case 1: Single Dynamo version, compatible
+            var resultDynamoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, compatibleDynamoVersion, compatibilityMap);
+
+            // Case 2: Single Dynamo version, incompatible
+            var resultNoDynamoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, incompatibleDynamoVersion, compatibilityMap);
+
+            // Assert
+            Assert.IsTrue(resultDynamoCompatibility, "Expected compatible with matching Dynamo versions.");
+            Assert.IsFalse(resultNoDynamoCompatibility, "Expected incompatible with mismatched Dynamo versions.");
+        }
+
+        [Test]
         public void HostCompatibilityFiltersExclusivity()
         {
             var mockGreg = new Mock<IGregClient>();
@@ -1160,6 +1186,20 @@ namespace Dynamo.PackageManager.Wpf.Tests
             bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, version);
 
             Assert.IsTrue(result, "Expected compatibility to be true when version is in the list.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_NoCompatibleVersion_ReturnsFalse()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                versions = new List<string> { "2.1.0", "2.3.0" }
+            };
+            Version version = new Version("2.2.0");
+
+            bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, version);
+
+            Assert.IsFalse(result, "Expected compatibility to be false when version is not in the list.");
         }
 
         [Test]
