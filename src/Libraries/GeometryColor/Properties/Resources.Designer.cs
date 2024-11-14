@@ -60,7 +60,7 @@ namespace GeometryColor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The color count is invalid. It must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color). If you want to color multiple mesh, you may need to use List Levels accordingly..
+        ///   Looks up a localized string similar to The color count is invalid. It must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color). If you want to color multiple meshes, you may need to use List Levels..
         /// </summary>
         internal static string ByMeshColorsInvalidColorCountMessage {
             get {
