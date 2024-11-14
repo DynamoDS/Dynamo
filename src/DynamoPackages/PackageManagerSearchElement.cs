@@ -369,13 +369,13 @@ namespace Dynamo.PackageManager
             bool isListedInVersions = compatibility.versions?.Contains(version.ToString()) ?? false;
 
             // Parse min and max values, if provided, and check for valid range
-            bool isWithinMinMax = true;
+            bool isWithinMinMax = false;
             if (!string.IsNullOrEmpty(compatibility.min) || !string.IsNullOrEmpty(compatibility.max))
             {
                 Version minVersion = VersionUtilities.Parse(compatibility.min);
                 Version maxVersion = VersionUtilities.Parse(compatibility.max);
 
-                // if max is null, try to parse based on wildcard symantics
+                // if max is null, try to parse based on wildcard semantics
                 if(maxVersion == null)
                 {
                     maxVersion = VersionUtilities.WildCardParse(compatibility.max);
