@@ -1,0 +1,343 @@
+{
+  "Uuid": "8b1518b8-ee85-4363-90bf-19ec47e7a546",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "polycurveDirection",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Line": {
+        "Key": "Autodesk.DesignScript.Geometry.Line",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "64e2ad56b9904413a93d7e8c0e49b238",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8a68c1d721b44ab0b54a4ad315bf7d83",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6387efbc588d45e78df7c4197583f4bc",
+          "Name": "",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e0679a8eceee4406a1645e616a0ce612",
+          "Name": "",
+          "Description": "c",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aa45050641104eca8e80a0cb47990984",
+          "Name": "",
+          "Description": "l",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "a = Point.ByCoordinates(0,0,0);\nb = Point.ByCoordinates(1,0,0);\nc = Point.ByCoordinates(2,0,0);\nl = [Line.ByStartPointEndPoint(b, a),\nLine.ByStartPointEndPoint(b, c)];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "6863ce4a66d44b86b5252c71ede91642",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "7f3dc22c0ea34a3fabe8cdd6a49ec051",
+          "Name": "curves",
+          "Description": "Curves to join into polycurve\n\nCurve[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eb9658a6f6314861b9f2f7c32a0ae77f",
+          "Name": "joinTolerance",
+          "Description": "Tolerance to determine size of gap allowed between curves to be joined\n\ndouble\nDefault value : 0.001",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a7f28d2c2bf54fa8811a853ba963a7ac",
+          "Name": "trimCurves",
+          "Description": "bool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "acfa46209ac24b7f92b461f520b6a608",
+          "Name": "trimLength",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4a422ff86ed54d6aa3030b10860d5763",
+          "Name": "PolyCurve",
+          "Description": "Polycurve created by joined curves",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double,bool,double",
+      "Replication": "Auto",
+      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "767ed54d687440909fa7f3ca60ef5a7a",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "730a44246b7c4ce8a9cad658ae7d6c94",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "24330308a6bb414caacd769df152d54e",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.StartPoint",
+      "Replication": "Auto",
+      "Description": "Get the start Point along the Curve\n\nCurve.StartPoint: Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "7ffd7e3009b9464f84b8b05ea4e1c94d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "969afbdca6a7448f9bd088c012cfafed",
+          "Name": "point",
+          "Description": "Autodesk.DesignScript.Geometry.Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "07fc0f851c9243ea8b977f13d9ab649f",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.X",
+      "Replication": "Auto",
+      "Description": "Get the X component of a Point\n\nPoint.X: double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 27.333333333333332,
+      "WatchHeight": 38.0,
+      "Id": "b9633d4f980148c09a7af648d08d97f9",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "7d2cb1e9477c4ab68c010ddcaf46de01",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9dddee41875d4e26beca4b3d080690ce",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "aa45050641104eca8e80a0cb47990984",
+      "End": "7f3dc22c0ea34a3fabe8cdd6a49ec051",
+      "Id": "680b091051c64f3eb73069a1ab82f860",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4a422ff86ed54d6aa3030b10860d5763",
+      "End": "730a44246b7c4ce8a9cad658ae7d6c94",
+      "Id": "6ac4acd906d541849f5376bf16cc626b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "24330308a6bb414caacd769df152d54e",
+      "End": "969afbdca6a7448f9bd088c012cfafed",
+      "Id": "4fa8c69fbca94fd9992de2fb1284052c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "07fc0f851c9243ea8b977f13d9ab649f",
+      "End": "7d2cb1e9477c4ab68c010ddcaf46de01",
+      "Id": "6b47a172574042ff8f1f93e7ab0bc4b9",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": null,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.3",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.3.0.6046",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "64e2ad56b9904413a93d7e8c0e49b238",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 271.3965530086052,
+        "Y": 639.0
+      },
+      {
+        "Id": "6863ce4a66d44b86b5252c71ede91642",
+        "Name": "PolyCurve.ByJoinedCurves",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 786.5846718634932,
+        "Y": 605.3934117869281
+      },
+      {
+        "Id": "767ed54d687440909fa7f3ca60ef5a7a",
+        "Name": "Curve.StartPoint",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1102.790895354412,
+        "Y": 605.9968587783228
+      },
+      {
+        "Id": "7ffd7e3009b9464f84b8b05ea4e1c94d",
+        "Name": "Point.X",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1331.4973050930726,
+        "Y": 606.6003057697178
+      },
+      {
+        "Id": "b9633d4f980148c09a7af648d08d97f9",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1601.5298959728818,
+        "Y": 608.334227919369
+      }
+    ],
+    "Annotations": [],
+    "X": -247.88597880977272,
+    "Y": -257.84879990429783,
+    "Zoom": 1.029885639470986
+  }
+}
