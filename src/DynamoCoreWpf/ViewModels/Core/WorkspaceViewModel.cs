@@ -1501,9 +1501,9 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Zoom around current selection
         ///     _fitViewActualZoomToggle is used internally to toggle
-        /// between the default 1.0 zoom level and the intended zoom around selection
+        ///     between the default 1.0 zoom level and the intended zoom around selection
         ///     The optional toggle boolean is introduced to avoid this behavior and only zoom around the selection
-        /// no matter how many times the operation is performed
+        ///     no matter how many times the operation is performed.
         /// </summary>
         /// <param name="toggle"></param>
         internal void FitViewInternal(bool toggle = true)
@@ -1543,13 +1543,26 @@ namespace Dynamo.ViewModels
                     maxX = Math.Max(model.X + model.Width, maxX);
                     minY = Math.Min(model.Y, minY);
                     maxY = Math.Max(model.Y + model.Height, maxY);
-                }
-                
+                }   
             }
 
-            // Add padding to the calculated bounding box for better visibility
-            double focusWidth = (maxX - minX) * Configurations.ZoomToFitPaddingFactor;
-            double focusHeight = (maxY - minY) * Configurations.ZoomToFitPaddingFactor;
+            double focusWidth;
+            double focusHeight;
+
+            //  If toggle is true, zoom to fit in the whole workspace view,
+            //  else zoom around the selected element by adding a padding factor.
+            if (toggle)
+            {
+                focusWidth = maxX - minX;
+                focusHeight = maxY - minY;
+            }
+            else
+            {
+                // Add padding to the calculated bounding box for better visibility
+                focusWidth = (maxX - minX) * Configurations.ZoomToFitPaddingFactor;
+                focusHeight = (maxY - minY) * Configurations.ZoomToFitPaddingFactor;
+
+            }
 
             // Adjust offset to ensure the view is centered with the padding
             double offsetX = minX - (focusWidth - (maxX - minX)) / 2.0;
