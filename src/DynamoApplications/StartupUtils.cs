@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading;
 using CommandLine;
@@ -401,13 +402,12 @@ namespace Dynamo.Applications
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
             // Ignore some assemblies(Revit assemblies) that we know work and have changed their version number format or do not align
             // with semantic versioning.
+            loadedAssemblies.RemoveAll(assembly => assemblyNamesToIgnore.Contains(assembly.GetName().Name));
 
-            var loadedAssemblyNames = loadedAssemblies.Select(assem => assem.GetName()).ToList();
-            loadedAssemblyNames.RemoveAll(assemblyName =>assemblyNamesToIgnore.Contains(assemblyName.Name));
+            //build dict
+            var loadedAssemblyDict = loadedAssemblies.GroupBy(assm => assm.GetName().Name).ToDictionary(g => g.Key, g => g.ToList());
 
-            //build dict- ignore those with duplicate names.
-            var loadedAssemblyDict = loadedAssemblyNames.GroupBy(assm => assm.Name).ToDictionary(g => g.Key, g => g.First());
-
+            var alcInput = AssemblyLoadContext.GetLoadContext(assembly);
             var output = new List<Exception>();
 
             foreach (var currentReferencedAssembly in assembly.GetReferencedAssemblies().Concat(new AssemblyName[] { assembly.GetName() }))
@@ -415,28 +415,38 @@ namespace Dynamo.Applications
                 if (loadedAssemblyDict.ContainsKey(currentReferencedAssembly.Name))
                 {
                     //if the dll is already loaded, then check that our required version is not greater than the currently loaded one.
-                    var loadedAssembly = loadedAssemblyDict[currentReferencedAssembly.Name];
-                    if (currentReferencedAssembly.Version.Major > loadedAssembly.Version.Major)
+                    foreach(var loadedAssembly in loadedAssemblyDict[currentReferencedAssembly.Name])
                     {
-                        //there must exist a loaded assembly which references the newer version of the assembly which we require - lets find it:
-
-                        var referencingNewerVersions = new List<AssemblyName>();
-                        foreach(var originalLoadedAssembly in loadedAssemblies )
+                        if (currentReferencedAssembly.Version.Major > loadedAssembly.GetName().Version.Major)
                         {
-                            foreach(var refedAssembly in originalLoadedAssembly.GetReferencedAssemblies())
+                            // If two conflicting assemblies belong to different ALCs, we will not issue a file load exception.
+                            // While we don't know in which ALC the referenced assemblies will be loaded, it's fair to make an
+                            // educated guess and assume they will be loaded in the same ALC as the main input
+                            // assembly (or in a different ALC than the one we are comparing against).
+                            if (!ReferenceEquals(alcInput, AssemblyLoadContext.GetLoadContext(loadedAssembly)))
                             {
-                                //if the version matches then this is one our guys
-                                if(refedAssembly.Version == loadedAssembly.Version)
+                                continue;
+                            }
+
+                            //there must exist a loaded assembly which references the newer version of the assembly which we require - lets find it:
+                            var referencingNewerVersions = new List<AssemblyName>();
+                            foreach (var originalLoadedAssembly in loadedAssemblies)
+                            {
+                                foreach (var refedAssembly in originalLoadedAssembly.GetReferencedAssemblies())
                                 {
-                                    referencingNewerVersions.Add(originalLoadedAssembly.GetName());
+                                    //if the version matches then this is one our guys
+                                    if (refedAssembly.Version == loadedAssembly.GetName().Version)
+                                    {
+                                        referencingNewerVersions.Add(originalLoadedAssembly.GetName());
+                                    }
                                 }
                             }
-                        }
 
-                        output.Add(new FileLoadException(
-                            string.Format(Resources.MismatchedAssemblyVersion, assembly.FullName, currentReferencedAssembly.FullName)
-                            + Environment.NewLine + Resources.MismatchedAssemblyList + Environment.NewLine +
-                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).Distinct().ToArray())));
+                            output.Add(new FileLoadException(
+                                string.Format(Resources.MismatchedAssemblyVersion, assembly.FullName, currentReferencedAssembly.FullName)
+                                + Environment.NewLine + Resources.MismatchedAssemblyList + Environment.NewLine +
+                                String.Join(", ", referencingNewerVersions.Select(x => x.Name).Distinct().ToArray())));
+                        }
                     }
                 }
             }
