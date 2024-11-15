@@ -382,6 +382,7 @@ namespace Dynamo.PackageManager
                     foreach (var property in host.Properties())
                     {
                         string hostName = property.Name;
+                        if (hostName.ToLower().Equals("dynamo")) continue;
                         var versionMapping = property.Value.ToObject<Dictionary<string, string>>();
 
                         if (!compatibilityMap.ContainsKey(hostName))

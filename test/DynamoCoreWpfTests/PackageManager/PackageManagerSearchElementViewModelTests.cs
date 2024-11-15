@@ -1013,13 +1013,96 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 new List<Greg.Responses.Compatibility> { new Greg.Responses.Compatibility { name = "dynamo", min = "2.10", max = "2.13.1" } },
                 compatibleDynamoVersion, compatibilityMap, null, hostName);
 
+            // Case 6: No compatibility information is provided
+            var resultNoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                new List<Greg.Responses.Compatibility> { new Greg.Responses.Compatibility() },
+                compatibleDynamoVersion, compatibilityMap, null, hostName);
+
             // Assert
-            Assert.IsNull(resultNoDynamoCompatibility, "Expected compatibility to be null when no Dynamo-specific compatibility exists and no fallback is allowed.");
+            Assert.IsFalse(resultNoDynamoCompatibility, "Expected compatibility to be incompatible (false) when no Dynamo-specific compatibility exists and we fallback to host.");
             Assert.IsTrue(resultWithHostCompatibility, "Expected compatibility to be true when no Dynamo-specific compatibility exists but host compatibility matches.");
             Assert.IsTrue(resultMinOnlyCompatibility, "Expected compatibility to be true for min-only range within major version.");
-            Assert.IsNull(resultIncompleteCompatibilityInfo, "Expected compatibility to be indeterminate (null) when information is incomplete.");
+            Assert.IsFalse(resultIncompleteCompatibilityInfo, "Expected compatibility to be incompatible (false) when no dynamo information is provided, but any information for host is present.");
             Assert.IsTrue(resultFallbackToDynamo, "Expected compatibility to be true when under host but only Dynamo compatibility is provided.");
+            Assert.IsNull(resultNoCompatibility, "Expected unknown compatibility (null) when no compatibility information is provided.");
         }
+
+        [Test]
+        public void TestComputeVersionSingleCompatibility()
+        {
+            // Arrange
+            var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "dynamo", versions = new List<string> { "3.2.2" } }
+            };
+
+            var compatibleDynamoVersion = new Version("3.2.2");  // Compatible with Dynamo 3.2.2
+            var incompatibleDynamoVersion = new Version("3.4.0");  // Incompatible with Dynamo 3.4.0
+
+            // Act
+            // Case 1: Single Dynamo version, compatible
+            var resultDynamoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, compatibleDynamoVersion, compatibilityMap);
+
+            // Case 2: Single Dynamo version, incompatible
+            var resultNoDynamoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, incompatibleDynamoVersion, compatibilityMap);
+
+            // Assert
+            Assert.IsTrue(resultDynamoCompatibility, "Expected compatible with matching Dynamo versions.");
+            Assert.IsFalse(resultNoDynamoCompatibility, "Expected incompatible with mismatched Dynamo versions.");
+        }
+
+        [Test]
+        public void HostCompatibilityFiltersExclusivity()
+        {
+            var mockGreg = new Mock<IGregClient>();
+
+            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object) { CallBase = true };
+            var pmSVM = new PackageManagerSearchViewModel(pmCVM.Object);
+            pmSVM.RegisterTransientHandlers();
+
+            pmSVM.HostFilter = new List<FilterEntry>
+            {
+                new FilterEntry("host", "group", "tooltip", pmSVM) { OnChecked = false },
+            };
+
+            pmSVM.CompatibilityFilter = new List<FilterEntry>
+            {
+                new FilterEntry("compatibility", "group", "tooltip", pmSVM) { OnChecked = false },
+            };
+
+            pmSVM.HostFilter.ForEach(f => f.PropertyChanged += pmSVM.filter_PropertyChanged);
+            pmSVM.CompatibilityFilter.ForEach(f => f.PropertyChanged += pmSVM.filter_PropertyChanged);
+
+            Assert.IsTrue(pmSVM.HostFilter.All(x => x.IsEnabled), "Expect starting filter state to be enabled");
+            Assert.IsTrue(pmSVM.CompatibilityFilter.All(x => x.IsEnabled), "Expect starting filter state to be enabled");
+
+            // Act/Assert Host -> Compatibility
+            pmSVM.HostFilter.First().OnChecked = true;
+            pmSVM.ApplyFilterRules();
+
+            Assert.IsFalse(pmSVM.CompatibilityFilter.All(x => x.IsEnabled), "Filter groups should be mutually exclusive");
+
+            pmSVM.HostFilter.First().OnChecked = false;
+            pmSVM.ApplyFilterRules();
+
+            Assert.IsTrue(pmSVM.CompatibilityFilter.All(x => x.IsEnabled), "Filter groups should be mutually exclusive");
+
+            // Act/Assert Compatibility -> Host
+            pmSVM.CompatibilityFilter.First().OnChecked = true;
+            pmSVM.ApplyFilterRules();
+
+            Assert.IsFalse(pmSVM.HostFilter.All(x => x.IsEnabled), "Filter groups should be mutually exclusive");
+
+            pmSVM.CompatibilityFilter.First().OnChecked = false;
+            pmSVM.ApplyFilterRules();
+
+            Assert.IsTrue(pmSVM.HostFilter.All(x => x.IsEnabled), "Filter groups should be mutually exclusive");
+        }
+
+        #region Compatibility Tests
 
         [Test]
         public void TestReverseDynamoCompatibilityFromHost()
@@ -1103,6 +1186,20 @@ namespace Dynamo.PackageManager.Wpf.Tests
             bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, version);
 
             Assert.IsTrue(result, "Expected compatibility to be true when version is in the list.");
+        }
+
+        [Test]
+        public void IsVersionCompatible_NoCompatibleVersion_ReturnsFalse()
+        {
+            var compatibility = new Greg.Responses.Compatibility
+            {
+                versions = new List<string> { "2.1.0", "2.3.0" }
+            };
+            Version version = new Version("2.2.0");
+
+            bool result = PackageManagerSearchElement.IsVersionCompatible(compatibility, version);
+
+            Assert.IsFalse(result, "Expected compatibility to be false when version is not in the list.");
         }
 
         [Test]
@@ -1328,6 +1425,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
                           "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
         }
+
+        #endregion
 
     }
 }

@@ -262,6 +262,7 @@
                                         <Setter Property="Command" Value="{Binding FilterCommand}" />
                                         <Setter Property="CommandParameter" Value="{Binding FilterName}" />
                                         <Setter Property="IsChecked" Value="{Binding OnChecked, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Setter Property="IsEnabled" Value="{Binding IsEnabled, UpdateSourceTrigger=PropertyChanged}" />
                                         <Setter Property="ToolTip">
                                             <Setter.Value>
                                                 <ToolTip Content="{Binding Tooltip}" Style="{StaticResource GenericToolTipLight}" />

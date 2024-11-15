@@ -71,6 +71,12 @@ namespace Dynamo.PackageDetails
         {
             Closed?.Invoke(this, EventArgs.Empty);
         }
+
+        // Disables DataGrid interactions on mousedown (selection)
+        private void DataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
     
 }

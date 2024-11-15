@@ -5755,6 +5755,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Incompatible with your current setup.
+        /// </summary>
+        public static string PackageDetailsIncompatibilityWithSetup {
+            get {
+                return ResourceManager.GetString("PackageDetailsIncompatibilityWithSetup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to KEYWORDS.
         /// </summary>
         public static string PackageDetailsKeywords {
@@ -5841,6 +5850,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageDetailsVersionsAndPackageRequirements {
             get {
                 return ResourceManager.GetString("PackageDetailsVersionsAndPackageRequirements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown compatibility with your current setup.
+        /// </summary>
+        public static string PackageDetailsXCompatibilityWithSetup {
+            get {
+                return ResourceManager.GetString("PackageDetailsXCompatibilityWithSetup", resourceCulture);
             }
         }
         
@@ -7443,6 +7461,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageUseOlderDynamoMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageUseOlderDynamoMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Versions marked with .x include all versions in the specified major or minor release.
+        /// </summary>
+        public static string PackageVersionTooltip {
+            get {
+                return ResourceManager.GetString("PackageVersionTooltip", resourceCulture);
             }
         }
         

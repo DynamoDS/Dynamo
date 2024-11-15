@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
+using Dynamo.Properties;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -19,6 +20,7 @@ namespace Dynamo.Search.SearchElements
         private SearchElementGroup group;
         private string assembly;
         private bool isVisibleInSearch = true;
+        internal virtual bool IsExperimental { get; set; }  
 
         internal AutoCompletionNodeElementInfo AutoCompletionNodeElementInfo { get; set; } = new AutoCompletionNodeElementInfo();
 
@@ -141,7 +143,15 @@ namespace Dynamo.Search.SearchElements
             get
             {
                 if (string.IsNullOrEmpty(description))
+                {
                     return Configurations.NoDescriptionAvailable;
+                }
+                if (IsExperimental)
+                {
+                    return $"{Resources.DocsExperimentalPrefixMessage}" +
+                        $"{Environment.NewLine}{Environment.NewLine}{description}"; 
+                }
+              
 
                 return description;
             }

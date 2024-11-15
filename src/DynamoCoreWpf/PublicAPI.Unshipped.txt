@@ -874,6 +874,8 @@ Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.FilterName.get -
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.FilterName.set -> void
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.GroupName.get -> string
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.GroupName.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.IsEnabled.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.IsEnabled.set -> void
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.OnChecked.get -> bool
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.OnChecked.set -> void
 Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.Tooltip.get -> string
@@ -2416,6 +2418,7 @@ Dynamo.ViewModels.NodeViewModel.InPorts.set -> void
 Dynamo.ViewModels.NodeViewModel.IsCustomFunction.get -> bool
 Dynamo.ViewModels.NodeViewModel.IsDisplayingLabels.get -> bool
 Dynamo.ViewModels.NodeViewModel.IsDisplayingLabels.set -> void
+Dynamo.ViewModels.NodeViewModel.IsExperimental.get -> bool
 Dynamo.ViewModels.NodeViewModel.IsFrozen.get -> bool
 Dynamo.ViewModels.NodeViewModel.IsFrozen.set -> void
 Dynamo.ViewModels.NodeViewModel.IsFrozenExplicitly.get -> bool
@@ -5017,6 +5020,7 @@ static Dynamo.Wpf.Properties.Resources.PackageDetailsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsHost.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsIncompatibileVersionTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsIncompatibilityWithSetup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsKeywords.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsLicense.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsLinks.get -> string
@@ -5027,6 +5031,7 @@ static Dynamo.Wpf.Properties.Resources.PackageDetailsSize.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsUnknownCompatibilityVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersions.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersionsAndPackageRequirements.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsXCompatibilityWithSetup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadConfirmMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadErrorMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadMessageBoxTitle.get -> string
@@ -5384,6 +5389,7 @@ static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageHostDependencyTo
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageKeywords.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageKeywordsTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageName.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageNameTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageNameWatermark.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageViewPackageVersion.get -> string

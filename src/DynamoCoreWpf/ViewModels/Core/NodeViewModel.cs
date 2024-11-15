@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,6 +15,7 @@ using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -269,7 +271,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.State; }
         }
-        
+
         /// <summary>
         /// The total number of info/warnings/errors dismissed by the user on this node.
         /// This is displayed on the node by a little icon beside the Context Menu button.
@@ -356,7 +358,7 @@ namespace Dynamo.ViewModels
             get { return true; }
         }
 
-        [JsonProperty("ShowGeometry",Order = 6)]
+        [JsonProperty("ShowGeometry", Order = 6)]
         public bool IsVisible
         {
             get
@@ -641,7 +643,16 @@ namespace Dynamo.ViewModels
                 return false;
             }
         }
-
+        [Experimental("NVM_ISEXPERIMENTAL_GLPYH")]
+        [JsonIgnore]
+        public bool IsExperimental
+        {
+            get
+            {
+                return NodeModel.IsExperimental && (DynamoModel.FeatureFlags?.CheckFeatureFlag("experimentalGlyphIsVisible", false) ?? false);
+            }
+        }
+            
         /// <summary>
         /// A flag indicating whether the underlying NodeModel's IsFrozen property can be toggled.      
         /// </summary>
