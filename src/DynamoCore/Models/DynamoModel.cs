@@ -1788,6 +1788,22 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
             }
+            var supportedLocales = Configurations.SupportedLocaleDic.Values.ToList<string>();
+
+            //Get the last part of the template path e.f. if the path is C:\ProgramData\Dynamo\Dynamo Core\templates\en-US then currentPathLocale = en-US
+            var pathParts = PreferenceSettings.TemplateFilePath.Split("\\");
+            var currentPathLocale = pathParts.Last();
+
+            //Check if the locale is found inside the supported locales 
+            if (supportedLocales.Contains(currentPathLocale))
+            {
+                //If the CurrentUICulture is different than the locale in the TemplateFilePath then needs to be updated         
+                if (CultureInfo.CurrentUICulture.Name != currentPathLocale)
+                {
+                    PreferenceSettings.TemplateFilePath= PreferenceSettings.TemplateFilePath.Replace(currentPathLocale, CultureInfo.CurrentUICulture.Name);
+                }
+            }
+
 
             UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
             UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
