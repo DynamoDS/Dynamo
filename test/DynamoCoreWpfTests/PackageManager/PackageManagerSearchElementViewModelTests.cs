@@ -1015,7 +1015,22 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
             // Case 6: No compatibility information is provided
             var resultNoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                new List<Greg.Responses.Compatibility> { },
+                compatibleDynamoVersion, compatibilityMap, null, hostName);
+
+            // Case 7: Mall formed compatibility information is provided
+            var resultbadCompatibility = PackageManagerSearchElement.CalculateCompatibility(
                 new List<Greg.Responses.Compatibility> { new Greg.Responses.Compatibility() },
+                compatibleDynamoVersion, compatibilityMap, null, hostName);
+
+            // Case 8: Under host context, but alternative host compatibility
+            var resultNotRightHost = PackageManagerSearchElement.CalculateCompatibility(
+                new List<Greg.Responses.Compatibility> { new Greg.Responses.Compatibility { name = "Civil", min = "2023.1", max = "2024.0.0" } },
+                compatibleDynamoVersion, compatibilityMap, null, hostName);
+
+            // Case 9: Under host context, but alternative host compatibility, fall back to Dynamo
+            var resultFallbackToDynamo2 = PackageManagerSearchElement.CalculateCompatibility(
+                new List<Greg.Responses.Compatibility> { new Greg.Responses.Compatibility { name = "Civil", min = "2023.1", max = "2024.0.0" }, new Greg.Responses.Compatibility { name = "dynamo", min = "2.10", max = "2.13.1" } },
                 compatibleDynamoVersion, compatibilityMap, null, hostName);
 
             // Assert
@@ -1025,6 +1040,82 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.IsFalse(resultIncompleteCompatibilityInfo, "Expected compatibility to be incompatible (false) when no dynamo information is provided, but any information for host is present.");
             Assert.IsTrue(resultFallbackToDynamo, "Expected compatibility to be true when under host but only Dynamo compatibility is provided.");
             Assert.IsNull(resultNoCompatibility, "Expected unknown compatibility (null) when no compatibility information is provided.");
+            Assert.IsNull(resultbadCompatibility, "Expected unknown compatibility (null) when bad compatibility information is provided.");
+            Assert.IsFalse(resultNotRightHost, "Expected compatibility to be false when under host but only different host compatibility is provided.");
+            Assert.IsTrue(resultFallbackToDynamo2, "Expected compatibility to be true when under host but with different host compatibility and Dynamo compatibility is provided.");
+        }
+
+        [Test]
+        public void TestComputeVersion_HostCompatibility()
+        {
+            // Arrange
+            var complexCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "dynamo", min = "2.19.5", max = "3.2.2" },
+                new Greg.Responses.Compatibility { name = "revit", min = "2016", max = "2025" },
+                new Greg.Responses.Compatibility { name = "civil3d", min = "2020", max = "2025" }
+            };
+
+            var compatibleDynamoVersion = new Version("3.0.0"); 
+            var incompatibleDynamoVersion = new Version("3.4.0.6825");
+            var compatibleHostVersion = new Version("2025.0.0");
+            var incompatibleHostVersion = new Version("2026.0.0");
+            var revitHostName = "revit";
+            var civilHostName = "civil3d";
+
+            // Act and Assert
+            // Case 1: No host provided, compatible Dynamo
+            var resultNoHostCompatibleDynamo = PackageManagerSearchElement.CalculateCompatibility(
+                complexCompatibilityMatrix, compatibleDynamoVersion, null, null, null);
+            Assert.IsTrue(resultNoHostCompatibleDynamo, "Expected compatibility to be true when only Dynamo version is provided and is compatible.");
+
+            // Case 2: No host provided, incompatible Dynamo
+            var resultNoHostIncompatibleDynamo = PackageManagerSearchElement.CalculateCompatibility(
+                complexCompatibilityMatrix, incompatibleDynamoVersion, null, null, null);
+            Assert.IsFalse(resultNoHostIncompatibleDynamo, "Expected compatibility to be false when only Dynamo version is provided and is incompatible.");
+
+            // Case 3: Host is Revit, compatible host version
+            var resultRevitCompatibleHost = PackageManagerSearchElement.CalculateCompatibility(
+                complexCompatibilityMatrix, null, null, compatibleHostVersion, revitHostName);
+            Assert.IsTrue(resultRevitCompatibleHost, "Expected compatibility to be true when Revit host is provided with a compatible version.");
+
+            // Case 4: Host is Revit, incompatible host version
+            var resultRevitIncompatibleHost = PackageManagerSearchElement.CalculateCompatibility(
+                complexCompatibilityMatrix, null, null, incompatibleHostVersion, revitHostName);
+            Assert.IsFalse(resultRevitIncompatibleHost, "Expected compatibility to be false when Revit host is provided with an incompatible version.");
+
+            // Case 5: Host is Civil3D, compatible host version
+            var resultCivil3DCompatibleHost = PackageManagerSearchElement.CalculateCompatibility(
+                complexCompatibilityMatrix, null, null, compatibleHostVersion, civilHostName);
+            Assert.IsTrue(resultCivil3DCompatibleHost, "Expected compatibility to be true when Civil3D host is provided with a compatible version.");
+
+            // Case 6: Host is Civil3D, incompatible host version
+            var resultCivil3DIncompatibleHost = PackageManagerSearchElement.CalculateCompatibility(
+                complexCompatibilityMatrix, null, null, incompatibleHostVersion, civilHostName);
+            Assert.IsFalse(resultCivil3DIncompatibleHost, "Expected compatibility to be false when Civil3D host is provided with an incompatible version.");
+        }
+
+        [Test]
+        public void TestFullHostMatrix_HostCompatibility()
+        {
+            // Arrange
+            var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "dynamo", min = "2.19.5", max = "3.2.2" }
+            };
+
+            var incompatibleDynamoVersion = new Version("3.4.0.6825");
+            var hostVersion = new Version("2025.0.0");
+            var hostName = "revit";
+
+            // Act
+            // Case 1: No Dynamo-specific compatibility, expect null (no fallback)
+            var resultNoDynamoCompatibility = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, incompatibleDynamoVersion, compatibilityMap, hostVersion, hostName);
+
+
+            // Assert
+            Assert.IsFalse(resultNoDynamoCompatibility, "Expected compatibility to be incompatible (false) when no Dynamo-specific compatibility exists and we fallback to host.");
         }
 
         [Test]
@@ -1051,6 +1142,82 @@ namespace Dynamo.PackageManager.Wpf.Tests
             // Assert
             Assert.IsTrue(resultDynamoCompatibility, "Expected compatible with matching Dynamo versions.");
             Assert.IsFalse(resultNoDynamoCompatibility, "Expected incompatible with mismatched Dynamo versions.");
+        }
+
+
+        [Test]
+        [TestCase("2.9.9", false)] // Incompatible Dynamo version
+        [TestCase("3.0.0", true)]  // Compatible Dynamo version
+        [TestCase("3.1.0", true)]  // Compatible Dynamo version
+        [TestCase("3.2.2", true)]  // Compatible Dynamo version
+        [TestCase("3.3.0", false)] // Incompatible Dynamo version
+        [TestCase("3.4.0", false)] // Incompatible Dynamo version
+        public void TestComputeMultipleSingleCompatibility(string dynamoVersion, bool expectedCompatibility)
+        {
+            // Arrange
+            var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "dynamo", versions = new List<string> { "3.0.0", "3.1.0", "3.2.2" } }
+            };
+
+            var versionToTest = new Version(dynamoVersion);
+
+            // Act
+            var result = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, versionToTest, compatibilityMap);
+
+            // Assert
+            Assert.AreEqual(expectedCompatibility, result, $"Expected compatibility to be {expectedCompatibility} for version {dynamoVersion}.");
+        }
+
+        [Test]
+        [TestCase("2.19", true)] // Compatible Dynamo version
+        [TestCase("2.19.1", false)] // Incompatible Dynamo version
+        [TestCase("2.19.5", true)] // Compatible Dynamo version
+        [TestCase("2.19.6", true)] // Compatible Dynamo version
+        [TestCase("3.0.0", true)]  // Compatible Dynamo version
+        [TestCase("3.1.0", true)]  // Compatible Dynamo version
+        [TestCase("3.2.2", true)]  // Compatible Dynamo version
+        [TestCase("3.3.0", false)] // Incompatible Dynamo version
+        [TestCase("3.4.0.6825", true)] // Compatible Dynamo version
+        public void TestComputeMinMaxMultipleSingleCompatibility(string dynamoVersion, bool expectedCompatibility)
+        {
+            // Arrange
+            var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "dynamo", min = "2.19.5", max = "3.2.2", versions = new List<string> { "2.19", "3.4.0.6825" } }
+            };
+
+            var versionToTest = new Version(dynamoVersion);
+
+            // Act
+            var result = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, versionToTest, compatibilityMap);
+
+            // Assert
+            Assert.AreEqual(expectedCompatibility, result, $"Expected compatibility to be {expectedCompatibility} for version {dynamoVersion}.");
+        }
+
+        [TestCase("3.1", true)]  // Compatible Dynamo version
+        [TestCase("3.1.0", false)]  // Incompatible Dynamo version
+        [TestCase("3.4.0", false)] // Incompatible Dynamo version
+        [TestCase("3.4.0.6825", true)] // Compatible Dynamo version
+        public void TestPreciseSingleCompatibility(string dynamoVersion, bool expectedCompatibility)
+        {
+            // Arrange
+            var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "dynamo", versions = new List<string> { "3.1", "3.4.0.6825" } }
+            };
+
+            var versionToTest = new Version(dynamoVersion);
+
+            // Act
+            var result = PackageManagerSearchElement.CalculateCompatibility(
+                hostOnlyCompatibilityMatrix, versionToTest, compatibilityMap);
+
+            // Assert
+            Assert.AreEqual(expectedCompatibility, result, $"Expected compatibility to be {expectedCompatibility} for version {dynamoVersion}.");
         }
 
         [Test]

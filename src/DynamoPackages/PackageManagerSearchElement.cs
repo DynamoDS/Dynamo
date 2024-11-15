@@ -312,6 +312,12 @@ namespace Dynamo.PackageManager
                     return null;
                 }
 
+                // If there is any mal-formed data, we reject
+                if (compatibilityMatrix.Any(x => string.IsNullOrEmpty(x.name)))
+                {
+                    return null;
+                }
+
                 Greg.Responses.Compatibility compatibility = null;
 
                 // Determine compatibility
@@ -323,6 +329,12 @@ namespace Dynamo.PackageManager
                     // Check for host-specific compatibility
                     compatibility = compatibilityMatrix.FirstOrDefault(c => c.name?.ToLowerInvariant() == host?.ToLowerInvariant())
                                     ?? compatibilityMatrix.FirstOrDefault(c => c.name?.ToLowerInvariant() == "dynamo");
+
+                    //If we have no compatibility that means didn't match the supported cases 
+                    if (compatibility == null)
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
