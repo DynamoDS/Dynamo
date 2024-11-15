@@ -1792,7 +1792,7 @@ namespace Dynamo.Models
 
             //Get the last part of the template path e.f. if the path is C:\ProgramData\Dynamo\Dynamo Core\templates\en-US then currentPathLocale = en-US
             var pathParts = PreferenceSettings.TemplateFilePath.Split("\\");
-            var currentPathLocale = pathParts[pathParts.Count() - 1];
+            var currentPathLocale = pathParts.Last();
 
             //Check if the locale is found inside the supported locales 
             if (supportedLocales.Contains(currentPathLocale))
