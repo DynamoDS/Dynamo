@@ -186,7 +186,7 @@ namespace Dynamo.PackageManager
                     Dynamo.Logging.Analytics.TrackEvent(
                         Actions.Filter,
                         Categories.PackageManagerOperations,
-                        pmSearchViewModel.CompatibilityFilter.FirstOrDefault(x=>x.OnChecked).FilterName);
+                        pmSearchViewModel.CompatibilityFilter.FirstOrDefault(x=>x.OnChecked)?.FilterName);
                 }
                 pmSearchViewModel.SearchAndUpdateResults();
                 return;
