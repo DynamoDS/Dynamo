@@ -180,6 +180,14 @@ namespace Dynamo.PackageManager
                         Categories.PackageManagerOperations,
                         string.Join(",", pmSearchViewModel.SelectedHosts));
                 }
+                if(GroupName.Equals(Resources.PackageFilterByCompatibility))
+                {
+                    // Send filter event with what compatibility state filter user using
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Actions.Filter,
+                        Categories.PackageManagerOperations,
+                        pmSearchViewModel.CompatibilityFilter.FirstOrDefault(x=>x.OnChecked)?.FilterName);
+                }
                 pmSearchViewModel.SearchAndUpdateResults();
                 return;
             }
