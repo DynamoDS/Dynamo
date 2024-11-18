@@ -66,7 +66,7 @@
             <Style x:Key="TextLinkStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="FontSize" Value="14px" />
-                <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />  
+                <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Foreground" Value="{StaticResource Blue400Brush}" />
