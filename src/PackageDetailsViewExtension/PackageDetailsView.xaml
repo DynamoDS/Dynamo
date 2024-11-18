@@ -66,7 +66,7 @@
             <Style x:Key="TextLinkStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="FontSize" Value="14px" />
-                <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />  
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Foreground" Value="{StaticResource Blue400Brush}" />
@@ -433,7 +433,7 @@
                                         <Style.Triggers>
                                             <!--  Trigger for IsCompatible == true (compatible)  -->
                                             <DataTrigger Binding="{Binding IsCompatible}" Value="True">
-                                                <Setter Property="BorderBrush" Value="{StaticResource PMHeaderBackgroundColorBrush}" />
+                                                <Setter Property="BorderBrush" Value="{StaticResource PMVersionCompatibleColorBrush}" />
                                             </DataTrigger>
 
                                             <!--  Trigger for IsCompatible == false (not compatible)  -->
