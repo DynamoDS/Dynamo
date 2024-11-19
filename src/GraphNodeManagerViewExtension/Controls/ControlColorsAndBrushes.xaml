@@ -58,10 +58,37 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <DockPanel HorizontalAlignment="Left" LastChildFill="False" VerticalAlignment="Center">
                         <Rectangle HorizontalAlignment="Left" Height="11" Width="1" Margin="-1,1,6,3" Stroke="#BBBBBB"/>
-                        <TextBlock Text="{Binding}"  Margin="0, 2, 2, 2"/>
-                    </StackPanel>
+                        <TextBlock Text="{Binding}" Margin="0,2,2,2" VerticalAlignment="Center"/>
+                        <Path x:Name="SortArrow"
+                              Width="7" Height="6"
+                              Margin="5,0,0,0"
+                              VerticalAlignment="Center"
+                              Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                              DockPanel.Dock="Right"
+                              Fill="#bbbbbb"
+                              RenderTransformOrigin="0.5,0.5"
+                              Stretch="Fill" Visibility="Collapsed" />
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="SortDirection" Value="Ascending">
+                            <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="SortArrow" Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Descending">
+                            <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="SortArrow" Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="0"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
