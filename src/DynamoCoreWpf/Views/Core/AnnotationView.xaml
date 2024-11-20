@@ -29,6 +29,7 @@
         <utilities:GroupStyleItemSelector x:Key="GroupStyleItemSelector"/>
         <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
         <controls:TextForegroundSaturationColorConverter x:Key="TextForegroundSaturationColorConverter"/>
+        <controls:BackgroundConditionEvaluator x:Key="BackgroundConditionEvaluator"/>
         <CornerRadius x:Key="ExpanderCornerRadius"
                       TopLeft="10"
                       TopRight="10" />
@@ -139,16 +140,28 @@
                 </Grid>
             </Border>
             <ControlTemplate.Triggers>
+
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False"/>
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False"/>
+                        <Condition Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}" Value="True" />
                     </MultiDataTrigger.Conditions>
 
                     <Setter Property="Source"
                             TargetName="sign"
                             Value="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png" />
                 </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False"/>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False"/>
+                        <Condition Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}" Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Source"
+                            TargetName="sign"
+                            Value="/DynamoCoreWpf;component/UI/Images/caret_down_white_48px.png" />
+                </MultiDataTrigger>                
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
@@ -159,16 +172,28 @@
                             TargetName="sign"
                             Value="/DynamoCoreWpf;component/UI/Images/caret_down_hover_48px.png" />
                 </MultiDataTrigger>
+                
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False"/>
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True"/>
+                        <Condition Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}" Value="True" />
                     </MultiDataTrigger.Conditions>
 
                     <Setter Property="Source"
                             TargetName="sign"
                             Value="/DynamoCoreWpf;component/UI/Images/caret_up_grey_48px.png" />
-                </MultiDataTrigger>
+                </MultiDataTrigger>                
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False"/>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True"/>
+                        <Condition Binding="{Binding Background.Color, Converter={StaticResource BackgroundConditionEvaluator}}" Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Source"
+                            TargetName="sign"
+                            Value="/DynamoCoreWpf;component/UI/Images/caret_up_white_48px.png" />
+                </MultiDataTrigger>                
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
@@ -179,6 +204,10 @@
                             TargetName="sign"
                             Value="/DynamoCoreWpf;component/UI/Images/caret_up_hover_48px.png" />
                 </MultiDataTrigger>
+
+
+
+
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
