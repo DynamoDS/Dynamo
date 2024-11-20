@@ -136,31 +136,8 @@
 		<NodeHelpZhCNMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\zh-CN\**\*.md"/>
 		<NodeHelpZhTWMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\zh-TW\**\*.md"/>
 		<NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn"/>
-		<NodeHelpCsCZTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\cs-CZ\**\*.txt"/>
-		<NodeHelpDeDETXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\de-DE\**\*.txt"/>
-		<NodeHelpEnUSTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.txt"/>
-		<NodeHelpEsESTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\es-ES\**\*.txt"/>
-		<NodeHelpFrFRTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\fr-FR\**\*.txt"/>
-		<NodeHelpItITTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\it-IT\**\*.txt"/>
-		<NodeHelpJaJPTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ja-JP\**\*.txt"/>
-		<NodeHelpKoKRTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ko-KR\**\*.txt"/>
-		<NodeHelpPlPLTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\pl-PL\**\*.txt"/>
-		<NodeHelpPtBRTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\pt-BR\**\*.txt"/>
-		<NodeHelpRuRUTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ru-RU\**\*.txt"/>
-		<NodeHelpZhCNTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\zh-CN\**\*.txt"/>
-		<NodeHelpZhTWTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\zh-TW\**\*.txt"/>
-		<NodeHelpCsCZSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\cs-CZ\**\*.sat"/>
-		<NodeHelpDeDESATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\de-DE\**\*.sat"/>
-		<NodeHelpEnUSSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.sat"/>
-		<NodeHelpEsESSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\es-ES\**\*.sat"/>
-		<NodeHelpFrFRSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\fr-FR\**\*.sat"/>
-		<NodeHelpItITSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\it-IT\**\*.sat"/>
-		<NodeHelpJaJPSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ja-JP\**\*.sat"/>
-		<NodeHelpKoKRSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ko-KR\**\*.sat"/>
-		<NodeHelpPlPLSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\pl-PL\**\*.sat"/>
-		<NodeHelpPtBRSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\pt-BR\**\*.sat"/>
-		<NodeHelpRuRUSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ru-RU\**\*.sat"/>
-		<NodeHelpZhCNSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\zh-CN\**\*.sat"/>
+		<NodeHelpTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.txt"/>
+		<NodeHelpSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.sat"/>
         <NodeHelpJpgImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.jpg" />
         <NodeHelpPngImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.png" />
         <NodeHelpGifImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.gif" />
@@ -187,32 +164,32 @@
 	<Copy SourceFiles="@(NodeHelpZhCNMDFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\"/>
 	<Copy SourceFiles="@(NodeHelpZhTWMDFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\"/>
 	<Copy SourceFiles="@(NodeHelpDYNFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\"/>
-	<Copy SourceFiles="@(NodeHelpCsCZTXTFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpDeDETXTFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpEnUSTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpEsESTXTFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpFrFRTXTFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpItITTXTFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpJaJPTXTFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpKoKRTXTFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpPlPLTXTFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpPtBRTXTFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpRuRUTXTFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpZhCNTXTFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpZhTWTXTFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpCsCZSATFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpDeDESATFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpEnUSSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpEsESSATFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpFrFRSATFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpItITSATFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpJaJPSATFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpKoKRSATFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpPlPLSATFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpPtBRSATFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpRuRUSATFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpZhCNSATFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\"/>
-	<Copy SourceFiles="@(NodeHelpZhTWSATFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\"/>
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\"/>
     <Copy SourceFiles="@(NodeHelpJpgImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
     <Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
     <Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
