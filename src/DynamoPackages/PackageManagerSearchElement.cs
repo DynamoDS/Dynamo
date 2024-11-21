@@ -377,8 +377,11 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal static bool IsVersionCompatible(Greg.Responses.Compatibility compatibility, Version version)
         {
+            // Start by trimming away the Revision value 
+            version = VersionUtilities.NormalizeVersion(version);
+
             // Check if the version is explicitly listed
-            bool isListedInVersions = compatibility.versions?.Contains(version.ToString()) ?? false;
+            bool isListedInVersions = NormalizeAndContain(compatibility.versions, version);
 
             // Parse min and max values, if provided, and check for valid range
             bool isWithinMinMax = false;
@@ -419,6 +422,33 @@ namespace Dynamo.PackageManager
             }
 
             return isListedInVersions || isWithinMinMax;
+        }
+
+        // Aligns Dynamo's fully-defined version with Compatibility Matrix partial version strings
+        internal static bool NormalizeAndContain(IEnumerable<string> versionStrings, Version version)
+        {
+            if (versionStrings == null) return false;
+
+            // Normalize the input version to a 3-part format (Major.Minor.Build)
+            var normalizedVersion = VersionUtilities.NormalizeVersion(version);
+
+            foreach (var v in versionStrings)
+            {
+                // Parse and normalize each version string
+                var parsedVersion = VersionUtilities.Parse(v);
+                if (parsedVersion != null)
+                {
+                    var normalizedParsedVersion = VersionUtilities.NormalizeVersion(parsedVersion);
+
+                    // Compare the normalized versions
+                    if (normalizedVersion.Equals(normalizedParsedVersion))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         // Method to find Dynamo compatibility based on other hosts in the compatibilityMatrix
