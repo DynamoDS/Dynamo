@@ -125,11 +125,11 @@ namespace Dynamo.ViewModels
             var termsOfUseView = new TermsOfUseView(touFilePath);
             termsOfUseView.Closed += TermsOfUseView_Closed;
             isTermsOfUseCreated = true;
+            termsOfUseView.Owner = parent;
 
             //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
             if (!GuideFlowEvents.IsAnyGuideActive)
             {
-                termsOfUseView.Owner = parent;
                 termsOfUseView.ShowDialog();
             }
             else
