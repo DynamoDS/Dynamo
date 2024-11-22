@@ -1824,6 +1824,8 @@ Dynamo.ViewModels.ConnectorViewModel.DotLeft.get -> double
 Dynamo.ViewModels.ConnectorViewModel.DotLeft.set -> void
 Dynamo.ViewModels.ConnectorViewModel.DotTop.get -> double
 Dynamo.ViewModels.ConnectorViewModel.DotTop.set -> void
+Dynamo.ViewModels.ConnectorViewModel.DynamicStrokeThickness.get -> double
+Dynamo.ViewModels.ConnectorViewModel.DynamicStrokeThickness.set -> void
 Dynamo.ViewModels.ConnectorViewModel.EndDotSize.get -> double
 Dynamo.ViewModels.ConnectorViewModel.EndDotSize.set -> void
 Dynamo.ViewModels.ConnectorViewModel.GoToEndNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
