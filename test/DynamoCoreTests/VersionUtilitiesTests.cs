@@ -113,7 +113,7 @@ namespace Dynamo.Tests
             Version result = VersionUtilities.Parse(version);
 
             // Assert
-            Assert.AreEqual(new Version(2019, 1, 2, 0), result, "Expected version '2019.1.2.0' when input is '2019.1.2.0'.");
+            Assert.AreEqual(new Version(2019, 1, 2), result, "Expected version '2019.1.2' when input is '2019.1.2.0'.");
         }
 
         [Test]
@@ -256,6 +256,28 @@ namespace Dynamo.Tests
 
             // Assert
             Assert.IsNull(result, "Expected null when input has too many components '1.2.3.4.*'.");
+        }
+
+        [Test]
+        public void NormalizeVersion_ShouldReturnCorrectlyNormalizedVersion()
+        {
+            // Test case 1: Partial version with only Major
+            Version.TryParse("3.0", out Version input1);
+            var expected1 = new Version(3, 0, 0);
+            var result1 = VersionUtilities.NormalizeVersion(input1);
+            Assert.AreEqual(expected1, result1, $"Expected {expected1} but got {result1}");
+
+            // Test case 2: Partial version with Major and Minor
+            Version.TryParse("3.1", out Version input2);
+            var expected2 = new Version(3, 1, 0);
+            var result2 = VersionUtilities.NormalizeVersion(input2);
+            Assert.AreEqual(expected2, result2, $"Expected {expected2} but got {result2}");
+
+            // Test case 3: Full version that doesn't need normalization
+            var input3 = new Version(3, 1, 2);
+            var expected3 = new Version(3, 1, 2);
+            var result3 = VersionUtilities.NormalizeVersion(input3);
+            Assert.AreEqual(expected3, result3, $"Expected {expected3} but got {result3}");
         }
 
     }
