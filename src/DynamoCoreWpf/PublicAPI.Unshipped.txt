@@ -37,6 +37,10 @@ Dynamo.Controls.AutoLacingToVisibilityConverter
 Dynamo.Controls.AutoLacingToVisibilityConverter.AutoLacingToVisibilityConverter() -> void
 Dynamo.Controls.AutoLacingToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.AutoLacingToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.BackgroundConditionEvaluator
+Dynamo.Controls.BackgroundConditionEvaluator.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.BackgroundConditionEvaluator.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.BackgroundConditionEvaluator.BackgroundConditionEvaluator() -> void
 Dynamo.Controls.Base64ToImageConverter
 Dynamo.Controls.Base64ToImageConverter.Base64ToImageConverter() -> void
 Dynamo.Controls.Base64ToImageConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
