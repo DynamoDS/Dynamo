@@ -1,4 +1,4 @@
-﻿using Dynamo.UI.Commands;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -6,6 +6,7 @@ namespace Dynamo.ViewModels
     {
         private DelegateCommand connectCommand;
         private DelegateCommand autoCompleteCommand;
+        private DelegateCommand nodeClusterAutoCompleteCommand;
         private DelegateCommand portMouseEnterCommand;
         private DelegateCommand portMouseLeaveCommand;
         private DelegateCommand portMouseLeftButtonCommand;
@@ -32,11 +33,26 @@ namespace Dynamo.ViewModels
             get
             {
                 if (autoCompleteCommand == null)
-                    autoCompleteCommand = new DelegateCommand(AutoComplete, CanAutoComplete);
+                    autoCompleteCommand ??= new DelegateCommand(NodeViewModel.WorkspaceViewModel.DynamoViewModel.IsNodeAutocompleteClusterEnabled ? AutoCompleteCluster : AutoComplete, CanAutoComplete);
 
                 return autoCompleteCommand;
             }
         }
+
+        /// <summary>
+        /// Command to trigger Node Auto Complete from node port interaction
+        /// </summary>
+        public DelegateCommand ClusterNodeAutoCompleteCommand
+        {
+            get
+            {
+                if (nodeClusterAutoCompleteCommand == null)
+                    nodeClusterAutoCompleteCommand = new DelegateCommand(NodeclusterAutoComplete, CanAutoComplete);
+
+                return nodeClusterAutoCompleteCommand;
+            }
+        }
+
 
         /// <summary>
         /// Command to open an Port's Context Menu popup

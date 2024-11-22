@@ -252,7 +252,7 @@
 
                 <!--  Bind NodeAutoComplete to double left click  -->
                 <Border.InputBindings>
-                    <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
+                    <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="RightDoubleClick" />
                 </Border.InputBindings>
 
                 <!--

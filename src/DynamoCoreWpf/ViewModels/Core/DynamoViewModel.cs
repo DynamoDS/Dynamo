@@ -220,6 +220,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the cluster node autocomplete placement feature is enabled from feature flag
+        /// </summary>
+        internal bool IsNodeAutocompleteClusterEnabled
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNodeAutocompleteClusterEnabled", true) ?? true;
+            }
+        }
+
+        /// <summary>
         /// Count of unresolved issues on the linter manager.
         /// This is used for binding in the NotificationsControl
         /// </summary>

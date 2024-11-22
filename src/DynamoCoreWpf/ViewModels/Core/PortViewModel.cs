@@ -1,9 +1,12 @@
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
@@ -414,6 +417,52 @@ namespace Dynamo.ViewModels
             // Bail out from connect state
             wsViewModel.CancelActiveState();
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+        }
+
+        // Handler to invoke Node autocomplete cluster
+        private void AutoCompleteCluster(object parameter)
+        {
+            // Put a C# timer here to test the cluster placement
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            var wsViewModel = node.WorkspaceViewModel;
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+
+            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
+            if (this.inputPortDisconnectedByConnectCommand)
+            {
+                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+            }
+
+            // Bail out from connect state
+            wsViewModel.CancelActiveState();
+
+            if (wsViewModel.DynamoViewModel.IsNodeAutocompleteClusterEnabled)
+            {
+                MLNodeClusterAutoCompletionResponse clusterNodeAutocompleteresults =  wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
+
+                foreach (var result in clusterNodeAutocompleteresults.Results)
+                {
+                    //
+                }
+            }
+        }
+
+        // Handler to invoke node Auto Complete
+        private void NodeclusterAutoComplete(object parameter)
+        {
+            var wsViewModel = node.WorkspaceViewModel;
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+
+            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
+            if (this.inputPortDisconnectedByConnectCommand)
+            {
+                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+            }
+
+            // Bail out from connect state
+            wsViewModel.CancelActiveState();
+            wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show, true);
         }
 
         private void NodePortContextMenu(object obj)

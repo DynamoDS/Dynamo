@@ -172,7 +172,7 @@ namespace Dynamo.ViewModels
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
         internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
 
-        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
+        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag, bool ClusterNodeAutocomplete = false)
         {
             RequestNodeAutoCompleteSearch?.Invoke(flag);
         }

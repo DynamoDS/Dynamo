@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
                     xmlns:interactivity="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
@@ -40,7 +40,7 @@
 
             <!--  Bind NodeAutoComplete to double left click  -->
             <Grid.InputBindings>
-                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
+                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="RightDoubleClick" />
             </Grid.InputBindings>
 
             <!--  Enables Port Snapping  -->
