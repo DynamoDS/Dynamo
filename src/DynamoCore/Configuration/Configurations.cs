@@ -58,6 +58,11 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly double ZoomToFitPaddingFactor = 3.5;
 
+        /// <summary>
+        /// Const used to define the interaction or hit area thickness for connectors in the workspace.
+        /// </summary>
+        public static readonly double ConnectorHitAreaThickness = 60;
+
         #endregion
 
         #region Usage Reporting Error Message

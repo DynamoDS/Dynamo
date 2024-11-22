@@ -5,7 +5,8 @@
                       xmlns:i="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
                       xmlns:views="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
                       xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
-                      xmlns:mouse="clr-namespace:Dynamo.Wpf.UI;assembly=DynamoCoreWpf">
+                      xmlns:mouse="clr-namespace:Dynamo.Wpf.UI;assembly=DynamoCoreWpf"
+                      xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -129,7 +130,13 @@
             <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3"
               Name="connector"
               Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" 
-              Style="{StaticResource SConnector}" Canvas.ZIndex="-1" 
+              Style="{StaticResource SConnector}" Canvas.ZIndex="-2" 
+                  Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">
+            </Path>
+            <Path Stroke="Transparent"
+                  StrokeThickness="{Binding Source={x:Static configuration:Configurations.ConnectorHitAreaThickness}}"
+                  Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"
+                  Style="{StaticResource SConnector}" Canvas.ZIndex="-1"
                   Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Behaviors>
                     <mouse:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" MouseY="{Binding PanelY, Mode=OneWayToSource,  UpdateSourceTrigger=PropertyChanged}" />
