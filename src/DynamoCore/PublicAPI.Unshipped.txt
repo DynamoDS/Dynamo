@@ -3001,6 +3001,8 @@ static readonly Dynamo.Configuration.Configurations.AutodeskAsString -> string
 static readonly Dynamo.Configuration.Configurations.BackupFolderName -> string
 static readonly Dynamo.Configuration.Configurations.CBNMaxPortNameLength -> int
 static readonly Dynamo.Configuration.Configurations.CodeBlockOutputPortHeightInPixels -> double
+static readonly Dynamo.Configuration.Configurations.ConnectorBaseThickness -> double
+static readonly Dynamo.Configuration.Configurations.ConnectorZoomScalingFactor -> double
 static readonly Dynamo.Configuration.Configurations.DoubleSliderTextBoxWidth -> double
 static readonly Dynamo.Configuration.Configurations.DynamoAsString -> string
 static readonly Dynamo.Configuration.Configurations.DynamoNodeHelpDocs -> string

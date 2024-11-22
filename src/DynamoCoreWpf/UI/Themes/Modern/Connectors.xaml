@@ -5,7 +5,8 @@
                       xmlns:i="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
                       xmlns:views="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
                       xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
-                      xmlns:mouse="clr-namespace:Dynamo.Wpf.UI;assembly=DynamoCoreWpf">
+                      xmlns:mouse="clr-namespace:Dynamo.Wpf.UI;assembly=DynamoCoreWpf"
+                      xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -126,7 +127,7 @@
             </Canvas>
 
             <!--Bezier Path-->
-            <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3"
+            <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="{Binding Source={x:Static configuration:Configurations.ConnectorBaseThickness}}"
               Name="connector"
               Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" 
               Style="{StaticResource SConnector}" Canvas.ZIndex="-2" 
