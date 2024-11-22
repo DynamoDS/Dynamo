@@ -127,14 +127,13 @@
             </Canvas>
 
             <!--Bezier Path-->
-            <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3"
+            <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="{Binding Source={x:Static configuration:Configurations.ConnectorBaseThickness}}"
               Name="connector"
               Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" 
               Style="{StaticResource SConnector}" Canvas.ZIndex="-2" 
                   Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">
             </Path>
-            <Path Stroke="Transparent"
-                  StrokeThickness="{Binding Source={x:Static configuration:Configurations.ConnectorHitAreaThickness}}"
+            <Path Stroke="Transparent" StrokeThickness="{Binding DynamicStrokeThickness}"
                   Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"
                   Style="{StaticResource SConnector}" Canvas.ZIndex="-1"
                   Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">

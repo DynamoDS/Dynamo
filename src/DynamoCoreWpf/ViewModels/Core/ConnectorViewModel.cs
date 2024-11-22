@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -48,6 +49,7 @@ namespace Dynamo.ViewModels
         private double dotLeft;
         private double endDotSize = 6;
         private double zIndex = 3;
+        private double dynamicStrokeThickness;
 
         private Point curvePoint1;
         private Point curvePoint2;
@@ -568,6 +570,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public double DynamicStrokeThickness
+        {
+            get => dynamicStrokeThickness;
+            set
+            {
+                dynamicStrokeThickness = value;
+                RaisePropertyChanged(nameof(DynamicStrokeThickness));
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -959,6 +971,7 @@ namespace Dynamo.ViewModels
             this.workspaceViewModel = workspace;
             ConnectorPinViewCollection = new ObservableCollection<ConnectorPinViewModel>();
             ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
+            workspaceViewModel.PropertyChanged += WorkspaceViewModel_PropertyChanged;
 
             IsHidden = !workspaceViewModel.DynamoViewModel.IsShowingConnectors;
             IsConnecting = true;
@@ -966,6 +979,7 @@ namespace Dynamo.ViewModels
             activeStartPort = port;
             ZIndex = SetZIndex();
 
+            UpdateDynamicStrokeThickness();
             Redraw(port.Center);
 
             InitializeCommands();
@@ -1001,6 +1015,7 @@ namespace Dynamo.ViewModels
 
             ConnectorPinViewCollection = new ObservableCollection<ConnectorPinViewModel>();
             ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
+            workspaceViewModel.PropertyChanged += WorkspaceViewModel_PropertyChanged;
 
 
             if (connectorModel.ConnectorPinModels != null)
@@ -1028,6 +1043,7 @@ namespace Dynamo.ViewModels
                 NodeEnd.PropertyChanged += nodeEndViewModel_PropertyChanged;
             }
             
+            UpdateDynamicStrokeThickness();
             Redraw();
             InitializeCommands();
 
@@ -1164,6 +1180,24 @@ namespace Dynamo.ViewModels
             Redraw();
         }
 
+        private void WorkspaceViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(workspaceViewModel.Zoom))
+            {
+                UpdateDynamicStrokeThickness();
+            }
+        }
+
+        private void UpdateDynamicStrokeThickness()
+        {
+            DynamicStrokeThickness = Math.Max(
+                Configurations.ConnectorBaseThickness,
+                Configurations.ConnectorBaseThickness *
+                (1 / workspaceViewModel.Zoom) *
+                Configurations.ConnectorZoomScalingFactor
+            );
+        }
+
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -1189,6 +1223,8 @@ namespace Dynamo.ViewModels
                 NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
             }
             ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
+
+            workspaceViewModel.PropertyChanged -= WorkspaceViewModel_PropertyChanged;
 
             foreach (var pin in ConnectorPinViewCollection.ToList())
             {
