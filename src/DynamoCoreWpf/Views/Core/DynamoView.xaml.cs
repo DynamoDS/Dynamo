@@ -1427,7 +1427,14 @@ namespace Dynamo.Controls
         {
             if (homePage == null && (startPage != null))
             {
-                homePage = new UI.Views.HomePage();
+                try
+                {
+                    homePage = new UI.Views.HomePage();
+                }
+                catch(Exception ex)
+                {
+                    Log(ex.Message);
+                }
                 homePage.DataContext = startPage;
 
                 var visibilityBinding = new System.Windows.Data.Binding
