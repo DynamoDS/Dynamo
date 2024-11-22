@@ -8,7 +8,6 @@ using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -1190,12 +1189,10 @@ namespace Dynamo.ViewModels
 
         private void UpdateDynamicStrokeThickness()
         {
-            DynamicStrokeThickness = Math.Max(
-                Configurations.ConnectorBaseThickness,
-                Configurations.ConnectorBaseThickness *
-                (1 / workspaceViewModel.Zoom) *
-                Configurations.ConnectorZoomScalingFactor
-            );
+            const double baseThickness = 3.0;
+            const double zoomScalingFactor = 2.0;
+
+            DynamicStrokeThickness = Math.Max(baseThickness, baseThickness * (1 / workspaceViewModel.Zoom) * zoomScalingFactor );
         }
 
         /// <summary>

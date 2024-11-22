@@ -58,16 +58,6 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly double ZoomToFitPaddingFactor = 3.5;
 
-        /// <summary>
-        /// Const defining the base stroke thickness for connectors.
-        /// </summary>
-        public static readonly double ConnectorBaseThickness = 3;
-
-        /// <summary>
-        /// Const defining the scaling factor for adjusting connector stroke thickness based on zoom level.
-        /// </summary>
-        public const double ConnectorZoomScalingFactor = 2.0;
-
         #endregion
 
         #region Usage Reporting Error Message
