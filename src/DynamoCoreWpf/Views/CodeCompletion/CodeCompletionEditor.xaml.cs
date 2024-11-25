@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -59,6 +60,7 @@ namespace Dynamo.UI.Controls
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
+            this.Loaded += CodeCompletionEditor_Loaded;
 
             CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
         }
@@ -329,6 +331,46 @@ namespace Dynamo.UI.Controls
                 OnEscape();
             }
         }
+
+        /// <summary>
+        /// Handles the Loaded event to initialize resize capabilities and set minimum dimensions.
+        /// </summary>
+        private void CodeCompletionEditor_Loaded(object sender, RoutedEventArgs e)
+        {
+            resizeThumb.Visibility = Visibility.Visible;
+            MinWidth = 100;
+            MinHeight = 38;
+        }
+
+
+        /// <summary>
+        /// Handles the Thumb drag event to resize the node, dynamically overriding MaxWidth if exceeded.
+        /// </summary>
+        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
+        {
+            var yAdjust = ActualHeight + e.VerticalChange;
+            var xAdjust = ActualWidth + e.HorizontalChange;
+
+            // Dynamically remove MaxWidth if the thumb is used
+            if (InnerTextEditor != null)
+            {
+                if (xAdjust > InnerTextEditor.MaxWidth)
+                {
+                    InnerTextEditor.MaxWidth = double.PositiveInfinity;
+                }
+            }
+
+            if (xAdjust >= MinWidth)
+            {
+                Width = xAdjust;
+            }
+
+            if (yAdjust >= MinHeight)
+            {
+                Height = yAdjust;
+            }
+        }
+
         #endregion
 
         private void ShowInsightWindow(IEnumerable<CodeCompletionInsightItem> items)

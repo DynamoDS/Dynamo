@@ -43,5 +43,21 @@
                    FontSize="13px"
                    Foreground="#AAAAAA"
                    IsHitTestVisible="False" />
+        <!--  Display a draggable control to resize the Code Block  -->
+        <Thumb Name="resizeThumb"
+               Grid.Column="1"
+               DockPanel.Dock="Right"
+               Margin="1,3,5,5"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+               Cursor="SizeNWSE"
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+               Visibility="Collapsed">
+            <Thumb.Template>
+                <ControlTemplate>
+                    <Polygon Fill="#AFAFAF" Points="0,8 8,8 8,0" />
+                </ControlTemplate>
+            </Thumb.Template>
+        </Thumb>
     </Grid>
 </UserControl>
