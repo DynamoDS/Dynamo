@@ -1,4 +1,5 @@
-﻿using System.Windows;
+using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
@@ -20,6 +21,9 @@ namespace CoreNodeModelsWpf.Nodes
         private DynamoViewModel dynamoViewModel;
         private StringInput nodeModel;
         private MenuItem editWindowItem;
+        private readonly double defMaxWidthSize = 400;
+        private readonly int minWidthSize = 100;
+        private readonly int minHeightSize = 33;
 
         public void CustomizeView(StringInput stringInput, NodeView nodeView)
         {
@@ -41,9 +45,13 @@ namespace CoreNodeModelsWpf.Nodes
                 AcceptsReturn = true,
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
-                MaxWidth = 200,
+                //MaxWidth = defMaxWidthSize,
                 VerticalAlignment = VerticalAlignment.Top
             };
+
+            RestoreNodeSize(tb, stringInput);
+
+            var c1 = tb.Width;
 
             nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
@@ -58,50 +66,44 @@ namespace CoreNodeModelsWpf.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            // Add resize thumb using the helper method
-            AddResizeThumb(tb, nodeView.inputGrid);
+            //add resize thumb using the helper methods
+            AddResizeThumb(tb, nodeView.inputGrid, stringInput);
         }
 
-        private void AddResizeThumb(StringTextBox tb, Grid inputGrid)
+        /// <summary>
+        /// Adds a resize thumb to enable dynamic resizing of a StringTextBox, restoring saved dimensions and updating them on resize.
+        /// </summary>
+        private void AddResizeThumb(StringTextBox tb, Grid inputGrid, StringInput stringInput)
         {
-            // Create the resize thumb
-            var resizeThumb = new Thumb
-            {
-                Width = 10,
-                Height = 10,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Bottom,
-                Cursor = Cursors.SizeNWSE,
-                Margin = new Thickness(0, 0, 3, 3)
-            };
+            // Create and configure the resize thumb
+            var resizeThumb = CreateResizeThumb();
 
-            // Define the shape for the thumb
-            var template = new ControlTemplate(typeof(Thumb));
-            var polygon = new FrameworkElementFactory(typeof(System.Windows.Shapes.Polygon));
-            polygon.SetValue(System.Windows.Shapes.Polygon.FillProperty, new SolidColorBrush(Color.FromRgb(175, 175, 175)));
-            polygon.SetValue(System.Windows.Shapes.Polygon.PointsProperty, new PointCollection(new[] { new Point(0, 8), new Point(8, 8), new Point(8, 0) }));
-            template.VisualTree = polygon;
-            resizeThumb.Template = template;
+            var c1 = tb.Width;
+
+            // Restore saved size
+            RestoreNodeSize(tb, stringInput);
+
+            var c2 = tb.Width;
 
             // Handle resizing
             resizeThumb.DragDelta += (s, e) =>
             {
-                if (tb.MaxWidth == 200)
+                var c3 = tb.Width;
+
+                if (tb.MaxWidth == defMaxWidthSize)
                 {
                     tb.MaxWidth = double.PositiveInfinity;
                 }
 
+                var c4 = tb.Width;
+
                 var newWidth = tb.ActualWidth + e.HorizontalChange;
                 var newHeight = tb.ActualHeight + e.VerticalChange;
+                tb.Width = Math.Max(minWidthSize, newWidth);
+                tb.Height = Math.Max(minHeightSize, newHeight);
 
-                tb.MinWidth = 100;
-                tb.MinHeight = 38;
-
-                if (newWidth >= tb.MinWidth)
-                    tb.Width = newWidth;
-
-                if (newHeight >= tb.MinHeight)
-                    tb.Height = newHeight;
+                // Save the new dimensions to the NodeSizes dictionary
+                StringInput.NodeSizes[stringInput.GUID] = new Tuple<double, double>(tb.Width, tb.Height);
             };
 
             // Add the thumb to the input grid
@@ -124,6 +126,53 @@ namespace CoreNodeModelsWpf.Nodes
 
             editWindow.ShowDialog();
         }
+
+        #region Helpers
+
+        /// <summary>
+        /// Helper to create a resize thumb.
+        /// </summary>
+        private static Thumb CreateResizeThumb()
+        {
+            return new Thumb
+            {
+                Width = 10,
+                Height = 10,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Cursor = Cursors.SizeNWSE,
+                Margin = new Thickness(0, 0, 5, 3),
+                Template = CreateThumbTemplate()
+            };
+        }
+
+        /// <summary>
+        /// Helper to create the thumb template.
+        /// </summary>
+        private static ControlTemplate CreateThumbTemplate()
+        {
+            var template = new ControlTemplate(typeof(Thumb));
+            var polygon = new FrameworkElementFactory(typeof(System.Windows.Shapes.Polygon));
+            polygon.SetValue(System.Windows.Shapes.Polygon.FillProperty, new SolidColorBrush(Color.FromRgb(175, 175, 175)));
+            polygon.SetValue(System.Windows.Shapes.Polygon.PointsProperty, new PointCollection(new[] { new Point(0, 8), new Point(8, 8), new Point(8, 0) }));
+            template.VisualTree = polygon;
+            return template;
+        }
+
+        /// <summary>
+        /// Helper to restore node size.
+        /// </summary>
+        private static void RestoreNodeSize(StringTextBox tb, StringInput stringInput)
+        {
+            if (StringInput.NodeSizes.TryGetValue(stringInput.GUID, out var savedSize))
+            {
+                tb.Width = savedSize.Item1;
+                tb.Height = savedSize.Item2;
+
+            }
+        }
+
+        #endregion
 
         public void Dispose()
         {

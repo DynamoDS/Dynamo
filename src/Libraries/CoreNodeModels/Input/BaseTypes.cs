@@ -29,6 +29,10 @@ namespace CoreNodeModels.Input
         /// server type for the node. This property should only be
         /// used for serialization. 
         /// </summary>
+        public static Dictionary<Guid, Tuple<double, double>> NodeSizes = new Dictionary<Guid, Tuple<double, double>>();
+
+        public Guid GUID { get; set; } = Guid.NewGuid();
+
         public override string NodeType
         {
             get
