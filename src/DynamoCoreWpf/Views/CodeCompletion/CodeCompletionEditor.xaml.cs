@@ -337,11 +337,24 @@ namespace Dynamo.UI.Controls
         /// </summary>
         private void CodeCompletionEditor_Loaded(object sender, RoutedEventArgs e)
         {
-            resizeThumb.Visibility = Visibility.Visible;
+            // Set the visibility of the resize thumb to Collapsed initially
+            resizeThumb.Visibility = Width > 145 ? Visibility.Visible : Visibility.Collapsed;
+
             MinWidth = 100;
             MinHeight = 38;
+
+            // Attach SizeChanged event to dynamically toggle visibility based on width
+            InnerTextEditor.SizeChanged += OnEditorSizeChanged;
         }
 
+        private void OnEditorSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (resizeThumb != null)
+            {
+                // Show the resize thumb if Width > 100, otherwise collapse it
+                resizeThumb.Visibility = ActualWidth > 145 ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
 
         /// <summary>
         /// Handles the Thumb drag event to resize the node, dynamically overriding MaxWidth if exceeded.

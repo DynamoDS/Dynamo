@@ -21,9 +21,9 @@ namespace CoreNodeModelsWpf.Nodes
         private DynamoViewModel dynamoViewModel;
         private StringInput nodeModel;
         private MenuItem editWindowItem;
-        private readonly double defMaxWidthSize = 400;
+        private readonly double defMaxWidthSize = 200;
         private readonly int minWidthSize = 100;
-        private readonly int minHeightSize = 33;
+        private readonly int minHeightSize = 31;
 
         public void CustomizeView(StringInput stringInput, NodeView nodeView)
         {
@@ -45,13 +45,11 @@ namespace CoreNodeModelsWpf.Nodes
                 AcceptsReturn = true,
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
-                //MaxWidth = defMaxWidthSize,
+                MaxWidth = defMaxWidthSize,
                 VerticalAlignment = VerticalAlignment.Top
             };
 
-            RestoreNodeSize(tb, stringInput);
-
-            var c1 = tb.Width;
+            //RestoreNodeSize(tb, stringInput);
 
             nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
@@ -66,8 +64,10 @@ namespace CoreNodeModelsWpf.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            //add resize thumb using the helper methods
+            ////add resize thumb using the helper methods
             AddResizeThumb(tb, nodeView.inputGrid, stringInput);
+
+            
         }
 
         /// <summary>
@@ -75,39 +75,35 @@ namespace CoreNodeModelsWpf.Nodes
         /// </summary>
         private void AddResizeThumb(StringTextBox tb, Grid inputGrid, StringInput stringInput)
         {
-            // Create and configure the resize thumb
             var resizeThumb = CreateResizeThumb();
+            inputGrid.Children.Add(resizeThumb);
 
-            var c1 = tb.Width;
+            // Add event listener to toggle the thumb's visibility based on the text box width
+            tb.SizeChanged += (sender, args) =>
+            {
+                resizeThumb.Visibility = tb.ActualWidth <= minWidthSize ? Visibility.Collapsed : Visibility.Visible;
+            };
 
-            // Restore saved size
-            RestoreNodeSize(tb, stringInput);
+            // Ensure the thumb visibility aligns with the initial width
+            resizeThumb.Visibility = stringInput.Width <= minWidthSize ? Visibility.Collapsed : Visibility.Visible;
 
-            var c2 = tb.Width;
-
-            // Handle resizing
+            // Handle resizing logic in the resize thumb
             resizeThumb.DragDelta += (s, e) =>
             {
-                var c3 = tb.Width;
-
                 if (tb.MaxWidth == defMaxWidthSize)
                 {
                     tb.MaxWidth = double.PositiveInfinity;
                 }
 
-                var c4 = tb.Width;
-
                 var newWidth = tb.ActualWidth + e.HorizontalChange;
                 var newHeight = tb.ActualHeight + e.VerticalChange;
+
                 tb.Width = Math.Max(minWidthSize, newWidth);
                 tb.Height = Math.Max(minHeightSize, newHeight);
 
-                // Save the new dimensions to the NodeSizes dictionary
-                StringInput.NodeSizes[stringInput.GUID] = new Tuple<double, double>(tb.Width, tb.Height);
+                stringInput.Width = tb.ActualWidth;
+                stringInput.Height = tb.ActualHeight;
             };
-
-            // Add the thumb to the input grid
-            inputGrid.Children.Add(resizeThumb);
         }
 
         public void editWindowItem_Click(object sender, RoutedEventArgs e)
@@ -141,7 +137,7 @@ namespace CoreNodeModelsWpf.Nodes
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Cursor = Cursors.SizeNWSE,
-                Margin = new Thickness(0, 0, 5, 3),
+                Margin = new Thickness(0, 0, 3, 3),
                 Template = CreateThumbTemplate()
             };
         }
@@ -162,15 +158,15 @@ namespace CoreNodeModelsWpf.Nodes
         /// <summary>
         /// Helper to restore node size.
         /// </summary>
-        private static void RestoreNodeSize(StringTextBox tb, StringInput stringInput)
-        {
-            if (StringInput.NodeSizes.TryGetValue(stringInput.GUID, out var savedSize))
-            {
-                tb.Width = savedSize.Item1;
-                tb.Height = savedSize.Item2;
+        //private static void RestoreNodeSize(StringTextBox tb, StringInput stringInput)
+        //{
+        //    if (StringInput.NodeSizes.TryGetValue(stringInput.GUID, out var savedSize))
+        //    {
+        //        tb.Width = savedSize.Item1;
+        //        tb.Height = savedSize.Item2;
 
-            }
-        }
+        //    }
+        //}
 
         #endregion
 
