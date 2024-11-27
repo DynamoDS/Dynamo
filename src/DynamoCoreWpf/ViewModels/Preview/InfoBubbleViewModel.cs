@@ -1039,8 +1039,7 @@ namespace Dynamo.ViewModels
     public struct InfoBubbleDataPacket : IEquatable<InfoBubbleDataPacket>
     {
         private const string externalLinkIdentifier = "href=";
-        private const string externalLinkSuffix = ".html";
-        private static readonly Regex externalLinkMatcher = new(Regex.Escape(externalLinkIdentifier) + ".*?" + Regex.Escape(externalLinkSuffix), RegexOptions.Compiled);
+        private static readonly Regex externalLinkMatcher = new($@"({Regex.Escape(externalLinkIdentifier)}[^ \n]*?)([ \n]|$)", RegexOptions.Compiled);
         public InfoBubbleViewModel.Style Style;
         public Point TopLeft;
         public Point BotRight;
