@@ -57,7 +57,7 @@ namespace DynamoCoreWpfTests
             const string i = "href=";
             var goodLink = "ExcelNotInstalled.html";
             var badWhitespaceLink = " ";
-            var partialDotLink = " . ";
+            var partialDotLink = ". ";
             var goodRemoteLink = "https://dictionary.dynamobim.org/#/";
             var partialRemoteLink = ".com";
             var badIdentifierIncomplete = "href";

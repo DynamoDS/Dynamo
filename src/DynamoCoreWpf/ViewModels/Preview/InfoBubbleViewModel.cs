@@ -1089,7 +1089,7 @@ namespace Dynamo.ViewModels
             if (!text.Contains(externalLinkIdentifier)) return text;
 
             // remove all links from the text (marked as starting with externalLinkIdentifier)
-            return externalLinkMatcher.Replace(text, string.Empty);
+            return externalLinkMatcher.Replace(text, "$2").Trim();
         }
 
         private static Uri ParseLinkFromText(string text)
