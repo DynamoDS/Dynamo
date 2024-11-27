@@ -433,7 +433,7 @@
                                         <Style.Triggers>
                                             <!--  Trigger for IsCompatible == true (compatible)  -->
                                             <DataTrigger Binding="{Binding IsCompatible}" Value="True">
-                                                <Setter Property="BorderBrush" Value="{StaticResource PMHeaderBackgroundColorBrush}" />
+                                                <Setter Property="BorderBrush" Value="{StaticResource PMVersionCompatibleColorBrush}" />
                                             </DataTrigger>
 
                                             <!--  Trigger for IsCompatible == false (not compatible)  -->
