@@ -71,21 +71,23 @@ namespace CoreNodeModelsWpf.Nodes
         }
 
         /// <summary>
-        /// Adds a resize thumb to enable dynamic resizing of a StringTextBox, restoring saved dimensions and updating them on resize.
+        /// Adds a resize thumb to enable dynamic resizing of a StringTextBox.
         /// </summary>
         private void AddResizeThumb(StringTextBox tb, Grid inputGrid, StringInput stringInput)
         {
             var resizeThumb = CreateResizeThumb();
             inputGrid.Children.Add(resizeThumb);
 
-            // Add event listener to toggle the thumb's visibility based on the text box width
-            tb.SizeChanged += (sender, args) =>
-            {
-                resizeThumb.Visibility = tb.ActualWidth <= minWidthSize ? Visibility.Collapsed : Visibility.Visible;
-            };
+            //// Add event listener to toggle the thumb's visibility based on the text box width
+            //tb.SizeChanged += (sender, args) =>
+            //{
+            //    resizeThumb.Visibility = tb.ActualWidth <= minWidthSize ?
+            //    Visibility.Collapsed : Visibility.Visible;
+            //};
 
-            // Ensure the thumb visibility aligns with the initial width
-            resizeThumb.Visibility = stringInput.Width <= minWidthSize ? Visibility.Collapsed : Visibility.Visible;
+            //// Ensure the thumb visibility aligns with the initial width
+            //resizeThumb.Visibility = stringInput.Width <= minWidthSize ?
+            //    Visibility.Collapsed : Visibility.Visible;
 
             // Handle resizing logic in the resize thumb
             resizeThumb.DragDelta += (s, e) =>

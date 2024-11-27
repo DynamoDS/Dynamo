@@ -109,6 +109,11 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        ///// <summary>
+        ///// The threshold width for showing the resize thumb.
+        ///// </summary>
+        //private const int ResizeThumbVisibilityThreshold = 145;
+
         #endregion
 
         /// <summary>
@@ -337,24 +342,29 @@ namespace Dynamo.UI.Controls
         /// </summary>
         private void CodeCompletionEditor_Loaded(object sender, RoutedEventArgs e)
         {
-            // Set the visibility of the resize thumb to Collapsed initially
-            resizeThumb.Visibility = Width > 145 ? Visibility.Visible : Visibility.Collapsed;
+            //// Set the visibility of the resize thumb to Collapsed initially
+            //resizeThumb.Visibility = Width > MinWidth ?
+            //    Visibility.Visible : Visibility.Collapsed;
+            resizeThumb.Visibility = Visibility.Visible;
 
             MinWidth = 100;
             MinHeight = 38;
 
-            // Attach SizeChanged event to dynamically toggle visibility based on width
-            InnerTextEditor.SizeChanged += OnEditorSizeChanged;
+            //// Attach SizeChanged event to dynamically toggle visibility based on width
+            //InnerTextEditor.SizeChanged += OnEditorSizeChanged;
         }
 
-        private void OnEditorSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (resizeThumb != null)
-            {
-                // Show the resize thumb if Width > 100, otherwise collapse it
-                resizeThumb.Visibility = ActualWidth > 145 ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
+        ///// <summary>
+        ///// Toggles the Thumb visibility based on the editor's width. 
+        ///// </summary>
+        //private void OnEditorSizeChanged(object sender, SizeChangedEventArgs e)
+        //{
+        //    if (resizeThumb != null)
+        //    {
+        //        resizeThumb.Visibility = ActualWidth >= MinWidth ?
+        //            Visibility.Visible : Visibility.Collapsed;
+        //    }
+        //}
 
         /// <summary>
         /// Handles the Thumb drag event to resize the node, dynamically overriding MaxWidth if exceeded.
