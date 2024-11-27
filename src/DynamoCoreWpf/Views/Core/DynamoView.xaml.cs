@@ -1427,21 +1427,28 @@ namespace Dynamo.Controls
         {
             if (homePage == null && (startPage != null))
             {
-                homePage = new UI.Views.HomePage();
-                homePage.DataContext = startPage;
-
-                var visibilityBinding = new System.Windows.Data.Binding
+                try
                 {
-                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DynamoView), 1),
-                    Path = new PropertyPath("DataContext.ShowStartPage"),
-                    Mode = BindingMode.OneWay,
-                    Converter = new BooleanToVisibilityConverter(),
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-                };
+                    homePage = new UI.Views.HomePage();
+                    homePage.DataContext = startPage;
 
-                BindingOperations.SetBinding(homePage, UIElement.VisibilityProperty, visibilityBinding);
+                    var visibilityBinding = new System.Windows.Data.Binding
+                    {
+                        RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DynamoView), 1),
+                        Path = new PropertyPath("DataContext.ShowStartPage"),
+                        Mode = BindingMode.OneWay,
+                        Converter = new BooleanToVisibilityConverter(),
+                        UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                    };
 
-                this.newHomePageContainer.Children.Add(homePage);
+                    BindingOperations.SetBinding(homePage, UIElement.VisibilityProperty, visibilityBinding);
+
+                    this.newHomePageContainer.Children.Add(homePage);
+                }
+                catch (Exception ex)
+                {
+                    Log(ex.Message);
+                }
             }
         }
 
