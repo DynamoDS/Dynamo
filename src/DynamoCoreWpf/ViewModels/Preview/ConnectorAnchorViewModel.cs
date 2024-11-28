@@ -49,15 +49,15 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The offset for the anchor button, calculated as half the size.
         /// </summary>
-        public double AnchorOffset => AnchorSize / -2; //Log to public API
+        public double AnchorOffset => AnchorSize / -2;
         /// <summary>
         /// The vertical offset for the Watch and Pin buttons.
         /// </summary>
-        public double MarkerOffsetY => GetCachedScaledSize(-37); //Log to public API
+        public double MarkerOffsetY => GetCachedScaledSize(-37);
         /// <summary>
         /// The horizontal offset for the Pin button.
         /// </summary>
-        public double MarkerOffsetX => GetCachedScaledSize(-30); //Log to public API
+        public double MarkerOffsetX => GetCachedScaledSize(-30);
 
         /// <summary>
         /// Midpoint of the connector bezier curve.
