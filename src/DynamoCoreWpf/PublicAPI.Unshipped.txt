@@ -1715,6 +1715,8 @@ Dynamo.ViewModels.CompactBubbleViewModel.ShowNumberOfItems.get -> bool
 Dynamo.ViewModels.CompactBubbleViewModel.ValueType.get -> string
 Dynamo.ViewModels.CompactBubbleViewModel.ValueType.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel
+Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorOffset.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorOffset.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorSize.get -> double
 Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorSize.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.CanDisplayIcons.get -> bool
@@ -1732,6 +1734,10 @@ Dynamo.ViewModels.ConnectorAnchorViewModel.IsHalftone.get -> bool
 Dynamo.ViewModels.ConnectorAnchorViewModel.IsHalftone.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.IsTemporarilyDisplayed.get -> bool
 Dynamo.ViewModels.ConnectorAnchorViewModel.IsTemporarilyDisplayed.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerOffsetY.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerOffsetY.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerOffsetX.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerOffsetX.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerSize.get -> double
 Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerSize.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.PinConnectorCommand.get -> Dynamo.UI.Commands.DelegateCommand
