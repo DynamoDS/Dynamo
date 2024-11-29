@@ -3083,8 +3083,9 @@ namespace Dynamo.Controls
 
         private void PinHomeButton()
         {
+            const int FirstTabItemMinimumLeftMarginOffset = 230;
             const int LibraryScrollBarWidth = 15;
-            const int minimumLeftMarginOffset = 210;
+            const int minimumLeftMarginOffset = FirstTabItemMinimumLeftMarginOffset - LibraryScrollBarWidth;
 
             var parentGrid = (Grid)verticalSplitter.Parent;
             var columnWidth = parentGrid.ColumnDefinitions[0].ActualWidth == 0
