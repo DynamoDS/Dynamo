@@ -4,7 +4,6 @@ using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
 using System;
 using CoreNodeModels;
-using System.Linq;
 
 namespace Dynamo.Controls
 {
