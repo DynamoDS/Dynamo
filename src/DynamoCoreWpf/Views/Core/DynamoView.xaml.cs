@@ -269,6 +269,7 @@ namespace Dynamo.Controls
             }
 
             DefaultMinWidth = MinWidth;
+            PinHomeButton();
         }
         private void OnRequestCloseHomeWorkSpace()
         {
@@ -2953,6 +2954,8 @@ namespace Dynamo.Controls
             {
                 tabItem.Margin = new System.Windows.Thickness(-leftMargin, 0, leftMargin, 0);
             }
+
+            PinHomeButton();
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
@@ -3076,6 +3079,27 @@ namespace Dynamo.Controls
         {
             if (this.dynamoViewModel.ShowStartPage)
                 this.dynamoViewModel.ShowStartPage = false;
+        }
+
+        private void PinHomeButton()
+        {
+            const int LibraryScrollBarWidth = 15;
+            const int minimumLeftMarginOffset = 210;
+
+            var parentGrid = (Grid)verticalSplitter.Parent;
+            var columnWidth = parentGrid.ColumnDefinitions[0].ActualWidth == 0
+                ? dynamoViewModel.LibraryWidth + LibraryScrollBarWidth
+                : parentGrid.ColumnDefinitions[0].ActualWidth;
+
+            // Constrain the position of the HomeButton.
+            if (columnWidth < minimumLeftMarginOffset)
+            {
+                this.dynamoViewModel.MinLeftMarginOffset = minimumLeftMarginOffset - columnWidth;
+            }
+            else
+            {
+                this.dynamoViewModel.MinLeftMarginOffset = 0;
+            }
         }
 
         public void Dispose()

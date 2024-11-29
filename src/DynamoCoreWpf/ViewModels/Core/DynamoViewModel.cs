@@ -366,6 +366,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private double minLeftMarignOffset;
+        /// <summary>
+        /// The 
+        /// </summary>
+        public double MinLeftMarginOffset
+        {
+            get => minLeftMarignOffset;
+            set
+            {
+                if(minLeftMarignOffset != value)
+                {
+                    minLeftMarignOffset = value;
+                    RaisePropertyChanged(nameof(MinLeftMarginOffset));
+                }
+            }
+        }
+
         /// <summary>
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
