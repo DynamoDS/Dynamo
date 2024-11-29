@@ -232,7 +232,7 @@
     <value>Converting an array to {0} would cause array rank reduction and is not permitted href=kConvertArrayToNonArray.html</value>
   </data>
   <data name="kConvertDoubleToInt" xml:space="preserve">
-    <value>Converting a double to an int may lose information. href=testing.html</value>
+    <value>Converting a double to an int may lose information.</value>
   </data>
   <data name="kConvertNonConvertibleTypes" xml:space="preserve">
     <value>Asked to convert non-convertible types</value>
