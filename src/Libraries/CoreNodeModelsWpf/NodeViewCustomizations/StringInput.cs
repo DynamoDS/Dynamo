@@ -21,7 +21,7 @@ namespace CoreNodeModelsWpf.Nodes
         private DynamoViewModel dynamoViewModel;
         private StringInput nodeModel;
         private MenuItem editWindowItem;
-        private readonly double defMaxWidthSize = 200;
+        private readonly double defMaxWidthSize = 800;
         private readonly int minWidthSize = 100;
         private readonly int minHeightSize = 31;
 
@@ -46,7 +46,7 @@ namespace CoreNodeModelsWpf.Nodes
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
                 MaxWidth = defMaxWidthSize,
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Top,
             };
 
             //RestoreNodeSize(tb, stringInput);
@@ -63,6 +63,10 @@ namespace CoreNodeModelsWpf.Nodes
                 Source = stringInput,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
+
+            // Apply deserialized Width and Height to the nodeView
+            tb.Width = stringInput.Width;  // Node's width
+            tb.Height = stringInput.Height; // Node's height
 
             ////add resize thumb using the helper methods
             AddResizeThumb(tb, nodeView.inputGrid, stringInput);

@@ -13,7 +13,6 @@ using Dynamo.Migration;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
 
 namespace CoreNodeModels.Input
 {
@@ -30,6 +29,9 @@ namespace CoreNodeModels.Input
         /// used for serialization. 
         /// </summary>
         public static Dictionary<Guid, Tuple<double, double>> NodeSizes = new Dictionary<Guid, Tuple<double, double>>();
+
+        public double Width { get; set; } = 200; // Default width
+        public double Height { get; set; } = 31; // Default height
 
         public Guid GUID { get; set; } = Guid.NewGuid();
 
@@ -86,6 +88,14 @@ namespace CoreNodeModels.Input
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.DeserializeCore(nodeElement, context);
+
+            // Use XmlElementHelper to read attributes for Width and Height
+            var helper = new XmlElementHelper(nodeElement);
+
+            // Assign Width and Height with defaults if missing
+            Width = helper.ReadDouble("Width", this.Width); 
+            Height = helper.ReadDouble("Height", this.Height); 
+
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals(typeof(string).FullName))
