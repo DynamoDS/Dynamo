@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -460,7 +461,7 @@ namespace Dynamo.ViewModels
         }
 
         // Cluster Node Autocomplete
-        internal void ShowNodeClusterAutocompleMLResults()
+        /*internal void ShowNodeClusterAutocompleMLResults()
         {
             MLNodeClusterAutoCompletionResponse MLresults = null;
 
@@ -471,7 +472,7 @@ namespace Dynamo.ViewModels
             // Get results from the ML API.
             try
             {
-                //MLresults = GetMLNodeClusterAutocompleteResults(jsonRequest);
+                MLresults = GetMLNodeClusterAutocompleteResults(jsonRequest);
             }
             catch (Exception ex)
             {
@@ -483,7 +484,6 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            // ML Results are categorized based on the threshold confidence score before displaying. 
             if (MLresults.Results.Count() > 0)
             {
                 foreach (var result in MLresults.Results)
@@ -491,15 +491,15 @@ namespace Dynamo.ViewModels
                     //
                 }               
             }
-        }
+        }*/
 
         // Rest API call to get the Node cluster Autocomlete results from the service.
         internal MLNodeClusterAutoCompletionResponse GetMLNodeClusterAutocompleteResults()
         {
             MLNodeClusterAutoCompletionResponse results = null;
 
-            var requestObj = GenerateRequestForMLAutocomplete();
-            string jsonRequest = JsonConvert.SerializeObject(requestObj);
+            var MLRequest = GenerateRequestForMLAutocomplete();
+            string jsonRequest = JsonConvert.SerializeObject(MLRequest);
 
             var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
 

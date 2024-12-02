@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
@@ -439,30 +440,9 @@ namespace Dynamo.ViewModels
 
             if (wsViewModel.DynamoViewModel.IsNodeAutocompleteClusterEnabled)
             {
-                MLNodeClusterAutoCompletionResponse clusterNodeAutocompleteresults =  wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
-
-                foreach (var result in clusterNodeAutocompleteresults.Results)
-                {
-                    //
-                }
+               MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
+               wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
             }
-        }
-
-        // Handler to invoke node Auto Complete
-        private void NodeclusterAutoComplete(object parameter)
-        {
-            var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
-            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
-            {
-                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
-            }
-
-            // Bail out from connect state
-            wsViewModel.CancelActiveState();
-            wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show, true);
         }
 
         private void NodePortContextMenu(object obj)

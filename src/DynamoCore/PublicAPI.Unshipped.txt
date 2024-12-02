@@ -2189,6 +2189,8 @@ Dynamo.Search.SearchElements.AutoCompletionNodeMachineLearningInfo.IsByUse.get -
 Dynamo.Search.SearchElements.AutoCompletionNodeMachineLearningInfo.IsByUse.set -> void
 Dynamo.Search.SearchElements.CodeBlockNodeSearchElement
 Dynamo.Search.SearchElements.CodeBlockNodeSearchElement.CodeBlockNodeSearchElement(Dynamo.Graph.Nodes.TypeLoadData data, Dynamo.Engine.LibraryServices manager) -> void
+Dynamo.Search.SearchElements.ConnectionItem
+Dynamo.Search.SearchElements.ConnectionItem.ConnectionItem() -> void
 Dynamo.Search.SearchElements.CustomNodeSearchElement
 Dynamo.Search.SearchElements.CustomNodeSearchElement.CustomNodeSearchElement(Dynamo.Graph.Nodes.CustomNodes.ICustomNodeSource customNodeManager, Dynamo.CustomNodeInfo info) -> void
 Dynamo.Search.SearchElements.CustomNodeSearchElement.ID.get -> System.Guid
@@ -2203,6 +2205,7 @@ Dynamo.Search.SearchElements.ElementTypes.CustomNode = 2 -> Dynamo.Search.Search
 Dynamo.Search.SearchElements.ElementTypes.None = 0 -> Dynamo.Search.SearchElements.ElementTypes
 Dynamo.Search.SearchElements.ElementTypes.Packaged = 131072 -> Dynamo.Search.SearchElements.ElementTypes
 Dynamo.Search.SearchElements.ElementTypes.ZeroTouch = 1 -> Dynamo.Search.SearchElements.ElementTypes
+Dynamo.Search.SearchElements.NodeItem
 Dynamo.Search.SearchElements.NodeModelSearchElement
 Dynamo.Search.SearchElements.NodeModelSearchElementBase
 Dynamo.Search.SearchElements.NodeModelSearchElementBase.NodeModelSearchElementBase(Dynamo.Graph.Nodes.TypeLoadData typeLoadData) -> void

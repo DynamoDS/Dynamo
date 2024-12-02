@@ -40,21 +40,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Command to trigger Node Auto Complete from node port interaction
-        /// </summary>
-        public DelegateCommand ClusterNodeAutoCompleteCommand
-        {
-            get
-            {
-                if (nodeClusterAutoCompleteCommand == null)
-                    nodeClusterAutoCompleteCommand = new DelegateCommand(NodeclusterAutoComplete, CanAutoComplete);
-
-                return nodeClusterAutoCompleteCommand;
-            }
-        }
-
-
-        /// <summary>
         /// Command to open an Port's Context Menu popup
         /// </summary>
         public DelegateCommand NodePortContextMenuCommand

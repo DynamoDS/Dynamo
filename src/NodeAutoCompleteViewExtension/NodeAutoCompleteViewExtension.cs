@@ -1,7 +1,12 @@
 using System;
+using Dynamo.Core;
+using System.Windows.Controls;
 using Dynamo.Extensions;
 using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
+using System.Collections.Generic;
+using Dynamo.ViewModels;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.NodeAutoComplete
 {
@@ -12,6 +17,22 @@ namespace Dynamo.NodeAutoComplete
     public class NodeAutoCompleteViewExtension : IViewExtension, ILogSource
     {
         private const String extensionName = "Node Auto Complete";
+
+        internal MenuItem nodeAutocompleteMenuItem;
+
+        /// <summary>
+        /// Internal cache of the data displayed in data grid, useful in unit testing.
+        /// You are not expected to modify this but rather inspection.
+        /// </summary>
+        internal IEnumerable<NodeAutocompleteCluster> NodeAutocompleteClusters;
+
+        internal NodeAutoCompleteViewModel nodeAutoCompleteViewModel { get; set; }
+
+        internal NodeAutoCompleteView DependencyView
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Extension Name
@@ -56,6 +77,7 @@ namespace Dynamo.NodeAutoComplete
         public void Startup(ViewStartupParams viewStartupParams)
         {
             // Do nothing for now
+
         }
 
         public event Action<ILogMessage> MessageLogged;
@@ -67,7 +89,32 @@ namespace Dynamo.NodeAutoComplete
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            // Do nothing for now
+            var dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
+
+            DependencyView = new NodeAutoCompleteView(this, viewLoadedParams);
+            nodeAutoCompleteViewModel = new NodeAutoCompleteViewModel(viewLoadedParams.DynamoWindow, dynamoViewModel);
+
+            // Adding a button in view menu to refresh and show manually
+            nodeAutocompleteMenuItem = new MenuItem { Header = "Show NodeAutocomplete view extension", IsCheckable = true, IsChecked = false };
+            nodeAutocompleteMenuItem.Click += (sender, args) =>
+            {
+                if (nodeAutocompleteMenuItem.IsChecked)
+                {
+                    viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+                    nodeAutocompleteMenuItem.IsChecked = true;
+                }
+                else
+                {
+                    viewLoadedParams.CloseExtensioninInSideBar(this);
+                    nodeAutocompleteMenuItem.IsChecked = false;
+                }
+            };
+            viewLoadedParams.AddExtensionMenuItem(nodeAutocompleteMenuItem);
+        }
+
+        internal void ShowClusterNodeAutocompleteResults(MLNodeClusterAutoCompletionResponse results)
+        {
+            DependencyView.MainItems.ItemsSource = results.Results;
         }
     }
 }

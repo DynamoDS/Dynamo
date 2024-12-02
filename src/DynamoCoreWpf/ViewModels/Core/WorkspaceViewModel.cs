@@ -18,6 +18,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
@@ -171,6 +172,7 @@ namespace Dynamo.ViewModels
 
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
         internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
+        internal static event Action<MLNodeClusterAutoCompletionResponse> RequestNodeAutoCompleteViewExtension;
 
         internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag, bool ClusterNodeAutocomplete = false)
         {
@@ -180,6 +182,11 @@ namespace Dynamo.ViewModels
         internal void OnRequestPortContextMenu(ShowHideFlags flag, PortViewModel viewModel)
         {
             RequestPortContextMenu?.Invoke(flag, viewModel);
+        }
+
+        internal void OnRequestNodeAutoCompleteViewExtension(MLNodeClusterAutoCompletionResponse clusterNodeAutoComplete)
+        {
+            RequestNodeAutoCompleteViewExtension?.Invoke(clusterNodeAutoComplete);
         }
 
         #endregion

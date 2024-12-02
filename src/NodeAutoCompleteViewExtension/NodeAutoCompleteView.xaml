@@ -1,18 +1,21 @@
-<UserControl x:Class="Dynamo.WorkspaceDependency.WorkspaceDependencyView"
+<UserControl x:Class="Dynamo.NodeAutoComplete.NodeAutoCompleteView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
+             xmlns:w="clr-namespace:Dynamo.NodeAutoComplete.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
              HorizontalAlignment="Stretch">
     <UserControl.Resources>
+
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
@@ -84,16 +87,50 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Fill Space -->
         <Grid x:Name="container"
             Background="Transparent"
-            Grid.Row="3"
-            Height="10000"
+            Grid.Row="0"
+            Height="30"
             VerticalAlignment="Stretch">
+        </Grid>
+        
+        <TextBlock Margin="5,0,0,3"
+                   Grid.Row="1"
+                   TextWrapping="Wrap"  
+                   TextTrimming="CharacterEllipsis"
+                   Text="Node Autocomplete Cluster Results" />
+
+        <Grid x:Name="MainGrid"  Grid.Row="2">
+            <ItemsControl Name="MainItems" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>    
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Margin="5,0,0,3"
+                           Grid.Row="1"
+                           TextWrapping="Wrap"  
+                           TextTrimming="CharacterEllipsis"
+                           Background="Red"
+                           Text="{Binding Path=Title, Mode=TwoWay}" />
+                        <!--<Expander Foreground="Red" Style="{StaticResource WorkspaceReferencesExpanderStyle}" ExpandDirection="Down" HorizontalAlignment="Left" IsExpanded="{Binding ShowHide}">
+                            <Expander.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Foreground="Red" Text="{Binding Path=Title}"
+                                               Width="{Binding RelativeSource={RelativeSource AncestorType=Expander}, Path=ActualWidth}">
+                                    </TextBlock>
+                                </DataTemplate>
+                            </Expander.HeaderTemplate>
+                        </Expander>-->
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </UserControl>

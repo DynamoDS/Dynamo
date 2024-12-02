@@ -40,8 +40,11 @@ namespace Dynamo.Search.SearchElements
         internal ContextItem Context { get; set; }
     }
 
+    /// <summary>
+    /// Data representing node properties for ML autocomplete.
+    /// </summary>
     [DataContract]
-    internal class NodeItem
+    public class NodeItem
     {
         internal NodeItem()
         {
@@ -133,8 +136,11 @@ namespace Dynamo.Search.SearchElements
         internal IEnumerable<ConnectionItem> Connections { get; set; }
     }
 
+    /// <summary>
+    /// Data representing node connections for ML autocomplete.
+    /// </summary>
     [DataContract]
-    internal class ConnectionItem
+    public class ConnectionItem
     {
         [DataMember(Name = "from")]
         internal ConnectorNodeItem StartNode { get; set; }
