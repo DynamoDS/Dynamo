@@ -361,6 +361,10 @@ Dynamo.Controls.LacingToVisibilityConverter
 Dynamo.Controls.LacingToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LacingToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LacingToVisibilityConverter.LacingToVisibilityConverter() -> void
+Dynamo.Controls.LeftMarginConverter
+Dynamo.Controls.LeftMarginConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.LeftMarginConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.LeftMarginConverter.LeftMarginConverter() -> void
 Dynamo.Controls.LeftThicknessConverter
 Dynamo.Controls.LeftThicknessConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LeftThicknessConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -2003,6 +2007,8 @@ Dynamo.ViewModels.DynamoViewModel.LogText.get -> string
 Dynamo.ViewModels.DynamoViewModel.MainGuideManager.get -> Dynamo.Wpf.UI.GuidedTour.GuidesManager
 Dynamo.ViewModels.DynamoViewModel.MainGuideManager.set -> void
 Dynamo.ViewModels.DynamoViewModel.MakeNewHomeWorkspace(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.MinLeftMarginOffset.get -> double
+Dynamo.ViewModels.DynamoViewModel.MinLeftMarginOffset.set -> void
 Dynamo.ViewModels.DynamoViewModel.Model.get -> Dynamo.Models.DynamoModel
 Dynamo.ViewModels.DynamoViewModel.MutateTestDelegateCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.MutateTestDelegateCommand.set -> void
