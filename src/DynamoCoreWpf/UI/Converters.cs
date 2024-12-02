@@ -613,6 +613,24 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// A custom converter to 'pin' the location of the Home button in place when the slider goes under a certain value
+    /// Do not use for other purposes, and please, do not change
+    /// </summary>
+    public class LeftMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double offset = (double)value;
+            return new System.Windows.Thickness(offset * 1, 0, offset * -1, 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PathToFileNameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
