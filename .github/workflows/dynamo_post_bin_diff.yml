@@ -17,13 +17,13 @@ jobs:
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Download Pull Request Data
-        uses: dawidd6/action-download-artifact@v6
+        uses: dawidd6/action-download-artifact@v7
         with:
           name: pr_data
           run_id: ${{ github.event.workflow_run.id }}
           path: ${{ github.workspace }}/pr
       - name: Download Bin Diff Result
-        uses: dawidd6/action-download-artifact@v6
+        uses: dawidd6/action-download-artifact@v7
         with:
           name: bin_diff_result
           run_id: ${{ github.event.workflow_run.id }}
