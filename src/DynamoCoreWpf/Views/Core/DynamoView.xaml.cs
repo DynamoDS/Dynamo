@@ -2926,17 +2926,18 @@ namespace Dynamo.Controls
             UpdateLibraryCollapseIcon();
         }
 
+        // The Workspace TabItems must appear to the right of icon buttons (New File, Open, Save, Undo, Redo)
+        // but never overlap them. 230 is the minimum offset required to achieve this. 
+        // If the library panel is stretched greater than 230, they must align with its width instead.
+        private const int FirstTabItemMinimumLeftMarginOffset = 230;
+        private const int LibraryScrollBarWidth = 15;
+
         /// <summary>
         /// Updates the workspace TabItems to have the correct margins in response to events
         /// such as the library being stretched or a Custom Node workspace being created.
         /// </summary>
         private void UpdateWorkspaceTabSizes()
         {
-            // The Workspace TabItems must appear to the right of icon buttons (New File, Open, Save, Undo, Redo)
-            // but never overlap them. 230 is the minimum offset required to achieve this. 
-            // If the library panel is stretched greater than 230, they must align with its width instead.
-            const int FirstTabItemMinimumLeftMarginOffset = 230;
-            const int LibraryScrollBarWidth = 15;
             
             // We measure the full library width at runtime.
             int fullLibraryWidth = dynamoViewModel.LibraryWidth + LibraryScrollBarWidth;
@@ -3090,8 +3091,6 @@ namespace Dynamo.Controls
 
         private void PinHomeButton()
         {
-            const int FirstTabItemMinimumLeftMarginOffset = 230;
-            const int LibraryScrollBarWidth = 15;
             const int minimumLeftMarginOffset = FirstTabItemMinimumLeftMarginOffset - LibraryScrollBarWidth;
 
             var parentGrid = (Grid)verticalSplitter.Parent;
