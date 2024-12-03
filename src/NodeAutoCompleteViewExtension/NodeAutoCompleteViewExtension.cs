@@ -9,6 +9,8 @@ using Dynamo.ViewModels;
 using Dynamo.Search.SearchElements;
 using System.Data;
 using System.Linq;
+using Dynamo.NodeAutoComplete.Properties;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.NodeAutoComplete
 {
@@ -16,11 +18,18 @@ namespace Dynamo.NodeAutoComplete
     /// This view extension tracks current clicked node port in Dynamo and 
     /// tries to suggest the next best node to connect that port.
     /// </summary>
-    public class NodeAutoCompleteViewExtension : IViewExtension, ILogSource
+    public class NodeAutoCompleteViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
         private const String extensionName = "Node Auto Complete";
+        private ViewLoadedParams viewLoadedParamsReference;
 
         internal MenuItem nodeAutocompleteMenuItem;
+
+        /// <summary>
+        /// Internal cache of the data displayed in data grid, useful in unit testing.
+        /// You are not expected to modify this but rather inspection.
+        /// </summary>
+        internal IEnumerable<NodeAutocompleteCluster> nodeAutocompleteClusters;
 
         /// <summary>
         /// Internal cache of the data displayed in data grid, useful in unit testing.
@@ -39,7 +48,7 @@ namespace Dynamo.NodeAutoComplete
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name
+        public override string Name
         {
             get
             {
@@ -50,7 +59,7 @@ namespace Dynamo.NodeAutoComplete
         /// <summary>
         /// GUID of the extension
         /// </summary>
-        public string UniqueId
+        public override string UniqueId
         {
             get
             {
@@ -61,9 +70,10 @@ namespace Dynamo.NodeAutoComplete
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
-            // Do nothing for now
+            DependencyView?.Dispose();
+            nodeAutocompleteClusters = null;
         }
 
         public void Ready(ReadyParams readyParams)
@@ -89,8 +99,27 @@ namespace Dynamo.NodeAutoComplete
             this.MessageLogged?.Invoke(msg);
         }
 
+        internal void AddToSidebar()
+        {
+            // Dont allow the extension to show in anything that isnt a HomeWorkspaceModel
+            if (!(this.viewLoadedParamsReference.CurrentWorkspaceModel is HomeWorkspaceModel))
+            {
+                this.Closed();
+                return;
+            }
+
+            this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, DependencyView);
+        }
+
+        internal void ShowViewExtension()
+        {
+            AddToSidebar();
+            this.nodeAutocompleteMenuItem.IsChecked = true;
+        }
+
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
+            this.viewLoadedParamsReference = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
             var dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
 
             DependencyView = new NodeAutoCompleteView(this, viewLoadedParams);
@@ -113,10 +142,17 @@ namespace Dynamo.NodeAutoComplete
             };
             viewLoadedParams.AddExtensionMenuItem(nodeAutocompleteMenuItem);
         }
+        public override void Closed()
+        {
+            if (this.nodeAutocompleteMenuItem != null)
+            {
+                this.nodeAutocompleteMenuItem.IsChecked = false;
+            }
+        }
 
         internal void ShowClusterNodeAutocompleteResults(MLNodeClusterAutoCompletionResponse results)
         {
-            var nodeAutocompleteClusters = results.Results.ToList().Select(r => new NodeAutocompleteCluster(r));
+            nodeAutocompleteClusters = results.Results.ToList().Select(r => new NodeAutocompleteCluster(r));
 
             DependencyView.MainItems.ItemsSource = nodeAutocompleteClusters;
         }

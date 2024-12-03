@@ -100,6 +100,7 @@ namespace Dynamo.NodeAutoComplete
         /// </summary>
         internal void ShowNodeAutoCompleteViewExtension(MLNodeClusterAutoCompletionResponse results)
         {
+            nodeAutocompleteViewExtension.ShowViewExtension();
             nodeAutocompleteViewExtension.ShowClusterNodeAutocompleteResults(results);
         }
 

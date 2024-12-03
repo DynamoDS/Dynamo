@@ -113,13 +113,6 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-
-                        <!--<TextBlock Margin="5,0,0,3"
-                           Grid.Row="1"
-                           TextWrapping="Wrap"
-                           TextTrimming="CharacterEllipsis"
-                           Text="{Binding Title}" />-->
-
                         <Expander Header="{Binding Path=Title}" Style="{StaticResource WorkspaceReferencesExpanderStyle}" ExpandDirection="Down" HorizontalAlignment="Left" IsExpanded="{Binding ShowHide}">
                             <Grid>
                                 <Grid.RowDefinitions>
