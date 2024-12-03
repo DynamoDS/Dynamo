@@ -15,7 +15,7 @@
 
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
-              Height="35px"
+              Height="34px"
               Background="Transparent"
               IsHitTestVisible="True">
             <Grid.ColumnDefinitions>
