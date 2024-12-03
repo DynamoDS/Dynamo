@@ -44,7 +44,6 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\WorkspaceDependencyViewExtension\WorkspaceDependencyViewExtension.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="PackageDetailsView.xaml">
