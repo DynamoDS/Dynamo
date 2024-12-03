@@ -37,7 +37,6 @@
             <!--  Bind NodeAutoComplete to double left click  -->
             <Grid.InputBindings>
                 <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
-                <MouseBinding Command="{Binding Path=ClusterNodeAutoCompleteCommand}" MouseAction="RightClick" />
             </Grid.InputBindings>
 
             <Grid.Style>

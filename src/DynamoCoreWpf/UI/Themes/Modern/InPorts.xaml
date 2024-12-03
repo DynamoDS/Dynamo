@@ -40,7 +40,7 @@
 
             <!--  Bind NodeAutoComplete to double left click  -->
             <Grid.InputBindings>
-                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="RightDoubleClick" />
+                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
             </Grid.InputBindings>
 
             <!--  Enables Port Snapping  -->

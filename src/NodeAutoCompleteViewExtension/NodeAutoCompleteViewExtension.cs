@@ -7,6 +7,8 @@ using Dynamo.Wpf.Extensions;
 using System.Collections.Generic;
 using Dynamo.ViewModels;
 using Dynamo.Search.SearchElements;
+using System.Data;
+using System.Linq;
 
 namespace Dynamo.NodeAutoComplete
 {
@@ -114,7 +116,9 @@ namespace Dynamo.NodeAutoComplete
 
         internal void ShowClusterNodeAutocompleteResults(MLNodeClusterAutoCompletionResponse results)
         {
-            DependencyView.MainItems.ItemsSource = results.Results;
+            var nodeAutocompleteClusters = results.Results.ToList().Select(r => new NodeAutocompleteCluster(r));
+
+            DependencyView.MainItems.ItemsSource = nodeAutocompleteClusters;
         }
     }
 }
