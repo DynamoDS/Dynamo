@@ -64,8 +64,8 @@
                 x:Name="AnchorButton"
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
-                Height="{Binding AnchorSize}"
-                Width="{Binding AnchorSize}"
+                Height="{Binding ScaledAnchorSize}"
+                Width="{Binding ScaledAnchorSize}"
                 ToolTipService.ShowDuration="{x:Static Member=System:Int32.MaxValue}">
             <Button.ToolTip>
                 <ToolTip Style="{StaticResource ConnectorTooltip}"
@@ -104,8 +104,8 @@
                 Style="{StaticResource TransparentButtonWithTriggers}"
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
-                Height="{Binding MarkerSize}"
-                Width="{Binding MarkerSize}"
+                Height="{Binding ScaledMarkerSize}"
+                Width="{Binding ScaledMarkerSize}"
                 Command="{Binding PlaceWatchNodeCommand}"
                 MouseEnter="OnWatchIconHover"
                 MouseLeave="OnWatchIconUnhover">
@@ -137,8 +137,8 @@
                 Style="{StaticResource TransparentButtonWithTriggers}"
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
-                Height="{Binding MarkerSize}"
-                Width="{Binding MarkerSize}"
+                Height="{Binding ScaledMarkerSize}"
+                Width="{Binding ScaledMarkerSize}"
                 Command="{Binding PinConnectorCommand}"
                 MouseEnter="OnPinIconHover"
                 MouseLeave="OnPinIconUnhover">

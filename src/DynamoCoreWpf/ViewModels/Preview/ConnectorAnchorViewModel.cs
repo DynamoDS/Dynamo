@@ -41,15 +41,23 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The size of the Watch and Pin icons (x &amp; y dimensions).
         /// </summary>
-        public double MarkerSize => GetCachedScaledSize(30);
+        public double MarkerSize { get; set; } = 30;
+        /// <summary>
+        /// The scaled size of the Watch and Pin icons (x &amp; y dimensions).
+        /// </summary>
+        public double ScaledMarkerSize => GetCachedScaledSize(MarkerSize);
         /// <summary>
         /// The size of the anchor button (x and y dimensions).
         /// </summary>
-        public double AnchorSize => GetCachedScaledSize(15);
+        public double AnchorSize { get; set; } = 15;
+        /// <summary>
+        /// The scaled size of the anchor button (x and y dimensions).
+        /// </summary>
+        public double ScaledAnchorSize => GetCachedScaledSize(AnchorSize);
         /// <summary>
         /// The offset for the anchor button, calculated as half the size.
         /// </summary>
-        public double AnchorOffset => AnchorSize / -2;
+        public double AnchorOffset => ScaledAnchorSize / -2;
         /// <summary>
         /// The vertical offset for the Watch and Pin buttons.
         /// </summary>
