@@ -92,7 +92,7 @@ namespace Md2Html
                 while (true)
                 {
                     var line = Console.ReadLine();
-                    if (line == @"<<Eod>>")
+                    if (line.Contains(@"<<Eod>>"))
                     {
                         break;
                     }
