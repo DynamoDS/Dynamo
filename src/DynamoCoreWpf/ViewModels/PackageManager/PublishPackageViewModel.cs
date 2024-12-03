@@ -2101,7 +2101,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void RemoveSingleItem(PackageItemRootViewModel vm, DependencyType fileType)
+        internal void RemoveSingleItem(PackageItemRootViewModel vm, DependencyType fileType)
         {
             var fileName = vm.DisplayName;
 
@@ -2120,9 +2120,26 @@ namespace Dynamo.PackageManager
             else if (fileType.Equals(DependencyType.CustomNode) || fileType.Equals(DependencyType.CustomNodePreview))
             {
                 fileName = Path.GetFileNameWithoutExtension(fileName);
-                CustomNodeDefinitions.Remove(CustomNodeDefinitions
-                    .First(x => x.DisplayName == fileName));
 
+                // We allow multiple .dyf files with identical node names to be loaded at once
+                // We use the node Namespace as a prefix ([Namespace].[Node Name]) to allow for that
+                string[] nameVariations = {
+                    fileName,
+                    fileName.Replace(".", ""), // Edge case where the actual Display Name as the '.' removed
+                    fileName.Contains('.') ? fileName.Split('.')[1] : fileName // Edge case for the .dyf files that were added first
+                };
+
+                foreach (var variation in nameVariations)
+                {
+                    var customNode = CustomNodeDefinitions.FirstOrDefault(x => x.DisplayName == variation);
+                    if (customNode != null)
+                    {
+                        CustomNodeDefinitions.Remove(customNode);
+                        break; // Exit loop once found and removed
+                    }
+                }
+
+                // Find and remove the corresponding key in CustomDyfFilepaths
                 var keyToRemove = CustomDyfFilepaths.Keys
                                     .FirstOrDefault(k => Path.GetFileNameWithoutExtension(k) == fileName);
 

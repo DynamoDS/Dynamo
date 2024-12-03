@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
@@ -75,6 +76,38 @@ namespace DynamoCoreWpfTests
             Assert.AreNotEqual(vm.UploadState, PackageUploadHandle.State.Uploaded);
             Console.WriteLine(vm.ErrorString);
 
+        }
+
+        [Test]
+        public void CanRemoveCustomNodesWithIdenticalNames()
+        {
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            // Arrange
+            var customNode1 = new CustomNodeDefinition(Guid.NewGuid(), "Geometry.Curve", new List<NodeModel>());
+            var customNode2 = new CustomNodeDefinition(Guid.NewGuid(), "Building.Curve", new List<NodeModel>());
+            var customNode3 = new CustomNodeDefinition(Guid.NewGuid(), "Curve", new List<NodeModel>());
+
+            vm.CustomNodeDefinitions.Add(customNode1);
+            vm.CustomNodeDefinitions.Add(customNode2);
+            vm.CustomNodeDefinitions.Add(customNode3);
+
+            // Initial Assert
+            Assert.AreEqual(3, vm.CustomNodeDefinitions.Count);
+
+            var item1 = new PackageItemRootViewModel("Geometry.Curve.dyf", "C:\\test\\Geometry.Curve.dyf");
+            var item2 = new PackageItemRootViewModel("Building.Curve.dyf", "C:\\test\\Building.Curve.dyf");
+            var item3 = new PackageItemRootViewModel("Curve.dyf", "C:\\test\\Curve.dyf");
+
+            // Assert
+            vm.RemoveSingleItem(item1, DependencyType.CustomNodePreview);
+            Assert.AreEqual(2, vm.CustomNodeDefinitions.Count);
+
+            vm.RemoveSingleItem(item2, DependencyType.CustomNodePreview);
+            Assert.AreEqual(1, vm.CustomNodeDefinitions.Count);
+
+            vm.RemoveSingleItem(item3, DependencyType.CustomNodePreview);
+            Assert.AreEqual(0, vm.CustomNodeDefinitions.Count);
         }
 
         [Test]
