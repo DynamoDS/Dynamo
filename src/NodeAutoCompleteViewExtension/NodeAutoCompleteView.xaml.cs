@@ -151,7 +151,6 @@ namespace Dynamo.NodeAutoComplete
         /// </summary>
         public int EntryNodeInPort => clusterResultItem.EntryNodeInPort;
 
-
         /// <summary>
         /// confidence level
         /// </summary>
