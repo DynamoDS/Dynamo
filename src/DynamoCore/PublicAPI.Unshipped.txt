@@ -2041,6 +2041,8 @@ Dynamo.Models.EvaluationCompletedEventArgs.EvaluationSucceeded.get -> bool
 Dynamo.Models.EvaluationCompletedEventArgs.EvaluationTookPlace.get -> bool
 Dynamo.Models.HostAnalyticsInfo
 Dynamo.Models.HostAnalyticsInfo.HostAnalyticsInfo() -> void
+Dynamo.Models.HostAnalyticsInfo.HostProductName -> string
+Dynamo.Models.HostAnalyticsInfo.HostProductVersion -> System.Version
 Dynamo.Models.HostAnalyticsInfo.HostName -> string
 Dynamo.Models.HostAnalyticsInfo.HostVersion -> System.Version
 Dynamo.Models.HostAnalyticsInfo.ParentId -> string
@@ -2254,7 +2256,7 @@ Dynamo.Selection.ISelectable.IsSelected.set -> void
 Dynamo.Selection.ISelectable.Select() -> void
 Dynamo.Updates.BinaryVersion
 Dynamo.Utilities.LuceneCustomAnalyzer
-Dynamo.Utilities.LuceneCustomAnalyzer.LuceneCustomAnalyzer(Lucene.Net.Util.LuceneVersion matchVersion) -> void
+Dynamo.Utilities.LuceneCustomAnalyzer.LuceneCustomAnalyzer(Lucene.Net.Util.LuceneVersion matchVersion, string language) -> void
 Dynamo.Visualization.DefaultRenderPackage
 Dynamo.Visualization.DefaultRenderPackage.AddLineStripVertex(double x, double y, double z) -> void
 Dynamo.Visualization.DefaultRenderPackage.AddLineStripVertexColor(byte red, byte green, byte blue, byte alpha) -> void
@@ -2723,7 +2725,6 @@ static Dynamo.Models.DynamoModel.IsTestMode.set -> void
 static Dynamo.Models.DynamoModel.ModelBasedRecordableCommand.DeserializeGuid(System.Xml.XmlElement element, Dynamo.Utilities.XmlElementHelper helper) -> System.Collections.Generic.IEnumerable<System.Guid>
 static Dynamo.Models.DynamoModel.OnRequestDispatcherBeginInvoke(System.Action action) -> void
 static Dynamo.Models.DynamoModel.OnRequestDispatcherInvoke(System.Action action) -> void
-static Dynamo.Models.DynamoModel.RecordableCommand.jsonSettings -> Newtonsoft.Json.JsonSerializerSettings
 static Dynamo.Models.DynamoModel.RequestDispatcherBeginInvoke -> Dynamo.Models.ActionHandler
 static Dynamo.Models.DynamoModel.RequestDispatcherInvoke -> Dynamo.Models.ActionHandler
 static Dynamo.Models.DynamoModel.SetUICulture(string locale) -> void
@@ -2781,6 +2782,7 @@ static Dynamo.Properties.Resources.DescriptionResource1.get -> string
 static Dynamo.Properties.Resources.DirectoryNotFound.get -> string
 static Dynamo.Properties.Resources.DisplayEngineFailureMessageDescription.get -> string
 static Dynamo.Properties.Resources.DllLoadException.get -> string
+static Dynamo.Properties.Resources.DocsExperimentalPrefixMessage.get -> string
 static Dynamo.Properties.Resources.DownloadLatestButton.get -> string
 static Dynamo.Properties.Resources.DSFunctionNodeDescription.get -> string
 static Dynamo.Properties.Resources.DulicatedPackage.get -> string
@@ -2894,6 +2896,8 @@ static Dynamo.Properties.Resources.OutputPortAlternativeName.get -> string
 static Dynamo.Properties.Resources.PackageEmpty.get -> string
 static Dynamo.Properties.Resources.PackageLoadFailureForBlockedAssembly.get -> string
 static Dynamo.Properties.Resources.PackageManagerPackageAlreadyExists.get -> string
+static Dynamo.Properties.Resources.PackageManagerPackagePreviewCounter.get -> string
+static Dynamo.Properties.Resources.PackageManagerPackageSelectCounter.get -> string
 static Dynamo.Properties.Resources.PackageManagerUserIsNotAMaintainer.get -> string
 static Dynamo.Properties.Resources.PackageStateError.get -> string
 static Dynamo.Properties.Resources.PackageStateErrorTooltip.get -> string
@@ -2999,6 +3003,7 @@ static readonly Dynamo.Configuration.Configurations.CBNMaxPortNameLength -> int
 static readonly Dynamo.Configuration.Configurations.CodeBlockOutputPortHeightInPixels -> double
 static readonly Dynamo.Configuration.Configurations.DoubleSliderTextBoxWidth -> double
 static readonly Dynamo.Configuration.Configurations.DynamoAsString -> string
+static readonly Dynamo.Configuration.Configurations.DynamoNodeHelpDocs -> string
 static readonly Dynamo.Configuration.Configurations.ExtensionsSideBarTabMinWidth -> int
 static readonly Dynamo.Configuration.Configurations.FallbackUiCulture -> string
 static readonly Dynamo.Configuration.Configurations.FilePathAttribName -> string
@@ -3011,6 +3016,7 @@ static readonly Dynamo.Configuration.Configurations.TabDefaultWidth -> int
 static readonly Dynamo.Configuration.Configurations.ZoomDirectEditThreshold -> double
 static readonly Dynamo.Configuration.Configurations.ZoomIncrement -> double
 static readonly Dynamo.Configuration.Configurations.ZoomThreshold -> double
+static readonly Dynamo.Configuration.Configurations.ZoomToFitPaddingFactor -> double
 static readonly Dynamo.Configuration.PreferenceSettings.DynamoDefaultTime -> System.DateTime
 virtual Dynamo.Core.CustomNodeManager.OnCustomNodeRemoved(System.Guid functionId) -> void
 virtual Dynamo.Core.CustomNodeManager.OnDefinitionUpdated(Dynamo.CustomNodeDefinition obj) -> void

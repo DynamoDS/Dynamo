@@ -567,5 +567,70 @@ import(""FFITarget.dll"");
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", "中文字符");
         }
+        [Test]
+        public void TestStringFromArrayFormat() {
+            String code =
+    @"
+import(""FFITarget.dll"");
+                a  = ClassFunctionality.ClassFunctionality(1);
+                arr1 = [1,2];
+                arr2 = [1.100005,a];
+                arr3 = [5,a,1.1];   
+                b1 = ""a"" + __ToStringFromArrayAndFormat(arr1,""F2"");
+                b2 = ""a"" + __ToStringFromArrayAndFormat(arr2, ""G3"");
+                b3 = __ToStringFromArrayAndFormat(arr3, ""B"");  
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b1", "a[1.00,2.00]");
+            thisTest.Verify("b2", "a[1.1,FFITarget.ClassFunctionality]");
+            //TODO note this difference between array and object conversion - if any format specifier is invalid the entire array conversion fails.
+            //how should this behave?
+            thisTest.Verify("b3", "Format specifier was invalid." );
+
+        }
+        [Test]
+        public void TestStringFromObjectFormat()
+        {
+            String code =
+    @"
+import(""FFITarget.dll"");
+                a  = ClassFunctionality.ClassFunctionality(1);
+                arr1 = [1,2];
+                arr2 = [1.100005,a];
+                arr3 = [5,a,1.1];
+                b1 = __ToStringFromObjectAndFormat(arr1,""F2"");
+                b2 = __ToStringFromObjectAndFormat(arr2, ""G3"");
+                b3 = __ToStringFromObjectAndFormat(arr3, ""B"");  
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b1", new string[] { "1.00", "2.00" });
+            thisTest.Verify("b2", new string[]{"1.1","FFITarget.ClassFunctionality"});
+            thisTest.Verify("b3", new string[] { "101", "FFITarget.ClassFunctionality","Format specifier was invalid." });
+        }
+        [Test]
+        public void TestStringFromObjectFormat_Prefs1()
+        {
+            String code =
+    @"
+                b1 = __ToStringFromObjectAndFormat(1.123456789, ""DynamoPreferencesNumberFormat"");  
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b1", "1.123");
+        }
+        [Test]
+        public void TestStringFromObjectFormat_Prefs2()
+        {
+            var oldpref = ProtoCore.Mirror.MirrorData.PrecisionFormat;
+            ProtoCore.Mirror.MirrorData.PrecisionFormat = "F6";
+            String code =
+    @"
+                b1 = __ToStringFromObjectAndFormat(1.123456789, ""DynamoPreferencesNumberFormat"");  
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b1", "1.123457");
+            //reset
+            ProtoCore.Mirror.MirrorData.PrecisionFormat = oldpref;
+
+        }
     }
 }

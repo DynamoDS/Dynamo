@@ -676,4 +676,8 @@ In Generative Design workflows, this node should be used to control and block th
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Select Types</value>
   </data>
+  <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
+    <value>Format specifier for numeric values, see extended node help for more info.
+default value: G</value>
+  </data>
 </root>

@@ -17,6 +17,8 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="**" target="lib\$TargetFramework$\" exclude="en-US\fallback_docs\*"/>
+              <file src="**"
+              target="lib\$TargetFramework$\"
+              exclude="**\*.pdb;**\*.txt;**\*.rtf;en-US\fallback_docs\*;NodeHelpSharedDocs\*;Open Source Licenses\*;samples\**;**\*Tests.dll;**\*Tests.runtimeconfig.json;**\*Tests.pdb;FFITarget.*;ProtoTestConsoleRunner.exe;TestCodeBlockNodeSecurityIssue.dll;ProtoTest.dll;ProtoTest.pdb;nunit*.dll;NUnit3.TestAdapter.*;TestServices.* "/>
     </files>
 </package>

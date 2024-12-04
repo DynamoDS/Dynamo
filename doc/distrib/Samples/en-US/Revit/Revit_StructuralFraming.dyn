@@ -1563,19 +1563,19 @@
     {
       "NodeId": "effe1561-9cd2-4994-9800-0724bfaa912d",
       "Binding": {
-        "BeamByCurve_InClassDecl-1_InFunctionScope-1_Instance0_effe1561-9cd2-4994-9800-0724bfaa912d": "H4sIAAAAAAAACq3MoQ7DIBCA4Xc5XRIKdxSqa6onSwUFsswgNlzTd99Su5PnfvN/2wmtfnotS+oJ5u2EcgecER79/WrPdYkwR7C6puIoK08ZFSaDKhwpq+AKUbU2GG+V1saNBm2EIcLa+v0aDKTRXnANIjoyOorpxOgkpjtGd2L6xOiTmO4Z3YvpgdGDmJ7+ddJi+sHo40/fr/0L+bN0lmADAAA="
+        "BeamByCurve_InClassDecl-1_InFunctionScope-1_Instance0_effe1561-9cd2-4994-9800-0724bfaa912d": "H4sIAAAAAAAACq3MqxKDMBBA0X9ZTWY2IU80Bl1JEHnRqUG0cQz/3g62K9ddc896wtE+vdU59QTTekK9A84Ij/5+Hc9ljjBFaCjHFqwVOe2j0KZokZ2TQiuvWsC9ZlcEovJuH3WEIcJy9PtV1mhEfcE1sOiG0A2bbgndsumO0B2b7gnds+mB0AObnv51iWx6JnTJphdCVz99u7YvTsFCdGADAAA="
       }
     },
     {
       "NodeId": "8fe59086-ce7b-4400-a2ce-dbc270af9476",
       "Binding": {
-        "BeamByCurve_InClassDecl-1_InFunctionScope-1_Instance0_8fe59086-ce7b-4400-a2ce-dbc270af9476": "H4sIAAAAAAAACq3MoQ7DIBCA4Xc53UvoHceguqZ6slTcgCwziA1HePcu1ZNzv/m/vUMtn1byqk1h2TvkK6BHuLf3qz63NcISgU3R7CShl2TRKlkMD00YXBYpzIE8ozHkZuJbhCnCVtv1kg1ieB4wpr/o/odOX/0YxwmedKN5zgAAAA=="
+        "BeamByCurve_InClassDecl-1_InFunctionScope-1_Instance0_8fe59086-ce7b-4400-a2ce-dbc270af9476": "H4sIAAAAAAAACq3MsQ6EIBBF0X+Z2klwBkGtbay3FAuQwdhQ7NIR/n2N9ZbbveTmna1Clk+RuPjiYd4qxGdAdfAq7yuf6+JgdiCqZ5mMweATox4OjcHaHjWNJJNKMdgDlaLRJiYHnYM1l+dLZtB3aNC6v+j8Q+db39v+BYQcL03OAAAA"
       }
     },
     {
       "NodeId": "16434ff3-76f1-4674-8dfb-82b23008f021",
       "Binding": {
-        "ColumnByCurve_InClassDecl-1_InFunctionScope-1_Instance0_16434ff3-76f1-4674-8dfb-82b23008f021": "H4sIAAAAAAAACrXPMRODIAyG4f+SWe4wIVScXZw7igMV2uvi0LJ5/HdbVzPiRgbe755pgzV9c4pDyAH66XTG4wGbh3v+vNfXOHjoPZBOIVpeVMeLUSagUe4RFuVsZE5EDjtSWqNtEaOHxsO45uMvGsca2wKlqVJPQh1/9fnfr495CnNUC0NaqJvLMNQKc1wNg0LdXochYe5WDWOEencdhoU5Vw1jz3XSB2Yu8w7GpnTUEwQAAA=="
+        "ColumnByCurve_InClassDecl-1_InFunctionScope-1_Instance0_16434ff3-76f1-4674-8dfb-82b23008f021": "H4sIAAAAAAAACrXPqxLDIBCF4XdZHWaWS7hEx0RXhggI0KmJaHGZvHvbyHYlcazgP/PNO2z5VXMaQw0wzH9nOh+we7jV52O7T6OHwUNGLrPTmsVQJFP9qlg0hjMlrMgOS4pmZYjCmiKsh87DtNXzr9C9dE4ccHRN6o6oy099+fbbYwIxp5phIlHvr8OsxJxuhklE3VyHycScbYYpRN1dhpH4O6cQsRVGcqLOT8xyLG+MhlrHEwQAAA=="
       }
     }
   ],
@@ -1584,8 +1584,8 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.0.0.6964",
-      "RunType": "Automatic",
+      "Version": "3.4.0.6752",
+      "RunType": "Manual",
       "RunPeriod": "100"
     },
     "Camera": {
@@ -1603,25 +1603,25 @@
     "ConnectorPins": [
       {
         "Left": 4395.341521590691,
-        "Top": 763.2435333408882,
+        "Top": 753.2436333408882,
         "IsHidden": false,
         "ConnectorGuid": "66240279-a8d3-4e92-9d58-14deb9ebbd8e"
       },
       {
         "Left": 2332.874377224438,
-        "Top": 1466.135882871259,
+        "Top": 1456.1359828712589,
         "IsHidden": false,
         "ConnectorGuid": "542e9414-26e4-4a4c-81ad-3a97c364dbae"
       },
       {
         "Left": 6558.452756523093,
-        "Top": 2445.267902650118,
+        "Top": 2435.268002650118,
         "IsHidden": false,
         "ConnectorGuid": "ce1bcbf8-6c0e-4ac3-8616-196c0b8c23d7"
       },
       {
         "Left": 2221.9269305324706,
-        "Top": 1404.8801154727416,
+        "Top": 1394.8802154727416,
         "IsHidden": false,
         "ConnectorGuid": "7621259c-5606-4936-b3d0-b3fb297555c4"
       }
@@ -2034,7 +2034,7 @@
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
         "InitialTop": 946.7180637027673,
-        "InitialHeight": 1768.0780858997946,
+        "InitialHeight": 1286.3309614250247,
         "TextblockHeight": 63.0,
         "Background": "#FFFFB8D8"
       },
@@ -2050,14 +2050,14 @@
           "716d7ebfb5754c409e728c9ce1fb7b08"
         ],
         "HasNestedGroups": false,
-        "Left": 330.83120152653316,
+        "Left": 331.232868368215,
         "Top": 409.2320370828184,
-        "Width": 304.0,
+        "Width": 304.55115904772595,
         "Height": 244.22035749872833,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 482.2320370828184,
-        "InitialHeight": 252.2203574987284,
+        "InitialHeight": 252.22035749872833,
         "TextblockHeight": 63.0,
         "Background": "#FFA4E1FF"
       },
@@ -2225,7 +2225,7 @@
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 1597.6440070889792,
-        "InitialHeight": 511.21883315430614,
+        "InitialHeight": 511.21883315430637,
         "TextblockHeight": 63.0,
         "Background": "#FFB9F9E1"
       },
@@ -2293,14 +2293,14 @@
       },
       {
         "Id": "74b608eab40040eb9e49b29e1e2070fe",
-        "Title": "Run this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation \n\nC:\\Program Files\\Autodesk\\Revit 2025\\Samples",
+        "Title": "Run this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation \n\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 340.83120152653316,
+        "Left": 341.78402741594095,
         "Top": 490.2320370828184,
         "Width": 0.0,
         "Height": 0.0,
@@ -2741,7 +2741,7 @@
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 5988.841496332138,
-        "Top": 1781.857962874515,
+        "Top": 1781.8579628745151,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -2774,8 +2774,8 @@
         "PinnedNode": "560bc931d3da489198a42d70aaad6cf8"
       }
     ],
-    "X": 302.8155826432492,
-    "Y": -34.23761064799817,
-    "Zoom": 0.2560937319071292
+    "X": 34.901565184301944,
+    "Y": 174.79988448684728,
+    "Zoom": 0.1170045418175784
   }
 }

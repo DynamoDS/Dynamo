@@ -25,6 +25,23 @@ namespace Dynamo.PackageManager.UI
         /// </summary>
         public ObservableCollection<PackageItemRootViewModel> ItemSelection { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
 
+
+        private string _filesAndFoldersCounterPreview;
+
+        public string FilesAndFoldersCounterPreview
+        {
+            get { return _filesAndFoldersCounterPreview; }
+            set
+            {
+                if (_filesAndFoldersCounterPreview != value)
+                {
+                    _filesAndFoldersCounterPreview = value;
+                    RaisePropertyChanged(nameof(FilesAndFoldersCounterPreview));
+                }
+            }
+        }
+
+
         private bool _allItemsSelected;
         /// <summary>
         /// Indicates if all preview items are currently selected
@@ -57,11 +74,57 @@ namespace Dynamo.PackageManager.UI
             this.Tag = "Select Package Contents";
         }
 
+        private void PublishPackageViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (PublishPackageViewModel == null) return;
+            if (e.PropertyName == nameof(PublishPackageViewModel.PackageContents))  
+            {
+                int contentFileCount = 0;
+                int contentFolderCount = 0;
+
+                foreach (var item in PublishPackageViewModel.PackageContents)
+                {
+                    CountFileItems(item, ref contentFileCount, ref contentFolderCount);
+                }
+
+                //set the counter text
+                var counterText = string.Format(Properties.Resources.PackageManagerPackageSelectCounter, contentFileCount, contentFolderCount);
+                FilesAndFoldersCounterPreview = counterText;
+            };
+        }
+
+        private void CountFileItems(PackageItemRootViewModel item, ref int contentFileCount, ref int contentFolderCount)
+        {
+            // Base count if the item itself is a file, custom node, or assembly
+            if (item.DependencyType == DependencyType.File ||
+                item.DependencyType == DependencyType.CustomNode ||
+                item.DependencyType == DependencyType.Assembly)
+            {
+                contentFileCount++;
+            }
+
+            // If the item is a folder, recursively count its children
+            if (item.DependencyType == DependencyType.Folder)
+            {
+                contentFolderCount++;
+                foreach (var child in item.ChildItems)
+                {
+                    CountFileItems(child, ref contentFileCount, ref contentFolderCount);
+                }
+            }
+        }
+
         private void PublishPackagePublishPage_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            if(PublishPackageViewModel != null)
+            {
+                PublishPackageViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
+            }
+
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
+            PublishPackageViewModel.PropertyChanged += PublishPackageViewModel_PropertyChanged;
         }
-        
+
         internal void LoadEvents()
         {
             this.IsEnabled = true;
@@ -78,6 +141,7 @@ namespace Dynamo.PackageManager.UI
         public void Dispose()
         {
             this.ItemSelection?.Clear();
+            this.PublishPackageViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
             this.PublishPackageViewModel = null;
             this.DataContextChanged -= PublishPackagePublishPage_DataContextChanged;
             this.customBrowserControl?.Dispose();

@@ -41,7 +41,7 @@
 
             <Grid.Style>
                 <Style>
-                    <Setter Property="Grid.Height" Value="35px" />
+                    <Setter Property="Grid.Height" Value="34px" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                             <Setter Property="Grid.Height" Value="14px" />

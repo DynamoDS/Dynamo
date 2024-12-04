@@ -314,7 +314,7 @@ namespace ProtoCore.Utils
                 
 
                 bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
-                bool parsingCbnFlag = core.IsParsingPreloadedAssembly;
+                bool parsingCbnFlag = core.IsParsingCodeBlockNode;
                 core.IsParsingPreloadedAssembly = false;
                 core.IsParsingCodeBlockNode = true;
 
@@ -383,7 +383,7 @@ namespace ProtoCore.Utils
                 }
                 catch
                 {
-                    // For class declarations, import statements etc. that are currently ignored
+                    // For class declarations etc. that are currently ignored
                 }
             }
 
@@ -415,11 +415,7 @@ namespace ProtoCore.Utils
                 // Append the temporaries only if it is not a function def or class decl
                 bool isFunctionOrClassDef = n is FunctionDefinitionNode;
 
-                if (n is ImportNode)
-                {
-                    core.BuildStatus.LogSemanticError(Resources.ImportStatementNotSupported);
-                }
-                else if (n is ClassDeclNode)
+                if (n is ClassDeclNode)
                 {
                     core.BuildStatus.LogSemanticError(Resources.ClassDeclarationNotSupported);
                 }

@@ -329,6 +329,17 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
+        public bool CanUpdatePythonEngine
+        {
+            get { return DynamoViewModel.CanUpdatePythonNodeEngine(null); }
+        }
+        [JsonIgnore]
+        public bool CanUpdateAllPythonEngine
+        {
+            get { return DynamoViewModel.CanUpdateAllPythonEngine(null); }
+        }
+
+        [JsonIgnore]
         public bool IsGeometryOperationEnabled
         {
             get

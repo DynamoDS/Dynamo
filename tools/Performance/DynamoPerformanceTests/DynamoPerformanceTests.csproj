@@ -36,6 +36,9 @@
         <Reference Include="DynamoServices">
             <HintPath>..\..\..\bin\$(Platform)\$(Configuration)\DynamoServices.dll</HintPath>
         </Reference>
+        <Reference Include="SystemTestServices">
+            <HintPath>..\..\..\bin\$(Platform)\$(Configuration)\SystemTestServices.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">

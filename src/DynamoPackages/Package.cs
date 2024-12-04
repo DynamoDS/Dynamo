@@ -293,6 +293,8 @@ namespace Dynamo.PackageManager
 
         }
 
+        //TODO: why are we skipping backup files and folders, any particular reason?
+        //TODO: can we remove the part where we skip the original pkg.json file? This is handled later anyways
         public void EnumerateAdditionalFiles()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return;
@@ -303,8 +305,9 @@ namespace Dynamo.PackageManager
                 RootDirectory,
                 "*",
                 SearchOption.AllDirectories)
-                .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll") &&
-                    !x.ToLower().EndsWith("pkg.json") && !x.ToLower().EndsWith(".backup") &&
+                .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll")
+                        //&& !x.ToLower().EndsWith("pkg.json")
+                     && !x.ToLower().EndsWith(".backup") &&
                     !x.ToLower().Contains(backupFolderName))
                 .Select(x => new PackageFileInfo(RootDirectory, x));
 

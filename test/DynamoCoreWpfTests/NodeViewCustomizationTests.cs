@@ -292,8 +292,12 @@ namespace DynamoCoreWpfTests
             var tree = nodeView.ChildrenOfType<WatchTree>();
             Assert.AreEqual(1, tree.Count());
 
-            var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
-            Assert.AreEqual(8, items.Count());
+            // text block for list indexes
+            var textBlocks = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(4, textBlocks.Count());
+            // text boxes for list items
+            var textBoxes = tree.First().treeView1.ChildrenOfType<TextBox>();
+            Assert.AreEqual(4, textBoxes.Count());
         }
 
         [Test, Category("DisplayHardwareDependent")]
@@ -308,9 +312,9 @@ namespace DynamoCoreWpfTests
 
             // Starting from Dynamo 2.13, node view now comes with 
             // images like node icon, lacing image etc
-            // As of March 2022, we have 7 images per NodeView
+            // As of Nov 2024, we have 8 images per NodeView
             // Images are named for ease of use
-            Assert.AreEqual(7, imgs.Count());
+            Assert.AreEqual(8, imgs.Count());
 
             var img = imgs.First(x => x.Name == "DotsImage");
 
@@ -437,7 +441,12 @@ namespace DynamoCoreWpfTests
 
             var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
             // watch is computed with cbn and has its value
-            Assert.AreEqual(8, items.Count());
+            // text block for list indexes
+            var textBlocks = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(4, textBlocks.Count());
+            // text boxes for list items
+            var textBoxes = tree.First().treeView1.ChildrenOfType<TextBox>();
+            Assert.AreEqual(4, textBoxes.Count());
 
             // disconnect watch
             Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchGuid, 0, PortType.Input,
@@ -464,8 +473,10 @@ namespace DynamoCoreWpfTests
             Run();
             DispatcherUtil.DoEvents();
             tree = nodeView.ChildrenOfType<WatchTree>();
-            items = tree.First().treeView1.ChildrenOfType<TextBlock>();
-            Assert.AreEqual(8, items.Count());
+            textBlocks = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(4, textBlocks.Count());
+            textBoxes = tree.First().treeView1.ChildrenOfType<TextBox>();
+            Assert.AreEqual(4, textBoxes.Count());
         }
 
         [Test]
