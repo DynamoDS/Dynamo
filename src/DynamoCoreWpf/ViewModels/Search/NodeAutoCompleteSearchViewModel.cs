@@ -460,39 +460,6 @@ namespace Dynamo.ViewModels
             return results;
         }
 
-        // Cluster Node Autocomplete
-        /*internal void ShowNodeClusterAutocompleMLResults()
-        {
-            MLNodeClusterAutoCompletionResponse MLresults = null;
-
-            var request = GenerateRequestForMLAutocomplete();
-
-            string jsonRequest = JsonConvert.SerializeObject(request);
-
-            // Get results from the ML API.
-            try
-            {
-                MLresults = GetMLNodeClusterAutocompleteResults(jsonRequest);
-            }
-            catch (Exception ex)
-            {
-                dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
-                DisplayAutocompleteMLStaticPage = true;
-                AutocompleteMLTitle = Resources.LoginNeededTitle;
-                AutocompleteMLMessage = Resources.LoginNeededMessage;
-                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
-                return;
-            }
-
-            if (MLresults.Results.Count() > 0)
-            {
-                foreach (var result in MLresults.Results)
-                {
-                    //
-                }               
-            }
-        }*/
-
         // Rest API call to get the Node cluster Autocomlete results from the service.
         internal MLNodeClusterAutoCompletionResponse GetMLNodeClusterAutocompleteResults()
         {
