@@ -423,9 +423,6 @@ namespace Dynamo.ViewModels
         // Handler to invoke Node autocomplete cluster
         private void AutoCompleteCluster(object parameter)
         {
-            // Put a C# timer here to test the cluster placement
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 

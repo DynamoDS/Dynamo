@@ -226,7 +226,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNodeAutocompleteClusterEnabled", true) ?? true;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNodeAutocompleteClusterEnabled", false) ?? true;
             }
         }
 
