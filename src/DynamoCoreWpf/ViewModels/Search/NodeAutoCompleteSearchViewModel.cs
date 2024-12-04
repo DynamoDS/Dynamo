@@ -487,9 +487,6 @@ namespace Dynamo.ViewModels
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request);
 
-                    //var jsonSerializerSettings = new JsonSerializerSettings();
-                    //jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
-                    //TODO maybe worth moving to system.text json in phases?
                     results = JsonConvert.DeserializeObject<MLNodeClusterAutoCompletionResponse>(response.Content);
                 }
                 catch (Exception ex)

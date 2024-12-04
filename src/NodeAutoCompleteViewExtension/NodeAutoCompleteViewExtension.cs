@@ -31,12 +31,6 @@ namespace Dynamo.NodeAutoComplete
         /// </summary>
         internal IEnumerable<NodeAutocompleteCluster> nodeAutocompleteClusters;
 
-        /// <summary>
-        /// Internal cache of the data displayed in data grid, useful in unit testing.
-        /// You are not expected to modify this but rather inspection.
-        /// </summary>
-        internal IEnumerable<NodeAutocompleteCluster> NodeAutocompleteClusters;
-
         internal NodeAutoCompleteViewModel nodeAutoCompleteViewModel { get; set; }
 
         internal NodeAutoCompleteView DependencyView

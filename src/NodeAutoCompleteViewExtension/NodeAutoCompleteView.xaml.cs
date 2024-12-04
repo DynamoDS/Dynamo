@@ -28,16 +28,8 @@ namespace Dynamo.NodeAutoComplete
 
         internal WorkspaceModel currentWorkspace;
 
-        /// <summary>
-        /// The hyper link where Dynamo user will be forwarded to for submitting comments.
-        /// </summary>
-        private readonly string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
-
         internal ViewLoadedParams loadedParams;
         private readonly NodeAutoCompleteViewExtension nodeAutocompleteViewExtension;
-
-
-        internal CustomNodeManager CustomNodeManager { get; set; }
 
         /// <summary>
         /// Event handler for workspaceAdded event
@@ -67,13 +59,13 @@ namespace Dynamo.NodeAutoComplete
         {
             if (obj is WorkspaceModel)
             {
-               //
+               // do nothing for now
             }
         }
 
         private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            //
+            //  do nothing for now
         }
 
 
@@ -124,21 +116,11 @@ namespace Dynamo.NodeAutoComplete
             WorkspaceViewModel.RequestNodeAutoCompleteViewExtension -= ShowNodeAutoCompleteViewExtension;
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
         }
-
-        private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            //
-        }
-
-        private void ForceRefresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            //
-        }
     }
 
 
     /// <summary>
-    /// Represents information about a package dependency as a row in the dependency table
+    /// Represents information about a node cluster suggestion in the view extension.
     /// </summary>
     public class NodeAutocompleteCluster
     {
@@ -150,38 +132,38 @@ namespace Dynamo.NodeAutoComplete
         }
 
         /// <summary>
-        /// 
+        /// Title of the node cluster 
         /// </summary>
         public string Title => clusterResultItem.Title;
 
         /// <summary>
-        /// Node autocomplete cluster results description
+        /// Description of the node cluster 
         /// </summary>
         public string Description => clusterResultItem.Description;
 
         /// <summary>
-        /// 
+        /// Entry node index for this node cluster
         /// </summary>
         public int EntryNodeIndex => clusterResultItem.EntryNodeIndex;
 
         /// <summary>
-        /// 
+        /// Entry node inport for this node cluster
         /// </summary>
         public int EntryNodeInPort => clusterResultItem.EntryNodeInPort;
 
 
         /// <summary>
-        ///
+        /// confidence level
         /// </summary>
         public string Probability => clusterResultItem.Probability;
 
         /// <summary>
-        /// 
+        /// Nodes in the node cluster
         /// </summary>
         public IEnumerable<NodeItem> Nodes => clusterResultItem.Topology.Nodes;
 
         /// <summary>
-        /// 
+        /// Connections in the node cluster
         /// </summary>
         public IEnumerable<ConnectionItem> Connections => clusterResultItem.Topology.Connections;
     }
