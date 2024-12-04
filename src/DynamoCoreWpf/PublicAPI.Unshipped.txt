@@ -1723,6 +1723,7 @@ Dynamo.ViewModels.CompactBubbleViewModel.ShowNumberOfItems.get -> bool
 Dynamo.ViewModels.CompactBubbleViewModel.ValueType.get -> string
 Dynamo.ViewModels.CompactBubbleViewModel.ValueType.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel
+Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorOffset.get -> double
 Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorSize.get -> double
 Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorSize.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.CanDisplayIcons.get -> bool
@@ -1740,6 +1741,8 @@ Dynamo.ViewModels.ConnectorAnchorViewModel.IsHalftone.get -> bool
 Dynamo.ViewModels.ConnectorAnchorViewModel.IsHalftone.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.IsTemporarilyDisplayed.get -> bool
 Dynamo.ViewModels.ConnectorAnchorViewModel.IsTemporarilyDisplayed.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerOffsetY.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerOffsetX.get -> double
 Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerSize.get -> double
 Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerSize.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.PinConnectorCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -1749,6 +1752,8 @@ Dynamo.ViewModels.ConnectorAnchorViewModel.PinIconPreviewOn.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.PlaceWatchNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.ConnectorAnchorViewModel.PlaceWatchNodeCommand.set -> void
 Dynamo.ViewModels.ConnectorAnchorViewModel.RequestDispose -> System.EventHandler
+Dynamo.ViewModels.ConnectorAnchorViewModel.ScaledAnchorSize.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.ScaledMarkerSize.get -> double
 Dynamo.ViewModels.ConnectorAnchorViewModel.WatchIconPreviewOn.get -> bool
 Dynamo.ViewModels.ConnectorAnchorViewModel.WatchIconPreviewOn.set -> void
 Dynamo.ViewModels.ConnectorContextMenuViewModel
@@ -1832,6 +1837,8 @@ Dynamo.ViewModels.ConnectorViewModel.DotLeft.get -> double
 Dynamo.ViewModels.ConnectorViewModel.DotLeft.set -> void
 Dynamo.ViewModels.ConnectorViewModel.DotTop.get -> double
 Dynamo.ViewModels.ConnectorViewModel.DotTop.set -> void
+Dynamo.ViewModels.ConnectorViewModel.DynamicStrokeThickness.get -> double
+Dynamo.ViewModels.ConnectorViewModel.DynamicStrokeThickness.set -> void
 Dynamo.ViewModels.ConnectorViewModel.EndDotSize.get -> double
 Dynamo.ViewModels.ConnectorViewModel.EndDotSize.set -> void
 Dynamo.ViewModels.ConnectorViewModel.GoToEndNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand

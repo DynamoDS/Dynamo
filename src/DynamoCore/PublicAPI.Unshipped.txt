@@ -36,6 +36,7 @@ abstract Dynamo.Search.SearchElements.SearchElementBase.Type.get -> string
 abstract Dynamo.Search.SearchElements.SearchElementBase.Weight.get -> double
 abstract Dynamo.Search.SearchElements.SearchElementBase.Weight.set -> void
 const Dynamo.Configuration.Configurations.NotificationsDefaultTimeOut = 10000 -> int
+const Dynamo.Configuration.Configurations.ConnectorZoomScalingFactor = 2 -> double
 const Dynamo.Configuration.Context.NONE = "None" -> string
 const Dynamo.Configuration.Context.REVIT_2014 = "Revit 2014" -> string
 const Dynamo.Configuration.Context.REVIT_2015 = "Revit 2015" -> string
@@ -3001,6 +3002,7 @@ static readonly Dynamo.Configuration.Configurations.AutodeskAsString -> string
 static readonly Dynamo.Configuration.Configurations.BackupFolderName -> string
 static readonly Dynamo.Configuration.Configurations.CBNMaxPortNameLength -> int
 static readonly Dynamo.Configuration.Configurations.CodeBlockOutputPortHeightInPixels -> double
+static readonly Dynamo.Configuration.Configurations.ConnectorBaseThickness -> double
 static readonly Dynamo.Configuration.Configurations.DoubleSliderTextBoxWidth -> double
 static readonly Dynamo.Configuration.Configurations.DynamoAsString -> string
 static readonly Dynamo.Configuration.Configurations.DynamoNodeHelpDocs -> string
