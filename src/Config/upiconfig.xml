@@ -14,7 +14,7 @@
             <upi_attribute name='id' value='Win64'/>
             <upi_element name='level'>
               <upi_attribute name='name' value='build'/>
-              <upi_attribute name='id' value='3.4.0' />
+              <upi_attribute name='id' value='3.4.1' />
             </upi_element>
           </upi_element>
         </upi_element>
