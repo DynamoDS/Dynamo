@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using CommandLine;
 using CommandLine.Text;
 
@@ -27,12 +28,12 @@ namespace Md2Html
                 while (true)
                 {
                     var line = Console.ReadLine();
-                    if (line.Contains(@"<<<<<Sanitize>>>>>"))
+                    if (line.Contains(@"<<Sanitize>>"))
                     {
                         Console.WriteLine(@"<<<<<Sod>>>>>");
                         Sanitize();
                     }
-                    else if (line.Contains(@"<<<<<Convert>>>>>"))
+                    else if (line.Contains(@"<<Convert>>"))
                     {
                         Console.WriteLine(@"<<<<<Sod>>>>>");
                         Convert();
@@ -50,9 +51,17 @@ namespace Md2Html
         {
             var data = GetData();
 
-            var output = Md2Html.Sanitize(data);
+            //Decode the base64 data sent by the client
+            var base64EncodedBytes = System.Convert.FromBase64String(data);
+            var decodedData = Encoding.UTF8.GetString(base64EncodedBytes);
 
-            Console.WriteLine(output);
+            var output = Md2Html.Sanitize(decodedData);
+
+            //Encode to base64 and send it back to the client 
+            var plainTextBytes = Encoding.UTF8.GetBytes(output);
+            var base64MDString = System.Convert.ToBase64String(plainTextBytes);
+
+            Console.WriteLine(base64MDString);
         }
 
         static void Convert()
@@ -62,9 +71,18 @@ namespace Md2Html
             var data = GetData();
 
             var instance = Md2Html.Instance;
-            var output = instance.ParseToHtml(data, mdPath);
 
-            Console.WriteLine(output);
+            //Decode the base64 data sent by the client
+            var base64EncodedBytes = System.Convert.FromBase64String(data);
+            var decodedData = Encoding.UTF8.GetString(base64EncodedBytes);
+
+            var output = instance.ParseToHtml(decodedData, mdPath);
+
+            //Encode to base64 and send it back to the client 
+            var plainTextBytes = Encoding.UTF8.GetBytes(output);
+            var base64MDString = System.Convert.ToBase64String(plainTextBytes);
+
+            Console.WriteLine(base64MDString);
         }
 
         static string GetData()
@@ -74,7 +92,7 @@ namespace Md2Html
                 while (true)
                 {
                     var line = Console.ReadLine();
-                    if (line == @"<<<<<Eod>>>>>")
+                    if (line.Contains(@"<<Eod>>"))
                     {
                         break;
                     }
