@@ -78,7 +78,7 @@ namespace Dynamo.Utilities
                 return GetCantCommunicateErrorMessage();
             }
 
-            return GetData(processCommunicationTimeoutms);
+            return GetData(processCommunicationTimeoutms,null,true);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Dynamo.Utilities
                 return GetCantCommunicateErrorMessage();
             }
 
-            return GetData(processCommunicationTimeoutms);
+            return GetData(processCommunicationTimeoutms, null, true);
         }
 
         /// <summary>
