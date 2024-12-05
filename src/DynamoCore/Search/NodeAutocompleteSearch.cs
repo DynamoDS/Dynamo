@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace Dynamo.Search.SearchElements
 {
+    /// <summary>
+    /// Data representing the request for ML node autocompletion service.
+    /// </summary>
     [DataContract]
     internal class MLNodeAutoCompletionRequest
     {
@@ -44,7 +47,7 @@ namespace Dynamo.Search.SearchElements
     /// Data representing node properties for ML autocomplete.
     /// </summary>
     [DataContract]
-    public class NodeItem
+    internal class NodeItem
     {
         internal NodeItem()
         {
@@ -104,6 +107,9 @@ namespace Dynamo.Search.SearchElements
         internal string KeepListStructure { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the Host info.
+    /// </summary>
     [DataContract]
     internal class HostItem
     {
@@ -120,6 +126,9 @@ namespace Dynamo.Search.SearchElements
         internal string Version { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the workflow context which has upstream and downstream nodes along with connections.
+    /// </summary>
     [DataContract]
     internal class ContextItem
     {
@@ -140,7 +149,7 @@ namespace Dynamo.Search.SearchElements
     /// Data representing node connections for ML autocomplete.
     /// </summary>
     [DataContract]
-    public class ConnectionItem
+    internal class ConnectionItem
     {
         [DataMember(Name = "from")]
         internal ConnectorNodeItem StartNode { get; set; }
@@ -149,6 +158,9 @@ namespace Dynamo.Search.SearchElements
         internal ConnectorNodeItem EndNode { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the nodes in the connectors info.
+    /// </summary>
     [DataContract]
     internal class ConnectorNodeItem
     {
@@ -179,6 +191,9 @@ namespace Dynamo.Search.SearchElements
         internal int PortIndex { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the package info.
+    /// </summary>
     [DataContract]
     internal class PackageItem
     {
@@ -195,6 +210,10 @@ namespace Dynamo.Search.SearchElements
         internal string Version { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the ML node autocomplete response.
+    /// Contains version, number of results and list of node suggestions.
+    /// </summary>
     [DataContract]
     internal class MLNodeAutoCompletionResponse
     {
@@ -213,6 +232,10 @@ namespace Dynamo.Search.SearchElements
         internal IEnumerable<ResultItem> Results { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the ML node cluster autocomplete response.
+    /// Contains version, number of results and list of node cluster suggestions.
+    /// </summary>
     [DataContract]
     internal class MLNodeClusterAutoCompletionResponse
     {
@@ -231,6 +254,9 @@ namespace Dynamo.Search.SearchElements
         internal IEnumerable<ClusterResultItem> Results { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the ML node suggestion.
+    /// </summary>
     [DataContract]
     internal class ResultItem
     {
@@ -244,6 +270,9 @@ namespace Dynamo.Search.SearchElements
         internal double Score { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the ML node cluster suggestion.
+    /// </summary>
     [DataContract]
     internal class ClusterResultItem
     {
@@ -266,6 +295,9 @@ namespace Dynamo.Search.SearchElements
         internal TopologyItem Topology { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the nodes and connetions in node cluster suggestion.
+    /// </summary>
     [DataContract]
     internal class TopologyItem
     {
@@ -337,6 +369,7 @@ namespace Dynamo.Search.SearchElements
         }
     }
 
+    // List of host names.
     internal enum HostNames
     {
         Revit,

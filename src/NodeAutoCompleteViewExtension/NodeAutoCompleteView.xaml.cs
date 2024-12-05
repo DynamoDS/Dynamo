@@ -159,11 +159,11 @@ namespace Dynamo.NodeAutoComplete
         /// <summary>
         /// Nodes in the node cluster
         /// </summary>
-        public IEnumerable<NodeItem> Nodes => clusterResultItem.Topology.Nodes;
+        internal IEnumerable<NodeItem> Nodes => clusterResultItem.Topology.Nodes;
 
         /// <summary>
         /// Connections in the node cluster
         /// </summary>
-        public IEnumerable<ConnectionItem> Connections => clusterResultItem.Topology.Connections;
+        internal IEnumerable<ConnectionItem> Connections => clusterResultItem.Topology.Connections;
     }
 }
