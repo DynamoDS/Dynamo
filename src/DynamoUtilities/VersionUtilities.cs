@@ -49,7 +49,7 @@ namespace Dynamo.Utilities
             // Try parsing directly; if successful, return the parsed version
             if (Version.TryParse(version, out Version parsedVersion))
             {
-                return parsedVersion;
+                return NormalizeVersion(parsedVersion);
             }
 
             // If parsing failed, pad the version string
@@ -127,6 +127,20 @@ namespace Dynamo.Utilities
         private static string AppendWildcardVersion(string major, string minor = WILDCARD_MAX_VERSION, string patch = "0")
         {
             return $"{major}.{minor}.{patch}";
+        }
+
+        /// <summary>
+        /// Helper method to normalize versions to a 3-part format
+        /// </summary>
+        /// <param name="version">A potentially partial version</param>
+        /// <returns></returns>
+        internal static Version NormalizeVersion(Version version)
+        {
+            return new Version(
+                version.Major,
+                version.Minor == -1 ? 0 : version.Minor,
+                version.Build == -1 ? 0 : version.Build
+            );
         }
     }
 }
