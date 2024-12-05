@@ -73,6 +73,7 @@ namespace DynamoCoreWpfTests.PackageManager
                         "Sample View Extension",
                         "TuneUp",
                         "Workspace References",
+                        "Node Auto Complete"
                     }
                 )
             );
