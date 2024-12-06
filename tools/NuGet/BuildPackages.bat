@@ -1,3 +1,5 @@
+:: PLEASE SOMEONE FIND THE TIME TO REPLACE THIS WITH ANOTHER SCRIPTING LANGUAGE :(
+
 :: Argument %1: path to template folder
 :: Argument %2: path to dynamo build directory
 ::
@@ -37,6 +39,9 @@ for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %harvestPath%\Dyn
 setlocal DisableDelayedExpansion
 set version=%Major%.%Minor%.%Build%-beta%Revision%
 
+for /f %%i in ('git rev-parse HEAD') do set COMMIT=%%i
+
+echo %COMMIT%
 :: Get target framework from build.xml
 for /f %%f in ('cscript //Nologo .\GetTargetFramework.vbs ..\..\src\build.xml') do (
   setlocal EnableDelayedExpansion
@@ -47,12 +52,18 @@ setlocal DisableDelayedExpansion
 :: Clean files generated from the previous run
 if exist *.nupkg ( del *.nupkg )
 
+echo %1|find ".nuspec" >nul
+if errorlevel 1 (goto :packfolder) else (goto:packsingle_nuspec)
+
+:packsingle_nuspec
+nuget pack %1 -basepath %harvestPath% -properties gitcommitid=%COMMIT%;Version=%version%;TargetFramework=%targetFramework%
+:packfolder
 :: Pack .nupkg files based on each .nuspec in the "nuspec" folder
 for %%f in (%1\*.nuspec) do (
   :: Check if nuspec file name containing "Symbols"
   echo %%f|find "Symbols" >nul
   :: When nuget pack symbols, set to release path where the symbol files live
-  if errorlevel 1 ( nuget pack %%f -basepath %harvestPath% -properties Version=%version%;TargetFramework=%targetFramework%) else (nuget pack %%f -basepath %releasePath% -properties Version=%version%;TargetFramework=%targetFramework%)
+  if errorlevel 1 ( nuget pack %%f -basepath %harvestPath% -properties gitcommitid=%COMMIT%;Version=%version%;TargetFramework=%targetFramework%) else (nuget pack %%f -basepath %releasePath% -properties Version=%version%;TargetFramework=%targetFramework%)
   if not exist %%~nf.%version%.nupkg (
     exit /b 1
   )

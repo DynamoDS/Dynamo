@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using Autodesk.DesignScript.Runtime;
@@ -59,8 +60,25 @@ namespace PythonNodeModels
                 {
                     engine = value;
                     RaisePropertyChanged(nameof(EngineName));
-                }
+                }   
             }
+        }
+
+        /// <summary>
+        /// The method returns the assembly name from which the node originated.
+        /// </summary>
+        /// <returns>Assembly Name</returns>
+        internal override AssemblyName GetNameOfAssemblyReferencedByNode()
+        {
+            AssemblyName assemblyName = null;
+
+            var pyEng = PythonEngineManager.Instance.AvailableEngines.Where(x => x.Name.Equals(this.EngineName)).FirstOrDefault();
+            if (pyEng != null)
+            {
+                assemblyName = AssemblyName.GetAssemblyName(pyEng.GetType().Assembly.Location);
+            }
+
+            return assemblyName;
         }
 
         /// <summary>

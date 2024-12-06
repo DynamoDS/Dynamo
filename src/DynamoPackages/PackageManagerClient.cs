@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.PackageManager
 {
@@ -55,6 +57,8 @@ namespace Dynamo.PackageManager
             this.uploadBuilder = builder;
             this.client = client;
             this.packageMaintainers = new Dictionary<string, bool>();
+
+            this.LoadCompatibilityMap();  // Load the compatibility map
         }
 
         internal bool Upvote(string packageId)
@@ -76,6 +80,21 @@ namespace Dynamo.PackageManager
             }, null);
 
             return votes?.has_upvoted;
+        }
+
+        internal List<JObject> CompatibilityMap()
+        {
+            var compatibilityMap = FailFunc.TryExecute(() =>
+            {
+                var cm = new GetCompatibilityMap();
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<object>(cm);
+
+                // Serialize the response to JSON and parse it
+                var content = JsonSerializer.Serialize(pkgResponse.content);
+                return JArray.Parse(content).Cast<JObject>().ToList();
+            }, null);
+
+            return compatibilityMap;
         }
 
         internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)
@@ -226,19 +245,32 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle PublishAsync(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, bool retainFolderStructure)
+        /// <summary>
+        ///     Asynchronously publishes a package along with associated files and markdown files.
+        /// We use the 'roots' collection as a guide to the folders we expect to find in the root directory of the package.
+        /// Based on that, we either want to nest inside a new package folder (if more than 2 root folders are found)
+        /// or if just 1 root folder is found, then use that as the new package folder
+        /// </summary>
+        /// <param name="package">The package to be published.</param>
+        /// <param name="files">The files to be included in the package.</param>
+        /// <param name="markdownFiles">The markdown files to be included in the package.</param>
+        /// <param name="isNewVersion">Indicates if this is a new version of an existing package.</param>
+        /// <param name="roots">A collection of root directories to normalize file paths against.</param>
+        /// <param name="retainFolderStructure">Indicates whether to retain the original folder structure.</param>
+        /// <returns>A <see cref="PackageUploadHandle"/> Used to track the upload status.</returns>
+        internal PackageUploadHandle PublishAsync(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, IEnumerable<string> roots, bool retainFolderStructure)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
             Task.Factory.StartNew(() =>
             {
-                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle, retainFolderStructure);
+                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle, roots, retainFolderStructure);
             });
 
             return packageUploadHandle;
         }
 
-        internal void Publish(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle, bool retainFolderStructure = false)
+        internal void Publish(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle, IEnumerable<string> roots, bool retainFolderStructure = false)
         {
             try
             {
@@ -246,7 +278,7 @@ namespace Dynamo.PackageManager
                 if (isNewVersion)
                 {
                     var pkg = retainFolderStructure ?
-                        uploadBuilder.NewPackageVersionRetainUpload(package, packageUploadDirectory, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
+                        uploadBuilder.NewPackageVersionRetainUpload(package, packageUploadDirectory, roots, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
                         packageUploadHandle)
                         : uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, (IEnumerable<string>)files, markdownFiles,
                         packageUploadHandle);
@@ -256,7 +288,7 @@ namespace Dynamo.PackageManager
                 else
                 {
                     var pkg = retainFolderStructure ?
-                        uploadBuilder.NewPackageRetainUpload(package, packageUploadDirectory, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
+                        uploadBuilder.NewPackageRetainUpload(package, packageUploadDirectory, roots, (IEnumerable<IEnumerable<string>>)files, markdownFiles,
                         packageUploadHandle)
                         : uploadBuilder.NewPackageUpload(package, packageUploadDirectory, (IEnumerable<string>)files, markdownFiles,
                         packageUploadHandle);
@@ -319,5 +351,53 @@ namespace Dynamo.PackageManager
             this.packageMaintainers[package.Name] = value;
             return value;
         }
+
+
+        #region Compatibility Map
+
+        // Store the compatibility map as a static property
+        private static Dictionary<string, Dictionary<string, string>> compatibilityMap;
+
+        /// <summary>
+        /// A static access to the CompatibilityMap
+        /// </summary>
+        /// <returns></returns>
+        internal static Dictionary<string, Dictionary<string, string>> GetCompatibilityMap()
+        {
+            return compatibilityMap;
+        }
+
+        /// <summary>
+        /// Method to load the map once, making it accessible to all elements
+        /// </summary>
+        private void LoadCompatibilityMap()
+        {
+            if (compatibilityMap == null)  // Load only if not already loaded
+            {
+                compatibilityMap = new Dictionary<string, Dictionary<string, string>>();
+                var compatibilityMapList = this.CompatibilityMap();
+
+                foreach (var host in compatibilityMapList)
+                {
+                    foreach (var property in host.Properties())
+                    {
+                        string hostName = property.Name;
+                        if (hostName.ToLower().Equals("dynamo")) continue;
+                        var versionMapping = property.Value.ToObject<Dictionary<string, string>>();
+
+                        if (!compatibilityMap.ContainsKey(hostName))
+                        {
+                            compatibilityMap[hostName] = new Dictionary<string, string>();
+                        }
+
+                        foreach (var version in versionMapping)
+                        {
+                            compatibilityMap[hostName][version.Key] = version.Value;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

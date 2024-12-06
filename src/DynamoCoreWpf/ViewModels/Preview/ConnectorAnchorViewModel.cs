@@ -18,6 +18,7 @@ namespace Dynamo.ViewModels
     public class ConnectorAnchorViewModel: ViewModelBase
     {
         #region Properties 
+        private WorkspaceViewModel WorkspaceViewModel { get; }
         private Point currentPosition;
         private bool isHalftone;
         private bool isTemporarilyVisible = false;
@@ -29,16 +30,42 @@ namespace Dynamo.ViewModels
         private bool pinIconPreviewOn = false;
         private string dataTooltipText;
 
+        private double? cachedZoom = null;
+        private Dictionary<double, double> cachedSizes = new Dictionary<double, double>();
+
         private ConnectorViewModel ViewModel { get; set; }
         private DynamoModel DynamoModel { get; set; }
         private DynamoViewModel DynamoViewModel { get; set; }
         private Dispatcher Dispatcher { get; set; }
 
         /// <summary>
-        /// The size of the Watch Icon (x &amp; y dimensions).
+        /// The size of the Watch and Pin icons (x &amp; y dimensions).
         /// </summary>
         public double MarkerSize { get; set; } = 30;
+        /// <summary>
+        /// The scaled size of the Watch and Pin icons (x &amp; y dimensions).
+        /// </summary>
+        public double ScaledMarkerSize => GetCachedScaledSize(MarkerSize);
+        /// <summary>
+        /// The size of the anchor button (x and y dimensions).
+        /// </summary>
         public double AnchorSize { get; set; } = 15;
+        /// <summary>
+        /// The scaled size of the anchor button (x and y dimensions).
+        /// </summary>
+        public double ScaledAnchorSize => GetCachedScaledSize(AnchorSize);
+        /// <summary>
+        /// The offset for the anchor button, calculated as half the size.
+        /// </summary>
+        public double AnchorOffset => ScaledAnchorSize / -2;
+        /// <summary>
+        /// The vertical offset for the Watch and Pin buttons.
+        /// </summary>
+        public double MarkerOffsetY => GetCachedScaledSize(-37);
+        /// <summary>
+        /// The horizontal offset for the Pin button.
+        /// </summary>
+        public double MarkerOffsetX => GetCachedScaledSize(-30);
 
         /// <summary>
         /// Midpoint of the connector bezier curve.
@@ -165,7 +192,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// This property acts as the main flag that signals whether or not watch icon/pin icon/tooltip
-        /// should be visibile/ hidden.
+        /// should be visible/ hidden.
         /// </summary>
         public bool CanDisplayIcons
         {
@@ -284,6 +311,7 @@ namespace Dynamo.ViewModels
             ViewModel = connectorViewModel;
             DynamoViewModel = dynamoViewModel;
             DynamoModel = DynamoViewModel.Model;
+            WorkspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
             DataToolTipText = tooltipText;
             InitCommands();
 
@@ -416,6 +444,49 @@ namespace Dynamo.ViewModels
         private int ConnectorSegmentIndex(Point midPoint, Point connectorLocation)
         {
             return midPoint.X > connectorLocation.X ? 0 : 1;
+        }
+
+        /// <summary>
+        /// Calculates a scaled size based on the zoom level, applying a non-linear decay.
+        /// Ensures the size decreases monotonically and approaches a minimum size as zoom decreases.
+        /// </summary>
+        private double CalculateScaledSize(double defaultSize)
+        {
+            // Proportion for the minimum size relative to defaultSize
+            const double resizingFactor = 0.5;
+            // Controls the rate of size decay for lower zoom levels
+            const double curveSteepness = 1.5;
+
+            double minSize = defaultSize * resizingFactor;
+
+            if (WorkspaceViewModel.Zoom >= 1)
+            {
+                return defaultSize;
+            }
+
+            // Apply non-linear decay formula
+            double zoomFactor = Math.Pow(WorkspaceViewModel.Zoom, curveSteepness);
+            return (minSize + (defaultSize - minSize) * zoomFactor) / WorkspaceViewModel.Zoom;
+        }
+
+        /// <summary>
+        /// Retrieves a scaled size from the cache or calculates it if the Zoom level has changed or the size is not cached.
+        /// </summary>
+        private double GetCachedScaledSize(double defaultSize)
+        {
+            if (cachedZoom != WorkspaceViewModel.Zoom)
+            {
+                cachedSizes.Clear();
+                cachedZoom = WorkspaceViewModel.Zoom;
+            }
+
+            if (!cachedSizes.TryGetValue(defaultSize, out var scaledSize))
+            {
+                scaledSize = CalculateScaledSize(defaultSize);
+                cachedSizes[defaultSize] = scaledSize;
+            }
+
+            return scaledSize;
         }
     }
 }

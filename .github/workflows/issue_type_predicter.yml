@@ -89,7 +89,7 @@ jobs:
       - name: Run Issues Type Predicter
         if: env.analysis_response == 'Valid'
         run: |
-          echo "is_wish_list="$(dotnet run -p ./IssuesTypePredicter/IssuesTypePredicterML.ConsoleApp/IssuesTypePredicterML.ConsoleApp.csproj -v q "${{ env.issue_json_string }}")"" >> $GITHUB_ENV
+          echo "is_wish_list="$(dotnet run --project ./IssuesTypePredicter/IssuesTypePredicterML.ConsoleApp/IssuesTypePredicterML.ConsoleApp.csproj -v q "${{ env.issue_json_string }}")"" >> $GITHUB_ENV
 
       #  If the is_wish_list variable contains 1, label the issue as "Wishlist"
       - name: Label issue as 'Wishlist'

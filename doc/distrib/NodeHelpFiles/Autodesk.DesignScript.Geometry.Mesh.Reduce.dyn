@@ -1,0 +1,586 @@
+{
+  "Uuid": "a161e887-368b-43e6-922d-242d40758fea",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.Reduce",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Reduce@double",
+      "Id": "5f1d2d32d9894ac2b28d837b0b6d2ccf",
+      "Inputs": [
+        {
+          "Id": "7d635168e9054e7cbd4713e0c33ef7fb",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4c9fbd649c2a4442be133077323e82e6",
+          "Name": "triangleCount",
+          "Description": "Goal triangle count for the reduction\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e9d8d196e1034dd789f28f34ad4b3235",
+          "Name": "mesh",
+          "Description": "Reduced mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns a new Mesh with a reduced number of triangles.\n\nMesh.Reduce (triangleCount: double): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ImportFile@string",
+      "Id": "fb6ba12e262a4c6099d1a8ca9c84d04a",
+      "Inputs": [
+        {
+          "Id": "fcd4b6e34b2944c88434764e3dae9530",
+          "Name": "fileName",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "eb26d25617b44087bfbe9b490bd1fe5a",
+          "Name": "Mesh[]",
+          "Description": "Mesh[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a file, parsing it into a number of Meshes. Currently supported formats are: .mix -- Meshmixer .obj -- Wavefront\n\nMesh.ImportFile (fileName: string): Mesh[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "P:\\Shared\\Archilizer\\Clients\\Autodesk\\Projects\\23 - Q4\\Nodes Documentation\\Mesh Toolkit Graphs\\Example Bunny\\stanford_bunny_tri.obj",
+      "InputValue": "Example Bunny\\stanford_bunny_tri.obj",
+      "NodeType": "ExtensionNode",
+      "Id": "473c4e96f4dd489d9126bc983f9b90d5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cde002b21c524c819bcb95d03de946b8",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Translate@Autodesk.DesignScript.Geometry.Vector",
+      "Id": "a515afd22e3145a49d85d21d6bb794e6",
+      "Inputs": [
+        {
+          "Id": "154198cbad334d22bd4093a38965c43a",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "52c73b30a2d44474b4c47d933d572165",
+          "Name": "vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "726f3e65a9414f04837abf39e637ea81",
+          "Name": "Mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Translate a Mesh in the direction of input Vector by the length of the Vector\n\nMesh.Translate (vector: Vector): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
+      "Id": "55716ce180a84580a07468054ea6a312",
+      "Inputs": [
+        {
+          "Id": "ac973266b76241b3812391abc2135d6b",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "988d2029bdfb451f842e0c7307108de3",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "29a1ed9b31b245eb8e064e2996a0a6c2",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9ee0f49569944e239ec935b585c9ab4e",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "50;\n0;\n0;",
+      "Id": "0e36b8ae8106400ea8cdb171cd18d56f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ba692e54ec5a42588441940f05db8714",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bad99c1f8f8a409999aca6c4cee63dad",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c2c5c0cd45a347ae897892ba463d4283",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.TriangleCount",
+      "Id": "f276af00bcee4206aaa2325768c50450",
+      "Inputs": [
+        {
+          "Id": "cda110390ceb4dc790b50e3d4ddad447",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1c0c6ab186ae4284ab8d46d48e526b3c",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the number of triangles in the Mesh\n\nMesh.TriangleCount: int"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "f3cbb2e9a0074281b650ba523a661610",
+      "Inputs": [
+        {
+          "Id": "86e61ec2dde5411e824c0e1c392d37ae",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f90a3988d374435db3201a7d2351899a",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "ba31d98695214a5f8af0f1a26ecf8543",
+      "Inputs": [
+        {
+          "Id": "5fe575715f7949baa6bbda139b1004e6",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2dc46c8359414e979eb0b2703afdc953",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.TriangleCount",
+      "Id": "02b386467e3d413da089050ec201a4d9",
+      "Inputs": [
+        {
+          "Id": "6aaa064aa5d947fe938fd1a6b3781f5d",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8d541d2489064520ba2467697a279c2e",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the number of triangles in the Mesh\n\nMesh.TriangleCount: int"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 600,
+      "MaximumValue": 700,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "6132f9949ec3480ea8ed61ca18fa0988",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ccdd142cce6a429487b1c03b90d6ccb7",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e9d8d196e1034dd789f28f34ad4b3235",
+      "End": "154198cbad334d22bd4093a38965c43a",
+      "Id": "08358dd73e70446ab4dbcea1774dbbb5"
+    },
+    {
+      "Start": "eb26d25617b44087bfbe9b490bd1fe5a",
+      "End": "7d635168e9054e7cbd4713e0c33ef7fb",
+      "Id": "1297707fb75043e3a0aee50e68df498b"
+    },
+    {
+      "Start": "eb26d25617b44087bfbe9b490bd1fe5a",
+      "End": "cda110390ceb4dc790b50e3d4ddad447",
+      "Id": "20fec4f84f9740d59b21e44f5ea58b5b"
+    },
+    {
+      "Start": "cde002b21c524c819bcb95d03de946b8",
+      "End": "fcd4b6e34b2944c88434764e3dae9530",
+      "Id": "8cae712852b548d3b3307eec17ab4f39"
+    },
+    {
+      "Start": "726f3e65a9414f04837abf39e637ea81",
+      "End": "6aaa064aa5d947fe938fd1a6b3781f5d",
+      "Id": "4469b7dcfc314c53ac49bc2bd52b4607"
+    },
+    {
+      "Start": "9ee0f49569944e239ec935b585c9ab4e",
+      "End": "52c73b30a2d44474b4c47d933d572165",
+      "Id": "8f14872fc19b4becb1d95475d183ed1a"
+    },
+    {
+      "Start": "ba692e54ec5a42588441940f05db8714",
+      "End": "ac973266b76241b3812391abc2135d6b",
+      "Id": "688326712da84de9ba93f6b111984bfa"
+    },
+    {
+      "Start": "bad99c1f8f8a409999aca6c4cee63dad",
+      "End": "988d2029bdfb451f842e0c7307108de3",
+      "Id": "bfee086224124bc6a9ec4fa631a39ed0"
+    },
+    {
+      "Start": "c2c5c0cd45a347ae897892ba463d4283",
+      "End": "29a1ed9b31b245eb8e064e2996a0a6c2",
+      "Id": "1d4c554d81d94e1a84de8df1897352c0"
+    },
+    {
+      "Start": "1c0c6ab186ae4284ab8d46d48e526b3c",
+      "End": "86e61ec2dde5411e824c0e1c392d37ae",
+      "Id": "54ba1fe2e49344bab2cdae6f9b287090"
+    },
+    {
+      "Start": "8d541d2489064520ba2467697a279c2e",
+      "End": "5fe575715f7949baa6bbda139b1004e6",
+      "Id": "03e84077e2f94a81bd7537c49796a881"
+    },
+    {
+      "Start": "ccdd142cce6a429487b1c03b90d6ccb7",
+      "End": "4c9fbd649c2a4442be133077323e82e6",
+      "Id": "0bc0026ed3af44ee8e14242689ba7017"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "5f1d2d32d9894ac2b28d837b0b6d2ccf",
+        "fb6ba12e262a4c6099d1a8ca9c84d04a",
+        "a515afd22e3145a49d85d21d6bb794e6",
+        "f276af00bcee4206aaa2325768c50450",
+        "02b386467e3d413da089050ec201a4d9"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 66.134616472188853,
+      "EyeY": -7.50257266882506,
+      "EyeZ": 214.29165920987461,
+      "LookX": -52.520724870626353,
+      "LookY": 55.347711218629748,
+      "LookZ": -213.65465054288242,
+      "UpX": 0.10651287123272841,
+      "UpY": 0.89493469603527576,
+      "UpZ": 0.43329792183451232
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.Reduce",
+        "Id": "5f1d2d32d9894ac2b28d837b0b6d2ccf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 372.52330573315282,
+        "Y": -696.97997292503828
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.ImportFile",
+        "Id": "fb6ba12e262a4c6099d1a8ca9c84d04a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 91.413000897880323,
+        "Y": -769.80177271409343
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "473c4e96f4dd489d9126bc983f9b90d5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -187.98606872055586,
+        "Y": -771.19602392398679
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Translate",
+        "Id": "a515afd22e3145a49d85d21d6bb794e6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 677.10752313291846,
+        "Y": -698.46435839189041
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.ByCoordinates",
+        "Id": "55716ce180a84580a07468054ea6a312",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 443.31868592595742,
+        "Y": -570.24978342566158
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "0e36b8ae8106400ea8cdb171cd18d56f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 277.9654458239678,
+        "Y": -554.40743548003081
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.TriangleCount",
+        "Id": "f276af00bcee4206aaa2325768c50450",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 382.79919407209456,
+        "Y": -873.09857436719938
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "f3cbb2e9a0074281b650ba523a661610",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 609.84334851928429,
+        "Y": -873.98582495853361
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "ba31d98695214a5f8af0f1a26ecf8543",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1209.9413184446662,
+        "Y": -693.733955972181
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.TriangleCount",
+        "Id": "02b386467e3d413da089050ec201a4d9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 958.3375058185477,
+        "Y": -700.7447976793228
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "6132f9949ec3480ea8ed61ca18fa0988",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 33.083488553283473,
+        "Y": -664.997865258091
+      }
+    ],
+    "Annotations": [],
+    "X": 101.03752452442677,
+    "Y": 802.83095417968241,
+    "Zoom": 0.7802387898757831
+  }
+}

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -758,7 +759,7 @@ namespace DynamoCoreWpfTests
             //we somehow need use single threaded sync context to force webview2 async initalization on this thread.
             //unfortunately it passes locally but then still fails on master-15.
             var testDirectory = GetTestDirectory(ExecutingDirectory);
-            var tempDynDirectory = Path.Combine(testDirectory, "Temp Test Path");
+            var tempDynDirectory = Path.Combine(TempFolder, "Temp Test Path");
             var dynFileName = Path.Combine(testDirectory, @"UI\BasicAddition.dyn");
             var insertDynFilePath = Path.Combine(tempDynDirectory, @"BasicAddition.dyn");
 
@@ -828,7 +829,7 @@ namespace DynamoCoreWpfTests
             var dynFileName = Path.GetFileNameWithoutExtension(docsViewModel.Link.AbsolutePath) + ".dyn";
 
             //This will return a path with the pkg doc + dyn file name
-            var sharedFilesPath = Path.Combine(DocumentationBrowserView.SharedDocsDirectoryName, dynFileName);
+            var sharedFilesPath = Path.Combine(Configurations.DynamoNodeHelpDocs, dynFileName);
 
             Assert.IsNotNull(graphPathValue);
             Assert.IsTrue(!string.IsNullOrEmpty(graphPathValue.ToString()));
@@ -994,6 +995,61 @@ namespace DynamoCoreWpfTests
             }
         }
 
+        [Test]
+        [TestCase("en-US")]
+        [TestCase("cs-CZ")]
+        [TestCase("ko-KR")]
+        public void CheckThatExtendedCharactersAreCorrectlyInHTML(string language)
+        {
+            var testDirectory = GetTestDirectory(ExecutingDirectory);
+            string mdFile = "Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.md";
+            string resource = Path.Combine(testDirectory, "Tools", "docGeneratorTestFiles", "fallback_docs", language, mdFile);
+
+            Assert.True(File.Exists(resource), "The resource provided {0} doesn't exist in the path {1}", mdFile, resource);
+
+            // Arrange
+            var content = File.ReadAllText(resource, Encoding.UTF8);
+
+            using (var converter = new Md2Html())
+            {
+                // Act
+                var html = converter.ParseMd2Html(content, ExecutingDirectory);
+                var output = converter.SanitizeHtml(html);
+
+                // Assert
+                Assert.IsTrue(string.IsNullOrEmpty(output));
+
+                Regex rxExp = new Regex(@"#+\s[^\n]*\n(.*?)(?=\n##?\s|$)", RegexOptions.Singleline);
+
+                //Apply RegEx expression to the md file to getting the content without headers
+                MatchCollection matches = rxExp.Matches(content);
+                foreach (Match match in matches)
+                {
+                    if (match.Groups.Count == 0) continue;
+
+                    var UTF8Content = match.Groups[1].Value.Trim();
+
+                    //Discard the image due that inside the html is converted to <img .......
+                    if(!UTF8Content.StartsWith("![")) 
+                    {
+                        // Assert
+                        //Clean the content to remove characters also removed by the Md2Html.exe tool
+                        var cleanedContent = UTF8Content.Replace("___", string.Empty).Trim();
+
+                        //Apply a Regular Expresion in the HTML file for getting the first <p> 
+                        Match m = Regex.Match(html, "<p>(.+?)<\\/p>", RegexOptions.IgnoreCase);
+                        string specificHTMLContent = string.Empty;
+                        if (m.Success)
+                        {
+                            specificHTMLContent = m.Groups[1].Value; 
+                        }
+
+                        Assert.IsTrue(specificHTMLContent == cleanedContent, "Part of the MD file content was not found in the HTML File");
+                    }                   
+                }
+            }
+        }
+
         #region Helpers
         private static string[] htmlResources()
         {
@@ -1011,6 +1067,12 @@ namespace DynamoCoreWpfTests
             var docsDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"src\DocumentationBrowserViewExtension\Docs");
 
             return Directory.GetFiles(docsDirectory, wildcard);
+        }
+
+        public static string GetTestDirectory(string executingDirectory)
+        {
+            var directory = new DirectoryInfo(executingDirectory);
+            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
         }
 
         #endregion
