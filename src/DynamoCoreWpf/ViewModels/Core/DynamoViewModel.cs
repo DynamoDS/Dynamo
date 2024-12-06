@@ -200,7 +200,6 @@ namespace Dynamo.ViewModels
             get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
         }
 
-
         public EngineController EngineController { get { return Model.EngineController; } }
 
         public WorkspaceModel CurrentSpace
@@ -216,6 +215,17 @@ namespace Dynamo.ViewModels
             get
             {
                 return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNADataIngestionPipelineinBeta", true) ?? true;
+            }
+        }
+
+        /// <summary>
+        /// Controls if the cluster node autocomplete placement feature is enabled from feature flag
+        /// </summary>
+        internal bool IsDNAClusterPlacementEnabled
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNAClusterPlacementEnabled", false) ?? true;
             }
         }
 

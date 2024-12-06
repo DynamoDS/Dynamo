@@ -55,6 +55,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("ExportSampleImagesViewExtension")]
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
 [assembly: InternalsVisibleTo("Notifications")]
+[assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
 
 // Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
 #pragma warning disable RS0016 

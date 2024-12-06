@@ -1,8 +1,13 @@
+using Autodesk.DesignScript.Geometry;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Dynamo.Search.SearchElements
 {
+    /// <summary>
+    /// Data representing the request for ML node autocompletion service.
+    /// </summary>
     [DataContract]
     internal class MLNodeAutoCompletionRequest
     {
@@ -10,20 +15,20 @@ namespace Dynamo.Search.SearchElements
         {
             DynamoVersion = dynamoVersion;
             NumberOfResults = numberOfResults;
-            Node = new NodeRequest();
-            Port = new PortRequest();
-            Context = new ContextRequest();
+            Node = new NodeItem();
+            Port = new PortItem();
+            Context = new ContextItem();
             Packages = new List<PackageItem>();
         }
 
         [DataMember(Name = "node")]
-        internal NodeRequest Node { get; set; }
+        internal NodeItem Node { get; set; }
 
         [DataMember(Name = "port")]
-        internal PortRequest Port { get; set; }
+        internal PortItem Port { get; set; }
 
         [DataMember(Name = "host")]
-        internal HostRequest Host { get; set; }
+        internal HostItem Host { get; set; }
 
         [DataMember(Name = "dynamoVersion")]
         internal string DynamoVersion { get; set; }
@@ -35,49 +40,52 @@ namespace Dynamo.Search.SearchElements
         internal IEnumerable<PackageItem> Packages { get; set; }
 
         [DataMember(Name = "context")]
-        internal ContextRequest Context { get; set; }
+        internal ContextItem Context { get; set; }
     }
 
+    /// <summary>
+    /// Data representing node properties for ML autocomplete.
+    /// </summary>
     [DataContract]
-    internal class NodeRequest
+    internal class NodeItem
     {
-        internal NodeRequest()
+        internal NodeItem()
         {
-            Type = new NodeTypeRequest();
+            Type = new NodeType();
         }
 
-        internal NodeRequest(string id)
+        internal NodeItem(string id)
         {
             Id = id;
-            Type = new NodeTypeRequest();
+            Type = new NodeType();
         }
 
         [DataMember(Name = "id")]
         internal string Id { get; set; }
 
         [DataMember(Name = "type")]
-        internal NodeTypeRequest Type { get; set; }
+        internal NodeType Type { get; set; }
 
         [DataMember(Name = "lacing")]
         internal string Lacing { get; set; }
     }
 
     [DataContract]
-    internal class NodeTypeRequest
+    internal class NodeType
     {
         [DataMember(Name = "id")]
         internal string Id { get; set; }
     }
 
     [DataContract]
-    internal class PortRequest
+    internal class PortItem
     {
-        internal PortRequest()
+        internal PortItem()
         {
             //nothing
         }
 
-        internal PortRequest(string name, string direction)
+        internal PortItem(string name, string direction)
         {
             Name = name;
             Direction = direction;
@@ -85,6 +93,9 @@ namespace Dynamo.Search.SearchElements
 
         [DataMember(Name = "name")]
         internal string Name { get; set; }
+
+        [DataMember(Name = "index")]
+        internal int Index { get; set; }
 
         [DataMember(Name = "direction")]
         internal string Direction { get; set; }
@@ -96,10 +107,13 @@ namespace Dynamo.Search.SearchElements
         internal string KeepListStructure { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the Host info.
+    /// </summary>
     [DataContract]
-    internal class HostRequest
+    internal class HostItem
     {
-        internal HostRequest(string name, string version)
+        internal HostItem(string name, string version)
         {
             Name = name;
             Version = version;
@@ -112,24 +126,30 @@ namespace Dynamo.Search.SearchElements
         internal string Version { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the workflow context which has upstream and downstream nodes along with connections.
+    /// </summary>
     [DataContract]
-    internal class ContextRequest
+    internal class ContextItem
     {
-        internal ContextRequest()
+        internal ContextItem()
         {
-            Connections = new List<ConnectionsRequest>();
-            Nodes = new List<NodeRequest>();
+            Connections = new List<ConnectionItem>();
+            Nodes = new List<NodeItem>();
         }
 
         [DataMember(Name = "nodes")]
-        internal IEnumerable<NodeRequest> Nodes { get; set; }
+        internal IEnumerable<NodeItem> Nodes { get; set; }
 
         [DataMember(Name = "connections")]
-        internal IEnumerable<ConnectionsRequest> Connections { get; set; }
+        internal IEnumerable<ConnectionItem> Connections { get; set; }
     }
 
+    /// <summary>
+    /// Data representing node connections for ML autocomplete.
+    /// </summary>
     [DataContract]
-    internal class ConnectionsRequest
+    internal class ConnectionItem
     {
         [DataMember(Name = "from")]
         internal ConnectorNodeItem StartNode { get; set; }
@@ -138,13 +158,27 @@ namespace Dynamo.Search.SearchElements
         internal ConnectorNodeItem EndNode { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the nodes in the connectors info.
+    /// </summary>
     [DataContract]
     internal class ConnectorNodeItem
     {
+        internal ConnectorNodeItem()
+        {
+            // default constructor for deserialization.
+        }
+
         internal ConnectorNodeItem(string nodeId, string portName)
         {
             NodeId = nodeId;
             PortName = portName;
+        }
+
+        internal ConnectorNodeItem(string nodeId, int portIndex)
+        {
+            NodeId = nodeId;
+            PortIndex = portIndex;
         }
 
         [DataMember(Name = "nodeId")]
@@ -152,8 +186,14 @@ namespace Dynamo.Search.SearchElements
 
         [DataMember(Name = "portName")]
         internal string PortName { get; set; }
+
+        [DataMember(Name = "portIndex")]
+        internal int PortIndex { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the package info.
+    /// </summary>
     [DataContract]
     internal class PackageItem
     {
@@ -170,6 +210,10 @@ namespace Dynamo.Search.SearchElements
         internal string Version { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the ML node autocomplete response.
+    /// Contains version, number of results and list of node suggestions.
+    /// </summary>
     [DataContract]
     internal class MLNodeAutoCompletionResponse
     {
@@ -188,21 +232,90 @@ namespace Dynamo.Search.SearchElements
         internal IEnumerable<ResultItem> Results { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the ML node cluster autocomplete response.
+    /// Contains version, number of results and list of node cluster suggestions.
+    /// </summary>
+    [DataContract]
+    internal class MLNodeClusterAutoCompletionResponse
+    {
+        internal MLNodeClusterAutoCompletionResponse()
+        {
+            Results = new List<ClusterResultItem>();
+        }
+
+        [DataMember(Name = "version")]
+        internal string Version { get; set; }
+
+        [DataMember(Name = "numberOfResults")]
+        internal int NumberOfResults { get; set; }
+
+        [DataMember(Name = "results")]
+        internal IEnumerable<ClusterResultItem> Results { get; set; }
+    }
+
+    /// <summary>
+    /// Data representing the ML node suggestion.
+    /// </summary>
     [DataContract]
     internal class ResultItem
     {
         [DataMember(Name = "node")]
-        internal NodeResponse Node { get; set; }
+        internal NodeResponseItem Node { get; set; }
 
         [DataMember(Name = "port")]
-        internal PortResponse Port { get; set; }
+        internal PortResponseItem Port { get; set; }
 
         [DataMember(Name = "score")]
         internal double Score { get; set; }
     }
 
+    /// <summary>
+    /// Data representing the ML node cluster suggestion.
+    /// </summary>
     [DataContract]
-    internal class PortResponse
+    internal class ClusterResultItem
+    {
+        [DataMember(Name = "title")]
+        internal string Title { get; set; }
+
+        [DataMember(Name = "description")]
+        internal string Description { get; set; }
+
+        [DataMember(Name = "probability")]
+        internal string Probability { get; set; }
+
+        [DataMember(Name = "entryNodeIndex")]
+        internal int EntryNodeIndex { get; set; }
+
+        [DataMember(Name = "entryNodeInPort")]
+        internal int EntryNodeInPort { get; set; }
+
+        [DataMember(Name = "topology")]
+        internal TopologyItem Topology { get; set; }
+    }
+
+    /// <summary>
+    /// Data representing the nodes and connetions in node cluster suggestion.
+    /// </summary>
+    [DataContract]
+    internal class TopologyItem
+    {
+        internal TopologyItem()
+        {
+            Nodes = new List<NodeItem>();
+            Connections = new List<ConnectionItem>();
+        }
+
+        [DataMember(Name = "nodes")]
+        internal IEnumerable<NodeItem> Nodes { get; set; }
+
+        [DataMember(Name = "connections")]
+        internal IEnumerable<ConnectionItem> Connections { get; set; }
+    }
+
+    [DataContract]
+    internal class PortResponseItem
     {
         [DataMember(Name = "name")]
         internal string Name { get; set; }
@@ -212,9 +325,9 @@ namespace Dynamo.Search.SearchElements
     }
 
     [DataContract]
-    internal class NodeResponse
+    internal class NodeResponseItem
     {
-        internal NodeResponse()
+        internal NodeResponseItem()
         {
             Type = new NodeTypeResponse();
         }
@@ -256,6 +369,7 @@ namespace Dynamo.Search.SearchElements
         }
     }
 
+    // List of host names.
     internal enum HostNames
     {
         Revit,
