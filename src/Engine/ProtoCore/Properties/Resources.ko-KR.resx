@@ -1,0 +1,947 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AttributeArgMustBeConstant" xml:space="preserve">
+    <value>속성 인수는 상수 표현식이어야 합니다</value>
+  </data>
+  <data name="BaseIsExpectedToCallBaseConstructor" xml:space="preserve">
+    <value>기준 클래스 생성자를 호출하려면 여기에 키워드 '기준'이 필요합니다</value>
+  </data>
+  <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
+    <value>지정된 리스트의 모든 요소가 동일한 유형인지 확인합니다</value>
+  </data>
+  <data name="ChecksIfLengthsAreSameInMultiDimentionalList" xml:space="preserve">
+    <value>다차원 리스트의 각 행의 요소 수가 같은지 확인합니다 </value>
+  </data>
+  <data name="ChecksIfListContainsTheElement" xml:space="preserve">
+    <value>지정된 요소가 지정된 리스트에 존재하는지 확인합니다</value>
+  </data>
+  <data name="ChecksIfTheListIsAllFalse" xml:space="preserve">
+    <value>지정된 리스트의 모든 요소가 false인지 확인합니다</value>
+  </data>
+  <data name="ChecksIfTheListIsAllTrue" xml:space="preserve">
+    <value>지정된 리스트의 모든 요소가 true인지 확인합니다</value>
+  </data>
+  <data name="ChecksListWithUniformDepth" xml:space="preserve">
+    <value>리스트의 깊이가 균일한지 확인합니다</value>
+  </data>
+  <data name="CloseBracketExpected" xml:space="preserve">
+    <value>')' 예상됨 - 불완전한 종료</value>
+  </data>
+  <data name="ContainsKeys" xml:space="preserve">
+    <value>지정된 키-값 쌍 리스트에 지정된 키가 존재하는지 확인합니다</value>
+  </data>
+  <data name="DeterminesObjectsAreEqual" xml:space="preserve">
+    <value>두 객체 인스턴스(instance)가 같은지 여부를 확인합니다</value>
+  </data>
+  <data name="EmptyCharacterLiteral" xml:space="preserve">
+    <value>빈 문자 리터럴</value>
+  </data>
+  <data name="FailedToImport" xml:space="preserve">
+    <value>{0}을(를) 가져오지 못했습니다</value>
+  </data>
+  <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
+    <value>지정의 왼쪽에는 함수 호출을 사용할 수 없습니다</value>
+  </data>
+  <data name="GetKeys" xml:space="preserve">
+    <value>지정된 키-값 쌍 리스트에서 모든 키를 가져옵니다</value>
+  </data>
+  <data name="Gettypes" xml:space="preserve">
+    <value>현재 인스턴스(instance)의 유형을 가져옵니다</value>
+  </data>
+  <data name="GetValues" xml:space="preserve">
+    <value>지정된 키-값 쌍 리스트에 저장된 모든 값을 가져오며 단순 리스트의 경우 리스트의 모든 요소를 반환합니다</value>
+  </data>
+  <data name="ImportFileByGivenFilePath" xml:space="preserve">
+    <value>쉼표로 구분된 값이 포함된 텍스트 파일의 데이터를 2차원 리스트로 가져옵니다</value>
+  </data>
+  <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
+    <value>쉼표로 구분된 값이 포함된 텍스트 파일의 데이터를 2차원 리스트로 가져오고 지정된 경우 출력 리스트의 행과 열을 바꿉니다</value>
+  </data>
+  <data name="ImportStatementNotSupported" xml:space="preserve">
+    <value>CodeBlock 노드에서는 Imports 문이 지원되지 않습니다. 대신 라이브러리 UI를 사용하십시오</value>
+  </data>
+  <data name="ClassDeclarationNotSupported" xml:space="preserve">
+    <value>CodeBlock 노드에서는 함수 정의 및 지정 문만 지원되며 클래스 선언은 지원되지 않습니다.</value>
+  </data>
+  <data name="InsertsAnElementIntoList" xml:space="preserve">
+    <value>요소를 지정된 인덱스의 리스트에 삽입합니다</value>
+  </data>
+  <data name="InvalidLanguageBlockIdentifier" xml:space="preserve">
+    <value>\"{0}\"은(는) 유효한 언어 블록 식별자가 아닙니다. \"결합형\" 또는 \"명령형\"을 의미합니까?</value>
+  </data>
+  <data name="InvalidSymbol" xml:space="preserve">
+    <value>구문 오류: 잘못된 기호 '{0}'. (수정자 스택 \" =&gt; \"을 사용하시겠습니까?)</value>
+  </data>
+  <data name="kAlreadyImported" xml:space="preserve">
+    <value>'{0}' 파일은 이미 가져왔습니다</value>
+  </data>
+  <data name="kAmbigousMethodDispatch" xml:space="preserve">
+    <value>내부 오류. 신고하십시오. 최종 디스패치에서 함수를 찾을 수 없습니다.</value>
+  </data>
+  <data name="kArgumentTypeUndefined" xml:space="preserve">
+    <value>'{1}' 인수의 '{0}' 유형이 정의되지 않았습니다</value>
+  </data>
+  <data name="kArrayOverIndexed" xml:space="preserve">
+    <value>인덱스가 지정된 범위 밖에 있습니다. href=kArrayOverIndexed.html</value>
+  </data>
+  <data name="kArrayRankReduction" xml:space="preserve">
+    <value>유형을 변환하면 배열 순위가 감소합니다. 복제 범위 밖에서는 허용되지 않습니다. {511ED65F-FB66-4709-BDDA-DCD5E053B87F}</value>
+  </data>
+  <data name="kAssignNonCharacterToString" xml:space="preserve">
+    <value>문자열은 문자로 구성되어야 합니다</value>
+  </data>
+  <data name="kAssingToThis" xml:space="preserve">
+    <value>'이' 항목은 읽기 전용이며 지정할 수 없습니다</value>
+  </data>
+  <data name="kCallingConstructorInConstructor" xml:space="preserve">
+    <value>생성자 자체 내에서 '{0}()' 생성자를 호출할 수 없습니다</value>
+  </data>
+  <data name="KCallingConstructorOnInstance" xml:space="preserve">
+    <value>기존 객체에서 '{0}()' 생성자를 호출할 수 없습니다</value>
+  </data>
+  <data name="kCallingNonStaticMethod" xml:space="preserve">
+    <value>'{0}.{1}()'은(는) 정적 방법이 아닙니다</value>
+  </data>
+  <data name="kCallingNonStaticProperty" xml:space="preserve">
+    <value>'{0}.{1}'은(는) 정적 특성이 아닙니다</value>
+  </data>
+  <data name="kConsoleWarningMessage" xml:space="preserve">
+    <value>&gt; 런타임 경고: {0}\n - \"{1}\" &lt;행: {2}, 열: {3}&gt;</value>
+  </data>
+  <data name="kConvertArrayToNonArray" xml:space="preserve">
+    <value>배열을 {0}(으)로 변환하면 배열 순위가 감소하며, 이는 허용되지 않습니다. href=kConvertArrayToNonArray.html</value>
+  </data>
+  <data name="kConvertDoubleToInt" xml:space="preserve">
+    <value>double을 int으로 변환하면 정보가 손실될 수 있습니다.</value>
+  </data>
+  <data name="kConvertNonConvertibleTypes" xml:space="preserve">
+    <value>변환 불가능한 유형의 변환을 요청했습니다</value>
+  </data>
+  <data name="kCyclicDependency" xml:space="preserve">
+    <value>두 변수 사이에 존재하는 주기적 의존성 href=kCyclicDependency.html</value>
+  </data>
+  <data name="kDereferencingNonPointer" xml:space="preserve">
+    <value>내부 오류. 신고하십시오. 비포인터를 역참조하고 있습니다. href=DereferencingNonPointer.html</value>
+  </data>
+  <data name="kExceptionTypeUndefined" xml:space="preserve">
+    <value>예외 유형 '{0}'이(가) 정의되지 않았습니다</value>
+  </data>
+  <data name="keywordCannotBeUsedAsConstructorName" xml:space="preserve">
+    <value>\"{0}\"은(는) 키워드이며 생성자 이름으로 사용할 수 없습니다</value>
+  </data>
+  <data name="keywordCantBeUsedAsIdentifier" xml:space="preserve">
+    <value>\"{0}\"은(는) 키워드이지만 식별자가 예상됩니다</value>
+  </data>
+  <data name="kFailToConverToFunction" xml:space="preserve">
+    <value>객체를 함수 포인터로 변환할 수 없습니다</value>
+  </data>
+  <data name="kFailToConverToNull" xml:space="preserve">
+    <value>다른 항목은 null로 변환할 수 없습니다</value>
+  </data>
+  <data name="kFailToConverToPointer" xml:space="preserve">
+    <value>객체를 함수 포인터로 변환할 수 없습니다</value>
+  </data>
+  <data name="kFFIFailedToObtainObject" xml:space="preserve">
+    <value>'{1}.{2}'에 대해 '{0}' 객체를 가져오지 못했습니다</value>
+  </data>
+  <data name="kFFIFailedToObtainThisObject" xml:space="preserve">
+    <value>'{0}.{1}'에 대해 이 객체를 가져오지 못했습니다</value>
+  </data>
+  <data name="kFFIInvalidCast" xml:space="preserve">
+    <value>'{0}'이(가) '{1}'에 투영되지만 허용되는 범위는 [{2}..{3}]입니다</value>
+  </data>
+  <data name="kFileNotFound" xml:space="preserve">
+    <value>'{0}' 파일을 찾을 수 없습니다</value>
+  </data>
+  <data name="kFunctionNotFound" xml:space="preserve">
+    <value>후보 함수를 찾을 수 없습니다</value>
+  </data>
+  <data name="kFunctionNotReturnAtAllCodePaths" xml:space="preserve">
+    <value>'{0}()' 방법을 통한 모든 경로에서 값을 반환해야 합니다</value>
+  </data>
+  <data name="kIndexOutOfRange" xml:space="preserve">
+    <value>인덱스가 범위를 벗어났습니다. href=kIndexOutOfRange.html</value>
+  </data>
+  <data name="kInvalidAmountInRangeExpression" xml:space="preserve">
+    <value>범위 표현식의 수는 양의 정수여야 합니다</value>
+  </data>
+  <data name="kInvalidArguments" xml:space="preserve">
+    <value>인수가 잘못되었습니다</value>
+  </data>
+  <data name="kInvalidArgumentsInRangeExpression" xml:space="preserve">
+    <value>범위 표현식에 사용되는 값은 숫자 또는 문자여야 합니다</value>
+  </data>
+  <data name="kInvalidBreakForFunction" xml:space="preserve">
+    <value>내부 오류. 신고하십시오. break 문으로 인해 함수에서 비정상적으로 null을 반환합니다.</value>
+  </data>
+  <data name="kInvalidContinueForFunction" xml:space="preserve">
+    <value>내부 오류. 신고하십시오. continue 문으로 인해 함수에서 비정상적으로 null을 반환합니다.</value>
+  </data>
+  <data name="kInvalidStaticCyclicDependency" xml:space="preserve">
+    <value>두 변수 사이에 존재하는 주기적 의존성</value>
+  </data>
+  <data name="kInvalidThis" xml:space="preserve">
+    <value>'이' 항목은 클래스의 구성원인 방법에서만 사용할 수 있습니다</value>
+  </data>
+  <data name="kInvokeMethodOnInvalidObject" xml:space="preserve">
+    <value>'{0}()' 방법이 잘못된 객체에서 호출되었습니다.</value>
+  </data>
+  <data name="kMethodAlreadyDefined" xml:space="preserve">
+    <value>'{0}()' 방법이 이미 정의되어 있습니다</value>
+  </data>
+  <data name="kMethodHasInvalidArguments" xml:space="preserve">
+    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+  </data>
+  <data name="kMethodIsInaccessible" xml:space="preserve">
+    <value>여기서는 '{0}()' 방법으로 도달할 수 없습니다</value>
+  </data>
+  <data name="kMethodNotFound" xml:space="preserve">
+    <value>'{0}()' 방법을 찾을 수 없습니다. href=kMethodNotFound.html</value>
+  </data>
+  <data name="kMethodResolutionFailure" xml:space="preserve">
+    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+  </data>
+  <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
+    <value>'{0}' 연산자는 '{1}' 및 '{2}' 유형의 피연산자에 적용할 수 없습니다</value>
+  </data>
+  <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
+    <value>인수 유형({1})을 허용하는 {0} 버전이 없습니다. href=NonOverloadMethodResolutionError.html</value>
+  </data>
+  <data name="kMethodStackOverflow" xml:space="preserve">
+    <value>'{0}()'은(는) Dynamo에 메모리가 부족할 때까지 반복됩니다. 기준 사례를 추가하십시오.</value>
+  </data>
+  <data name="kMultipleSymbolFound" xml:space="preserve">
+    <value>'{0}'에 대한 여러 정의가 {1}(으)로 확인되었습니다. href=kMultipleSymbolFound.html</value>
+  </data>
+  <data name="kMultipleSymbolFoundFromName" xml:space="preserve">
+    <value>'{0}'에 대한 여러 정의가 {1}(으)로 확인되었습니다</value>
+  </data>
+  <data name="kMethodDeprecated" xml:space="preserve">
+    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+  </data>
+  <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
+    <value>양 범위 표현식에 단계 크기가 지정되지 않았습니다</value>
+  </data>
+  <data name="kPropertyInaccessible" xml:space="preserve">
+    <value>'{0}' 특성에 액세스할 수 없습니다</value>
+  </data>
+  <data name="kPropertyIsInaccessible" xml:space="preserve">
+    <value>'{0}' 특성에 액세스할 수 없습니다</value>
+  </data>
+  <data name="kPropertyNotFound" xml:space="preserve">
+    <value>'{0}' 특성을 찾을 수 없습니다</value>
+  </data>
+  <data name="kPropertyOfClassNotFound" xml:space="preserve">
+    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+  </data>
+  <data name="kRangeExpressionConflictOperator" xml:space="preserve">
+    <value>양 연산자는 단계 연산자와 함께 사용할 수 없습니다</value>
+  </data>
+  <data name="kRangeExpressionWithInvalidAmount" xml:space="preserve">
+    <value>단계의 수가 잘못되었습니다.</value>
+  </data>
+  <data name="kRangeExpressionWithInvalidStepSize" xml:space="preserve">
+    <value>범위 표현식의 단계 크기가 잘못되었습니다.</value>
+  </data>
+  <data name="kRangeExpressionWithNegativeStepNumber" xml:space="preserve">
+    <value>범위 표현식의 단계 수는 0보다 커야 합니다</value>
+  </data>
+  <data name="kRangeExpressionWithNonIntegerStepNumber" xml:space="preserve">
+    <value>범위 표현식의 단계 수는 정수여야 합니다</value>
+  </data>
+  <data name="kRangeExpressionWithStepSizeZero" xml:space="preserve">
+    <value>범위 표현식의 단계 크기는 0이 아니어야 합니다</value>
+  </data>
+  <data name="kReturnTypeUndefined" xml:space="preserve">
+    <value>'{1}()' 방법의 반환 유형 '{0}'이(가) 정의되지 않았습니다</value>
+  </data>
+  <data name="kStaticMethodNotFound" xml:space="preserve">
+    <value>정적 방법 또는 생성자 {0}.{1}()을(를) 찾을 수 없습니다</value>
+  </data>
+  <data name="kStringIndexingCannotBeAssigned" xml:space="preserve">
+    <value>문자열 인덱싱을 지정할 수 없습니다. 읽기 전용입니다</value>
+  </data>
+  <data name="kStringIndexOutOfRange" xml:space="preserve">
+    <value>문자열에 대한 인덱스가 범위를 벗어났습니다</value>
+  </data>
+  <data name="kStringOverIndexed" xml:space="preserve">
+    <value>문자열이 지나치게 인덱스되었습니다</value>
+  </data>
+  <data name="kTypeUndefined" xml:space="preserve">
+    <value>'{0}' 유형이 정의되지 않았습니다</value>
+  </data>
+  <data name="kUnboundIdentifierMsg" xml:space="preserve">
+    <value>'{0}' 변수가 아직 정의되지 않았습니다</value>
+  </data>
+  <data name="kUsingNonStaticMemberInStaticContext" xml:space="preserve">
+    <value>'{0}'은(는) 정적 특성이 아니므로 정적 특성에 지정하거나 정적 방법에서 사용할 수 없습니다.</value>
+  </data>
+  <data name="kUsingThisInStaticFunction" xml:space="preserve">
+    <value>'이' 항목은 정적 방법에서 사용할 수 없습니다</value>
+  </data>
+  <data name="MapsValueFromOneRangeToAnotherRange" xml:space="preserve">
+    <value>한 범위의 값을 다른 범위로 매핑합니다</value>
+  </data>
+  <data name="MapsValueIntoInputRange" xml:space="preserve">
+    <value>값을 입력 범위로 매핑합니다</value>
+  </data>
+  <data name="NoConstructorForAttribute" xml:space="preserve">
+    <value>속성 '{0}'에 대한 어떤 생성자도 {1}개의 인수를 사용하지 않습니다</value>
+  </data>
+  <data name="NoSuchFileOrDirectoryToImport" xml:space="preserve">
+    <value>'{0}' 파일을 가져올 수 없습니다. 이러한 파일 또는 디렉토리가 없습니다</value>
+  </data>
+  <data name="ObjectsContainsInList1NotInList2" xml:space="preserve">
+    <value>List1에는 포함되지만 List2에서는 제외된 객체를 반환합니다</value>
+  </data>
+  <data name="ProducesTheSetIntersection" xml:space="preserve">
+    <value>두 시퀀스의 설정 교차점을 생성합니다</value>
+  </data>
+  <data name="ProducesTheSetUnion" xml:space="preserve">
+    <value>기본 균일성 비교자를 사용하여 두 시퀀스의 설정 조합을 생성합니다</value>
+  </data>
+  <data name="RemoveKeys" xml:space="preserve">
+    <value>리스트에서 키를 제거합니다</value>
+  </data>
+  <data name="RemovesTheMembersofTheList" xml:space="preserve">
+    <value>리스트에서 지정된 유형의 구성원이 아닌 구성원을 제거합니다</value>
+  </data>
+  <data name="ReordersList" xml:space="preserve">
+    <value>지정된 인덱스를 사용하여 리스트를 다시 정렬합니다</value>
+  </data>
+  <data name="ReturnsConcatenatingList" xml:space="preserve">
+    <value>두 리스트를 단일 리스트로 결합합니다</value>
+  </data>
+  <data name="ReturnsListWithRankDepth" xml:space="preserve">
+    <value>지정된 순위에 따라 다차원 리스트를 반환합니다</value>
+  </data>
+  <data name="ReturnsListWithUniformDepth" xml:space="preserve">
+    <value>입력 깊이로 지정된 대로 깊이가 균일한 리스트를 반환합니다</value>
+  </data>
+  <data name="ReturnsNumberOfItems" xml:space="preserve">
+    <value>지정된 리스트의 항목 수를 반환합니다</value>
+  </data>
+  <data name="ReturnStatementIsNotAllowedInConstructor" xml:space="preserve">
+    <value>생성자에는 return 문을 사용할 수 없습니다</value>
+  </data>
+  <data name="ReturnsTheDeepestDepthOfTheList" xml:space="preserve">
+    <value>리스트의 가장 깊은 깊이를 반환합니다</value>
+  </data>
+  <data name="ReturnsTheFlattened1DList" xml:space="preserve">
+    <value>다차원 입력 리스트의 단순화된 1차원 리스트를 반환합니다. 입력이 단일 값이면 해당 값을 반환합니다.</value>
+  </data>
+  <data name="ReturnsTheIndex" xml:space="preserve">
+    <value>리스트 구성원의 인덱스를 반환합니다</value>
+  </data>
+  <data name="ReturnsTheNumberOfFalseValueInList" xml:space="preserve">
+    <value>리스트에서 false 값의 수를 반환합니다</value>
+  </data>
+  <data name="ReturnsTheNumberOfTrueValue" xml:space="preserve">
+    <value>리스트에서 true 값의 수를 반환합니다</value>
+  </data>
+  <data name="SemiColonExpected" xml:space="preserve">
+    <value>';'이 예상됩니다</value>
+  </data>
+  <data name="SortsListByValue" xml:space="preserve">
+    <value>지정된 리스트를 구성원의 값을 기준으로 오름차순 또는 내림차순으로 정렬합니다</value>
+  </data>
+  <data name="SortsListByValueInAscending" xml:space="preserve">
+    <value>지정된 리스트를 구성원의 값을 기준으로 오름차순으로 정렬합니다</value>
+  </data>
+  <data name="TooManyCharacters" xml:space="preserve">
+    <value>문자 리터럴에 문자가 너무 많습니다</value>
+  </data>
+  <data name="UnknownAttribute" xml:space="preserve">
+    <value>알 수 없는 속성 {0}</value>
+  </data>
+  <data name="UseInlineConditional" xml:space="preserve">
+    <value>'{0}' 문은 명령형 언어 블록에서만 사용할 수 있습니다. 대신 인라인 조건문을 사용해 보십시오?</value>
+  </data>
+  <data name="UseListJoinNode" xml:space="preserve">
+    <value>대신 List.Join 노드를 사용하십시오</value>
+  </data>
+  <data name="ValidForImperativeBlockOnly" xml:space="preserve">
+    <value>'{0}' 문은 명령형 언어 블록에서만 사용할 수 있습니다</value>
+  </data>
+  <data name="ModuloByZero" xml:space="preserve">
+    <value>정수를 0으로 나눔</value>
+  </data>
+  <data name="addadd_expected" xml:space="preserve">
+    <value>"++" 예상됨</value>
+  </data>
+  <data name="add_expected" xml:space="preserve">
+    <value>"+" 예상됨</value>
+  </data>
+  <data name="andand_expected" xml:space="preserve">
+    <value>"&amp;&amp;" 예상됨</value>
+  </data>
+  <data name="and_expected" xml:space="preserve">
+    <value>"&amp;" 예상됨</value>
+  </data>
+  <data name="asterisk_expected" xml:space="preserve">
+    <value>"*" 예상됨</value>
+  </data>
+  <data name="catch_expected" xml:space="preserve">
+    <value>"catch" 예상됨</value>
+  </data>
+  <data name="char_expected" xml:space="preserve">
+    <value>char 예상됨</value>
+  </data>
+  <data name="closebrace_expected" xml:space="preserve">
+    <value>"}" 예상됨</value>
+  </data>
+  <data name="closebracket_expected" xml:space="preserve">
+    <value>closebracket 예상됨</value>
+  </data>
+  <data name="closeparen_expected" xml:space="preserve">
+    <value>closeparen 예상됨</value>
+  </data>
+  <data name="comma_expected" xml:space="preserve">
+    <value>"," 예상됨</value>
+  </data>
+  <data name="curvedash_expected" xml:space="preserve">
+    <value>"~\" 예상됨</value>
+  </data>
+  <data name="dashdash_expected" xml:space="preserve">
+    <value>"--" 예상됨</value>
+  </data>
+  <data name="divider_expected" xml:space="preserve">
+    <value>"/" 예상됨</value>
+  </data>
+  <data name="doublecolumn_expected" xml:space="preserve">
+    <value>":" 예상됨</value>
+  </data>
+  <data name="endline_expected" xml:space="preserve">
+    <value>endline 예상됨</value>
+  </data>
+  <data name="EOF_expected" xml:space="preserve">
+    <value>EOF 예상됨</value>
+  </data>
+  <data name="equalmark_expected" xml:space="preserve">
+    <value>"=" 예상됨</value>
+  </data>
+  <data name="equalright_expected" xml:space="preserve">
+    <value>"=&gt;" 예상됨</value>
+  </data>
+  <data name="equal_expected" xml:space="preserve">
+    <value>equal 예상됨</value>
+  </data>
+  <data name="error" xml:space="preserve">
+    <value>오류</value>
+  </data>
+  <data name="float_expected" xml:space="preserve">
+    <value>float 예상됨</value>
+  </data>
+  <data name="greaterequal_expected" xml:space="preserve">
+    <value>greaterequal 예상됨</value>
+  </data>
+  <data name="greaterthan_expected" xml:space="preserve">
+    <value>greaterthan 예상됨</value>
+  </data>
+  <data name="hax_expected" xml:space="preserve">
+    <value>"#" 예상됨</value>
+  </data>
+  <data name="ident_expected" xml:space="preserve">
+    <value>ident 예상됨</value>
+  </data>
+  <data name="invalid_Associative_AccessSpecifier" xml:space="preserve">
+    <value>잘못된 Associative_AccessSpecifier</value>
+  </data>
+  <data name="invalid_Associative_AddOp" xml:space="preserve">
+    <value>invalid_Associative_AddOp</value>
+  </data>
+  <data name="invalid_Associative_BinaryOps" xml:space="preserve">
+    <value>잘못된 Associative_BinaryOps</value>
+  </data>
+  <data name="invalid_Associative_BitOp" xml:space="preserve">
+    <value>잘못된 Associative_BitOp</value>
+  </data>
+  <data name="invalid_Associative_classdecl" xml:space="preserve">
+    <value>잘못된 Associative_classdecl</value>
+  </data>
+  <data name="invalid_Associative_ComparisonOp" xml:space="preserve">
+    <value>잘못된 Associative_ComparisonOp</value>
+  </data>
+  <data name="invalid_Associative_DecoratedIdentifier" xml:space="preserve">
+    <value>잘못된 Associative_DecoratedIdentifier</value>
+  </data>
+  <data name="invalid_Associative_Factor" xml:space="preserve">
+    <value>잘못된 Associative_Factor</value>
+  </data>
+  <data name="invalid_Associative_FunctionalStatement" xml:space="preserve">
+    <value>잘못된 Associative_FunctionalStatement</value>
+  </data>
+  <data name="invalid_Associative_functiondecl" xml:space="preserve">
+    <value>잘못된 Associative_functiondecl</value>
+  </data>
+  <data name="invalid_Associative_LanguageBlock" xml:space="preserve">
+    <value>잘못된 Associative_LanguageBlock</value>
+  </data>
+  <data name="invalid_Associative_LogicalOp" xml:space="preserve">
+    <value>잘못된 Associative_LogicalOp</value>
+  </data>
+  <data name="invalid_Associative_MulOp" xml:space="preserve">
+    <value>잘못된 Associative_MulOp</value>
+  </data>
+  <data name="invalid_Associative_NameReference" xml:space="preserve">
+    <value>잘못된 Associative_NameReference</value>
+  </data>
+  <data name="invalid_Associative_negop" xml:space="preserve">
+    <value>잘못된 Associative_negop</value>
+  </data>
+  <data name="invalid_Associative_Number" xml:space="preserve">
+    <value>잘못된 Associative_Number</value>
+  </data>
+  <data name="invalid_Associative_PostFixOp" xml:space="preserve">
+    <value>잘못된 Associative_PostFixOp</value>
+  </data>
+  <data name="invalid_Associative_Statement" xml:space="preserve">
+    <value>잘못된 Associative_Statement</value>
+  </data>
+  <data name="invalid_Associative_UnaryExpression" xml:space="preserve">
+    <value>잘못된 Associative_UnaryExpression</value>
+  </data>
+  <data name="invalid_Associative_unaryop" xml:space="preserve">
+    <value>잘못된 Associative_unaryop</value>
+  </data>
+  <data name="invalid_Hydrogen" xml:space="preserve">
+    <value>잘못된 수소</value>
+  </data>
+  <data name="invalid_Imperative_addop" xml:space="preserve">
+    <value>잘못된 Imperative_addop</value>
+  </data>
+  <data name="invalid_Imperative_assignstmt" xml:space="preserve">
+    <value>잘못된 Imperative_assignstmt</value>
+  </data>
+  <data name="invalid_Imperative_bitop" xml:space="preserve">
+    <value>잘못된 Imperative_bitop</value>
+  </data>
+  <data name="invalid_Imperative_decoratedIdentifier" xml:space="preserve">
+    <value>잘못된 Imperative_decoratedIdentifier</value>
+  </data>
+  <data name="invalid_Imperative_factor" xml:space="preserve">
+    <value>잘못된 Imperative_factor</value>
+  </data>
+  <data name="invalid_Imperative_forloop" xml:space="preserve">
+    <value>잘못된 Imperative_forloop</value>
+  </data>
+  <data name="invalid_Imperative_functiondecl" xml:space="preserve">
+    <value>잘못된 Imperative_functiondecl</value>
+  </data>
+  <data name="invalid_Imperative_ifstmt" xml:space="preserve">
+    <value>잘못된 Imperative_ifstmt</value>
+  </data>
+  <data name="invalid_Imperative_languageblock" xml:space="preserve">
+    <value>잘못된 Imperative_languageblock</value>
+  </data>
+  <data name="invalid_Imperative_logicalop" xml:space="preserve">
+    <value>잘못된 Imperative_logicalop</value>
+  </data>
+  <data name="invalid_Imperative_mulop" xml:space="preserve">
+    <value>잘못된 Imperative_mulop</value>
+  </data>
+  <data name="invalid_Imperative_NameReference" xml:space="preserve">
+    <value>잘못된 Imperative_NameReference</value>
+  </data>
+  <data name="invalid_Imperative_num" xml:space="preserve">
+    <value>잘못된 Imperative_num</value>
+  </data>
+  <data name="invalid_Imperative_PostFixOp" xml:space="preserve">
+    <value>잘못된 Imperative_PostFixOp</value>
+  </data>
+  <data name="invalid_Imperative_relop" xml:space="preserve">
+    <value>잘못된 Imperative_relop</value>
+  </data>
+  <data name="invalid_Imperative_stmt" xml:space="preserve">
+    <value>잘못된 Imperative_stmt</value>
+  </data>
+  <data name="invalid_Imperative_unaryexpr" xml:space="preserve">
+    <value>잘못된 Imperative_unaryexpr</value>
+  </data>
+  <data name="invalid_Imperative_unaryop" xml:space="preserve">
+    <value>잘못된 Imperative_unaryop</value>
+  </data>
+  <data name="invalid_Import_Statement" xml:space="preserve">
+    <value>잘못된 Import_Statement</value>
+  </data>
+  <data name="in_expected" xml:space="preserve">
+    <value>"in" 예상됨</value>
+  </data>
+  <data name="kw_break_expected" xml:space="preserve">
+    <value>kw_break 예상됨</value>
+  </data>
+  <data name="kw_class_expected" xml:space="preserve">
+    <value>kw_class 예상됨</value>
+  </data>
+  <data name="kw_constructor_expected" xml:space="preserve">
+    <value>kw_constructor 예상됨</value>
+  </data>
+  <data name="kw_continue_expected" xml:space="preserve">
+    <value>kw_continue 예상됨</value>
+  </data>
+  <data name="kw_def_expected" xml:space="preserve">
+    <value>kw_def 예상됨</value>
+  </data>
+  <data name="kw_elseif_expected" xml:space="preserve">
+    <value>kw_elseif 예상됨</value>
+  </data>
+  <data name="kw_else_expected" xml:space="preserve">
+    <value>kw_else 예상됨</value>
+  </data>
+  <data name="kw_extend_expected" xml:space="preserve">
+    <value>kw_extend 예상됨</value>
+  </data>
+  <data name="kw_external_expected" xml:space="preserve">
+    <value>kw_external 예상됨</value>
+  </data>
+  <data name="kw_for_expected" xml:space="preserve">
+    <value>kw_for 예상됨</value>
+  </data>
+  <data name="kw_from_expected" xml:space="preserve">
+    <value>kw_from 예상됨</value>
+  </data>
+  <data name="kw_heap_expected" xml:space="preserve">
+    <value>kw_heap 예상됨</value>
+  </data>
+  <data name="kw_if_expected" xml:space="preserve">
+    <value>kw_if 예상됨</value>
+  </data>
+  <data name="kw_import_expected" xml:space="preserve">
+    <value>kw_import 예상됨</value>
+  </data>
+  <data name="kw_local_expected" xml:space="preserve">
+    <value>kw_local 예상됨</value>
+  </data>
+  <data name="kw_native_expected" xml:space="preserve">
+    <value>kw_native 예상됨</value>
+  </data>
+  <data name="kw_prefix_expected" xml:space="preserve">
+    <value>kw_prefix 예상됨</value>
+  </data>
+  <data name="kw_static_expected" xml:space="preserve">
+    <value>kw_static 예상됨</value>
+  </data>
+  <data name="kw_while_expected" xml:space="preserve">
+    <value>kw_while 예상됨</value>
+  </data>
+  <data name="lessequal_expected" xml:space="preserve">
+    <value>lessequal 예상됨</value>
+  </data>
+  <data name="lessthan_expected" xml:space="preserve">
+    <value>lessthan 예상됨</value>
+  </data>
+  <data name="literal_false_expected" xml:space="preserve">
+    <value>literal_false 예상됨</value>
+  </data>
+  <data name="literal_null_expected" xml:space="preserve">
+    <value>literal_null 예상됨</value>
+  </data>
+  <data name="literal_true_expected" xml:space="preserve">
+    <value>literal_true 예상됨</value>
+  </data>
+  <data name="neg_expected" xml:space="preserve">
+    <value>neg 예상됨</value>
+  </data>
+  <data name="notequal_expected" xml:space="preserve">
+    <value>notequal 예상됨</value>
+  </data>
+  <data name="not_expected" xml:space="preserve">
+    <value>not 예상됨</value>
+  </data>
+  <data name="number_expected" xml:space="preserve">
+    <value>number 예상됨</value>
+  </data>
+  <data name="openbrace_expected" xml:space="preserve">
+    <value>"{" 예상됨</value>
+  </data>
+  <data name="openbracket_expected" xml:space="preserve">
+    <value>openbracket 예상됨</value>
+  </data>
+  <data name="openparen_expected" xml:space="preserve">
+    <value>openparen 예상됨</value>
+  </data>
+  <data name="oror_expected" xml:space="preserve">
+    <value>"||" 예상됨</value>
+  </data>
+  <data name="period_expected" xml:space="preserve">
+    <value>period 예상됨</value>
+  </data>
+  <data name="pipe_expected" xml:space="preserve">
+    <value>pipe 예상됨</value>
+  </data>
+  <data name="postfixed_replicationguide_expected" xml:space="preserve">
+    <value>postfixed replicationguide 예상됨</value>
+  </data>
+  <data name="power_expected" xml:space="preserve">
+    <value>"^" 예상됨</value>
+  </data>
+  <data name="private_expected" xml:space="preserve">
+    <value>"private" 예상됨</value>
+  </data>
+  <data name="protected_expected" xml:space="preserve">
+    <value>"protected" 예상됨</value>
+  </data>
+  <data name="public_expected" xml:space="preserve">
+    <value>"public" 예상됨</value>
+  </data>
+  <data name="question_expected" xml:space="preserve">
+    <value>"?" 예상됨</value>
+  </data>
+  <data name="rangeop_expected" xml:space="preserve">
+    <value>rangeop 예상됨</value>
+  </data>
+  <data name="reminder_expected" xml:space="preserve">
+    <value>"%" 예상됨</value>
+  </data>
+  <data name="replicationguide_postfix_expected" xml:space="preserve">
+    <value>replicationguide_postfix 예상됨</value>
+  </data>
+  <data name="textstring_expected" xml:space="preserve">
+    <value>textstring 예상됨</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Associative_FunctionalStatement" xml:space="preserve">
+    <value>이 기호는 Associative_FunctionalStatement에서 예상되지 않습니다</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Associative_FunctionCallStatement" xml:space="preserve">
+    <value>이 기호는 Associative_FunctionCallStatement에서 예상되지 않습니다</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Associative_Statement" xml:space="preserve">
+    <value>이 기호는 Associative_Statement에서 예상되지 않습니다</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Import_Statement" xml:space="preserve">
+    <value>이 기호는 Import_Statement에서 예상되지 않습니다</value>
+  </data>
+  <data name="this_symbol_no_expected_in_Associative_FunctionalStatement" xml:space="preserve">
+    <value>이 기호는 Associative_FunctionalStatement에서 예상되지 않습니다</value>
+  </data>
+  <data name="this_symbo_no_expected_in_Associative_NonAssignmentStatement" xml:space="preserve">
+    <value>이 기호는 Associative_NonAssignmentStatement에서 예상되지 않습니다</value>
+  </data>
+  <data name="throw_expected" xml:space="preserve">
+    <value>throw 예상됨</value>
+  </data>
+  <data name="triquestionmark_expected" xml:space="preserve">
+    <value>??? 예상됨</value>
+  </data>
+  <data name="try_expected" xml:space="preserve">
+    <value>"try" 예상됨</value>
+  </data>
+  <data name="kInvalidType" xml:space="preserve">
+    <value>유형이 유효하지 않습니다.</value>
+  </data>
+  <data name="AlgorithmNotSupported" xml:space="preserve">
+    <value>선택한 알고리즘은 지원되지 않습니다</value>
+  </data>
+  <data name="ArrayWithNotSupported" xml:space="preserve">
+    <value>공통 수퍼클래스가 없는 배열은 아직 지원되지 않습니다. {0}</value>
+  </data>
+  <data name="FailedToResolveSortingFunction" xml:space="preserve">
+    <value>정렬에 대해 비교 기능을 해결할 수 없습니다. 예상 정의 정렬기: int(x,y)</value>
+  </data>
+  <data name="FunctionDispatchFailed" xml:space="preserve">
+    <value>함수 디스패치를 완료할 수 없습니다 {0}</value>
+  </data>
+  <data name="MaxDimensionExceeded" xml:space="preserve">
+    <value>요청된 복제가 이용 가능한 배열 차원을 초과합니다. 이 경우에는 아직 지원되지 않습니다. {0}</value>
+  </data>
+  <data name="MultipleFunctionsFound" xml:space="preserve">
+    <value>실행할 기능을 결정할 수 없습니다. 더 구체적인 유형 정보를 제공해 주십시오. 가능한 함수는 다음과 같습니다. </value>
+  </data>
+  <data name="MultipleGuidesNotSupported" xml:space="preserve">
+    <value>죄송합니다. 오름차순이 아닌 단일 인수의 여러 가이드가 아직 지원되지 않습니다. 대신 루프를 사용하십시오. </value>
+  </data>
+  <data name="OneDArrayExpected" xml:space="preserve">
+    <value>두 인수 모두 1차원 배열 유형인 것으로 예상되었습니다!</value>
+  </data>
+  <data name="OperationFailType1" xml:space="preserve">
+    <value>{0}.{1} 작업이 실패했습니다.</value>
+  </data>
+  <data name="OperationFailType2" xml:space="preserve">
+    <value>{0}.{1} 작업이 실패했습니다.
+{2}</value>
+  </data>
+  <data name="ZipAlgorithmError" xml:space="preserve">
+    <value>압축된 Longest 및 최단 모음을 지원할 수 없습니다</value>
+  </data>
+  <data name="FailedToCastFromNull" xml:space="preserve">
+    <value>Null 값은 {0}(으)로 투영할 수 없습니다. href=FailedToCastFromNull.html</value>
+  </data>
+  <data name="ArgumentNullException" xml:space="preserve">
+    <value>Value cannot be null.
+Parameter name: {0}. href=ArgumentNullException.html</value>
+  </data>
+  <data name="FunctionGroupNotFound" xml:space="preserve">
+    <value>{1}에서 {0} 함수를 찾을 수 없습니다.</value>
+  </data>
+  <data name="FunctionGroupWithParameterNotFound" xml:space="preserve">
+    <value>{2}을(를) 사용하는 {1}에서 {0} 함수를 찾을 수 없습니다.</value>
+  </data>
+  <data name="kInvalidStringArgumentInRangeExpression" xml:space="preserve">
+    <value>시작 값은 숫자 또는 단일 문자가 될 수 있습니다.</value>
+  </data>
+  <data name="kInvalidUnicodeArgumentInRangeExpression" xml:space="preserve">
+    <value>범위 및 시퀀스 표현식은 ASCII 문자만 지원합니다.</value>
+  </data>
+  <data name="MoreThanOneDominantList" xml:space="preserve">
+    <value>주 리스트 하나만 허용됩니다.</value>
+  </data>
+  <data name="RangeExpressionOutOfMemory" xml:space="preserve">
+    <value>범위 표현식의 항목 수가 제한을 초과했습니다.</value>
+  </data>
+  <data name="IndexIntoNonArrayObject" xml:space="preserve">
+    <value>지정된 인덱스 주소에 항목이 없습니다.</value>
+  </data>
+  <data name="RunOutOfMemory" xml:space="preserve">
+    <value>메모리가 부족하여 작업을 마칠 수 없습니다.</value>
+  </data>
+  <data name="InvalidFunction" xml:space="preserve">
+    <value>유효하지 않은 함수입니다.</value>
+  </data>
+  <data name="kInvalidListLevelName" xml:space="preserve">
+    <value>'{0}'은(는) 리스트 레벨 이름으로 사용할 수 없습니다. 레벨 1에 L1을 사용해 보십시오.</value>
+  </data>
+  <data name="invalid_Associative_Level" xml:space="preserve">
+    <value>부적합한 list@level 구문입니다. 레벨 1에 @L1을 사용해 보십시오.</value>
+  </data>
+  <data name="VariableRedifinitionError" xml:space="preserve">
+    <value>변수 {0}이(가) 이 코드 블록 노드에 정의되었습니다. 변수를 둘 이상 정의할 수 없습니다.</value>
+  </data>
+  <data name="VariableRecursiveReference" xml:space="preserve">
+    <value>변수 {0}이(가) 정의된 것과 동일한 문에 사용되었습니다. 반복 종속성은 허용되지 않습니다.</value>
+  </data>
+  <data name="InvalidArrayIndexType" xml:space="preserve">
+    <value>리스트 인덱스는 숫자여야 합니다. href=InvalidArrayIndexType.html</value>
+  </data>
+  <data name="FailedToConvertArrayToDictionary" xml:space="preserve">
+    <value>리스트를 사전 유형으로 변환할 수 없습니다.</value>
+  </data>
+  <data name="NonOverloadMethodResolutionError" xml:space="preserve">
+    <value>{0}에서는 인수 유형({1})을 예상했으나 ({2})이(가) 호출되었습니다. href=NonOverloadMethodResolutionError.html</value>
+  </data>
+  <data name="DeprecatedListInitializationSyntax" xml:space="preserve">
+    <value>더 이상 리스트 작성에 가새를 사용하지 않습니다. 대신 꺾쇠괄호를 사용합니다(예: [] 또는 [1,2,3]).</value>
+  </data>
+  <data name="ListMethodDeprecated" xml:space="preserve">
+    <value>방법 '{0}'이(가) 사용되지 않았습니다. 사전 유형으로 대신 방법 '{1}'을(를) 사용하십시오.</value>
+  </data>
+  <data name="IntegerOverflow" xml:space="preserve">
+    <value>작업으로 인해 정수 오버플로우가 발생했습니다. 그 결과가 예기치 않게 발생할 수 있습니다.</value>
+  </data>
+</root>

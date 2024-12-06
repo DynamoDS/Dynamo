@@ -1,0 +1,832 @@
+{
+  "Uuid": "adfb96bf-c673-4a19-8026-70e80871a954",
+  "IsCustomNode": false,
+  "Description": "Tento graf vytvoří modelovou čáru a referenční bod v prostředí rodiny koncepčních objemů.",
+  "Name": "Revit_GeometryCreation_Points",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "434e51b97d504ad485ec8873844cb5b9",
+      "Name": "Hodnota Z bodu",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "25",
+      "MaximumValue": 50.0,
+      "MinimumValue": 5.0,
+      "StepValue": 5.0,
+      "NumberType": "Double",
+      "Description": "Vytváří číselné hodnoty."
+    },
+    {
+      "Id": "5ac6a2ecccc04bdbb240d93d993aec7b",
+      "Name": "Hodnota Y bodu",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "25",
+      "MaximumValue": 50.0,
+      "MinimumValue": 5.0,
+      "StepValue": 5.0,
+      "NumberType": "Double",
+      "Description": "Vytváří číselné hodnoty."
+    },
+    {
+      "Id": "77a8a99bf71c47e2a984fc1d4f97e4c7",
+      "Name": "Hodnota X bodu",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "50",
+      "MaximumValue": 50.0,
+      "MinimumValue": 5.0,
+      "StepValue": 5.0,
+      "NumberType": "Double",
+      "Description": "Vytváří číselné hodnoty."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "2a0405887d4d4166a10168b37f352fc7",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "88e426d68c2a49f6ad18b7385bd79215",
+          "Name": "x",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "988f10e7269a495a8475000981883a75",
+          "Name": "y",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bc05db6a0acf4e2bba2d0ed19582dfa4",
+          "Name": "z",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "114ef9fe83fd44cfb1e89faa0a154fbf",
+          "Name": "Point",
+          "Description": "Bod vytvořený pomocí souřadnic",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 50.0,
+      "MinimumValue": 5.0,
+      "StepValue": 5.0,
+      "Id": "434e51b97d504ad485ec8873844cb5b9",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b06ab1a5b52144d2bec1c2766f6196d0",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytváří číselné hodnoty.",
+      "InputValue": 25.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 328.0,
+      "WatchHeight": 38.0,
+      "Id": "14e9c97906e24d4f9efc89922056c5f8",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "ca7eddc03860468686247430e560ec91",
+          "Name": "",
+          "Description": "Uzel k vyhodnocení.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d03694df96a447d582cd65922b3a7d3d",
+          "Name": "",
+          "Description": "Zobrazit obsah.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vizualizuje výstup uzlu"
+    },
+    {
+      "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "WasExecuted": true,
+      "Camera": {
+        "Name": "05fc900e-3b57-41e0-8c5c-811feb8ee30f Preview",
+        "EyeX": -59.810522825354404,
+        "EyeY": -7.443073319112866,
+        "EyeZ": -48.432236726769084,
+        "LookX": 59.810522825354404,
+        "LookY": 7.443073319112866,
+        "LookZ": 48.432236726769084,
+        "UpX": -0.23890918493270874,
+        "UpY": 0.9515755772590637,
+        "UpZ": -0.19345931708812714
+      },
+      "VariableInputPorts": true,
+      "Id": "05fc900e3b5741e08c5c811feb8ee30f",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "7ec7bc2685db46bd9c9eb7329a674646",
+          "Name": "",
+          "Description": "Příchozí objekty geometrie.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "93f0d3d49e80440988c9189f8ae3fcb5",
+          "Name": "",
+          "Description": "Příchozí objekty geometrie.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Zobrazuje dynamický náhled geometrie."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ac19514ca0f94af7a1de3f7098066c0f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "0a25001c46b9438494ef74a10d8d8cea",
+          "Name": "x",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8daf688bb7034ee9bb2d321142607334",
+          "Name": "y",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "611cc3ae597242e7851bab7a112ae8b4",
+          "Name": "z",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "84218ad31df04a5ebb804072db41f04c",
+          "Name": "Point",
+          "Description": "Bod vytvořený pomocí souřadnic",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "764cb6ce6ecb4ca59ee8e9b25f85de2d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "4d601a5f1b1b47fea6958522e7be9531",
+          "Name": "startPoint",
+          "Description": "Počáteční bod čáry\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "790a32ec609d4a26bc22c80c8130a2db",
+          "Name": "endPoint",
+          "Description": "Koncový bod čáry\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2359b00a6a2841a08d665a02d28c477f",
+          "Name": "Line",
+          "Description": "Čára od počátečního a koncového bodu",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Vytvoří rovnou čáru mezi dvěma vstupními body.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "32a21b61d9f24239989f97ca0a4a4189",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "14203baacb874bc19f8e922b2b164b47",
+          "Name": "curve",
+          "Description": "Křivka",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "016cf7eb9ed749ff8d497882bfcf492d",
+          "Name": "ModelCurve",
+          "Description": "ModelCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
+      "Replication": "Auto",
+      "Description": "Vytvoří prvek ModelCurve aplikace Revit z křivky\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "62bde2021eb04e88b6aabe6e7379a978",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c08cd794c2ee4c279311637ac89b1cf6",
+          "Name": "pt",
+          "Description": "Bod",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "630dd924addb4cd9966763dddab7503e",
+          "Name": "ReferencePoint",
+          "Description": "ReferencePoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Revit.Elements.ReferencePoint.ByPoint@Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Vytvoří referenční bod z bodu.\n\nReferencePoint.ByPoint (pt: Point): ReferencePoint"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 50.0,
+      "MinimumValue": 5.0,
+      "StepValue": 5.0,
+      "Id": "5ac6a2ecccc04bdbb240d93d993aec7b",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ff4c7df612b94c2580fa5f9287eca57c",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytváří číselné hodnoty.",
+      "InputValue": 25.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 50.0,
+      "MinimumValue": 5.0,
+      "StepValue": 5.0,
+      "Id": "77a8a99bf71c47e2a984fc1d4f97e4c7",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "eda08a49f1ab4e47ba44fc6b234da7c7",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytváří číselné hodnoty.",
+      "InputValue": 50.0
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "114ef9fe83fd44cfb1e89faa0a154fbf",
+      "End": "c08cd794c2ee4c279311637ac89b1cf6",
+      "Id": "ee863720652f47f98b47737031a4815b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "114ef9fe83fd44cfb1e89faa0a154fbf",
+      "End": "ca7eddc03860468686247430e560ec91",
+      "Id": "8f262474762b446982088ff50ed65a8a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "114ef9fe83fd44cfb1e89faa0a154fbf",
+      "End": "790a32ec609d4a26bc22c80c8130a2db",
+      "Id": "b9a8c7e7a7ed4678ba02a1f08241141c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b06ab1a5b52144d2bec1c2766f6196d0",
+      "End": "bc05db6a0acf4e2bba2d0ed19582dfa4",
+      "Id": "c50e50b35a2b4c4abe0202005a3ec8bb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "84218ad31df04a5ebb804072db41f04c",
+      "End": "4d601a5f1b1b47fea6958522e7be9531",
+      "Id": "222154a5768048a2a5830e028f2c0805",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2359b00a6a2841a08d665a02d28c477f",
+      "End": "14203baacb874bc19f8e922b2b164b47",
+      "Id": "b06ff5e2cc294564a1d411d04997e1a0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2359b00a6a2841a08d665a02d28c477f",
+      "End": "7ec7bc2685db46bd9c9eb7329a674646",
+      "Id": "eb4876221542441f9f5c94ae6519ece1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ff4c7df612b94c2580fa5f9287eca57c",
+      "End": "988f10e7269a495a8475000981883a75",
+      "Id": "abd7262431f74a55ae40cc9d0714ea1f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "eda08a49f1ab4e47ba44fc6b234da7c7",
+      "End": "88e426d68c2a49f6ad18b7385bd79215",
+      "Id": "cef77db74d9e43ffa4f66eaa527f97b0",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAHsAqQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9Dc0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0ZptFADs0U2igBmaM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aM03dRuoAdmjNN3UbqAHZozTd1G6gB2aKbuooAbuo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduo3U3NGaAHbqN1NzRmgB26jdTc0ZoAduopuaKAG0U3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NGaAHUU3NFADd1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1G6m5FGRQA7dRupuRRkUAO3UbqbkUZFADt1FNyKKAG0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigB9FMooAfRTKKAH0UyigBuTRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRk03dRuoAdk0ZNN3UbqAHZNGTTd1G6gB2TRTd1FADcijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsiolvbeS7ktVnja6iRZZIQ4LojFgrFeoBKOAe+1vQ0+uS0z/krXiT/sCaX/AOj9Qq4xum+3+ZcY3TfY6/IoyKbRUEDsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsijIptFADsiim0UANopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOopuTRk0AOrBvJrvWtUmsrG9m0+2s/luriBIzIZiqMka+YrDaEbcx29WjAPDgaOrTXkWnXDWESTXu3bCshwgc8Bn5HygnJxzgHAJwKNJ06PR9Nt7OFndIlwZJCC8jdWdyByzElie5JPegDO2eJrX5/O0nU88eT5Utnj/a37ps+m3aOuc8YJ/buqwfJP4bu5pR957G5gkhP+60jxsffKDnPUcncyaMmgDD/4TfR4+bm4m02PtLqVrLaRk/3Q8qqpbqdoOcAnHBrWsdQtdUtUubO5hu7aTOyaBw6NgkHBHB5BH4VNk1Xhsba3uri5it4Yrm42+dMkYDy7Rhdxxk4HAz0oAtUU3JoyaAHUVVurqW38ny7Wa68yRUbyig8tT1dtzD5R3xk88A1YyaAHUU3JoyaAHUU3JoyaAHUU3JoyaAHUU3JoyaAHUU3JoyaAHUU3JoyaAHUU3JoyaAHVy+n2c8fxO1+6aCRbWXR9NiSYoQjus18WUN0JAdCR23L6iumyaMmqUrJruUpWTXcdRTcmjJqSR1FNyaMmgB1FNyaMmgB1FNyaMmgB1FNyaMmg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",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Vlastnosti",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "7.0",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [
+    {
+      "NodeId": "32a21b61-d9f2-4239-989f-97ca0a4a4189",
+      "Binding": {
+        "ByCurve_InClassDecl-1_InFunctionScope-1_Instance0_32a21b61-d9f2-4239-989f-97ca0a4a4189": "H4sIAAAAAAAACh3LoQ6AIBRG4Xf5s2wXuHcTssVs9BoAxVkMjuZ8d52nfeHMN9bUEiJuxdSu49zHQREV5KokYW+IbTHsczbZysetkuMiJQQy9GU5eUWnGM/2v+J6/+BZXnNT2nFcAAAA"
+      }
+    },
+    {
+      "NodeId": "62bde202-1eb0-4e88-b6aa-be6e7379a978",
+      "Binding": {
+        "ByPoint_InClassDecl-1_InFunctionScope-1_Instance0_62bde202-1eb0-4e88-b6aa-be6e7379a978": "H4sIAAAAAAAACh3LoQ6AIBRG4Xf5s2wXvHcTssVs9BoAxVkIjuZ8d52nfeEsN7bYIgJuxdyusx7TqAgKckWicG+IbTbcp2SSlY97IcdZsvdk6MtyZEWnmGr7X3EDP3jWFyOxI6ZcAAAA"
+      }
+    }
+  ],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.4.0.6752",
+      "RunType": "Manual",
+      "RunPeriod": "100"
+    },
+    "Camera": {
+      "Name": "_Náhled pozadí",
+      "EyeX": -34.617584228515625,
+      "EyeY": 15.351829528808594,
+      "EyeZ": 45.2993049621582,
+      "LookX": 30.096176147460938,
+      "LookY": -4.021317481994629,
+      "LookZ": -53.19477844238281,
+      "UpX": -0.25729018449783325,
+      "UpY": 0.8526402711868286,
+      "UpZ": 0.4547596871852875
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "2a0405887d4d4166a10168b37f352fc7",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3211.500671680106,
+        "Y": 958.6474456758182
+      },
+      {
+        "Id": "434e51b97d504ad485ec8873844cb5b9",
+        "Name": "Hodnota Z bodu",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2696.26604972724,
+        "Y": 1118.90209498037
+      },
+      {
+        "Id": "14e9c97906e24d4f9efc89922056c5f8",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3542.9380167078157,
+        "Y": 1032.8569061853225
+      },
+      {
+        "Id": "05fc900e3b5741e08c5c811feb8ee30f",
+        "Name": "Watch 3D",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 4050.9437707323677,
+        "Y": 962.8485054607146
+      },
+      {
+        "Id": "ac19514ca0f94af7a1de3f7098066c0f",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3229.404824843268,
+        "Y": 621.8717615746564
+      },
+      {
+        "Id": "764cb6ce6ecb4ca59ee8e9b25f85de2d",
+        "Name": "Line.ByStartPointEndPoint",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3603.108423743848,
+        "Y": 712.8107888983637
+      },
+      {
+        "Id": "32a21b61d9f24239989f97ca0a4a4189",
+        "Name": "ModelCurve.ByCurve",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 4030.2079253354186,
+        "Y": 712.6241829229928
+      },
+      {
+        "Id": "62bde2021eb04e88b6aabe6e7379a978",
+        "Name": "ReferencePoint.ByPoint",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3580.180497128028,
+        "Y": 1338.6724393196419
+      },
+      {
+        "Id": "5ac6a2ecccc04bdbb240d93d993aec7b",
+        "Name": "Hodnota Y bodu",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2696.26604972724,
+        "Y": 980.21817065175
+      },
+      {
+        "Id": "77a8a99bf71c47e2a984fc1d4f97e4c7",
+        "Name": "Hodnota X bodu",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2696.26604972724,
+        "Y": 841.53424632313
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "a96c9510bf074c609a16622f984b07de",
+        "Title": "Info",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "d0f6481a303e4728a927331432a70bed",
+          "d2ca38c2dcee4ec98891dd6c9da939de",
+          "467cffc5116f411f84fcd2e970ef1b87"
+        ],
+        "HasNestedGroups": false,
+        "Left": 2684.6170038387027,
+        "Top": 280.8586989664688,
+        "Width": 320.0,
+        "Height": 416.6363946063307,
+        "FontSize": 36.0,
+        "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
+        "InitialTop": 353.8586989664688,
+        "InitialHeight": 381.6363946063307,
+        "TextblockHeight": 63.0,
+        "Background": "#FFA4E1FF"
+      },
+      {
+        "Id": "aaa8e3691c1e45e19ec7e1d950a69849",
+        "Title": "Souřadnice bodů",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "434e51b97d504ad485ec8873844cb5b9",
+          "5ac6a2ecccc04bdbb240d93d993aec7b",
+          "77a8a99bf71c47e2a984fc1d4f97e4c7"
+        ],
+        "HasNestedGroups": false,
+        "Left": 2686.26604972724,
+        "Top": 768.53424632313,
+        "Width": 368.0,
+        "Height": 482.3678486572401,
+        "FontSize": 36.0,
+        "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
+        "InitialTop": 841.53424632313,
+        "InitialHeight": 422.3678486572401,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFB8D8"
+      },
+      {
+        "Id": "d1b73e4922504caba997fd43ac6fdbbe",
+        "Title": "Geometrická data lze zobrazit buď jako textové informace, nebo v 3D prostoru.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 3601.9380167078157,
+        "Top": 967.8569061853225,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "14e9c97906e24d4f9efc89922056c5f8"
+      },
+      {
+        "Id": "467cffc5116f411f84fcd2e970ef1b87",
+        "Title": "Mezi 3D navigací na pozadí a navigací v zobrazení grafu můžete přepínat pomocí tlačítek v pravém horním rohu obrazovky (klávesová zkratka Ctrl+B). Náhled pozadí je také možné zapnout nebo vypnout v nabídce Zobrazit v aplikacích Dynamo a Revit. ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2694.6170038387027,
+        "Top": 598.4950935727995,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "d4a7602dd9aa49bc8f2ecc88f885a1eb",
+        "Title": "Aplikace Dynamo může tvořit a upravovat pouze prvky, které jsou vhodné pro soubor, s nímž je aplikace Dynamo asociována. Například referenční body je možné vytvořit pouze v určitých prostředích rodin (například Obecný model adaptivní), zatímco modelové čáry je možné tvořit téměř kdekoli.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 3555.680497128028,
+        "Top": 1216.6724393196419,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "62bde2021eb04e88b6aabe6e7379a978"
+      },
+      {
+        "Id": "d0f6481a303e4728a927331432a70bed",
+        "Title": "Spusťte tento graf v prostředí koncepčního objemu nebo rodiny obecných adaptivních modelů.\n\nChcete-li vytvořit novou rodinu, přejděte do nabídky Soubor > Nová rodina > a vyberte šablonu ve složce: \n\nC:\\ProgramData\\Autodesk\\RVT 2026\\Family Templates\\English-Imperial\\Generic Model Adaptive.rft ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2695.6691718720854,
+        "Top": 361.8586989664688,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "d2ca38c2dcee4ec98891dd6c9da939de",
+        "Title": "Tento graf vytvoří modelovou čáru a referenční bod v prostředí rodiny.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2696.5408234984125,
+        "Top": 530.6813225625001,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "5063c42eb34b44eba6bff276a3425a89",
+        "Title": "Vytvořit křivku modelu spojením dvou bodů",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 4008.7079253354186,
+        "Top": 662.6241829229928,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "32a21b61d9f24239989f97ca0a4a4189"
+      },
+      {
+        "Id": "73b7676b54c946efbdf41d825fb27821",
+        "Title": "Náhled geometrie ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 4117.943770732368,
+        "Top": 912.8485054607145,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "05fc900e3b5741e08c5c811feb8ee30f"
+      },
+      {
+        "Id": "679dc2339ead4144863f0d6b03849301",
+        "Title": "Manipulace s polohou bodu v prostředí aplikace Dynamo: Vyberte uzel Point.ByCoordinates a přepněte do náhledu pozadí, abyste mohli táhnout bod podél jeho tří os.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 3175.500671680106,
+        "Top": 864.6474456758183,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "2a0405887d4d4166a10168b37f352fc7"
+      }
+    ],
+    "X": -1405.3784198991132,
+    "Y": -124.74573719850011,
+    "Zoom": 0.5397502601580435
+  }
+}

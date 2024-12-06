@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcceptButtonTooltip" xml:space="preserve">
+    <value>현재 코드 변경 사항을 수락합니다.</value>
+  </data>
+  <data name="CustomNodesPythonDependencyHeader" xml:space="preserve">
+    <value>IronPython2 종속성이 있는 사용자 정의 노드</value>
+  </data>
+  <data name="DiffButtonTooltip" xml:space="preserve">
+    <value>나란히 뷰 및 인라인 뷰 간에 변경합니다.</value>
+  </data>
+  <data name="IronPythonDialogDescription" xml:space="preserve">
+    <value>Dynamo가 이전 IronPython2(Python 2) 엔진에서 새로운 CPython3(Python 3) 엔진으로 바뀌었습니다. 
+IronPython 엔진은 여전히 Dynamo Package Manager를 통해 패키지로 제공되지만, 앞으로는 CPython3 엔진만 지원됩니다.</value>
+  </data>
+  <data name="IronPythonDialogSummary" xml:space="preserve">
+    <value>이 그래프에는 오래된 Python 엔진을 참조하는 노드가 포함되어 있습니다.</value>
+  </data>
+  <data name="IronPythonDialogTitle" xml:space="preserve">
+    <value>그래프에 오래된 Python 엔진이 포함되어 있음</value>
+  </data>
+  <data name="IronPythonDisableAlertMessage" xml:space="preserve">
+    <value>다시 표시하지 않습니다.</value>
+  </data>
+  <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
+    <value>이 그래프에는 현재 사용되지 않는 이전 IronPython 엔진을 사용하는 Python 노드가 포함되어 있습니다. 이러한 노드를 업데이트하여 새 CPython 3.7 엔진을 사용해 보십시오.</value>
+  </data>
+  <data name="IronPythonNotificationShortMessage" xml:space="preserve">
+    <value>이 그래프에는 현재 사용되지 않는 이전 IronPython2(Python 2) 엔진을 사용하는 노드가 포함되어 있습니다. 새 CPython3(Python 3)이 구현되었으며 Python 편집기 내에서 액세스 가능합니다.</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
+    <value>계속</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerDecline" xml:space="preserve">
+    <value>거부</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerDisable" xml:space="preserve">
+    <value>다시 표시하지 않습니다.</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerHeader" xml:space="preserve">
+    <value>Python 코드를 변경하려고 함</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
+    <value>마이그레이션 보조 도구를 사용하면 사용자가 Python 2에서 Python 3으로 스크립트를 업데이트할 수 있습니다.
+"계속"을 클릭하면 마이그레이션 보조 도구에서 제안한 대로 소스 코드에 구문 변경 사항을 구현하는 데 동의하게 됩니다. 마이그레이션 보조 도구는 오픈 소스 Dynamo의 구성요소입니다. 따라서 Apache License 2.0(https://www.apache.org/licenses/LICENSE-2.0)의 약관에 따라 사용자에게 라이센스가 부여됩니다. Apache License 2.0의 약관에 따라 Dynamo 및 마이그레이션 보조 도구는 "그대로" 제공됩니다.</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
+    <value>마이그레이션 보조 도구 고지 사항</value>
+  </data>
+  <data name="MigrationAssistantNoChangesStateHeader" xml:space="preserve">
+    <value>여기에 표시되는 항목이 없음</value>
+  </data>
+  <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
+    <value>코드가 Python 3 엔진에서 실행될 준비가 되었습니다. 동의를 클릭하면 Python 3 엔진으로 전환됩니다.</value>
+  </data>
+  <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
+    <value>코드에 오류가 있습니다!</value>
+  </data>
+  <data name="MigrationAssistantErrorStateMessage" xml:space="preserve">
+    <value>코드 마이그레이션을 시도하기 전에 모든 오류를 수정하십시오.</value>
+  </data>
+  <data name="PackagedCustomNodesHeader" xml:space="preserve">
+    <value>패키지</value>
+  </data>
+  <data name="PackagedCustomNodesTooltip" xml:space="preserve">
+    <value>패키지 작성자에게 패키지 업데이트를 알리십시오.</value>
+  </data>
+  <data name="PythonMigrationAssistantCodeAfter" xml:space="preserve">
+    <value>이후</value>
+  </data>
+  <data name="PythonMigrationAssistantCodeBefore" xml:space="preserve">
+    <value>이전</value>
+  </data>
+  <data name="PythonMigrationAssistantInlinePaneTitle" xml:space="preserve">
+    <value>이전 -&gt; 이후</value>
+  </data>
+  <data name="PythonMigrationAssistantWindowTitle" xml:space="preserve">
+    <value>마이그레이션 보조 도구</value>
+  </data>
+  <data name="PythonMigrationBackupExtension" xml:space="preserve">
+    <value>Python2</value>
+  </data>
+  <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>Python 코드 마이그레이션을 적용하기 전에 구성된 백업 위치({0})에 이 그래프의 백업을 저장했습니다.</value>
+  </data>
+  <data name="RejectButtonTooltip" xml:space="preserve">
+    <value>현재 코드 변경 사항을 거부합니다.</value>
+  </data>
+  <data name="UserDefinitionCustomNodesTooltip" xml:space="preserve">
+    <value>사용자 노드를 두 번 클릭하여 해당 작업공간을 엽니다.</value>
+  </data>
+  <data name="UserDefinitionsHeader" xml:space="preserve">
+    <value>정의</value>
+  </data>
+  <data name="MoreInformationButton" xml:space="preserve">
+    <value>추가 정보</value>
+  </data>
+  <data name="AcceptButton" xml:space="preserve">
+    <value>동의</value>
+  </data>
+  <data name="RejectButton" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="SwitchViewButton" xml:space="preserve">
+    <value>뷰 전환</value>
+  </data>
+</root>

@@ -1,0 +1,1729 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "Tento graf vyhodnotí plochu povrchu vybraných prvků a pomocí přepsání zobrazení vybarví prvky podle této hodnoty. ",
+  "Name": "Revit_Color",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "0c78494a8be54761b2321c4acea3b0b9",
+      "Name": "Vybere prvky modelu.",
+      "Type": "selection",
+      "Type2": "hostSelection",
+      "Value": "45ed4799-d124-4abc-8e2b-9d29089bad28-000b7d3c,45ed4799-d124-4abc-8e2b-9d29089bad28-000b7d59,45ed4799-d124-4abc-8e2b-9d29089bad28-000b7d87,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc535,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc5ca,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc732,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc761,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc78e,ee03061f-d7b4-4e6a-b397-fa44f24a42a7-000d8d2a,ee03061f-d7b4-4e6a-b397-fa44f24a42a7-000d8dc4,be7c41aa-3dbe-41ab-a35e-bc804583677c-001431f3,be7c41aa-3dbe-41ab-a35e-bc804583677c-001432d8,be7c41aa-3dbe-41ab-a35e-bc804583677c-001433fb,be7c41aa-3dbe-41ab-a35e-bc804583677c-0014355f,03907ce2-d6bf-41d6-b870-f44df8a9f0d9-00143791,cd385e70-9bdd-443f-864f-9b1e057a8a5c-0015a7ee,2a2a5167-04a0-4202-bdcf-0377e2f524eb-001687b4,addda3e8-7d30-4bf4-87a0-3c8bdf6639ff-001688dc,addda3e8-7d30-4bf4-87a0-3c8bdf6639ff-001689a4,1e43b841-b995-46db-b1d2-6664b7dfa367-00168a9b,1e43b841-b995-46db-b1d2-6664b7dfa367-00168aae,1e43b841-b995-46db-b1d2-6664b7dfa367-00168aeb,1e43b841-b995-46db-b1d2-6664b7dfa367-00168b0f,1e43b841-b995-46db-b1d2-6664b7dfa367-00168b41,1e43b841-b995-46db-b1d2-6664b7dfa367-00168b7e,ad2588d0-c655-4eef-965a-6d983a5e846c-00168c26,ad2588d0-c655-4eef-965a-6d983a5e846c-00168c78,ad2588d0-c655-4eef-965a-6d983a5e846c-001692ae,ad2588d0-c655-4eef-965a-6d983a5e846c-001692d7,ad2588d0-c655-4eef-965a-6d983a5e846c-0016930e,ad2588d0-c655-4eef-965a-6d983a5e846c-0016936d,ad2588d0-c655-4eef-965a-6d983a5e846c-00169386,ad2588d0-c655-4eef-965a-6d983a5e846c-00169397",
+      "Description": "Vyberte více prvků z dokumentu aplikace Revit."
+    }
+  ],
+  "Outputs": [
+    {
+      "Id": "86dd6263ba1c4e53ad5e803609041500",
+      "Name": "/",
+      "Type": "unknown",
+      "InitialValue": "",
+      "Description": "Vrátí podíl čísla x číslem y\n\n/ (x: var[]..[], y: var[]..[]): var[]..[]"
+    }
+  ],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ecb2936d6ee94b999ab124269ffedfc5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "59e660d673754b578721904e617c9c58",
+          "Name": "element",
+          "Description": "Revit.Elements.Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c7e5fb17a4b3453b969a8d8f7ac7cc6e",
+          "Name": "color",
+          "Description": "Barva, která se použije na plnou výplň prvku.\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "83e9d251d9b349338d6e9c103170fb78",
+          "Name": "Element",
+          "Description": "Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Revit.Elements.Element.OverrideColorInView@DSCore.Color",
+      "Replication": "Longest",
+      "Description": "Přepíše barvu prvku v aktivním pohledu.Element.\n\nElement.OverrideColorInView (color: Color): Element"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "bcb655a95f3a46c0926d51616dbe998f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "0d4c4a2fc54e4233bf0760a8f2046bc9",
+          "Name": "alpha",
+          "Description": "Hodnota alfa (mezi 0 a 255 včetně)\n\nint\nVýchozí hodnota: 255 (zakázáno)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "db9ae2bf99604763a3203a2c38cbc2f3",
+          "Name": "red",
+          "Description": "Hodnota červené barvy v RGB modelu barev (mezi 0 a 255 včetně)\n\nint\nVýchozí hodnota: 0 (zakázáno)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "08e88461fdf94d8aaf0c44c007f0bc52",
+          "Name": "green",
+          "Description": "Hodnota zelené barvy v RGB modelu barev (mezi 0 a 255 včetně)\n\nint\nVýchozí hodnota: 0 (zakázáno)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2dbc754af1c3417ab8d505baa4f78ec6",
+          "Name": "blue",
+          "Description": "Hodnota modré barvy v RGB modelu barev (mezi 0 a 255 včetně)\n\nint\nVýchozí hodnota: 0 (zakázáno)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "724c93b1e0e24b89a29c2a09e9a1b846",
+          "Name": "color",
+          "Description": "Barva vytvořená z modelu ARGB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
+      "Replication": "Longest",
+      "Description": "Vytvoří barvu z komponent alfa, červená, zelená a modrá.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "e773ba81f00245cba043ae4a66f7fa20",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7711a1a0e67b4e9fb33e06bf7c20f0f0",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytvoří číslo.",
+      "InputValue": 255.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "e3736b6056f4466da7a28bb6417a1161",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2cea58a52976492db31b4bf838d85f24",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytvoří číslo.",
+      "InputValue": 0.0
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "16db4a52d49d4e8d97a210c82478fc02",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "1a649dfd397a4bb78d16b6386de72a03",
+          "Name": "alpha",
+          "Description": "Hodnota alfa (mezi 0 a 255 včetně)\n\nint\nVýchozí hodnota: 255 (zakázáno)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "50a63468639f4c1c84e6b4c34dfaf5c4",
+          "Name": "red",
+          "Description": "Hodnota červené barvy v RGB modelu barev (mezi 0 a 255 včetně)\n\nint\nVýchozí hodnota: 0 (zakázáno)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6d721abbac8f44bebcd159b97508c0f8",
+          "Name": "green",
+          "Description": "Hodnota zelené barvy v RGB modelu barev (mezi 0 a 255 včetně)\n\nint\nVýchozí hodnota: 0 (zakázáno)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "636f89a5240541559287d1c8dde38c6d",
+          "Name": "blue",
+          "Description": "Hodnota modré barvy v RGB modelu barev (mezi 0 a 255 včetně)\n\nint\nVýchozí hodnota: 0 (zakázáno)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e4aa7660c9ee4930890d161fe43a3925",
+          "Name": "color",
+          "Description": "Barva vytvořená z modelu ARGB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
+      "Replication": "Longest",
+      "Description": "Vytvoří barvu z komponent alfa, červená, zelená a modrá.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "7f963803c47b404885f61c045f2a3063",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d6d0502d168344f486134e8bac053d3e",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytvoří číslo.",
+      "InputValue": 0.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "ccfc2ceddf1642bfa6483d52f8b7d63b",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "01e835af69b746cf9313257d93d9bed0",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytvoří číslo.",
+      "InputValue": 255.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "56cc5b21d87946b9aa079ed0f15da53e",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "632dad237fa74675ab6f4972e37b78f3",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytvoří číslo.",
+      "InputValue": 100.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.ColorRange, CoreNodeModels",
+      "Id": "258e20b41ac74f0d918035f6a6851f1f",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "62aac27825ff4e35bf331fa8af34f33c",
+          "Name": "colors",
+          "Description": "Seznam barev, které mají být zahrnuty do rozsahu",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6d9522a919024234a662d9fb3a1f6c21",
+          "Name": "indices",
+          "Description": "Seznam hodnot v rozsahu 0,0 až 1,0, což umístí vstupní barvy podél rozsahu",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8e9c1f84d2a24f44b7a3c01f8af566df",
+          "Name": "value",
+          "Description": "Seznam hodnot v rozmezí 0,0 až 1,0. Tyto hodnoty definují barvy, které jsou vybrány podél rozsahu barev k vytvoření seznamu barev.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9d8155ee1bab405a85d5c31e977a833a",
+          "Name": "color",
+          "Description": "Vybrané barvy",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vrací barvu z daného barevného rozsahu."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "86dd6263ba1c4e53ad5e803609041500",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "86cd5e920d9d4aba9989ddc6e60b64cd",
+          "Name": "x",
+          "Description": "Hodnota integer nebo hodnota double\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "62af667db97343458878abfb639fbc6c",
+          "Name": "y",
+          "Description": "Hodnota integer nebo hodnota double\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a193c00cacb24bd9803b061082d9f022",
+          "Name": "double",
+          "Description": "Výsledek dělení",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "/@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Vrátí podíl čísla x číslem y\n\n/ (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "e503bedbd3b147b89219db21f2e23d89",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "5784fe1ed3f1411bb6025016d693046b",
+          "Name": "list",
+          "Description": "Seznam porovnatelných položek, ze kterých se vybere hodnota maxima\n\nvar[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cd35820f804d4d08a735ff2924800bb4",
+          "Name": "item",
+          "Description": "Maximální položka ze seznamu.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.MaximumItem@var[]",
+      "Replication": "Auto",
+      "Description": "Vrací maximální hodnotu ze seznamu.\n\nList.MaximumItem (list: var[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "a64810c3f1334d92bae4b61f8c703cb4",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8ee33ab4ae8143388e48f8b737971f0c",
+          "Name": "solid",
+          "Description": "Autodesk.DesignScript.Geometry.Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7e5d95d0a8204b308422359a790e73a8",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.Area",
+      "Replication": "Auto",
+      "Description": "Vrací plochu povrchu – součet všech oblastí všech ploch.\n\nSolid.Area: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b9f354e490504f34b9b27661dad88418",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "6d380f128a35461dac402551f9718ef5",
+          "Name": "list",
+          "Description": "Seznam k vyrovnání\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c3361f6f99e84786b9d047e123c3aad8",
+          "Name": "amount",
+          "Description": "Hladiny vnoření seznamu k odebrání (-1 odebere všechna vnoření seznamu)\n\nint\nVýchozí hodnota: -1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f6ec2d128ba2412297899e7c428aba84",
+          "Name": "list",
+          "Description": "Vyrovnaný seznam o určité množství",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
+      "Replication": "Auto",
+      "Description": "Vyrovná vnořený seznam seznamů o určité množství.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "83126e2bcf5643e184593b4b2f57c24e",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "35e17c176ef7478b9e331540a2793f54",
+          "Name": "item0",
+          "Description": "Index položky č. 0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b18a854cb6bf43ebb69da85d25b614f1",
+          "Name": "item1",
+          "Description": "Index položky č. 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2adfe4aae9ad46aaaee064e1b5cf4461",
+          "Name": "list",
+          "Description": "Seznam",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytvoří nový seznam z daných vstupů"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "0dfab8b474814a8fb582c90604bf25c7",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "25d9e8ec99f74ecd83320fde2931e0ff",
+          "Name": "",
+          "Description": "Hodnota výrazu na řádku 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
+      "Code": "[0,1];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "16a8696b91d64c1f91387e1f29d12bac",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "7489ccd7ea7f45be88165eab77ceede8",
+          "Name": "element",
+          "Description": "Revit.Elements.Element",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a3efc8f9e6914e608d27056cbbcbdf8d",
+          "Name": "detailLevel",
+          "Description": "Úroveň detailů\n\nstring\nVýchozí hodnota : „Střední“",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ab07b53e5a464318ba113673e182c08e",
+          "Name": "var[]",
+          "Description": "Seznam geometrií z prvku",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Revit.Elements.Element.GetGeometry@string",
+      "Replication": "Auto",
+      "Description": "Vrátí všechny geometrie asociované s prvkem. Ignoruje transformace pokud se použije na propojený prvek.\n\nElement.GetGeometry (detailLevel: string = \"Medium\"): var[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "Id": "af434bbb5f9b4e5398854b599f52c95d",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "66c325ff5d8e4b26ade677e6ac3e385d",
+          "Name": "test",
+          "Description": "Test booleovské hodnoty",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7f43b8cdc1194785921fc82c6c4b45de",
+          "Name": "true",
+          "Description": "Vráceno, pokud je test pravdivý.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6e1a1feaa41e4af994371ea11971d473",
+          "Name": "false",
+          "Description": "Vráceno, pokud je test nepravdivý",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f0ef4b0e1542465da370c91b9a7c27c0",
+          "Name": "result",
+          "Description": "Vytvořený blok výsledku",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Vrátí hodnotu výsledku vstupu True nebo False podle toho, na co je booleovská hodnota u testovacího vstupu přepnuta. Podporuje rekurzi, která vyžaduje, aby byla spuštěna pouze jedna větev. Je velmi důležité, aby byly větve vzájemně izolované a nemohly mezi sebou interagovat."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "6467f818afba4f4c966f64e4a7c5773a",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4db09c2994e94cf88f4e9b657c1c2fe1",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytvoří číslo.",
+      "InputValue": 1.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "b7274d4b8e534538b39e78b420e6a397",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "581c0029a2cf4409b40e5bcb989bdac5",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vytvoří číslo.",
+      "InputValue": 0.0
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "a861fe74183344b4afaa6ec75fbcbe7d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "71f0087895f4457ab6f7315962b815a3",
+          "Name": "x",
+          "Description": "Hodnota integer nebo hodnota double\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "05c8a7b0c8b3473888281739f15bffb7",
+          "Name": "y",
+          "Description": "Hodnota integer nebo hodnota double\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "53cd4297ea3d460f8ba65dc13616dae2",
+          "Name": "bool",
+          "Description": "Vrací hodnotu true, pokud je x větší než y, false pokud není",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": ">@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Porovná, zda je hodnota x větší než hodnota y\n\n> (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "cd929e10bef84a4f89273c0a01972721",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "082d22a14dd54b25b91871a81c33d9ec",
+          "Name": "",
+          "Description": "Uzel k zobrazení výstupu",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "07db4bcc2981494280e20a53d745af21",
+          "Name": "",
+          "Description": "Výstup uzlu",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vizualizuje výstup uzlu"
+    },
+    {
+      "ConcreteType": "Dynamo.Nodes.DSModelElementsSelection, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "InstanceId": [
+        "45ed4799-d124-4abc-8e2b-9d29089bad28-000b7d3c",
+        "45ed4799-d124-4abc-8e2b-9d29089bad28-000b7d59",
+        "45ed4799-d124-4abc-8e2b-9d29089bad28-000b7d87",
+        "8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc535",
+        "8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc5ca",
+        "8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc732",
+        "8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc761",
+        "8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc78e",
+        "ee03061f-d7b4-4e6a-b397-fa44f24a42a7-000d8d2a",
+        "ee03061f-d7b4-4e6a-b397-fa44f24a42a7-000d8dc4",
+        "be7c41aa-3dbe-41ab-a35e-bc804583677c-001431f3",
+        "be7c41aa-3dbe-41ab-a35e-bc804583677c-001432d8",
+        "be7c41aa-3dbe-41ab-a35e-bc804583677c-001433fb",
+        "be7c41aa-3dbe-41ab-a35e-bc804583677c-0014355f",
+        "03907ce2-d6bf-41d6-b870-f44df8a9f0d9-00143791",
+        "cd385e70-9bdd-443f-864f-9b1e057a8a5c-0015a7ee",
+        "2a2a5167-04a0-4202-bdcf-0377e2f524eb-001687b4",
+        "addda3e8-7d30-4bf4-87a0-3c8bdf6639ff-001688dc",
+        "addda3e8-7d30-4bf4-87a0-3c8bdf6639ff-001689a4",
+        "1e43b841-b995-46db-b1d2-6664b7dfa367-00168a9b",
+        "1e43b841-b995-46db-b1d2-6664b7dfa367-00168aae",
+        "1e43b841-b995-46db-b1d2-6664b7dfa367-00168aeb",
+        "1e43b841-b995-46db-b1d2-6664b7dfa367-00168b0f",
+        "1e43b841-b995-46db-b1d2-6664b7dfa367-00168b41",
+        "1e43b841-b995-46db-b1d2-6664b7dfa367-00168b7e",
+        "ad2588d0-c655-4eef-965a-6d983a5e846c-00168c26",
+        "ad2588d0-c655-4eef-965a-6d983a5e846c-00168c78",
+        "ad2588d0-c655-4eef-965a-6d983a5e846c-001692ae",
+        "ad2588d0-c655-4eef-965a-6d983a5e846c-001692d7",
+        "ad2588d0-c655-4eef-965a-6d983a5e846c-0016930e",
+        "ad2588d0-c655-4eef-965a-6d983a5e846c-0016936d",
+        "ad2588d0-c655-4eef-965a-6d983a5e846c-00169386",
+        "ad2588d0-c655-4eef-965a-6d983a5e846c-00169397"
+      ],
+      "Id": "0c78494a8be54761b2321c4acea3b0b9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "509003f0d1df4eccbff1ac902a173455",
+          "Name": "Elements",
+          "Description": "Vybrané prvky.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Vyberte více prvků z dokumentu aplikace Revit."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "724c93b1e0e24b89a29c2a09e9a1b846",
+      "End": "35e17c176ef7478b9e331540a2793f54",
+      "Id": "42626feb2a2045e7a0723fb4387f91f3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7711a1a0e67b4e9fb33e06bf7c20f0f0",
+      "End": "08e88461fdf94d8aaf0c44c007f0bc52",
+      "Id": "23ca2d0119744d4b9e87ae28303ad914",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2cea58a52976492db31b4bf838d85f24",
+      "End": "0d4c4a2fc54e4233bf0760a8f2046bc9",
+      "Id": "cbf2ab2eac394735be5e9b2bfbdd1058",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2cea58a52976492db31b4bf838d85f24",
+      "End": "db9ae2bf99604763a3203a2c38cbc2f3",
+      "Id": "384d066ddb1f4d9c9cd2d746884e89f0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2cea58a52976492db31b4bf838d85f24",
+      "End": "2dbc754af1c3417ab8d505baa4f78ec6",
+      "Id": "cf242c3cd72e4f67bb56c77c800cffda",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e4aa7660c9ee4930890d161fe43a3925",
+      "End": "b18a854cb6bf43ebb69da85d25b614f1",
+      "Id": "c1fb29f824d04b23aca19f9c5091f3ac",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d6d0502d168344f486134e8bac053d3e",
+      "End": "1a649dfd397a4bb78d16b6386de72a03",
+      "Id": "5b7e0139c268407a83054a99c5b9e4b2",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d6d0502d168344f486134e8bac053d3e",
+      "End": "636f89a5240541559287d1c8dde38c6d",
+      "Id": "a89bae8ccde243ce98bbc3095f04585b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d6d0502d168344f486134e8bac053d3e",
+      "End": "6d721abbac8f44bebcd159b97508c0f8",
+      "Id": "e3cb849d87124a0596f3780b5a365a07",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "01e835af69b746cf9313257d93d9bed0",
+      "End": "50a63468639f4c1c84e6b4c34dfaf5c4",
+      "Id": "5959558a87f44228be3c132f3527cda9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "632dad237fa74675ab6f4972e37b78f3",
+      "End": "05c8a7b0c8b3473888281739f15bffb7",
+      "Id": "de1adffe8def49c7b7d58310ba52086f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9d8155ee1bab405a85d5c31e977a833a",
+      "End": "c7e5fb17a4b3453b969a8d8f7ac7cc6e",
+      "Id": "756f82b4b5ea4f649989ed7b21ab5299",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a193c00cacb24bd9803b061082d9f022",
+      "End": "8e9c1f84d2a24f44b7a3c01f8af566df",
+      "Id": "b659bff9223f41a38cba41d5a6659fd6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cd35820f804d4d08a735ff2924800bb4",
+      "End": "62af667db97343458878abfb639fbc6c",
+      "Id": "45a4c2b8d5854b34a036868c35fe9f28",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7e5d95d0a8204b308422359a790e73a8",
+      "End": "5784fe1ed3f1411bb6025016d693046b",
+      "Id": "fb6cd595a71346139bddb1ec69bee878",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7e5d95d0a8204b308422359a790e73a8",
+      "End": "86cd5e920d9d4aba9989ddc6e60b64cd",
+      "Id": "619046633ba643abb5420a0748f8171f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7e5d95d0a8204b308422359a790e73a8",
+      "End": "71f0087895f4457ab6f7315962b815a3",
+      "Id": "1b53effddcf2429f8fb911658a424b39",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f6ec2d128ba2412297899e7c428aba84",
+      "End": "8ee33ab4ae8143388e48f8b737971f0c",
+      "Id": "7c39cc869b344a93ac818a84dc77f827",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2adfe4aae9ad46aaaee064e1b5cf4461",
+      "End": "62aac27825ff4e35bf331fa8af34f33c",
+      "Id": "2f917d495a9349479257d9aeae62387b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "25d9e8ec99f74ecd83320fde2931e0ff",
+      "End": "6d9522a919024234a662d9fb3a1f6c21",
+      "Id": "058602df9c9d42128b525121c82e49c2",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ab07b53e5a464318ba113673e182c08e",
+      "End": "6d380f128a35461dac402551f9718ef5",
+      "Id": "62e8ab61c5d74222b17e2d350a644e34",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f0ef4b0e1542465da370c91b9a7c27c0",
+      "End": "082d22a14dd54b25b91871a81c33d9ec",
+      "Id": "6957f7e208ef45e18fe7afc031ceb332",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4db09c2994e94cf88f4e9b657c1c2fe1",
+      "End": "7f43b8cdc1194785921fc82c6c4b45de",
+      "Id": "0444559275144dd397a6caebf5ca1f72",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "581c0029a2cf4409b40e5bcb989bdac5",
+      "End": "6e1a1feaa41e4af994371ea11971d473",
+      "Id": "84956735fb2b421ca61dd80a67a3928a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "53cd4297ea3d460f8ba65dc13616dae2",
+      "End": "66c325ff5d8e4b26ade677e6ac3e385d",
+      "Id": "98e83f3165624991b34112b395d61738",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "509003f0d1df4eccbff1ac902a173455",
+      "End": "59e660d673754b578721904e617c9c58",
+      "Id": "194c7ccda0ec41e5bd52c72d6f32a876",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "509003f0d1df4eccbff1ac902a173455",
+      "End": "7489ccd7ea7f45be88165eab77ceede8",
+      "Id": "3d63a02f13154b5d91ca3c039ed4e9f2",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAKkAkADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKw/EXjnw94RMa61rVjpjyEBI7mdUdsnHCk5I962YZkuIklidZI3UMrochgeQQe4rONSEpOEZJtbrqiVKLbinqh9FFFaFBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUVi+KPGmheCrH7Xruq2umQHhTPIAzn0VerH2ANZ1KkKUXOo0kur0RMpRguaTsjapGYKpJOAOSTXzR47/bS02yaa28J6U+pPtIW/viYog3qI/vMPqVNfOnjr4xeLviH8ut6zNNagnbZwgRQj/gC4DfVsn3r4XMOM8uwd4UL1ZeWi/wDAv8kz53FZ9haF40/fflt9/wDlc+yfHf7T3gfwS0sCX51vUI+Ps+mgSKDnGGk+4PfBJGOlfNvj79rrxl4qWW30wxeGbJm4+xktcbfQyn+aha8OlnC1RnuDzzX5rjuKczzG8VP2ce0dPve/5LyPlMRnGLxWifKuy/z3NW81a41i/lub26mu7qQ7pJ7hy7uemSScmvUPhH8dvEHwukjgtJ/t+js4aXT7gkqexKHqhx6ceoNeHxznzTz2rRs7wrjmvmqdbEYSqq+Hm4zXVf1r8z4/E4nE4aup0JuLXb+tT9Kfhp8aPDfxQt8adcG21BR+80+6IWYcZJUZ+ZevI9OQK7yvy40zVprO6hubaaS3uYWDxyxsVZGByCCOhr6Z+FP7WtzZmDTfGateQEhF1SFR5iDpmRR94D1HPsTX6xkvG9Ktahma5JfzL4X69vy9D7jKeLqdW1HMPdl/N0fr2/L0Pq6iqWj61YeIdOhv9MvIb6zmGUmgcMp/Ed/bqKu1+pxlGcVKLumfosZKSUou6YUUUVRQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUVna94i0vwvp0l/q9/b6dZp1muJAi/QZ6n2HNeD+O/2zPD2js9v4ZsZdfm28XUuYIFP0I3Nj0wPrXk47NcFlqviqqj5dfuWpxYjGYfCq9aaX5/dufRNeY+Ov2jPA/gTMc2qLqt5yPsullZ3BHZjkKv0JB9q+NvHfx38afEESxanrEkNjJwbCy/cw49CByw/3ia8+8yvzTMeO5O8Mvp/9vS/yX6v5HyeK4ib93DQ+b/yPoHx5+2J4p8QefbaBbw+HrNjhZl/e3JX/AHj8q5HouR2NeGatrV/r1615qd/cajdsAGnu5mlkIHQFmJNZxk96TdX5tjcyxmYy5sVUcvy+S2R8riMVXxTvWm3+X3bEjSenNRSSUM1QyNXnxicqIZmqjM9WZmrOuJOtdlOJ0RQxZP3p57Vdt5O2axll/fH6VetZOnNdE46Hi46P7w6C1m6VqW83vXPRzeWpbsBmmeEfGGneKId9nPmRRl4X4dfqPT3HFebUoylFzS0W54k6MpRcktEer+AfiXr/AMOdSW70W+eFCwaW1f5oZgOzL9OMjkdiK+vfhX+0h4d+IKwWV86aHrjkILWd/wB3M3/TN8Y5P8JwcnAz1r4VhaplYqQQcEcgivYyfiPHZLLlpvmp9Yvb5dn6fNM9TK8+xeUy5ab5ofyvb5dv6umfqBRXxZ8Kf2n9c8FiDTtc365oykLvkYm5hXphWJ+YD+630BFfWvg3xxovj7SV1HRL1Ly3PDrgq8bf3XU8g/z7Zr96yfiHBZ1G1GVp9Yvf5d15r52P2bK88wmbR/dO0+sXv/wV6G9RRRX0x9AFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUVV1PVLPRbGW91C7hsbSIbpJ7iQIij3J4FKUlFXbshNpK7LVFfP8A4+/bH8K+Hlmt/D8E3iK9XKrKAYbYH/eI3Nj2XB9e9fN/jz9pbxv46Zlm1ZtJsyNv2PSi0CEf7RyWb6E49q+LzDi7LcFeNOXtJdo7fft91zwcTnWFw+kXzvy/zPtDx58dvBfw7jkGpaxFcXi5H2CxImnyOxUHC/8AAiK+c/H37aGu6s72/haxj0O16C6uAJrhvcA/Iv0w3Qc18zteDJxTPtBbvX5pmHF2ZY28aT9lH+7v/wCBb/dY+UxOdYvEaQfIvLf7/wDKx0GveJtT8UahJf6vqFxqV4/Wa5kLt9BnoPYcCswy/hVPzD607zK+IlzTk5Sd2z56V5O7d2TlqTdUe6jdU2FYdmk3UzNJup2HYeWqGRqczVDI1WkUkV5261mXUnWr87cVk3bda7qSOiCKok/fH6VetZOaxxJ++P0q/ZyciuypHQ8rHR/eHQ22HUA81gaT8NbfRPFllq2nSlIEMnm27843IwG0+mT0Nbdm1bNselea61SipKDspKzPE9tUpKSg9GrM0oWq0tVIz0qyhrxJHkyHitXw74m1TwjqkOpaRey2N5CcrJE2M+xHQg+h4rKp1KM5U5KcHZrZomM5U5KcHZo+vPhT+1ZpviAW+m+K1TS9SY7BfIMW0nu2TlCfy57V7/FKk8SSRuskbgMrqchgeQQe4r8xK3vB/wC2BffBWZbCG5fXNPjZg+kN91Tk52yEfu+STxkdyDX6/wAP8Z15SWGx8XNfzJar/Euq89/U/beC8dnPEOKjluHws8RPvBXcV3n0S/vNr5n6QUV5Z8E/2kPBfx00uOTRL9bXVwm6fRbx1W6iI6kLn514zuXIwRnB4r1Ov2WlVhWgp03dM/SsdgcVlteWFxlNwqR3TVn/AMN2ez6BRRRWpwhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFcZ44+MXhD4d/JretQwXWMizhzLOfqi5K59WwPevmf9pD41eLo/HmseGLDU5NL0m0ZIgtifLklyisS8g+bqxGAQMdQa+f7i1mm8ySRy0jEsWY5LE9STX5VnHHEcJVnhsJTvKLabltdOzslq/vXofD5lxPSwc3SgtU7Xf+S1Porx9+2xqN5HJb+FNKTS1zgX18RLLj2jA2qfqWr538X/ABC1vxpfte65qtxqdx2Mz/Kvsqj5VHsAK5fVJ5bWTY4KnqM96yZLwt3r87xeY47NNcVVcl22X3LT9T52ri6+OXNUndP7vw0NSbUuvNVJL4t3rNa45601rj3rkjRSMVTSNNbr3qws9Ya3HzdatR3HTmiVIbgbMcnSpwc1lwzVdjkNcco2MJRLINP3VErZpc1kQOZqbRTSaAFJxUEjVIzVXkatIopFa4brWReN1rTuG4rIvG616FFHTAz1b98fpWjZnpWSp/fH6VrWfauypseZjvjN6zPStq1PArEs+1bFr0FeFWPm6pqRVaj7VTh/pVuM15cjzpEtOptOXpWLMWFfPvjb/kbNV/67tX0FXz742/5GzVf+u7V9Hkf8afp+p/aH0XP+Six//Xj/ANyRM7S9VvdD1G3v9Ou5rG+t3EkNxbyFJI2HQqw5Br7Y/Z8/4KFTWK2mhfE5HuoVGxPEVumZF9PPjUfNxgb1545DEk18O0V+h4THV8FPmoyt5dGf3/xBwzlfE2H9hmNK9tpLSUfR/o7p9Uz9yPDfibSvGGi2ur6JqFvqumXS74bq1kDo46HkdwcgjqCCDzWnX40fB749eMfgfrS3vhvUmW1Zs3Gl3JL2lyP9tMjn/aXDD161+iv7Pn7ZXhH42LaaVesnhzxdINp0y4fMdw3/AEwkIAbPXYcNzgbsE1+iZfnVDGWhP3Z9uj9H+h/HvFvhrmnDvNicMvbYdfaS96K/vR8v5lp3tsfQVFFFfRH48FFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH5+ftFf8lv8Tf9d4v/AEUlcSVDV237RX/Jb/E3/XeL/wBFJXFV/Jedf8jHEf45/wDpTP504k/3yXrL8yrfabBqFu0UyBgRw38S+4PauI8QeFbnTY3nts3FsoLN/eQe47/Ue9eg0ledQxM6D027Hh4TH1sG/cd126HiP2r5qX7QK9J8ReCbTWleaEC1vMEh1GFc5z8wx9eevPfpXmmuaPe+H7gR3ce0NnZIpyrAHqD/AE68ivqcNiKWJVo6PsffYLMaGNVou0uz/TuPS45q5DcdOa5+O65q9b3HT0rsnSPVlA6C3m5FaUMnFc9bT8jmtaCXNebVgcs4moslTK1U4nyKnWSuCUTmaJWNNzSFqaxqRA5qvMalaq8xrWKLiVbg8Vj3netW4PWsa+PWvRorU6qZRjP74/Stez7ViRH98fpW3Y9q6q2x5WO+M3bMdK2LfpWRadq17c8CvArHzdQ0Ye1W46qQ9qsx15kjzpE9OWmr0py1izFi18++Nv8AkbNV/wCu7V9BV8++Nv8AkbNV/wCu7V9Fkf8AGn6fqf2f9Fz/AJKLH/8AXj/3JExKKKK+0P8ASkKVWKsGUkMDkEdRSUUAfVX7Pf7d/iP4bfZNE8YibxN4ZjURpN96+tlHTa7ECRQP4W54ADADFfoN8N/ij4Z+LXh2LWvC+qQ6laMB5iKcSwMf4JEPKNwevXGRkc1+J9dF4D+IXiL4Y+IYdb8M6pNpOpRjHmxYIdcglXUgqynA4IIr6fL89rYW1Ot70PxX9dj8Q4t8LcuzzmxWXWoV3rovck/NLZvuvVpn7c0V8jfs9/t9aD44+y6H488nw3rmxUXVGYLZXLcD5if9Ux68/L15HAr61t7iK6t454JEmhkUOkkbBlZSMggjqCO9foeGxdHFw56Mr/mvU/kLOsgzLh7EPDZjScH0fSXnF7P9OtmSUUUV1nzwUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH5+ftFf8lv8Tf9d4v/AEUlcVXa/tFf8lv8Tf8AXeL/ANFJXFV/JWdf8jHEf45/+lM/nTiT/fJesvzCiiivEPkgqve2UGoWkttcRLNBIMMjdDViimm4u6Gm4u6PMPE3wxe333WkFpI1BZrVzlxz0T147HnjqSa4yPfbzNFKjRyIdrKwwQR1BFfQVVY9F0iTWrTUr/R7TU2t5BIYbneEmxj5ZNjKWHA4J/SvocLmrVoYjVd+vz/q59Zgc9nTtTxWq79f+D+Z5TpOharqmm6jf2Wm3l3Y6bbyXd5cwQM8dvEiF3d2AwoCqTz6Vk+FfGFr4kac2vmGOFgu9lwGJ9P/AK9foD4m+MngzxB+y78S9B06xtfC2oJ4R1QLpcMSxQu32KUHyiAAeg4PzfXGa/NL4S2bWmiRMeszGU/yH6AV91isBg44JYmjWVTm7bLytvf1t6H6HKnhp4ZV6FRTv26eXe/qevQNlRVkGqFu3yCrkZr4mSPEkTbqaWpKQ1lYiwpqtKetTM1VpGrSKLRUuDwaxr5uta1w3FYt6a9GitTqplOE/vj9K3bEcCsC1/15+ldHYrwK3r6I8jMP4hs2nate37Vl2q1rW4xXgVT5qoXougq1HVaLtVmOvNkefInXpTlpq9KctYMxYtfPvjb/AJGzVf8Aru1fQVfPvjb/AJGzVf8Aru1fRZH/ABp+n6n9n/Rc/wCSix//AF4/9yRMSiiivtD/AEpCiiigAooooAK90+Af7XnjL4HTRWXnN4g8MAbW0e8lIEYznML4JjPXjleeVPBHhdFb0cRVw81UpSszy8yyvBZxh5YTH0lUpvo/zT3T81Zn7G/Bb9orwZ8dNNEmgagI9UjjElzpF0Ql1B2J2/xKDgblyORnBOK9Or8MdG1rUPDupW+o6VfXGm39uweK6tZWjkjYdwykEV9u/AH/AIKHOslvovxPjBi2qieILSI7geBmeJRzxyWQdvunOR99l/EFOtanivdl36f8D8j+T+LfCXF5fzYvI71ae/I/jXp/Mv8Aybye5940VS0XWtP8R6Va6npV7BqOnXSCSC6tpA8cinuGHBq7X16aauj+eJRlCTjJWaCiiimSFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAfn5+0V/yW/xN/wBd4v8A0UlcVXa/tFf8lv8AE3/XeL/0UlcVX8lZ1/yMcR/jn/6Uz+dOJP8AfJesvzCiiivEPkgooooAKKKKAPN/iZ42vdCuv7Mt4YClxbh2klTf8pLKV2ng9O+a8x0jVm024ZnXzIWOfLVQNv8Au9AB14+mMCuu+NH/ACNFr/15r/6G9cDX6LltGmsJGy+Jan+sXhj4d8LZtwBgnicDBzxFNSnNK03LVXU/iVuydvLVnqOlajb6hDvt5FcDqO6n0I7VqRGvILS8msZhNbyGKUcbl/lXa6H42humEV8Ft5O0ufkP19P5Vy4nAzh70NV+J+Fcd+CWbcO8+Nye+Jwy1sl+8gvOK+JL+aPzilqdhTGNG7Kgg5Bpua8g/maw1zVWY1Zaq03WtIlop3HesW+PWte471i3vevSo7nVTK1nzcH6f1rqLBflFczp/wDx8fhXWWMfyijFOx4mZP8AeGrajitWEVn2q4xWnCtfP1WfM1GW4x0qzHUEdTx158jiZMvSnLTR0py1kzFi18++Nv8AkbNV/wCu7V9BV8++Nv8AkbNV/wCu7V9Fkf8AGn6fqf2f9Fz/AJKLH/8AXj/3JExKKKK+0P8ASkKKKKACiiigAooooAKKKKAPRfg58ffGPwN1g3nhvUSLWQj7Rpl1mS1uBnPzJkYP+0uGGTzya/Rz4B/tieDPjcINNeQ+HvFBRd2mXrjbM54Igk6SduCA3PQ4zX5O7qVZCrBlJVgcgjtXt4DNcRgXyxd49n+nY/M+KuA8p4pi6lSPs6/SpFa/9vLaS9dezR+7dFfmr8A/2+vEngJoNJ8cCbxT4fVVjS5Xb9ttgD1DHAlGOznPA+btX6CeAfiR4a+J+hx6t4Y1i11a0YAv5EgLxE5+WROqNweGA6V+jYLMsPjl+7dn2e5/HHE3BmbcLVLYyHNTe046xf8Ak/J28rrU6aiiivUPhQooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAPz8/aK/5Lf4m/wCu8X/opK4qu1/aK/5Lf4m/67xf+ikriq/krOv+RjiP8c//AEpn86cSf75L1l+YUUUV4h8kFFFFABRRRQB4v8aP+Rotf+vNf/Q3rga7740f8jRa/wDXmv8A6G9cDX6Zl3+6U/Q/2p8Hv+SByj/r0vzYUUUV6J+xGxovia70dtoYz2//ADxduB9D2rvNK16z1hP3En70DLRNww/x/CvK6fHK8Lh43aNx0ZSQR+NcGIwdOtqtGfgfHXg/knF/Ni8Mvq+Kf24r3ZP+/Hr/AIlaXe9rHr7VXm61yej+OGXbFqA3L0E6Dn/gQ7/h+VdV5yTxrJGwdG5DKcg14NShOg7TR/AHFPBedcG4r6vm1HlT+Ga1hL/DL9HaS6pFK471jXnetu471i3g611Udz5CmQaaP9J/CuxsV+QVyWlr/pP4V2dinyis8Y9TwMzf700rda0oRVG3WtCEV8/UZ8zNlhPu1YSoUXpU61xSOVj6ctJSrWbMmLXz742/5GzVf+u7V9BV8++Nv+Rs1X/ru1fRZH/Gn6fqf2f9Fz/kosf/ANeP/ckTEooor7Q/0pCiiigAooooAKKKKACg0UjU0JjaKKa1MxuLurqPAHxK8S/C/XE1fwvrFxpF8uAzQsCkig52uhyrr7MCK5XNJurSMpQalF2aOetTpYinKjXipQlo01dNeaZ+mHwF/b88N+P2h0nxulv4S1khVS8Mh+xXDE4+8f8AVHp94kdfm7V9YqwZQykFSMgjoa/B/wAyvffgN+2R41+CrRWMkzeJfDQIB0q/mbMK558mTkx9+MFfavs8BxBKNqeM1X8y/Vf5H828V+EdKtzYvh58sutNvR/4ZPb0lp5paH6yUV518Hvj74M+OGkm68Namr3UQBuNNuR5d1bk/wB5O4/2lyvvnIr0WvuKdSFWKnTd0z+X8Xg8RgK8sNi6bhOO6as0FFFFaHGFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAfn5+0V/yW/wATf9d4v/RSVxVdr+0V/wAlv8Tf9d4v/RSVxVfyVnX/ACMcR/jn/wClM/nTiT/fJesvzCiiivEPkgooooAKKKKAPF/jR/yNFr/15r/6G9cDXffGj/kaLX/rzX/0N64Gv0zLv90p+h/tT4Pf8kDlH/Xpfmwooor0T9iCiiigAq3p+qXOlyF7eTbn7yMMq31FVKKUoqSs0ebmGXYPNsNPB4+lGpSlvGSun/XR7rodvYeJLbUj5bfuJjwFcjDfQ96LwVxBAYEEZFaFtrlxBxLm4j9CfmH0Pf8AH868+WE5XemfxXxx4D1sK5Y7hZ88N3Rk/eX+CT+L0lZ+cmdRpMf+k/hXZ2cfyCuQ8OyxXk5aJ1cDggdQfeu7tYsRjivBxsrSsz+G87pVcLipUK8HGcdGmrNPs09UyaFcVej6VBGlWo16V4c2fLyZOlTKKiSplrkZzMdSrSUq1LIYtfPvjb/kbNV/67tX0FXz742/5GzVf+u7V9Fkf8afp+p/Z/0XP+Six/8A14/9yRMSiiivtD/SkKKKKACiiigAooooAKRqWmtTRMthDTGp26mMapHPLYaTTS1DGmk1oczkDNSrKVqNmpjSVdjB1HHU2ND8Q6h4d1O31HSr6403ULdg8V1aytHIjDuGBBFfdfwD/wCCicUkcWkfFCIxvlUi1+xgyp56zxL0x/eQf8B7n8+POK1Ml5613YXFYjBS5qL+XRny+eZDlPE1H2GZU7tbSWko+j/R3XkfvBpOr2Ovabb6hpt5BqFhcLvhubaQSRyL6qw4NXK/Gj4J/tIeM/gbqBk8Oalu06Zw9zpV0PMtp8EZ+X+FiBjcpB96/ST4C/teeCvjhBFaLOvh7xJwraRfzKGlY/8APF+PMHPTAbrxjmvvsDnFDGWhL3Z9n19GfyZxV4dZnw7zYmh++w/80VrH/FHp6q6722Pc6KKK98/JwooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAPz8/aK/5Lf4m/67xf+ikriq7X9or/AJLf4m/67xf+ikriq/krOv8AkY4j/HP/ANKZ/OnEn++S9ZfmFFFFeIfJBRRRQAUUUUAeL/Gj/kaLX/rzX/0N64Gu++NH/I0Wv/Xmv/ob1wNfpmXf7pT9D/anwe/5IHKP+vS/NhRRRXon7EFFFFABRRRQAUUUUATWl5PYXCzW8rRSr0Zf6+o9jXpfhr4hWd8ohv8AbZT9BIT+7b8f4fx4968uorjxGFp4pWnv3Pybjnwx4e4+o2zGlyV18NWFlNeTe0l5STt0s9T6KjUYBHNWFXHFeJ+GfHl/4dIjJ+12mf8AUyE5X/dPb+Vet+H/ABJp/iS3MlnLl1+/E4w6/Uf1HFfGYzA1cK7tXj3/AK2P8z/EDwk4h4BnKviIe2wt9KsE+Xy51vB+ujeikzXUVKtMAxTxXjn4YxacvSm05elSyGFfPvjb/kbNV/67tX0FXz742/5GzVf+u7V9Hkf8afp+p/aH0XP+Six//Xj/ANyRMSiiivtD/SkKKKKACiiigAooooAKa1OprU0TLYZUbVJTHq0cs9iNqYxpzGoZG7VskcVSVkMd6ieTFNkaq8klbxieRUqjmlpnmH1qBpKZv966FE8yVbUvw3RU1pWmoNHIjo5R1IZWU4II6EGueEnvUscxUis5UkzqoY2UND7h/Z+/4KBa94KW30bx4s/ifR9yompbx9stlyMk8fvgBnhiG/2ugr9A/AnxC8O/Ezw/FrXhjVrfV9Oc7TLbtyjdSjqeUYZHysAeQe9fhVBfbcAmu8+GfxY8UfC3Wo9V8L6zc6VchlMiROfKmAIO2RPuuvHQivbwWc18JaFf3o/iv8/mfmXEvhtlmf8ANicrtQrvVr7EvVL4X5x07pvU/buivmL9nT9tjR/itaxad4rtU8M68DtW4yfsN10xtc/6tjz8rEjjhjnA+nFYMoIOQeQRX3OFxlDGR56Ek+/l6rofyZmeW4nKMZUwOLVqkHZpNP8AFC0UUV2HlhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH5+ftFf8lv8Tf8AXeL/ANFJXFV2v7RX/Jb/ABN/13i/9FJXFV/JWdf8jHEf45/+lM/nTiT/AHyXrL8wooorxD5IKKKKACiiigDxf40f8jRa/wDXmv8A6G9cDXffGj/kaLX/AK81/wDQ3rga/TMu/wB0p+h/tT4Pf8kDlH/Xpfmwooor0T9iCiiigAooooAKKKKACiiigAqW3uZbOZJoJGilQ5V0OCD9aiooeujM6lOFaDp1IpxejT1TXZo9Q8K/FhW2W2tDDZwt1GvH/Ah/UflXpVvcRXUKSwyLLE4yrocg/Q18y1teHfF2o+GZc2k2YC2Xt35Rv8D7ivm8Zk8Kl54fR9un/AP4w8RPo6Zfm/PmHCbWHrbuk/4Uv8P/AD7flrHpaK1PoSnL0rmPCvjzTvEyrGHFre9DbyMMn/dPf+ftXT18fWpToy5Kisz/ADxzzIcz4bxs8vzahKjVjupL8U9mn0abT6MK+ffG3/I2ar/13avoKvn3xt/yNmq/9d2r3sj/AI0/T9T+svouf8lFj/8Arx/7kiYlFFFfaH+lIUUUUAFFFFABRRRQAU1qdTWpomWwyo2qSonrSJyTImqvI1Tt3qrL3roieVWloVpWqtI3apZT1qnK1dkEfO16lhrSVEZahkl5NbPh7wTrPih1+xWjeQTg3Enyxr0zyevXoMn2racoUo89R2XmfKY7NMNgIOtiqihHu2l+ZlfaMHrVzTrW61ScQ2lvLcyn+GJSx/SvU/D/AMD7O1Cy6vcteS5B8mH5I+vQnqc8enevQ9M0Wy0eAQ2VrFax4AxGgGcdMnufc187is8oU/dormf3I/Hs18VMHhW4ZbTdWXd+7H/5J/cvU8p0H4RajebJdQmSxiPPlr80nT06D869D0nwXpmjx+XFbLLxgyTAMx/H/CuiC4or5TEZjiMT8UrLsj8WzfjbPc5bVfEOMP5Ye7H8NX82xsaCNAqgAAYAHav0O/ZVuprz4F+HnnlaVwbhAznJ2ieQAfgBX551+g/7Jv8AyQjw/wD791/6USV9jwO3/aU/8D/9KifKYRt1G32PX6KKK/cj1wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD8/P2iv+S3+Jv8ArvF/6KSuKrtf2iv+S3+Jv+u8X/opK4qv5Kzr/kY4j/HP/wBKZ/OnEn++S9ZfmFFFFeIfJBRRRQAUUUUAeL/Gj/kaLX/rzX/0N64Gu++NH/I0Wv8A15r/AOhvXA1+mZd/ulP0P9qfB7/kgco/69L82FFFFeifsQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAqsUYMpKsDkEdRXf+E/itc6bsttV3XltnAn/wCWiD3/ALw/X+Vef0VzV8PSxMeSqrnxfFXB2ScaYJ4HO8Oqkej2lB94yWsX+D2aa0PpXS9WtNatVubKdLiE8blPQ+hHY/WvCPG3/I2ar/13aqGj65faDdC4sbhoX7qD8rD0I7im6pqT6vqVxeSqqSTuXZU6An0ry8HlzwdeUk7xa+Z+H+GvhDiPDfibGYyhXVXCVaXLFvScXzxfLJbPRfEt+sY6FWiiivbP6eCiiigAooooAKKKKACmtTqRqaJlsRt1qN6mNRPVo5p7Fdu9VZulbum+GtR1rm1tmaPp5jfKn5muw0n4UwLhtRuGmbOfLh+VfzPJ/Ss6mNoYf45a9j8q4j44yHh/mp4vEJ1F9iPvS9GlpH/t5o8nW2nvJRFBFJNKxwEjUsT+ArqtG+EOramVe+ZNOgIz83zydP7o6fiRXsWm6LY6THts7SK3GMEooBP1PU/jV3aK8atnlR6UI283q/8AL8z+Zs98WMfjW6eV0lSj/M/el/8AIr7n6nH6B8L9C0TZIbX7bcr/AMtrn5ucY4Xp69u/Wuw20tFfPVq9SvLmqybfmfieMx2KzCq62LqOcu7bYUUUVicQUUUUAFfoP+yb/wAkI8P/AO/df+lElfnxX6D/ALJv/JCPD/8Av3X/AKUSV+hcD/8AIyn/AIH/AOlRO7B/xH6Hr9FFFfuZ64UUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQB+fn7RX/Jb/ABN/13i/9FJXFV2v7RX/ACW/xN/13i/9FJXFV/JWdf8AIxxH+Of/AKUz+dOJP98l6y/MKKKK8Q+SCiiigAooooA8X+NH/I0Wv/Xmv/ob1wNd98aP+Rotf+vNf/Q3rga/TMu/3Sn6H+1Pg9/yQOUf9el+bCiiivRP2IKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigBc06mUUEtD6KTdS1JFrBRRRQIKKKv6boN9qzAW1u7of+WhGE/M8VMpRirydkceMxuGy+i8Ri6kacFu5NJfeyhTo4ZLiRY4kaSRjgKgJJ/Cu5034cKuGv5y7Z/wBXDwPxJFdbp+k2umpttreOEYwSq8n6nqa8qrmVKnpDVn4HxD405Jl3NSyuDxM+/wAMPvau/lGz7nnml/D/AFC++a5K2Uf+18zH8B/U112l+CdM0zY3k/aJl/5aTc8/TpXQhcUteLWx1eto3ZeR/M3EHiVxJxDzQq1/ZU39in7q+bvzP0cmvIjWLaAOgqTaBRRXAflwUUUUAFFFFABRRRQAUUUUAFfoP+yb/wAkI8P/AO/df+lElfnxX6D/ALJv/JCPD/8Av3X/AKUSV+hcD/8AIyn/AIH/AOlRO7B/xH6Hr9FFFfuZ64UUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQB+fn7RX/Jb/ABN/13i/9FJXFV3P7R0MkPxu8R+ZG0e+WJ13KRuXyk5HqK4av5Lzv/kY4j/HP/0pn86cSf75L1l+YUUUV4Z8kFFFFABRRRQB4v8AGj/kaLX/AK81/wDQ3rga7740f8jRa/8AXmv/AKG9cDX6Zl3+6U/Q/wBqfB7/AJIHKP8Ar0vzYUUUV6J+xBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABS5pKKBEiKZGCqCzHgADmui0vwHqV8wMyCzi67pfvf989fzxXO29xLazLLDI0Uq9HQ4I/GvU/BOs3Ot6XJLdFWkjk8sMq4JGAcn35rzMdVq0Ic1O1j8Y8TeIM+4ZyxY7KVTVO6UpSu5pvblj8Pzd/TqM0vwPp2ngNJH9rm/vS9PwXp+ea6FYwqgAbQBgAdqfRXytSrOq7zdz+Cs2zzM88re3zLESqy/vPRei2S8kkgxRRRWR4gUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAV+g/7Jv8AyQjw/wD791/6USV+fFfoP+yb/wAkI8P/AO/df+lElfoXA/8AyMp/4H/6VE7sH/Efoev0UUV+5nrhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHL+Ovhr4d+I9gLbXNPS5ZRiK4X5ZofdHHI57dD3Br8xbP4kaTceI9U0edzY3Nndy2yGdhslCOVBDepx0P4Zr9Yq/MX9p79hnxX4H1bWfFfhYP4n8O3E8l5PDEv+l2m9izAp/y0QE/eXnB5HBNfn3FWRUsyhGtGn763kt/n3R8TxJk9LMKSqKHvLqt7fqOor578H/FXU/DRit7g/b9OXjyX++g/wBlv6Hj6V7V4a8XaZ4stfNsJ9zL9+GT5ZE+o/qOK/BsbllfBO8lePdfr2PxDF5fWwbvJXj3X9aG1RRRXknmBRRRQB4v8aP+Rotf+vNf/Q3rga7740f8jRa/9ea/+hvXA1+mZd/ulP0P9qfB7/kgco/69L82FFFFeifsQUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFek/DP/kC3P/Xwf/QVrzavSfhn/wAgW5/6+D/6CteXmX+7v1R+GeM3/JI1f8cPzOvooor5E/z6CiiigAooooAKKKKACiiigAooooAKKKKACiiigAr9B/2Tf+SEeH/9+6/9KJK/Piv0H/ZN/wCSEeH/APfuv/SiSv0Lgf8A5GU/8D/9Kid2D/iP0PX6KKK/cz1wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA+dP2iP2KPB/xuW61awRfDXi5lyNQtUAhuGH/PeMD5v94YbgckDFfnB8Vvgl46/Z78SJb6/YyWRDD7LqtmWa2nOM/u5MDnrlSAeORX7VVleJ/C2keNNDutG13TrfVdLul2zWt0gdHAORx6ggEHqCM14GOyehjE5R92T+5+qPDxuU0cUnKPuy/B+qPyA8H/GwEJba+uD0F5Ev/oaj+Y/KvV7W6hvbdJ7eVZoZBlZEOQRXZ/tEf8E6bnTFu9e+FzNeWqgM3hy4kLTKOh8iRj8/rtc564JOBXx3peu+IPhvrVxavFcWF1C+y506+iZMMOzxtgqfyNfjWb8LSoybprlf/kr9O39aI/Jc04blRk3Bcr/B+nb+tj6Wori/BvxR0zxQscEzLYaiRgwyH5XP+w3f6dfrXZSNtUmvzuth6uHn7OrGzPhK1GpQnyVFZnjPxo/5Gi1/681/9DeuBrqPjTqyReKrbzHVQbZVGeMAO3U/jXKRSLJGrqwZWGQwOQRX6PgIOOEpt9j/AGP8FczweM4Iy7D4eqpTpU0ppPWLu9Gt1+vQfRRRXcfuoUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFek/DP/kC3P/Xwf/QVrzavSfhn/wAgW5/6+D/6CteXmX+7v1R+GeM3/JI1f8cPzOvooor5E/z6CiiigAooooAKKKKACiiq99qVrpsJlu7iK3j67pGC5+nrTScnZFwhOpJQgrt9FuWKK878QfGKys1ePTLdryYHAkl+WPr1Hc/pXmPiTxprHiZiLy6YQ5yLeL5Yx17d+vU5Ne7hcmxGI1n7q89/u/4Y/UMo8OM7zK1SvD2EH1n8Xyjv9/Kexa98TtB0eSSI3y3Nwn/LK3BfPH94fL+tdLp919qt45CpQsobaeoyOlfL+j6d/aGvafbY3LJKNw/2QQW/TNfTWk/6tfpWmaYGjgYwjTbbe9z5HiLKYZJmNTAQlzcltXpe6T2+Zo0UUV86fNBX6D/sm/8AJCPD/wDv3X/pRJX58V+g/wCyb/yQjw//AL91/wClElfoXA//ACMp/wCB/wDpUTuwf8R+h6/RRRX7meuFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAV5L8dP2ZPBPx802RdbsFtNaVQtvrdmoW5ix0BPR17bWyOeMHBHrVFZVKcK0XCorpmdSnCrFwmro/Hv49fsj+OvgLNcXl3anWfDKOBHrtihMYBPy+anJiOSBzxk4DHiuN8JfFvUdDjjtL8HULEcbmJ81B7HuPY+nUV+2N1aw31vJb3EMdxBIpV4pVDKwPUEHgivjT9oT/gnboniwXuufDmSPw/rDHedFkwLGY9xGcZhJ645XjACg5Hwea8NQrRfs1zR7Pdej/p+p8TmXD0K0X7Ncy7dV6P+vmfnV8atUs/EWpWd5YXAmjMJRlwQynJOCD9f0r60/aA+FnhjR/2Ofgx42sdJhsfEd1ZaVY3V1bjZ9pjawdyZFHDODEvzdcZBJ4x8hfEzwLr3w58Q3Oh+JdJuNH1W3Pz29yuDjsykcMp7MpIPY191ftLf8o+/gl/3B/8A02z1x4LDxo4CrRkvhjpfdan6f4P1K2A4kwlCjNxTfK9bXWuj7+jPiRTlaWmx/dFOr5o/09WwUUUUhhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABXpPwz/AOQLc/8AXwf/AEFa82r0n4Z/8gW5/wCvg/8AoK15eZf7u/VH4Z4zf8kjV/xw/M6+iiivkT/PoKKKKACimTTR28bSSyLFGvJZyAB+Ncxq3xCsLHK2qteyf7PyoPxP9BW1OjUrO1ONz6LJ+Hc24gq+yyzDyqPq0vdXrJ2ivm0dVWTq/ivTNEytzcr5o/5ZRjc/5Dp+Neba1401TVg6GfyIG/5Zw/L+Z6mucYGvcoZTfWtL5L/M/oXI/BGtK1XPMRy/3Ker+c2rLzSi/JnYa58U7253R6fCtpGRjzH+Z/w7D9a4bULy51KQy3VxJcSf3pGLH9afIuahZa+kw+HpYdfu42P3rK+FcoyCPLl2HjB/zbyfrJ3f428jPkj7VXeOr8iVAy5r0oyO+rSRvfDvSRNqz3rN/wAe67VX3bv+QP517fpP+pWvHvhlKJLrU4hz5flE/U7/APAV7Hpf+rFfG51Jus0+lvyufwn4gW/1lxaXeP8A6REv0UUV8yfnYV+g/wCyb/yQjw//AL91/wClElfnxX6D/sm/8kI8P/791/6USV+hcD/8jKf+B/8ApUTuwf8AEfoev0UUV+5nrhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQBy3j74W+Evinp0Nh4t8PWOv2sMgliS8iDGNh3U9R74PIODXzX/AMFJrO30/wDZ98NWlpBHa2sHiG2iighQIkaLaXQVVUcAAAAAdMV9e18kf8FMv+SE6B/2Mtv/AOkt1Xk5pGKwdWSWtj7rgOK/1nwLS151+TPzWj+6KdTY/uinV+Rn+jC2CiiikMKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK9J+Gf/IFuf+vg/wDoK15tXpPwz/5Atz/18H/0Fa8vMv8Ad36o/DPGb/kkav8Ajh+Z19FFFfIn+fRW1LUoNJs3ublikS8HAycnoK4rVPiU7Epp9uEXH+sn5P4AGtvx/wD8i3L/AL6fzry2vey/C0qsPaTV3c/rDwl4FyPPMslm2ZUvazVRxSb9yyUX8Ktd6vdteRbvtVvNUbddXEk5zkBjwPoOgqm3Slor6GMVFWSP65oYajhKSo4eChBbKKSS9EtCFxUeKmao62RnNELCoXWrDLUTDitYnDUiVXWq8kfpVxqo6rcfY9PuJ+6ISPr2/WuiF20kePiOWnCVSWyVzb+C032zUPEcmcjzYlBHoA4H8q9y08fuxXhH7PKbodbJ674f5PXvdkMKK+Uz73cZOK6W/JH+eXF9R1c7xFSW7af3xRZooor5g+NCv0H/AGTf+SEeH/8Afuv/AEokr8+K/Qf9k3/khHh//fuv/SiSv0Lgf/kZT/wP/wBKid2D/iP0PX6KKK/cz1wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK+SP+CmX/JCdA/7GW3/9Jbqvrevkj/gpl/yQnQP+xlt//SW6ry80/wByq+h97wH/AMlNgf8AGvyZ+a0f3RTqbH90U6vyE/0VWwUUUUhhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABXpPwz/5Atz/18H/0Fa82r0n4Z/8AIFuf+vg/+grXl5l/u79UfhnjN/ySNX/HD8zr6KKK+RP8+jnPH/8AyLcv++n868tr1Lx//wAi3L/vp/OvLa+pyz+A/X/I/vDwP/5Jip/1+n/6TAKKKK9c/oIY1M21K1MIqzCSImFRMKsNUTCtEcs4laRa5nxxdeTpaQj70zj8hz/PFdS3Q1wPjm687U44AciGPkehPP8ALFengo89ZeR8TxLW+r5dUa3l7v37/hc9F/ZzXdDrn+/D/J693teFFeF/s4/8e+u/78P8nr3W2+6K+K4g/wB/qfL8kfwDxX/yOK//AG7/AOkxJ6KKK+aPkgr9B/2Tf+SEeH/9+6/9KJK/Piv0H/ZN/wCSEeH/APfuv/SiSv0Lgf8A5GU/8D/9Kid2D/iP0PX6KKK/cz1wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK+SP+CmP/JCdB/7GWD/ANJbqvrevkj/AIKY/wDJCdB/7GWD/wBJbqvKzT/cqvofe8B/8lPgf8a/Jn5rp92lpF+7S1+RH+iq2CiiikMKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK9J+Gf/IFuf8Ar4P/AKCtebV6T8M/+QLc/wDXwf8A0Fa8vMv93fqj8M8Zv+SRq/44fmdfRRRXyJ/n0c54/wD+Rbl/30/nXltepeP/APkW5f8AfT+deW19Tln8B+v+R/eHgf8A8kxU/wCv0/8A0mAUUUV65/QQjU2n01qozYyo2qVqjbvVo55kDV5RrV19s1S6nByrSHafYcD9AK9L1y6+xaVdTAgFUOM+p4H6mvKjX0GWw+KfyPyPjTEa0sMvOT/Jfqe1/s4j/R9e/wB+H+T17rb/AHRXhn7N/wDx769/vw/yevdIelfnuf8A/IwqfL8kfxHxZ/yOa/8A27/6TEkooor5w+RCv0H/AGTf+SEeH/8Afuv/AEokr8+K/Qf9k3/khHh//fuv/SiSv0Lgf/kZT/wP/wBKid2D/iP0PX6KKK/cz1wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK+SP+CmP/JCdB/7GWD/0luq+t6+SP+CmP/JCdB/7GWD/ANJbqvKzT/cqvofe8B/8lPgf8a/Jn5rr92lpF+7S1+RH+iq2CiiikMKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK9J+Gf/IFuf+vg/wDoK15tXpPwz/5Atz/18H/0Fa8vMv8Ad36o/DPGb/kkav8Ajh+Z19FFFfIn+fRznj//AJFuX/fT+deW16l4/wD+Rbl/30/nXltfU5Z/Afr/AJH94eB//JMVP+v0/wD0mAUUUV65/QQU1qdTWqiGNao271I1MaqRzy2OS8fXXlafDAOsr5P0H/1yK4Oul8dXXnawIh0hjAP1PP8AIiubIr6/Bw5KEfPU/n3iTEfWMzqtbR937t/xue3fs2r/AKPr3+/D/J69zi6V4f8As2j/AEfXv9+D+T17hH0r8tz7/kYVfl+SP5J4s/5HNf8A7d/9JiPooor54+QCv0H/AGTf+SEeH/8Afuv/AEokr8+K/Qf9k3/khHh//fuv/SiSv0Lgf/kZT/wP/wBKid2D/iP0PX6KKK/cz1wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK+Sf+CmH/JCdB/7GW3/9Jbqvravkn/gph/yQnQf+xlt//SW6rys0/wByq+h97wH/AMlPgf8AGvyZ+ay/dpaRfu0tfkR/oqtgooopDCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACvSfhn/AMgW5/6+D/6CtebV6T8M/wDkC3P/AF8H/wBBWvLzL/d36o/DPGb/AJJGr/jh+Z19FFFfIn+fRznj/wD5FuX/AH0/nXltepeP/wDkW5f99P515bX1OWfwH6/5H94eB/8AyTFT/r9P/wBJgFFFFeuf0EFNanU1qohjWpjU9qy/EV59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AAZJ4AFet+Af2X/HXjryJ207+xNNkG4XmpHy8r1ysf3zkdOAD619q+BPgz4P+G436HosMF0QA15MTLOf+BsSVz6Lge1drX6Rl/A0I2nj6l/KO33vX7kvU74YNbzZ4T8P/wBj/wAG+EZEudX8zxReryPtihLcH1EQJz34YsOenevbrDT7XSrOK0sraGztYhtjgt4wiIPQKOBViiv0bB5fhcBHkw1NRXlv83u/md8YRgrRQUUUV6BYUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABXM+Pvhv4Z+KGhvpHijR7fV7FslVmUh4yRjcjjDI3upBrpqKmUYzTjJXTN6Nerhqka1CbjOOqadmn5NbH5qfHz9gPxJ4BE+r+CGn8V6LlnexWP/TbZcZA2g/vh15UA9PlPWvk1lKMVYFWBwQeor93a8F+PH7HPgn42JLfRwr4a8SkEjVbCFcStjjzo+BJ25yG96+Lx/D6lephNH/L/AJP/ADP6Y4S8YKlHlwnES5o9KiWq/wAcVv6x18m9T8m6+1v+Cffwm8MfEbRfFF54i07+0W0+7hWCJpXWP5kJJYKRu+6ODx7V8/fEX9mH4j/DXxNBot94bvNRkun2Wd1pUTXMN17IVGQf9lgG9sc191/sI/BTxX8HvBevv4rsY9MuNXuIZ4LMyh5kRUYZkC5Ck7hxnIwcgHivEyvL3UxihiaV4q901ptpe5914oZtlWO4TmqVeE3UcHBKSbdpK7S8le/brqfSOk6Lp/h+yWz0uwtdNtFJK29pCsUYJ6kKoAq7RRX6fGKiuWKsj+JgoooqgCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA/9k=",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Vlastnosti",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "7.0",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.4.0.6752",
+      "RunType": "Manual",
+      "RunPeriod": "100"
+    },
+    "Camera": {
+      "Name": "_Náhled pozadí",
+      "EyeX": -127.6622543334961,
+      "EyeY": 138.72370147705078,
+      "EyeZ": 105.53301239013672,
+      "LookX": 73.52091979980469,
+      "LookY": -62.075660705566406,
+      "LookZ": -205.45584106445312,
+      "UpX": 0.020568307489156723,
+      "UpY": 0.9981348514556885,
+      "UpZ": -0.057479143142700195
+    },
+    "ConnectorPins": [
+      {
+        "Left": 1290.2729511749656,
+        "Top": 825.4182161637351,
+        "IsHidden": false,
+        "ConnectorGuid": "1b53effd-dcf2-429f-8fb9-11658a424b39"
+      }
+    ],
+    "NodeViews": [
+      {
+        "Id": "ecb2936d6ee94b999ab124269ffedfc5",
+        "Name": "Element.OverrideColorInView",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3207.5943257232852,
+        "Y": 644.9093065270333
+      },
+      {
+        "Id": "bcb655a95f3a46c0926d51616dbe998f",
+        "Name": "Color.ByARGB",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2188.0513761378866,
+        "Y": -192.7710293962225
+      },
+      {
+        "Id": "e773ba81f00245cba043ae4a66f7fa20",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1985.4356680179767,
+        "Y": -69.53721180245634
+      },
+      {
+        "Id": "e3736b6056f4466da7a28bb6417a1161",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1985.4356680179767,
+        "Y": -205.09441115559912
+      },
+      {
+        "Id": "16db4a52d49d4e8d97a210c82478fc02",
+        "Name": "Color.ByARGB",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2200.6092651385093,
+        "Y": 124.63141636260178
+      },
+      {
+        "Id": "7f963803c47b404885f61c045f2a3063",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1984.5572643443725,
+        "Y": 89.88692538279196
+      },
+      {
+        "Id": "ccfc2ceddf1642bfa6483d52f8b7d63b",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1985.5467730764133,
+        "Y": 219.09302995397752
+      },
+      {
+        "Id": "56cc5b21d87946b9aa079ed0f15da53e",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1119.544664272454,
+        "Y": 929.7449099663959
+      },
+      {
+        "Id": "258e20b41ac74f0d918035f6a6851f1f",
+        "Name": "Color Range",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2753.814679073259,
+        "Y": 274.8713539591679
+      },
+      {
+        "Id": "86dd6263ba1c4e53ad5e803609041500",
+        "Name": "/",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": true,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1692.6314612047622,
+        "Y": 352.54302396257077
+      },
+      {
+        "Id": "e503bedbd3b147b89219db21f2e23d89",
+        "Name": "List.MaximumItem",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1359.2395798308319,
+        "Y": 286.3612429037009
+      },
+      {
+        "Id": "a64810c3f1334d92bae4b61f8c703cb4",
+        "Name": "Solid.Area",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1021.461307759949,
+        "Y": 357.44377424690794
+      },
+      {
+        "Id": "b9f354e490504f34b9b27661dad88418",
+        "Name": "List.Flatten",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 766.017716601733,
+        "Y": 359.475629665458
+      },
+      {
+        "Id": "83126e2bcf5643e184593b4b2f57c24e",
+        "Name": "List.Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2495.8605482316334,
+        "Y": 38.95498894003691
+      },
+      {
+        "Id": "0dfab8b474814a8fb582c90604bf25c7",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2493.2564077622987,
+        "Y": 271.02422946209845
+      },
+      {
+        "Id": "16a8696b91d64c1f91387e1f29d12bac",
+        "Name": "Element.GetGeometry",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 463.65697739457516,
+        "Y": 360.77386941650775
+      },
+      {
+        "Id": "af434bbb5f9b4e5398854b599f52c95d",
+        "Name": "If",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1860.4568507984418,
+        "Y": 907.5010143124466
+      },
+      {
+        "Id": "6467f818afba4f4c966f64e4a7c5773a",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1564.487084513023,
+        "Y": 1153.348924812081
+      },
+      {
+        "Id": "b7274d4b8e534538b39e78b420e6a397",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1564.487084513023,
+        "Y": 1290.3489248120811
+      },
+      {
+        "Id": "a861fe74183344b4afaa6ec75fbcbe7d",
+        "Name": ">",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1531.292695220342,
+        "Y": 907.5010143124466
+      },
+      {
+        "Id": "cd929e10bef84a4f89273c0a01972721",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2117.66466924694,
+        "Y": 906.9334339667748
+      },
+      {
+        "Id": "0c78494a8be54761b2321c4acea3b0b9",
+        "Name": "Vybere prvky modelu.",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 24.95448003000041,
+        "Y": 660.087479483822
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "57d38c261dfc4f2bbb89befb182b50ef",
+        "Title": "Alternativa – vyhodnotí, zda kritéria splňují daný práh",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "af434bbb5f9b4e5398854b599f52c95d",
+          "6467f818afba4f4c966f64e4a7c5773a",
+          "b7274d4b8e534538b39e78b420e6a397",
+          "a861fe74183344b4afaa6ec75fbcbe7d",
+          "cd929e10bef84a4f89273c0a01972721",
+          "79d256e41c694ce3b117ad2bba92b9df",
+          "dcc8e7298bcb414c9f85a4bc650cfc01",
+          "e8dc1940afa840ffac31c83e195544a5",
+          "c4a96cd12dcd468c933bf69b9b2fab35"
+        ],
+        "HasNestedGroups": false,
+        "Left": 1484.487084513023,
+        "Top": 760.9334339667748,
+        "Width": 931.1775847339168,
+        "Height": 661.4154908453063,
+        "FontSize": 36.0,
+        "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
+        "InitialTop": 833.9334339667748,
+        "InitialHeight": 601.4154908453063,
+        "TextblockHeight": 63.0,
+        "Background": "#FFB9F9E1"
+      },
+      {
+        "Id": "3a4ec673cf52427a8a0a48ee0f041a2e",
+        "Title": "Vyhodnotit plochu povrchu prvku",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "86dd6263ba1c4e53ad5e803609041500",
+          "e503bedbd3b147b89219db21f2e23d89",
+          "a64810c3f1334d92bae4b61f8c703cb4",
+          "b9f354e490504f34b9b27661dad88418",
+          "16a8696b91d64c1f91387e1f29d12bac",
+          "2a2839faf0dc449280f79845b668755d",
+          "32341fd072af4937bdaffe5b772dcb2f",
+          "2e6ef76c6bc94fd886349a35c9504d40",
+          "d02bbc53462e4017bcfede690bdda0b4"
+        ],
+        "HasNestedGroups": false,
+        "Left": 453.65697739457516,
+        "Top": 155.36124290370088,
+        "Width": 1426.974483810187,
+        "Height": 367.41262651280687,
+        "FontSize": 36.0,
+        "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
+        "InitialTop": 228.36124290370088,
+        "InitialHeight": 277.41262651280687,
+        "TextblockHeight": 63.0,
+        "Background": "#FFB9F9E1"
+      },
+      {
+        "Id": "ce9391679fc743d69a81fde7dd844139",
+        "Title": "Do aplikace Revit: Přepsat barvu prvku v pohledu",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "ecb2936d6ee94b999ab124269ffedfc5",
+          "97547975312e443cbce10001398a87bd"
+        ],
+        "HasNestedGroups": false,
+        "Left": 3196.5943257232852,
+        "Top": 411.9093065270333,
+        "Width": 316.0,
+        "Height": 395.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
+        "InitialTop": 571.9093065270333,
+        "InitialHeight": 218.0,
+        "TextblockHeight": 150.0,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "0b1e3865352f4374805f94d2618aae1a",
+        "Title": "Vytvořit barvy",
+        "DescriptionText": "Příprava barevného schématu pro barevné rozlišení prvků",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "bcb655a95f3a46c0926d51616dbe998f",
+          "e773ba81f00245cba043ae4a66f7fa20",
+          "e3736b6056f4466da7a28bb6417a1161",
+          "16db4a52d49d4e8d97a210c82478fc02",
+          "7f963803c47b404885f61c045f2a3063",
+          "ccfc2ceddf1642bfa6483d52f8b7d63b",
+          "258e20b41ac74f0d918035f6a6851f1f",
+          "83126e2bcf5643e184593b4b2f57c24e",
+          "0dfab8b474814a8fb582c90604bf25c7",
+          "ea56f2857a8c4579b471a98799bae890",
+          "f1c12f85c3bb41c4ba7618ade1235a60",
+          "82fd71e4e96f4347b0e0cd3a861d2661"
+        ],
+        "HasNestedGroups": false,
+        "Left": 1974.5572643443725,
+        "Top": -323.7710293962225,
+        "Width": 1120.2574147288865,
+        "Height": 798.6423833553904,
+        "FontSize": 36.0,
+        "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
+        "InitialTop": -250.7710293962225,
+        "InitialHeight": 670.6423833553904,
+        "TextblockHeight": 63.0,
+        "Background": "#FFB9F9E1"
+      },
+      {
+        "Id": "42a72a2cf2a84526929fd56feec80ebe",
+        "Title": "Vybrat prvky modelu",
+        "DescriptionText": "Vyberte stěny fasády ",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "0c78494a8be54761b2321c4acea3b0b9",
+          "6721c9001b92484c9c2fca9f5634b516"
+        ],
+        "HasNestedGroups": false,
+        "Left": 14.954480030000411,
+        "Top": 471.087479483822,
+        "Width": 317.0,
+        "Height": 424.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
+        "InitialTop": 587.087479483822,
+        "InitialHeight": 218.0,
+        "TextblockHeight": 106.0,
+        "Background": "#FFFFB8D8"
+      },
+      {
+        "Id": "d1b51d67b91b482db8f9cd85443e1916",
+        "Title": "Info",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "46696f9e598745099faa07e651896032",
+          "6173a9eec7ff4f03a05a33f5b72bc7fd"
+        ],
+        "HasNestedGroups": false,
+        "Left": 13.865170190846243,
+        "Top": 152.7951643759111,
+        "Width": 318.0,
+        "Height": 259.13046807394517,
+        "FontSize": 36.0,
+        "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
+        "InitialTop": 225.7951643759111,
+        "InitialHeight": 238.13046807394517,
+        "TextblockHeight": 63.0,
+        "Background": "#FFA4E1FF"
+      },
+      {
+        "Id": "cf49f7017e784246a5bcc4aaecd9d60c",
+        "Title": "Práh",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "56cc5b21d87946b9aa079ed0f15da53e"
+        ],
+        "HasNestedGroups": false,
+        "Left": 1109.544664272454,
+        "Top": 856.7449099663959,
+        "Width": 177.24,
+        "Height": 205.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
+        "InitialTop": 929.7449099663959,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFB8D8"
+      },
+      {
+        "Id": "2a2839faf0dc449280f79845b668755d",
+        "Title": "Načíst nejvyšší hodnotu",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1407.2395798308319,
+        "Top": 236.36124290370088,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "e503bedbd3b147b89219db21f2e23d89"
+      },
+      {
+        "Id": "32341fd072af4937bdaffe5b772dcb2f",
+        "Title": "Normalizovat na nejvyšší hodnotu",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1699.1314612047622,
+        "Top": 302.54302396257077,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "86dd6263ba1c4e53ad5e803609041500"
+      },
+      {
+        "Id": "ea56f2857a8c4579b471a98799bae890",
+        "Title": "nastavit rozsah barev",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2867.814679073259,
+        "Top": 224.8713539591679,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "258e20b41ac74f0d918035f6a6851f1f"
+      },
+      {
+        "Id": "79d256e41c694ce3b117ad2bba92b9df",
+        "Title": "identifikovat oblasti v rámci tolerance",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1860.9568507984418,
+        "Top": 857.5010143124466,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "af434bbb5f9b4e5398854b599f52c95d"
+      },
+      {
+        "Id": "2e6ef76c6bc94fd886349a35c9504d40",
+        "Title": "Extrahovat oblast povrchu geometrie",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1021.461307759949,
+        "Top": 307.44377424690794,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "a64810c3f1334d92bae4b61f8c703cb4"
+      },
+      {
+        "Id": "46696f9e598745099faa07e651896032",
+        "Title": "Spusťte tento graf v souboru Snowdon Tower Sample Architectural.rvt ve složce Samples, která se nachází ve složce instalace aplikace Revit \r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 26.291527552219804,
+        "Top": 233.7951643759111,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "6173a9eec7ff4f03a05a33f5b72bc7fd",
+        "Title": "Tento graf vybarvuje prvky aplikace Revit podle měřitelných kritérií (plocha povrchu). \nPrvky jsou vybarveny pomocí funkce Přepsat zobrazení v nabídce Zobrazení > Podle prvku.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 23.865170190846243,
+        "Top": 326.92563244985627,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "f1c12f85c3bb41c4ba7618ade1235a60",
+        "Title": "zelená barva",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2242.0513761378866,
+        "Top": -242.7710293962225,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "bcb655a95f3a46c0926d51616dbe998f"
+      },
+      {
+        "Id": "82fd71e4e96f4347b0e0cd3a861d2661",
+        "Title": "červená barva",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2261.6092651385093,
+        "Top": 74.63141636260178,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "16db4a52d49d4e8d97a210c82478fc02"
+      },
+      {
+        "Id": "dcc8e7298bcb414c9f85a4bc650cfc01",
+        "Title": "tento výsledek je možné použít jako vstup 'indices' uzlu Color Range",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2106.66466924694,
+        "Top": 841.9334339667748,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "cd929e10bef84a4f89273c0a01972721"
+      },
+      {
+        "Id": "d02bbc53462e4017bcfede690bdda0b4",
+        "Title": "Načíst geometrii prvku ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 505.15697739457516,
+        "Top": 310.77386941650775,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "16a8696b91d64c1f91387e1f29d12bac"
+      },
+      {
+        "Id": "6721c9001b92484c9c2fca9f5634b516",
+        "Title": "Kliknutím na tlačítko 'Změnit' vyberte prvky z modelu aplikace Revit.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 31.95448003000041,
+        "Top": 595.087479483822,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "0c78494a8be54761b2321c4acea3b0b9"
+      },
+      {
+        "Id": "97547975312e443cbce10001398a87bd",
+        "Title": "Tato možnost přepíše barvu prvku v aktivním pohledu.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 3206.5943257232852,
+        "Top": 579.9093065270333,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "ecb2936d6ee94b999ab124269ffedfc5"
+      },
+      {
+        "Id": "e8dc1940afa840ffac31c83e195544a5",
+        "Title": "Porovnat s prahovou hodnotou ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1515.792695220342,
+        "Top": 857.5010143124466,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "a861fe74183344b4afaa6ec75fbcbe7d"
+      },
+      {
+        "Id": "c4a96cd12dcd468c933bf69b9b2fab35",
+        "Title": "Čísla budou označovat polohu na barevném spektru – od 0 do 1",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1494.487084513023,
+        "Top": 1088.348924812081,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "6467f818afba4f4c966f64e4a7c5773a"
+      }
+    ],
+    "X": 68.9586152050631,
+    "Y": 175.58474711894496,
+    "Zoom": 0.22970815988971405
+  }
+}

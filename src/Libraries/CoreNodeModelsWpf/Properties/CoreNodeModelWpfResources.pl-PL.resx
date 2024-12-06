@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ChartsBarChartDescription" xml:space="preserve">
+    <value>Utwórz nowy wykres słupkowy</value>
+  </data>
+  <data name="ChartsBarChartSearchTags" xml:space="preserve">
+    <value>bar;barchart</value>
+  </data>
+  <data name="ChartsBarChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista etykiet dla kategorii wykresu słupkowego.
+
+List&lt;string&gt;</value>
+  </data>
+  <data name="ChartsBarChartValuesDataPortToolTip" xml:space="preserve">
+    <value>Lista (list) służąca do przekazania wartości dla słupków w poszczególnych kategoriach.
+
+List&lt;var&gt;</value>
+  </data>
+  <data name="ChartsBarChartColorsDataPortToolTip" xml:space="preserve">
+    <value>Lista kolorów dla poszczególnych kategorii wykresu słupkowego.
+
+List&lt;color&gt;</value>
+  </data>
+  <data name="ChartsBarChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Słownik zawierający pary kluczy i wartości w postaci etykieta:wartość
+
+Dictionary&lt;string, double&gt;</value>
+  </data>
+  <data name="ChartsBasicLineChartDescription" xml:space="preserve">
+    <value>Utwórz nowy podstawowy wykres liniowy</value>
+  </data>
+  <data name="ChartsBasicLineChartSearchTags" xml:space="preserve">
+    <value>index;indexvalue;indexvaluelineplot</value>
+  </data>
+  <data name="ChartsBasicLineChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista etykiet ciągów dla poszczególnych linii do wykreślenia.
+
+List&lt;string&gt;</value>
+  </data>
+  <data name="ChartsBasicLineChartValuesDataPortToolTip" xml:space="preserve">
+    <value>Lista list, z których każda zawiera wartości typu double do wykreślenia w parach z wartościami osi X.
+
+List&lt;List&lt;double&gt;&gt;</value>
+  </data>
+  <data name="ChartsBasicLineChartColorsDataPortToolTip" xml:space="preserve">
+    <value>Lista kolorów dla poszczególnych linii.
+
+List&lt;color&gt;</value>
+  </data>
+  <data name="ChartsBasicLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Słownik zawierający pary kluczy i wartości w postaci etykieta:wartość
+
+Dictionary&lt;string, List&lt;double&gt;&gt;</value>
+  </data>
+  <data name="ChartsHeatSeriesDescription" xml:space="preserve">
+    <value>Utwórz wykres termiczny</value>
+  </data>
+  <data name="ChartsHeatSeriesSearchTags" xml:space="preserve">
+    <value>heat;heatseries;heatseriesplot</value>
+  </data>
+  <data name="ChartsHeatSeriesXLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista etykiet ciągów dla osi x.
+
+List&lt;string&gt;</value>
+  </data>
+  <data name="ChartsHeatSeriesYLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista etykiet ciągów dla osi y.
+
+List&lt;string&gt;</value>
+  </data>
+  <data name="ChartsHeatSeriesValuesDataPortToolTip" xml:space="preserve">
+    <value>Lista list, z których każda zawiera wartości typu double reprezentujące pozycje w kolumnie. 
+
+List&lt;List&lt;double&gt;&gt;</value>
+  </data>
+  <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
+    <value>Lista kolorów dla poszczególnych kategorii wykresu słupkowego.
+
+List&lt;color&gt;</value>
+  </data>
+  <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Słownik zawierający pary kluczy i wartości w postaci etykieta:wartość
+
+Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
+  </data>
+  <data name="ChartsPieChartDescription" xml:space="preserve">
+    <value>Utwórz nowy wykres kołowy</value>
+  </data>
+  <data name="ChartsPieChartSearchTags" xml:space="preserve">
+    <value>pie;piechart</value>
+  </data>
+  <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista etykiet ciągów dla poszczególnych segmentów na wykresie kołowym.
+
+List&lt;string&gt;</value>
+  </data>
+  <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
+    <value>Lista wartości typu double służąca do przekazania wartości dla poszczególnych segmentów wykresu kołowego.
+
+List&lt;double&gt;</value>
+  </data>
+  <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
+    <value>Lista kolorów dla poszczególnych segmentów wykresu kołowego.
+
+List&lt;color&gt;</value>
+  </data>
+  <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Słownik zawierający pary kluczy i wartości w postaci etykieta:wartość
+
+Dictionary&lt;string, double&gt;</value>
+  </data>
+  <data name="ChartsScatterPlotDescription" xml:space="preserve">
+    <value>Utwórz wykres punktowy</value>
+  </data>
+  <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
+    <value>scatter;scatterplot</value>
+  </data>
+  <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista etykiet ciągów dla poszczególnych grup punktów do wykreślenia.
+
+List&lt;string&gt;</value>
+  </data>
+  <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista list, z których każda zawiera wartości typu double reprezentujące współrzędne x.
+
+List&lt;List&lt;double&gt;&gt;</value>
+  </data>
+  <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista list, z których każda zawiera wartości typu double reprezentujące współrzędne y.
+
+List&lt;List&lt;double&gt;&gt;</value>
+  </data>
+  <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
+    <value>Lista kolorów dla poszczególnych grup punktów.
+
+List&lt;color&gt;</value>
+  </data>
+  <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Słownik zawierający pary kluczy i wartości w postaci etykieta:wartość
+
+Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
+  </data>
+  <data name="ChartsXYLineChartDescription" xml:space="preserve">
+    <value>Utwórz nowy wykres liniowy XY</value>
+  </data>
+  <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
+    <value>lineplot;xylineplot</value>
+  </data>
+  <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista etykiet ciągów dla poszczególnych linii do wykreślenia
+
+List&lt;string&gt;</value>
+  </data>
+  <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista list, z których każda zawiera wartości typu double reprezentujące współrzędne x dla poszczególnych punktów w linii.
+
+List&lt;List&lt;double&gt;&gt;</value>
+  </data>
+  <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
+    <value>Lista list, z których każda zawiera wartości typu double reprezentujące współrzędne x dla poszczególnych punktów w linii.
+
+List&lt;List&lt;double&gt;&gt;</value>
+  </data>
+  <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
+    <value>Lista kolorów dla poszczególnych linii na wykresie liniowym.
+
+List&lt;color&gt;</value>
+  </data>
+  <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Słownik zawierający pary kluczy i wartości w postaci etykieta:wartość
+
+Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
+  </data>
+  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+    <value>Zaawansowany</value>
+  </data>
+  <data name="ColorPaletteUIRecentColors" xml:space="preserve">
+    <value>Ostatnie kolory</value>
+  </data>
+  <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
+    <value>Standardowy</value>
+  </data>
+  <data name="ColorPaletteUIStandardColors" xml:space="preserve">
+    <value>Kolory standardowe</value>
+  </data>
+  <data name="DateTimeInputToolTip" xml:space="preserve">
+    <value>Wprowadź datę i godzinę w formacie MMMM dd, rrrr g:mm tt</value>
+  </data>
+  <data name="LblDisplay" xml:space="preserve">
+    <value>Wyświetl</value>
+  </data>
+  <data name="LblValue" xml:space="preserve">
+    <value>Wartość</value>
+  </data>
+  <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
+    <value>Używane są kolory domyślne. Aby zdefiniować kolory niestandardowe, należy podać jednakową liczbę kolorów i liczbę punktów danych wejściowych etykiet.</value>
+  </data>
+  <data name="ResizeThumbToolTip" xml:space="preserve">
+    <value>Przeciągnij, aby zmienić rozmiar wykresu</value>
+  </data>
+  <data name="GateClose" xml:space="preserve">
+    <value>Zamknij</value>
+  </data>
+  <data name="GateOpen" xml:space="preserve">
+    <value>Otwórz</value>
+  </data>
+</root>
