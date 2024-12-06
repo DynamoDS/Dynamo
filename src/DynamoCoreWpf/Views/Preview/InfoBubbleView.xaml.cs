@@ -16,7 +16,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
-using Microsoft.VisualBasic.Logging;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 
 namespace Dynamo.Controls
