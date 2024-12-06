@@ -200,7 +200,6 @@ namespace Dynamo.ViewModels
             get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
         }
 
-
         public EngineController EngineController { get { return Model.EngineController; } }
 
         public WorkspaceModel CurrentSpace
