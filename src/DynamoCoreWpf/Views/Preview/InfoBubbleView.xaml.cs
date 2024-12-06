@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
+using Microsoft.VisualBasic.Logging;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 
 namespace Dynamo.Controls
@@ -277,7 +278,8 @@ namespace Dynamo.Controls
                     SetStyle_ErrorCondensed();
                     break;
                 case InfoBubbleViewModel.Style.None:
-                    throw new ArgumentException("InfoWindow didn't have a style (456B24E0F400)");
+                    ViewModel.DynamoViewModel.Model.Logger.Log("InfoWindow didn't have a style (456B24E0F400)");
+                    break;
             }
         }
 
