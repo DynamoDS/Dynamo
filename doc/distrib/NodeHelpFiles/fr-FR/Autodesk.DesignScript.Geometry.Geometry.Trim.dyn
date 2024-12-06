@@ -1,0 +1,611 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Trim",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "e8aae09db2f44f13ba13d1dace270855",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "1.8",
+      "MaximumValue": 3.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cone.ByPointsRadius@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "9353c4dfe5c94c3b89718f7d9b2123ba",
+      "Inputs": [
+        {
+          "Id": "ff53f2fdfecd4e819fc7e42722d5c5b2",
+          "Name": "startPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fa2ea77b29a54bde834a77d30e9afeb4",
+          "Name": "endPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2dd52cef0deb4e4e97de020283ad56c8",
+          "Name": "startRadius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1ae5821027a943fabcce98785710adf3",
+          "Name": "Cone",
+          "Description": "Cone",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Cone with given base radius at start Point, extending to a apex at end Point.\n\nCone.ByPointsRadius (startPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), endPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1), startRadius: double = 1): Cone"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "fb784abe345a49ce9476f22cbf49e7a9",
+      "Inputs": [
+        {
+          "Id": "a46271c5b5014ccb8c52700d08305e24",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "88c1cb135d754609823926e8415e9bbb",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "951d5e8c9b204a19ab7181e56a4e9baa",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9227927be22449b59d6d48dfcd5d838c",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;\n2;\n8;",
+      "Id": "47226805f4414bd689711e386a9009d1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "65175898b7c042f38803a4e4f774e811",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aac0c7e996434936a5f3e0afe4744246",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b074fab1ab5b446a883a0f994de7319f",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "af36d39a902b41c5adef72edc68ceae5",
+      "Inputs": [
+        {
+          "Id": "ebeea1cab3c143eca78e354f43a10f90",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5c305e750be64569a111b3870faf5898",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3272ee0eaf21420e88e1beafc4aacc86",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f32b2cc5265c4d539c4bba4d82125eb5",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "8;\n2;\n5;",
+      "Id": "3273b2aa4cfd4c3c91550de1891faeaa",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e42e6a8dd22044a4bdc45bf8de146c54",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e60ce69b26ff47acb361e30bd79db420",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cef4f7c275ac47c1a12320b9dee5b8ec",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByTwoPoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Id": "a488bb48b6c549a0949332e00a23d213",
+      "Inputs": [
+        {
+          "Id": "97ea5b02f3054984be91adc936244f5d",
+          "Name": "start",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5228a1bb3202482d9847b15fe23bb425",
+          "Name": "end",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "828c6f00089a48c885fa864db0aef57a",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Vector by two end points. The result is a vector from the start to the end point.\n\nVector.ByTwoPoints (start: Point, end: Point): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Trim@Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Point",
+      "Id": "f1d539a938dc45e496753650bdb6205b",
+      "Inputs": [
+        {
+          "Id": "1a88c2ec611a4c9e9a46e7d846c7c6ca",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0a348c9f4c9c48a5a29a842d12ae0d81",
+          "Name": "other",
+          "Description": "Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "40d7a2528f1e426ea51b3a483e9a6180",
+          "Name": "pick",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4d611ce42d0e47d78a8cfda9b17d19b6",
+          "Name": "Geometry[]",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Removes elements of the entity closest to the pick point\n\nGeometry.Trim (other: Geometry, pick: Point): Geometry[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@Autodesk.DesignScript.Geometry.Vector,double",
+      "Id": "c3013cc34c9843f5a407b48c947df399",
+      "Inputs": [
+        {
+          "Id": "1d7821cc54b94e7d9683ff025a41c39a",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b9505f2ce2844c81a87f72a65bedbf72",
+          "Name": "direction",
+          "Description": "Displacement direction.\n\nVector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d3f7f3d5b4554798a4e757d703cee023",
+          "Name": "distance",
+          "Description": "Displacement distance along given direction.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "544757d3ed9f495db5c9786defdd5cd9",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Translates any geometry type by the given distance in the given direction.\n\nGeometry.Translate (direction: Vector, distance: double): Geometry"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 3.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 1.8,
+      "Id": "e8aae09db2f44f13ba13d1dace270855",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2f455d38d90f4e13b4d8fc2514136ab1",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "1ae5821027a943fabcce98785710adf3",
+      "End": "1d7821cc54b94e7d9683ff025a41c39a",
+      "Id": "b0e6843d176446878421002207dfe1cb"
+    },
+    {
+      "Start": "1ae5821027a943fabcce98785710adf3",
+      "End": "1a88c2ec611a4c9e9a46e7d846c7c6ca",
+      "Id": "a5fd51a32a234f259aa694f621baa110"
+    },
+    {
+      "Start": "9227927be22449b59d6d48dfcd5d838c",
+      "End": "fa2ea77b29a54bde834a77d30e9afeb4",
+      "Id": "8b69485c14a44b7887723c7be7d72094"
+    },
+    {
+      "Start": "9227927be22449b59d6d48dfcd5d838c",
+      "End": "5228a1bb3202482d9847b15fe23bb425",
+      "Id": "d2678219c5504a3aab48e57c57065439"
+    },
+    {
+      "Start": "9227927be22449b59d6d48dfcd5d838c",
+      "End": "40d7a2528f1e426ea51b3a483e9a6180",
+      "Id": "539d408d5a6f4252bcdd926217ec9312"
+    },
+    {
+      "Start": "65175898b7c042f38803a4e4f774e811",
+      "End": "a46271c5b5014ccb8c52700d08305e24",
+      "Id": "2ec5e7f846d44473a6203fbbc923fa7b"
+    },
+    {
+      "Start": "65175898b7c042f38803a4e4f774e811",
+      "End": "2dd52cef0deb4e4e97de020283ad56c8",
+      "Id": "692ec51016e44df188fae212c3055d31"
+    },
+    {
+      "Start": "aac0c7e996434936a5f3e0afe4744246",
+      "End": "88c1cb135d754609823926e8415e9bbb",
+      "Id": "7a35d9161be94317acecf44e8ee767fa"
+    },
+    {
+      "Start": "b074fab1ab5b446a883a0f994de7319f",
+      "End": "951d5e8c9b204a19ab7181e56a4e9baa",
+      "Id": "336eaaf595bb4c9490ebe8880bf985d5"
+    },
+    {
+      "Start": "f32b2cc5265c4d539c4bba4d82125eb5",
+      "End": "ff53f2fdfecd4e819fc7e42722d5c5b2",
+      "Id": "151c7e7f2c4546dc9a0dd66f88f8b79e"
+    },
+    {
+      "Start": "f32b2cc5265c4d539c4bba4d82125eb5",
+      "End": "97ea5b02f3054984be91adc936244f5d",
+      "Id": "b4209b8ad9c049a0890d2b7917044431"
+    },
+    {
+      "Start": "e42e6a8dd22044a4bdc45bf8de146c54",
+      "End": "ebeea1cab3c143eca78e354f43a10f90",
+      "Id": "c0a8c1a945604b46bece7a46417df2ab"
+    },
+    {
+      "Start": "e60ce69b26ff47acb361e30bd79db420",
+      "End": "5c305e750be64569a111b3870faf5898",
+      "Id": "23ae605596724f66841c7a47ae68f63a"
+    },
+    {
+      "Start": "cef4f7c275ac47c1a12320b9dee5b8ec",
+      "End": "3272ee0eaf21420e88e1beafc4aacc86",
+      "Id": "06e6243be4fd4c85bc6c4c513542d048"
+    },
+    {
+      "Start": "828c6f00089a48c885fa864db0aef57a",
+      "End": "b9505f2ce2844c81a87f72a65bedbf72",
+      "Id": "2d1ad69d06ad40ddbd161c5f604d4f81"
+    },
+    {
+      "Start": "544757d3ed9f495db5c9786defdd5cd9",
+      "End": "0a348c9f4c9c48a5a29a842d12ae0d81",
+      "Id": "426d69bb14f643548fdd1f96b4115b3e"
+    },
+    {
+      "Start": "2f455d38d90f4e13b4d8fc2514136ab1",
+      "End": "d3f7f3d5b4554798a4e757d703cee023",
+      "Id": "c7ad9e57803142d486448fcf261fc87f"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -13.541318893432617,
+      "EyeY": 9.108738899230957,
+      "EyeZ": 13.394313812255859,
+      "LookX": 17.992462158203125,
+      "LookY": -2.860471248626709,
+      "LookZ": -18.188621520996094,
+      "UpX": -0.073510974645614624,
+      "UpY": 0.99452191591262817,
+      "UpZ": 0.074312411248683929
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Cone.ByPointsRadius",
+        "Id": "9353c4dfe5c94c3b89718f7d9b2123ba",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 706.351723984353,
+        "Y": 166.90632379371851
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Point.ByCoordinates",
+        "Id": "fb784abe345a49ce9476f22cbf49e7a9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 448.35172398435304,
+        "Y": 364.90632379371851
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "47226805f4414bd689711e386a9009d1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 269.35172398435304,
+        "Y": 373.33299046038513
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Point.ByCoordinates",
+        "Id": "af36d39a902b41c5adef72edc68ceae5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 448.35172398435304,
+        "Y": 204.90632379371849
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "3273b2aa4cfd4c3c91550de1891faeaa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 269.35172398435304,
+        "Y": 217.54632379371847
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Vector.ByTwoPoints",
+        "Id": "a488bb48b6c549a0949332e00a23d213",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 706.351723984353,
+        "Y": 326.90632379371851
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.Trim",
+        "Id": "f1d539a938dc45e496753650bdb6205b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1442.3517239843532,
+        "Y": 270.90632379371846
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Geometry.Translate",
+        "Id": "c3013cc34c9843f5a407b48c947df399",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1105.3517239843532,
+        "Y": 296.90632379371846
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Number Slider",
+        "Id": "e8aae09db2f44f13ba13d1dace270855",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 706.351723984353,
+        "Y": 461.90632379371851
+      }
+    ],
+    "Annotations": [],
+    "X": -292.6554418434,
+    "Y": -77.3248722740377,
+    "Zoom": 1.03605787560061
+  }
+}

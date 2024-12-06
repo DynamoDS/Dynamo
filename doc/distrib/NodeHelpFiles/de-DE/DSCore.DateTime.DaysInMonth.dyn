@@ -1,0 +1,208 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DaysInMonth",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2006;",
+      "Id": "ef798129ae36476898fb576b32ad0958",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dd024addabc6487b80b0ca35c55d9a8b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "8;",
+      "Id": "e7776d3a0df0421fb100b5caead8c5d1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0dc849f2ff1b4fa2b6fbca6d0e011d44",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "24a8b5ecbae94670a6126866cf966c41",
+      "Inputs": [
+        {
+          "Id": "b96985aca55541f9b5a8fcc3f7c7cd38",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "51d357a9733e40bd89a0312566ed046a",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.DaysInMonth@int,int",
+      "Id": "83d8facf6ed74b38b9f348f62eedf3a2",
+      "Inputs": [
+        {
+          "Id": "0913d20645704baaa0f3e0d39bb4b850",
+          "Name": "year",
+          "Description": "Exact year (1-9999)\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7e6b5b2ab4984e2692d74f818a7eae6a",
+          "Name": "month",
+          "Description": "Exact month (1-12)\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "56d1036f005148f2b2234128b9edcaa2",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Calculates how many days are in the given month of the given year.\n\nDateTime.DaysInMonth (year: int, month: int): int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "dd024addabc6487b80b0ca35c55d9a8b",
+      "End": "0913d20645704baaa0f3e0d39bb4b850",
+      "Id": "529c721a364e427db49c2f765370dab1"
+    },
+    {
+      "Start": "0dc849f2ff1b4fa2b6fbca6d0e011d44",
+      "End": "7e6b5b2ab4984e2692d74f818a7eae6a",
+      "Id": "77f16c25315a489aa03381a898249407"
+    },
+    {
+      "Start": "56d1036f005148f2b2234128b9edcaa2",
+      "End": "b96985aca55541f9b5a8fcc3f7c7cd38",
+      "Id": "a559cbe9f5104757ae6b3626f6a1c9d3"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "ef798129ae36476898fb576b32ad0958",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -134.62927984473,
+        "Y": 2607.07604621743
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e7776d3a0df0421fb100b5caead8c5d1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -132.22927984473,
+        "Y": 2697.13191029279
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "24a8b5ecbae94670a6126866cf966c41",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 191.546025800905,
+        "Y": 2637.0685463128
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.DaysInMonth",
+        "Id": "83d8facf6ed74b38b9f348f62eedf3a2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 5.0275363616316326,
+        "Y": 2637.0685463128
+      }
+    ],
+    "Annotations": [],
+    "X": 712.893686819037,
+    "Y": -4510.39080704605,
+    "Zoom": 1.78921269716459
+  }
+}

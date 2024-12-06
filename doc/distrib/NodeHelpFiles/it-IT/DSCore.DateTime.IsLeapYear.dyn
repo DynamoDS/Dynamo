@@ -1,0 +1,164 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "IsLeapYear",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.IsLeapYear@int",
+      "Id": "bd66960babac4c3896ab1e810889828b",
+      "Inputs": [
+        {
+          "Id": "9fc71bb14ff941af8d13c6554c15b08f",
+          "Name": "year",
+          "Description": "Exact year (1-9999)\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2cbd447c749944cf9e5bb930f12254f1",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determines if the given year is a leap year.\n\nDateTime.IsLeapYear (year: int): bool"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2016;",
+      "Id": "7c396e516e4b41e3a740fb2de5f7cb8a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6578c90a1d874cb8898c523720edd386",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "21b94e9c29a84a7b931d19a7f2a945f1",
+      "Inputs": [
+        {
+          "Id": "61b64cb059b5435480c3001449a5d041",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fae28e93cd9d4e46ad2adbad4d66e5bd",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "2cbd447c749944cf9e5bb930f12254f1",
+      "End": "61b64cb059b5435480c3001449a5d041",
+      "Id": "eeaf66339ba941799ac9b634fe212da5"
+    },
+    {
+      "Start": "6578c90a1d874cb8898c523720edd386",
+      "End": "9fc71bb14ff941af8d13c6554c15b08f",
+      "Id": "2c29845b24ee4af897f06e1fc523c520"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.IsLeapYear",
+        "Id": "bd66960babac4c3896ab1e810889828b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 25.978316999232504,
+        "Y": 2609.29894720984
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7c396e516e4b41e3a740fb2de5f7cb8a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -153.0216830007675,
+        "Y": 2614.0711855864834
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "21b94e9c29a84a7b931d19a7f2a945f1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 297.9783169992325,
+        "Y": 2609.85785225315
+      }
+    ],
+    "Annotations": [],
+    "X": 224.89368681903704,
+    "Y": -4479.39080704605,
+    "Zoom": 1.78921269716459
+  }
+}

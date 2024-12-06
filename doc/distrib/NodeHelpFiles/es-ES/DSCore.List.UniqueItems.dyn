@@ -1,0 +1,390 @@
+{
+  "Uuid": "7ae9e580-1907-4858-8e90-9c2dc8ae3f8e",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.List.UniqueItems",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "cd995624e97f4d5a8565aa4881ff8597",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "25",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "Produces integer values",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "06bd8cc669d24cd099080da474adf850",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "7dc2088047314636b31443bed819ccda",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "16c5ddf24cea4d9597341d67b8e6b11f",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "6adcd4dbb17a4dbcbd9b5fe48288f24c",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a00e9fa1d255437bb7833b021bc792d6",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "abe274972cb344b2a48cf077aacc3ae8",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "f84cbb4cdedf4c0697b0f813c94f6875",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "836c3542865e4162b13890fd17a81c60",
+          "Name": "list",
+          "Description": "List to filter duplicates out of.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "85e6c9cba93a41faab5ed61143664fb8",
+          "Name": "list",
+          "Description": "Filtered list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.UniqueItems@var[]..[]",
+      "Replication": "Auto",
+      "Description": "Creates a new list containing all unique items in the given list.\n\nList.UniqueItems (list: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "4ad1ca64bc1542f28b60ce5b6f0d122c",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "2a9579712ab044618a549346d50e26ed",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "28bb3b84876746a284bb843753ae7e8c",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "abbaffb0a065449b881c774c73fcc883",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "d63ea94a124b4706b8142a1538ae8ab3",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e75567a5eed44fde9a4e6d4259dfd018",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "x*10;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "fc4c82990fe14a01be1602114164692d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8e712ca7a8dd4eaeb9709ed877072554",
+          "Name": "number",
+          "Description": "Number to round down\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9b2139f953e542c1b4f8bb07d117eb7f",
+          "Name": "int",
+          "Description": "First integer smaller than the number",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Math.Floor@double",
+      "Replication": "Auto",
+      "Description": "Returns the first integer smaller than the number.\n\nMath.Floor (number: double): int"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NumberType": "Integer",
+      "MaximumValue": 100,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "cd995624e97f4d5a8565aa4881ff8597",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ee6509653eac43ad8015023ad70c420f",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces integer values",
+      "InputValue": 25
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "16c5ddf24cea4d9597341d67b8e6b11f",
+      "End": "836c3542865e4162b13890fd17a81c60",
+      "Id": "8952989c377740e6a770fe70f964e083",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "85e6c9cba93a41faab5ed61143664fb8",
+      "End": "a00e9fa1d255437bb7833b021bc792d6",
+      "Id": "3215790b8ead43fb878224a1234ca74c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "28bb3b84876746a284bb843753ae7e8c",
+      "End": "d63ea94a124b4706b8142a1538ae8ab3",
+      "Id": "68719e3858bb43cd8038041d6f764e60",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e75567a5eed44fde9a4e6d4259dfd018",
+      "End": "8e712ca7a8dd4eaeb9709ed877072554",
+      "Id": "a48d1f11a9814e33b1c379420a060a18",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9b2139f953e542c1b4f8bb07d117eb7f",
+      "End": "7dc2088047314636b31443bed819ccda",
+      "Id": "ee3d7e88130343fba47e7c1ac4a09100",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ee6509653eac43ad8015023ad70c420f",
+      "End": "2a9579712ab044618a549346d50e26ed",
+      "Id": "ea75d362ecf04bfbbca9862ec8a1f4f7",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -13.988694190979004,
+      "EyeY": 18.264490127563477,
+      "EyeZ": 21.429862976074219,
+      "LookX": 16.723785400390625,
+      "LookY": -5.2774238586425781,
+      "LookZ": -19.588394165039063,
+      "UpX": -0.009065740741789341,
+      "UpY": 0.99990254640579224,
+      "UpZ": 0.010618607513606548
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "06bd8cc669d24cd099080da474adf850",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 639.01853192673639,
+        "Y": -7.1328576841236782
+      },
+      {
+        "Id": "6adcd4dbb17a4dbcbd9b5fe48288f24c",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1202.0648940959875,
+        "Y": -7.1328576841236782
+      },
+      {
+        "Id": "f84cbb4cdedf4c0697b0f813c94f6875",
+        "Name": "List.UniqueItems",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 959.04171301136194,
+        "Y": -7.1328576841236782
+      },
+      {
+        "Id": "4ad1ca64bc1542f28b60ce5b6f0d122c",
+        "Name": "Math.RandomList",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -58.051011327140259,
+        "Y": -7.1328576841236782
+      },
+      {
+        "Id": "abbaffb0a065449b881c774c73fcc883",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 205.97216975748529,
+        "Y": -7.1328576841236782
+      },
+      {
+        "Id": "fc4c82990fe14a01be1602114164692d",
+        "Name": "Math.Floor",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 402.99535084211084,
+        "Y": -7.1328576841236782
+      },
+      {
+        "Id": "cd995624e97f4d5a8565aa4881ff8597",
+        "Name": "Integer Slider",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -449.07419241176581,
+        "Y": -7.1328576841236782
+      }
+    ],
+    "Annotations": [],
+    "X": 329.51646926442237,
+    "Y": 246.88190853172037,
+    "Zoom": 0.66696433312246373
+  }
+}

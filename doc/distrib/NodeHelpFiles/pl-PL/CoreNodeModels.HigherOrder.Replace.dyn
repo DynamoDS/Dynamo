@@ -1,0 +1,329 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.HigherOrder.Replace_img",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..5..1;",
+      "Id": "07d54988a1e84967af483d475df73441",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "daf9076abc804184885d5220d128b893",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "4b4fa7981e2a411999b4053bc695c408",
+      "Inputs": [
+        {
+          "Id": "3ddef85855c6498797cffa465b6a48d9",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c683b24cf7dc476fa37a1963fc08fb76",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.Replace, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "b3eec1fa2ea2464fb847fb4f124d77db",
+      "Inputs": [
+        {
+          "Id": "1f334ac1c8a142d3b29dcf86437faea3",
+          "Name": "item",
+          "Description": "Item to potentially be replaced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b11a0e0fa033402f910a34973dcaa03a",
+          "Name": "replaceWith",
+          "Description": "Object to replace with",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7ee307d4357a4d2db3e65808c3fbc430",
+          "Name": "condition",
+          "Description": "Replacement function used to determine if an object should be replaced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1d68e5cdb6f94e34867bb972fc7f5602",
+          "Name": "var[]..[]",
+          "Description": "Item, or list of items where condition was used to replace with item given in \"replaceWith\"",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Replaces an item with the given substitute if the original item satisfies the given condition"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;",
+      "Id": "12681310281642a683a19115b4c3cc63",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "50285a1c05374df7bea444003d2d6b4b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
+      "Formula": "x%2==0",
+      "NodeType": "FormulaNode",
+      "Id": "bf10aa2b09494f2092f5be47960a6326",
+      "Inputs": [
+        {
+          "Id": "b814d785c3444c39af37e59cb6ba31b4",
+          "Name": "x",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cc75ecd46ab449eb92037a097e26b6d6",
+          "Name": "",
+          "Description": "Result from formula",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Evaluates mathematical formulas using NCalc"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "e1b8356c97474b2c9715f783aa916c46",
+      "Inputs": [
+        {
+          "Id": "fc635246b10a43c1b5ab2ddd1515564d",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5ba8389177094c7cbb5272646fc08c22",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "daf9076abc804184885d5220d128b893",
+      "End": "3ddef85855c6498797cffa465b6a48d9",
+      "Id": "2f79ce64058a470593c13f3f2326cd0a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c683b24cf7dc476fa37a1963fc08fb76",
+      "End": "1f334ac1c8a142d3b29dcf86437faea3",
+      "Id": "4b309fa6ef374e088cd6ca09bf3a9212",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1d68e5cdb6f94e34867bb972fc7f5602",
+      "End": "fc635246b10a43c1b5ab2ddd1515564d",
+      "Id": "3278e74377c64ebb9351dabe63613b8a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "50285a1c05374df7bea444003d2d6b4b",
+      "End": "b11a0e0fa033402f910a34973dcaa03a",
+      "Id": "9fb8159728b54c3fbc755054dcbb7a6c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cc75ecd46ab449eb92037a097e26b6d6",
+      "End": "7ee307d4357a4d2db3e65808c3fbc430",
+      "Id": "743ee1614d204c71af8c948261332473",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -11.702650547027588,
+      "EyeY": 20.44056510925293,
+      "EyeZ": -24.494302749633789,
+      "LookX": 12.377099990844727,
+      "LookY": -14.715733528137207,
+      "LookZ": 6.1681365966796875,
+      "UpX": 0.50565505027771,
+      "UpY": 0.82511365413665771,
+      "UpZ": 0.25199323892593384
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "07d54988a1e84967af483d475df73441",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 294.263891548268,
+        "Y": 1287.3251690050588
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "4b4fa7981e2a411999b4053bc695c408",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 548.663891548268,
+        "Y": 1287.4976690050587
+      },
+      {
+        "Name": "ReplaceByCondition",
+        "ShowGeometry": true,
+        "Id": "b3eec1fa2ea2464fb847fb4f124d77db",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 927.063891548268,
+        "Y": 1511.4976690050587
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "12681310281642a683a19115b4c3cc63",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 548.663891548268,
+        "Y": 1601.3251690050588
+      },
+      {
+        "Name": "Formula",
+        "ShowGeometry": true,
+        "Id": "bf10aa2b09494f2092f5be47960a6326",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 548.663891548268,
+        "Y": 1747.4976690050587
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "e1b8356c97474b2c9715f783aa916c46",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1249.4638915482678,
+        "Y": 1511.4976690050587
+      }
+    ],
+    "Annotations": [],
+    "X": -408.06559712977219,
+    "Y": -448.29655366983582,
+    "Zoom": 0.80498705780845559
+  }
+}

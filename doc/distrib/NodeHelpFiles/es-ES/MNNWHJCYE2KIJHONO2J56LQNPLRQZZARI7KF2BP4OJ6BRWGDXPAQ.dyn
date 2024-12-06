@@ -1,0 +1,244 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByWidthLength",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "d1cb45b71e5f4ef9b6da7c41293897a6",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "6.8",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "986b2b32a0774e0281b5d987ba13d0ea",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "2.7",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 6.8,
+      "Id": "d1cb45b71e5f4ef9b6da7c41293897a6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c5427071870f4a58b1e0ef580075c91e",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 2.7,
+      "Id": "986b2b32a0774e0281b5d987ba13d0ea",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3bb102ab730b41f58edec34c0bdea3b5",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@Autodesk.DesignScript.Geometry.Plane,double,double",
+      "Id": "9ca64c4a9067431f8bfcc8c3e4271867",
+      "Inputs": [
+        {
+          "Id": "0302e53fcef24764beac3cdad82b3093",
+          "Name": "plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "70129ea277d043a4bc08b6aa1b78fafa",
+          "Name": "width",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "70941aa07bea4c888e7b15b6be76c853",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bc9d296b13fe44469f99b4ac158d9d4a",
+          "Name": "Rectangle",
+          "Description": "Rectangle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Rectangle centered at input Plane root, with input width (Plane X axis length), and length (Plane Y axis length).\n\nRectangle.ByWidthLength (plane: Plane, width: double = 1, length: double = 1): Rectangle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.YZ",
+      "Id": "a1f1fbb297974af88ea9603fec255212",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7df9f596b33942d4b0b1014031b39da0",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a plane in the world YZ\n\nPlane.YZ ( ): Plane"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "c5427071870f4a58b1e0ef580075c91e",
+      "End": "70129ea277d043a4bc08b6aa1b78fafa",
+      "Id": "497830152b2948049a6659674c1fc371"
+    },
+    {
+      "Start": "3bb102ab730b41f58edec34c0bdea3b5",
+      "End": "70941aa07bea4c888e7b15b6be76c853",
+      "Id": "e5f6f76ad4f748c680c6e5a077158238"
+    },
+    {
+      "Start": "7df9f596b33942d4b0b1014031b39da0",
+      "End": "0302e53fcef24764beac3cdad82b3093",
+      "Id": "5c16093d08e44c30abcfd79648300bcf"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -4.7700605392456055,
+      "EyeY": 4.4356050491333008,
+      "EyeZ": 6.0252628326416016,
+      "LookX": 5.1657471656799316,
+      "LookY": -3.6908137798309326,
+      "LookZ": -5.1317133903503418,
+      "UpX": 0.17762959003448486,
+      "UpY": 0.9681476354598999,
+      "UpZ": -0.17645928263664246
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "d1cb45b71e5f4ef9b6da7c41293897a6",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 550.481983567209,
+        "Y": 837.341060714802
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "986b2b32a0774e0281b5d987ba13d0ea",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 550.481983567209,
+        "Y": 901.821493897852
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Rectangle.ByWidthLength",
+        "Id": "9ca64c4a9067431f8bfcc8c3e4271867",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1064.97860154654,
+        "Y": 750.186920343878
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Plane.YZ",
+        "Id": "a1f1fbb297974af88ea9603fec255212",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 772.881983567209,
+        "Y": 750.186920343878
+      }
+    ],
+    "Annotations": [],
+    "X": -403.671123827002,
+    "Y": -667.501466533396,
+    "Zoom": 0.93960835564511
+  }
+}

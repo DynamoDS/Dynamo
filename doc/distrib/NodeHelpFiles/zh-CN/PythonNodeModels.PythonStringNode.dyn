@@ -1,0 +1,535 @@
+{
+  "Uuid": "c7adcf5f-031b-4549-891d-85c54b73c88a",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "PythonNodeModels.PythonStringNode",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Rectangle": {
+        "Key": "Autodesk.DesignScript.Geometry.Rectangle",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Surface": {
+        "Key": "Autodesk.DesignScript.Geometry.Surface",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Sphere": {
+        "Key": "Autodesk.DesignScript.Geometry.Sphere",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Cylinder": {
+        "Key": "Autodesk.DesignScript.Geometry.Cylinder",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Line": {
+        "Key": "Autodesk.DesignScript.Geometry.Line",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      },
+      "PolyCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.PolyCurve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "PolySurface": {
+        "Key": "Autodesk.DesignScript.Geometry.PolySurface",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "34d19015b92041a5a294739e8bbf1411",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f0f282b55198491986a6c9c98c9dbe06",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "3;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "917f00ef16324bff952d6d99bc610bf7",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3e9963d6d0764a53af7269b890fc781a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "10;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "62fabdca0fcf4102931718d04b68f30d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "583cc329f69d4ab1af079d93c6aa63fa",
+          "Name": "lowPoint",
+          "Description": "Corner low point of cuboid\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fe58557fed044088aa1754c63c4c81b9",
+          "Name": "highPoint",
+          "Description": "Corner high point of cuboid\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0e4ba926760841db81d6514eabdba5ad",
+          "Name": "Cuboid",
+          "Description": "Cuboind created by corners",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByCorners@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Create an Cuboid spanning from low Point to high Point.\n\nCuboid.ByCorners (lowPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), highPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1)): Cuboid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "670fae8e8dc845db85f80c2ac642aafd",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "4aa9cbec0d594d55b6b28c3db739be04",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b20a7bc43c9c4d6d99bd04fcceaf08e5",
+          "Name": "origin",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ae57b9ec36e845659b7f466ea2a640e8",
+          "Name": "axis",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "91feda4d065e4e08982c9106bc057f86",
+          "Name": "degrees",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "11eb5980f47045ef8df11ce2fb37c52d",
+          "Name": "Geometry",
+          "Description": "Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Rotate@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,double",
+      "Replication": "Auto",
+      "Description": "Rotates an object around an origin and an axis by a specified degree\n\nGeometry.Rotate (origin: Point, axis: Vector, degrees: double = 0): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b59411eabb6745f3975e04a87771469e",
+      "NodeType": "FunctionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e124193d28f945d4876db94caae8632b",
+          "Name": "Point",
+          "Description": "Origin point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Origin",
+      "Replication": "Auto",
+      "Description": "Get the Origin point (0,0,0)\n\nPoint.Origin ( ): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "1df42fffd0f147269d40e2fb32ed97a1",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d70cbd7dc10a4332b104bbfd861cfc52",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "10;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "323319373726422db7ee65515c87c879",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "abe2606aeb74480b98ef6f524350ab87",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "Vector.ByCoordinates(1,0.5,0.5);"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
+      "EngineName": "CPython3",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "45073da27bc84c689246c0a66bf70784",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "044eb95418b84143affd5bf5e036d717",
+          "Name": "script",
+          "Description": "Python script to run.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3c42e835016a47cba2fe084a375c651d",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "227850a5179b4c85b2cb64aaeb0b9215",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "04f729c728074d87aae78cff87f43a3b",
+          "Name": "IN[2]",
+          "Description": "Input #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fa3ceaece495499e813be2ebcff13830",
+          "Name": "IN[3]",
+          "Description": "Input #3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "24412df2bef0410381056bbc61bd3502",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs a Python script from a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "Id": "4a5a5a408a1f4ec1be8970cde56cced7",
+      "NodeType": "StringInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5e1fd8d09fac49328649619b57e5092c",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string",
+      "InputValue": "import clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\nfrom System.Reflection import *\r\nimport System\r\nfrom System import Array\r\nfrom System.Collections.Generic import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\nsolid = IN[0]\r\nseed = IN[1]\r\nxCount = IN[2]\r\nyCount = IN[3]\r\n\r\nsolids = []\r\ncrvs = []\r\n\r\nedges = solid.Edges\r\nfor edge in edges:\r\n    crvs.append(edge.CurveGeometry)\r\n\r\nbbox = BoundingBox.ByGeometry(crvs)\r\nyDist = bbox.MaxPoint.Y - bbox.MinPoint.Y\r\nxDist = bbox.MaxPoint.X - bbox.MinPoint.X\r\n\r\nxRange = list(range(xCount))\r\nyRange = list(range(yCount))\r\n\r\nfromCoord = solid.ContextCoordinateSystem\r\n\r\n# Loop through xRange and yRange\r\nfor i in xRange:\r\n    for j in yRange:\r\n        # Rotate and translate the coordinate system\r\n        toCoord = fromCoord.Rotate(solid.ContextCoordinateSystem.Origin, Vector.ByCoordinates(0, 0, 1), (90 * (i + j % seed)))\r\n        # Creating an Array type in .NET\r\n        arrayObj = Array[System.Object]\r\n        # Instantiating an object of that type with Length 1\r\n        array1 = arrayObj.CreateInstance(System.Object, 1)\r\n        # Creating our Vector to put into the array\r\n        vec = Vector.ByCoordinates((xDist * i), (yDist * j), 0)\r\n        # Adding our vector to the array at index zero\r\n        array1[0] = vec\r\n        # Letting .NET figure out what function to call instead of PythonNET - Note: Problems exist today in PythonNET 2\r\n        toCoord = toCoord.GetType().InvokeMember(\"Translate\", BindingFlags.InvokeMethod, None, toCoord, array1)\r\n        # Transform the solid from the source coordinate system to the target coordinate system and append to the list\r\n        solids.append(solid.Transform(fromCoord, toCoord))\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = solids\r\n"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f0f282b55198491986a6c9c98c9dbe06",
+      "End": "227850a5179b4c85b2cb64aaeb0b9215",
+      "Id": "94427dbcaed44f2a99d110443f9b6a13",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3e9963d6d0764a53af7269b890fc781a",
+      "End": "04f729c728074d87aae78cff87f43a3b",
+      "Id": "6e37b9f572444c12b32f0361d1189e48",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3e9963d6d0764a53af7269b890fc781a",
+      "End": "fa3ceaece495499e813be2ebcff13830",
+      "Id": "e71fb556414e4e649e068bc98acf3f3d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0e4ba926760841db81d6514eabdba5ad",
+      "End": "4aa9cbec0d594d55b6b28c3db739be04",
+      "Id": "8920f40ed9aa4b4688d2aed48b5d88cb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "11eb5980f47045ef8df11ce2fb37c52d",
+      "End": "3c42e835016a47cba2fe084a375c651d",
+      "Id": "91e2c27902704cbd972f48ee0945c827",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e124193d28f945d4876db94caae8632b",
+      "End": "b20a7bc43c9c4d6d99bd04fcceaf08e5",
+      "Id": "875b57ca2e4d4a159387f9ba9da1e1a5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d70cbd7dc10a4332b104bbfd861cfc52",
+      "End": "91feda4d065e4e08982c9106bc057f86",
+      "Id": "b7051e1dc0404ddb953c9299f060cc2f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "abe2606aeb74480b98ef6f524350ab87",
+      "End": "ae57b9ec36e845659b7f466ea2a640e8",
+      "Id": "0a8f7eb6dfd14960915d189e638072b8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5e1fd8d09fac49328649619b57e5092c",
+      "End": "044eb95418b84143affd5bf5e036d717",
+      "Id": "160ba766cbc94c70aa42db624965ee8e",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "4.0",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.0.0.6570",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.592674732208252,
+      "EyeY": 14.589745044708252,
+      "EyeZ": 5.339345932006836,
+      "LookX": 6.4563751220703125,
+      "LookY": -8.120643615722656,
+      "LookZ": -10.154024124145508,
+      "UpX": -0.011704959906637669,
+      "UpY": 0.9997620582580566,
+      "UpZ": 0.018408771604299545
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "34d19015b92041a5a294739e8bbf1411",
+        "Name": "Seed",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2453.5898052565262,
+        "Y": 5487.3548666771
+      },
+      {
+        "Id": "917f00ef16324bff952d6d99bc610bf7",
+        "Name": "xCount / yCount",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2453.5898052565262,
+        "Y": 5635.3548666771
+      },
+      {
+        "Id": "62fabdca0fcf4102931718d04b68f30d",
+        "Name": "Cuboid.ByCorners",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 2018.5898052565262,
+        "Y": 5025.527366677101
+      },
+      {
+        "Id": "670fae8e8dc845db85f80c2ac642aafd",
+        "Name": "Geometry.Rotate",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 2453.5898052565262,
+        "Y": 5227.527366677101
+      },
+      {
+        "Id": "b59411eabb6745f3975e04a87771469e",
+        "Name": "Point.Origin",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2018.5898052565262,
+        "Y": 5214.527366677101
+      },
+      {
+        "Id": "1df42fffd0f147269d40e2fb32ed97a1",
+        "Name": "Degrees",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2018.5898052565262,
+        "Y": 5510.3548666771
+      },
+      {
+        "Id": "323319373726422db7ee65515c87c879",
+        "Name": "Axis Vector",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2018.5898052565262,
+        "Y": 5363.3548666771
+      },
+      {
+        "Id": "45073da27bc84c689246c0a66bf70784",
+        "Name": "Python Script From String",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2800.5898052565262,
+        "Y": 4698.527366677101
+      },
+      {
+        "Id": "4a5a5a408a1f4ec1be8970cde56cced7",
+        "Name": "String",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1656.3141180896075,
+        "Y": 4680.709679906147
+      }
+    ],
+    "Annotations": [],
+    "X": -692.6377427650598,
+    "Y": -2087.851842880719,
+    "Zoom": 0.45294270134228193
+  }
+}

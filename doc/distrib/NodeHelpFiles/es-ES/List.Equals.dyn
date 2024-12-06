@@ -1,0 +1,469 @@
+{
+  "Uuid": "459ca6d7-5caa-4c83-982e-b220dc43e25f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "List.Equals",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "6b1b1263e5154d05aba2bf2a680ee031",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "2",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Double",
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "a816797097f94ac4a1a73a3433f1f15c",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "1",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Double",
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "3fc8d7a830cb46609220a38d2bf8c774",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "50f7089bfba8415db212b2dc3b114a2c",
+          "Name": "object",
+          "Description": "First object\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "552850a027eb42c0becd7b2a3b495aa3",
+          "Name": "otherObject",
+          "Description": "Other object\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6d5e2a0ad473447c9fd03b0c300b85c5",
+          "Name": "bool",
+          "Description": "Returns true if object instances are equal, false if they are different",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "List.Equals@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Determines whether two object instances are equal.\n\nList.Equals (object: var[]..[], otherObject: var[]..[]): bool"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 58.0,
+      "WatchHeight": 38.0,
+      "Id": "9ffdaec77f914e338c9d702a74faef9f",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a4761a880af349939d88886b53e6505c",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "299d45a8267e474f8a46bae37f7b43a6",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "a9560a86537644d18493ba9a337e4161",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ce69c6e904714db4891e635256f215ca",
+          "Name": "centerPoint",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d2bcabb579384dca98b939069e6e1412",
+          "Name": "radius",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2f4a40500e7b4cd98265de97a75b0b7b",
+          "Name": "Circle",
+          "Description": "Circle created with center point and radius",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "6f956705bb4d4d698b08dce05cd83434",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "443f1251346d4c5da852366071368eb4",
+          "Name": "centerPoint",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "493d2fe994034a7c956151390ada8fdd",
+          "Name": "radius",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "623b3d2717864bf0af73c54af1e6946a",
+          "Name": "Circle",
+          "Description": "Circle created with center point and radius",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "179a2f534684444a92ebcd85ef3cebcf",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "6a4e6d2c84aa46c8b5af83d1e9ba850a",
+          "Name": "circle",
+          "Description": "Autodesk.DesignScript.Geometry.Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c2cc9b4db34f45ffb039bf1f78210d10",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.Radius",
+      "Replication": "Auto",
+      "Description": "Returns the radius of the circle.\n\nCircle.Radius: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "c39da5b6f5aa4b9a9292df550262e0e3",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "44129ee8dad548fb8e1878358c0960ae",
+          "Name": "circle",
+          "Description": "Autodesk.DesignScript.Geometry.Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "42dd7eaa19d14e369dcadd579738889c",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.Radius",
+      "Replication": "Auto",
+      "Description": "Returns the radius of the circle.\n\nCircle.Radius: double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "Id": "6b1b1263e5154d05aba2bf2a680ee031",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b43a55c31ed6467280e109c557241db4",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces numeric values",
+      "InputValue": 2.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "Id": "a816797097f94ac4a1a73a3433f1f15c",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fc5dd34fdf6c46269ca9dff81b7e5aa8",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces numeric values",
+      "InputValue": 1.0
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6d5e2a0ad473447c9fd03b0c300b85c5",
+      "End": "a4761a880af349939d88886b53e6505c",
+      "Id": "81d43d9d9af7482398da3a8f404d370d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2f4a40500e7b4cd98265de97a75b0b7b",
+      "End": "6a4e6d2c84aa46c8b5af83d1e9ba850a",
+      "Id": "39336c03097740f5b82a66b230aa59e9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "623b3d2717864bf0af73c54af1e6946a",
+      "End": "44129ee8dad548fb8e1878358c0960ae",
+      "Id": "12011ac89efe47fa88024cff665ae647",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c2cc9b4db34f45ffb039bf1f78210d10",
+      "End": "50f7089bfba8415db212b2dc3b114a2c",
+      "Id": "1000e8334d8a49f8824f14e8b90348a6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "42dd7eaa19d14e369dcadd579738889c",
+      "End": "552850a027eb42c0becd7b2a3b495aa3",
+      "Id": "57a3e77b4b7a4cff924d8da3ff4216bb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b43a55c31ed6467280e109c557241db4",
+      "End": "d2bcabb579384dca98b939069e6e1412",
+      "Id": "5f4eeae40d5645fa82bf8c8240e5e35a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fc5dd34fdf6c46269ca9dff81b7e5aa8",
+      "End": "493d2fe994034a7c956151390ada8fdd",
+      "Id": "9181965053aa4694977ad83157eea1c3",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -19.80754724340575,
+      "EyeY": 90.564444461668316,
+      "EyeZ": 116.00855545016306,
+      "LookX": 19.80754724340575,
+      "LookY": -90.564444461668316,
+      "LookZ": -116.00855545016306,
+      "UpX": 0.071661420166492462,
+      "UpY": 0.9048270583152771,
+      "UpZ": -0.41970542073249817
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "3fc8d7a830cb46609220a38d2bf8c774",
+        "Name": "List.Equals",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1136.9,
+        "Y": 291.40000000000009
+      },
+      {
+        "Id": "9ffdaec77f914e338c9d702a74faef9f",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1461.9,
+        "Y": 291.40000000000009
+      },
+      {
+        "Id": "a9560a86537644d18493ba9a337e4161",
+        "Name": "Circle.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 458.9,
+        "Y": 219.40000000000003
+      },
+      {
+        "Id": "6f956705bb4d4d698b08dce05cd83434",
+        "Name": "Circle.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 458.9,
+        "Y": 397.40000000000009
+      },
+      {
+        "Id": "179a2f534684444a92ebcd85ef3cebcf",
+        "Name": "Circle.Radius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 834.9,
+        "Y": 234.40000000000009
+      },
+      {
+        "Id": "c39da5b6f5aa4b9a9292df550262e0e3",
+        "Name": "Circle.Radius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 834.9,
+        "Y": 382.40000000000009
+      },
+      {
+        "Id": "6b1b1263e5154d05aba2bf2a680ee031",
+        "Name": "Number Slider",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 10.899999999999977,
+        "Y": 253.40000000000006
+      },
+      {
+        "Id": "a816797097f94ac4a1a73a3433f1f15c",
+        "Name": "Number Slider",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 10.899999999999977,
+        "Y": 431.40000000000009
+      }
+    ],
+    "Annotations": [],
+    "X": 172.31387998137382,
+    "Y": -61.630304860849492,
+    "Zoom": 0.74804557627634238
+  }
+}

@@ -1,0 +1,316 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "BoundingBox",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Sphere.ByFourPoints": {
+        "Key": "Autodesk.DesignScript.Geometry.Sphere",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Sphere": {
+        "Key": "Autodesk.DesignScript.Geometry.Sphere",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Display": {
+        "Key": "Display.Display",
+        "Value": "Display.dll"
+      },
+      "GeometryColor": {
+        "Key": "Modifiers.GeometryColor",
+        "Value": "GeometryColor.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ToPolySurface",
+      "Id": "c22bb8b60a35488bb22678919818af34",
+      "Inputs": [
+        {
+          "Id": "6cd4f912d1e945c5893fabc6e1fbb99d",
+          "Name": "boundingBox",
+          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "657de4cbdca64a54aea26f1f720913fe",
+          "Name": "PolySurface",
+          "Description": "A PolySurface representation of the BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the BoundingBox as a collection of Surfaces\n\nBoundingBox.ToPolySurface ( ): PolySurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.BoundingBox",
+      "Id": "474c9b5e391947f7b7e3c389d4ec334a",
+      "Inputs": [
+        {
+          "Id": "10711e5a8bb747a8af48b17fab8d28d8",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "38a1af67202a43c190cb3f77243db037",
+          "Name": "BoundingBox",
+          "Description": "BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the BoundingBox containing the given piece of Geometry\n\nGeometry.BoundingBox: BoundingBox"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "pt1 = Point.ByCoordinates(3,0,4);\npt2 = Point.ByCoordinates(4,-2,0);\npt3 = Point.ByCoordinates(0,3,4);\n\nSphere.ByCenterPointRadius([pt1, pt2, pt3],3);",
+      "Id": "3132e5ea686a4692b69c34b951fd9a1b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "30214938989242c7ad5f9b3df6155f79",
+          "Name": "",
+          "Description": "pt1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cb9828b2224b4787a105d22ebdc9d93f",
+          "Name": "",
+          "Description": "pt2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "51f102891d994be0870c598ae8911ea8",
+          "Name": "",
+          "Description": "pt3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d42dbcc2015c4a92b4304d82e81fe93a",
+          "Name": "",
+          "Description": "Value of expression at line 5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.ByUnion@Autodesk.DesignScript.Geometry.Solid[]",
+      "Id": "298b752698ea456981d18c4793180cab",
+      "Inputs": [
+        {
+          "Id": "65bec1b7c9a7451abbbe11817c0ba184",
+          "Name": "solids",
+          "Description": "A collection of solids\n\nSolid[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4efd647b018b4f91be648fad23b21ef6",
+          "Name": "Solid",
+          "Description": "Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Union a collection of solids into one solid\n\nSolid.ByUnion (solids: Solid[]): Solid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "color = Color.ByARGB(100,141,198,217);\nGeometryColor.ByGeometryColor(geometry, color);",
+      "Id": "0bea116e181645649ba294b8e8ec552c",
+      "Inputs": [
+        {
+          "Id": "eeddc5fa34cc44d08abd76b2062111c1",
+          "Name": "geometry",
+          "Description": "geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9b3135ece8d14cba8c725a058b78b5d9",
+          "Name": "",
+          "Description": "color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ee2d1d47585945bca5067b082f2c461c",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "657de4cbdca64a54aea26f1f720913fe",
+      "End": "eeddc5fa34cc44d08abd76b2062111c1",
+      "Id": "fbc34a7717364b92b777c73d84302552"
+    },
+    {
+      "Start": "38a1af67202a43c190cb3f77243db037",
+      "End": "6cd4f912d1e945c5893fabc6e1fbb99d",
+      "Id": "1db1861770304240bc086ec706f1927e"
+    },
+    {
+      "Start": "d42dbcc2015c4a92b4304d82e81fe93a",
+      "End": "65bec1b7c9a7451abbbe11817c0ba184",
+      "Id": "9e80202760b340ecabbf976b48120fba"
+    },
+    {
+      "Start": "4efd647b018b4f91be648fad23b21ef6",
+      "End": "10711e5a8bb747a8af48b17fab8d28d8",
+      "Id": "e0d5b858b354405eb4c52796ea24b06f"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 12.473233222961426,
+      "EyeY": 13.198745727539063,
+      "EyeZ": -21.173271179199219,
+      "LookX": -12.158740043640137,
+      "LookY": -8.815546989440918,
+      "LookZ": 12.120868682861328,
+      "UpX": -0.18090894818305969,
+      "UpY": 0.96682333946228027,
+      "UpZ": 0.18034546077251434
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "BoundingBox.ToPolySurface",
+        "Id": "c22bb8b60a35488bb22678919818af34",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1253.0864778182704,
+        "Y": 643.42988406228835
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.BoundingBox",
+        "Id": "474c9b5e391947f7b7e3c389d4ec334a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 894.0864778182704,
+        "Y": 643.42988406228835
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "3132e5ea686a4692b69c34b951fd9a1b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 101.0864778182704,
+        "Y": 577.34988406228831
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Solid.ByUnion",
+        "Id": "298b752698ea456981d18c4793180cab",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 610.0864778182704,
+        "Y": 643.42988406228835
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "0bea116e181645649ba294b8e8ec552c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1624.0864778182704,
+        "Y": 647.64321739562172
+      }
+    ],
+    "Annotations": [],
+    "X": -439.02954366829,
+    "Y": -623.062234921176,
+    "Zoom": 1.20654988893055
+  }
+}

@@ -1,0 +1,380 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "C",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices@Autodesk.DesignScript.Geometry.Point[],Autodesk.DesignScript.Geometry.IndexGroup[]",
+      "Id": "4562f2cbae064123b625c325d5455cee",
+      "Inputs": [
+        {
+          "Id": "dc58f4d8006c47ac8fc83a43998dc168",
+          "Name": "vertexPositions",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4929dd8f4f51495e8bc28035ce741f52",
+          "Name": "indices",
+          "Description": "IndexGroup[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "21197721c7154552b17b6259573c78fc",
+          "Name": "Mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a mesh from a collection of Points and a collection of IndexGroups referencing the Point collection\n\nMesh.ByPointsFaceIndices (vertexPositions: Point[], indices: IndexGroup[]): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.IndexGroup.ByIndices@int,int,int",
+      "Id": "f2bef4ca41f44263892509e79f570171",
+      "Inputs": [
+        {
+          "Id": "713487a2f9df48ac83662096a61e686f",
+          "Name": "a",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8d692fba70794210a3e9e67bcd45a2e7",
+          "Name": "b",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b6e5d8a198b142bf8294f481575ecd4e",
+          "Name": "c",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7544d5f603644d5e815a521993b03dc6",
+          "Name": "IndexGroup",
+          "Description": "IndexGroup",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create an IndexGroup storing four indices\n\nIndexGroup.ByIndices (a: int, b: int, c: int): IndexGroup"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;\n1;\n2;",
+      "Id": "8ac5992ed0574e6c9feeb89d5c20e216",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "89741586c32b4a7f920b3fbff2e40c7a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "32c2ce0bd88d404c97576f539e93b753",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1961c9948dc046ec8a65b21de8555679",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "10b7863ed943457db9a08d8366b1f7e3",
+      "Inputs": [
+        {
+          "Id": "0535cebca524401987225756e7a57d8e",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4a2aecbe8b664cd5b20284f134207ad9",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "pt1 = Point.ByCoordinates(0,2,1);\npt2 = Point.ByCoordinates(2,2,3);\npt3 = Point.ByCoordinates(1,1,0);\n[pt1, pt2, pt3];",
+      "Id": "4e7c689e944c47bd817fc93e4374a077",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "945e932ef0454f1a89e6c33a33055af2",
+          "Name": "",
+          "Description": "pt1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b7483455deea469db1959cf4b7b526d1",
+          "Name": "",
+          "Description": "pt2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1c250ab9e2a746a0a18ef772549fe11c",
+          "Name": "",
+          "Description": "pt3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "14a815867da34a54923f00b12fd8d279",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.IndexGroup.C",
+      "Id": "65e246fbab9f4d9fb57e1cda7ba43798",
+      "Inputs": [
+        {
+          "Id": "f2ac692bd92c44619b664b565474c0b1",
+          "Name": "indexGroup",
+          "Description": "Autodesk.DesignScript.Geometry.IndexGroup",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "46ece2861802484eb649088cca28325f",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The third index\n\nIndexGroup.C: int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "7544d5f603644d5e815a521993b03dc6",
+      "End": "4929dd8f4f51495e8bc28035ce741f52",
+      "Id": "82dd8219a08d406c8280d8adfba6d78d"
+    },
+    {
+      "Start": "7544d5f603644d5e815a521993b03dc6",
+      "End": "f2ac692bd92c44619b664b565474c0b1",
+      "Id": "f56b64c7df2543c580e7ee702d39a7fd"
+    },
+    {
+      "Start": "89741586c32b4a7f920b3fbff2e40c7a",
+      "End": "713487a2f9df48ac83662096a61e686f",
+      "Id": "7ba832cf68714705b165f0fe925fa64b"
+    },
+    {
+      "Start": "32c2ce0bd88d404c97576f539e93b753",
+      "End": "8d692fba70794210a3e9e67bcd45a2e7",
+      "Id": "2b3adf09d3044ddbb58106befb4336d0"
+    },
+    {
+      "Start": "1961c9948dc046ec8a65b21de8555679",
+      "End": "b6e5d8a198b142bf8294f481575ecd4e",
+      "Id": "2ff10c6f335c4e0c9fd62dea8322cba0"
+    },
+    {
+      "Start": "14a815867da34a54923f00b12fd8d279",
+      "End": "dc58f4d8006c47ac8fc83a43998dc168",
+      "Id": "2be532870e4e40db9c2ca12b9f6a7bfb"
+    },
+    {
+      "Start": "46ece2861802484eb649088cca28325f",
+      "End": "0535cebca524401987225756e7a57d8e",
+      "Id": "6d5db30e960b4293abac048aaa4cdec9"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -2.2852640151977539,
+      "EyeY": 3.16717529296875,
+      "EyeZ": -0.71605658531188965,
+      "LookX": 3.2859179973602295,
+      "LookY": -1.8544031381607056,
+      "LookZ": -1.852323055267334,
+      "UpX": 0.20779189467430115,
+      "UpY": 0.9711342453956604,
+      "UpZ": -0.11713552474975586
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.ByPointsFaceIndices",
+        "Id": "4562f2cbae064123b625c325d5455cee",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 758.448740334213,
+        "Y": 2916.1321704604784
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IndexGroup.ByIndices",
+        "Id": "f2bef4ca41f44263892509e79f570171",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 57.448740334212971,
+        "Y": 2996.1321704604784
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "8ac5992ed0574e6c9feeb89d5c20e216",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -121.55125966578703,
+        "Y": 3008.7721704604783
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "10b7863ed943457db9a08d8366b1f7e3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 758.448740334213,
+        "Y": 3050.1321704604784
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4e7c689e944c47bd817fc93e4374a077",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 356.44874033421297,
+        "Y": 2867.6255037938117
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IndexGroup.C",
+        "Id": "65e246fbab9f4d9fb57e1cda7ba43798",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 356.44874033421297,
+        "Y": 3050.1321704604784
+      }
+    ],
+    "Annotations": [],
+    "X": -87.8583349874929,
+    "Y": -3492.67598777513,
+    "Zoom": 1.23041168935798
+  }
+}

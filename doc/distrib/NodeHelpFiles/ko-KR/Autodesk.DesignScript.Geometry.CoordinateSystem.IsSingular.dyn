@@ -1,0 +1,253 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "IsSingular",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "5d20ff98fc5c46a9adb422cbfce05b4f",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "0.9",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 0.9,
+      "Id": "5d20ff98fc5c46a9adb422cbfce05b4f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1644b80d1bfe4eca9e7a5f93919acea6",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.IsSingular",
+      "Id": "c76dd8be6d9445e9b0915c19c13c3257",
+      "Inputs": [
+        {
+          "Id": "e540811f33f94d83b2a3d1d37d302d2b",
+          "Name": "coordinateSystem",
+          "Description": "Autodesk.DesignScript.Geometry.CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d15117e95d414d06af5f2a6a640f64b2",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determine whether it is possible to get the Inverse of this CoordinateSystem\n\nCoordinateSystem.IsSingular: bool"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "0b5a08f4ff354a3bb7fd6bcdd49bcd19",
+      "Inputs": [
+        {
+          "Id": "37c6a0be93924861b624ad39fa1ef3cb",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f5090585f0224ba2ab90906822e9065f",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@double,double,double",
+      "Id": "320a5c5d5f684521b56ea3eb6bd975c6",
+      "Inputs": [
+        {
+          "Id": "9c655a7276424af8b1ef459a7e252c44",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b1573614548d4a9484d7c9f499aa32b2",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "97b18a87e2da4fd8959587f9b0fb0dc2",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "69499b4e800b4fac9b7a0757c4ba8c2c",
+          "Name": "CoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a CoordinateSystem with origin at X, Y, and Z locations, with X and Y Axes set as WCS X and Y Axes.\n\nCoordinateSystem.ByOrigin (x: double = 0, y: double = 0, z: double = 0): CoordinateSystem"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "1644b80d1bfe4eca9e7a5f93919acea6",
+      "End": "9c655a7276424af8b1ef459a7e252c44",
+      "Id": "9190875c195a4556a6f66e862ef17440"
+    },
+    {
+      "Start": "1644b80d1bfe4eca9e7a5f93919acea6",
+      "End": "b1573614548d4a9484d7c9f499aa32b2",
+      "Id": "2ea2e610097a4bb4b702283fbbefca86"
+    },
+    {
+      "Start": "1644b80d1bfe4eca9e7a5f93919acea6",
+      "End": "97b18a87e2da4fd8959587f9b0fb0dc2",
+      "Id": "f10ba58c89fb4d87966736a39600a218"
+    },
+    {
+      "Start": "d15117e95d414d06af5f2a6a640f64b2",
+      "End": "37c6a0be93924861b624ad39fa1ef3cb",
+      "Id": "bf675c62a710411a800a7005f2ab4acd"
+    },
+    {
+      "Start": "69499b4e800b4fac9b7a0757c4ba8c2c",
+      "End": "e540811f33f94d83b2a3d1d37d302d2b",
+      "Id": "b2c380d30d354db6818e661e911799de"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 7.58525276184082,
+      "EyeY": 3.8096342086791992,
+      "EyeZ": -0.8631860613822937,
+      "LookX": -4.6113300323486328,
+      "LookY": -2.287745475769043,
+      "LookZ": -2.27799654006958,
+      "UpX": -0.18028013408184052,
+      "UpY": 0.97957515716552734,
+      "UpZ": -0.089058391749858856
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "5d20ff98fc5c46a9adb422cbfce05b4f",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -246.838417892571,
+        "Y": 1506.68197073724
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "CoordinateSystem.IsSingular",
+        "Id": "c76dd8be6d9445e9b0915c19c13c3257",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 417.78245281768983,
+        "Y": 1484.5269436439544
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "0b5a08f4ff354a3bb7fd6bcdd49bcd19",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 696.27501373558187,
+        "Y": 1483.7847519625318
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "CoordinateSystem.ByOrigin",
+        "Id": "320a5c5d5f684521b56ea3eb6bd975c6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 151.916466944066,
+        "Y": 1486.0113270068
+      }
+    ],
+    "Annotations": [],
+    "X": 225.754129899855,
+    "Y": -1619.40417675873,
+    "Zoom": 1.34736083013352
+  }
+}

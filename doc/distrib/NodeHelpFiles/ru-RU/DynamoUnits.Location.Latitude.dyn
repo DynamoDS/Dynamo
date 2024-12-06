@@ -1,0 +1,297 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Latitude",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Location.ByLatitudeAndLongitude@double,double,string",
+      "Id": "f100f63863a445c3b6246f414ee8aed2",
+      "Inputs": [
+        {
+          "Id": "641efd0fb9014723ba99085e0784abaa",
+          "Name": "latitude",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7c3ac5e3d52a438d90214f23c6cdc85c",
+          "Name": "longitude",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4cef35a223ce47c896f4903ff72b50f3",
+          "Name": "name",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e73e0f35593e4b4fafc36307df8e1fe9",
+          "Name": "Location",
+          "Description": "Location",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Location.ByLatitudeAndLongitude (latitude: double, longitude: double, name: string): Location"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "45.5231;",
+      "Id": "2c9be40e1f094ae79c1c080387f8ada6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b447e6b8790b47999d9faa5d16fd614d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "-122.679565;",
+      "Id": "943bcfa7f5f4489783f0df7a88396437",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3c36d155cfca4c2a82f1bf53cf071456",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"Portland\";",
+      "Id": "c7c6087687dd41d19fdbe02a2a61f083",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e8349aaad3264852b7695d8df1e1d2d7",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "b812f2f0b7cf462ba21c8d400c86f9c9",
+      "Inputs": [
+        {
+          "Id": "147cc2b20f4e475c8dee38d00470890a",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4a96e25bcd384f6db9292f0018024b3f",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Location.Latitude",
+      "Id": "e0f8b7b1e9e84cd992a93c8084fc5669",
+      "Inputs": [
+        {
+          "Id": "9d3fd2ea07f84a55b4117c1feaabec14",
+          "Name": "location",
+          "Description": "DynamoUnits.Location",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6fd85dce9a9d404ca8ddff887251a67e",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Location.Latitude: double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e73e0f35593e4b4fafc36307df8e1fe9",
+      "End": "9d3fd2ea07f84a55b4117c1feaabec14",
+      "Id": "a674fd5268c7436a8efa2937c8d602f3"
+    },
+    {
+      "Start": "b447e6b8790b47999d9faa5d16fd614d",
+      "End": "641efd0fb9014723ba99085e0784abaa",
+      "Id": "0b1a1aedee70407b860c0c2785106372"
+    },
+    {
+      "Start": "3c36d155cfca4c2a82f1bf53cf071456",
+      "End": "7c3ac5e3d52a438d90214f23c6cdc85c",
+      "Id": "692e34a21d7f471886869d70c9972db7"
+    },
+    {
+      "Start": "e8349aaad3264852b7695d8df1e1d2d7",
+      "End": "4cef35a223ce47c896f4903ff72b50f3",
+      "Id": "49631ef139fd44c899bf30bf63a893c2"
+    },
+    {
+      "Start": "6fd85dce9a9d404ca8ddff887251a67e",
+      "End": "147cc2b20f4e475c8dee38d00470890a",
+      "Id": "0a647d152d4c4cfab56bf424b862593c"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -7.7047104835510254,
+      "EyeY": 8.497960090637207,
+      "EyeZ": 19.619060516357422,
+      "LookX": 16.613174438476562,
+      "LookY": -5.0187773704528809,
+      "LookZ": -21.119640350341797,
+      "UpX": -0.019420096650719643,
+      "UpY": 0.99950653314590454,
+      "UpZ": 0.024687962606549263
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Location.ByLatitudeAndLongitude",
+        "Id": "f100f63863a445c3b6246f414ee8aed2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1739.8088998475,
+        "Y": 3581.0375206593972
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "2c9be40e1f094ae79c1c080387f8ada6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1510.8088998475,
+        "Y": 3503.2508539927303
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "943bcfa7f5f4489783f0df7a88396437",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1510.8088998475,
+        "Y": 3611.2508539927303
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c7c6087687dd41d19fdbe02a2a61f083",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1510.8088998475,
+        "Y": 3719.2508539927303
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "b812f2f0b7cf462ba21c8d400c86f9c9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2376.8088998475,
+        "Y": 3581.0375206593972
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Location.Latitude",
+        "Id": "e0f8b7b1e9e84cd992a93c8084fc5669",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2068.5936750706655,
+        "Y": 3581.0375206593972
+      }
+    ],
+    "Annotations": [],
+    "X": -2007.28432081627,
+    "Y": -4385.34421245482,
+    "Zoom": 1.27425021902012
+  }
+}

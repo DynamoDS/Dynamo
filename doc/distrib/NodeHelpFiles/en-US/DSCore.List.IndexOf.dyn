@@ -1,0 +1,397 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.List.IndexOf",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b4760fc7400e4878ad46698d1974c17c",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "4741285a87a74557b4f040b7bbac6496",
+          "Name": "list",
+          "Description": "The list to find the element in.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "36094d3283c44ed39c0b17d20e39741e",
+          "Name": "element",
+          "Description": "The element whose index is to be returned.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "91fff7db286a44fd98874a51003412b4",
+          "Name": "int",
+          "Description": "The index of the element in the list. Invalid index -1 will be returned if strict match not found.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.IndexOf@var[]..[],var",
+      "Replication": "Auto",
+      "Description": "Returns the index of the element in the given list. Match between given list and target element must be a strict match (i.e. int to int, double to double, string to string, object to object etc.).\n\nList.IndexOf (list: var[]..[], element: var): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "d59e73c300094857a3666e335f6243bd",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2d1446a9c38e4ab0a90d08a869fc09c5",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "0..19..#11;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "5cb99cb28a3e4ac6b40b71f1a0946deb",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5324400ee2f441ab9d2d3acc12dcf7c5",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "019e35804d0842cb99f33de6f11944e3",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "3.8;\n4.8;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 27.5,
+      "WatchHeight": 38.0,
+      "Id": "b5816650ee87421da4e0adde5fbfae3a",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a1ad62c72a824465b7aa3523d531d501",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6515f3b8435e4d24890fdbe57e42fb81",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "f81af81272c1430380398f98296f0daa",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "c064e821201046a6a906446676722d6e",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "db18207e63f24751b28c5145190195f4",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "4ef2b2ece10948f3b91701b4b05b43a5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "148325fbd53043e79254513e388f92ae",
+          "Name": "list",
+          "Description": "The list to find the element in.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3c53a263756f4ba19de8d3eae4715662",
+          "Name": "element",
+          "Description": "The element whose index is to be returned.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c282877dcb3446f6a3bb29b30038519b",
+          "Name": "int",
+          "Description": "The index of the element in the list. Invalid index -1 will be returned if strict match not found.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.IndexOf@var[]..[],var",
+      "Replication": "Auto",
+      "Description": "Returns the index of the element in the given list. Match between given list and target element must be a strict match (i.e. int to int, double to double, string to string, object to object etc.).\n\nList.IndexOf (list: var[]..[], element: var): int"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 50.0,
+      "WatchHeight": 38.0,
+      "Id": "06df58ca218f4ecd9154da43012aac5a",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "8879fa0db628438897bedf8a16530a76",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "69e12068a2034874b4d36c696043a214",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "91fff7db286a44fd98874a51003412b4",
+      "End": "a1ad62c72a824465b7aa3523d531d501",
+      "Id": "1bef7ea82868467fb3a250d6eafe1a09",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2d1446a9c38e4ab0a90d08a869fc09c5",
+      "End": "c064e821201046a6a906446676722d6e",
+      "Id": "7a319f1f914444f8a2c041905ed8abd3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5324400ee2f441ab9d2d3acc12dcf7c5",
+      "End": "36094d3283c44ed39c0b17d20e39741e",
+      "Id": "108765a8132243ad98717b4d0cc77b16",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "019e35804d0842cb99f33de6f11944e3",
+      "End": "3c53a263756f4ba19de8d3eae4715662",
+      "Id": "bd3ff365b92747d7aa8f8fa584782436",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "db18207e63f24751b28c5145190195f4",
+      "End": "4741285a87a74557b4f040b7bbac6496",
+      "Id": "0ccf90b938884d2dbc15047fd0dd49ba",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "db18207e63f24751b28c5145190195f4",
+      "End": "148325fbd53043e79254513e388f92ae",
+      "Id": "e8065de756be4c9585ed6a9b01475561",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c282877dcb3446f6a3bb29b30038519b",
+      "End": "8879fa0db628438897bedf8a16530a76",
+      "Id": "7a8986cc9f894f2fab550176426ba936",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.4.0.6144",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.165075302124023,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.05388512834906578,
+      "UpY": 0.9961946606636047,
+      "UpZ": -0.06850194185972214
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "b4760fc7400e4878ad46698d1974c17c",
+        "Name": "List.IndexOf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 270.78018520891123,
+        "Y": 2486.61307979844
+      },
+      {
+        "Id": "d59e73c300094857a3666e335f6243bd",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -388.9467571925705,
+        "Y": 2472.0165880143
+      },
+      {
+        "Id": "5cb99cb28a3e4ac6b40b71f1a0946deb",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -50.51683838405384,
+        "Y": 2808.004605017077
+      },
+      {
+        "Id": "b5816650ee87421da4e0adde5fbfae3a",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 579.9502406107003,
+        "Y": 2486.124457198379
+      },
+      {
+        "Id": "f81af81272c1430380398f98296f0daa",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -117.94675719257049,
+        "Y": 2472.1890880143
+      },
+      {
+        "Id": "4ef2b2ece10948f3b91701b4b05b43a5",
+        "Name": "List.IndexOf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 276.1497123824988,
+        "Y": 2736.7543244275066
+      },
+      {
+        "Id": "06df58ca218f4ecd9154da43012aac5a",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 572.5796311910144,
+        "Y": 2760.924379829296
+      }
+    ],
+    "Annotations": [],
+    "X": 458.68606789263856,
+    "Y": -2409.77855203425,
+    "Zoom": 1.0232846371347786
+  }
+}

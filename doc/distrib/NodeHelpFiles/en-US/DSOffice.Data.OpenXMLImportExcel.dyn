@@ -1,0 +1,448 @@
+{
+  "Uuid": "a19b2b4a-e4e6-43ab-9b41-f8d218bff28f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Data.OpenXMLExportExcel",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSOffice.Data.OpenXMLExportExcel@string,string,var[][],int,int,bool,bool",
+      "Id": "ea8ddcbdaeae47849fa5a5c59c94ab70",
+      "Inputs": [
+        {
+          "Id": "4f8e50f3dfb74327825b4688682dc0ee",
+          "Name": "filePath",
+          "Description": "File representing the Excel workbook\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "88fc15d6d825477ba80784ec5ca09325",
+          "Name": "sheetName",
+          "Description": "Name of the worksheet containing data\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "18d799baa9744de6849b7263ef622d01",
+          "Name": "data",
+          "Description": "Data to write to the spreadsheet\n\nvar[][]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "485533c3b3354d108e98a9c5f660734b",
+          "Name": "startRow",
+          "Description": "Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b318192fe68442f590314c74399ba61b",
+          "Name": "startColumn",
+          "Description": "Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8acd499314df42719da0409c87e39ca7",
+          "Name": "overWrite",
+          "Description": "Toggle to clear spreadsheet before writing\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "642334e9ebf94e23a853a6e480b56273",
+          "Name": "writeAsString",
+          "Description": "Toggle to switch between writing cell values as strings\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ea32457cb5e3441baa9dbc1313452a53",
+          "Name": "bool",
+          "Description": "Boolean indicating if writing to spreadsheet is successful.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Write data to a Microsoft Excel spreadsheet by using the Open XML standard. Data is written by row with sublists to be written in successive rows. Rows and columns are zero-indexed; for example, the value in the data list at [0,0] will be written to cell A1. Null values and empty lists are written as empty cells.\n\nData.OpenXMLExportExcel (filePath: string, sheetName: string, data: var[][], startRow: int = 0, startColumn: int = 0, overWrite: bool = false, writeAsString: bool = false): bool"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"A\"..\"D\";\n0..3;",
+      "Id": "120ad8913fb6403f8f60c410c65280c4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5d608fea2a554cdcb804c8a1a6b10773",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0c8b97eb63874d5d821c3cb672ebeb8e",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "bb286254943d46b0878b445ee66f7403",
+      "Inputs": [
+        {
+          "Id": "6cc578245a9542cfa703cb5caf0ca0cc",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "63ecbd87795d4fbbb9491bfac8ea6db3",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6b43f24fd71c43d39a83891f791a6834",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list out of the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "LettersAndNumbers",
+      "Id": "35a3e742a3c34ef286bb99367726f107",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7e686e32baca4ebc9d6e309ea215e858",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "5e99d453c5ec4045a979fa21d4ab4261",
+      "Inputs": [
+        {
+          "Id": "acc73124f90641eb89a8409e2005b821",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "287be5cb1e0943f8b298562316888ce2",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "D:\\Autodesk\\Generative BIM - Dynamo Dictionary\\Data.OpenXMLExportExcel\\DSOffice.Data.OpenXMLImportExcelSample.xlsx",
+      "InputValue": ".\\DSOffice.Data.OpenXMLImportExcelSample.xlsx",
+      "NodeType": "ExtensionNode",
+      "Id": "f033c80c7f2145f98453d3eab5016f3f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1f9f3dad0b924f19a69524951b2e7646",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its file path."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "d760995f372f423183c3e9c336809244",
+      "Inputs": [
+        {
+          "Id": "3bcef2c73a91498b81867194e15bf9db",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b364178813cc4b80aa728ea29f96e1d8",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ea32457cb5e3441baa9dbc1313452a53",
+      "End": "acc73124f90641eb89a8409e2005b821",
+      "Id": "9bf512b2ce7b4d04b110cf8247a608b7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5d608fea2a554cdcb804c8a1a6b10773",
+      "End": "6cc578245a9542cfa703cb5caf0ca0cc",
+      "Id": "e290b91edc514c1d872805ca3f34353f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0c8b97eb63874d5d821c3cb672ebeb8e",
+      "End": "63ecbd87795d4fbbb9491bfac8ea6db3",
+      "Id": "2188612a83e749e08c2283b5fbd528ce",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6b43f24fd71c43d39a83891f791a6834",
+      "End": "18d799baa9744de6849b7263ef622d01",
+      "Id": "b694e74c84c243a0925755025a32aba1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6b43f24fd71c43d39a83891f791a6834",
+      "End": "3bcef2c73a91498b81867194e15bf9db",
+      "Id": "e020958a0a404deca98f5e589f8494d1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7e686e32baca4ebc9d6e309ea215e858",
+      "End": "88fc15d6d825477ba80784ec5ca09325",
+      "Id": "884e74fca5844788b8e241e9d325518f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1f9f3dad0b924f19a69524951b2e7646",
+      "End": "4f8e50f3dfb74327825b4688682dc0ee",
+      "Id": "bb64584842d2483ebb1a202a3df35a0a",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Sample.xlsx",
+      "ReferenceType": "External",
+      "Nodes": [
+        "f033c80c7f2145f98453d3eab5016f3f"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [
+      {
+        "Left": 723.59999999999991,
+        "Top": 552.0001,
+        "IsHidden": false,
+        "ConnectorGuid": "e020958a-0a40-4dec-a98f-5e589f8494d1"
+      }
+    ],
+    "NodeViews": [
+      {
+        "Name": "Data.OpenXMLExportExcel",
+        "ShowGeometry": true,
+        "Id": "ea8ddcbdaeae47849fa5a5c59c94ab70",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 791.2,
+        "Y": 191.6
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "120ad8913fb6403f8f60c410c65280c4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 220.0,
+        "Y": 358.0
+      },
+      {
+        "Name": "List Create",
+        "ShowGeometry": true,
+        "Id": "bb286254943d46b0878b445ee66f7403",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 499.2,
+        "Y": 354.4
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "35a3e742a3c34ef286bb99367726f107",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 445.6,
+        "Y": 220.8
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "5e99d453c5ec4045a979fa21d4ab4261",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1180.0,
+        "Y": 191.6
+      },
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "f033c80c7f2145f98453d3eab5016f3f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 513.6,
+        "Y": 66.4
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "d760995f372f423183c3e9c336809244",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1184.0,
+        "Y": 497.20000000000005
+      }
+    ],
+    "Annotations": [],
+    "X": -107.20000000000005,
+    "Y": -8.8000000000000114,
+    "Zoom": 1.0
+  }
+}

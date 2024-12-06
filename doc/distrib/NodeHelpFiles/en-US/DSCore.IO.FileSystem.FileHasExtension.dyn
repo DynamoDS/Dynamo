@@ -1,0 +1,207 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.FileHasExtension_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Temp\\sample.txt",
+      "InputValue": "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\Temp\\sample.txt",
+      "NodeType": "ExtensionNode",
+      "Id": "054c8c81f54e4af0923e74a37e16a17e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "23eecdd98600468fbe84b2f0a0f4d20f",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "2a8918eb703149f18ec5b904b8b4b0a5",
+      "Inputs": [
+        {
+          "Id": "86adf1b6f7dd4626b6ffc9659ce33a16",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f8994277d86843ce995d899112a2e97e",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.FileHasExtension@string",
+      "Id": "1d4f09f2061f47fcb4abf385573bb424",
+      "Inputs": [
+        {
+          "Id": "ec8c8cda4d4d4a2bab8435233af575f9",
+          "Name": "path",
+          "Description": "Path to check for an extension\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cb76c51a55a2459494858eadd700406c",
+          "Name": "bool",
+          "Description": "True if file path contains extension, false if it doesn't",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Determines whether or not a file path contains an extension.\n\nFileSystem.FileHasExtension (path: string): bool"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "23eecdd98600468fbe84b2f0a0f4d20f",
+      "End": "ec8c8cda4d4d4a2bab8435233af575f9",
+      "Id": "44a0146ef1f646d2a23e4e22225c7e32",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cb76c51a55a2459494858eadd700406c",
+      "End": "86adf1b6f7dd4626b6ffc9659ce33a16",
+      "Id": "641080a5e65a4320ba3ba5621acb3270",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "sample.txt",
+      "ReferenceType": "External",
+      "Nodes": [
+        "054c8c81f54e4af0923e74a37e16a17e"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "054c8c81f54e4af0923e74a37e16a17e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3424.4106660891439,
+        "Y": 3856.9235235392971
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "2a8918eb703149f18ec5b904b8b4b0a5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4082.4544170952522,
+        "Y": 3857.8000717022514
+      },
+      {
+        "Name": "FileSystem.FileHasExtension",
+        "ShowGeometry": true,
+        "Id": "1d4f09f2061f47fcb4abf385573bb424",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3701.6984847922627,
+        "Y": 3856.7465692195433
+      }
+    ],
+    "Annotations": [],
+    "X": -3309.2463573187424,
+    "Y": -2978.7465969587033,
+    "Zoom": 0.96421855318101279
+  }
+}

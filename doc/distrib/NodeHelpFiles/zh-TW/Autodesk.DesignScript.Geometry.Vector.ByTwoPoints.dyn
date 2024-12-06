@@ -1,0 +1,325 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByTwoPoints",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByTwoPoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Id": "b1e150c608074a759b4a92b87d95e915",
+      "Inputs": [
+        {
+          "Id": "852adda8a45f4913b685bc69a1f8a7f8",
+          "Name": "start",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bfdc7227e1344f63aeeda4880a546c70",
+          "Name": "end",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "944ab14a297e4e32b2126e2a05b5e8e0",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Vector by two end points. The result is a vector from the start to the end point.\n\nVector.ByTwoPoints (start: Point, end: Point): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,double",
+      "Id": "7534e0fc0f224efcb9c2ec36461ebcbd",
+      "Inputs": [
+        {
+          "Id": "6807d0375fac4222b8f6587fbf4c327c",
+          "Name": "startPoint",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c097cbcd0d56414d8d4216acb15a0885",
+          "Name": "direction",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8c610d313e6645febfdc46931a333615",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c94e26c441a34726a71f2a2a4715ade2",
+          "Name": "Line",
+          "Description": "Line",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a straight Line starting at start Point, extending in Vector direction by specified length.\n\nLine.ByStartPointDirectionLength (startPoint: Point, direction: Vector, length: double = 1): Line"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Point.ByCoordinates(2,4,0);\nPoint.ByCoordinates(4,5,2);",
+      "Id": "336d6aeb25754878bd2cfd58f4b57bc1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8204626ffdd34d95aded2321649493d1",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "58b465430c1c4713a444a903492239a8",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.DistanceTo@Autodesk.DesignScript.Geometry.Geometry",
+      "Id": "975717fad9bf488886005f8187ff0b64",
+      "Inputs": [
+        {
+          "Id": "aba4f9ba3850456e9ea44b6af3e9e476",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c1dca827457841d188596f7ff409dee8",
+          "Name": "other",
+          "Description": "The other Geometry\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "552907201dba40058f70c45b60f22c2a",
+          "Name": "double",
+          "Description": "The distance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Obtain the distance from this Geometry to another\n\nGeometry.DistanceTo (other: Geometry): double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.Length",
+      "Id": "409123070f754121b4adaa43b424e3fe",
+      "Inputs": [
+        {
+          "Id": "787ce2ef226d4d3fb56106d6ee19aa9b",
+          "Name": "vector",
+          "Description": "Autodesk.DesignScript.Geometry.Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8f27ce552fdf4d03b73d733bc24f2caa",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the length of the vector - otherwise known as the Euclidean norm\n\nVector.Length: double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "944ab14a297e4e32b2126e2a05b5e8e0",
+      "End": "c097cbcd0d56414d8d4216acb15a0885",
+      "Id": "6e0fd501952941ad8faba6fa147684d8"
+    },
+    {
+      "Start": "944ab14a297e4e32b2126e2a05b5e8e0",
+      "End": "787ce2ef226d4d3fb56106d6ee19aa9b",
+      "Id": "b3d156e0d82d4183b8278e0cd94f7cff"
+    },
+    {
+      "Start": "8204626ffdd34d95aded2321649493d1",
+      "End": "852adda8a45f4913b685bc69a1f8a7f8",
+      "Id": "0193359b7f5b4f61abe2528f57ca7e0e"
+    },
+    {
+      "Start": "8204626ffdd34d95aded2321649493d1",
+      "End": "6807d0375fac4222b8f6587fbf4c327c",
+      "Id": "cc45487a1ac74d15aaf308dbb615a205"
+    },
+    {
+      "Start": "8204626ffdd34d95aded2321649493d1",
+      "End": "aba4f9ba3850456e9ea44b6af3e9e476",
+      "Id": "7a1df98d229042dba3ac2fa61babcaeb"
+    },
+    {
+      "Start": "58b465430c1c4713a444a903492239a8",
+      "End": "bfdc7227e1344f63aeeda4880a546c70",
+      "Id": "e5ef92d618db4b39b33b15401385efca"
+    },
+    {
+      "Start": "58b465430c1c4713a444a903492239a8",
+      "End": "c1dca827457841d188596f7ff409dee8",
+      "Id": "cd957d2384264997af618c7fc8f212c8"
+    },
+    {
+      "Start": "552907201dba40058f70c45b60f22c2a",
+      "End": "8c610d313e6645febfdc46931a333615",
+      "Id": "e613105994b149fabebf19d9cb1920b8"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 6.3255581855773926,
+      "EyeY": 2.6030604839324951,
+      "EyeZ": -1.6804723739624023,
+      "LookX": -1.7615951299667358,
+      "LookY": -0.44731205701828003,
+      "LookZ": -1.091782808303833,
+      "UpX": 0.0029670221265405416,
+      "UpY": 0.99999386072158813,
+      "UpZ": 0.0018388687167316675
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.ByTwoPoints",
+        "Id": "b1e150c608074a759b4a92b87d95e915",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2912.50328960733,
+        "Y": 4058.0171358602665
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Line.ByStartPointDirectionLength",
+        "Id": "7534e0fc0f224efcb9c2ec36461ebcbd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3173.5251457503737,
+        "Y": 3958.8144776893764
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "336d6aeb25754878bd2cfd58f4b57bc1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2523.97284061814,
+        "Y": 4033.73293274509
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.DistanceTo",
+        "Id": "975717fad9bf488886005f8187ff0b64",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2879.73501366724,
+        "Y": 4172.59366141676
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.Length",
+        "Id": "409123070f754121b4adaa43b424e3fe",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3173.5251457503737,
+        "Y": 4111.4085287447924
+      }
+    ],
+    "Annotations": [],
+    "X": -2667.01506015249,
+    "Y": -4122.2924426406362,
+    "Zoom": 1.1083193989052016
+  }
+}

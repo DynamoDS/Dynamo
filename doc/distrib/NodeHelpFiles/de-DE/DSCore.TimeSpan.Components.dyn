@@ -1,0 +1,421 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Components",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "53539fc39aa4437b92e736348f8955c2",
+      "Inputs": [
+        {
+          "Id": "10e0d745021844f19a2e5984a4512c88",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "519b8a2722284ba2a98d78964442522f",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.TimeSpan.FromString@string",
+      "Id": "4433f651207b4eca93534f2def49f6c3",
+      "Inputs": [
+        {
+          "Id": "eb6e1ab74bc8424281169670d2ddd25c",
+          "Name": "str",
+          "Description": "String representation of a TimeSpan.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7d808c9daee7468abfdc732c093945a7",
+          "Name": "timeSpan",
+          "Description": "TimeSpan",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Attempts to parse a TimeSpan from a string.\n\nTimeSpan.FromString (str: string): var"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"5:6:21\";",
+      "Id": "13d1282121bf4e9ebbc05cf25d8e1159",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3b95663ef114463a87cd640824e962c2",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.TimeSpan.Components@var",
+      "Id": "d41b2bd640694b5d9760bcd5d4bce147",
+      "Inputs": [
+        {
+          "Id": "805f546ee71d4c00bf15a4363723377c",
+          "Name": "timeSpan",
+          "Description": "A TimeSpan.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ee8aebfc7e9b48c19ce2c669d0b08774",
+          "Name": "days",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7b99142039014481bd5fdf009cbf2b3e",
+          "Name": "hours",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6075e47029de4df895038672ed976dfc",
+          "Name": "minutes",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c9ea64614e044b86b87f106d0db12c76",
+          "Name": "seconds",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "02dd83845cdb489b8c64fa92c1eb3730",
+          "Name": "milliseconds",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Extracts the individual components of a TimeSpan.\n\nTimeSpan.Components (timeSpan: var): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "4b0d48047e4f4b908b09dad1dc3df364",
+      "Inputs": [
+        {
+          "Id": "4c2b68069a1446d9a35827744ea5f112",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bdfd2d8f3f91447d8f6bdbefed3ec9da",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "954b977ac8ab4d3c9237d8f7a844ba94",
+      "Inputs": [
+        {
+          "Id": "326f9cd5ce3a47ba8a5f36ced7fb58a9",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9359592534074a9998d4be8af973fae8",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "e0eeb30de3ee4eb2ac6ff2f60b3e1e0e",
+      "Inputs": [
+        {
+          "Id": "dbc69129fd154e4ebce08e5dc0e02882",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "86a2a4e600ee4cb8b1f6a15b78bdfffd",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "a1f46383a58a48f6a12af61b1f3da874",
+      "Inputs": [
+        {
+          "Id": "19bd5211d8894bbc8f3821ac3977fc95",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "89751193294242c78ed7bc2eb6f0ba44",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "7d808c9daee7468abfdc732c093945a7",
+      "End": "805f546ee71d4c00bf15a4363723377c",
+      "Id": "bbb5b46af8574b40bc4ab6a335f58050"
+    },
+    {
+      "Start": "3b95663ef114463a87cd640824e962c2",
+      "End": "eb6e1ab74bc8424281169670d2ddd25c",
+      "Id": "4ffd9ec7bbff4775861ce592d1ff7b57"
+    },
+    {
+      "Start": "ee8aebfc7e9b48c19ce2c669d0b08774",
+      "End": "10e0d745021844f19a2e5984a4512c88",
+      "Id": "03b73b1e9e87415eb5daa0ddf5f0c5f0"
+    },
+    {
+      "Start": "7b99142039014481bd5fdf009cbf2b3e",
+      "End": "4c2b68069a1446d9a35827744ea5f112",
+      "Id": "4c9e9566514648ac9d004f30e81b48a1"
+    },
+    {
+      "Start": "6075e47029de4df895038672ed976dfc",
+      "End": "326f9cd5ce3a47ba8a5f36ced7fb58a9",
+      "Id": "1110097f27f147019d1e89a6e1a2b23b"
+    },
+    {
+      "Start": "c9ea64614e044b86b87f106d0db12c76",
+      "End": "dbc69129fd154e4ebce08e5dc0e02882",
+      "Id": "eebb8b85cd15475e983b74b965c3d5ac"
+    },
+    {
+      "Start": "02dd83845cdb489b8c64fa92c1eb3730",
+      "End": "19bd5211d8894bbc8f3821ac3977fc95",
+      "Id": "daa42b7a6d1d40c29581c3e813eb3691"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "53539fc39aa4437b92e736348f8955c2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 731.66412976041624,
+        "Y": 2579.1002502046349
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "TimeSpan.FromString",
+        "Id": "4433f651207b4eca93534f2def49f6c3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 86.664129760416245,
+        "Y": 2775.1002502046349
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "13d1282121bf4e9ebbc05cf25d8e1159",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -117.33587023958376,
+        "Y": 2779.313583537968
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "TimeSpan.Components",
+        "Id": "d41b2bd640694b5d9760bcd5d4bce147",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 379.66412976041624,
+        "Y": 2775.1002502046349
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "4b0d48047e4f4b908b09dad1dc3df364",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 731.66412976041624,
+        "Y": 2703.1002502046349
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "954b977ac8ab4d3c9237d8f7a844ba94",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 731.66412976041624,
+        "Y": 2827.1002502046349
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "e0eeb30de3ee4eb2ac6ff2f60b3e1e0e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 731.66412976041624,
+        "Y": 2951.1002502046349
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "a1f46383a58a48f6a12af61b1f3da874",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 731.66412976041624,
+        "Y": 3075.1002502046349
+      }
+    ],
+    "Annotations": [],
+    "X": -59.165802683992013,
+    "Y": -4026.56126224045,
+    "Zoom": 1.51530382433281
+  }
+}

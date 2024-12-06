@@ -1,0 +1,518 @@
+{
+  "Uuid": "50c8c753-f37c-4ba4-ad14-31639cc79b5c",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCylinderPointsRadius",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "99241cc3ad274680bf72b883b1b5754e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "d5bc7c60e1144d5187523b281d1e50af",
+          "Name": "startPoint",
+          "Description": "Start point of a cylinder\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f8f1d1194fad4896a85d608b8a14d181",
+          "Name": "endPoint",
+          "Description": "End point of a cylinder\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0dd78171d18f419e94215a7907e00cb4",
+          "Name": "radius",
+          "Description": "Radius of a cylinder\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bdced8b0373a4d92bfa8c35f19a280fc",
+          "Name": "radiusSpans",
+          "Description": "Number of spans in circumference\n\nint\nDefault value : 8",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a42892cdff8c4aee8a25c2a2b550be8b",
+          "Name": "heightSpans",
+          "Description": "Number of spans in height\n\nint\nDefault value : 4",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4e88b7c6c244477e8672f08020dc94a4",
+          "Name": "symmetry",
+          "Description": "Symmetry options of a T-Spline Surface\n\nTSplineInitialSymmetry\nDefault value : Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(false, false, false)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c4455f59d2bb44fba9a3132e688ec38e",
+          "Name": "inSmoothMode",
+          "Description": "Show T-Spline Surface in box or smooth visualization\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "929dc945ceb34f7d9a82f6e2ee80002e",
+          "Name": "TSplineSurface",
+          "Description": "Cylindric T-Spline Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCylinderPointsRadius@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,double,int,int,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,bool",
+      "Replication": "Auto",
+      "Description": "Construct a T-Splines Cylinder given the bottom and top center point of the Cylinder.\n\nTSplineSurface.ByCylinderPointsRadius (startPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), endPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1), radius: double = 1, radiusSpans: int = 8, heightSpans: int = 4, symmetry: TSplineInitialSymmetry = Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(false, false, false), inSmoothMode: bool = false): TSplineSurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "72cef0e427f7495baa667e83115cd0a5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "3129a5c8688a4fa5a3bff70dcaff2665",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a0f2f4b867e146c58ad32fbf925f073a",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "03acda725ec248caac598f119439564f",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4cc9b723f2aa409785dff0c5e47f1df3",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "9b1c6abcc2d442068027f61ed6bce334",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c9557c91080c4b60ac91c61fed4a36b9",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "937c1a9666fa46a483bd9786b0908c13",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c6a112f950fb4c2cb5f369568ea2dc2a",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f3f21d8cc00b4ceda8916ec57ec2e7fe",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "2005487943414f62be361a3509220e5f",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2820bf1c54f94c66b6bc582227ce46b3",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "5;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "a8c3491e2da54341b3befa0a4d440d76",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "14c283c87aa749e4b258076cadf37b02",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d9f990a2247e459ea20888ad9440f7f7",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1064b9620f2f44b5949d98cee12af476",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "3;\n9;\n3;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "abf5797cf2884f28ada5314432a0b5f5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "5a972f66835b4fccbfa537323707b437",
+          "Name": "symmetricFaces",
+          "Description": "int\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c8ea026530544ee19a8bf6c7ab507a94",
+          "Name": "TSplineInitialSymmetry",
+          "Description": "TSplineInitialSymmetry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByRadial@int",
+      "Replication": "Auto",
+      "Description": "Create a radial TSplineInitialSymmetry with given amount of spans per symmetric segment.\n\nTSplineInitialSymmetry.ByRadial (symmetricFaces: int = 1): TSplineInitialSymmetry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "ed7efcf29eba48a49f69159402c87f66",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2caa1e480a3d454a893be87bfc687ee9",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "1;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "6540e117649a4d4aa972fbe9c1f08449",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c4288861fb434140b4a339d013f60dcd",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4cc9b723f2aa409785dff0c5e47f1df3",
+      "End": "d5bc7c60e1144d5187523b281d1e50af",
+      "Id": "eab80451153a4d389c7cbd625472afc3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f3f21d8cc00b4ceda8916ec57ec2e7fe",
+      "End": "f8f1d1194fad4896a85d608b8a14d181",
+      "Id": "d52d2894e451428d8bc2e8afef1339a4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2820bf1c54f94c66b6bc582227ce46b3",
+      "End": "937c1a9666fa46a483bd9786b0908c13",
+      "Id": "4f008f8064344a13848495f3450de5dc",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2820bf1c54f94c66b6bc582227ce46b3",
+      "End": "c6a112f950fb4c2cb5f369568ea2dc2a",
+      "Id": "8ea4a67eb9b24f62800545b956d82215",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2820bf1c54f94c66b6bc582227ce46b3",
+      "End": "c9557c91080c4b60ac91c61fed4a36b9",
+      "Id": "d8fd0288fc194f8f833ee1a947a77c7f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "14c283c87aa749e4b258076cadf37b02",
+      "End": "0dd78171d18f419e94215a7907e00cb4",
+      "Id": "db24ef9e56e44acc9591d15d6d3cae11",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d9f990a2247e459ea20888ad9440f7f7",
+      "End": "bdced8b0373a4d92bfa8c35f19a280fc",
+      "Id": "9de70cecf9fe43b0a58dc6e6517bd8fe",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1064b9620f2f44b5949d98cee12af476",
+      "End": "a42892cdff8c4aee8a25c2a2b550be8b",
+      "Id": "35c40bfd86ab4ff49cb94235dd17a0e0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c8ea026530544ee19a8bf6c7ab507a94",
+      "End": "4e88b7c6c244477e8672f08020dc94a4",
+      "Id": "be84aa4ed1524b7e9782682d577df13f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2caa1e480a3d454a893be87bfc687ee9",
+      "End": "5a972f66835b4fccbfa537323707b437",
+      "Id": "82646f3a1c1044bb98f5a05e22ffba59",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c4288861fb434140b4a339d013f60dcd",
+      "End": "c4455f59d2bb44fba9a3132e688ec38e",
+      "Id": "66278759f4cc46df926c5ca46bc260d2",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.3.6543",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -21.737056732177734,
+      "EyeY": 17.773708343505859,
+      "EyeZ": 46.265865325927734,
+      "LookX": -4.0050048828125,
+      "LookY": -6.7377414703369141,
+      "LookZ": -60.129478454589844,
+      "UpX": 0.0069469180889427662,
+      "UpY": 0.9945218563079834,
+      "UpZ": 0.10429742932319641
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "99241cc3ad274680bf72b883b1b5754e",
+        "Name": "TSplineSurface.ByCylinderPointsRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 561.38278931750733,
+        "Y": 427.06528189910978
+      },
+      {
+        "Id": "72cef0e427f7495baa667e83115cd0a5",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 82.0,
+        "Y": 237.0
+      },
+      {
+        "Id": "9b1c6abcc2d442068027f61ed6bce334",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 88.0,
+        "Y": 475.0
+      },
+      {
+        "Id": "2005487943414f62be361a3509220e5f",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -152.0,
+        "Y": 508.0
+      },
+      {
+        "Id": "a8c3491e2da54341b3befa0a4d440d76",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 161.73887240356089,
+        "Y": 662.92284866468844
+      },
+      {
+        "Id": "abf5797cf2884f28ada5314432a0b5f5",
+        "Name": "TSplineInitialSymmetry.ByRadial",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -35.602373887240219,
+        "Y": 823.56973293768556
+      },
+      {
+        "Id": "ed7efcf29eba48a49f69159402c87f66",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -226.08308605341244,
+        "Y": 824.27893175074189
+      },
+      {
+        "Id": "6540e117649a4d4aa972fbe9c1f08449",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 127.00890207715122,
+        "Y": 967.18991097922867
+      }
+    ],
+    "Annotations": [],
+    "X": 303.995,
+    "Y": -151.85750000000007,
+    "Zoom": 0.8425
+  }
+}

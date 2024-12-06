@@ -1,0 +1,134 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "XY",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.XZ",
+      "Id": "2e01472b11394f8bb5b830ad7017fd74",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e128f117412e49fbb5177a6609e3194d",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a plane in the world XZ plane\n\nPlane.XZ ( ): Plane"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.YZ",
+      "Id": "6bec043cdadf47cbb9ec86646b75dd49",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b9a9777f0ea04c09b7fcc099a6b808ea",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a plane in the world YZ\n\nPlane.YZ ( ): Plane"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.XY",
+      "Id": "b70905020e8341cea83b234b14f9bfbd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8fa1605f565a4cdb82cebe87ecd7d155",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a plane in the world XY\n\nPlane.XY ( ): Plane"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -16.278566360473633,
+      "EyeY": 8.8992633819580078,
+      "EyeZ": 15.316742897033691,
+      "LookX": 23.252426147460937,
+      "LookY": -1.2338912487030029,
+      "LookZ": -16.470115661621094,
+      "UpX": -0.14029937982559204,
+      "UpY": 0.98510932922363281,
+      "UpZ": 0.099376566708087921
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Plane.XZ",
+        "Id": "2e01472b11394f8bb5b830ad7017fd74",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -606.876292269889,
+        "Y": 369.743389034485
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Plane.YZ",
+        "Id": "6bec043cdadf47cbb9ec86646b75dd49",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -476.788255588722,
+        "Y": 369.743389034485
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Plane.XY",
+        "Id": "b70905020e8341cea83b234b14f9bfbd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -346.700218907555,
+        "Y": 369.743389034485
+      }
+    ],
+    "Annotations": [],
+    "X": 1008.57015844817,
+    "Y": -285.053498940698,
+    "Zoom": 1.06696975018683
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "PadRight",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Name": "String",
+      "Type": "string",
+      "Value": "Hello World",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "f683b059dc594ba5af756cb25dff6917",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Value": "30",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "Id": "38e5b017705d455eb63654c288c14fcd",
+      "Name": "String",
+      "Type": "string",
+      "Value": "_",
+      "Description": "Creates a string."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "Hello World",
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "db9af9db259b4201bef4cad82ffa04d9",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "1f79f9e394fc4650ad0f49067625f89a",
+      "Inputs": [
+        {
+          "Id": "8a648dcf41394c8d94096a04e8135104",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "829826650ed54330bce3bbd94599b505",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 30,
+      "MaximumValue": 100,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "f683b059dc594ba5af756cb25dff6917",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "96c9cc0f22fe43899e1c5dc7fa196994",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "_",
+      "Id": "38e5b017705d455eb63654c288c14fcd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1306126fb47f4ec481270bab288f267f",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.PadRight@string,int,string",
+      "Id": "d56105373d414184afec1cba1d09de59",
+      "Inputs": [
+        {
+          "Id": "4ab2aac9dc224f599662e4f5908dc852",
+          "Name": "str",
+          "Description": "String to pad.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d90498921f83419e9b84d0eb2b424db4",
+          "Name": "newWidth",
+          "Description": "Total length of the string after padding.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0c0c735f03244f51bb2ee38c0027b9f0",
+          "Name": "padChars",
+          "Description": "Character to pad with, defaults to space.\n\nstring\nDefault value : \" \"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a39cdba4c68e42b1b1f0572219fcabe6",
+          "Name": "str",
+          "Description": "Strings left-aligned by padding with trailing whitespaces for a specified total length.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Left-aligns the characters in the given string by padding them with spaces on the right, for a specified total length.\n\nString.PadRight (str: string, newWidth: int, padChars: string = \" \"): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "db9af9db259b4201bef4cad82ffa04d9",
+      "End": "4ab2aac9dc224f599662e4f5908dc852",
+      "Id": "ccd4f762b8494fb6b77dd6d33d85011a"
+    },
+    {
+      "Start": "96c9cc0f22fe43899e1c5dc7fa196994",
+      "End": "d90498921f83419e9b84d0eb2b424db4",
+      "Id": "f0517ccd63b94c68a6c33e07bc6a4346"
+    },
+    {
+      "Start": "1306126fb47f4ec481270bab288f267f",
+      "End": "0c0c735f03244f51bb2ee38c0027b9f0",
+      "Id": "b5fce2babd6e46ee8b289c4c5a0fe9aa"
+    },
+    {
+      "Start": "a39cdba4c68e42b1b1f0572219fcabe6",
+      "End": "8a648dcf41394c8d94096a04e8135104",
+      "Id": "05f2840620ca42afba3b975af95a5e12"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "8f335c73856340f8ab161a8c0eda22f1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 340.0,
+        "Y": 224.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "1f79f9e394fc4650ad0f49067625f89a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 740.0,
+        "Y": 224.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "f683b059dc594ba5af756cb25dff6917",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 135.2,
+        "Y": 286.10626349892
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "38e5b017705d455eb63654c288c14fcd",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 375.2,
+        "Y": 348.21252699784
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String.PadRight",
+        "Id": "d56105373d414184afec1cba1d09de59",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 515.579276065754,
+        "Y": 224.0
+      }
+    ],
+    "Annotations": [],
+    "X": -37.9808792393352,
+    "Y": -124.527715137203,
+    "Zoom": 1.130842140625
+  }
+}

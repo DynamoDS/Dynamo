@@ -1,0 +1,293 @@
+{
+  "Uuid": "1b49faf2-ec06-4f18-8796-3df2fb5ea278",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Symbol.StringifyDecimal",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "dc6b7aeb97a94126b686e0d8dab2cc7d",
+      "Inputs": [
+        {
+          "Id": "9ddbcc394f374af8b7bbdf2bdd0f7c7f",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e386804ca20d477cbbb4ec566b0fdfd0",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "UnitsUI.Symbols, UnitsUI",
+      "SelectedIndex": 88,
+      "SelectedString": "Feet: '",
+      "NodeType": "ExtensionNode",
+      "Id": "8e373670349443f989d912155f11bac5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0b47d1d08f484727b7e58298bb5058ba",
+          "Name": "Symbol",
+          "Description": "The selected Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Symbol type"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 1.5,
+      "Id": "b9ff89832f574721ac7ce0b82cb3c62d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2064a0bc25054974a47bea93f0f0ba06",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 1.0,
+      "Id": "f6000d7d5d044df5a8fcbf44a9280ce0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a1f4988d31954063a5e6aa8f0da6efb7",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Symbol.StringifyDecimal@double,int,DynamoUnits.Symbol,bool",
+      "Id": "c6afeaf73aac426894cb5dcb5f5447a0",
+      "Inputs": [
+        {
+          "Id": "73fcf10a7a384d0e8396a3a56ada6a9f",
+          "Name": "value",
+          "Description": "Number value for the unit\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d52c93ad2bba467389af5bbb3d1b2b58",
+          "Name": "precision",
+          "Description": "Decimal precision for the expression\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5f9aa83dfbef4e999313fdb6c39f9de9",
+          "Name": "symbol",
+          "Description": "Symbol type\n\nSymbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ec6741d53c724b3a9467dd0fde52907d",
+          "Name": "removeTrailingZeros",
+          "Description": "Remove trailing zeros in the output\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6fadb1fed7764a058cf105b2a2c3213f",
+          "Name": "string",
+          "Description": "Formatted unit expression",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the formatted unit expression for a given value and symbol in a decimal format.\n\nSymbol.StringifyDecimal (value: double, precision: int, symbol: Symbol, removeTrailingZeros: bool = false): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "0b47d1d08f484727b7e58298bb5058ba",
+      "End": "5f9aa83dfbef4e999313fdb6c39f9de9",
+      "Id": "84d62fb3ee814ed29757143dcd4ceb05",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2064a0bc25054974a47bea93f0f0ba06",
+      "End": "73fcf10a7a384d0e8396a3a56ada6a9f",
+      "Id": "ebeb060e8f1449459e63af77334cc4e1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a1f4988d31954063a5e6aa8f0da6efb7",
+      "End": "d52c93ad2bba467389af5bbb3d1b2b58",
+      "Id": "a479ed2e53214bbda41937509eb4b387",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6fadb1fed7764a058cf105b2a2c3213f",
+      "End": "9ddbcc394f374af8b7bbdf2bdd0f7c7f",
+      "Id": "4c9af9a20cb34a928fa13591d8986faa",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "dc6b7aeb97a94126b686e0d8dab2cc7d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 848.23909287257027,
+        "Y": 345.3602591792656
+      },
+      {
+        "Name": "Symbols",
+        "ShowGeometry": true,
+        "Id": "8e373670349443f989d912155f11bac5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 149.03909287257022,
+        "Y": 526.36025917926565
+      },
+      {
+        "Name": "Number",
+        "ShowGeometry": true,
+        "Id": "b9ff89832f574721ac7ce0b82cb3c62d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 149.03909287257022,
+        "Y": 232.3602591792656
+      },
+      {
+        "Name": "Number",
+        "ShowGeometry": true,
+        "Id": "f6000d7d5d044df5a8fcbf44a9280ce0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 149.03909287257022,
+        "Y": 379.3602591792656
+      },
+      {
+        "Name": "Symbol.StringifyDecimal",
+        "ShowGeometry": true,
+        "Id": "c6afeaf73aac426894cb5dcb5f5447a0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 471.4390928725702,
+        "Y": 345.3602591792656
+      }
+    ],
+    "Annotations": [],
+    "X": 33.867471007928771,
+    "Y": -101.28656971218913,
+    "Zoom": 1.130842140625
+  }
+}

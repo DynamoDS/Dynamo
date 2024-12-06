@@ -1,0 +1,365 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Perimeter",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "811d35e82a204dcfa1aa8382db1c54b4",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "true",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "66792e81c65a4747a2aa295d87c94d99",
+      "Inputs": [
+        {
+          "Id": "3021a6272ad549a79450673322de8234",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9f3d7bf4a281458da362fe668daa341b",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "pt1 = Point.ByCoordinates(0,0);\npt2 = Point.ByCoordinates(8,0);\npt3 = Point.ByCoordinates(12,12);\npt4 = Point.ByCoordinates(6,6,4);\npt5 = Point.ByCoordinates(0,16,-2);\npts = [pt1,pt2,pt3,pt4, pt5];",
+      "Id": "819027a9253a433989114d3c95a99767",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "033bfbae2bc74830bbc8d87f50fe75a0",
+          "Name": "",
+          "Description": "pt1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "96366802f29648cbb51bc2ad2dd37fb2",
+          "Name": "",
+          "Description": "pt2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "75fcdfc4abcc4163aab72ed71b130910",
+          "Name": "",
+          "Description": "pt3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b097e84533844578bfd24889b2bcaa06",
+          "Name": "",
+          "Description": "pt4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e40783588df54985a2bd2c66b1bc94bd",
+          "Name": "",
+          "Description": "pt5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3093398d087f49bca81726b8dfdfd80d",
+          "Name": "",
+          "Description": "pts",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[],int,bool",
+      "Id": "8d35a8d7dd5449db831554c699c74eab",
+      "Inputs": [
+        {
+          "Id": "92f2f4eb8a2f4dadb193635e956e7f57",
+          "Name": "points",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3a825f8655364e72817019ba792fa074",
+          "Name": "degree",
+          "Description": "int\nDefault value : 3",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5919419cc1bf451e824c81e76471bab0",
+          "Name": "closeCurve",
+          "Description": "bool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e00cbca7d58a499aa18153f803cceef6",
+          "Name": "NurbsCurve",
+          "Description": "NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use a PolyCurve instead. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.\n\nNurbsCurve.ByControlPoints (points: Point[], degree: int = 3, closeCurve: bool = false): NurbsCurve"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "811d35e82a204dcfa1aa8382db1c54b4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "80d6bee7713b44f9a46ee0f62f534296",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByPatch@Autodesk.DesignScript.Geometry.Curve",
+      "Id": "634b54dd88014b4e872a11924c3187e0",
+      "Inputs": [
+        {
+          "Id": "10f56735aa37489bbf05218422aa9f6b",
+          "Name": "closedCurve",
+          "Description": "Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e75a5200975d45259dba6d4f572e1a1f",
+          "Name": "Surface",
+          "Description": "Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Surface by filling in the interior of a closed boundary defined by input Curves.\n\nSurface.ByPatch (closedCurve: Curve): Surface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Perimeter",
+      "Id": "3500f800319d4974bab1e876e92b870f",
+      "Inputs": [
+        {
+          "Id": "22202e5917224c3bb1ba2afed34e6aea",
+          "Name": "surface",
+          "Description": "Autodesk.DesignScript.Geometry.Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "66aa65c348c445cd93612b16c6244435",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the sum of all edges of the Surface.\n\nSurface.Perimeter: double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "3093398d087f49bca81726b8dfdfd80d",
+      "End": "92f2f4eb8a2f4dadb193635e956e7f57",
+      "Id": "a540078f9c174b99b4e0cc7d240d8e47"
+    },
+    {
+      "Start": "e00cbca7d58a499aa18153f803cceef6",
+      "End": "10f56735aa37489bbf05218422aa9f6b",
+      "Id": "fbb1f8decbae486d810b5ff3a19382d4"
+    },
+    {
+      "Start": "80d6bee7713b44f9a46ee0f62f534296",
+      "End": "5919419cc1bf451e824c81e76471bab0",
+      "Id": "3199ebb8e4064207863eb8b22ddadac8"
+    },
+    {
+      "Start": "e75a5200975d45259dba6d4f572e1a1f",
+      "End": "22202e5917224c3bb1ba2afed34e6aea",
+      "Id": "62919730fa664b7783a300ad1efb0152"
+    },
+    {
+      "Start": "66aa65c348c445cd93612b16c6244435",
+      "End": "3021a6272ad549a79450673322de8234",
+      "Id": "41b2af4750334207be16a84505888953"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 16.238405227661133,
+      "EyeY": 6.7324709892272949,
+      "EyeZ": -9.9837007522583,
+      "LookX": -11.455930709838867,
+      "LookY": -6.4399514198303223,
+      "LookZ": 6.3529057502746582,
+      "UpX": -0.2086045891046524,
+      "UpY": 0.9711342453956604,
+      "UpZ": 0.11568202823400497
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "66792e81c65a4747a2aa295d87c94d99",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1990.2289520107752,
+        "Y": 3013.3222810033467
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "819027a9253a433989114d3c95a99767",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 568.22895201077517,
+        "Y": 2901.668947670013
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "NurbsCurve.ByControlPoints",
+        "Id": "8d35a8d7dd5449db831554c699c74eab",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 987.22895201077517,
+        "Y": 3013.3222810033467
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "811d35e82a204dcfa1aa8382db1c54b4",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 568.22895201077517,
+        "Y": 3093.3222810033467
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Surface.ByPatch",
+        "Id": "634b54dd88014b4e872a11924c3187e0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1345.2289520107752,
+        "Y": 3013.3222810033467
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Surface.Perimeter",
+        "Id": "3500f800319d4974bab1e876e92b870f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1684.2289520107752,
+        "Y": 3013.3222810033467
+      }
+    ],
+    "Annotations": [],
+    "X": -1151.76368945304,
+    "Y": -4172.21093589611,
+    "Zoom": 1.43869752881472
+  }
+}

@@ -1,0 +1,629 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.ColorRange.GetColorAtParameter_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "c1 = Color.ByARGB(255,0,255,0);\nc2 = Color.ByARGB(255,255,0,0);\nc3 = Color.ByARGB(255,0,0,255);\n[c1,c2,c3];",
+      "Id": "82bcdd20314848c191346d71b2b33a1f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "88ffd6026bd14e1ba50e723d7a505c5f",
+          "Name": "",
+          "Description": "c1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "010d8d1061fa4ced9b83abd794a02bc8",
+          "Name": "",
+          "Description": "c2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bcd72bbd6f2546cbb5eeb5b5849b70e7",
+          "Name": "",
+          "Description": "c3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8091da491385416e82ffbf5e3a026c8f",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "uv1 = UV.ByCoordinates(0,0);\nuv2 = UV.ByCoordinates(0.5,0.7);\nuv3 = UV.ByCoordinates(1,0);\n[uv1,uv2,uv3];",
+      "Id": "83e5fd3f49ac447db235b3817b7cb32d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0ad619c2f3da4723bce9fcec4a6c3290",
+          "Name": "",
+          "Description": "uv1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bcafbb04037945c9b769c0a97187cc43",
+          "Name": "",
+          "Description": "uv2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5b9e221a7004447bbf403d45c5febc8a",
+          "Name": "",
+          "Description": "uv3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "80d9569dbfcf4a3d972ec2ea56a1716e",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.ColorRange.GetColorAtParameter@Autodesk.DesignScript.Geometry.UV",
+      "Id": "d130839f56b141e4a67745bd67bb4b6a",
+      "Inputs": [
+        {
+          "Id": "ba8951a20f8f4c3084c1e815aee44f60",
+          "Name": "colorRange",
+          "Description": "DSCore.ColorRange",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "751ee5c270b24ef1b84370142f0310ed",
+          "Name": "parameter",
+          "Description": "A UV between (0.0,0.0) and (1.0,1.0).\n\nUV",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fb4ea61428a746d682f63931cce924ae",
+          "Name": "Color",
+          "Description": "A Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the color in this color range at the specified parameter.\n\nColorRange.GetColorAtParameter (parameter: UV): Color"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..1..0.1;",
+      "Id": "78c3fc9f53b84f6382b4f13b2307d16a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f0769f4d0f7c4e478179f4c3db66c47c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.UV.ByCoordinates@double,double",
+      "Id": "258bace2b40a46a0b7d283cd8c14fdb8",
+      "Inputs": [
+        {
+          "Id": "779c20bf50ec4000bf6d377809d765ba",
+          "Name": "u",
+          "Description": "U value\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c6b7b673f8344cb683d2c382830dff47",
+          "Name": "v",
+          "Description": "V value\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "17854d2982724e55b403fef41e2251e7",
+          "Name": "UV",
+          "Description": "UV created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a UV from two doubles.\n\nUV.ByCoordinates (u: double = 0, v: double = 0): UV"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "Id": "5131beebab884e9eb1820d9af34dea98",
+      "Inputs": [
+        {
+          "Id": "21d9ac9ea53d43e29ebf31c4fa180569",
+          "Name": "geometry",
+          "Description": "The geometry to which you would like to apply color.\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "747e93f722dc4aecaf649443f0a76195",
+          "Name": "color",
+          "Description": "The color.\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cc01d654f323448aaf1f701635a4f155",
+          "Name": "GeometryColor",
+          "Description": "A Display object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Display geometry using a color.\n\nGeometryColor.ByGeometryColor (geometry: Geometry, color: Color): GeometryColor"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..20..2;",
+      "Id": "42fc92226f1742a8bb76645046af5807",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8e9acc2fa73e4e82967d0427fcd935af",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Id": "82bbff25875d450ebf496cac416d2434",
+      "Inputs": [
+        {
+          "Id": "796032532f524c1f9e85279f3ee3b09a",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "78f3864162194389b8098ece41db69d6",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3a008ebbd7da40fc8b6e4f0749ee8c37",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@Autodesk.DesignScript.Geometry.Point,double,double,double",
+      "Id": "47f8c21e333d4dd19ce5dcbe04dd9a5f",
+      "Inputs": [
+        {
+          "Id": "3ff019a1e672422ab1db40ec78f0d103",
+          "Name": "origin",
+          "Description": "Origin point\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6cf68d8ebd774a00a8d972a7f2dab7af",
+          "Name": "width",
+          "Description": "Width of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e122e3c340c1412d9267fa454b51a366",
+          "Name": "length",
+          "Description": "Length of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e2f8fee3a16a432c8135f092014d9129",
+          "Name": "height",
+          "Description": "Height of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "826fba9e229044f3b81a98dba91b6fc8",
+          "Name": "Cuboid",
+          "Description": "Cuboid created by lengths",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at input Point, with specified width, length, and height.\n\nCuboid.ByLengths (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), width: double = 1, length: double = 1, height: double = 1): Cuboid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.ColorRange.ByColorsAndParameters@DSCore.Color[],Autodesk.DesignScript.Geometry.UV[]",
+      "Id": "edb73e0aca104484ba3c74ff36b3d153",
+      "Inputs": [
+        {
+          "Id": "3d456738eddd4d3e983d6684ad4dbecf",
+          "Name": "colors",
+          "Description": "A list of colors.\n\nColor[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1837fa31542a44e7be260444efdf9990",
+          "Name": "parameters",
+          "Description": "A list of parameters between (0.0,0.0) and (1.0,1.0).\n\nUV[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3b76301e5b814b6599a836b91abec15e",
+          "Name": "ColorRange",
+          "Description": "A ColorRange object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a ColorRange by supplying lists of colors and UVs.\n\nColorRange.ByColorsAndParameters (colors: Color[], parameters: UV[]): ColorRange"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8091da491385416e82ffbf5e3a026c8f",
+      "End": "3d456738eddd4d3e983d6684ad4dbecf",
+      "Id": "6551cc1c3d0a4a9d921b5f8c3af4b724",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "80d9569dbfcf4a3d972ec2ea56a1716e",
+      "End": "1837fa31542a44e7be260444efdf9990",
+      "Id": "079dc2bcac4a4319be6ba6ceba077fe6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fb4ea61428a746d682f63931cce924ae",
+      "End": "747e93f722dc4aecaf649443f0a76195",
+      "Id": "b201ae72fefe4d71a7d890738035b060",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f0769f4d0f7c4e478179f4c3db66c47c",
+      "End": "779c20bf50ec4000bf6d377809d765ba",
+      "Id": "f9709b63557341bb81bb3cc19d86bd13",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f0769f4d0f7c4e478179f4c3db66c47c",
+      "End": "c6b7b673f8344cb683d2c382830dff47",
+      "Id": "8c369d9f49d4493a85fef8e9cbe14ef0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "17854d2982724e55b403fef41e2251e7",
+      "End": "751ee5c270b24ef1b84370142f0310ed",
+      "Id": "437287e5c40447bb8203a4003fb831cf",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8e9acc2fa73e4e82967d0427fcd935af",
+      "End": "796032532f524c1f9e85279f3ee3b09a",
+      "Id": "d2a74ac8ffee42afae13fd21f3ae91ee",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8e9acc2fa73e4e82967d0427fcd935af",
+      "End": "78f3864162194389b8098ece41db69d6",
+      "Id": "079ea2715a5b4b37b96f0d8286ea8677",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3a008ebbd7da40fc8b6e4f0749ee8c37",
+      "End": "3ff019a1e672422ab1db40ec78f0d103",
+      "Id": "67d073eb0079417584c837027516de89",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "826fba9e229044f3b81a98dba91b6fc8",
+      "End": "21d9ac9ea53d43e29ebf31c4fa180569",
+      "Id": "ef56ea23bd3e4ae4b6e986338c555cb1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3b76301e5b814b6599a836b91abec15e",
+      "End": "ba8951a20f8f4c3084c1e815aee44f60",
+      "Id": "952579a092dc49a8b563e38e05608f34",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "82bcdd20314848c191346d71b2b33a1f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1338.2737707761839,
+        "Y": 2382.465
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "83e5fd3f49ac447db235b3817b7cb32d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1338.2737707761839,
+        "Y": 2573.465
+      },
+      {
+        "Name": "ColorRange.GetColorAtParameter",
+        "ShowGeometry": true,
+        "Id": "d130839f56b141e4a67745bd67bb4b6a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2221.4737707761842,
+        "Y": 2567.6725
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "78c3fc9f53b84f6382b4f13b2307d16a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1338.2737707761839,
+        "Y": 2763.5
+      },
+      {
+        "Name": "UV.ByCoordinates",
+        "ShowGeometry": true,
+        "Id": "258bace2b40a46a0b7d283cd8c14fdb8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1800.673770776184,
+        "Y": 2674.6725
+      },
+      {
+        "Name": "GeometryColor.ByGeometryColor",
+        "ShowGeometry": true,
+        "Id": "5131beebab884e9eb1820d9af34dea98",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2639.9586577840969,
+        "Y": 2425.5149435039566
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "42fc92226f1742a8bb76645046af5807",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1338.2737707761839,
+        "Y": 2235.5
+      },
+      {
+        "Name": "Point.ByCoordinates",
+        "ShowGeometry": true,
+        "Id": "82bbff25875d450ebf496cac416d2434",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1806.9820107043681,
+        "Y": 2252.4873540754329
+      },
+      {
+        "Name": "Cuboid.ByLengths",
+        "ShowGeometry": false,
+        "Id": "47f8c21e333d4dd19ce5dcbe04dd9a5f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2221.4737707761842,
+        "Y": 2319.6725
+      },
+      {
+        "Name": "ColorRange.ByColorsAndParameters",
+        "ShowGeometry": true,
+        "Id": "edb73e0aca104484ba3c74ff36b3d153",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1791.6774501031373,
+        "Y": 2481.6633753906381
+      }
+    ],
+    "Annotations": [],
+    "X": -1098.78518477713,
+    "Y": -2046.7079036357823,
+    "Zoom": 0.99264401799833635
+  }
+}

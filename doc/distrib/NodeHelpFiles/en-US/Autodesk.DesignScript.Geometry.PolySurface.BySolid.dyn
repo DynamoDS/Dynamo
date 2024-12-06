@@ -1,0 +1,468 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "BySolid",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Display": {
+        "Key": "Display.Display",
+        "Value": "Display.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Polygon.RegularPolygon@Autodesk.DesignScript.Geometry.Circle,int",
+      "Id": "ce34befec1634356a578722ac1032e61",
+      "Inputs": [
+        {
+          "Id": "1d22a4764f614c03b41cbdfed27dc765",
+          "Name": "circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bbc76dbd3aae47fe8cc4767998c41a30",
+          "Name": "numberSides",
+          "Description": "int\nDefault value : 5",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2183b69467d046cd8d9e1d2458b0ee0c",
+          "Name": "Polygon",
+          "Description": "Polygon",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Construct an inscribed Polygon Curve within a circle.\n\nPolygon.RegularPolygon (circle: Circle, numberSides: int = 5): Polygon"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "e26fb26eca7d464da1d1c4d846e1f65a",
+      "Inputs": [
+        {
+          "Id": "5fffedc321b84fa7b86cddd645f26482",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "868491a8752a4b1a970d01782dc936f1",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d89395974c614daaa254c16bf2321a6c",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;",
+      "Id": "c35bd3f152ba409a81ad915d76de1bd9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b8ed0acccc404ecbafa0a775475fa8a2",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3;",
+      "Id": "a3edee41e81f478daad92bcb100dd5cc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6ddc2517858a4c5c945af08c676170d5",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid@double",
+      "Id": "d487b4f82cdf44cb9176783c214d8737",
+      "Inputs": [
+        {
+          "Id": "effa3d70d41246228424627e66292ffc",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f86a074849e04051b84e25a47cd48d2a",
+          "Name": "distance",
+          "Description": "Distance to extrude\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7dd953b84a30418e97f00e008e113abd",
+          "Name": "Solid",
+          "Description": "The extruded Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Extrudes a Curve in the Normal direction by the specified distance. Curve must be closed.\n\nCurve.ExtrudeAsSolid (distance: double = 1): Solid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolySurface.BySolid@Autodesk.DesignScript.Geometry.Solid",
+      "Id": "752f7f35f6254db5b2a05bfab92c696e",
+      "Inputs": [
+        {
+          "Id": "8a541cf6cd3943c8a68b8e95f88e9a53",
+          "Name": "solid",
+          "Description": "Solid which surfaces to use\n\nSolid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "436645e2606e4d188e9252a1bc162ff8",
+          "Name": "PolySurface",
+          "Description": "PolySurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Make Polysurface by surfaces of Solid.\n\nPolySurface.BySolid (solid: Solid): PolySurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "6;",
+      "Id": "d6628a3a32dc4e4cb20af6e85d637898",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0210721887a940a69042690ce9c29a62",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Modifiers.GeometryColor.BySurfaceColors@Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][]",
+      "Id": "264e24edd9584842bf1834767049672b",
+      "Inputs": [
+        {
+          "Id": "aabb0739216649ffa57f85a22b9687d5",
+          "Name": "surface",
+          "Description": "Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5306a22695c041dbbf1f644edfca3510",
+          "Name": "colors",
+          "Description": "Color[][]\nDefault value : [[DSCore.Color.ByARGB(255, 255, 0, 0), DSCore.Color.ByARGB(255, 255, 255, 0)], [DSCore.Color.ByARGB(255, 0, 255, 255), DSCore.Color.ByARGB(255, 0, 0, 255)]]",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9fe5fd954ead4ce4b1f4028261ce6ae8",
+          "Name": "GeometryColor",
+          "Description": "GeometryColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "GeometryColor.BySurfaceColors (surface: Surface, colors: Color[][] = [[DSCore.Color.ByARGB(255, 255, 0, 0), DSCore.Color.ByARGB(255, 255, 255, 0)], [DSCore.Color.ByARGB(255, 0, 255, 255), DSCore.Color.ByARGB(255, 0, 0, 255)]]): GeometryColor"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "c1 = Color.ByARGB(200,227,136,200);\nc2 = Color.ByARGB(200,100,136,200);\n[c1, c2];",
+      "Id": "52fb24577bf048cca5092e1a77a677d3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "214d7958c1ac440a8069409ccc8a912a",
+          "Name": "",
+          "Description": "c1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c8b05f8698a845cab0ce14941d0ea37f",
+          "Name": "",
+          "Description": "c2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3c5a82daab164b73ba0ac57379b3a7a8",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "2183b69467d046cd8d9e1d2458b0ee0c",
+      "End": "effa3d70d41246228424627e66292ffc",
+      "Id": "3baef28b7039494993c74dcfc081196f"
+    },
+    {
+      "Start": "d89395974c614daaa254c16bf2321a6c",
+      "End": "1d22a4764f614c03b41cbdfed27dc765",
+      "Id": "adbd4f0d56104f7db8d54906a91f3cf4"
+    },
+    {
+      "Start": "b8ed0acccc404ecbafa0a775475fa8a2",
+      "End": "868491a8752a4b1a970d01782dc936f1",
+      "Id": "c9190b7ead4b49c2929503b7121cf957"
+    },
+    {
+      "Start": "6ddc2517858a4c5c945af08c676170d5",
+      "End": "f86a074849e04051b84e25a47cd48d2a",
+      "Id": "75bb3aaf497f497d8cb98e0080dd2144"
+    },
+    {
+      "Start": "7dd953b84a30418e97f00e008e113abd",
+      "End": "8a541cf6cd3943c8a68b8e95f88e9a53",
+      "Id": "7f581ed16e6d408fb62aa3e711e90666"
+    },
+    {
+      "Start": "436645e2606e4d188e9252a1bc162ff8",
+      "End": "aabb0739216649ffa57f85a22b9687d5",
+      "Id": "14f7c7f695214dc88bbaf95c12a9e3a7"
+    },
+    {
+      "Start": "0210721887a940a69042690ce9c29a62",
+      "End": "bbc76dbd3aae47fe8cc4767998c41a30",
+      "Id": "54650329821c4450987b2ff02b04bd69"
+    },
+    {
+      "Start": "3c5a82daab164b73ba0ac57379b3a7a8",
+      "End": "5306a22695c041dbbf1f644edfca3510",
+      "Id": "fc34bb443e2f44279c88b94d843d47de"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -6.1645288467407227,
+      "EyeY": 10.624026298522949,
+      "EyeZ": 12.976572036743164,
+      "LookX": 12.920112609863281,
+      "LookY": -10.896117210388184,
+      "LookZ": -12.74569034576416,
+      "UpX": 0.227065771818161,
+      "UpY": 0.94776839017868042,
+      "UpZ": -0.22400037944316864
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Polygon.RegularPolygon",
+        "Id": "ce34befec1634356a578722ac1032e61",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1419.31159795229,
+        "Y": 3511.7932297127704
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Circle.ByCenterPointRadius",
+        "Id": "e26fb26eca7d464da1d1c4d846e1f65a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1096.31159795229,
+        "Y": 3459.7932297127704
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c35bd3f152ba409a81ad915d76de1bd9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 917.31159795229,
+        "Y": 3490.0065630461036
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a3edee41e81f478daad92bcb100dd5cc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1419.31159795229,
+        "Y": 3646.0065630461036
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Curve.ExtrudeAsSolid",
+        "Id": "d487b4f82cdf44cb9176783c214d8737",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1766.31159795229,
+        "Y": 3563.7932297127704
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "PolySurface.BySolid",
+        "Id": "752f7f35f6254db5b2a05bfab92c696e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2066.31159795229,
+        "Y": 3563.7932297127704
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "d6628a3a32dc4e4cb20af6e85d637898",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1096.31159795229,
+        "Y": 3594.0065630461036
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "GeometryColor.BySurfaceColors",
+        "Id": "264e24edd9584842bf1834767049672b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2485.31159795229,
+        "Y": 3497.7932297127704
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "52fb24577bf048cca5092e1a77a677d3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2066.31159795229,
+        "Y": 3426.859896379437
+      }
+    ],
+    "Annotations": [],
+    "X": -589.00921978953579,
+    "Y": -2400.522114918545,
+    "Zoom": 0.76368152490307051
+  }
+}

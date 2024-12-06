@@ -1,0 +1,192 @@
+{
+  "Uuid": "a19b2b4a-e4e6-43ab-9b41-f8d218bff28f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Symbol.Unit",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "UnitsUI.Symbols, UnitsUI",
+      "SelectedIndex": 88,
+      "SelectedString": "Feet: '",
+      "NodeType": "ExtensionNode",
+      "Id": "07695bb0568a491983ffabf6e373567b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ed2a6004f0ec4d62909a8f74781be2bf",
+          "Name": "Symbol",
+          "Description": "The selected Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Symbol type"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "0979895d634e43cd941e7ce92e4cfee2",
+      "Inputs": [
+        {
+          "Id": "ebf031cf24c24adc935a1f5aab9897d7",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ce7f46603b6a4dadb7b856d7ac866693",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Symbol.Unit",
+      "Id": "2c1d8ff9dca94a1daf82862159d3be33",
+      "Inputs": [
+        {
+          "Id": "85090beddd724f4791c0190e3bf37876",
+          "Name": "symbol",
+          "Description": "DynamoUnits.Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c324fb28201d4c84b880afe4768face4",
+          "Name": "Unit",
+          "Description": "Unit object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Gets the corresponding Unit of a Symbol\n\nSymbol.Unit: Unit"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ed2a6004f0ec4d62909a8f74781be2bf",
+      "End": "85090beddd724f4791c0190e3bf37876",
+      "Id": "227e5944f1234f5e81e70110b87f66ed",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c324fb28201d4c84b880afe4768face4",
+      "End": "ebf031cf24c24adc935a1f5aab9897d7",
+      "Id": "d412d45149cc42819a0db0014d05ce04",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Symbols",
+        "ShowGeometry": true,
+        "Id": "07695bb0568a491983ffabf6e373567b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 376.00000000000023,
+        "Y": 432.9704501588003
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "0979895d634e43cd941e7ce92e4cfee2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 990.4000000000002,
+        "Y": 432.97045015880025
+      },
+      {
+        "Name": "Symbol.Unit",
+        "ShowGeometry": true,
+        "Id": "2c1d8ff9dca94a1daf82862159d3be33",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 698.4000000000002,
+        "Y": 432.9704501588003
+      }
+    ],
+    "Annotations": [],
+    "X": 31.091747679186255,
+    "Y": -249.08062541317042,
+    "Zoom": 1.0542982150113263
+  }
+}

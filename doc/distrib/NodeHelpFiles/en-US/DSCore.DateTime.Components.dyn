@@ -1,0 +1,350 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Components",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.Components@var",
+      "Id": "083a9656fe0343db9fc076a4a0d437b3",
+      "Inputs": [
+        {
+          "Id": "45d681d8ad424baaa68887f1bba4aa85",
+          "Name": "dateTime",
+          "Description": "A DateTime.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1e95304f998246b9bbf449dc167bd66f",
+          "Name": "year",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "867ae54ac1a148f28ede1ca699a8083f",
+          "Name": "month",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0081f84fbc50485ea544e2bebdf2a143",
+          "Name": "day",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5d4cf1120b5e4ce99c292a3ce68c05bc",
+          "Name": "hour",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f36838e963e440a096c2ff921bf72485",
+          "Name": "minute",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "161308e61a884ef7aa208575cf8739af",
+          "Name": "second",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "db6eb8acc21f4027bda6ba08d0d90f3d",
+          "Name": "millisecond",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Extracts the individual components of a DateTime.\n\nDateTime.Components (dateTime: var): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.Now",
+      "Id": "f8849a7ba40d46a296f70c420fba5640",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "10dd273995a049f39aa64cd82769a7b1",
+          "Name": "dateTime",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The current system date and time.\n\nDateTime.Now: var"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "9cef58d418a5485da469cdcfea2e0390",
+      "Inputs": [
+        {
+          "Id": "67e5bfb2529645e8bf94799884f41350",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1c2193cce262446ebf9c0abf322015a2",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "859345585aed44fd9e69c5b7b557f93d",
+      "Inputs": [
+        {
+          "Id": "2245512ed91048a5aa14c8c5071b84f9",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b96a7290b44d4e678a1a89adabc52b81",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "5a25aa8948d24688b3fbe31f5d6d1a97",
+      "Inputs": [
+        {
+          "Id": "915268504fc24e14934b6e114bfbabd8",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "685a7aca0ae0405699c578c232c94746",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "b60c862a56d34be19c123b0660b3dd8f",
+      "Inputs": [
+        {
+          "Id": "107d63e9b41745c7a92cdbc99546f6d6",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9293ad043f654891a5daae9f699daa98",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "1e95304f998246b9bbf449dc167bd66f",
+      "End": "67e5bfb2529645e8bf94799884f41350",
+      "Id": "b38ca3a85bbd4901bbae1cf138a8feee"
+    },
+    {
+      "Start": "867ae54ac1a148f28ede1ca699a8083f",
+      "End": "2245512ed91048a5aa14c8c5071b84f9",
+      "Id": "3b76918b80154919b07afa7a453716c5"
+    },
+    {
+      "Start": "0081f84fbc50485ea544e2bebdf2a143",
+      "End": "915268504fc24e14934b6e114bfbabd8",
+      "Id": "44214e3f4cc64245b27f57b87b3dac8a"
+    },
+    {
+      "Start": "5d4cf1120b5e4ce99c292a3ce68c05bc",
+      "End": "107d63e9b41745c7a92cdbc99546f6d6",
+      "Id": "c4ff5317c24b4e0095d6d3d93a93695f"
+    },
+    {
+      "Start": "10dd273995a049f39aa64cd82769a7b1",
+      "End": "45d681d8ad424baaa68887f1bba4aa85",
+      "Id": "28eb791c2e04485284efd399056af5c2"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.Components",
+        "Id": "083a9656fe0343db9fc076a4a0d437b3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.93842451614298739,
+        "Y": 2731.523386817425
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.Now",
+        "Id": "f8849a7ba40d46a296f70c420fba5640",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -208.061575483857,
+        "Y": 2731.523386817425
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "9cef58d418a5485da469cdcfea2e0390",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 345.93842451614296,
+        "Y": 2584.523386817425
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "859345585aed44fd9e69c5b7b557f93d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 345.93842451614296,
+        "Y": 2708.523386817425
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "5a25aa8948d24688b3fbe31f5d6d1a97",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 345.93842451614296,
+        "Y": 2832.523386817425
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "b60c862a56d34be19c123b0660b3dd8f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 345.93842451614296,
+        "Y": 2956.523386817425
+      }
+    ],
+    "Annotations": [],
+    "X": 676.450561331817,
+    "Y": -3449.84936606465,
+    "Zoom": 1.34249425219329
+  }
+}

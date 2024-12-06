@@ -1,0 +1,192 @@
+{
+  "Uuid": "bfb65933-209b-4c95-8497-822d872575ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Symbol.Space",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Symbol.Space",
+      "Id": "750ba17f874640f1bd8722d138f97305",
+      "Inputs": [
+        {
+          "Id": "82fee04ef0df4aeea1c9be550877098b",
+          "Name": "symbol",
+          "Description": "DynamoUnits.Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "31a4666e96344bf5877793c4ed66a2f8",
+          "Name": "bool",
+          "Description": "Space between unit and symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Gets a boolean indicating if there is typically a space between the unit value and symbol.\n\nSymbol.Space: bool"
+    },
+    {
+      "ConcreteType": "UnitsUI.Symbols, UnitsUI",
+      "SelectedIndex": 36,
+      "SelectedString": "Square centimeters: cm^2",
+      "NodeType": "ExtensionNode",
+      "Id": "adebed93146449af895af6a8bf1f784a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1f868b8776454ff48965f412a9def52e",
+          "Name": "Symbol",
+          "Description": "The selected Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Symbol type"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "9b10b17298c94757be835dabaaebe90b",
+      "Inputs": [
+        {
+          "Id": "15a3669b9f4b4ae497c2ee7d82ffc844",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "23833b573fdc489a8045efb8095c6397",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "31a4666e96344bf5877793c4ed66a2f8",
+      "End": "15a3669b9f4b4ae497c2ee7d82ffc844",
+      "Id": "877ebbf9a6e94830b8955b4cf2c79839",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1f868b8776454ff48965f412a9def52e",
+      "End": "82fee04ef0df4aeea1c9be550877098b",
+      "Id": "625880c078cf4fbd8a6044ac4867363f",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Symbol.Space",
+        "ShowGeometry": true,
+        "Id": "750ba17f874640f1bd8722d138f97305",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 543.19999999999993,
+        "Y": 338.79999999999995
+      },
+      {
+        "Name": "Symbols",
+        "ShowGeometry": true,
+        "Id": "adebed93146449af895af6a8bf1f784a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 145.59999999999991,
+        "Y": 338.79999999999995
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "9b10b17298c94757be835dabaaebe90b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 836.0,
+        "Y": 338.79999999999995
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

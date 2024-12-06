@@ -1,0 +1,259 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByCoordinates",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "d0114fd7a0444bc8a63521756381d63a",
+      "Name": "Grid Bounds XY",
+      "Type": "number",
+      "Value": "61",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "085084fb4ba74cb68c51086a0a874ef9",
+      "Name": "Grid Spacing",
+      "Type": "number",
+      "Value": "2",
+      "MaximumValue": 5.0,
+      "MinimumValue": 1.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 1.0,
+      "InputValue": 61.0,
+      "Id": "d0114fd7a0444bc8a63521756381d63a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d5a57768f0ec48e88bfe8107811b9e84",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..a..b;",
+      "Id": "6551d8873aa841b5954d57939ff85340",
+      "Inputs": [
+        {
+          "Id": "0a01fe1a063548beb09a44a507c3f80d",
+          "Name": "a",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3e214281cc3b4973b193ec0f2fd097f4",
+          "Name": "b",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "df156dcbf46243a495a5f2226845c8e3",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Id": "0fe514ad0b554814a0582de1f3dee9b1",
+      "Inputs": [
+        {
+          "Id": "a1e65e16e3df40d8bc1b86397b39fe8a",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0b96082f81c44d85a346b75eaa88147d",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3852f2eab1db4c26bd6497a959844a6c",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 5.0,
+      "MinimumValue": 1.0,
+      "StepValue": 0.1,
+      "InputValue": 2.0,
+      "Id": "085084fb4ba74cb68c51086a0a874ef9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b5940770a8744b0cb706316e48ff5621",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d5a57768f0ec48e88bfe8107811b9e84",
+      "End": "0a01fe1a063548beb09a44a507c3f80d",
+      "Id": "889df2d9a01546eaaad97da8c68f1295"
+    },
+    {
+      "Start": "df156dcbf46243a495a5f2226845c8e3",
+      "End": "0b96082f81c44d85a346b75eaa88147d",
+      "Id": "b1ea6cdf39174356af2a1bfd6c7ed511"
+    },
+    {
+      "Start": "df156dcbf46243a495a5f2226845c8e3",
+      "End": "a1e65e16e3df40d8bc1b86397b39fe8a",
+      "Id": "d156ed64768444c98868070218196092"
+    },
+    {
+      "Start": "b5940770a8744b0cb706316e48ff5621",
+      "End": "3e214281cc3b4973b193ec0f2fd097f4",
+      "Id": "6f20c2abdf1a46a3b7b2d67a8a94eeb7"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.430702209472656,
+      "EyeY": 70.434890747070312,
+      "EyeZ": 44.337627410888672,
+      "LookX": 25.688692092895508,
+      "LookY": -57.036052703857422,
+      "LookZ": -54.617557525634766,
+      "UpX": 0.21920605003833771,
+      "UpY": 0.85716724395751953,
+      "UpZ": -0.4660610556602478
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Grid Bounds XY",
+        "Id": "d0114fd7a0444bc8a63521756381d63a",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -149.677229692001,
+        "Y": -1086.5618594145
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "6551d8873aa841b5954d57939ff85340",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 232.298125395592,
+        "Y": -1086.87675635027
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "0fe514ad0b554814a0582de1f3dee9b1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 455.680947616208,
+        "Y": -1094.19147890484
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Grid Spacing",
+        "Id": "085084fb4ba74cb68c51086a0a874ef9",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -149.677229692001,
+        "Y": -1023.34208362911
+      }
+    ],
+    "Annotations": [],
+    "X": 550.084395263614,
+    "Y": 1571.57998805616,
+    "Zoom": 1.19670605415741
+  }
+}

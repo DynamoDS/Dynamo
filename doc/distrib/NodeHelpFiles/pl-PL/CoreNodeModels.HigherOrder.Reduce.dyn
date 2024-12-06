@@ -1,0 +1,273 @@
+{
+  "Uuid": "a7144dee-0c0a-413f-9e6f-983d44b38ffd",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "CoreNodeModels.HigherOrder.Reduce",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.Reduce, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "ac175d6bf132461584690acaa6ffb00a",
+      "Inputs": [
+        {
+          "Id": "4f8723fe61c744a291d4ea8dc6dd95a8",
+          "Name": "reductor",
+          "Description": "Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ed3e3d48603840fa973568d242487e9c",
+          "Name": "seed",
+          "Description": "Starting accumulated value, to be passed into the first call to the Reductor function.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "663c8a5213204a8cb17ce931923c3f46",
+          "Name": "list1",
+          "Description": "List #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fbf04f211cac4006a86f0487076d0a4e",
+          "Name": "reduced",
+          "Description": "Reduced lists",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Reduces a list into a new value by combining each element with an accumulated result"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;\n1..4;",
+      "Id": "d284bd6d273a4a2d9ed9e738e544f321",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3ecec8e5199f4d8f88e277897cfaaedd",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5c3a8a14a9314b138968df5090f147ec",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "-@var[]..[],var[]..[]",
+      "Id": "cbf624563f8f4fd1a83d921459a5ab1b",
+      "Inputs": [
+        {
+          "Id": "f5b547d3006c44c9b52691175dc0f16a",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3c2596d749694ecdaeaafcf6ea2940e1",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e89d64f5000a4037b79f56098edf838d",
+          "Name": "number",
+          "Description": "Result of the y input subtracted from the x input",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns subtraction of x minus y\n\n- (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "d18d3d367c4947cd944d273710319bc2",
+      "Inputs": [
+        {
+          "Id": "a6b18694dc114b8f8a52d1d04589df18",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d861cdfe3e9b4caeadb123a768eb37c9",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fbf04f211cac4006a86f0487076d0a4e",
+      "End": "a6b18694dc114b8f8a52d1d04589df18",
+      "Id": "a8adaeb71954436fa5f58a0301735753",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3ecec8e5199f4d8f88e277897cfaaedd",
+      "End": "ed3e3d48603840fa973568d242487e9c",
+      "Id": "8d7a9794c88a4a25be273d210bb3b874",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5c3a8a14a9314b138968df5090f147ec",
+      "End": "663c8a5213204a8cb17ce931923c3f46",
+      "Id": "fa2aa87efa1641aebd0497288fd53d3f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e89d64f5000a4037b79f56098edf838d",
+      "End": "4f8723fe61c744a291d4ea8dc6dd95a8",
+      "Id": "14b646d082d44aaf9f2092151ad8ef01",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "List.Reduce",
+        "ShowGeometry": true,
+        "Id": "ac175d6bf132461584690acaa6ffb00a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 412.10000000000008,
+        "Y": 674.0725
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "d284bd6d273a4a2d9ed9e738e544f321",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 128.10000000000008,
+        "Y": 784.7275
+      },
+      {
+        "Name": "-",
+        "ShowGeometry": true,
+        "Id": "cbf624563f8f4fd1a83d921459a5ab1b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 128.10000000000008,
+        "Y": 606.0725
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "d18d3d367c4947cd944d273710319bc2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 715.30000000000018,
+        "Y": 674.07249999999988
+      }
+    ],
+    "Annotations": [],
+    "X": 207.20000000000005,
+    "Y": -28.800000000000068,
+    "Zoom": 1.0
+  }
+}

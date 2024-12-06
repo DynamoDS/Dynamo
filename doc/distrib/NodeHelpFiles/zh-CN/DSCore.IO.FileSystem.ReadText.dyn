@@ -1,0 +1,230 @@
+{
+  "Uuid": "a19b2b4a-e4e6-43ab-9b41-f8d218bff28f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "FileSystem.ReadText",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.ReadText@var",
+      "Id": "5527ca26566b49a6847954149d73ef4d",
+      "Inputs": [
+        {
+          "Id": "6c2182cbea8b47dca49cc91f89ca2c6f",
+          "Name": "file",
+          "Description": "File object to read text from\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "363b26cf4b574f75af0eccbad6409247",
+          "Name": "string",
+          "Description": "Contents of the text file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Reads a text file and returns the contents as a string.\n\nFileSystem.ReadText (file: var): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "7b16871b84aa43ae91a12b9b15c65635",
+      "Inputs": [
+        {
+          "Id": "a9eba9c41a1a44ed8a657cc38b0a9fac",
+          "Name": "path",
+          "Description": "Path to the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f60ce8623ad3429e8984c88a01d6dc37",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from a path."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "f422657da5a841d698fa4df145146fdf",
+      "Inputs": [
+        {
+          "Id": "12a649d6ae1d4725849e4534445a8939",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "888157be98604afabd02cc43dd9f93cd",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": ".\\sample.txt",
+      "Id": "634d89866bd94e85a382969fbec4a487",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3043b52e2c454d51ae5c7defec177025",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "363b26cf4b574f75af0eccbad6409247",
+      "End": "12a649d6ae1d4725849e4534445a8939",
+      "Id": "196d6f68b8064c1bb740ed151ef09c5a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f60ce8623ad3429e8984c88a01d6dc37",
+      "End": "6c2182cbea8b47dca49cc91f89ca2c6f",
+      "Id": "7f8ab76eb4394aac81b53ee04adea0c8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3043b52e2c454d51ae5c7defec177025",
+      "End": "a9eba9c41a1a44ed8a657cc38b0a9fac",
+      "Id": "60a5ee7898e9491e94b85e6dca976081",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.3835",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "FileSystem.ReadText",
+        "ShowGeometry": true,
+        "Id": "5527ca26566b49a6847954149d73ef4d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 881.39999999999975,
+        "Y": 271.20000000000005
+      },
+      {
+        "Name": "File From Path",
+        "ShowGeometry": true,
+        "Id": "7b16871b84aa43ae91a12b9b15c65635",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 601.39999999999964,
+        "Y": 271.20000000000005
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "f422657da5a841d698fa4df145146fdf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1208.6,
+        "Y": 271.20000000000005
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "634d89866bd94e85a382969fbec4a487",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 354.1999999999997,
+        "Y": 271.20000000000005
+      }
+    ],
+    "Annotations": [],
+    "X": -342.20199999999954,
+    "Y": -102.99799999999999,
+    "Zoom": 1.1575
+  }
+}

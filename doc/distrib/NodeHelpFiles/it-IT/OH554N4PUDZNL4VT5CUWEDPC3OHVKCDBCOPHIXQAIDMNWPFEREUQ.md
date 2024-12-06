@@ -1,0 +1,9 @@
+<!--- Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors(origin, xAxis, yAxis) --->
+<!--- OH554N4PUDZNL4VT5CUWEDPC3OHVKCDBCOPHIXQAIDMNWPFEREUQ --->
+## In Depth
+ByOriginVectors (origin, xAxis, yAxis) will return a new CoordinateSystem at an input origin point with input X and Y axes. In the example below, the CoordinateSystem is placed at an origin with new vectors for the X and Y axes. The result is a CoordinateSystem rotated relative to the original CoordinateSystem.
+___
+## Example File
+
+![ByOriginVectors (origin, xAxis, yAxis)](./OH554N4PUDZNL4VT5CUWEDPC3OHVKCDBCOPHIXQAIDMNWPFEREUQ_img.jpg)
+

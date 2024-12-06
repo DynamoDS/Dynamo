@@ -1,0 +1,451 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Area",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "242558df77a94faf8717e3e97650845c",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "0.23",
+      "MaximumValue": 0.5,
+      "MinimumValue": 0.0,
+      "StepValue": 0.01,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double",
+      "Id": "175889ad77db4dc29caf619a6362e01c",
+      "Inputs": [
+        {
+          "Id": "b4eca49d83ee43eabee911540123424e",
+          "Name": "width",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7d3d6205f0fe4aba97532c0c4ab1f68e",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dd5df51685c1444cb4d8e17b9b7f88c6",
+          "Name": "height",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1f6f0eb7769b482bbdae7485e9badb43",
+          "Name": "Cuboid",
+          "Description": "Cuboid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at WCS origin, with width, length, and height.\n\nCuboid.ByLengths (width: double = 1, length: double = 1, height: double = 1): Cuboid"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 0.5,
+      "MinimumValue": 0.0,
+      "StepValue": 0.01,
+      "InputValue": 0.23,
+      "Id": "242558df77a94faf8717e3e97650845c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fb0bad8263e04d2fa6dddd6fc2cf7e2f",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Face.Edges",
+      "Id": "99c4220ef6e540acb435aca013e768ba",
+      "Inputs": [
+        {
+          "Id": "5901529aa4fa4093a118738c318e144f",
+          "Name": "face",
+          "Description": "Autodesk.DesignScript.Geometry.Face",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0b002772ac1d4f399b4f5b625de5b50f",
+          "Name": "Edge[]",
+          "Description": "Edge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "All of the Edges around this Face in counterclockwise order\n\nFace.Edges: Edge[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "71ccd7fb34ed4ef1a1a381a9db25ad5f",
+      "Inputs": [
+        {
+          "Id": "44652eebcee14d06861bb2dd19a5d5d8",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d6534c5847644b13b0b456a7847310a5",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6ef61497df244d3bb7dc5f991561e267",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;",
+      "Id": "572d2b34aa954e7eb62774b2de488c77",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d9257c8c0ed7461087bb4b08f5660927",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.Chamfer@Autodesk.DesignScript.Geometry.Edge[],double",
+      "Id": "d9650de73ef74cad92279d2b3e6bdcaf",
+      "Inputs": [
+        {
+          "Id": "683ade4bba7040cf8792db0a0f87b0d0",
+          "Name": "solid",
+          "Description": "Autodesk.DesignScript.Geometry.Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "41b25589a77444b28db0675399767950",
+          "Name": "edges",
+          "Description": "Edge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b9807e225e964942afcca7b56ec51876",
+          "Name": "offset",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "48a20b7b3be1402f936e8db9ea182af0",
+          "Name": "Solid",
+          "Description": "Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Chamfers a Solid along input Edges with a given offset from the edge corner.\n\nSolid.Chamfer (edges: Edge[], offset: double): Solid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.Area",
+      "Id": "e1609d11ff374b35a736bb05e5c26aca",
+      "Inputs": [
+        {
+          "Id": "6a3fa872c7544aa39385dcb1c4424798",
+          "Name": "solid",
+          "Description": "Autodesk.DesignScript.Geometry.Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "88eeea9b304a47abad763fbeab37d766",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the surface area -- sum of all the areas of all faces\n\nSolid.Area: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Topology.Faces",
+      "Id": "c862dbff1fd64219a5db63ab4bee1755",
+      "Inputs": [
+        {
+          "Id": "51ac3380b41c43b89f643fef7128f750",
+          "Name": "topology",
+          "Description": "Autodesk.DesignScript.Geometry.Topology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9a903508ec8346af83ecd6abbf7bf686",
+          "Name": "Face[]",
+          "Description": "Face[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The Faces of the Topology\n\nTopology.Faces: Face[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "1f6f0eb7769b482bbdae7485e9badb43",
+      "End": "683ade4bba7040cf8792db0a0f87b0d0",
+      "Id": "7f603016077345d79af668c3ac9791ab"
+    },
+    {
+      "Start": "1f6f0eb7769b482bbdae7485e9badb43",
+      "End": "51ac3380b41c43b89f643fef7128f750",
+      "Id": "1c56326f3015454391073bc4ba2beb6a"
+    },
+    {
+      "Start": "fb0bad8263e04d2fa6dddd6fc2cf7e2f",
+      "End": "b9807e225e964942afcca7b56ec51876",
+      "Id": "ddf0905f3bae4d7490086b850ddc7528"
+    },
+    {
+      "Start": "0b002772ac1d4f399b4f5b625de5b50f",
+      "End": "44652eebcee14d06861bb2dd19a5d5d8",
+      "Id": "713f67175be84687b05d2e6fd3b92b05"
+    },
+    {
+      "Start": "6ef61497df244d3bb7dc5f991561e267",
+      "End": "41b25589a77444b28db0675399767950",
+      "Id": "4ad7737c4aa84a1eb5e1ac1c46b7c488"
+    },
+    {
+      "Start": "d9257c8c0ed7461087bb4b08f5660927",
+      "End": "d6534c5847644b13b0b456a7847310a5",
+      "Id": "06137db8fd8e48b19bb92aeea0b5ed84"
+    },
+    {
+      "Start": "48a20b7b3be1402f936e8db9ea182af0",
+      "End": "6a3fa872c7544aa39385dcb1c4424798",
+      "Id": "e179bb1e3576436c9a1bd0f1430e24a1"
+    },
+    {
+      "Start": "9a903508ec8346af83ecd6abbf7bf686",
+      "End": "5901529aa4fa4093a118738c318e144f",
+      "Id": "ef3f9adc78ba4e95a11f592fe5449e63"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -4.0148696899414062,
+      "EyeY": 1.6966052055358887,
+      "EyeZ": 1.6967998743057251,
+      "LookX": 4.0619072914123535,
+      "LookY": -0.91090667247772217,
+      "LookZ": -1.7083555459976196,
+      "UpX": -0.011261515319347382,
+      "UpY": 0.99992537498474121,
+      "UpZ": 0.0047363694757223129
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Cuboid.ByLengths",
+        "Id": "175889ad77db4dc29caf619a6362e01c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -867.042125331468,
+        "Y": 274.325937667563
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "242558df77a94faf8717e3e97650845c",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 60.957874668531986,
+        "Y": 413.825937667563
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Face.Edges",
+        "Id": "99c4220ef6e540acb435aca013e768ba",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -221.04212533146801,
+        "Y": 240.82593766756298
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "71ccd7fb34ed4ef1a1a381a9db25ad5f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 60.957874668531986,
+        "Y": 279.825937667563
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "572d2b34aa954e7eb62774b2de488c77",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -221.04212533146801,
+        "Y": 349.03927100089629
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Solid.Chamfer",
+        "Id": "d9650de73ef74cad92279d2b3e6bdcaf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 459.957874668532,
+        "Y": 307.825937667563
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Solid.Area",
+        "Id": "e1609d11ff374b35a736bb05e5c26aca",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 743.88718267960826,
+        "Y": 308.89662965648682
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Topology.Faces",
+        "Id": "c862dbff1fd64219a5db63ab4bee1755",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -541.69209198961312,
+        "Y": 185.48335188536782
+      }
+    ],
+    "Annotations": [],
+    "X": 817.92709910349186,
+    "Y": -41.236891472205,
+    "Zoom": 0.933975419957197
+  }
+}

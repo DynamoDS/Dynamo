@@ -1,0 +1,597 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DistanceTo",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "a542471b38c94f8e9a4a05f5a91650f7",
+      "Inputs": [
+        {
+          "Id": "7464b90698bc47e9a5e010b1d3df07a0",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "10207cef028e47cf9246722f2089b955",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f5ece23979cb476eabb2ce7b9bd82dac",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7c24ac4e431e4cd49396e83e23633dbb",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "b3d7cae8488e4645a8c9d96380bff9ff",
+      "Inputs": [
+        {
+          "Id": "835d1be37e7d41d8a2b7ac610ae9b89d",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "28700634fb614f07a5f4760d4cbe428f",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6e64419e4d3c4a1f8c17b555c7619de3",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "67cedc7ac6d64280b56d9f5a09fbd1bf",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "b932277c9b8448c1a0c66421fe341b8c",
+      "Inputs": [
+        {
+          "Id": "48c2e29f5b324a58b0b1a43c8d6ce18f",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "30b8553c9a6542bb8cde233763ecccc6",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f2fd1173888f4ce2a3e6efa1463b5b92",
+          "Name": "Sphere",
+          "Description": "Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Solid Sphere cetered at the input Point, with given radius.\n\nSphere.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Sphere"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "0fd129a03a0b4fbf86bfaaf817309fb0",
+      "Inputs": [
+        {
+          "Id": "2ea10dc0a0f64492b63e4a82e469f05d",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f4089f94b47345d8ac889e91e3ca6dfc",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "49f9133123e8426482493fbe31298ec9",
+          "Name": "Sphere",
+          "Description": "Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Solid Sphere cetered at the input Point, with given radius.\n\nSphere.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Sphere"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;",
+      "Id": "bb78a7ab53f642b09337ec42037058ab",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1dbf7d2d83bb462e8cf5feeb10a39aff",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "25;\n12;\n8;",
+      "Id": "88ccf5cbdd864f60ab3c17731377ac92",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "84367921021148de897c0bf171e36617",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ce0a61fce5e5435ea241cc4d9d9c2f35",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7ef1e229ed9d415f8d979b7a1b352814",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;\n2;\n3;",
+      "Id": "b607b3611879436f81472c5bea1ab5a8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2ca188a8b82b4654b5109d2ded253e4c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8ba13fdaeb9d451ba3534384d1f9a517",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "22abc1c58bff4d7c986b7d054bf4362c",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ClosestPointTo@Autodesk.DesignScript.Geometry.Geometry",
+      "Id": "d9275d04116e47a69b862c2208638e0d",
+      "Inputs": [
+        {
+          "Id": "4af6716a6c0a4fadb9e46be151219fe4",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d29b99057a7b4db597448dc64ae0c7c1",
+          "Name": "other",
+          "Description": "Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5e6518525eaa42639f08218c70d956cf",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Obtain the closest Point on this Geometry to the other\n\nGeometry.ClosestPointTo (other: Geometry): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.DistanceTo@Autodesk.DesignScript.Geometry.Geometry",
+      "Id": "db48bcd928dc45f68cf328edf86d4d75",
+      "Inputs": [
+        {
+          "Id": "f546f3bc255c424e82dedb0ebd7f7c4c",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a5770721165640d38fd678f7869f056f",
+          "Name": "other",
+          "Description": "The other Geometry\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f7dab5aa46634d948dbef5a0a3e862d3",
+          "Name": "double",
+          "Description": "The distance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Obtain the distance from this Geometry to another\n\nGeometry.DistanceTo (other: Geometry): double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "7d2b30404ea44f498dc1f2fce3374549",
+      "Inputs": [
+        {
+          "Id": "efbb4ac883b843b184a50dde746ed8d1",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5015ff195ed04c3cbf2d8cffe4ad7738",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "7c24ac4e431e4cd49396e83e23633dbb",
+      "End": "2ea10dc0a0f64492b63e4a82e469f05d",
+      "Id": "c0d1c2d88dfb48ebb0ce740ab583effc"
+    },
+    {
+      "Start": "67cedc7ac6d64280b56d9f5a09fbd1bf",
+      "End": "48c2e29f5b324a58b0b1a43c8d6ce18f",
+      "Id": "bf7b05638a084dbb8c7c1c75dc6fbb9e"
+    },
+    {
+      "Start": "f2fd1173888f4ce2a3e6efa1463b5b92",
+      "End": "d29b99057a7b4db597448dc64ae0c7c1",
+      "Id": "9447386b691f46b2b7f11f470d8b2744"
+    },
+    {
+      "Start": "f2fd1173888f4ce2a3e6efa1463b5b92",
+      "End": "a5770721165640d38fd678f7869f056f",
+      "Id": "2431d3fac4804cee952a72bb5c62fbdf"
+    },
+    {
+      "Start": "49f9133123e8426482493fbe31298ec9",
+      "End": "4af6716a6c0a4fadb9e46be151219fe4",
+      "Id": "e8b8939350fe40f8a5a9280583ee5542"
+    },
+    {
+      "Start": "49f9133123e8426482493fbe31298ec9",
+      "End": "f546f3bc255c424e82dedb0ebd7f7c4c",
+      "Id": "267f29221f8449b99cee20c069c91c2f"
+    },
+    {
+      "Start": "1dbf7d2d83bb462e8cf5feeb10a39aff",
+      "End": "f4089f94b47345d8ac889e91e3ca6dfc",
+      "Id": "67bbda27e4f645bbb640b34cda1194ca"
+    },
+    {
+      "Start": "1dbf7d2d83bb462e8cf5feeb10a39aff",
+      "End": "30b8553c9a6542bb8cde233763ecccc6",
+      "Id": "ef7fd72ce47646ed87a14f9686b2d6e9"
+    },
+    {
+      "Start": "84367921021148de897c0bf171e36617",
+      "End": "7464b90698bc47e9a5e010b1d3df07a0",
+      "Id": "ce7ec47a084a4f6a8e00fc50562a378b"
+    },
+    {
+      "Start": "ce0a61fce5e5435ea241cc4d9d9c2f35",
+      "End": "10207cef028e47cf9246722f2089b955",
+      "Id": "4f3452e02db24bfc9a4d1fa5e6104d05"
+    },
+    {
+      "Start": "7ef1e229ed9d415f8d979b7a1b352814",
+      "End": "f5ece23979cb476eabb2ce7b9bd82dac",
+      "Id": "4841edd7f293467ca9a7bcca4f2929ef"
+    },
+    {
+      "Start": "2ca188a8b82b4654b5109d2ded253e4c",
+      "End": "835d1be37e7d41d8a2b7ac610ae9b89d",
+      "Id": "1f7e6c6c3cf84229bff784d0b2821d57"
+    },
+    {
+      "Start": "8ba13fdaeb9d451ba3534384d1f9a517",
+      "End": "28700634fb614f07a5f4760d4cbe428f",
+      "Id": "b834a71fb5304e178f980de5373d6da3"
+    },
+    {
+      "Start": "22abc1c58bff4d7c986b7d054bf4362c",
+      "End": "6e64419e4d3c4a1f8c17b555c7619de3",
+      "Id": "64113caa39984ce39c7832b149ac37eb"
+    },
+    {
+      "Start": "f7dab5aa46634d948dbef5a0a3e862d3",
+      "End": "efbb4ac883b843b184a50dde746ed8d1",
+      "Id": "f670a25fa4064677b40b6be04ef8ba2d"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.945466995239258,
+      "EyeY": 13.518550872802734,
+      "EyeZ": 18.552114486694336,
+      "LookX": 21.971446990966797,
+      "LookY": -4.3238210678100586,
+      "LookZ": -22.210987091064453,
+      "UpX": -0.055177364498376846,
+      "UpY": 0.99691730737686157,
+      "UpZ": 0.055778924375772476
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "a542471b38c94f8e9a4a05f5a91650f7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 320.0,
+        "Y": 383.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "b3d7cae8488e4645a8c9d96380bff9ff",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 320.0,
+        "Y": 652.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Sphere.ByCenterPointRadius",
+        "Id": "b932277c9b8448c1a0c66421fe341b8c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 578.0,
+        "Y": 583.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Sphere.ByCenterPointRadius",
+        "Id": "0fd129a03a0b4fbf86bfaaf817309fb0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 578.0,
+        "Y": 449.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "bb78a7ab53f642b09337ec42037058ab",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 320.0,
+        "Y": 543.71333333333337
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "88ccf5cbdd864f60ab3c17731377ac92",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 141.0,
+        "Y": 396.13999999999993
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "b607b3611879436f81472c5bea1ab5a8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 141.0,
+        "Y": 665.14
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.ClosestPointTo",
+        "Id": "d9275d04116e47a69b862c2208638e0d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1229.0,
+        "Y": 436.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.DistanceTo",
+        "Id": "db48bcd928dc45f68cf328edf86d4d75",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 910.0,
+        "Y": 570.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "7d2b30404ea44f498dc1f2fce3374549",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1229.0,
+        "Y": 570.5
+      }
+    ],
+    "Annotations": [],
+    "X": -360.354178384839,
+    "Y": -455.223633093145,
+    "Zoom": 1.30764135636719
+  }
+}

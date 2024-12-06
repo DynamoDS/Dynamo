@@ -1,0 +1,477 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByFourPoints",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Display": {
+        "Key": "Display.Display",
+        "Value": "Display.dll"
+      },
+      "GeometryColor.ByGeometryColor": {
+        "Key": "Modifiers.GeometryColor",
+        "Value": "GeometryColor.dll"
+      },
+      "GeometryColor": {
+        "Key": "Modifiers.GeometryColor",
+        "Value": "GeometryColor.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "7af5d690dab845a49e35cb1a8ba6afc8",
+      "Name": "X Position",
+      "Type": "number",
+      "Value": "4.1",
+      "MaximumValue": 10.0,
+      "MinimumValue": -5.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "7ed76fb766d6443ca62983d1432d4c4c",
+      "Name": "Y Position",
+      "Type": "number",
+      "Value": "-1.6",
+      "MaximumValue": 10.0,
+      "MinimumValue": -5.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.ByFourPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Id": "9bf1b93c34874f09b8f2eaf9ccd18968",
+      "Inputs": [
+        {
+          "Id": "519a3886df7c4b3297f394bd645945e5",
+          "Name": "points",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6f91e4d256de4181884e76156502d5a8",
+          "Name": "Sphere",
+          "Description": "Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Solid Sphere containing four input Points on the surface.\n\nSphere.ByFourPoints (points: Point[]): Sphere"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "pt1 = Point.ByCoordinates(0,0,0);\npt2 = Point.ByCoordinates(x,y,0);\npt3 = Point.ByCoordinates(x,y,4);\npt4 = Point.ByCoordinates(0,0,4);\npt5 = Point.ByCoordinates(8,0,0);\npt6 = Point.ByCoordinates(8,0,4);\ncircle1 = [pt1, pt2, pt3, pt4];\ncircle2 = [pt2, pt3, pt5, pt6];",
+      "Id": "5aff5a7b8aeb4c2eb9078f09860196e4",
+      "Inputs": [
+        {
+          "Id": "070ebd34173b4f42b9878e6f8ad1d3a8",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e11d81d4dc324da3ac180343424db4ee",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "97f1200d129644aa82577d79502113ef",
+          "Name": "",
+          "Description": "pt1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3bcd0de8ac7e4d03a2f892e5a8ce9a15",
+          "Name": "",
+          "Description": "pt2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "71cbdff4189c4e1f9d61f78b3586a6e8",
+          "Name": "",
+          "Description": "pt3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "efe604f144a74620a086b9500707687f",
+          "Name": "",
+          "Description": "pt4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4bf2b4698a8f44a2a9a74df5669fa153",
+          "Name": "",
+          "Description": "pt5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d9125a20cb404d78ad6f8cf8298f37a1",
+          "Name": "",
+          "Description": "pt6",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4942838009944aabb1c30a52ee87b8a0",
+          "Name": "",
+          "Description": "circle1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b551479f6c444fac9e1c33f565908357",
+          "Name": "",
+          "Description": "circle2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": -5.0,
+      "StepValue": 0.1,
+      "InputValue": 4.1,
+      "Id": "7af5d690dab845a49e35cb1a8ba6afc8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f2532673661c485397a3c7e0daaf26b5",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.ByFourPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Id": "df3cb0701aa24d159e68bd30339fecb8",
+      "Inputs": [
+        {
+          "Id": "6aeef15a8ef547eb82336684574f93dc",
+          "Name": "points",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f820ff0f09554ef39d499f9a53e896e5",
+          "Name": "Sphere",
+          "Description": "Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Solid Sphere containing four input Points on the surface.\n\nSphere.ByFourPoints (points: Point[]): Sphere"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "color = Color.ByARGB(100,141,198,217);\nGeometryColor.ByGeometryColor(geometry, color);",
+      "Id": "1f0c5e2746c9431e9da1f5f4a05d0ef1",
+      "Inputs": [
+        {
+          "Id": "387681f4ec81468ebf1a417d5534aca5",
+          "Name": "geometry",
+          "Description": "geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c270607746cf402391845ed822eb691c",
+          "Name": "",
+          "Description": "color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5f104deb16894ff5b480483f4d0abd66",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "color = Color.ByARGB(100,141,198,217);\nGeometryColor.ByGeometryColor(geometry, color);",
+      "Id": "efb674d6b153466a8f9c0428535139a3",
+      "Inputs": [
+        {
+          "Id": "baf4668585cf4592aca58a66fc625f01",
+          "Name": "geometry",
+          "Description": "geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "679eebc6128543428f35ca4cd5e8e2c7",
+          "Name": "",
+          "Description": "color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "95b0614d9f8b4bf8a2a9a06e636bd6db",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": -5.0,
+      "StepValue": 0.1,
+      "InputValue": -1.6,
+      "Id": "7ed76fb766d6443ca62983d1432d4c4c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d8738825600f4b85b264c2f976ef6be8",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6f91e4d256de4181884e76156502d5a8",
+      "End": "387681f4ec81468ebf1a417d5534aca5",
+      "Id": "a3ca43cdb391489cbb32105e42c2f083"
+    },
+    {
+      "Start": "4942838009944aabb1c30a52ee87b8a0",
+      "End": "519a3886df7c4b3297f394bd645945e5",
+      "Id": "b37be42e730b46c58dd610871d05e40b"
+    },
+    {
+      "Start": "b551479f6c444fac9e1c33f565908357",
+      "End": "6aeef15a8ef547eb82336684574f93dc",
+      "Id": "6858208dd9e045ae870880720a5ad69d"
+    },
+    {
+      "Start": "f2532673661c485397a3c7e0daaf26b5",
+      "End": "070ebd34173b4f42b9878e6f8ad1d3a8",
+      "Id": "8aee4d43fc9741f793b7372e8e17fc85"
+    },
+    {
+      "Start": "f820ff0f09554ef39d499f9a53e896e5",
+      "End": "baf4668585cf4592aca58a66fc625f01",
+      "Id": "a2788884fad94b41bc3cf62e0b02cac5"
+    },
+    {
+      "Start": "d8738825600f4b85b264c2f976ef6be8",
+      "End": "e11d81d4dc324da3ac180343424db4ee",
+      "Id": "3623cccd21554a37856bb5be622deff6"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -4.1305351257324219,
+      "EyeY": 6.326420783996582,
+      "EyeZ": 11.329721450805664,
+      "LookX": 11.158385276794434,
+      "LookY": -3.3709061145782471,
+      "LookZ": -14.185192108154297,
+      "UpX": -0.019420096650719643,
+      "UpY": 0.99950653314590454,
+      "UpZ": 0.024687962606549263
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Sphere.ByFourPoints",
+        "Id": "9bf1b93c34874f09b8f2eaf9ccd18968",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1897.422179007805,
+        "Y": 3452.0504983294568
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "5aff5a7b8aeb4c2eb9078f09860196e4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1476.422179007805,
+        "Y": 3401.037164996123
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "X Position",
+        "Id": "7af5d690dab845a49e35cb1a8ba6afc8",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1077.422179007805,
+        "Y": 3363.82383166279
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Sphere.ByFourPoints",
+        "Id": "df3cb0701aa24d159e68bd30339fecb8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1897.422179007805,
+        "Y": 3570.0504983294568
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "1f0c5e2746c9431e9da1f5f4a05d0ef1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2197.422179007805,
+        "Y": 3456.26383166279
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "efb674d6b153466a8f9c0428535139a3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2197.422179007805,
+        "Y": 3574.26383166279
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Y Position",
+        "Id": "7ed76fb766d6443ca62983d1432d4c4c",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1077.422179007805,
+        "Y": 3447.3971649961231
+      }
+    ],
+    "Annotations": [],
+    "X": -1494.16423935227,
+    "Y": -4276.88951217054,
+    "Zoom": 1.27425021902012
+  }
+}

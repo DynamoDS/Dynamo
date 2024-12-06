@@ -1,0 +1,208 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.MoveDirectory_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "C:\\Temp\\NewFolder",
+      "InputValue": "C:\\Temp\\NewFolder",
+      "NodeType": "ExtensionNode",
+      "Id": "ec53b459c7cd474d9abcae8e5bc7e4d4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "78b2f0a4d2794dda81f5ca278ebc8924",
+          "Name": "",
+          "Description": "Directory path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a directory on the system and returns its path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.MoveDirectory@string,string,bool",
+      "Id": "e171bc40ef6841db8974c6ee17773b47",
+      "Inputs": [
+        {
+          "Id": "513aefdc20654fb5b2ca72fa751bb465",
+          "Name": "path",
+          "Description": "String representation of existing path\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "19b3974a5ed64537850f776671bf14ef",
+          "Name": "newPath",
+          "Description": "String representation of new path\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f82a49cc257b4ce9b195133b4d45bdaf",
+          "Name": "overwriteFiles",
+          "Description": "Toggle to overwrite existing files\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "64b4e757989742dd9d3e1eddc6ceca80",
+          "Name": "void",
+          "Description": "Node performs a task, doesn’t produce an output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Moves a directory to a new location.\n\nFileSystem.MoveDirectory (path: string, newPath: string, overwriteFiles: bool = false): void"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"C:\\\\Temp\\\\NewFolder2\";",
+      "Id": "7ab23245f6714f8f8e6defd9927db2b0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "00de30dc21b14e06a23c22d39b1d38a7",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "78b2f0a4d2794dda81f5ca278ebc8924",
+      "End": "513aefdc20654fb5b2ca72fa751bb465",
+      "Id": "ca028bee9c104549a2bdd7a680d4c0a7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "00de30dc21b14e06a23c22d39b1d38a7",
+      "End": "19b3974a5ed64537850f776671bf14ef",
+      "Id": "6a2cb8b4aeb24759917504e03db948a9",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Directory Path",
+        "ShowGeometry": true,
+        "Id": "ec53b459c7cd474d9abcae8e5bc7e4d4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3355.4747995462712,
+        "Y": 3958.1384392248447
+      },
+      {
+        "Name": "FileSystem.MoveDirectory",
+        "ShowGeometry": true,
+        "Id": "e171bc40ef6841db8974c6ee17773b47",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3714.8630357006023,
+        "Y": 3957.8796273083112
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "7ab23245f6714f8f8e6defd9927db2b0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3355.4747995462712,
+        "Y": 4115.965939224845
+      }
+    ],
+    "Annotations": [],
+    "X": -3372.8811169694359,
+    "Y": -3424.6939190074227,
+    "Zoom": 1.0408165206697666
+  }
+}

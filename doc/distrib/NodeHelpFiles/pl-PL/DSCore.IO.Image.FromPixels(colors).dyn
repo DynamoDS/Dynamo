@@ -1,0 +1,277 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.Image.FromPixels(colors)_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
+      "Id": "04eeac73bb63475384fbe2d5d073de0b",
+      "Inputs": [
+        {
+          "Id": "47fee489fc8144478a22d4a41d6d237b",
+          "Name": "alpha",
+          "Description": "Alpha value (between 0 and 255 inclusive)\n\nint\nDefault value : 255",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a427bfff18a94192845d76a7cb6b03cd",
+          "Name": "red",
+          "Description": "Red value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c83d5f08df47415e83cddd7b50577c7b",
+          "Name": "green",
+          "Description": "Green value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4b72fb9f934d4b589f6226579316e2bf",
+          "Name": "blue",
+          "Description": "Blue value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6fe77669be6646b29b770e417a34b605",
+          "Name": "color",
+          "Description": "Color created from ARGB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Construct a color by alpha, red, green, and blue components.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..255..1;",
+      "Id": "eaeecbf600dd4a06acc816897a11ddd3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dead3c0fdbd649feb57a1dfad1e00c97",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.Image.FromPixels@DSCore.Color[][]",
+      "Id": "a37dad5bbbd34c1ab32e35731cf68169",
+      "Inputs": [
+        {
+          "Id": "c2fc81ea66f5478fba30314f1217d914",
+          "Name": "colors",
+          "Description": "2d rectangular list of colors representing the pixels\n\nColor[][]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "00738eb9c40c4382bcf090a5d9b7ece8",
+          "Name": "image",
+          "Description": "Image from 2d list of pixels",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Constructs an image from a 2d list of pixels.\n\nImage.FromPixels (colors: Color[][]): var"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.WatchImageCore, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "9a9048c179554df7903c5954eb68ade3",
+      "Inputs": [
+        {
+          "Id": "e52221d5f87c4cdc9b19b67393b7996f",
+          "Name": "image",
+          "Description": "Image for visualization",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "55c6728963e24d4e93bf729c27f4368a",
+          "Name": "image",
+          "Description": "Image for visualization",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Previews an image"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6fe77669be6646b29b770e417a34b605",
+      "End": "c2fc81ea66f5478fba30314f1217d914",
+      "Id": "47c8e100e37242aaa2219ba948d51b3b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dead3c0fdbd649feb57a1dfad1e00c97",
+      "End": "a427bfff18a94192845d76a7cb6b03cd",
+      "Id": "ca5bb20e8b274d2bbd737e75c8c9400c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dead3c0fdbd649feb57a1dfad1e00c97",
+      "End": "c83d5f08df47415e83cddd7b50577c7b",
+      "Id": "7fb795ecc0674b8e8d059e686d89d32a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "00738eb9c40c4382bcf090a5d9b7ece8",
+      "End": "e52221d5f87c4cdc9b19b67393b7996f",
+      "Id": "b7ff2173a1804dbd9a88e150e155d8b0",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Color.ByARGB",
+        "ShowGeometry": true,
+        "Id": "04eeac73bb63475384fbe2d5d073de0b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3830.8634438140439,
+        "Y": 4198.4386782170022
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "eaeecbf600dd4a06acc816897a11ddd3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3568.4634438140438,
+        "Y": 4249.2661782170026
+      },
+      {
+        "Name": "Image.FromPixels",
+        "ShowGeometry": true,
+        "Id": "a37dad5bbbd34c1ab32e35731cf68169",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4124.4634438140438,
+        "Y": 4198.4386782170022
+      },
+      {
+        "Name": "Watch Image",
+        "ShowGeometry": true,
+        "Id": "9a9048c179554df7903c5954eb68ade3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 4430.8634438140434,
+        "Y": 4198.4386782170022
+      }
+    ],
+    "Annotations": [],
+    "X": -2202.8139194813357,
+    "Y": -2015.6344094498263,
+    "Zoom": 0.62291756147692323
+  }
+}
