@@ -435,7 +435,7 @@ namespace Dynamo.ViewModels
             // Bail out from connect state
             wsViewModel.CancelActiveState();
 
-            if (wsViewModel.DynamoViewModel.IsNodeAutocompleteClusterEnabled)
+            if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
             {
                MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
                wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);

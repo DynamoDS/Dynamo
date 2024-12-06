@@ -116,25 +116,28 @@ namespace Dynamo.NodeAutoComplete
             this.viewLoadedParamsReference = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
             var dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
 
-            DependencyView = new NodeAutoCompleteView(this, viewLoadedParams);
-            nodeAutoCompleteViewModel = new NodeAutoCompleteViewModel(viewLoadedParams.DynamoWindow, dynamoViewModel);
-
-            // Adding a button in view menu to refresh and show manually
-            nodeAutocompleteMenuItem = new MenuItem { Header = "Show NodeAutocomplete view extension", IsCheckable = true, IsChecked = false };
-            nodeAutocompleteMenuItem.Click += (sender, args) =>
+            if (dynamoViewModel.IsDNAClusterPlacementEnabled)
             {
-                if (nodeAutocompleteMenuItem.IsChecked)
+                DependencyView = new NodeAutoCompleteView(this, viewLoadedParams);
+                nodeAutoCompleteViewModel = new NodeAutoCompleteViewModel(viewLoadedParams.DynamoWindow, dynamoViewModel);
+
+                // Adding a button in view menu to refresh and show manually
+                nodeAutocompleteMenuItem = new MenuItem { Header = "Show NodeAutocomplete view extension", IsCheckable = true, IsChecked = false };
+                nodeAutocompleteMenuItem.Click += (sender, args) =>
                 {
-                    viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
-                    nodeAutocompleteMenuItem.IsChecked = true;
-                }
-                else
-                {
-                    viewLoadedParams.CloseExtensioninInSideBar(this);
-                    nodeAutocompleteMenuItem.IsChecked = false;
-                }
-            };
-            viewLoadedParams.AddExtensionMenuItem(nodeAutocompleteMenuItem);
+                    if (nodeAutocompleteMenuItem.IsChecked)
+                    {
+                        viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+                        nodeAutocompleteMenuItem.IsChecked = true;
+                    }
+                    else
+                    {
+                        viewLoadedParams.CloseExtensioninInSideBar(this);
+                        nodeAutocompleteMenuItem.IsChecked = false;
+                    }
+                };
+                viewLoadedParams.AddExtensionMenuItem(nodeAutocompleteMenuItem);
+            }
         }
         public override void Closed()
         {

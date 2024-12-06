@@ -222,11 +222,11 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Controls if the cluster node autocomplete placement feature is enabled from feature flag
         /// </summary>
-        internal bool IsNodeAutocompleteClusterEnabled
+        internal bool IsDNAClusterPlacementEnabled
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNodeAutocompleteClusterEnabled", false) ?? true;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNAClusterPlacementEnabled", false) ?? true;
             }
         }
 
