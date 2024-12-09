@@ -1,0 +1,947 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AttributeArgMustBeConstant" xml:space="preserve">
+    <value>属性参数必须是常数表达式</value>
+  </data>
+  <data name="BaseIsExpectedToCallBaseConstructor" xml:space="preserve">
+    <value>此处应输入关键字“base”以调用基本类构造函数</value>
+  </data>
+  <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
+    <value>检查指定列表中所有元素的类型是否相同</value>
+  </data>
+  <data name="ChecksIfLengthsAreSameInMultiDimentionalList" xml:space="preserve">
+    <value>检查多维列表中所有行是否都具有相同数量的元素</value>
+  </data>
+  <data name="ChecksIfListContainsTheElement" xml:space="preserve">
+    <value>检查指定列表中是否存在指定图元</value>
+  </data>
+  <data name="ChecksIfTheListIsAllFalse" xml:space="preserve">
+    <value>检查指定列表中的所有元素是否均为“False”</value>
+  </data>
+  <data name="ChecksIfTheListIsAllTrue" xml:space="preserve">
+    <value>检查指定列表中的所有元素是否均为“True”</value>
+  </data>
+  <data name="ChecksListWithUniformDepth" xml:space="preserve">
+    <value>检查列表是否具有均匀深度</value>
+  </data>
+  <data name="CloseBracketExpected" xml:space="preserve">
+    <value>应输入“)”- 半括号</value>
+  </data>
+  <data name="ContainsKeys" xml:space="preserve">
+    <value>检查指定 key-value 对列表中是否存在指定关键点</value>
+  </data>
+  <data name="DeterminesObjectsAreEqual" xml:space="preserve">
+    <value>确定两个对象实例是否相等</value>
+  </data>
+  <data name="EmptyCharacterLiteral" xml:space="preserve">
+    <value>空字符文字</value>
+  </data>
+  <data name="FailedToImport" xml:space="preserve">
+    <value>无法导入 {0}</value>
+  </data>
+  <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
+    <value>分配项左侧不允许调用函数</value>
+  </data>
+  <data name="GetKeys" xml:space="preserve">
+    <value>从指定关键值对列表获取所有关键点</value>
+  </data>
+  <data name="Gettypes" xml:space="preserve">
+    <value>获取当前实例的类型</value>
+  </data>
+  <data name="GetValues" xml:space="preserve">
+    <value>获取存储在指定关键值对列表中的所有值，对于简单列表，它将返回列表中的所有元素</value>
+  </data>
+  <data name="ImportFileByGivenFilePath" xml:space="preserve">
+    <value>将数据从文本文件(包含用逗号分隔的值)导入二维列表</value>
+  </data>
+  <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
+    <value>将数据从文本文件(包含用逗号分隔的值)导入二维列表，并对输出列表(若已指定)进行转置</value>
+  </data>
+  <data name="ImportStatementNotSupported" xml:space="preserve">
+    <value>导入语句在 CodeBlock 节点中不受支持，请使用库 UI</value>
+  </data>
+  <data name="ClassDeclarationNotSupported" xml:space="preserve">
+    <value>类声明在 CodeBlock 节点中不受支持，仅支持函数定义和赋值语句</value>
+  </data>
+  <data name="InsertsAnElementIntoList" xml:space="preserve">
+    <value>在指定索引处将元素插入列表中</value>
+  </data>
+  <data name="InvalidLanguageBlockIdentifier" xml:space="preserve">
+    <value>\"{0}\" 不是有效的语言块标识符，您是指 \"Associative\" 还是 \"Imperative\"？</value>
+  </data>
+  <data name="InvalidSymbol" xml:space="preserve">
+    <value>语法错误: 符号 '{0}' 无效。(您是要使用修改器堆栈  \" =&gt; \" 吗)</value>
+  </data>
+  <data name="kAlreadyImported" xml:space="preserve">
+    <value>文件: '{0}' 已经导入</value>
+  </data>
+  <data name="kAmbigousMethodDispatch" xml:space="preserve">
+    <value>内部错误，请报告: 最终调用上找不到函数。</value>
+  </data>
+  <data name="kArgumentTypeUndefined" xml:space="preserve">
+    <value>参数 '{1}' 的类型 '{0}' 未定义</value>
+  </data>
+  <data name="kArrayOverIndexed" xml:space="preserve">
+    <value>索引超出给定范围 href=kArrayOverIndexed.html</value>
+  </data>
+  <data name="kArrayRankReduction" xml:space="preserve">
+    <value>类型转换将导致数组秩减小。在重复内容以外不被允许。{511ED65F-FB66-4709-BDDA-DCD5E053B87F}</value>
+  </data>
+  <data name="kAssignNonCharacterToString" xml:space="preserve">
+    <value>字符串必须由字符组成</value>
+  </data>
+  <data name="kAssingToThis" xml:space="preserve">
+    <value>'this' 为只读，不能赋值</value>
+  </data>
+  <data name="kCallingConstructorInConstructor" xml:space="preserve">
+    <value>无法调用自身内部的构造函数 '{0}()'</value>
+  </data>
+  <data name="KCallingConstructorOnInstance" xml:space="preserve">
+    <value>无法调用现有对象的构造函数 '{0}()'</value>
+  </data>
+  <data name="kCallingNonStaticMethod" xml:space="preserve">
+    <value>'{0}.{1}()' 不是静态方法函数</value>
+  </data>
+  <data name="kCallingNonStaticProperty" xml:space="preserve">
+    <value>'{0}.{1}' 不是静态特性</value>
+  </data>
+  <data name="kConsoleWarningMessage" xml:space="preserve">
+    <value>&gt; 运行警告: {0}\n - \"{1}\" &lt;line: {2}, col: {3}&gt;</value>
+  </data>
+  <data name="kConvertArrayToNonArray" xml:space="preserve">
+    <value>将数组转换为 {0} 会导致数组秩减小，此结果不被允许 href=kConvertArrayToNonArray.html</value>
+  </data>
+  <data name="kConvertDoubleToInt" xml:space="preserve">
+    <value>将双精度型数据转换为整型可能会丢失信息。</value>
+  </data>
+  <data name="kConvertNonConvertibleTypes" xml:space="preserve">
+    <value>要求转换不可转换类型</value>
+  </data>
+  <data name="kCyclicDependency" xml:space="preserve">
+    <value>两个变量之间存在循环从属关系 href=kCyclicDependency.html</value>
+  </data>
+  <data name="kDereferencingNonPointer" xml:space="preserve">
+    <value>内部错误，请报告: 正在取消引用非指针。href=DereferencingNonPointer.html</value>
+  </data>
+  <data name="kExceptionTypeUndefined" xml:space="preserve">
+    <value>异常类型 '{0}' 未定义</value>
+  </data>
+  <data name="keywordCannotBeUsedAsConstructorName" xml:space="preserve">
+    <value>\"{0}\" 是关键字，不能用作构造函数名称</value>
+  </data>
+  <data name="keywordCantBeUsedAsIdentifier" xml:space="preserve">
+    <value>\"{0}\" 是关键字，应输入标识符</value>
+  </data>
+  <data name="kFailToConverToFunction" xml:space="preserve">
+    <value>不允许将对象转换为函数指针</value>
+  </data>
+  <data name="kFailToConverToNull" xml:space="preserve">
+    <value>不允许将其它对象转换为空</value>
+  </data>
+  <data name="kFailToConverToPointer" xml:space="preserve">
+    <value>无法将对象转换为函数的指针</value>
+  </data>
+  <data name="kFFIFailedToObtainObject" xml:space="preserve">
+    <value>无法为 '{1}.{2}' 获取对象 '{0}'</value>
+  </data>
+  <data name="kFFIFailedToObtainThisObject" xml:space="preserve">
+    <value>无法为 '{0}.{1}' 获取该对象</value>
+  </data>
+  <data name="kFFIInvalidCast" xml:space="preserve">
+    <value>正在将 '{0}' 投射到 '{1}'，但允许的范围为 [{2}..{3}]</value>
+  </data>
+  <data name="kFileNotFound" xml:space="preserve">
+    <value>文件: 未找到 '{0}'</value>
+  </data>
+  <data name="kFunctionNotFound" xml:space="preserve">
+    <value>找不到任何候选函数</value>
+  </data>
+  <data name="kFunctionNotReturnAtAllCodePaths" xml:space="preserve">
+    <value>通过方法函数 '{0}()' 的所有路径必须返回值</value>
+  </data>
+  <data name="kIndexOutOfRange" xml:space="preserve">
+    <value>索引超出范围 href=kIndexOutOfRange.html</value>
+  </data>
+  <data name="kInvalidAmountInRangeExpression" xml:space="preserve">
+    <value>范围表达式中的数量应为正整数</value>
+  </data>
+  <data name="kInvalidArguments" xml:space="preserve">
+    <value>参数无效</value>
+  </data>
+  <data name="kInvalidArgumentsInRangeExpression" xml:space="preserve">
+    <value>范围表达式中使用的值必须是数字或字母</value>
+  </data>
+  <data name="kInvalidBreakForFunction" xml:space="preserve">
+    <value>内部错误，请报告: 语句中断导致函数异常返回空值。</value>
+  </data>
+  <data name="kInvalidContinueForFunction" xml:space="preserve">
+    <value>内部错误，请报告: 语句继续导致函数异常返回空值。</value>
+  </data>
+  <data name="kInvalidStaticCyclicDependency" xml:space="preserve">
+    <value>两个变量之间存在循环从属关系</value>
+  </data>
+  <data name="kInvalidThis" xml:space="preserve">
+    <value>“this”只能用于属于类别成员的方法函数</value>
+  </data>
+  <data name="kInvokeMethodOnInvalidObject" xml:space="preserve">
+    <value>调用方法函数“{0}()”的对象无效。</value>
+  </data>
+  <data name="kMethodAlreadyDefined" xml:space="preserve">
+    <value>方法函数 '{0}()' 已定义</value>
+  </data>
+  <data name="kMethodHasInvalidArguments" xml:space="preserve">
+    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+  </data>
+  <data name="kMethodIsInaccessible" xml:space="preserve">
+    <value>无法从此处达到方法函数 '{0}()'</value>
+  </data>
+  <data name="kMethodNotFound" xml:space="preserve">
+    <value>未找到方法“{0}()”href=kMethodNotFound.html</value>
+  </data>
+  <data name="kMethodResolutionFailure" xml:space="preserve">
+    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+  </data>
+  <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
+    <value>运算符 '{0}' 无法应用于类型为 '{1}' 和 '{2}' 的运算对象</value>
+  </data>
+  <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
+    <value>没有任何一个版本的 {0} 接受参数类型({1})。href=NonOverloadMethodResolutionError.html</value>
+  </data>
+  <data name="kMethodStackOverflow" xml:space="preserve">
+    <value>'{0}()' 递归直到 Dynamo 内存溢出，请添加基础案例。</value>
+  </data>
+  <data name="kMultipleSymbolFound" xml:space="preserve">
+    <value>发现“{0}”的多个定义为 {1} href=kMultipleSymbolFound.html</value>
+  </data>
+  <data name="kMultipleSymbolFoundFromName" xml:space="preserve">
+    <value>发现 '{0}' 的多个定义为 {1}</value>
+  </data>
+  <data name="kMethodDeprecated" xml:space="preserve">
+    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+  </data>
+  <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
+    <value>数量范围表达式中没有指定步长大小</value>
+  </data>
+  <data name="kPropertyInaccessible" xml:space="preserve">
+    <value>特性 '{0}' 无法访问</value>
+  </data>
+  <data name="kPropertyIsInaccessible" xml:space="preserve">
+    <value>特性 '{0}' 无法访问</value>
+  </data>
+  <data name="kPropertyNotFound" xml:space="preserve">
+    <value>未找到特性 '{0}'</value>
+  </data>
+  <data name="kPropertyOfClassNotFound" xml:space="preserve">
+    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+  </data>
+  <data name="kRangeExpressionConflictOperator" xml:space="preserve">
+    <value>数量运算符不能与步长运算符一起使用</value>
+  </data>
+  <data name="kRangeExpressionWithInvalidAmount" xml:space="preserve">
+    <value>步长数量无效。</value>
+  </data>
+  <data name="kRangeExpressionWithInvalidStepSize" xml:space="preserve">
+    <value>范围表达式的步长大小无效。</value>
+  </data>
+  <data name="kRangeExpressionWithNegativeStepNumber" xml:space="preserve">
+    <value>范围表达式的步长数应大于 0</value>
+  </data>
+  <data name="kRangeExpressionWithNonIntegerStepNumber" xml:space="preserve">
+    <value>范围表达式的步长数应为整数</value>
+  </data>
+  <data name="kRangeExpressionWithStepSizeZero" xml:space="preserve">
+    <value>范围表达式的步长不应为 0</value>
+  </data>
+  <data name="kReturnTypeUndefined" xml:space="preserve">
+    <value>方法函数 '{1}()' 的返回类型 '{0}' 未定义</value>
+  </data>
+  <data name="kStaticMethodNotFound" xml:space="preserve">
+    <value>找不到静态方法函数或构造函数 {0}.{1}()</value>
+  </data>
+  <data name="kStringIndexingCannotBeAssigned" xml:space="preserve">
+    <value>不能给字符串索引赋值，因为其为只读</value>
+  </data>
+  <data name="kStringIndexOutOfRange" xml:space="preserve">
+    <value>字符串的索引超出范围</value>
+  </data>
+  <data name="kStringOverIndexed" xml:space="preserve">
+    <value>字符串索引过多</value>
+  </data>
+  <data name="kTypeUndefined" xml:space="preserve">
+    <value>类型 '{0}' 未定义</value>
+  </data>
+  <data name="kUnboundIdentifierMsg" xml:space="preserve">
+    <value>变量 '{0}' 尚未定义</value>
+  </data>
+  <data name="kUsingNonStaticMemberInStaticContext" xml:space="preserve">
+    <value>'{0}' 不是静态特性 ，因此不能分配给静态特性或用于静态方法函数。</value>
+  </data>
+  <data name="kUsingThisInStaticFunction" xml:space="preserve">
+    <value>“this”不能用于静态方法</value>
+  </data>
+  <data name="MapsValueFromOneRangeToAnotherRange" xml:space="preserve">
+    <value>将值从一个范围映射到另一个范围</value>
+  </data>
+  <data name="MapsValueIntoInputRange" xml:space="preserve">
+    <value>将值映射到输入范围</value>
+  </data>
+  <data name="NoConstructorForAttribute" xml:space="preserve">
+    <value>属性 '{0}' 的构造函数没有采用 {1} 个参数</value>
+  </data>
+  <data name="NoSuchFileOrDirectoryToImport" xml:space="preserve">
+    <value>无法导入文件: '{0}': 没有此类文件或目录</value>
+  </data>
+  <data name="ObjectsContainsInList1NotInList2" xml:space="preserve">
+    <value>返回的对象包含在 List1 但不包括在 List2</value>
+  </data>
+  <data name="ProducesTheSetIntersection" xml:space="preserve">
+    <value>生成两个序列的交集</value>
+  </data>
+  <data name="ProducesTheSetUnion" xml:space="preserve">
+    <value>使用默认等分比较器生成两个序列的并集</value>
+  </data>
+  <data name="RemoveKeys" xml:space="preserve">
+    <value>从列表中删除关键点</value>
+  </data>
+  <data name="RemovesTheMembersofTheList" xml:space="preserve">
+    <value>删除列表中非指定类型的成员</value>
+  </data>
+  <data name="ReordersList" xml:space="preserve">
+    <value>使用指定索引给列表重新排序</value>
+  </data>
+  <data name="ReturnsConcatenatingList" xml:space="preserve">
+    <value>将两个列表合并为单个列表</value>
+  </data>
+  <data name="ReturnsListWithRankDepth" xml:space="preserve">
+    <value>根据给定等级返回多维列表</value>
+  </data>
+  <data name="ReturnsListWithUniformDepth" xml:space="preserve">
+    <value>返回具有输入深度指定的均匀深度的列表</value>
+  </data>
+  <data name="ReturnsNumberOfItems" xml:space="preserve">
+    <value>返回指定列表中的项数</value>
+  </data>
+  <data name="ReturnStatementIsNotAllowedInConstructor" xml:space="preserve">
+    <value>构造函数中不允许使用返回语句</value>
+  </data>
+  <data name="ReturnsTheDeepestDepthOfTheList" xml:space="preserve">
+    <value>返回最深的列表深度</value>
+  </data>
+  <data name="ReturnsTheFlattened1DList" xml:space="preserve">
+    <value>返回多维输入列表的展平一维列表。如果输入为单个值，将返回该值。</value>
+  </data>
+  <data name="ReturnsTheIndex" xml:space="preserve">
+    <value>返回列表中成员的索引</value>
+  </data>
+  <data name="ReturnsTheNumberOfFalseValueInList" xml:space="preserve">
+    <value>返回列表中“False”值的数量</value>
+  </data>
+  <data name="ReturnsTheNumberOfTrueValue" xml:space="preserve">
+    <value>返回列表中“True”值的数量</value>
+  </data>
+  <data name="SemiColonExpected" xml:space="preserve">
+    <value>应输入 ';'</value>
+  </data>
+  <data name="SortsListByValue" xml:space="preserve">
+    <value>按成员值的升序或降序顺序给指定列表排序</value>
+  </data>
+  <data name="SortsListByValueInAscending" xml:space="preserve">
+    <value>按成员值的升序顺序给指定列表排序</value>
+  </data>
+  <data name="TooManyCharacters" xml:space="preserve">
+    <value>字符文本中的字符太多</value>
+  </data>
+  <data name="UnknownAttribute" xml:space="preserve">
+    <value>未知属性 {0}</value>
+  </data>
+  <data name="UseInlineConditional" xml:space="preserve">
+    <value>'{0}' 语句只能用于命令式语言块，考虑使用联机条件句？</value>
+  </data>
+  <data name="UseListJoinNode" xml:space="preserve">
+    <value>改为使用 List.Join 节点</value>
+  </data>
+  <data name="ValidForImperativeBlockOnly" xml:space="preserve">
+    <value>'{0}' 语句只能用于命令式语言块</value>
+  </data>
+  <data name="ModuloByZero" xml:space="preserve">
+    <value>按零整数求模</value>
+  </data>
+  <data name="addadd_expected" xml:space="preserve">
+    <value>应输入“++”</value>
+  </data>
+  <data name="add_expected" xml:space="preserve">
+    <value>应输入“+”</value>
+  </data>
+  <data name="andand_expected" xml:space="preserve">
+    <value>应输入“&amp;&amp;”</value>
+  </data>
+  <data name="and_expected" xml:space="preserve">
+    <value>应输入“&amp;”</value>
+  </data>
+  <data name="asterisk_expected" xml:space="preserve">
+    <value>应输入“*”</value>
+  </data>
+  <data name="catch_expected" xml:space="preserve">
+    <value>应输入“catch”</value>
+  </data>
+  <data name="char_expected" xml:space="preserve">
+    <value>应输入 char</value>
+  </data>
+  <data name="closebrace_expected" xml:space="preserve">
+    <value>应输入“}”</value>
+  </data>
+  <data name="closebracket_expected" xml:space="preserve">
+    <value>应输入 closebracket</value>
+  </data>
+  <data name="closeparen_expected" xml:space="preserve">
+    <value>应输入右圆括号“)”</value>
+  </data>
+  <data name="comma_expected" xml:space="preserve">
+    <value>应输入“,”</value>
+  </data>
+  <data name="curvedash_expected" xml:space="preserve">
+    <value>应输入“~\”</value>
+  </data>
+  <data name="dashdash_expected" xml:space="preserve">
+    <value>应输入“--”</value>
+  </data>
+  <data name="divider_expected" xml:space="preserve">
+    <value>应输入“/”</value>
+  </data>
+  <data name="doublecolumn_expected" xml:space="preserve">
+    <value>应输入“:”</value>
+  </data>
+  <data name="endline_expected" xml:space="preserve">
+    <value>应输入 endline</value>
+  </data>
+  <data name="EOF_expected" xml:space="preserve">
+    <value>应输入 EOF</value>
+  </data>
+  <data name="equalmark_expected" xml:space="preserve">
+    <value>应输入“=”</value>
+  </data>
+  <data name="equalright_expected" xml:space="preserve">
+    <value>应输入“=&gt;”</value>
+  </data>
+  <data name="equal_expected" xml:space="preserve">
+    <value>应输入等号“=”</value>
+  </data>
+  <data name="error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="float_expected" xml:space="preserve">
+    <value>应输入浮点数</value>
+  </data>
+  <data name="greaterequal_expected" xml:space="preserve">
+    <value>应输入 greaterequal</value>
+  </data>
+  <data name="greaterthan_expected" xml:space="preserve">
+    <value>应输入 greaterthan</value>
+  </data>
+  <data name="hax_expected" xml:space="preserve">
+    <value>应输入“#”</value>
+  </data>
+  <data name="ident_expected" xml:space="preserve">
+    <value>应输入 indent</value>
+  </data>
+  <data name="invalid_Associative_AccessSpecifier" xml:space="preserve">
+    <value>Associative_AccessSpecifier 无效</value>
+  </data>
+  <data name="invalid_Associative_AddOp" xml:space="preserve">
+    <value>invalid_Associative_AddOp 无效</value>
+  </data>
+  <data name="invalid_Associative_BinaryOps" xml:space="preserve">
+    <value>Associative_BinaryOps 无效</value>
+  </data>
+  <data name="invalid_Associative_BitOp" xml:space="preserve">
+    <value>Associative_BitOp 无效</value>
+  </data>
+  <data name="invalid_Associative_classdecl" xml:space="preserve">
+    <value>Associative_classdecl 无效</value>
+  </data>
+  <data name="invalid_Associative_ComparisonOp" xml:space="preserve">
+    <value>Associative_ComparisonOp 无效</value>
+  </data>
+  <data name="invalid_Associative_DecoratedIdentifier" xml:space="preserve">
+    <value>Associative_DecoratedIdentifier 无效</value>
+  </data>
+  <data name="invalid_Associative_Factor" xml:space="preserve">
+    <value>Associative_Factor 无效</value>
+  </data>
+  <data name="invalid_Associative_FunctionalStatement" xml:space="preserve">
+    <value>Associative_FunctionalStatement 无效</value>
+  </data>
+  <data name="invalid_Associative_functiondecl" xml:space="preserve">
+    <value>Associative_functiondecl 无效</value>
+  </data>
+  <data name="invalid_Associative_LanguageBlock" xml:space="preserve">
+    <value>Associative_LanguageBlock 无效</value>
+  </data>
+  <data name="invalid_Associative_LogicalOp" xml:space="preserve">
+    <value>Associative_LogicalOp 无效</value>
+  </data>
+  <data name="invalid_Associative_MulOp" xml:space="preserve">
+    <value>Associative_MulOp 无效</value>
+  </data>
+  <data name="invalid_Associative_NameReference" xml:space="preserve">
+    <value>Associative_NameReference 无效</value>
+  </data>
+  <data name="invalid_Associative_negop" xml:space="preserve">
+    <value>Associative_negop 无效</value>
+  </data>
+  <data name="invalid_Associative_Number" xml:space="preserve">
+    <value>Associative_Number 无效</value>
+  </data>
+  <data name="invalid_Associative_PostFixOp" xml:space="preserve">
+    <value>Associative_PostFixOp 无效</value>
+  </data>
+  <data name="invalid_Associative_Statement" xml:space="preserve">
+    <value>Associative_Statement 无效</value>
+  </data>
+  <data name="invalid_Associative_UnaryExpression" xml:space="preserve">
+    <value>Associative_UnaryExpression 无效</value>
+  </data>
+  <data name="invalid_Associative_unaryop" xml:space="preserve">
+    <value>Associative_unaryop 无效</value>
+  </data>
+  <data name="invalid_Hydrogen" xml:space="preserve">
+    <value>氢无效</value>
+  </data>
+  <data name="invalid_Imperative_addop" xml:space="preserve">
+    <value>Imperative_addop 无效</value>
+  </data>
+  <data name="invalid_Imperative_assignstmt" xml:space="preserve">
+    <value>Imperative_assignstmt 无效</value>
+  </data>
+  <data name="invalid_Imperative_bitop" xml:space="preserve">
+    <value>Imperative_bitop 无效</value>
+  </data>
+  <data name="invalid_Imperative_decoratedIdentifier" xml:space="preserve">
+    <value>Imperative_decoratedIdentifier 无效</value>
+  </data>
+  <data name="invalid_Imperative_factor" xml:space="preserve">
+    <value>Imperative_factor 无效</value>
+  </data>
+  <data name="invalid_Imperative_forloop" xml:space="preserve">
+    <value>Imperative_forloop 无效</value>
+  </data>
+  <data name="invalid_Imperative_functiondecl" xml:space="preserve">
+    <value>Imperative_functiondecl 无效</value>
+  </data>
+  <data name="invalid_Imperative_ifstmt" xml:space="preserve">
+    <value>Imperative_ifstmt 无效</value>
+  </data>
+  <data name="invalid_Imperative_languageblock" xml:space="preserve">
+    <value>Imperative_languageblock 无效</value>
+  </data>
+  <data name="invalid_Imperative_logicalop" xml:space="preserve">
+    <value>Imperative_logicalop 无效</value>
+  </data>
+  <data name="invalid_Imperative_mulop" xml:space="preserve">
+    <value>Imperative_mulop 无效</value>
+  </data>
+  <data name="invalid_Imperative_NameReference" xml:space="preserve">
+    <value>Imperative_NameReference 无效</value>
+  </data>
+  <data name="invalid_Imperative_num" xml:space="preserve">
+    <value>Imperative_num 无效</value>
+  </data>
+  <data name="invalid_Imperative_PostFixOp" xml:space="preserve">
+    <value>Imperative_PostFixOp 无效</value>
+  </data>
+  <data name="invalid_Imperative_relop" xml:space="preserve">
+    <value>Imperative_relop 无效</value>
+  </data>
+  <data name="invalid_Imperative_stmt" xml:space="preserve">
+    <value>Imperative_stmt 无效</value>
+  </data>
+  <data name="invalid_Imperative_unaryexpr" xml:space="preserve">
+    <value>Imperative_unaryexpr 无效</value>
+  </data>
+  <data name="invalid_Imperative_unaryop" xml:space="preserve">
+    <value>Imperative_unaryop 无效</value>
+  </data>
+  <data name="invalid_Import_Statement" xml:space="preserve">
+    <value>Import_Statement 无效</value>
+  </data>
+  <data name="in_expected" xml:space="preserve">
+    <value>应输入“in”</value>
+  </data>
+  <data name="kw_break_expected" xml:space="preserve">
+    <value>应输入 kw_break</value>
+  </data>
+  <data name="kw_class_expected" xml:space="preserve">
+    <value>应输入 kw_class</value>
+  </data>
+  <data name="kw_constructor_expected" xml:space="preserve">
+    <value>应输入 kw_constructor</value>
+  </data>
+  <data name="kw_continue_expected" xml:space="preserve">
+    <value>应输入 kw_continue</value>
+  </data>
+  <data name="kw_def_expected" xml:space="preserve">
+    <value>应输入 kw_def</value>
+  </data>
+  <data name="kw_elseif_expected" xml:space="preserve">
+    <value>应输入 kw_elseif</value>
+  </data>
+  <data name="kw_else_expected" xml:space="preserve">
+    <value>应输入 kw_else</value>
+  </data>
+  <data name="kw_extend_expected" xml:space="preserve">
+    <value>应输入 kw_extend</value>
+  </data>
+  <data name="kw_external_expected" xml:space="preserve">
+    <value>应输入 kw_external</value>
+  </data>
+  <data name="kw_for_expected" xml:space="preserve">
+    <value>应输入 kw_for</value>
+  </data>
+  <data name="kw_from_expected" xml:space="preserve">
+    <value>应输入 kw_from</value>
+  </data>
+  <data name="kw_heap_expected" xml:space="preserve">
+    <value>应输入 kw_heap</value>
+  </data>
+  <data name="kw_if_expected" xml:space="preserve">
+    <value>应输入 kw_if</value>
+  </data>
+  <data name="kw_import_expected" xml:space="preserve">
+    <value>应输入 kw_import</value>
+  </data>
+  <data name="kw_local_expected" xml:space="preserve">
+    <value>应输入 kw_local</value>
+  </data>
+  <data name="kw_native_expected" xml:space="preserve">
+    <value>应输入 kw_native</value>
+  </data>
+  <data name="kw_prefix_expected" xml:space="preserve">
+    <value>应输入 kw_prefix</value>
+  </data>
+  <data name="kw_static_expected" xml:space="preserve">
+    <value>应输入 kw_static</value>
+  </data>
+  <data name="kw_while_expected" xml:space="preserve">
+    <value>应输入 kw_while</value>
+  </data>
+  <data name="lessequal_expected" xml:space="preserve">
+    <value>应输入小于等于“&lt;=”</value>
+  </data>
+  <data name="lessthan_expected" xml:space="preserve">
+    <value>应输入小于“&lt;”</value>
+  </data>
+  <data name="literal_false_expected" xml:space="preserve">
+    <value>应输入 literal_false</value>
+  </data>
+  <data name="literal_null_expected" xml:space="preserve">
+    <value>应输入 literal_null</value>
+  </data>
+  <data name="literal_true_expected" xml:space="preserve">
+    <value>应输入 literal_true</value>
+  </data>
+  <data name="neg_expected" xml:space="preserve">
+    <value>应输入负号“-”</value>
+  </data>
+  <data name="notequal_expected" xml:space="preserve">
+    <value>应输入 notequal</value>
+  </data>
+  <data name="not_expected" xml:space="preserve">
+    <value>不应有</value>
+  </data>
+  <data name="number_expected" xml:space="preserve">
+    <value>应输入数字</value>
+  </data>
+  <data name="openbrace_expected" xml:space="preserve">
+    <value>应输入“{”</value>
+  </data>
+  <data name="openbracket_expected" xml:space="preserve">
+    <value>应输入左方括号“[”</value>
+  </data>
+  <data name="openparen_expected" xml:space="preserve">
+    <value>应输入左圆括号“(”</value>
+  </data>
+  <data name="oror_expected" xml:space="preserve">
+    <value>应输入“||”</value>
+  </data>
+  <data name="period_expected" xml:space="preserve">
+    <value>应输入周期</value>
+  </data>
+  <data name="pipe_expected" xml:space="preserve">
+    <value>应输入 pipe</value>
+  </data>
+  <data name="postfixed_replicationguide_expected" xml:space="preserve">
+    <value>应输入 postfixed replicationguide</value>
+  </data>
+  <data name="power_expected" xml:space="preserve">
+    <value>应输入“^”</value>
+  </data>
+  <data name="private_expected" xml:space="preserve">
+    <value>应输入“private”</value>
+  </data>
+  <data name="protected_expected" xml:space="preserve">
+    <value>应输入“protected”</value>
+  </data>
+  <data name="public_expected" xml:space="preserve">
+    <value>应输入“public”</value>
+  </data>
+  <data name="question_expected" xml:space="preserve">
+    <value>应输入“?”</value>
+  </data>
+  <data name="rangeop_expected" xml:space="preserve">
+    <value>应输入 rangeop</value>
+  </data>
+  <data name="reminder_expected" xml:space="preserve">
+    <value>应输入“%”</value>
+  </data>
+  <data name="replicationguide_postfix_expected" xml:space="preserve">
+    <value>应输入 replicationguide_postfix</value>
+  </data>
+  <data name="textstring_expected" xml:space="preserve">
+    <value>应输入 textString</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Associative_FunctionalStatement" xml:space="preserve">
+    <value>Associative_FunctionalStatement 中不应有该符号</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Associative_FunctionCallStatement" xml:space="preserve">
+    <value>Associative_FunctionCallStatement 中不应有该符号</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Associative_Statement" xml:space="preserve">
+    <value>Associative_Statement 中不应有该符号</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Import_Statement" xml:space="preserve">
+    <value>Import_Statement 中不应有该符号</value>
+  </data>
+  <data name="this_symbol_no_expected_in_Associative_FunctionalStatement" xml:space="preserve">
+    <value>Associative_FunctionalStatement 中不应有该符号</value>
+  </data>
+  <data name="this_symbo_no_expected_in_Associative_NonAssignmentStatement" xml:space="preserve">
+    <value>Associative_NonAssignmentStatement 中不应有该符号</value>
+  </data>
+  <data name="throw_expected" xml:space="preserve">
+    <value>应输入 throw</value>
+  </data>
+  <data name="triquestionmark_expected" xml:space="preserve">
+    <value>应输入 ???</value>
+  </data>
+  <data name="try_expected" xml:space="preserve">
+    <value>应输入“try”</value>
+  </data>
+  <data name="kInvalidType" xml:space="preserve">
+    <value>类型无效</value>
+  </data>
+  <data name="AlgorithmNotSupported" xml:space="preserve">
+    <value>选定的算法不受支持</value>
+  </data>
+  <data name="ArrayWithNotSupported" xml:space="preserve">
+    <value>尚不支持没有公共超级类的数组: {0}</value>
+  </data>
+  <data name="FailedToResolveSortingFunction" xml:space="preserve">
+    <value>无法解析比较功能进行排序，需要定义排序器: int(x,y)</value>
+  </data>
+  <data name="FunctionDispatchFailed" xml:space="preserve">
+    <value>函数调用无法完成 {0}</value>
+  </data>
+  <data name="MaxDimensionExceeded" xml:space="preserve">
+    <value>复制要求超出数组可用维数。本例尚不受支持 {0}</value>
+  </data>
+  <data name="MultipleFunctionsFound" xml:space="preserve">
+    <value>无法确定要执行的功能。请提供更多特定类型信息。可能的功能有:</value>
+  </data>
+  <data name="MultipleGuidesNotSupported" xml:space="preserve">
+    <value>很抱歉，不支持非升序排列的单个参数的多个导向，请改用 for 循环。</value>
+  </data>
+  <data name="OneDArrayExpected" xml:space="preserve">
+    <value>两个参数应该是一维数组类型！</value>
+  </data>
+  <data name="OperationFailType1" xml:space="preserve">
+    <value>{0}.{1} 操作失败。</value>
+  </data>
+  <data name="OperationFailType2" xml:space="preserve">
+    <value>{0}.{1} 操作失败。
+{2}</value>
+  </data>
+  <data name="ZipAlgorithmError" xml:space="preserve">
+    <value>不支持最长和最短的压缩集合</value>
+  </data>
+  <data name="FailedToCastFromNull" xml:space="preserve">
+    <value>空值不能投射到 {0} href=FailedToCastFromNull.html</value>
+  </data>
+  <data name="ArgumentNullException" xml:space="preserve">
+    <value>Value cannot be null.
+Parameter name: {0}. href=ArgumentNullException.html</value>
+  </data>
+  <data name="FunctionGroupNotFound" xml:space="preserve">
+    <value>无法找到名称为 {0} ({1} 上)的函数</value>
+  </data>
+  <data name="FunctionGroupWithParameterNotFound" xml:space="preserve">
+    <value>无法找到名称为 {0} ({1} 上，采用 {2}) 的函数</value>
+  </data>
+  <data name="kInvalidStringArgumentInRangeExpression" xml:space="preserve">
+    <value>起始值可以只是数字或单个字母</value>
+  </data>
+  <data name="kInvalidUnicodeArgumentInRangeExpression" xml:space="preserve">
+    <value>范围和序列表达式仅支持 ASCII 字符</value>
+  </data>
+  <data name="MoreThanOneDominantList" xml:space="preserve">
+    <value>仅允许一个主列表</value>
+  </data>
+  <data name="RangeExpressionOutOfMemory" xml:space="preserve">
+    <value>范围表达式中的项目数超出限制</value>
+  </data>
+  <data name="IndexIntoNonArrayObject" xml:space="preserve">
+    <value>指定索引地址处无项目</value>
+  </data>
+  <data name="RunOutOfMemory" xml:space="preserve">
+    <value>完成操作的内存不足。</value>
+  </data>
+  <data name="InvalidFunction" xml:space="preserve">
+    <value>不是有效函数。</value>
+  </data>
+  <data name="kInvalidListLevelName" xml:space="preserve">
+    <value>“{0}”不能用作列表标高名称，请考虑为标高 1 使用 L1。</value>
+  </data>
+  <data name="invalid_Associative_Level" xml:space="preserve">
+    <value>list@level 语法无效，请考虑为标高 1 使用 @L1。</value>
+  </data>
+  <data name="VariableRedifinitionError" xml:space="preserve">
+    <value>变量 {0} 已在此代码块节点中定义。您无法多次定义变量。</value>
+  </data>
+  <data name="VariableRecursiveReference" xml:space="preserve">
+    <value>变量 {0} 在您定义它的相同语句中使用。不允许存在递归依存关系。</value>
+  </data>
+  <data name="InvalidArrayIndexType" xml:space="preserve">
+    <value>列表索引必须为数字。href=InvalidArrayIndexType.html</value>
+  </data>
+  <data name="FailedToConvertArrayToDictionary" xml:space="preserve">
+    <value>无法将列表转换为字典类型。</value>
+  </data>
+  <data name="NonOverloadMethodResolutionError" xml:space="preserve">
+    <value>{0} 预期的参数类型为({1})，但使用了({2})调用。href=NonOverloadMethodResolutionError.html</value>
+  </data>
+  <data name="DeprecatedListInitializationSyntax" xml:space="preserve">
+    <value>大括号不再用于列表创建。改用方括号，如 [] 或 [1,2,3]。</value>
+  </data>
+  <data name="ListMethodDeprecated" xml:space="preserve">
+    <value>方法函数“{0}” 已弃用，请改为使用具有字典类型的“{1}”方法</value>
+  </data>
+  <data name="IntegerOverflow" xml:space="preserve">
+    <value>该操作导致整数溢出。其结果可能异常。</value>
+  </data>
+</root>
