@@ -32,14 +32,14 @@ namespace CoreNodeModels
     [AlsoKnownAs("DSCoreNodesUI.ColorRange")]
     public class ColorRange : NodeModel
     {
-        private List<Color> _defaultColors;
-        private List<Color> DefaultColors => _defaultColors ??= DefaultColorRanges.Analysis.ToList();
+        private IEnumerable<Color> defaultColors;
+        private IEnumerable<Color> DefaultColors => defaultColors ??= DefaultColorRanges.Analysis.ToList();
 
-        private AssociativeNode _defaultColorsNode;
-        private AssociativeNode DefaultColorsNode => _defaultColorsNode ??= CreateDefaultColorsNode(DefaultColors);
+        private AssociativeNode defaultColorsNode;
+        private AssociativeNode DefaultColorsNode => defaultColorsNode ??= CreateDefaultColorsNode(DefaultColors);
 
-        private AssociativeNode _defaultIndicesNode;
-        private AssociativeNode DefaultIndicesNode => _defaultIndicesNode ??= CreateDefaultIndicesNode(DefaultColors);
+        private AssociativeNode defaultIndicesNode;
+        private AssociativeNode DefaultIndicesNode => defaultIndicesNode ??= CreateDefaultIndicesNode(DefaultColors);
 
         public event Action RequestChangeColorRange;
         protected virtual void OnRequestChangeColorRange()
@@ -189,7 +189,7 @@ namespace CoreNodeModels
             return ColorRange1D.ByColorsAndParameters(colors, parameters);
         }
 
-        private AssociativeNode CreateDefaultColorsNode(List<Color> defaultColors)
+        private AssociativeNode CreateDefaultColorsNode(IEnumerable<Color> defaultColors)
         {
             return AstFactory.BuildExprList(
                     defaultColors.Select(color =>
@@ -206,7 +206,7 @@ namespace CoreNodeModels
                 );
         }
 
-        private AssociativeNode CreateDefaultIndicesNode(List<Color> defaultColors)
+        private AssociativeNode CreateDefaultIndicesNode(IEnumerable<Color> defaultColors)
         {
             var parameters = CreateParametersForColors(defaultColors);
 
@@ -217,7 +217,7 @@ namespace CoreNodeModels
             );
         }
 
-        private static List<double> CreateParametersForColors(List<Color> colors)
+        private static List<double> CreateParametersForColors(IEnumerable<Color> colors)
         {
             var parameters = new List<double>();
 
