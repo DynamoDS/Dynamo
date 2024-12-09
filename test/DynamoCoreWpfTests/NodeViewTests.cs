@@ -584,8 +584,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3, portVMs.Count);
             Assert.AreEqual(1, outPorts.Count);
 
-            Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (portVMs[0] as InPortViewModel).PortValueMarkerColor.Color);
-            Assert.AreEqual(InPortViewModel.PortValueMarkerRed.Color, (portVMs[1] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVMs[0] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVMs[1] as InPortViewModel).PortValueMarkerColor.Color);
             Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (portVMs[2] as InPortViewModel).PortValueMarkerColor.Color);
 
             Assert.False((outPorts[0] as OutPortViewModel).PortDefaultValueMarkerVisible);
@@ -669,6 +669,30 @@ namespace DynamoCoreWpfTests
             var countAfter = modelsSelected.Count();
 
             Assert.AreEqual(5, countAfter);
+        }
+        [Test]
+        public void ColorRange_InputPortsShowBlueIndicatorForDefaultValues()
+        {
+            Open(@"UI\color_range_ports.dyn");
+
+            var colorRangeVM = NodeViewWithGuid("423d7eaf-9308-4129-b11f-14c186fa4279");
+
+            var inPorts = colorRangeVM.ViewModel.InPorts;
+
+            // Assert that the first two input ports show blue markers on graph loaded.
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (inPorts[0] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (inPorts[1] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.IsTrue((inPorts[0] as InPortViewModel).PortDefaultValueMarkerVisible);
+            Assert.IsTrue((inPorts[1] as InPortViewModel).PortDefaultValueMarkerVisible);
+
+            Run();
+            DispatcherUtil.DoEvents();
+
+            // Assert that input ports retain default value indicators after graph execution.
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (inPorts[0] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.AreEqual(InPortViewModel.PortValueMarkerBlue.Color, (inPorts[1] as InPortViewModel).PortValueMarkerColor.Color);
+            Assert.IsTrue((inPorts[0] as InPortViewModel).PortDefaultValueMarkerVisible);
+            Assert.IsTrue((inPorts[1] as InPortViewModel).PortDefaultValueMarkerVisible);
         }
     }
 }
