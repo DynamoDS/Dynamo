@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>TestAssemblyIsolation1</AssemblyName>
+    <OutputType>Library</OutputType>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
+    <OutputPath>bin/$(AssemblyName)/$(Configuration)</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ClassFunctionality1.cs" />
+    <PackageReference Include="Newtonsoft.Json" Version="8.0.2" />
+  </ItemGroup>
+</Project>
