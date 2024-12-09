@@ -80,6 +80,7 @@
   <ItemGroup>
     <None Remove="Charts\Controls\BarChartControl.xaml" />
     <None Remove="Charts\Controls\BasicLineChartControl.xaml" />
+    <None Remove="Charts\Controls\CurveMapperControl.xaml" />
     <None Remove="Charts\Controls\HeatSeriesControl.xaml" />
     <None Remove="Charts\Controls\PieChartControl.xaml" />
     <None Remove="Charts\Controls\ScatterPlotControl.xaml" />
