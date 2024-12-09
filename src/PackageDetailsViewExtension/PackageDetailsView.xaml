@@ -167,7 +167,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <DockPanel Margin="0,8,0,0">
+        <DockPanel Margin="0,8,3,0">
             <Label Margin="10,0,0,0"
                    Content="Package Details"
                    FontSize="14"
@@ -186,7 +186,7 @@
         </DockPanel>
         <ScrollViewer Name="MainScrollViewer"
                       Grid.Row="1"
-                      Margin="17px"
+                      Margin="17,17,20,17"
                       DataContextChanged="FrameworkElement_OnDataContextChanged"
                       VerticalScrollBarVisibility="Visible">
 
