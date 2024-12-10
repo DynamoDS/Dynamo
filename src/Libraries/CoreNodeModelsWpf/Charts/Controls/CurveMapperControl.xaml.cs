@@ -1,22 +1,18 @@
-using CoreNodeModelsWpf.Charts;
-using LiveChartsCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
+using CoreNodeModelsWpf.Charts.Utilities;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
+using SkiaSharp.Views.WPF;
 
-namespace Dynamo.Wpf.Charts.Controls
+namespace CoreNodeModelsWpf.Charts.Controls
 {
     /// <summary>
     /// Interaction logic for CurveMapperControl.xaml
@@ -73,11 +69,6 @@ namespace Dynamo.Wpf.Charts.Controls
                 //    }
                 //});
             }
-        }
-
-        private void InitializeComponent()
-        {
-            throw new NotImplementedException();
         }
 
 

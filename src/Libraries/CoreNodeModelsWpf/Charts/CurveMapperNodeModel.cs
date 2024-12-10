@@ -101,11 +101,73 @@ namespace CoreNodeModelsWpf.Charts
         #endregion
     }
 
-    public class CurveMapperNodeView : INodeViewCustomization<PieChartNodeModel>
+    public class CurveMapperNodeView : INodeViewCustomization<CurveMapperNodeModel>
     {
-        public void CustomizeView(PieChartNodeModel model, NodeView nodeView)
+        private CurveMapperControl curveMapperControl;
+        private NodeView view;
+        private CurveMapperNodeModel model;
+
+        /// <summary>
+        /// At run-time, this method is called during the node 
+        /// creation. Add custom UI element to the node view.
+        /// </summary>
+        /// <param name="model">The NodeModel representing the node's core logic.</param>
+        /// <param name="nodeView">The NodeView representing the node in the graph.</param>
+        public void CustomizeView(CurveMapperNodeModel model, NodeView nodeView)
         {
-            throw new System.NotImplementedException();
+            this.model = model;
+            this.view = nodeView;
+            curveMapperControl = new CurveMapperControl(model);
+            nodeView.inputGrid.Children.Add(curveMapperControl);
+
+            UpdateDefaultInPortValues();
+
+            model.PortUpdated += ModelOnPortUpdated;
+        }
+
+        private void ModelOnPortUpdated(object sender, EventArgs e)
+        {
+            UpdateDefaultInPortValues();
+        }
+
+        private void UpdateDefaultInPortValues()
+        {
+            if (!this.view.ViewModel.InPorts.Any()) return;
+            var inPorts = this.view.ViewModel.InPorts;
+
+            // Only apply default values if all ports are disconnected
+            if (!model.IsInErrorState &&
+                    model.State != ElementState.Active &&
+                    !inPorts[0].IsConnected &&
+                    !inPorts[1].IsConnected &&
+                    !inPorts[2].IsConnected &&
+                    !inPorts[3].IsConnected)
+            {
+                ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = true;
+                ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = true;
+                ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = true;
+                ((InPortViewModel)inPorts[3]).PortDefaultValueMarkerVisible = true;
+            }
+            else
+            {
+                ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = false;
+                ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = false;
+                ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = false;
+                ((InPortViewModel)inPorts[3]).PortDefaultValueMarkerVisible = false;
+            }
+
+            var allPortsConnected = inPorts[0].IsConnected && inPorts[1].IsConnected && inPorts[2].IsConnected && inPorts[3].IsConnected && model.State != ElementState.Warning;
+            var noPortsConnected = !inPorts[0].IsConnected && !inPorts[1].IsConnected && !inPorts[2].IsConnected && !inPorts[3].IsConnected;
+
+            // The color input uses default values if it's not connected
+            if (!inPorts[4].IsConnected && (allPortsConnected || noPortsConnected))
+            {
+                ((InPortViewModel)inPorts[4]).PortDefaultValueMarkerVisible = true;
+            }
+            else
+            {
+                ((InPortViewModel)inPorts[4]).PortDefaultValueMarkerVisible = false;
+            }
         }
 
         public void Dispose()
