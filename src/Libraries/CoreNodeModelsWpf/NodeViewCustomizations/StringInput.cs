@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using CoreNodeModels.Input;
 using Dynamo.Controls;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Nodes;
 using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
@@ -19,6 +20,7 @@ namespace CoreNodeModelsWpf.Nodes
     public class StringInputNodeViewCustomization : INodeViewCustomization<StringInput>
     {
         private DynamoViewModel dynamoViewModel;
+        private WorkspaceModel workspace;
         private StringInput nodeModel;
         private MenuItem editWindowItem;
         private readonly int minWidthSize = 100;
@@ -29,6 +31,7 @@ namespace CoreNodeModelsWpf.Nodes
         {
             this.nodeModel = stringInput;
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            this.workspace = this.dynamoViewModel.CurrentSpace;
 
             this.editWindowItem = new MenuItem
             {
@@ -108,6 +111,10 @@ namespace CoreNodeModelsWpf.Nodes
 
                 stringInput.SerializedWidth = tb.ActualWidth;
                 stringInput.SerializedHeight = tb.ActualHeight;
+
+                // Mark the node as modified
+                if(!this.workspace.HasUnsavedChanges)
+                    this.workspace.HasUnsavedChanges = true;
             };
         }
 
