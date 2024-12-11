@@ -1,6 +1,10 @@
-﻿using System.Windows;
+using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Media;
 using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.Nodes;
@@ -17,6 +21,9 @@ namespace CoreNodeModelsWpf.Nodes
         private DynamoViewModel dynamoViewModel;
         private StringInput nodeModel;
         private MenuItem editWindowItem;
+        private readonly int minWidthSize = 100;
+        private readonly int minHeightSize = 34;
+        private readonly int defMaxWidthSize = 200;
 
         public void CustomizeView(StringInput stringInput, NodeView nodeView)
         {
@@ -38,7 +45,8 @@ namespace CoreNodeModelsWpf.Nodes
                 AcceptsReturn = true,
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
-                MaxWidth = 200,
+                MinHeight = minHeightSize,
+                MaxWidth = defMaxWidthSize,
                 VerticalAlignment = VerticalAlignment.Top
             };
 
@@ -54,6 +62,35 @@ namespace CoreNodeModelsWpf.Nodes
                 Source = stringInput,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
+
+            AddResizeThumb(tb, nodeView.inputGrid, stringInput);
+        }
+
+        /// <summary>
+        /// Adds a resize thumb to enable dynamic resizing of a StringTextBox.
+        /// </summary>
+        private void AddResizeThumb(StringTextBox tb, Grid inputGrid, StringInput stringInput)
+        {
+            var resizeThumb = CreateResizeThumb();
+            inputGrid.Children.Add(resizeThumb);
+
+            // Handle resizing logic in the resize thumb
+            resizeThumb.DragDelta += (s, e) =>
+            {
+                if (tb.MaxWidth == defMaxWidthSize)
+                {
+                    tb.MaxWidth = double.PositiveInfinity;
+                }
+
+                var newWidth = tb.ActualWidth + e.HorizontalChange;
+                var newHeight = tb.ActualHeight + e.VerticalChange;
+
+                tb.Width = Math.Max(minWidthSize, newWidth);
+                tb.Height = Math.Max(minHeightSize, newHeight);
+
+                stringInput.Width = tb.ActualWidth;
+                stringInput.Height = tb.ActualHeight;
+            };
         }
 
         public void editWindowItem_Click(object sender, RoutedEventArgs e)
@@ -72,6 +109,40 @@ namespace CoreNodeModelsWpf.Nodes
 
             editWindow.ShowDialog();
         }
+
+        #region Helpers
+
+        /// <summary>
+        /// Helper to create a resize thumb.
+        /// </summary>
+        private static Thumb CreateResizeThumb()
+        {
+            return new Thumb
+            {
+                Width = 10,
+                Height = 10,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Cursor = Cursors.SizeNWSE,
+                Margin = new Thickness(0, 0, 3, 3),
+                Template = CreateThumbTemplate()
+            };
+        }
+
+        /// <summary>
+        /// Helper to create the thumb template.
+        /// </summary>
+        private static ControlTemplate CreateThumbTemplate()
+        {
+            var template = new ControlTemplate(typeof(Thumb));
+            var polygon = new FrameworkElementFactory(typeof(System.Windows.Shapes.Polygon));
+            polygon.SetValue(System.Windows.Shapes.Polygon.FillProperty, new SolidColorBrush(Color.FromRgb(175, 175, 175)));
+            polygon.SetValue(System.Windows.Shapes.Polygon.PointsProperty, new PointCollection(new[] { new Point(0, 8), new Point(8, 8), new Point(8, 0) }));
+            template.VisualTree = polygon;
+            return template;
+        }
+
+        #endregion
 
         public void Dispose()
         {
