@@ -39,16 +39,31 @@ namespace CoreNodeModelsWpf.Nodes
 
             editWindowItem.Click += editWindowItem_Click;
 
-            //add a text box to the input grid of the control
+            // Add a text box to the input grid of the control
             var tb = new StringTextBox
             {
                 AcceptsReturn = true,
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
                 MinHeight = minHeightSize,
-                MaxWidth = defMaxWidthSize,
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Top,
             };
+
+            // Set the recorded Width, if any
+            if (stringInput.SerializedWidth != 0)
+            {
+                tb.Width = stringInput.SerializedWidth;
+            }
+            else
+            {
+                tb.MaxWidth = defMaxWidthSize;
+            }
+
+            // Set the recorded Height, if any
+            if (stringInput.SerializedHeight != 0)
+            {
+                tb.Height = stringInput.SerializedHeight;
+            }
 
             nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
@@ -90,6 +105,9 @@ namespace CoreNodeModelsWpf.Nodes
 
                 stringInput.Width = tb.ActualWidth;
                 stringInput.Height = tb.ActualHeight;
+
+                stringInput.SerializedWidth = tb.ActualWidth;
+                stringInput.SerializedHeight = tb.ActualHeight;
             };
         }
 
