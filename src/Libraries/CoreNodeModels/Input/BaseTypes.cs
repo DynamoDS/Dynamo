@@ -13,7 +13,6 @@ using Dynamo.Migration;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
 
 namespace CoreNodeModels.Input
 {
@@ -36,6 +35,16 @@ namespace CoreNodeModels.Input
                 return "StringInputNode";
             }
         }
+
+        /// <summary>
+        /// The serialized Width property of the text input; Width is taken and JsonIgnore applied to
+        /// </summary>
+        public double SerializedWidth { get; set; }
+
+        /// <summary>
+        /// The serialized Height property of the text input; Height is taken and JsonIgnore applied to
+        /// </summary>
+        public double SerializedHeight { get; set; }
 
         [JsonConstructor]
         private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
