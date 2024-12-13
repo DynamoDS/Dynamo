@@ -20,6 +20,8 @@ using Dynamo.Graph.Connectors;
 using Dynamo.ViewModels;
 using System.Collections.Generic;
 using System;
+using CoreNodeModelsWpf.Converters;
+using System.ComponentModel;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -42,10 +44,50 @@ namespace CoreNodeModelsWpf.Charts
     public class CurveMapperNodeModel : NodeModel
     {
         #region Properties
-        public List<double> MinLimitX { get; set; }
-        public List<double> MaxLimitX { get; set; }
-        public List<double> MinLimitY { get; set; }
-        public List<double> MaxLimitY { get; set; }
+        private double minLimitX = 0;
+        private double maxLimitX = 10;
+        private double minLimitY = 0;
+        private double maxLimitY = 10;
+
+        public double MinLimitX
+        {
+            get => minLimitX;
+            set
+            {
+                minLimitX = value;
+                RaisePropertyChanged(nameof(MinLimitX));
+            }
+        }
+
+        public double MaxLimitX
+        {
+            get => maxLimitX;
+            set
+            {
+                maxLimitX = value;
+                RaisePropertyChanged(nameof(MaxLimitX));
+            }
+        }
+
+        public double MinLimitY
+        {
+            get => minLimitY;
+            set
+            {
+                minLimitY = value;
+                RaisePropertyChanged(nameof(MinLimitY));
+            }
+        }
+
+        public double MaxLimitY
+        {
+            get => maxLimitY;
+            set
+            {
+                maxLimitY = value;
+                RaisePropertyChanged(nameof(MaxLimitY));
+            }
+        }
         public List<double> Values { get; set; }
         /// <summary>
         /// Triggers when port is connected or disconnected
@@ -55,6 +97,17 @@ namespace CoreNodeModelsWpf.Charts
         {
             PortUpdated?.Invoke(this, args);
         }
+        private GraphTypes selectedGraphType;
+        public GraphTypes SelectedGraphType
+        {
+            get => selectedGraphType;
+            set
+            {
+                selectedGraphType = value;
+                RaisePropertyChanged(nameof(SelectedGraphType));
+                OnNodeModified();
+            }
+        }
         #endregion
 
         #region Constructors
@@ -63,8 +116,18 @@ namespace CoreNodeModelsWpf.Charts
         {
             RegisterAllPorts();
 
-            PortConnected += CurveMapperNodeModel_PortConnected;
-            PortDisconnected += CurveMapperNodeModel_PortDisconnected;
+            SelectedGraphType = GraphTypes.Linear;
+
+            //PortConnected += CurveMapperNodeModel_PortConnected;
+            //PortDisconnected += CurveMapperNodeModel_PortDisconnected;
+        }
+        [JsonConstructor]
+        public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            //PortDisconnected += GraphMapNodeModel_PortDisconnected;
+            //PropertyChanged += GraphMapNodeModel_PropertyChanged;
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         #endregion
@@ -88,10 +151,10 @@ namespace CoreNodeModelsWpf.Charts
             // Clear UI when a input port is disconnected
             if (port.PortType == PortType.Input)
             {
-                MinLimitX?.Clear();
-                MaxLimitX?.Clear();
-                MinLimitY?.Clear();
-                MaxLimitY?.Clear();
+                //MinLimitX?.Clear();
+                //MaxLimitX?.Clear();
+                //MinLimitY?.Clear();
+                //MaxLimitY?.Clear();
                 Values?.Clear();
 
                 RaisePropertyChanged("DataUpdated");
@@ -172,7 +235,32 @@ namespace CoreNodeModelsWpf.Charts
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
+            model.PortUpdated -= ModelOnPortUpdated;
         }
     }
+
+    #region GraphTypes
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum GraphTypes
+    {
+        [Description("Linear Curve")]
+        Linear = 0,
+        [Description("Bezier Curve")]
+        Bezier = 1,
+        [Description("Sine Wave")]
+        SineWave = 2,
+        [Description("Cosine Wave")]
+        CosineWave = 3,
+        [Description("Tangent Wave")]
+        TangentWave = 4,
+        [Description("Gaussian Wave")]
+        GaussianWave = 5,
+        [Description("Parabolic Curve")]
+        Parabola = 6,
+        [Description("Perlin Noise")]
+        PerlinNoise = 7
+    }
+
+    #endregion
 }

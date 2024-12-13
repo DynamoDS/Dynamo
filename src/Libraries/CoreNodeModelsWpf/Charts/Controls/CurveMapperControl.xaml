@@ -5,9 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CoreNodeModelsWpf.Charts.Controls"
+             xmlns:charts="clr-namespace:CoreNodeModelsWpf.Charts"
+             xmlns:converters="clr-namespace:CoreNodeModelsWpf.Converters"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"             
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="500" 
              Height="300" Width="300"
@@ -15,35 +17,129 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />-->
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="*" MinHeight="100"/> <!-- graph canvas -->
+            <RowDefinition Height="50"/>                <!-- x values & x label-->
+            <RowDefinition Height="30"/>                <!-- x label -->
+            <RowDefinition Height="30"/>                <!-- graph types dropdown -->
+            <!--<RowDefinition Height="30"/>                --><!-- resize thumb -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" MinWidth="100"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="3"
-                       Grid.Column="2"
-                    Orientation="Horizontal">
-            <TextBlock Text="Curve Label"/>
-            <TextBlock Text="Placeholder for dropdown"
-                       Margin="20,0,0,0"/>
-            <ComboBox x:Name="SelectCurveType"
-                      Height="{x:Static configuration:Configurations.PortHeightInPixels}"
-                      MinWidth="50">
+
+        <!-- Graph canvas -->
+        <Canvas x:Name="GraphCanvas" Background="Transparent" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <!-- X values -->
+        <Grid Grid.Row="1" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="15"/>
+            </Grid.RowDefinitions>
                 
+            <TextBlock x:Name="minLimitXLabel" Text="0" FontSize="11"
+                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+                       HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0"/>
+
+            <TextBlock x:Name="midXLabel" Text="5" FontSize="11"
+                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+                       HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" Grid.Row="0"/>
+                    
+            <TextBlock x:Name="maxLimitXLabel" Text="10" FontSize="11"
+                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+                       HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" Grid.Row="0"/>
+                    
+            <TextBlock Text="x" FontSize="12"
+                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+                       HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+        </Grid>
+
+        <!-- Y values -->
+        <!-- column width when the values are high? -->
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="15"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="minLimitYLabel" Text="0" FontSize="11"
+               FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+               HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2"/>
+
+            <TextBlock x:Name="midYLabel" Text="5" FontSize="11"
+               FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+               HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+
+            <TextBlock x:Name="maxLimitYLabel" Text="10" FontSize="11"
+               FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+               HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="1" Grid.Row="0"/>
+
+            <TextBlock Text="y" FontSize="12"
+               FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+               HorizontalAlignment="Center" VerticalAlignment="Center"
+               Grid.Column="0" Grid.Row="1">
+                <TextBlock.RenderTransform>
+                    <RotateTransform Angle="-90" />
+                </TextBlock.RenderTransform>
+            </TextBlock>
+        </Grid>
+
+
+
+        <!-- Graph type dropdown -->
+        <StackPanel Grid.Row="2"
+                    Grid.Column="2"
+                    Orientation="Horizontal" VerticalAlignment="Center">
+            <TextBlock Text="Curve Type" Height="29" Margin="0,12,0,0"
+                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                       FontSize="12px"
+                       Foreground="{StaticResource DefaultFontColorBrush}"
+                       />
+            <!--FontFamily="{StaticResource ArtifaktElementRegular}"/>-->
+            <ComboBox Margin="10,0,0,0"                      
+                      HorizontalAlignment="Left" MinWidth="100"
+                      Style="{StaticResource RefreshComboBox}"
+                      ItemsSource="{converters:EnumBindingSource charts:GraphTypes}"
+                      SelectedItem="{Binding SelectedGraphType}" >
             </ComboBox>
-        </StackPanel>
             
+        </StackPanel>
+
+        <StackPanel Grid.Row="3"
+                    Grid.Column="2"
+                    Orientation="Horizontal" HorizontalAlignment="Right">
+            <Thumb Name ="resizeThumb"
+                   Style="{StaticResource ChartsThumb}"
+                   DragDelta="ThumbResizeThumbOnDragDeltaHandler" Margin="10,0,0,0">
+                <Thumb.ToolTip>
+                    <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </Thumb.ToolTip>
+            </Thumb>
+
+        </StackPanel>
+
+        
+
+
+
     </Grid>
 </UserControl>
