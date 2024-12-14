@@ -16,26 +16,25 @@
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-    <ItemGroup>
+  <ItemGroup>
     <Compile Remove="Graph\ConnectorPinModel.cs" />
     <Compile Remove="Utilities\NotificationCounter.cs" Condition="'$(Configuration)' != 'Debug'"/>
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-    <!--The System.Drawing package is only included in DynamoCore (and not in all projects that have image resources) for simplicity-->
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Lib.Harmony" Version="2.2.1" Condition="'$(Configuration)' == 'Debug'" />
-    <PackageReference Include="Autodesk.IDSDK" Version="1.1.8" />
-    <PackageReference Include="Greg" Version="3.0.0.3175" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.3331" GeneratePathProperty="true" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3421" GeneratePathProperty="true" />
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+        <!--The System.Drawing package is only included in DynamoCore (and not in all projects that have image resources) for simplicity-->
+        <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+        <PackageReference Include="Lib.Harmony" Version="2.3.3" Condition="'$(Configuration)' == 'Debug'" />
+        <PackageReference Include="Autodesk.IDSDK" Version="1.1.8" />
+        <PackageReference Include="Greg" Version="3.0.0.3175" />
+        <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.3331" GeneratePathProperty="true" />
+        <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3421" GeneratePathProperty="true" />
+    </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.2.4" />
     <PackageReference Include="Greg" Version="3.0.2.6533" />
