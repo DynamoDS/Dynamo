@@ -46,10 +46,18 @@ namespace Dynamo.Models
         {
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
+            bool isTemplate = command.IsTemplate;
             OpenFileFromPath(filePath, forceManualMode);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
+        }
+
+        protected virtual void OpenTemplateImpl(OpenFileCommand command)
+        {
+            string filePath = command.FilePath;
+            bool forceManualMode = command.ForceManualExecutionMode;
+            OpenTemplateFromPath(filePath, forceManualMode);
         }
 
         protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
@@ -285,8 +293,15 @@ namespace Dynamo.Models
 
         private void AddSelectionAndRecordUndo(ModelBase model)
         {
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase>() { model }, CurrentWorkspace.UndoRecorder);
-            DynamoSelection.Instance.Selection.AddUnique(model);
+            try
+            {
+                WorkspaceModel.RecordModelsForModification(new List<ModelBase>() { model }, CurrentWorkspace.UndoRecorder);
+                DynamoSelection.Instance.Selection.AddUnique(model);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("Failed to add model(s) to selection." + "\n" + ex.Message);
+            }
         }
 
         private void ClearSelectionAndRecordUndo()

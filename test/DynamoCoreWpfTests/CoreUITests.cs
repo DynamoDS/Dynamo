@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
 using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -728,8 +729,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void TestImportDefaultScaleFactor()
         {
-            string settingDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory), "settings");
-            string newSettingslFilePath = Path.Combine(settingDirectory, "DynamoSettings-NewSettings.xml");
+            string newSettingslFilePath = Path.Combine(TempFolder, "DynamoSettings-NewSettings.xml");
 
             var defaultSettings = new PreferenceSettings();
             defaultSettings.DefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor((int)GeometryScaleSize.ExtraLarge);
@@ -786,7 +786,7 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         private void RestartTestSetupWithNewSettings(Dynamo.Models.DynamoModel.IStartConfiguration configuration, bool startInTestMode)
@@ -819,7 +819,7 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         #endregion

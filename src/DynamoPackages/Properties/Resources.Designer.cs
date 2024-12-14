@@ -19,7 +19,7 @@ namespace DynamoPackages.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -61,6 +61,24 @@ namespace DynamoPackages.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while Dynamo is not running and try again..
+        /// </summary>
+        public static string CannotRemovePackageAssemblyMessage {
+            get {
+                return ResourceManager.GetString("CannotRemovePackageAssemblyMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot update assembly.
+        /// </summary>
+        public static string CannotRemovePackageAssemblyTitle {
+            get {
+                return ResourceManager.GetString("CannotRemovePackageAssemblyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidPackageFolderWarning {
@@ -84,15 +102,6 @@ namespace DynamoPackages.Properties {
         public static string InvalidPackageNodeLibraryIsNotSigned {
             get {
                 return ResourceManager.GetString("InvalidPackageNodeLibraryIsNotSigned", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A package called {0} found at {1} includes dll files but none are defined in node libraries in the package manifest.  Ignoring it..
-        /// </summary>
-        public static string InvalidPackageNoNodeLibrariesDefinedInPackageJson {
-            get {
-                return ResourceManager.GetString("InvalidPackageNoNodeLibrariesDefinedInPackageJson", resourceCulture);
             }
         }
         

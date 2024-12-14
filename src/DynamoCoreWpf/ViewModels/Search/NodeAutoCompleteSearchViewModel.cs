@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -43,6 +44,7 @@ namespace Dynamo.ViewModels
         private bool displayAutocompleteMLStaticPage;
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
+        private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
         internal LuceneSearchUtility LuceneUtility
@@ -160,7 +162,7 @@ namespace Dynamo.ViewModels
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
             // Off load some time consuming operation here
-            InitializeDefaultAutoCompleteCandidates();
+            DefaultResults = dynamoViewModel.DefaultAutocompleteCandidates.Values;
             ServiceVersion = string.Empty;
         }
 
@@ -177,23 +179,6 @@ namespace Dynamo.ViewModels
             FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
             FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
             searchElementsCache = new List<NodeSearchElementViewModel>();
-        }
-
-        private void InitializeDefaultAutoCompleteCandidates()
-        {
-            var candidates = new List<NodeSearchElementViewModel>();
-            // TODO: These are basic input types in Dynamo
-            // This should be only served as a temporary default case.
-            var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
-            foreach (var query in queries)
-            {
-                var foundNode = Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
-                if(foundNode != null)
-                {
-                    candidates.Add(foundNode);
-                }
-            }
-            DefaultResults = candidates;
         }
 
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
@@ -221,6 +206,7 @@ namespace Dynamo.ViewModels
             // Set port info
             // If the node is a Variable-input nodemodel or zero-touch node, then parse the port name to remove the digits at the end.
             request.Port.Name = (nodeInfo is VariableInputNode || nodeInfo is DSVarArgFunction) ? ParseVariableInputPortName(portInfo.Name) : portInfo.Name;
+            request.Port.Index = portInfo.Index;
             request.Port.Direction = portInfo.PortType == PortType.Input ? PortType.Input.ToString().ToLower() : PortType.Output.ToString().ToLower();
             request.Port.KeepListStructure = portInfo.KeepListStructure.ToString();
             request.Port.ListAtLevel = portInfo.Level;
@@ -231,7 +217,7 @@ namespace Dynamo.ViewModels
 
             if (hostNameEnum != HostNames.None)
             {
-                request.Host = new HostRequest(hostNameEnum.ToString(), dynamoViewModel.Model.HostVersion);
+                request.Host = new HostItem(hostNameEnum.ToString(), dynamoViewModel.Model.HostVersion);
             }
 
             // Set packages info
@@ -255,7 +241,7 @@ namespace Dynamo.ViewModels
 
             foreach (NodeModel nodeModel in upstreamAndDownstreamNodes)
             {
-                var nodeRequest = new NodeRequest(nodeModel.GUID.ToString());
+                var nodeRequest = new NodeItem(nodeModel.GUID.ToString());
 
                 if (nodeModel is DSFunctionBase DSfunctionNode)
                 {
@@ -282,7 +268,7 @@ namespace Dynamo.ViewModels
                     var startPortName = (startNode is VariableInputNode || startNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.Start.Name): connector.Start.Name;
                     var endPortName = (endNode is VariableInputNode || endNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.End.Name) : connector.End.Name;
 
-                    var connectorRequest = new ConnectionsRequest
+                    var connectorRequest = new ConnectionItem
                     {
                         StartNode = new ConnectorNodeItem(startNode.GUID.ToString(), startPortName),
                         EndNode = new ConnectorNodeItem(endNode.GUID.ToString(), endPortName)
@@ -295,7 +281,7 @@ namespace Dynamo.ViewModels
             return request;
         }
 
-        internal void DisplayMachineLearningResults()
+        internal void ShowNodeAutocompleMLResults()
         {
             MLNodeAutoCompletionResponse MLresults = null;
 
@@ -374,7 +360,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, Math.Round(result.Score * 100));
                             results.Add(viewModelElement);
                         }
                     }
@@ -407,7 +393,7 @@ namespace Dynamo.ViewModels
 
                         if (viewModelElement != null)
                         {
-                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, Math.Round(result.Score * 100));
                             results.Add(viewModelElement);
                         }
                     }
@@ -452,13 +438,56 @@ namespace Dynamo.ViewModels
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     var client = new RestClient(uri);
                     var request = new RestRequest(string.Empty,Method.Post);
-
-                    request.AddHeader("Authorization",$"Bearer {tokenprovider?.GetAccessToken()}");
+                    var tkn = tokenprovider?.GetAccessToken();
+                    if (string.IsNullOrEmpty(tkn))
+                    {
+                        throw new Exception("Authentication required.");
+                    }
+                    request.AddHeader("Authorization",$"Bearer {tkn}");
                     request = request.AddJsonBody(requestJSON);
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request);
                     //TODO maybe worth moving to system.text json in phases?
                     results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
+                }
+                catch (Exception ex)
+                {
+                    dynamoViewModel.Model.Logger.Log(ex.Message);
+                    throw new Exception("Authentication failed.");
+                }
+            }
+
+            return results;
+        }
+
+        // Rest API call to get the Node cluster Autocomlete results from the service.
+        internal MLNodeClusterAutoCompletionResponse GetMLNodeClusterAutocompleteResults()
+        {
+            MLNodeClusterAutoCompletionResponse results = null;
+
+            var MLRequest = GenerateRequestForMLAutocomplete();
+            string jsonRequest = JsonConvert.SerializeObject(MLRequest);
+
+            var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
+
+            if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
+            {
+                try
+                {
+                    var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeClusterAutocompleteMLEndpoint);
+                    var client = new RestClient(uri);
+                    var request = new RestRequest(string.Empty, Method.Post);
+                    var tkn = tokenprovider?.GetAccessToken();
+                    if (string.IsNullOrEmpty(tkn))
+                    {
+                        throw new Exception("Authentication required.");
+                    }
+                    request.AddHeader("Authorization", $"Bearer {tkn}");
+                    request = request.AddJsonBody(jsonRequest);
+                    request.RequestFormat = DataFormat.Json;
+                    RestResponse response = client.Execute(request);
+
+                    results = JsonConvert.DeserializeObject<MLNodeClusterAutoCompletionResponse>(response.Content);
                 }
                 catch (Exception ex)
                 {
@@ -537,7 +566,7 @@ namespace Dynamo.ViewModels
 
             if (IsDisplayingMLRecommendation)
             {
-                DisplayMachineLearningResults();
+                ShowNodeAutocompleMLResults();
                 //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
                 Analytics.TrackEvent(
                     Actions.Show,

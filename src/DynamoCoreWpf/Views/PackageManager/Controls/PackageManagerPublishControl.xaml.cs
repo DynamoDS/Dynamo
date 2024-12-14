@@ -84,10 +84,6 @@ namespace Dynamo.PackageManager.UI
 
         public void Dispose()
         {
-            Dynamo.Logging.Analytics.TrackEvent(
-                Actions.Close,
-                Categories.PackageManagerOperations);
-
             if(PublishPackageViewModel != null )
             {
                 PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
@@ -187,9 +183,6 @@ namespace Dynamo.PackageManager.UI
             if (e.ChangedButton == MouseButton.Left)
             {
                 this.Owner.DragMove();
-                Dynamo.Logging.Analytics.TrackEvent(
-                    Actions.Move,
-                    Categories.PackageManagerOperations);
             }
         }
 
@@ -347,8 +340,8 @@ namespace Dynamo.PackageManager.UI
             MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK :
                MessageBoxService.Show(
                    Owner,
-                   Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupMessage,
-                   Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupCaption,
+                   Wpf.Properties.Resources.ResetChangesWarningPopupMessage,
+                   Wpf.Properties.Resources.DiscardChangesWarningPopupCaption,
                    MessageBoxButton.OKCancel,
                    MessageBoxImage.Warning);
 

@@ -1,4 +1,5 @@
 using System.Windows;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -8,6 +9,12 @@ namespace Dynamo.LibraryViewExtensionWebView2
 {
     public class LibraryViewExtensionWebView2 : IViewExtension
     {
+        /// <summary>
+        /// Possible hosting contexts for the library. These represent
+        /// Dynamo home and custom workspaces.
+        /// </summary>
+        private enum HostingContextType { home,custom, none};
+
         private ViewLoadedParams viewParams;
         private LibraryViewCustomization customization = new LibraryViewCustomization();
         private LibraryViewController controller;
@@ -36,8 +43,18 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 viewParams = viewLoadedParams;
                 controller = new LibraryViewController(viewLoadedParams.DynamoWindow, viewLoadedParams.CommandExecutive, customization);
                 (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
+                viewParams.CurrentWorkspaceChanged += ViewParams_CurrentWorkspaceChanged;
             }
-            
+        }
+
+        private void ViewParams_CurrentWorkspaceChanged(IWorkspaceModel workspace)
+        {
+            var type = workspace switch
+            {
+                HomeWorkspaceModel _ => HostingContextType.home.ToString(),
+                CustomNodeWorkspaceModel _ => HostingContextType.custom.ToString()
+            };
+            controller.UpdateContext(type);
         }
 
         //hide browser directly when startpage is shown to deal with air space problem.
@@ -78,7 +95,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 (viewParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= handleDynamoViewPropertyChanges;
             }
-          
+            if (viewParams != null)
+            {
+                viewParams.CurrentWorkspaceChanged -= ViewParams_CurrentWorkspaceChanged;
+            }
 
             customization = null;
             controller = null;

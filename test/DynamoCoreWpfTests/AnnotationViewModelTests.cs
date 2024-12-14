@@ -705,7 +705,44 @@ namespace DynamoCoreWpfTests
             annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
             Assert.IsNotNull(annotation);
             Assert.AreEqual(1, annotation.Nodes.Count());
+        }
 
+        /// <summary>
+        /// Tests the Undo functionality for group collapse/expand and rename actions
+        /// </summary>
+        [Test]
+        [Category("DynamoUI")]
+        public void UndoGroupCollapseAndRenameShouldRestorePreviousStates()
+        {
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            string newName = "A1B2C3";
+            var workspaceVm = ViewModel.CurrentSpaceViewModel;
+            var groupVm = workspaceVm.Annotations.First();
+            groupVm.IsExpanded = true;
+
+            // Assert that initial conditions are met
+            Assert.IsNotNull(groupVm, "Expected an initial group to be present");
+            Assert.IsTrue(groupVm.IsExpanded, "Group should be expanded");
+            Assert.IsFalse(groupVm.AnnotationText.Equals(newName));
+
+            // Rename and collapse the group
+            groupVm.AnnotationText = newName;
+            groupVm.IsExpanded = false;
+
+            // Assert initial action
+            Assert.IsFalse(groupVm.IsExpanded, "Group should be collapsed");
+            Assert.AreEqual(newName, groupVm.AnnotationText, "Group should be renamed");
+
+            // Undo collapse
+            ViewModel.UndoCommand.Execute(null);
+            Assert.IsTrue(groupVm.IsExpanded, "Group should be expanded after undo");
+            Assert.AreEqual(newName, groupVm.AnnotationText, "Name should remain renamed after undo");
+
+            // Undo rename
+            ViewModel.UndoCommand.Execute(null);
+            Assert.IsTrue(groupVm.IsExpanded, "Group should remain expanded after second undo");
+            Assert.AreNotEqual(newName, groupVm.AnnotationText, "Group name should revert to original");
         }
 
         [Test]
@@ -1237,6 +1274,27 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void ConnectorPinsCanBeRemovedFromGroup()
+        {
+            // Arrange
+            OpenModel(@"core\annotationViewModelTests\groupWithConnectorPin.dyn");
+            var groupModel = ViewModel.CurrentSpace.Annotations.FirstOrDefault();
+            var connectorModel = ViewModel.CurrentSpace.Connectors.FirstOrDefault();
+            var pinModel = connectorModel.ConnectorPinModels.FirstOrDefault();
+
+            // Assert - Ensure that the pin is part of the group
+            Assert.That(groupModel.Nodes.OfType<ConnectorPinModel>().Contains(pinModel), "Pin should be in the group");
+
+            // Act - Select the pin and execute UngroupModelCommand
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(pinModel);
+            ViewModel.UngroupModelCommand.Execute(null);
+
+            // Assert - Ensure the pin is no longer part of the group's nodes
+            Assert.That(!groupModel.Nodes.OfType<ConnectorPinModel>().Contains(pinModel), "Pin should be removed from the group");
+        }
+
+        [Test]
         public void NodesCantBeAddedToCollapsedGroups()
         {
             // Arrange
@@ -1425,6 +1483,58 @@ namespace DynamoCoreWpfTests
 
             //Assert HasUnsavedChanges is false
             Assert.AreEqual(true, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+        }
+
+        [Test]
+        public void ConnectorsRemainCollapsedOnUndoCollapsedGroup()
+        {
+            // Arrange
+            var parentGroupName = "parentGroup";
+
+            OpenModel(@"core\annotationViewModelTests\connectorsRemainCollapsedAfterUndo.dyn");
+
+            var parentGroupVM = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == parentGroupName);
+            var connectors = ViewModel.CurrentSpaceViewModel.Connectors;
+
+            // Assert group exists and connectors are expanded
+            Assert.IsNotNull(parentGroupVM);
+            Assert.AreEqual(0, connectors.Count(c => c.IsCollapsed));
+
+            // Act
+            // Collapse the parent group
+            parentGroupVM.IsExpanded = false;
+
+            // Assert connectors are collapsed
+            Assert.AreEqual(2, connectors.Count(c => c.IsCollapsed));
+
+            // Select the all nodes from parent group and move them
+            DynamoSelection.Instance.Selection.Clear();
+            parentGroupVM.SelectAll();
+
+            // Perform move operation
+            var initialGroupX = parentGroupVM.Left;
+            var initialGroupY = parentGroupVM.Top;
+
+            var operation = DynamoModel.DragSelectionCommand.Operation.BeginDrag;
+            var command = new DynamoModel.DragSelectionCommand(new Point2D(100, 100), operation);
+
+            ViewModel.ExecuteCommand(command);
+
+            operation = DynamoModel.DragSelectionCommand.Operation.EndDrag;
+            command = new DynamoModel.DragSelectionCommand(new Point2D(300, 300), operation);
+
+            ViewModel.ExecuteCommand(command);
+
+            // Assert the group has moved and connectors remain collapsed
+            Assert.AreNotEqual(initialGroupX, parentGroupVM.Left);
+            Assert.AreNotEqual(initialGroupY, parentGroupVM.Top);
+            Assert.AreEqual(2, connectors.Count(c => c.IsCollapsed));
+
+            // Undo move operation
+            ViewModel.UndoCommand.Execute(null);
+
+            // Assert connectors remain collapsed post-undo
+            Assert.AreEqual(2, connectors.Count(c => c.IsCollapsed));
         }
 
         #endregion

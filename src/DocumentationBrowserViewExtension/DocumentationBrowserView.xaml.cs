@@ -29,8 +29,6 @@ namespace Dynamo.DocumentationBrowser
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
-        //This folder will be used to store images and dyn files previosuly located in /rootDirectory/en-US/fallback_docs so we don't need to copy all those files per each language
-        internal static readonly string SharedDocsDirectoryName = "NodeHelpSharedDocs";
 
         //Path in which the virtual folder for loading images will be created
         internal string VirtualFolderPath { get; set; }
@@ -42,6 +40,7 @@ namespace Dynamo.DocumentationBrowser
         public DocumentationBrowserView(DocumentationBrowserViewModel viewModel)
         {
             InitializeComponent();
+
             this.DataContext = viewModel;
             this.viewModel = viewModel;
 
@@ -139,7 +138,7 @@ namespace Dynamo.DocumentationBrowser
                 //if the node is not from a package, then set the virtual host path to the shared docs folder.
                 else if (viewModel.Link != null && !viewModel.IsOwnedByPackage)
                 {
-                    VirtualFolderPath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, SharedDocsDirectoryName);
+                    VirtualFolderPath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, Configuration.Configurations.DynamoNodeHelpDocs);
                 }
                 //unclear what would cause this.
                 else
@@ -169,22 +168,30 @@ namespace Dynamo.DocumentationBrowser
                     };
                 }
 
-                //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
-                await documentationBrowser.EnsureCoreWebView2Async();
-           
-                this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
-                comScriptingObject = new ScriptingObject(this.viewModel);
-                //register the interop object into the browser.
-                this.documentationBrowser.CoreWebView2.AddHostObjectToScript("bridge", comScriptingObject);
+                try
+                {
+                    //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
+                    await documentationBrowser.Initialize(Log);
+     
+                    this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
+                    comScriptingObject = new ScriptingObject(this.viewModel);
+                    //register the interop object into the browser.
+                    this.documentationBrowser.CoreWebView2.AddHostObjectToScript("bridge", comScriptingObject);
 
-                this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
-                this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
+                    this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+                    this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
 
-                initState = AsyncMethodState.Done;
+                    initState = AsyncMethodState.Done;
+                }
+                catch(ObjectDisposedException ex)
+                {
+                    Log(ex.Message);
+                }
+                
             }
             //if we make it this far, for example to do re-entry to to this method, while we're still
             //initializing, don't do anything, just bail.
-            if(initState == AsyncMethodState.Done)
+            if (initState == AsyncMethodState.Done)
             {
                 if (Directory.Exists(VirtualFolderPath))
                 {
@@ -210,11 +217,6 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            if (initState == AsyncMethodState.Started)
-            {
-                Log("DocumentationBrowserView is being disposed but async initialization is still not done");
-            }
-
             Dispose(true);
             GC.SuppressFinalize(this);
         }

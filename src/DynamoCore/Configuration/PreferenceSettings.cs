@@ -78,6 +78,7 @@ namespace Dynamo.Configuration
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
+        private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
 
         #region Constants
@@ -111,6 +112,10 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly DateTime DynamoDefaultTime = new DateTime(1977, 4, 12, 12, 12, 0, 0);
 
+        internal static readonly IEnumerable<string> InitialExperimentalLib_Namespaces =
+        [
+            "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface"
+            ];
         #endregion
 
         // The following settings are persistent between Dynamo sessions and are user-controllable
@@ -358,6 +363,12 @@ namespace Dynamo.Configuration
         public bool ShowEdges { get; set; }
 
         /// <summary>
+        /// Indicates whether background preview use instancing when rendering geometry.
+        /// be rendered.
+        /// </summary>
+        public bool UseRenderInstancing { get; set; }
+
+        /// <summary>
         /// Indicates whether show detailed or compact layout during search.
         /// </summary>
         public bool ShowDetailedLayout { get; set; }
@@ -388,6 +399,10 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool UseHardwareAcceleration { get; set; }
 
+        /// <summary>
+        /// Persistence for Dynamo HomePage
+        /// </summary>  
+        public List<string> HomePageSettings { get; set; }
         #endregion
 
         #region Dynamo application settings
@@ -444,6 +459,19 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// Template path
+        /// </summary>
+        public string TemplateFilePath
+        {
+            get { return templateFilePath; }
+            set
+            {
+                templateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateFilePath));
+            }
+        }
+
+        /// <summary>
         /// A list of backup file paths.
         /// </summary>
         public List<string> BackupFiles { get; set; }
@@ -472,6 +500,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Return a list of GraphChecksumItems
         /// </summary>
+        [Obsolete("This property is not needed anymore in the preference settings and can be removed in a future version of Dynamo.")]
         public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
 
         // This function is used to deserialize the trusted locations manually
@@ -856,7 +885,7 @@ namespace Dynamo.Configuration
         /// This property is not serialized and is assigned IronPythonResolveTargetVersion's value
         /// if found at deserialize time.
         /// </summary>
-        internal Version ironPythonResolveTargetVersion = new Version(3, 0, 0);
+        internal Version ironPythonResolveTargetVersion = new Version(3, 2, 0);
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
@@ -921,6 +950,7 @@ namespace Dynamo.Configuration
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
             RenderPrecision = DefaultRenderPrecision;
             ShowEdges = false;
+            UseRenderInstancing = true;
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
@@ -931,6 +961,8 @@ namespace Dynamo.Configuration
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
             BackupLocation = string.Empty;
+
+            TemplateFilePath = string.Empty;
 
             LibraryZoomScale = 100;
             PythonScriptZoomScale = 100;
@@ -958,6 +990,7 @@ namespace Dynamo.Configuration
             backupLocation = string.Empty;
             GraphChecksumItemsList = new List<GraphChecksumItem>();
             isMLAutocompleteTOUApproved = true;
+            HomePageSettings = new List<string>();
         }
 
         /// <summary>
@@ -1027,6 +1060,15 @@ namespace Dynamo.Configuration
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
                     settings = serializer.Deserialize(fs) as PreferenceSettings;
+                    var namespaces = settings?.NamespacesToExcludeFromLibrary;
+                    for (var index = 0; index < namespaces?.Count; index++)
+                    {
+                        if (namespaces[index] == "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel")
+                        {
+                            namespaces[index] = "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface";
+                        }
+                    }
+
                     fs.Close(); // Release file lock
                 }
             }
@@ -1058,7 +1100,7 @@ namespace Dynamo.Configuration
             PreferenceSettings settings = null;
 
             if(string.IsNullOrEmpty(content))
-                return new PreferenceSettings();
+                return new PreferenceSettings() { isCreatedFromValidFile = false };
 
             try
             {
@@ -1075,7 +1117,7 @@ namespace Dynamo.Configuration
                     return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
-
+                
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
@@ -1141,15 +1183,28 @@ namespace Dynamo.Configuration
             return defaultPythonEngine;
         }
 
+        /// <summary>
+        /// Initialize namespaces to exclude from Library based on conditions
+        /// </summary>
         internal void InitializeNamespacesToExcludeFromLibrary()
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                NamespacesToExcludeFromLibrary.Add(
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
-                );
+                NamespacesToExcludeFromLibrary = InitialExperimentalLib_Namespaces.ToList();
                 NamespacesToExcludeFromLibrarySpecified = true;
             }
+        }
+
+        /// <summary>
+        /// Update namespaces to exclude from Library based on feature flags
+        /// </summary>
+        internal void UpdateNamespacesToExcludeFromLibrary()
+        {
+            // Include the TSpline namespace from the library OOTB.
+            NamespacesToExcludeFromLibrary.Remove(
+                "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
+            );
+            return;
         }
 
         //migrate old path token to new path token
@@ -1238,13 +1293,11 @@ namespace Dynamo.Configuration
         internal void AddDefaultTrustedLocations()
         {
             if (!IsFirstRun) return;
-
-            const string Autodesk = "Autodesk";
             string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            AddTrustedLocation(Path.Combine(ProgramData, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramData, Configurations.AutodeskAsString));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            AddTrustedLocation(Path.Combine(ProgramFiles, Autodesk));
+            AddTrustedLocation(Path.Combine(ProgramFiles, Configurations.AutodeskAsString));
         }
 
         /// <summary>

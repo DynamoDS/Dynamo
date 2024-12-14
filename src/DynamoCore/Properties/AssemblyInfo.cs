@@ -31,6 +31,7 @@ using System.Runtime.CompilerServices;
 // For workspace package dependency collection
 [assembly: InternalsVisibleTo("DynamoPackages")]
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
+[assembly: InternalsVisibleTo("DynamoMLDataPipeline")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonNodeModels")]
 [assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
@@ -54,6 +55,9 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("ExportSampleImagesViewExtension")]
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
 [assembly: InternalsVisibleTo("Notifications")]
+[assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
 
-
+// Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
+#pragma warning disable RS0016 
 [assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]
+#pragma warning restore RS0016

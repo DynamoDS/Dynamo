@@ -17,8 +17,8 @@ namespace Dynamo.Tests
         {
             var ws = OpenWorkspaceFromSampleFile();
             Assert.AreEqual(ws.Name, "Basics_Basic01");
-            Assert.AreEqual(ws.X, -1915.11, .1);
-            Assert.AreEqual(ws.Y, -330.08, .1);
+            Assert.AreEqual(ws.X, -2651.25, .1);
+            Assert.AreEqual(ws.Y, -490.92, .1);
         }
 
         [Test]
@@ -47,7 +47,9 @@ namespace Dynamo.Tests
             ViewModel.Model.EvaluationCompleted -= testXmlEvent;
 
             // Save to json in temp location
-            string tempPath = Path.Combine(Dynamo.UnitTestBase.TestDirectory, @"core\serialization\serialization_temp.dyn");
+            string tempPath = Path.Combine(TempFolder, @"core\serialization\serialization_temp.dyn");
+            Directory.CreateDirectory(Path.GetDirectoryName(tempPath));
+            
             ViewModel.SaveAsCommand.Execute(tempPath);
             
             // Close workspace
@@ -85,7 +87,7 @@ namespace Dynamo.Tests
         {
             var ws = OpenWorkspaceFromSampleFile();
             var wvm = ViewModel.CurrentSpaceViewModel;
-            Assert.AreEqual(wvm.Zoom, 0.76, .1);
+            Assert.AreEqual(wvm.Zoom, 1.0, .1);
         }
 
         [Test]
@@ -146,7 +148,7 @@ namespace Dynamo.Tests
 
             _ = OpenWorkspaceFromSampleFile();
             var wvm = ViewModel.CurrentSpaceViewModel;
-            Assert.AreEqual(wvm.Zoom, 0.761, .1);
+            Assert.AreEqual(wvm.Zoom, 1.0, .1);
         }
 
         private WorkspaceModel OpenWorkspaceFromSampleFile()

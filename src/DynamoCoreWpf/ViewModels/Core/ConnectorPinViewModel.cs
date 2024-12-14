@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Logging;
 using Dynamo.UI.Commands;
+using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
+using Dynamo.Graph.Connectors;
+using Dynamo.Selection;
 
 namespace Dynamo.ViewModels
 {
@@ -43,6 +47,18 @@ namespace Dynamo.ViewModels
         {
             RequestRemove(this, e);
         }
+        /// <summary>
+        /// Raises a 'remove from group' event for this ConnectorPinViewModel
+        /// </summary>
+        public event EventHandler RequestRemoveFromGroup;
+        public virtual void OnRequestRemoveFromGroup(Object sender, EventArgs e)
+        {
+            if (RequestRemoveFromGroup != null)
+            {
+                RequestRemoveFromGroup(this, e);
+            }
+        }
+
 
         #endregion
 
@@ -209,6 +225,25 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool isInGroup;
+        /// <summary>
+        /// Gets or sets whether the pin is in a group and updates the command state when this changes.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsInGroup
+        {
+            get => isInGroup;
+            set
+            {
+                if (isInGroup == value) return;
+                isInGroup = value;
+                RaisePropertyChanged(nameof(IsInGroup));
+
+                // Update the command's state whenever the group status changes
+                RemovePinFromGroupCommand.RaiseCanExecuteChanged();
+            }
+        }
+
         /// <summary>
         /// This property is purely used for serializing/ deserializing.
         /// In reconstructing ConnectorPins, we need to know what Connector they belong to.
@@ -239,9 +274,38 @@ namespace Dynamo.ViewModels
             WorkspaceViewModel.Model.HasUnsavedChanges = true;
         }
 
+        /// <summary>
+        /// Delegate command handling the removal of this ConnectorPin from  group.
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand RemovePinFromGroupCommand { get; set; }
+
+        private void RemovePinFromGroupCommandExecute(object parameter)
+        {
+            WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.NodeContextMenuOperations, "ConnectorPin");
+
+            // Update the command's state after the pin is removed from the group
+            RemovePinFromGroupCommand.RaiseCanExecuteChanged();
+        }
+
+        /// <summary>
+        /// Determines if the connector pin can be ungrouped based on the selected group state in the workspace.
+        /// </summary>
+        private bool CanUngroupConnectorPin(object parameter)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            if (!groups.Any(x => x.IsSelected))
+            {
+                return (groups.ContainsModel(Model.GUID));
+            }
+            return false;
+        }
+
         private void InitializeCommands()
         {
             UnpinConnectorCommand = new DelegateCommand(UnpinWireCommandExecute);
+            RemovePinFromGroupCommand = new DelegateCommand(RemovePinFromGroupCommandExecute, CanUngroupConnectorPin);
         }
 
         #endregion
@@ -258,12 +322,22 @@ namespace Dynamo.ViewModels
             InitializeCommands();
             model.PropertyChanged += OnPinPropertyChanged;
             ZIndex = ++StaticZIndex; // places the pin on top of all nodes/notes
+
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+
+            AddPinToGroupIfConnectedNodesInSameGroup();
         }
 
         public override void Dispose()
         {
             model.PropertyChanged -= OnPinPropertyChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
+        }
+
+        private void SelectionOnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            RemovePinFromGroupCommand.RaiseCanExecuteChanged();
         }
 
         //respond to changes on the model's properties
@@ -287,5 +361,40 @@ namespace Dynamo.ViewModels
                     break;
             }
         }
+
+        /// <summary>
+        /// Adds the connector pin to a group if both connected nodes are part of the same group.
+        /// </summary>
+        private void AddPinToGroupIfConnectedNodesInSameGroup()
+        {
+            var workspace = WorkspaceViewModel.Model;
+            if (workspace == null)
+            {
+                return;
+            }
+
+            var groups = workspace.Annotations;
+            var connector = WorkspaceViewModel.Model.Connectors.FirstOrDefault(c => c.GUID == model.ConnectorId);
+            if (connector == null)
+            {
+                return;
+            }
+
+            // Get the start and end nodes of the connector associated with the pin
+            var startNode = connector.Start.Owner;
+            var endNode = connector.End.Owner;
+
+            foreach (var group in groups)
+            {
+                // Check if both nodes (start and end) are part of the same group
+                if (group.Nodes.Contains(startNode) && group.Nodes.Contains(endNode))
+                {
+                    // If both nodes are part of the same group, add the pin to that group
+                    group.AddToTargetAnnotationModel(model);
+                    break;
+                }
+            }
+        }
+
     }
 }

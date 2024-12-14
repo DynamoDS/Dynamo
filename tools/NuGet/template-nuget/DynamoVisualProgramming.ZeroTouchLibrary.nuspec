@@ -9,13 +9,14 @@
         <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Build zero touch node libraries for Dynamo. It contains the following files:
-        1) DynamoUnits.dll
-        2) ProtoGeometry.dll</description>
+        <description>Build zero touch node libraries for Dynamo.</description>
         <summary>This package contains all that is required to get up and running building zero touch libraries for the Dynamo Visual Programming language.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
             <group targetFramework="$TargetFramework$">
+                <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$"/>
+            </group>
+            <group targetFramework="netstandard2.0">
                 <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$"/>
             </group>
         </dependencies>
@@ -27,6 +28,9 @@
         <file src="ProtoGeometry.dll" target="lib\$TargetFramework$" />
         <file src="ProtoGeometry.xml" target="lib\$TargetFramework$" />
         
+        <file src="ProtoGeometry.dll" target="lib\netstandard2.0" />
+        <file src="ProtoGeometry.xml" target="lib\netstandard2.0" />
+
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

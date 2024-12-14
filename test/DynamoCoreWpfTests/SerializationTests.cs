@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
@@ -854,7 +855,7 @@ namespace DynamoCoreWpfTests
                 var valueB = b.NodeViewDataMap[kvp.Key];
                 Assert.AreEqual(valueA, valueB,
                 string.Format("Node View Data:{0} value, {1} is not equal to {2}",
-                a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
+                a.NodeViewDataMap[kvp.Key].Name, JsonSerializer.Serialize(valueA), JsonSerializer.Serialize(valueB)));
             }
         }
 
@@ -901,7 +902,7 @@ namespace DynamoCoreWpfTests
 
                 Assert.AreEqual(valueA, valueB,
                 string.Format("Node View Data:{0} value, {1} is not equal to {2}",
-                a.NodeViewDataMap[kvp.Key].Name, valueA, valueB));
+                a.NodeViewDataMap[kvp.Key].Name, JsonSerializer.Serialize(valueA), JsonSerializer.Serialize(valueB)));
             }
         }
 
@@ -1199,7 +1200,7 @@ namespace DynamoCoreWpfTests
                     {
                         Background = annotation.Background.ToString(),
                         FontSize = annotation.FontSize,
-                        Nodes = annotation.Nodes.Select(x => x.GUID.ToString()),
+                        Nodes = annotation.Nodes.Where(x => !(x is ConnectorPinModel)).Select(x => x.GUID.ToString()),
                         Title = annotation.AnnotationText,
                         Id = annotation.AnnotationModel.GUID.ToString(),
                         Left = annotation.Left,

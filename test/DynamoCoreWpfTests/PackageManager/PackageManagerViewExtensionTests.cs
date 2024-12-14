@@ -12,6 +12,8 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Scheduler;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
+using DynamoServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Moq;
@@ -157,7 +159,7 @@ namespace DynamoCoreWpfTests.PackageManager
         public void PackageManagerViewExtensionHasCorrectNumberOfRequestedExtensions()
         {
             var pkgViewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
-            Assert.AreEqual(pkgViewExtension.RequestedExtensions.Count(), 1);
+            Assert.AreEqual(pkgViewExtension.RequestedExtensions.Count(), 2);
         }
 
         [Test]
@@ -206,7 +208,7 @@ namespace DynamoCoreWpfTests.PackageManager
                 var pkg = loader.ScanPackageDirectory(pkgDir);
                 loader.LoadPackages(new List<Package> { pkg });
                 Assert.AreEqual(0, loader.RequestedExtensions.Count());
-                Assert.AreEqual(2, View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
+                Assert.AreEqual(3, View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
                 Assert.IsTrue(viewExtensionLoadStart);
                 Assert.IsTrue(viewExtensionAdd);
                 Assert.IsTrue(viewExtensionLoaded);
@@ -314,7 +316,49 @@ namespace DynamoCoreWpfTests.PackageManager
             }
         }
 
+        [Test]
+        public void TestCrashInPackage()
+        {
+            var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension_Crash");
+            var currentDynamoModel = ViewModel.Model;
+            var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
 
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+            Assert.IsNotNull(pkg);
+
+            loader.LoadPackages(new List<Package>() { pkg });
+     
+            Exception expectedEx = null;
+            var assem = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name == "TestCrash").FirstOrDefault();
+            Assert.IsNotNull(assem);
+
+            try
+            {
+                assem.GetType("TestCrash.Class1").GetMethod("TestCrash").Invoke(null, new object[] { });
+            }
+            catch (Exception ex)
+            {
+                expectedEx = ex;
+            }
+
+            int count = 0;
+            void DynamoConsoleLogger_LogErrorToDynamoConsole(string obj)
+            {
+                if (obj.Contains($"Unhandled exception coming from package {pkg.Name} was handled"))
+                {
+                    count++;
+                }
+            }
+
+            DynamoConsoleLogger.LogErrorToDynamoConsole += DynamoConsoleLogger_LogErrorToDynamoConsole;
+
+            ViewModel.CrashGracefully(expectedEx);
+
+            DynamoConsoleLogger.LogErrorToDynamoConsole -= DynamoConsoleLogger_LogErrorToDynamoConsole;
+
+            ViewModel.CrashGracefully(expectedEx);
+            Assert.AreEqual(1, count);
+        }
 
         [OneTimeTearDown]
         /// <summary>

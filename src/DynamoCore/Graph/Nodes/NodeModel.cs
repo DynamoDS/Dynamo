@@ -2,17 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
-using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
@@ -411,6 +412,10 @@ namespace Dynamo.Graph.Nodes
             get { return infos; }
         }
 
+        /// <summary>
+        /// BlockInfoBubbleUpdates is flag used to block InfoBubble updates during (or immediately after) graph execution.
+        /// </summary>
+        internal bool BlockInfoBubbleUpdates = false;
 
         /// <summary>
         /// A publicly accessible collector of all Info/Warning/Error data
@@ -1219,6 +1224,20 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// The method returns the assembly name from which the node originated.
+        /// </summary>
+        /// <returns>Assembly Name</returns>
+        internal virtual AssemblyName GetNameOfAssemblyReferencedByNode()
+        {
+            AssemblyName assemblyName = null;
+            
+            var assembly = this.GetType().Assembly;
+            assemblyName = AssemblyName.GetAssemblyName(assembly.Location);
+            
+            return assemblyName;
+        }
+
+        /// <summary>
         /// Here we try to find the correct port names and tooltips.
         /// ideally we'd use the runtime information to correctly update or localize
         /// the port info, if we can't find it for any of the ports of the current node we fallback to the deserialized data
@@ -1760,16 +1779,31 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Selects all neighboring nodes ans connector pins to this node
+        /// </summary>
         public void SelectNeighbors()
         {
             IEnumerable<ConnectorModel> outConnectors = outPorts.SelectMany(x => x.Connectors);
             IEnumerable<ConnectorModel> inConnectors = inPorts.SelectMany(x => x.Connectors);
 
             foreach (var c in outConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.End.Owner)))
+            {
                 DynamoSelection.Instance.Selection.Add(c.End.Owner);
+                foreach (var p in c.ConnectorPinModels)
+                {
+                    DynamoSelection.Instance.Selection.Add(p);
+                }
+            }                
 
             foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
+            {
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
+                foreach (var p in c.ConnectorPinModels)
+                {
+                    DynamoSelection.Instance.Selection.Add(p);
+                }
+            }
         }
 
         /// <summary>
@@ -2836,6 +2870,22 @@ namespace Dynamo.Graph.Nodes
 
         protected bool ShouldDisplayPreviewCore { get; set; }
 
+        [Experimental("NM_ISEXPERIMENTAL_GLPYH")]
+        internal bool IsExperimental
+        {
+            get
+            {
+                //TODO switch on model type?
+                if (this is DSFunction ztnm)
+                {
+                    return ztnm.Controller.Definition.IsExperimental;
+                }
+                else
+                {
+                    return TypeLoadData.CheckExperimentalFromAttribute(GetType());
+                }
+            }
+        }
         public event Action<NodeModel, RenderPackageCache> RenderPackagesUpdated;
 
         private void OnRenderPackagesUpdated(RenderPackageCache packages)

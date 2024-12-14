@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
-using Dynamo.GraphMetadata;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -42,7 +41,7 @@ namespace DynamoCoreWpfTests.PackageManager
         {
 
             Assert.That(Model.ExtensionManager.Extensions.Select(x => x.Name),
-                Is.EquivalentTo(new List<string> { "DynamoPackageManager", "testExtension" }));
+                Is.EquivalentTo(new List<string> { "DynamoPackageManager", "DynamoMLDataPipelineExtension", "testExtension" }));
         }
         [Test]
         public void PackageManagerLoadsExtensionAndItWorks()
@@ -72,7 +71,9 @@ namespace DynamoCoreWpfTests.PackageManager
                         "Properties",
                         "Python Migration",
                         "Sample View Extension",
+                        "TuneUp",
                         "Workspace References",
+                        "Node Auto Complete"
                     }
                 )
             );

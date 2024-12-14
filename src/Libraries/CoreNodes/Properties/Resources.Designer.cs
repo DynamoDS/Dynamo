@@ -70,6 +70,42 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input must be a single value or a non-nested list..
+        /// </summary>
+        internal static string DefineDataSupportedInputValueExceptionMessage {
+            get {
+                return ResourceManager.GetString("DefineDataSupportedInputValueExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This node expected a {0} input but received a {1} input. Please provide the expected input, or pick a new type in the node’s drop-down menu..
+        /// </summary>
+        internal static string DefineDataUnexpectedInputExceptionMessage {
+            get {
+                return ResourceManager.GetString("DefineDataUnexpectedInputExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This node does not support the combination of data types in the current input list {0}. Ensure the input list contains items of the same data type, or a mix of types with a common parent type.
+        /// </summary>
+        internal static string DefineDataUnsupportedCombinationOfDataTypesExceptionMessage {
+            get {
+                return ResourceManager.GetString("DefineDataUnsupportedCombinationOfDataTypesExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This node does not support the current input data type ({0}). View the supported data types in the drop-down menu..
+        /// </summary>
+        internal static string DefineDataUnsupportedDataTypeExceptionMessage {
+            get {
+                return ResourceManager.GetString("DefineDataUnsupportedDataTypeExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Friday.
         /// </summary>
         internal static string EnumDateOfWeekFriday {

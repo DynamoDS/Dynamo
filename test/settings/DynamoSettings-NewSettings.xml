@@ -25,12 +25,17 @@
   <DefaultScaleFactor>-2</DefaultScaleFactor>
   <RenderPrecision>8</RenderPrecision>
   <ShowEdges>true</ShowEdges>
+  <UseRenderInstancing>false</UseRenderInstancing>
   <ShowDetailedLayout>false</ShowDetailedLayout>
   <WindowX>-8</WindowX>
   <WindowY>-8</WindowY>
   <WindowW>1936</WindowW>
   <WindowH>1056</WindowH>
   <UseHardwareAcceleration>false</UseHardwareAcceleration>
+  <HomePageSettings>
+    <string>recentPageViewMode:list</string>
+    <string>samplesViewMode:list</string>
+  </HomePageSettings>
   <NumberFormat>f4</NumberFormat>
   <MaxNumRecentFiles>12</MaxNumRecentFiles>
   <RecentFiles>
@@ -40,6 +45,7 @@
   <BackupFiles>
     <string>C:\Users\user\Documents\dynamofile.dyn</string>
   </BackupFiles>
+  <TemplateFilePath>C:\ProgramData\Dynamo\Dynamo Core\templates\en-US</TemplateFilePath>
   <CustomPackageFolders>
     <string>%BuiltInPackages%</string>
     <string>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\2.16</string>

@@ -10,7 +10,9 @@ namespace Dynamo.Tests
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("ProtoGeometry.dll");
         }
 
         [SetUp]
@@ -184,7 +186,7 @@ namespace Dynamo.Tests
         {
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
             string searchTerm = "number";
-            List<string> expectedSearchResults1 = new List<string> { "number", "number slider", "round" };
+            List<string> expectedSearchResults1 = new List<string> { "number", "number slider", "numberofcurves" };
 
             string searchTerm2 = "list.join";
             List<string> expectedSearchResults2 = new List<string> { "join", "list create", "range" };
@@ -213,6 +215,63 @@ namespace Dynamo.Tests
                 //Check that the result match the expected position
                 Assert.AreEqual(nodesNamesList.ElementAt(i), expectedSearchResults2.ElementAt(i));
             }
+        }
+
+        //This test will validate that resulting nodes have a specific order when having T-Spline nodes in the nodes list.
+        [Test]
+        public void LuceneSearchTSplineNodesOrderingValidation()
+        {
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
+            string[] searchTerms = { "sphere", "cone" };
+
+            // Search for "sphere" and check that the results are correct based in the node name provided for the searchTerms
+            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerms[0]);
+
+            Assert.IsNotNull(nodesResult);
+            Assert.That(nodesResult.Count(), Is.GreaterThan(0));
+            var firstTSpline = nodesResult.Take(5).ToList().FindIndex(x => x.Class.ToLower().Contains("tspline"));
+
+            //Take the first 5 elements, get the ones that belong to the expected category and finally get the index in the list
+            var firstCatExpectedNode = nodesResult.Take(5).ToList().FindIndex(x => x.Class.ToLower().Contains(searchTerms[0]));
+
+            //Validate that the normal node (category Sphere) will be at index 0 (first place) and the TSpline node at index 3 (3 > 0)
+            Assert.That(firstTSpline > firstCatExpectedNode);
+
+            // Search for "cone "and check that the results are correct based in the node name provided for the searchTerms
+            nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerms[1]);
+
+            Assert.IsNotNull(nodesResult);
+            Assert.That(nodesResult.Count(), Is.GreaterThan(0));
+            firstTSpline = nodesResult.Take(5).ToList().FindIndex(x => x.Class.ToLower().Contains("tspline"));
+
+            //Take the first 5 elements, get the ones that belong to the expected category and finally get the index in the list
+            firstCatExpectedNode = nodesResult.Take(5).ToList().FindIndex(x => x.Class.ToLower().Contains(searchTerms[1]));
+
+            //Validate that T-Spline nodes are not found in the top 5 results
+            Assert.That(firstTSpline == -1);
+
+            //Validate that the normal node (category Cone) will be at the first top 5 positions
+            Assert.That(firstCatExpectedNode >= 0 && firstCatExpectedNode < 5); ;
+
+        }
+
+
+        //This test will validate that File Path node is found when using the criteria "file path"
+        [Test]
+        [Category("UnitTests")]
+        public void LuceneSearchFilePathValidation()
+        {
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
+            string searchTerm = "file path";
+
+            // Search and check that the results are correct based in the node name provided for the searchTerm
+            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm);
+            Assert.IsNotNull(nodesResult);
+            Assert.That(nodesResult.Count(), Is.GreaterThan(0));
+
+            //Validate that the file path node is in the first 5 elements of the resulting list
+            var nodesNamesList = nodesResult.Take(5).Select(x => x.Name.ToLower());
+            Assert.IsTrue(nodesNamesList.Contains(searchTerm));
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,6 +15,7 @@ using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -269,7 +271,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.State; }
         }
-        
+
         /// <summary>
         /// The total number of info/warnings/errors dismissed by the user on this node.
         /// This is displayed on the node by a little icon beside the Context Menu button.
@@ -356,7 +358,7 @@ namespace Dynamo.ViewModels
             get { return true; }
         }
 
-        [JsonProperty("ShowGeometry",Order = 6)]
+        [JsonProperty("ShowGeometry", Order = 6)]
         public bool IsVisible
         {
             get
@@ -641,7 +643,16 @@ namespace Dynamo.ViewModels
                 return false;
             }
         }
-
+        [Experimental("NVM_ISEXPERIMENTAL_GLPYH")]
+        [JsonIgnore]
+        public bool IsExperimental
+        {
+            get
+            {
+                return NodeModel.IsExperimental && (DynamoModel.FeatureFlags?.CheckFeatureFlag("experimentalGlyphIsVisible", false) ?? false);
+            }
+        }
+            
         /// <summary>
         /// A flag indicating whether the underlying NodeModel's IsFrozen property can be toggled.      
         /// </summary>
@@ -1256,10 +1267,17 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void BuildErrorBubble()
         {
-            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(this)
+            if (ErrorBubble == null)
             {
-                IsCollapsed = this.IsCollapsed
-            };
+                ErrorBubble = new InfoBubbleViewModel(this)
+                {
+                    IsCollapsed = this.IsCollapsed,
+                    // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
+                    // the node as well and the ErrorBubble needs to display on top of these, the
+                    // ErrorBubble's ZIndex should be the node's ZIndex + 2.
+                    ZIndex = ZIndex + 2
+                };
+            }
 
             ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
@@ -1273,14 +1291,8 @@ namespace Dynamo.ViewModels
                     WorkspaceViewModel.Errors.Add(ErrorBubble);
                 });
             }
-            
-            // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
-            // the node as well and the ErrorBubble needs to display on top of these, the
-            // ErrorBubble's ZIndex should be the node's ZIndex + 2.
-            ErrorBubble.ZIndex = ZIndex + 2;
 
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
-            
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
         }
 
@@ -1355,11 +1367,11 @@ namespace Dynamo.ViewModels
                 } 
             }
 
-            if (this.NodeModel.IsCustomFunction)
+            if (this.NodeModel.IsCustomFunction || !string.IsNullOrEmpty(this.PackageName))
             {
                 result = nodeCustomColor;
                 if(result != null)
-                {
+                {   
                     if (ImgGlyphOneSource == null)
                     {
                         ImgGlyphOneSource = packageGlyph;
@@ -1464,7 +1476,15 @@ namespace Dynamo.ViewModels
 
         public void UpdateBubbleContent()
         {
-            if (DynamoViewModel == null) return;
+            if (NodeModel.BlockInfoBubbleUpdates)
+            {
+                return;
+            }
+
+            if (DynamoViewModel == null)
+            {
+                return;
+            }
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning; 
             bool isNodeStateInfo = NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo;

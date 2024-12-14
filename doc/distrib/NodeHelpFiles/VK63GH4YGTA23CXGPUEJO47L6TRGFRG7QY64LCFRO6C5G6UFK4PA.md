@@ -5,5 +5,5 @@ This Cuboid By Lengths allows the user to input an origin point for the center o
 ___
 ## Example File
 
-![ByLengths (origin, width, length, height)](./Autodesk.DesignScript.Geometry.Cuboid.ByLengths(origin,%20width,%20length,%20height)_img.png)
+![ByLengths (origin, width, length, height)](./VK63GH4YGTA23CXGPUEJO47L6TRGFRG7QY64LCFRO6C5G6UFK4PA_img.png)
 

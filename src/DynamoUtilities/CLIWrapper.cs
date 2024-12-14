@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Dynamo.Utilities
@@ -37,7 +38,8 @@ namespace Dynamo.Utilities
                 RedirectStandardOutput = true,
                 RedirectStandardInput = true,
                 RedirectStandardError = true,
-
+                StandardInputEncoding = Encoding.UTF8,
+                StandardOutputEncoding = Encoding.UTF8,
                 UseShellExecute = false,
                 Arguments = argString,
                 FileName = GetToolPath(relativeEXEPath)
@@ -97,8 +99,9 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="timeoutms">will return empty string if we don't finish reading all data in the timeout provided in milliseconds.</param>
         /// <param name="mockReadLine"> if this delegate is non null, it will be used instead of communicating with std out of the process. Used for testing only.</param>
+        ///  <param name="decodeData"> if this flag is true means that the process is returning base64 encoded data then we need to decode it</param>
         /// <returns></returns>
-        protected virtual string GetData(int timeoutms, Func<string> mockReadLine = null)
+        protected virtual string GetData(int timeoutms, Func<string> mockReadLine = null, bool decodeData = false)
         {
             var readStdOutTask = Task.Run(() =>
             {
@@ -142,6 +145,12 @@ namespace Dynamo.Utilities
                                 //if we have started recieving valid data, start recording
                                 if (!string.IsNullOrWhiteSpace(line) && start)
                                 {
+                                    if(decodeData == true)
+                                    {
+                                        //Encode the info to base64 and send it to the Md2Html tool
+                                        var base64EncodedBytes = Convert.FromBase64String(line);
+                                        line = Encoding.UTF8.GetString(base64EncodedBytes);
+                                    }                                 
                                     writer.WriteLine(line);
                                 }
                             }

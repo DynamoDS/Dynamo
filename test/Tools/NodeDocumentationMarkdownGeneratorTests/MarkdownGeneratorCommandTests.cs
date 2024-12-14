@@ -164,7 +164,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
-            Assert.AreEqual(685, generatedFileNames.Count());
+            Assert.AreEqual(756, generatedFileNames.Count());
         }
 
         [Test]
@@ -225,7 +225,9 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             // Arrange
             var testOutputDirName = "TestMdOutput_CoreNodeModels";
- 
+            //these are new files/nodes so there is no dictionary content fo them.
+            var filesToSkip = new string[] { "CoreNodeModels.FormattedStringFromObject", "CoreNodeModels.FormattedStringFromArray" };
+                
             var coreNodeModelsDll = Path.Combine(DynamoCoreNodesDir, CORENODEMODELS_DLL_NAME);
             Assert.That(File.Exists(coreNodeModelsDll));
 
@@ -250,8 +252,8 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             //assert that the generated markdown files all contain an "indepth section" from the dictionary entry, which means
             //they were all found.
-
-            Assert.True(generatedFileNames.Where(x=>Path.GetExtension(x).Contains("md")).All(x => File.ReadAllText(x).ToLower().Contains("in depth")));
+            var generatedFileNamesSubset = generatedFileNames.Where(x => !filesToSkip.Contains(Path.GetFileNameWithoutExtension(x)));
+            Assert.True(generatedFileNamesSubset.Where(x=>Path.GetExtension(x).Contains("md")).All(x => File.ReadAllText(x).ToLower().Contains("in depth")));
           
         }
 
@@ -521,6 +523,62 @@ namespace NodeDocumentationMarkdownGeneratorTests
         }
 
         [Test]
+        public void CanRenameFileLongName()
+        {
+            // Arrange
+            var originalOutDirName = "fallback_docs";
+            var filesDirectory = "LongNameFiles";
+            var emptySpaceChar = "%20";
+            var originalOutDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, originalOutDirName, filesDirectory));
+
+            tempDirectory = CreateTempOutputDirectory();
+            Assert.That(tempDirectory.Exists);
+
+            CopyFilesRecursively(originalOutDir, tempDirectory);
+
+            var originalMdFile = tempDirectory.GetFiles("*.md", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name).FirstOrDefault();
+            Assert.IsNotNull(originalMdFile);
+
+            //Check that the original MD file contains space characters URL encoded
+            var originalMdFileContent = Path.Combine(tempDirectory.FullName, originalMdFile);
+            Assert.IsTrue(File.ReadAllText(originalMdFileContent).Contains(emptySpaceChar));
+
+            // Act
+            var opts = new RenameOptions
+            {
+                InputMdDirectory = tempDirectory.FullName,
+                MaxLength = 90
+            };
+
+            //Rename all the files in the temp directory
+            RenameCommand.HandleRename(opts);
+
+            // Assert
+            var finalMdFile = tempDirectory.GetFiles("*.md", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name).FirstOrDefault();
+            Assert.IsNotNull(finalMdFile);
+
+            var hashedName = Path.GetFileNameWithoutExtension(finalMdFile); 
+
+            //Validates that all the renamed files start with the hashed name
+            var allFiles = tempDirectory.GetFiles("*.*", SearchOption.TopDirectoryOnly).Select(x => x.Name);
+            foreach(var file in allFiles)
+            {
+                Assert.IsTrue(file.StartsWith(hashedName));
+            }
+
+            //Get the image file name renamed
+            var imageFile = tempDirectory.GetFiles("*.jpg", SearchOption.TopDirectoryOnly)
+                .Select(x => x.Name).FirstOrDefault();
+            Assert.IsNotNull(imageFile);
+
+            //Validates that the image file name is present inside the md file content.
+            var finalMdFileContent = Path.Combine(tempDirectory.FullName, finalMdFile);
+            Assert.IsTrue(File.ReadAllText(finalMdFileContent).Contains(imageFile));
+        }
+
+        [Test]
         public void CanRenameFilesInADirectory()
         {
             // Arrange
@@ -583,7 +641,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
         protected static void SaveCoreLayoutSpecToPath(Assembly assembly, string savePath)
         {
-            var resource = "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json";
+            var resource = "Dynamo.LibraryViewExtensionWebView2.Packages.LibrarieJS.layoutSpecs.json";
             assembly = assembly == null ? Assembly.GetExecutingAssembly() : assembly;
             var stream = assembly.GetManifestResourceStream(resource);
             var fs = File.Create(savePath);

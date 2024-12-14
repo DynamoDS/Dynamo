@@ -10,13 +10,7 @@
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>
-            Reference the core node types for Dynamo. It contains the following files:
-            1) Analysis.dll
-            2) GeometryColor.dll
-            3) DSCoreNodes.dll
-            4) CoreNodeModels.dll
-            5) Watch3DNodeModels.dll
-            6) UnitNodeModels.dll
+            Reference the core node types for Dynamo.
         </description>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>

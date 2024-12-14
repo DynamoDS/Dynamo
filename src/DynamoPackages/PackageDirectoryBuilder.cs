@@ -11,7 +11,11 @@ namespace Dynamo.PackageManager
     public interface IPackageDirectoryBuilder
     {
         IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownfiles);
+        IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles);
+
+        [Obsolete]
         IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles);
+
     }
 
     /// <summary>
@@ -33,7 +37,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="fileSystem">For moving files around</param>
         /// <param name="pathRemapper">For modifying custom node paths</param>
-        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper) 
+        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.pathRemapper = pathRemapper ?? throw new ArgumentNullException(nameof(pathRemapper));
@@ -57,30 +61,65 @@ namespace Dynamo.PackageManager
             WritePackageHeader(package, rootDir);
             RemoveUnselectedFiles(contentFiles, rootDir);
             CopyFilesIntoPackageDirectory(contentFiles, markdownFiles, dyfDir, binDir, extraDir, docDir);
-            RemoveDyfFiles(contentFiles, dyfDir); 
-
+            //RemoveDyfFiles(contentFiles, dyfDir); // Commenting this out for now to allow for unforeseen issues to manifest
             RemapCustomNodeFilePaths(contentFiles, dyfDir.FullName);
 
             return rootDir;
         }
 
-        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
+        /// <summary>
+        ///     Attempts to recreate the file/folder structure from an existing data
+        /// </summary>
+        /// <param name="package">The package to be formed</param>
+        /// <param name="packagesDirectory">The parent directory (the published folder or the default packages directory)</param>
+        /// <param name="roots">All possible root folders for this collection of contentFiles</param>
+        /// <param name="contentFiles">The collection of files to be moved</param>
+        /// <param name="markdownFiles">Separately provided markdown files</param>
+        /// <returns></returns>
+        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
         {
-            
+
             var rootPath = Path.Combine(packagesDirectory, package.Name);
             var rootDir = fileSystem.TryCreateDirectory(rootPath);
             package.RootDirectory = rootDir.FullName;
 
             var dyfFiles = new List<string>();
 
-            WritePackageHeader(package, rootDir);
-
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
-            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, rootDir, out dyfFiles);
-            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  
-            
+            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, roots, rootDir, out dyfFiles);
+            //RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles); // Commenting this out for now to allow for unforeseen issues to manifest
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
 
+            WritePackageHeader(package, rootDir);
+
+            return rootDir;
+        }
+
+        /// <summary>
+        /// [Obsolete] Attempts to recreate the file/folder structure from an existing data
+        /// </summary>
+        /// <param name="package">The package to be formed</param>
+        /// <param name="packagesDirectory">The parent directory (the published folder or the default packages directory)</param>
+        /// <param name="contentFiles">The collection of files to be moved</param>
+        /// <param name="markdownFiles">Separately provided markdown files</param>
+        /// <returns></returns>
+        [Obsolete]
+        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
+        {
+
+            var rootPath = Path.Combine(packagesDirectory, package.Name);
+            var rootDir = fileSystem.TryCreateDirectory(rootPath);
+            var sourcePackageDir = package.RootDirectory;
+            package.RootDirectory = rootDir.FullName;
+
+            var dyfFiles = new List<string>();
+
+            RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
+            CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, sourcePackageDir, rootDir, out dyfFiles);
+            //RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);  // Commenting this out for now to allow for unforeseen issues to manifest
+            RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
+
+            WritePackageHeader(package, rootDir);
 
             return rootDir;
         }
@@ -107,8 +146,7 @@ namespace Dynamo.PackageManager
         {
             foreach (var func in filePaths.Where(x => x.EndsWith(".dyf")))
             {
-                //var remapLocation = dyfFiles.First(x => Path.GetDirectoryName(x).Equals(Path.GetDirectoryName(func)));
-                var remapLocation = dyfFiles.First(x =>
+                var remapLocation = dyfFiles.FirstOrDefault(x =>
                 {
                     var p1 = Path.GetFileName(Path.GetDirectoryName(x));
                     var f1 = Path.GetFileName(x);
@@ -120,6 +158,14 @@ namespace Dynamo.PackageManager
 
                     return r1.Equals(r2);
                 });
+
+                // If no full path match is found, try to match based on filename only
+                if (remapLocation == null)
+                {
+                    remapLocation = dyfFiles.FirstOrDefault(x =>
+                        Path.GetFileName(x).Equals(Path.GetFileName(func), StringComparison.OrdinalIgnoreCase));
+                }
+
                 pathRemapper.SetPath(func, remapLocation);
             }
         }
@@ -128,7 +174,7 @@ namespace Dynamo.PackageManager
         private void RemoveRetainDyfFiles(IEnumerable<string> filePaths, List<string> dyfFiles)
         {
             var dyfsToRemove = filePaths
-                .Where(x => x.EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != Path.GetDirectoryName(dyfFiles.First(f => Path.GetFileName(f).Equals(Path.GetFileName(x)))));
+                .Where(x => x.ToLower().EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != Path.GetDirectoryName(dyfFiles.First(f => Path.GetFileName(f).Equals(Path.GetFileName(x)))));
 
             foreach (var dyf in dyfsToRemove)
             {
@@ -139,7 +185,7 @@ namespace Dynamo.PackageManager
         private void RemoveDyfFiles(IEnumerable<string> filePaths, IDirectoryInfo dyfDir)
         {
             var dyfsToRemove = filePaths
-                .Where(x => x.EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != dyfDir.FullName);
+                .Where(x => x.ToLower().EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != dyfDir.FullName);
 
             foreach (var dyf in dyfsToRemove)
             {
@@ -166,9 +212,9 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void FormPackageDirectory(string packageDirectory, string packageName, 
-            out IDirectoryInfo root, out IDirectoryInfo dyfDir, 
-            out IDirectoryInfo binDir, out IDirectoryInfo extraDir, 
+        private void FormPackageDirectory(string packageDirectory, string packageName,
+            out IDirectoryInfo root, out IDirectoryInfo dyfDir,
+            out IDirectoryInfo binDir, out IDirectoryInfo extraDir,
             out IDirectoryInfo docDir)
         {
             var rootPath = Path.Combine(packageDirectory, packageName);
@@ -214,19 +260,38 @@ namespace Dynamo.PackageManager
             fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 
-        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles, IDirectoryInfo rootDir, out List<string> dyfFiles)
+        /// <summary>
+        ///     Copies content and markdown files into a retained package directory, normalizing paths and maintaining directory structure.
+        /// We use the 'roots' collection as a guide to the folders we expect to find in the root directory of the package.
+        /// Based on that, we either want to nest inside a new package folder (if more than 2 root folders are found)
+        /// or if just 1 root folder is found, then use that as the new package folder
+        /// </summary>
+        /// <param name="contentFiles">A collection of collections of content file paths to be copied.</param>
+        /// <param name="markdownFiles">A collection of markdown file paths to be copied.</param>
+        /// <param name="roots">A collection of root directories to normalize file paths against.</param>
+        /// <param name="rootDir">The root directory into which the files will be copied.</param>
+        /// <param name="dyfFiles">An output list of paths to .dyf files that were copied.</param>
+        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles,
+                                                            IEnumerable<string> markdownFiles,
+                                                            IEnumerable<string> roots,
+                                                            IDirectoryInfo rootDir,
+                                                            out List<string> dyfFiles)
         {
             dyfFiles = new List<string>();
 
+            // Normalize roots to ensure consistent comparison
+            var normalizedRoots = roots.Select(r => Path.GetFullPath(r)).ToList();
+
+            // Determine if all files are under a single folder
+            var distinctFolders = contentFiles.SelectMany(f => f)
+                                              .Where(f => f != null)
+                                              .Select(f => f.Substring(normalizedRoots.First().Length).TrimStart(new char[] { '/', '\\' }))
+                                              .Select(rp => rp.Split(new char[] { '/', '\\' })[0])
+                                              .Distinct()
+                                              .Count();
+
             foreach (var files in contentFiles)
             {
-                // We expect that files are bundled in root folders
-                // For single files, just get its folder
-                var commonPath = files.Count() > 1 ? GetLongestCommonPrefix(files.ToArray()) : Path.GetDirectoryName(files.First());
-                commonPath = commonPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                var commonRootPath = Path.GetDirectoryName(commonPath);
-                if (commonRootPath == null) commonRootPath = commonPath; // already at the root
-
                 foreach (var file in files.Where(x => x != null))
                 {
                     // If the file doesn't actually exist, don't copy it
@@ -235,7 +300,25 @@ namespace Dynamo.PackageManager
                         continue;
                     }
 
-                    var relativePath = file.Substring(commonRootPath.Length);
+                    string relativePath = "";
+
+                    foreach (var root in normalizedRoots)
+                    {
+                        var normalizedFile = Path.GetFullPath(file);
+                        if (normalizedFile.StartsWith(root, StringComparison.OrdinalIgnoreCase))
+                        {
+                            relativePath = normalizedFile.Substring(root.Length);
+                            // Trim leading directory separators
+                            relativePath = relativePath.TrimStart(new char[] { '/', '\\' });
+                        }
+                    }
+
+                    // If we have more than 1 root, then we need to nest into a new root folder
+                    // If we don't, and in order to preserve 1-to-1 folder structure, we remove the original root and replace with the package name
+                    if (normalizedRoots.Count() == 1 && distinctFolders == 1)
+                    {
+                        relativePath = RemoveFirstFolder(relativePath);
+                    }
 
                     // Ensure the relative path starts with a directory separator.
                     if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
@@ -245,30 +328,27 @@ namespace Dynamo.PackageManager
 
                     var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
-                    // We are already creating the pkg.json file ourselves, so skip it
-                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")))
-                    {
-                        continue;
-                    }
-
-                    if (fileSystem.FileExists(destPath))
-                    {
-                        fileSystem.DeleteFile(destPath);
-                    }
-
                     if (!Directory.Exists(Path.GetDirectoryName(destPath)))
                     {
                         Directory.CreateDirectory(Path.GetDirectoryName(destPath)); 
                     }
 
-                    fileSystem.CopyFile(file, destPath);
+                    if (!fileSystem.FileExists(destPath))
+                    {
+                        // Only copy new files into the destination folder.
+                        // Under `retain folder structure`, if the destination file == source file,
+                        // then that is simply the actual Package file we want to work with. 
+                        fileSystem.CopyFile(file, destPath);
+                    }
 
-                    if (file.EndsWith(".dyf"))
+                    if (file.ToLower().EndsWith(".dyf"))
                     {
                         dyfFiles.Add(destPath);
                     }
                 }
             }
+
+
             // All files under Markdown directory do not apply to the rule above,
             // because they may fall into extra folder instead of docs folder,
             // currently there is on obvious way to filter them properly only based on path string.
@@ -286,6 +366,103 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private static string RemoveFirstFolder(string path)
+        {
+            var parts = path.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length > 1) return "\\" + String.Join("\\", parts, 1, parts.Length - 1);
+
+            return "\\" + parts[0];
+        }
+
+        /// <summary>
+        /// [Obsolete] Copies content and markdown files into a retained package directory, 
+        /// maintaining directory structure and handling specific cases like .dyf files and markdown files.
+        /// </summary>
+        /// <param name="contentFiles">A collection of collections of content file paths to be copied.</param>
+        /// <param name="markdownFiles">A collection of markdown file paths to be copied.</param>
+        /// <param name="sourcePackageDir">The source directory of the package files.</param>
+        /// <param name="rootDir">The root directory into which the files will be copied.</param>
+        /// <param name="dyfFiles">An output list of paths to .dyf files that were copied.</param>
+        [Obsolete]
+        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles, string sourcePackageDir, IDirectoryInfo rootDir, out List<string> dyfFiles)
+        {
+            dyfFiles = new List<string>();
+
+            foreach (var files in contentFiles)
+            {
+                foreach (var file in files.Where(x => x != null))
+                {
+                    // If the file doesn't actually exist, don't copy it
+                    if (!fileSystem.FileExists(file))
+                    {
+                        continue;
+                    }
+
+                    // TODO: This will be properly fixed in the next PR
+                    var relativePath = sourcePackageDir != null ? file.Substring(sourcePackageDir.Length) : Path.GetFileName(file);
+
+                    // Ensure the relative path starts with a directory separator.
+                    if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
+                    {
+                        relativePath = relativePath.TrimStart(new char[] { '/', '\\' });
+                        relativePath = Path.DirectorySeparatorChar + relativePath;
+                    }
+
+                    var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
+
+                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")) || destPath.Equals(file))
+                    {
+                        continue;
+                    }
+
+                    if (fileSystem.FileExists(destPath))
+                    {
+                        fileSystem.DeleteFile(destPath);
+                    }
+
+                    if (!Directory.Exists(Path.GetDirectoryName(destPath)))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+                    }
+
+                    fileSystem.CopyFile(file, destPath);
+
+                    if (file.ToLower().EndsWith(".dyf"))
+                    {
+                        dyfFiles.Add(destPath);
+                    }
+                }
+            }
+
+
+
+            // All files under Markdown directory do not apply to the rule above,
+            // because they may fall into extra folder instead of docs folder,
+            // currently there is on obvious way to filter them properly only based on path string.
+            var docDirPath = Path.Combine(rootDir.FullName, DocumentationDirectoryName);
+            foreach (var file in markdownFiles.Where(x => x != null))
+            {
+                var destPath = Path.Combine(docDirPath, Path.GetFileName(file));
+
+                if (fileSystem.FileExists(destPath))
+                {
+                    fileSystem.DeleteFile(destPath);
+                }
+
+                fileSystem.CopyFile(file, destPath);
+            }
+        }
+
+        /// <summary>
+        ///     Copies files into appropriate directories within a package, determining the target directory based on file type and path.
+        /// </summary>
+        /// <param name="files">A collection of file paths to be copied.</param>
+        /// <param name="markdownFiles">A collection of markdown file paths to be copied.</param>
+        /// <param name="dyfDir">The directory for .dyf files.</param>
+        /// <param name="binDir">The directory for binary files (.dll and related).</param>
+        /// <param name="extraDir">The directory for extra files that do not fit other categories.</param>
+        /// <param name="docDir">The directory for documentation files.</param>
         internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IEnumerable<string> markdownFiles,
                                                     IDirectoryInfo dyfDir, IDirectoryInfo binDir,
                                                     IDirectoryInfo extraDir, IDirectoryInfo docDir)
@@ -311,11 +488,11 @@ namespace Dynamo.PackageManager
                 {
                     targetFolder = docDirPath;
                 }
-                else if (file.EndsWith(".dyf"))
+                else if (file.ToLower().EndsWith(".dyf"))
                 {
                     targetFolder = dyfDirPath;
                 }
-                else if (file.EndsWith(".dll") || IsXmlDocFile(file, files) || IsDynamoCustomizationFile(file, files))
+                else if (file.ToLower().EndsWith(".dll") || IsXmlDocFile(file, files) || IsDynamoCustomizationFile(file, files))
                 {
                     targetFolder = binDirPath;
                 }
@@ -354,7 +531,7 @@ namespace Dynamo.PackageManager
         #endregion
 
         #region Public Static Utility Methods 
-        
+
         public static bool IsXmlDocFile(string path, IEnumerable<string> files)
         {
             if (!path.ToLower().EndsWith(".xml")) return false;
@@ -389,29 +566,6 @@ namespace Dynamo.PackageManager
                        .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                        .ToUpperInvariant();
         }
-
-
-        /// <summary>
-        /// Utility method to get the common file path 
-        /// </summary>
-        /// <param name="s">A collection of filepaths</param>
-        /// <returns></returns>
-        public static string GetLongestCommonPrefix(string[] s)
-        {
-            int k = s[0].Length;
-            for (int i = 1; i < s.Length; i++)
-            {
-                k = Math.Min(k, s[i].Length);
-                for (int j = 0; j < k; j++)
-                    if (s[i][j] != s[0][j])
-                    {
-                        k = j;
-                        break;
-                    }
-            }
-            return s[0].Substring(0, k);
-        }
-
         #endregion
 
     }

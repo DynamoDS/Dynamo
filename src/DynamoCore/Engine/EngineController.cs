@@ -389,7 +389,6 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="scheduler">The scheduler on which custom node compilation 
         /// task can be scheduled.</param>
-        /// 
         internal void ProcessPendingCustomNodeSyncData(IScheduler scheduler)
         {
             while (pendingCustomNodeSyncData.Count > 0)
@@ -438,7 +437,8 @@ namespace Dynamo.Engine
 
             foreach (var node in nodes)
             {
-                if (!node.IsInputNode) continue;
+                //Ignore inputs, nodes with input ports, and nodes derived from custom nodes.
+                if (!node.IsInputNode || node.InPorts.Any() || node.IsCustomFunction) continue;
 
                 // Only one or the other of the two lists, Added or Modified, will match the node GUID if they do. 
                 bool isAdded = false;

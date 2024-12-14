@@ -498,6 +498,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This node is currently experimental. Its behavior, name, and signature are subject to change..
+        /// </summary>
+        public static string DocsExperimentalPrefixMessage {
+            get {
+                return ResourceManager.GetString("DocsExperimentalPrefixMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download latest version.
         /// </summary>
         public static string DownloadLatestButton {
@@ -989,6 +998,15 @@ namespace Dynamo.Properties {
         public static string InputNodeDescription {
             get {
                 return ResourceManager.GetString("InputNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to default input name, rename me!.
+        /// </summary>
+        public static string InputNodeRenameHint {
+            get {
+                return ResourceManager.GetString("InputNodeRenameHint", resourceCulture);
             }
         }
         
@@ -1517,6 +1535,24 @@ namespace Dynamo.Properties {
         public static string PackageManagerPackageAlreadyExists {
             get {
                 return ResourceManager.GetString("PackageManagerPackageAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} files and {1} folders will be created..
+        /// </summary>
+        public static string PackageManagerPackagePreviewCounter {
+            get {
+                return ResourceManager.GetString("PackageManagerPackagePreviewCounter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} files and {1} folders loaded..
+        /// </summary>
+        public static string PackageManagerPackageSelectCounter {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageSelectCounter", resourceCulture);
             }
         }
         

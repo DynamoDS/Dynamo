@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>DynamoVisualProgramming.ServiceCoreRuntime</id>
+        <version>$Version$</version>
+        <authors>Autodesk</authors>
+        <owners>Autodesk</owners>
+        <license type="expression">Apache-2.0</license>
+        <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Assemblies required to start a DynamoModel and execute DesignScript code bundled along with their dependencies.
+            Built targeting linux. </description>
+        <copyright>Copyright Autodesk 2023</copyright>
+ <dependencies>
+            <group targetFramework="$TargetFramework$">
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+              <file src="**"
+              target="lib\$TargetFramework$\"
+              exclude="**\*.pdb;**\*.txt;**\*.rtf;en-US\fallback_docs\*;NodeHelpSharedDocs\*;Open Source Licenses\*;samples\**;**\*Tests.dll;**\*Tests.runtimeconfig.json;**\*Tests.pdb;FFITarget.*;ProtoTestConsoleRunner.exe;TestCodeBlockNodeSecurityIssue.dll;ProtoTest.dll;ProtoTest.pdb;nunit*.dll;NUnit3.TestAdapter.*;TestServices.* "/>
+    </files>
+</package>

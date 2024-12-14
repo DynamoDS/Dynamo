@@ -58,8 +58,8 @@ namespace DynamoShapeManager
         public Preloader(string rootFolder)
             : this(rootFolder, new[]
             {
+                new Version(231,0,0),
                 new Version(230,0,0),
-                new Version(229,0,0),
             })
         {
         }

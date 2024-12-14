@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
+using System.Runtime.InteropServices;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
-using Dynamo.Models;
 
 namespace Dynamo.PackageManager
 {
@@ -120,6 +121,8 @@ namespace Dynamo.PackageManager
 
         private void OnPackageAdded(Package pkg)
         {
+            Log($"attempting to load {pkg.Name} {pkg.VersionName} from {pkg.RootDirectory}");
+
             if (PackageAdded != null)
             {
                 PackageAdded(pkg);
@@ -196,6 +199,8 @@ namespace Dynamo.PackageManager
             List<Assembly> failedNodeLibs = new List<Assembly>();
             try
             {
+                var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
+
                 List<Assembly> blockedAssemblies = new List<Assembly>();
                 // Try to load node libraries from all assemblies
                 foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
@@ -243,7 +248,8 @@ namespace Dynamo.PackageManager
 
                 // load custom nodes
                 var packageInfo = new Graph.Workspaces.PackageInfo(package.Name, new Version(package.VersionName));
-                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo);
+                // skip loding if the CustomNodeDirectory does not exist
+                var customNodes = Directory.Exists(package.CustomNodeDirectory)? OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo) : [];
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
@@ -267,6 +273,19 @@ namespace Dynamo.PackageManager
                 PythonServices.PythonEngineManager.Instance.
                     LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
 
+                Log($"Loaded Package {package.Name} {package.VersionName} from {package.RootDirectory}");
+                try
+                {
+                    if (dynamoVersion.Major == 3 && Version.Parse(package.EngineVersion).Major < 3)
+                    {
+                        Log($@"{package.Name} {package.VersionName} has an engine version of {package.EngineVersion},
+                        it may not be compatible with this version of Dynamo due to .NET runtime changes. ");
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Log($"exception while trying to compare version info between package and dynamo {ex}");
+                }
                 PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
@@ -626,16 +645,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="packageDirectoryPath">path to package location</param>
         /// <param name="discoveredPkg">package object to check</param>
-        private void CheckPackageNodeLibraryCertificates(string packageDirectoryPath, Package discoveredPkg)
+        private static void CheckPackageNodeLibraryCertificates(string packageDirectoryPath, Package discoveredPkg)
         {
-            var dllfiles = new System.IO.DirectoryInfo(discoveredPkg.BinaryDirectory).EnumerateFiles("*.dll");
-            if (discoveredPkg.Header.node_libraries.Count() == 0 && dllfiles.Count() != 0)
-            {
-                Log(String.Format(
-                    String.Format(Resources.InvalidPackageNoNodeLibrariesDefinedInPackageJson,
-                    discoveredPkg.Name, discoveredPkg.RootDirectory)));
-            }
-
             foreach (var nodeLibraryAssembly in discoveredPkg.Header.node_libraries)
             {
 
@@ -678,36 +689,54 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Attempt to load a managed assembly in to MetaDataLoad context. 
         /// </summary>
+        /// <param name="rootDir">The root directory of the package</param>
         /// <param name="filename">The filename of a DLL</param>
         /// <param name="mlc">The MetaDataLoadContext to load the package assemblies into for inspection.</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns Success if success, NotManagedAssembly if BadImageFormatException, AlreadyLoaded if FileLoadException</returns>
-        internal static AssemblyLoadingState TryMetaDataContextLoad(string filename,MetadataLoadContext mlc, out Assembly assem)
+        internal static AssemblyLoadingState TryMetaDataContextLoad(string rootDir, string filename, MetadataLoadContext mlc, out Assembly assem)
         {
-                try
+            Assembly assemName = null;
+            assem = null;
+            try
+            {
+                var mlcAssemblies = mlc.GetAssemblies();
+                assemName = mlcAssemblies.FirstOrDefault(x => x.GetName().Name.ToLower().Equals(Path.GetFileNameWithoutExtension(filename).ToLower()), null);
+                assem = mlc.LoadFromAssemblyPath(filename);
+                
+                var mlcAssemblies2 = mlc.GetAssemblies();
+                //if loading the assembly did not actually add a new assembly to the MLC
+                //then we've loaded it already, and our current behavior is to
+                //disable publish when a package contains the same assembly twice.
+                if (mlcAssemblies2.Count() == mlcAssemblies.Count())
                 {
-                    var mlcAssemblies = mlc.GetAssemblies();
-                    assem = mlc.LoadFromAssemblyPath(filename);
-                    var mlcAssemblies2 = mlc.GetAssemblies();
-                    //if loading the assembly did not actually add a new assembly to the MLC
-                    //then we've loaded it already, and our current behavior is to
-                    //disable publish when a package contains the same assembly twice.
-                    if (mlcAssemblies2.Count() == mlcAssemblies.Count())
-                    {
-                        throw new FileLoadException(filename);
-                    }
-                    return AssemblyLoadingState.Success;
+                    throw new FileLoadException(filename);
                 }
-                catch (BadImageFormatException)
-                {
-                    assem = null;
-                    return AssemblyLoadingState.NotManagedAssembly;
-                }
-                catch (FileLoadException)
-                {
-                    assem = null;
-                    return AssemblyLoadingState.AlreadyLoaded;
-                }
+                return AssemblyLoadingState.Success;
+            }
+            catch (BadImageFormatException)
+            {
+                assem = null;
+                return AssemblyLoadingState.NotManagedAssembly;
+            }
+            catch (FileLoadException)
+            {
+                assem = assem == null ? assemName : assem;
+                return AssemblyLoadingState.AlreadyLoaded;
+            }
+        }
+
+        internal static MetadataLoadContext InitSharedPublishLoadContext()
+        {
+            // Retrieve the location of the assembly and the referenced assemblies used by the domain
+            var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+            // Create PathAssemblyResolver that can resolve assemblies using the created list.
+            var resolver = new PathAssemblyResolver(runtimeAssemblies);
+            return new MetadataLoadContext(resolver);
+        }
+        internal static void CleanSharedPublishLoadContext(MetadataLoadContext mlc)
+        {
+            mlc.Dispose();
         }
 
         /// <summary>

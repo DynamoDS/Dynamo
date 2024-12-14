@@ -240,7 +240,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 }
 
                 string guidName = Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", "");
-                if (currentGuide.TotalSteps - 1 == currentGuide.CurrentStep.Sequence)
+                int offSet = 1;
+                //Due that the Packages guide doesn't have a Welcome popup (like the other guides) then the Guide.Sequence starts at 1 (instead of 0) when we need to use a offSet = 0
+                if (currentGuide.Name == PackagesGuideName)
+                    offSet = 0;
+                if (currentGuide.TotalSteps - offSet == currentGuide.CurrentStep.Sequence)
                 {
                     Logging.Analytics.TrackEvent(Logging.Actions.Completed, Logging.Categories.GuidedTourOperations, guidName, currentGuide.CurrentStep.Sequence);
                 }
@@ -262,20 +266,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 dynamoViewModel.OnEnableShortcutBarItems(true);
 
-                EnableDynamoUI();
-
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
                 GuidesValidationMethods.CurrentExecutingGuide = null;
                 tourStarted = false;
             }
-        }
-
-        private void EnableDynamoUI()
-        {
-            var dynamoView = mainRootElement as DynamoView;
-            if (dynamoView != null)
-                dynamoView.EnableEnvironment(true);
         }
 
         /// <summary>
@@ -306,7 +301,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void ExitTourButton_Click(object sender, RoutedEventArgs e)
         {
             exitGuideWindow.IsOpen = false;
-            EnableDynamoUI();
             GuideFlowEvents.OnGuidedTourExited(currentGuide.Name);
             ExitTour();
         }

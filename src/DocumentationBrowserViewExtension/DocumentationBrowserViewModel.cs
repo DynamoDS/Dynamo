@@ -460,7 +460,7 @@ namespace Dynamo.DocumentationBrowser
             {
                
                 var sharedDocsLocation = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
-                    DocumentationBrowserView.SharedDocsDirectoryName);
+                    Configuration.Configurations.DynamoNodeHelpDocs);
                 return Path.Combine(sharedDocsLocation, Path.GetFileNameWithoutExtension(path)) + ".dyn";
             }
             else

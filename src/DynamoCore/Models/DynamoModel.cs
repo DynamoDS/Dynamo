@@ -36,6 +36,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using DynamoServices;
+using DynamoUtilities;
 using Greg;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -43,6 +44,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
 using ProtoCore.Runtime;
+using static Dynamo.Core.PathManager;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
@@ -96,10 +98,14 @@ namespace Dynamo.Models
     /// </summary>
     public struct HostAnalyticsInfo
     {
-        // Dynamo variation identified by host.
+        // Dynamo variation identified by host, e.g. Dynamo Revit
         public string HostName;
         // Dynamo variation version specific to host
         public Version HostVersion;
+        // Dynamo host application name, e.g. Revit
+        public string HostProductName;
+        // Dynamo host application version, e.g. 2025.2.0
+        public Version HostProductVersion;
         // Dynamo host parent id for analytics purpose.
         public string ParentId;
         // Dynamo host session id for analytics purpose.
@@ -147,6 +153,12 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Return a dictionary of GraphChecksumItems.
+        /// Key will be the workspace guid and its value will be a list of saved checksums(sha256 hash) for that workspace.
+        /// </summary>
+        internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
+
         #endregion
 
         #region static properties
@@ -160,8 +172,8 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Flag to indicate that there is no UI on this process, and things
-        /// like the update manager and the analytics collection should be
-        /// disabled.
+        /// like the node index process, update manager and the analytics collection 
+        /// should be disabled.
         /// </summary>
         public static bool IsHeadless { get; set; }
 
@@ -618,6 +630,7 @@ namespace Dynamo.Models
             {
                 NotificationCounter.StartCounting();
             }
+            DynamoModel.IsCrashing = false;
 
             if (config is DefaultStartConfiguration defaultStartConfig)
             {
@@ -704,24 +717,28 @@ namespace Dynamo.Models
                     // Do nothing for now
                 }
             }
+            //If network traffic is disabled, analytics should also be disabled - this is already done in
+            //our other entry points(CLI,Sandbox etc) - but
+            //not all integrators will use those entry points, some may just create a DynamoModel directly.
+            Analytics.DisableAnalytics = NoNetworkMode || Analytics.DisableAnalytics || IsServiceMode;
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client for web traffic reason.
-            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Analytics.DisableAnalytics)
+            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Analytics.DisableAnalytics && !NoNetworkMode)
             {
                 HandleAnalytics();
 
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
                 //event based/async then just run this on main thread - ie get rid of the Task.Run()
-                var mainThreadSyncContext = new SynchronizationContext();
+                var mainThreadSyncContext = SynchronizationContext.Current ?? new SynchronizationContext();
                 Task.Run(() =>
                 {
                     try
                     {
                         //this will kill the CLI process after cacheing the flags in Dynamo process.
                         using (FeatureFlags =
-                                new DynamoUtilities.DynamoFeatureFlagsManager(
+                                new DynamoFeatureFlagsManager(
                                 AnalyticsService.GetUserIDForSession(),
                                 mainThreadSyncContext,
                                 IsTestMode))
@@ -733,6 +750,7 @@ namespace Dynamo.Models
                     }
                     catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
                 });
+                DynamoFeatureFlagsManager.FlagsRetrieved += HandleFeatureFlags;
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
@@ -788,51 +806,52 @@ namespace Dynamo.Models
             var userCommonPackageFolder = pathManager.CommonPackageDirectory;
             AddPackagePath(userCommonPackageFolder);
 
-            // Load Python Template
-            // The loading pattern is conducted in the following order
-            // 1) Set from DynamoSettings.XML
-            // 2) Set from API via the configuration file
-            // 3) Set from PythonTemplate.py located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
-            // 4) Set from OOTB hard-coded default template
+                // Load Python Template
+                // The loading pattern is conducted in the following order
+                // 1) Set from DynamoSettings.XML
+                // 2) Set from API via the configuration file
+                // 3) Set from PythonTemplate.py located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
+                // 4) Set from OOTB hard-coded default template
 
-            // If a custom python template path doesn't already exists in the DynamoSettings.xml
-            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
-            {
-                // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
-                // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
-                // while passing the config to the 'DynamoModel' constructor.
-                if (config is DefaultStartConfiguration)
+                // If a custom python template path doesn't already exists in the DynamoSettings.xml
+                if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) ||
+                    !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
                 {
-                    var configurationSettings = (DefaultStartConfiguration)config;
-                    var templatePath = configurationSettings.PythonTemplatePath;
-
-                    // If a custom python template path was set in the config apply that template
-                    if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
+                    // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
+                    // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
+                    // while passing the config to the 'DynamoModel' constructor.
+                    if (config is DefaultStartConfiguration)
                     {
-                        PreferenceSettings.PythonTemplateFilePath = templatePath;
+                        var configurationSettings = (DefaultStartConfiguration)config;
+                        var templatePath = configurationSettings.PythonTemplatePath;
+
+                        // If a custom python template path was set in the config apply that template
+                        if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
+                        {
+                            PreferenceSettings.PythonTemplateFilePath = templatePath;
                         Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + PreferenceSettings.PythonTemplateFilePath);
+                        }
+
+                        // Otherwise fallback to the default
+                        else
+                        {
+                            SetDefaultPythonTemplate();
+                        }
                     }
 
-                    // Otherwise fallback to the default
                     else
                     {
+                        // Fallback to the default
                         SetDefaultPythonTemplate();
                     }
                 }
 
                 else
                 {
-                    // Fallback to the default
-                    SetDefaultPythonTemplate();
+                    // A custom python template path already exists in the DynamoSettings.xml
+                    Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
                 }
-            }
-
-            else
-            {
-                // A custom python template path already exists in the DynamoSettings.xml
-                Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
-            }
-
+            
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
@@ -851,6 +870,7 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
+            //don't load linter manager in service mode.
             if (!IsServiceMode)
             {
                 LinterManager = new LinterManager(this.ExtensionManager);
@@ -914,6 +934,7 @@ namespace Dynamo.Models
 
             if (extensions.Any())
             {
+                Logger.Log("\nLoading Dynamo extensions:");
                 var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
@@ -964,20 +985,41 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
-            StartBackupFilesTimer();
+            DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
+            if (!IsServiceMode)
+            {
+                StartBackupFilesTimer();
+            }
 
             TraceReconciliationProcessor = this;
 
             State = DynamoModelState.StartedUIless;
-            // Write index to disk only once
-            LuceneUtility.CommitWriterChanges();
+
+            if(!IsServiceMode)
+            {
+                // Write index to disk only once
+                LuceneUtility.CommitWriterChanges();
+            }
             //Disposed writer if it is in file system mode so that the index files can be used by other processes (potentially a second Dynamo session)
             if (LuceneUtility.startConfig.StorageType == LuceneSearchUtility.LuceneStorage.FILE_SYSTEM)
             {
-                LuceneUtility.DisposeWriter();
+                    LuceneUtility.DisposeWriter();
             }
+            
+
+            GraphChecksumDictionary = new Dictionary<string, List<string>>();
+                 
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        /// <summary>
+        /// When feature flags received, handle them and make changes 
+        /// </summary>
+        private void HandleFeatureFlags()
+        {
+            PreferenceSettings.UpdateNamespacesToExcludeFromLibrary();
+            return;
         }
 
         private void HandleAnalytics()
@@ -1286,11 +1328,6 @@ namespace Dynamo.Models
             // Override in derived classes to deal with orphaned serializables.
         }
 
-        void UpdateManager_Log(LogEventArgs args)
-        {
-            Logger.Log(args.Message, args.Level);
-        }
-
         /// <summary>
         /// LibraryLoaded event handler.
         /// </summary>
@@ -1377,6 +1414,7 @@ namespace Dynamo.Models
             LibraryServices.LibraryLoaded -= LibraryLoaded;
 
             EngineController.VMLibrariesReset -= ReloadDummyNodes;
+            DynamoFeatureFlagsManager.FlagsRetrieved -= HandleFeatureFlags;
 
             Logger.Dispose();
 
@@ -1407,6 +1445,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
             DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
+            DynamoConsoleLogger.LogErrorToDynamoConsole -= LogErrorMessageWrapper;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
@@ -1437,11 +1476,18 @@ namespace Dynamo.Models
             var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
+                //just bail in service mode.
+                if (IsServiceMode)
+                {
+                    return;
+                }
+
                 if (customNodeSearchRegistry.Contains(info.FunctionId)
                         || !info.IsVisibleInDynamoLibrary)
                     return;
 
-                var elements = SearchModel.Entries.OfType<CustomNodeSearchElement>().
+               
+                var elements = SearchModel?.Entries.OfType<CustomNodeSearchElement>().
                                 Where(x =>
                                 {
                                     // Search for common paths and get rid of empty paths.
@@ -1459,6 +1505,7 @@ namespace Dynamo.Models
                     }
                     return;
                 }
+                
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -1495,6 +1542,7 @@ namespace Dynamo.Models
                     }
                 };
             };
+
             CustomNodeManager.DefinitionUpdated += UpdateCustomNodeDefinition;
         }
 
@@ -1730,29 +1778,87 @@ namespace Dynamo.Models
             {
                 ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
                 PreferenceSettings.InitializeNamespacesToExcludeFromLibrary();
-
-                if (string.IsNullOrEmpty(PreferenceSettings.BackupLocation))
-                {
-                    PreferenceSettings.BackupLocation = pathManager.DefaultBackupDirectory;
-                }
-
-                UpdateBackupLocation(PreferenceSettings.BackupLocation);
+                InitializePreferenceLocations();
             }
         }
 
-        internal bool UpdateBackupLocation(string selectedBackupLocation)
+        private void InitializePreferenceLocations()
         {
-            return pathManager.UpdateBackupLocation(selectedBackupLocation);
+            if (string.IsNullOrEmpty(PreferenceSettings.BackupLocation))
+            {
+                PreferenceSettings.BackupLocation = pathManager.DefaultBackupDirectory;
+            }
+            if (string.IsNullOrEmpty(PreferenceSettings.TemplateFilePath))
+            {
+                PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
+            }
+            var supportedLocales = Configurations.SupportedLocaleDic.Values.ToList<string>();
+
+            //Get the last part of the template path e.f. if the path is C:\ProgramData\Dynamo\Dynamo Core\templates\en-US then currentPathLocale = en-US
+            var pathParts = PreferenceSettings.TemplateFilePath.Split("\\");
+            var currentPathLocale = pathParts.Last();
+
+            //Check if the locale is found inside the supported locales 
+            if (supportedLocales.Contains(currentPathLocale))
+            {
+                //If the CurrentUICulture is different than the locale in the TemplateFilePath then needs to be updated         
+                if (CultureInfo.CurrentUICulture.Name != currentPathLocale)
+                {
+                    PreferenceSettings.TemplateFilePath= PreferenceSettings.TemplateFilePath.Replace(currentPathLocale, CultureInfo.CurrentUICulture.Name);
+                }
+            }
+
+
+            UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
+            UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
+        }
+        internal bool UpdatePreferenceItemLocation(PreferenceItem item, string newLocation)
+        {
+            if (string.IsNullOrEmpty(newLocation)) return false;
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    PreferenceSettings.BackupLocation = newLocation;
+                    break;
+                case PreferenceItem.Templates:
+                    PreferenceSettings.TemplateFilePath = newLocation;
+                    break;
+                default:
+                    break;
+            }
+            return pathManager.UpdatePreferenceItemPath(item, newLocation);
+        }
+        internal bool IsDefaultPreferenceItemLocation(PreferenceItem item)
+        {
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    return PreferenceSettings.BackupLocation.Equals(pathManager.DefaultBackupDirectory);
+                case PreferenceItem.Templates:
+                    return PreferenceSettings.TemplateFilePath.Equals(pathManager.DefaultTemplatesDirectory);
+                default:
+                    return false;
+            }
         }
 
-        internal bool IsDefaultBackupLocation()
+        internal string DefaultPreferenceItemLocation(PreferenceItem item)
         {
-            return PreferenceSettings.BackupLocation.Equals(pathManager.DefaultBackupDirectory);
+            switch (item)
+            {
+                case PreferenceItem.Backup:
+                    return pathManager.DefaultBackupDirectory;
+                case PreferenceItem.Templates:
+                    return pathManager.DefaultTemplatesDirectory;
+                default:
+                    return string.Empty;
+            }
         }
-
-        internal string DefaultBackupLocation()
+        internal string ResetPreferenceItemLocation(PreferenceItem item)
         {
-            return pathManager.DefaultBackupDirectory;
+            var loc = DefaultPreferenceItemLocation(item);
+            UpdatePreferenceItemLocation(item, loc);
+
+            return loc;
         }
 
         /// <summary>
@@ -1968,6 +2074,29 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Opens a Dynamo workspace from a path to a template on disk.
+        /// </summary>
+        /// <param name="filePath">Path to file</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        public void OpenTemplateFromPath(string filePath, bool forceManualExecutionMode = false)
+        {
+
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex))
+            {
+                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, true);
+            }
+            else
+            {
+                // These kind of exceptions indicate that file is not accessible 
+                if (ex is IOException || ex is UnauthorizedAccessException || ex is JsonReaderException)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        /// <summary>
         /// Inserts a Dynamo graph or Custom Node inside the current workspace from a file path
         /// </summary>
         /// <param name="filePath"></param>
@@ -2011,7 +2140,7 @@ namespace Dynamo.Models
             JsonReader reader = new JsonTextReader(new StringReader(json));
             var obj = JObject.Load(reader);
             var viewBlock = obj["View"];
-            var dynamoBlock = viewBlock == null ? null : viewBlock["Dynamo"];
+            var dynamoBlock = viewBlock == null ? null : viewBlock[Configurations.DynamoAsString];
             if (dynamoBlock == null)
                 return DynamoPreferencesData.Default();
 
@@ -2023,7 +2152,7 @@ namespace Dynamo.Models
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture
             };
@@ -2038,8 +2167,9 @@ namespace Dynamo.Models
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
+        /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
+        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
         {
             try
             {
@@ -2050,7 +2180,7 @@ namespace Dynamo.Models
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, isTemplate, out ws))
                         {
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
@@ -2086,7 +2216,7 @@ namespace Dynamo.Models
                 {
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out WorkspaceModel ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, out WorkspaceModel ws))
                         {
                             ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
 
@@ -2278,6 +2408,7 @@ namespace Dynamo.Models
           string fileContents,
           DynamoPreferencesData dynamoPreferences,
           bool forceManualExecutionMode,
+          bool isTemplate,
           out WorkspaceModel workspace)
         {
             if (!string.IsNullOrEmpty(filePath))
@@ -2305,9 +2436,10 @@ namespace Dynamo.Models
                 CustomNodeManager,
                 this.LinterManager);
 
-            workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
-            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
+            workspace.FileName = string.IsNullOrEmpty(filePath) || isTemplate? string.Empty : filePath;
+            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
+            workspace.IsTemplate = isTemplate;
             
             if (!IsTestMode && !IsHeadless)
             {
@@ -2630,8 +2762,12 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
+                                if (model is ConnectorPinModel pinModel)
+                                {
+                                    annotation.MarkPinAsRemoved(pinModel);
+                                }
                                 annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();
+                                annotation.UpdateBoundaryFromSelection();                               
                             }
                         }
                         else
@@ -2700,7 +2836,7 @@ namespace Dynamo.Models
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(pathManager.LogDirectory, fileName);
 
-            SearchModel.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
+            SearchModel?.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
 
             Logger.Log(string.Format(Resources.LibraryIsDumped, fullFileName));
         }
@@ -2843,6 +2979,26 @@ namespace Dynamo.Models
                 }
 
                 CurrentWorkspace = customNodeWorkspace;
+                return true;
+            }
+
+            return false;
+        }
+        /// <summary>
+        ///     Opens an existing custom node workspace.
+        /// </summary>
+        /// <param name="guid">Identifier of the workspace to open</param>
+        /// <returns>True if workspace was found and open</returns>
+        internal bool OpenCustomNodeWorkspaceSilent(Guid guid)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
+            {
+                if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
+                {
+                    AddWorkspace(customNodeWorkspace);
+                }
+
                 return true;
             }
 
@@ -3210,9 +3366,15 @@ namespace Dynamo.Models
         {
             Logger.Log(obj);
         }
+
         private void LogMessageWrapper(string m)
         {
             LogMessage(Dynamo.Logging.LogMessage.Info(m));
+        }
+
+        private void LogErrorMessageWrapper(string m)
+        {
+            LogMessage(Dynamo.Logging.LogMessage.Error(m));
         }
 
 #if DEBUG_LIBRARY
@@ -3247,6 +3409,22 @@ namespace Dynamo.Models
             {
                 return null;
             }
+            var namespaces = PreferenceSettings.NamespacesToExcludeFromLibrary;
+            if (namespaces.Any(ns =>
+                {
+                    var namespc = ns.Split(":").LastOrDefault();
+
+                    return namespc != null && namespc.Contains(typeLoadData.Category);
+                }))
+            {
+                return null;
+            }
+                if(PreferenceSettings.InitialExperimentalLib_Namespaces.
+                Select(x => x.Split(":").LastOrDefault()).Any(x => x.Contains(typeLoadData.Category))){
+                //TODO safer way to set this?
+                typeLoadData.IsExperimental = true;
+            }
+
             var node = new NodeModelSearchElement(typeLoadData);
             SearchModel?.Add(node);
             return node;
@@ -3454,17 +3632,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Displays file open error dialog if the file is of a future version than the currently installed version
+        /// Displays file open error dialog if the file is of a future version than the currently installed version.
         /// </summary>
         /// <param name="fullFilePath"></param>
         /// <param name="fileVersion"></param>
         /// <param name="currVersion"></param>
-        /// <returns> true if the file must be opened and false otherwise </returns>
+        /// <returns> true if the file must be opened and false otherwise. </returns>
         private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
-            var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
-
             string summary = Resources.FutureFileSummary;
             var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 

@@ -1,13 +1,13 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Media.Imaging;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphMetadata.Controls;
 using Dynamo.Linting;
 using Dynamo.UI.Commands;
-using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.GraphMetadata
@@ -114,10 +114,9 @@ namespace Dynamo.GraphMetadata
             this.linterManager = viewLoadedParams.StartupParams.LinterManager;
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
-            // using this as CurrentWorkspaceChanged wont trigger if you:
-            // Close a saved workspace and open a New homeworkspace..
-            // This means that properties defined in the previous opened workspace will still be showed in the extension.
-            // CurrentWorkspaceCleared will trigger everytime a graph is closed which allows us to reset the properties. 
+            // Using this as CurrentWorkspaceChanged won't trigger if you close a saved workspace and open a new homeworkspace.
+            // This means that properties defined in the previous opened workspace will still be shown in the extension.
+            // CurrentWorkspaceCleared will trigger every time a graph is closed which allows us to reset the properties. 
             this.viewLoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceChanged;
             if (linterManager != null)
             {
@@ -128,22 +127,41 @@ namespace Dynamo.GraphMetadata
             InitializeCommands();
         }
 
+        /// <summary>
+        /// This event is triggered when a new workspace is opened or when the current workspace is cleared.
+        /// This event manages state of the workspace properties (ie GraphDescription, GraphAuthor, HelpLink, Thumbnail)
+        /// as well as the custom properties in the extension which do not live in the workspace model.
+        /// </summary>
         private void OnCurrentWorkspaceChanged(Graph.Workspaces.IWorkspaceModel obj)
         {
-            if (!(obj is HomeWorkspaceModel hwm))
+            //Todo review if the workspace properties should be managed in the Workspace model.
+            //Due to the fact that Dynamo often leaves the workspace objects in memory and resets their properties when you open a new workspace,
+            //the management of state is not straightforward. However it may make more sense to update those properties with the clearing logic.
+
+            //Handle the case of a custom workspace model opening
+            if (obj is not HomeWorkspaceModel hwm)
             {
                 extension.Closed();
                 return;
             }
 
-            if (string.IsNullOrEmpty(hwm.FileName))
+            //Handle workspace change cases in UI.  First is a new workspace or template opening
+            //In this case the properties should be cleared
+            if (!hwm.IsTemplate && string.IsNullOrEmpty(hwm.FileName) )
             {
                 GraphDescription = string.Empty;
                 GraphAuthor = string.Empty;
                 HelpLink = null;
                 Thumbnail = null;
             }
-
+            //Second is switching between an open workspace and open custom node and no state changes are required.
+            //This case can also be true if you close an open workspace while focused on a custom node.
+            //However in that scenario the first case will be triggered first due to empty filename.
+            else if(hwm == currentWorkspace)
+            {
+                return;
+            }
+            //Third is a new workspace opening from a saved file
             else
             {
                 currentWorkspace = hwm;
@@ -153,6 +171,7 @@ namespace Dynamo.GraphMetadata
                 RaisePropertyChanged(nameof(Thumbnail));
             }
 
+            //Clear custom properties for cases one and two.
             CustomProperties.Clear();
         }
 
@@ -217,7 +236,15 @@ namespace Dynamo.GraphMetadata
 
         private void AddCustomPropertyExecute(object obj)
         {
-            var propName = Properties.Resources.CustomPropertyControl_CustomPropertyDefault + " " + (CustomProperties.Count + 1);
+            int increment = CustomProperties.Count + 1;
+            string propName;
+            do
+            {
+                propName = Properties.Resources.CustomPropertyControl_CustomPropertyDefault + " " + increment;
+                increment++;
+            }
+            while (CustomProperties.Any(x => x.PropertyName == propName));
+
             AddCustomProperty(propName, string.Empty);
         }
 

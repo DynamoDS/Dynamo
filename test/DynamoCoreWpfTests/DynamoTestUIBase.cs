@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Dynamo.Configuration;
@@ -17,6 +18,7 @@ using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
+using DynamoUtilities;
 using NUnit.Framework;
 using TestServices;
 
@@ -30,6 +32,11 @@ namespace DynamoCoreWpfTests
         protected DynamoView View { get; set; }
         protected DynamoModel Model { get; set; }
 
+        // Use this flag to skip trying to execute all the dispatched operations during the test lifetime.
+        // This flag should only be used very sparingly
+        protected bool SkipDispatcherFlush = false;
+        protected int DispatcherOpsCounter = 0;
+
         protected string ExecutingDirectory
         {
             get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); }
@@ -40,7 +47,9 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
-            System.Console.WriteLine("Start test: " + TestContext.CurrentContext.Test.Name);
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
+
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -80,6 +89,11 @@ namespace DynamoCoreWpfTests
             View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+
+            if (!SkipDispatcherFlush)
+            {
+                Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
+            }
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
@@ -90,6 +104,14 @@ namespace DynamoCoreWpfTests
             RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
 
             eventMethod.Invoke(element, new object[] { args });
+        }
+
+        private void Hooks_OperationPosted(object sender, DispatcherHookEventArgs e)
+        {
+            e.Operation.Task.ContinueWith((t) => {
+                Interlocked.Decrement(ref DispatcherOpsCounter);
+            }, TaskScheduler.Default);
+            Interlocked.Increment(ref DispatcherOpsCounter);
         }
 
         /// <summary>
@@ -110,6 +132,13 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
+            if (!SkipDispatcherFlush)
+            {
+                Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
+
+                DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
+            }
+
             //Ensure that we leave the workspace marked as
             //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;
@@ -139,7 +168,9 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-            System.Console.WriteLine("Finished test: " + TestContext.CurrentContext.Test.Name);
+
+            TestUtilities.WebView2Tag = string.Empty;
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)

@@ -25,7 +25,7 @@ jobs:
         id: regex-match
         with:
           text: ${{github.event.issue.title}}
-          regex: '^[A-Za-z0-9 _.]*$'
+          regex: '[^\x00-\x7F]+|[a-zA-Z0-9?.><;,{}()[\]\-_+=!@#$%\^&*|''\s]+'
           flags: g
 
       #If the regex output is '' means that the issue title contains special chars
@@ -37,7 +37,7 @@ jobs:
 
       #Remove the " character in the issue title and replaced with -
       - name: Remove conflicting chars
-        uses: frabert/replace-string-action@v2.4
+        uses: frabert/replace-string-action@v2.5
         id: remove_quotations
         with:
           pattern: "\""
@@ -113,7 +113,7 @@ jobs:
       - name: Remove conflicting chars
         env:
           ISSUE_BODY: ${{github.event.issue.body}}
-        uses: frabert/replace-string-action@v2.4
+        uses: frabert/replace-string-action@v2.5
         id: remove_quotations
         with:
           pattern: "\""
@@ -128,13 +128,6 @@ jobs:
           ISSUE_BODY: ${{ steps.remove_quotations.outputs.replaced }}
         run: |
           echo "analysis_response=$(pwsh .\\.github\\scripts\\issue_analyzer.ps1 "${{ env.template }}" "${{ env.acceptable_missing_info }}" )" >> $GITHUB_ENV
-      
-      #Closes the issue if the analysis response is "Empty"
-      - name: Close issue
-        if: env.analysis_response == 'Empty'
-        run: |
-          curl -v -u admin:${{ secrets.GITHUB_TOKEN }} -d '{"body": "${{env.comment_intro}} ${{env.close_issue_comment}} ${{env.info_needed}}"}' ${{ github.event.issue.url }}/comments
-          curl -v -u admin:${{ secrets.GITHUB_TOKEN }} -X PATCH -d '{"state": "closed"}' ${{ github.event.issue.url }}
       
       #Adds the "needs more info" label if needed
       - name: Label and comment issue

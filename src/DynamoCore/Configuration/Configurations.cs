@@ -38,6 +38,36 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
 
+        /// <summary>
+        /// Const string of Autodesk
+        /// </summary>
+        public static readonly string AutodeskAsString = "Autodesk";
+
+        /// <summary>
+        /// Const string of Dynamo
+        /// </summary>
+        public static readonly string DynamoAsString = "Dynamo";
+
+        /// <summary>
+        /// Const string for Dynamo Node Help Docs
+        /// </summary>
+        public static readonly string DynamoNodeHelpDocs = "NodeHelpSharedDocs";
+
+        /// <summary>
+        /// Const used for zoom-to-fit calculations for nodes and groups in the workspace.
+        /// </summary>
+        public static readonly double ZoomToFitPaddingFactor = 3.5;
+
+        /// <summary>
+        /// Const used to define the interaction or hit area thickness for connectors in the workspace.
+        /// </summary>
+        public static readonly double ConnectorBaseThickness = 3;
+
+        /// <summary>
+        /// Const defining the scaling factor for adjusting connector stroke thickness based on zoom level.
+        /// </summary>
+        public const double ConnectorZoomScalingFactor = 2.0;
+
         #endregion
 
         #region Usage Reporting Error Message

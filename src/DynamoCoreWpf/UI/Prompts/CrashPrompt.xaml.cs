@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml;
 using Dynamo.Core;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 
@@ -47,14 +48,28 @@ namespace Dynamo.Nodes.Prompts
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
 
-        public CrashPrompt(CrashPromptArgs args, DynamoViewModel dynamoViewModel)
+        public CrashPrompt(CrashPromptArgs args, DynamoViewModel dynamoViewModel) : this(dynamoViewModel, args)
+        {}
+
+        internal CrashPrompt(object sender, CrashPromptArgs args)
         {
+            DynamoModel model = null;
+            var dynamoViewModel = sender as DynamoViewModel;
+            if (dynamoViewModel != null)
+            {
+                model = dynamoViewModel.Model;
+            }
+            else if (sender is DynamoModel dm)
+            {
+                model = dm;
+            }
+
             InitializeComponent();
 
-            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
+            var packageLoader = model?.GetPackageManagerExtension()?.PackageLoader;
             markdownPackages = Wpf.Utilities.CrashUtilities.PackagesToMakrdown(packageLoader);
 
-            productName = dynamoViewModel.BrandingResourceProvider.ProductName;
+            productName = dynamoViewModel?.BrandingResourceProvider.ProductName ?? Process.GetCurrentProcess().ProcessName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             TitleTextBlock.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);

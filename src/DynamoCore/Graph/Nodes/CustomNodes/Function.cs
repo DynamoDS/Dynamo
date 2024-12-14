@@ -5,6 +5,7 @@ using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Library;
+using Dynamo.Properties;
 using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -388,8 +389,13 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-
-            InputSymbol = String.Empty;
+            InputSymbol = new TypedParameter(
+                Resources.InputPortAlternativeName,
+                "var",
+                -1,
+                null,
+                Resources.InputNodeRenameHint)
+                .ToCommentNameString();
 
             ElementResolver = new ElementResolver();
         }
@@ -463,7 +469,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
 
                 OnNodeModified();
-                RaisePropertyChanged("InputSymbol");
+                RaisePropertyChanged(nameof(InputSymbol));
             }
         }
 

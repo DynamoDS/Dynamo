@@ -1,12 +1,14 @@
 <Project>
   <PropertyGroup>
-    <Platforms>AnyCPU;NET60_Linux;</Platforms>
+    <Platforms>AnyCPU;NET_Linux;Publish_Linux;</Platforms>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformTarget >x64</PlatformTarget>
     <!--Use the property DotNet to set TargetFramework from commandline without forcing it on all projects-->
     <!--Ex. DynamoServices uses TargetFramework netstandard2.0 -->
     <DotNet>net8.0</DotNet>
+      <!--Use LibGVer to tell the CI/CD pipeline what the prefered LIBG version is for testing-->
+    <LIBGVer>libg_231_0_0</LIBGVer>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
     <TargetFramework>$(DotNet)</TargetFramework>
     <FileAlignment>512</FileAlignment>
@@ -33,8 +35,12 @@
     <DebugSymbols>true</DebugSymbols>
     <SelfContained>false</SelfContained>
   </PropertyGroup>
-    <PropertyGroup>
-    <DebugType>full</DebugType>
+    <!--generate windows pdbs on windows and portable pdbs for linux builds - CER currently does not support portable-->
+    <PropertyGroup Condition="!$(Platform.Contains('Linux'))">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
+        <DebugType>portable</DebugType>
     </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
@@ -61,6 +67,10 @@
     <TargetFramework>$(TargetFramework)-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('Publish')) AND '$(TestProject)' == 'true' " >
+    <!--When under the Publish_ config, forces all test projects to not copy any dependencies into the output path-->
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <PropertyGroup>
     <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>

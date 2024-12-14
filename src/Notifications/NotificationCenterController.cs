@@ -119,9 +119,16 @@ namespace Dynamo.Notifications
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
 
-            initState = AsyncMethodState.Started;
-            await notificationUIPopup.webView.EnsureCoreWebView2Async();
-            initState = AsyncMethodState.Done;
+            try
+            {
+                initState = AsyncMethodState.Started;
+                await notificationUIPopup.webView.Initialize(Log);
+                initState = AsyncMethodState.Done;
+            }
+            catch(ObjectDisposedException ex)
+            {
+                Log(ex.Message);
+            }
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -133,6 +140,9 @@ namespace Dynamo.Notifications
 
             string setBottomButtonText = String.Format("window.setBottomButtonText('{0}');", Properties.Resources.NotificationsCenterBottomButtonText);
             InvokeJS(setBottomButtonText);
+
+            string setNoNotificationsTexts = String.Format("window.setNoNotificationsTexts('{{\"title\":\"{0}\", \"msg\":\"{1}\"}}');", Properties.Resources.NoNotificationsTitle, Properties.Resources.NoNotificationsMsg);
+            InvokeJS(setNoNotificationsTexts);
         }
 
         private void AddNotifications(List<NotificationItemModel> notifications)
@@ -210,6 +220,16 @@ namespace Dynamo.Notifications
 
         private void WebView_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
         {
+            if (!e.IsSuccess)
+            {
+                if (e.InitializationException != null)
+                {
+                    Log(e.InitializationException.Message);
+                }
+                Log("NotificationCenter CoreWebView2 initialization failed.");
+                return;
+            }
+
             var assembly = Assembly.GetExecutingAssembly();
             string htmlString = string.Empty;
 
@@ -231,14 +251,22 @@ namespace Dynamo.Notifications
                 // More initialization options
                 // Context menu disabled
                 notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
+                notificationUIPopup.webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                notificationUIPopup.webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
                 // Opening hyper-links using default system browser instead of WebView2 tab window
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
-                notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
-                // Hosts an object that will expose the properties and methods to be called from the javascript side
-                notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
-                    new ScriptObject(OnMarkAllAsRead, OnNotificationPopupUpdated));
 
-                notificationUIPopup.webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                try
+                {
+                    notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
+                    // Hosts an object that will expose the properties and methods to be called from the javascript side
+                    notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
+                        new ScriptObject(OnMarkAllAsRead, OnNotificationPopupUpdated));
+                }
+                catch (Exception ex)
+                {
+                    Log("NotificationCenter CoreWebView2 initialization failed: " + ex.Message);
+                }
             }
         }
 
@@ -265,7 +293,7 @@ namespace Dynamo.Notifications
         private void DynamoView_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             string popupBellID = "FontAwesome5.FontAwesome";
-            if (!notificationUIPopup.IsOpen) return;
+            if (notificationUIPopup == null || !notificationUIPopup.IsOpen) return;
             if(e.OriginalSource.ToString() != popupBellID)
             {
                 notificationUIPopup.IsOpen = false;
@@ -348,10 +376,6 @@ namespace Dynamo.Notifications
         /// </summary>
         public void Dispose()
         {
-            if (initState == AsyncMethodState.Started)
-            {
-                Log("NotificationCenterController is being disposed but async initialization is still not done");
-            }
             Dispose(true);
             GC.SuppressFinalize(this);
         }

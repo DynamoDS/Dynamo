@@ -64,12 +64,12 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Search Description matching weight
         /// </summary>
-        internal static int SearchDescriptionWeight = 6;
+        internal static int SearchDescriptionWeight = 4;
 
         /// <summary>
         /// Search tags matching weight
         /// </summary>
-        internal static int SearchTagsWeight = 6;
+        internal static int SearchTagsWeight = 4;
 
         /// <summary>
         /// other fields search matching weight
@@ -185,7 +185,12 @@ namespace Dynamo.Configuration
             /// <summary>
             /// Node Input Parameters as string (there are nodes with same name and category but different parameters)
             /// </summary>
-            Parameters
+            Parameters,
+
+            /// <summary>
+            /// Package author name
+            /// </summary>
+            Author
         }
 
         /// <summary>
@@ -208,6 +213,7 @@ namespace Dynamo.Configuration
         public static string[] PackageIndexFields = { nameof(NodeFieldsEnum.Name),
                                                       nameof(NodeFieldsEnum.Description),
                                                       nameof(NodeFieldsEnum.SearchKeywords),
-                                                      nameof(NodeFieldsEnum.Hosts)};
+                                                      nameof(NodeFieldsEnum.Hosts),
+                                                      nameof(NodeFieldsEnum.Author)};
     }
 }

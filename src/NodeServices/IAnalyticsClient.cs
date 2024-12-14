@@ -9,6 +9,9 @@ namespace Dynamo.Logging
     /// </summary>
     public enum Categories
     {
+        /// XXXOperations usually means actions from Dynamo users
+        /// v.s. XXX usually means actions from the Dynamo component itself
+
         /// <summary>
         /// Events Category related to application lifecycle
         /// </summary>
@@ -138,6 +141,16 @@ namespace Dynamo.Logging
         /// Events Category related to the splash screen
         /// </summary>
         SplashScreenOperations,
+
+        /// <summary>
+        /// Events Category related to DynamoMLDataPipeline
+        /// </summary>
+        DynamoMLDataPipelineOperations,
+
+        /// <summary>
+        /// Events Category related to DynamoHome
+        /// </summary>
+        DynamoHomeOperations
     }
 
     /// <summary>
@@ -401,6 +414,11 @@ namespace Dynamo.Logging
         ViewDocumentation,
 
         /// <summary>
+        /// When the in-depth node help documentation is un-available
+        /// </summary>
+        MissingDocumentation,
+
+        /// <summary>
         /// Cancel operation, e.g. cancel adding a new group style 
         /// </summary>
         Cancel,
@@ -443,7 +461,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Export event, e.g. tracks the ExportSettings event
         /// </summary>
-        Export
+        Export,
     }
 
     public enum HeartBeatType

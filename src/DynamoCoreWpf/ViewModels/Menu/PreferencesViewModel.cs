@@ -74,6 +74,7 @@ namespace Dynamo.ViewModels
         private GeometryScalingOptions optionsGeometryScale = null;
         private GeometryScaleSize defaultGeometryScaling = GeometryScaleSize.Medium;
         private bool canResetBackupLocation = false;
+        private bool canResetTemplateLocation = false;
 
         #endregion Private Properties
 
@@ -197,13 +198,14 @@ namespace Dynamo.ViewModels
 
                     if (UseHostScaleUnits && IsDynamoRevit) return;
 
-                    var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
+                    var enUnit = LocalizedUnitsMap.FirstOrDefault(x => x.Key == selectedUnits).Value;
+                    var result = Enum.TryParse(enUnit, out Configurations.Units currentUnit);
                     if (!result) return;
 
                     if (Configurations.SupportedUnits.TryGetValue(currentUnit, out double units))
                     {
                         // Update preferences setting and update the grapic helpers
-                        preferenceSettings.GraphicScaleUnit = value;
+                        preferenceSettings.GraphicScaleUnit = currentUnit.ToString();
                         preferenceSettings.GridScaleFactor = (float)units;
                         dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
 
@@ -282,6 +284,7 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.BackupLocation = value;
                 RaisePropertyChanged(nameof(BackupLocation));
+                RaisePropertyChanged(nameof(CanResetBackupLocation));
             }
         }
 
@@ -292,12 +295,35 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return canResetBackupLocation;
+                return !dynamoViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Backup);
+            }
+        }
+
+        /// <summary>
+        /// Backup files path
+        /// </summary>
+        public string TemplateLocation
+        {
+            get
+            {
+                return preferenceSettings.TemplateFilePath;
             }
             set
             {
-                canResetBackupLocation = value;
-                RaisePropertyChanged(nameof(CanResetBackupLocation));
+                preferenceSettings.TemplateFilePath = value;
+                RaisePropertyChanged(nameof(TemplateLocation));
+                RaisePropertyChanged(nameof(CanResetTemplateLocation));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the user can reset the Backup Location to the default value
+        /// </summary>
+        public bool CanResetTemplateLocation
+        {
+            get
+            {
+                return !dynamoViewModel.Model.IsDefaultPreferenceItemLocation(PathManager.PreferenceItem.Templates);
             }
         }
 
@@ -343,7 +369,7 @@ namespace Dynamo.ViewModels
         }        
 
         /// <summary>
-        /// Controls the IsChecked property in the Show Run Preview toogle button
+        /// Controls the IsChecked property in the Show Run Preview toggle button
         /// </summary>
         public bool RunPreviewIsChecked
         {
@@ -360,7 +386,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the Show Static Splash Screen toogle button
+        /// Controls the IsChecked property in the Show Static Splash Screen toggle button
         /// </summary>
         public bool StaticSplashScreenEnabled
         {
@@ -392,7 +418,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the Enabled property in the Show Run Preview toogle button
+        /// Controls the Enabled property in the Show Run Preview toggle button
         /// </summary>
         public bool RunPreviewEnabled
         {
@@ -690,7 +716,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the binding for the ShowEdges toogle in the Preferences->Visual Settings->Display Settings section
+        /// Controls the binding for the ShowEdges toggle in the Preferences->Visual Settings->Display Settings section
         /// </summary>
         public bool ShowEdges
         {
@@ -702,6 +728,22 @@ namespace Dynamo.ViewModels
             {
                 dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = value;
                 RaisePropertyChanged(nameof(ShowEdges));
+            }
+        }
+
+        /// <summary>
+        /// Controls the binding for the UseRenderInstancing toggle in the Preferences->Visual Settings->Display Settings section
+        /// </summary>
+        public bool UseRenderInstancing
+        {
+            get
+            {
+                return dynamoViewModel.RenderPackageFactoryViewModel.UseRenderInstancing;
+            }
+            set
+            {
+                dynamoViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = value;
+                RaisePropertyChanged(nameof(UseRenderInstancing));
             }
         }
 
@@ -722,7 +764,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the binding for the IsolateSelectedGeometry toogle in the Preferences->Visual Settings->Display Settings section
+        /// Controls the binding for the IsolateSelectedGeometry toggle in the Preferences->Visual Settings->Display Settings section
         /// </summary>
         public bool IsolateSelectedGeometry
         {
@@ -1051,7 +1093,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Node autocomplete" toogle button
+        /// Controls the IsChecked property in the "Node autocomplete" toggle button
         /// </summary>
         public bool NodeAutocompleteIsChecked
         {
@@ -1121,6 +1163,18 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the TSpline nodes experiment toggle is visible from feature flag
+        /// TODO: remove this public property in Dynamo 4.0 and archive the feature flag
+        /// </summary>
+        public bool IsTSplineNodesExperimentToggleVisible
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Contains the numbers of result of the ML recommendation
         /// </summary>
         public int MLRecommendationNumberOfResults
@@ -1137,7 +1191,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Hide nodes below a specific confidence level" toogle button
+        /// Controls the IsChecked property in the "Hide nodes below a specific confidence level" toggle button
         /// </summary>
         public bool HideNodesBelowSpecificConfidenceLevelIsChecked
         {
@@ -1194,7 +1248,7 @@ namespace Dynamo.ViewModels
         #endregion        
 
         /// <summary>
-        /// Controls the IsChecked property in the "Enable T-spline nodes" toogle button
+        /// Controls the IsChecked property in the "Enable T-spline nodes" toggle button
         /// </summary>
         public bool EnableTSplineIsChecked
         {
@@ -1207,6 +1261,23 @@ namespace Dynamo.ViewModels
             {
                 HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
                 RaisePropertyChanged(nameof(EnableTSplineIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Enable Paneling nodes" toggle button
+        /// </summary>
+        public bool EnablePanelingIsChecked
+        {
+            get
+            {
+                return !preferenceSettings.NamespacesToExcludeFromLibrary.Contains(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface");
+            }
+            set
+            {
+                HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.PanelSurface");
+                RaisePropertyChanged(nameof(EnablePanelingIsChecked));
             }
         }
 
@@ -1292,6 +1363,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// The dictionary that contains the localized resource strings for Units.
+        /// This is done to avoid a breaking change that is storing the selected unit in settings file in english language.
+        /// </summary>
+        private Dictionary<string, string> LocalizedUnitsMap;
+
+        /// <summary>
         /// Returns localized resource strings for Units
         /// </summary>
         private string GetLocalizedUnits(Enum value)
@@ -1333,6 +1410,7 @@ namespace Dynamo.ViewModels
             SelectedPythonEngine = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
             dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = preferenceSettings.RenderPrecision;
             dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = preferenceSettings.ShowEdges;
+            dynamoViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = preferenceSettings.UseRenderInstancing;
             PackagePathsForInstall = null;
             PackagePathsViewModel?.InitializeRootLocations();
             SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
@@ -1392,9 +1470,15 @@ namespace Dynamo.ViewModels
             LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
             SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
 
+            LocalizedUnitsMap = new Dictionary<string, string>();
+            foreach (var unit in Configurations.SupportedUnits)
+            {
+                LocalizedUnitsMap.Add(GetLocalizedUnits(unit.Key), unit.Key.ToString());
+            }
+
             // Chose the scaling unit, if option is allowed by user
             UnitList = Configurations.SupportedUnits.Keys.Select(x => GetLocalizedUnits(x)).ToObservableCollection();
-            SelectedUnits = Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key.ToString();
+            SelectedUnits = GetLocalizedUnits(Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key);
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
@@ -1439,11 +1523,13 @@ namespace Dynamo.ViewModels
             SavedChangesTooltip = string.Empty;
 
             // Add tabs
-            preferencesTabs = new Dictionary<string, TabSettings>();
-            preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
-            preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
-            preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
-            preferencesTabs.Add("Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty });
+            preferencesTabs = new Dictionary<string, TabSettings>
+            {
+                { "General", new TabSettings() { Name = "General", ExpanderActive = string.Empty } },
+                { "Features", new TabSettings() { Name = "Features", ExpanderActive = string.Empty } },
+                { "VisualSettings", new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty } },
+                { "Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty } }
+            };
 
             //create a packagePathsViewModel we'll use to interact with the package search paths list.
             var loadPackagesParams = new LoadPackageParams
@@ -1471,6 +1557,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [Obsolete("API obsolete - This is a deprecated API and should not be used. Use UpdatePreferenceItemLocation instead")]
+        public bool UpdateBackupLocation(string newBackupLocation)
+        {
+            return dynamoViewModel.Model.UpdatePreferenceItemLocation(Core.PathManager.PreferenceItem.Backup, newBackupLocation);
+        }
+        [Obsolete("API obsolete - This is a deprecated API and should not be used. Use ResetPreferenceItemLocation instead")]
+        public void ResetBackupLocation()
+        {
+            dynamoViewModel.Model.ResetPreferenceItemLocation(Core.PathManager.PreferenceItem.Backup);
+        }
+
         public event EventHandler<PythonTemplatePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PythonTemplatePathEventArgs e)
         {
@@ -1492,28 +1589,6 @@ namespace Dynamo.ViewModels
             DeletePythonPathCommand = new DelegateCommand(p => RemovePath(), p => CanDelete());
             UpdatePythonPathCommand = new DelegateCommand(p => UpdatePathAt());
             CopyToClipboardCommand = new DelegateCommand(p => CopyToClipboard(p));
-        }
-
-        public bool UpdateBackupLocation(string newBackupLocation)
-        {
-
-            bool isSafelyLocation = dynamoViewModel.Model.UpdateBackupLocation(newBackupLocation);
-            if (isSafelyLocation)
-            {
-                BackupLocation = newBackupLocation;
-                CanResetBackupLocation = !dynamoViewModel.Model.IsDefaultBackupLocation();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void ResetBackupLocation()
-        {
-            BackupLocation = dynamoViewModel.Model.DefaultBackupLocation();
-            UpdateBackupLocation(BackupLocation);
         }
 
         // Add python template path
@@ -1710,6 +1785,9 @@ namespace Dynamo.ViewModels
                 case nameof(ShowEdges):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingShowEdges), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
+                case nameof(UseRenderInstancing):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingUseInstancing), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
                 case nameof(IsolateSelectedGeometry):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsIsolateSelectedGeo), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
@@ -1743,6 +1821,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableTSplineNodes), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(EnablePanelingIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnablePanelingNodes), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowPreviewBubbles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);

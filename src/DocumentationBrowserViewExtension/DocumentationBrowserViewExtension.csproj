@@ -97,13 +97,10 @@
     <EmbeddedResource Include="Docs\MarkdownStyling.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Docs\NodeAnnotationNotFound.md" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Docs\syntaxHighlight.html" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

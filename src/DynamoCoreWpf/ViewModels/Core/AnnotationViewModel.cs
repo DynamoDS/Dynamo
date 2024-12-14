@@ -27,7 +27,7 @@ namespace Dynamo.ViewModels
         private IEnumerable<PortModel> originalOutPorts;
         private Dictionary<Guid, Geometry> GroupIdToCutGeometry = new Dictionary<Guid, Geometry>();
         // vertical offset accounts for the port margins
-        private const int verticalOffset = 20;
+        private const int verticalOffset = 17;
         private const int portVerticalMidPoint = 17;
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
@@ -260,25 +260,20 @@ namespace Dynamo.ViewModels
             get => annotationModel.IsExpanded;
             set
             {
+                // This change is triggered by the user interaction in the View.
+                // Before we updating the value in the Model and ViewModel
+                // we record the current state in the UndoRedoStack.
+                // This ensures that any modifications can be reverted by the user.
+                var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
+                using (undoRecorder.BeginActionGroup())
+                {
+                    undoRecorder.RecordModificationForUndo(annotationModel);
+                }
+
                 annotationModel.IsExpanded = value;
-                InPorts.Clear();
-                OutPorts.Clear();
-                if (value)
-                {
-                    this.ShowGroupContents();
-                }
-                else
-                {
-                    this.SetGroupInputPorts();
-                    this.SetGroupOutPorts();
-                    this.CollapseGroupContents(true);
-                    RaisePropertyChanged(nameof(NodeContentCount));
-                }
-                WorkspaceViewModel.HasUnsavedChanges = true;
-                AddGroupToGroupCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged(nameof(IsExpanded));
-                RedrawConnectors();
-                ReportNodesPosition();
+
+                // Methods to collapse or expand the group based on the new value of IsExpanded.
+                ManageAnnotationMVExpansionAndCollapse();
             }
         }
 
@@ -642,7 +637,7 @@ namespace Dynamo.ViewModels
 
             ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
 
-            // Add all grouped AnnotaionModels to the CutGeometryDictionary.
+            // Add all grouped AnnotationModels to the CutGeometryDictionary.
             // And raise ZIndex changed to make sure nested groups have
             // a higher zIndex than the parent.
             using (NestedGroupsGeometries.DeferCollectionReset())
@@ -1051,6 +1046,36 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// Manages the expansion or collapse of the annotation group in the view model.
+        /// </summary>
+        private void ManageAnnotationMVExpansionAndCollapse()
+        {
+            if (InPorts.Any() || OutPorts.Any())
+            {
+                InPorts.Clear();
+                OutPorts.Clear();
+            }
+
+            if (annotationModel.IsExpanded)
+            {
+                this.ShowGroupContents();
+            }
+            else
+            {
+                this.SetGroupInputPorts();
+                this.SetGroupOutPorts();
+                this.CollapseGroupContents(true);
+                RaisePropertyChanged(nameof(NodeContentCount));
+            }
+            WorkspaceViewModel.HasUnsavedChanges = true;
+            AddGroupToGroupCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(IsExpanded));
+            RedrawConnectors();
+            ReportNodesPosition();
+        }
+
         private void UpdateFontSize(object parameter)
         {
             if (parameter == null) return;
@@ -1203,6 +1228,10 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(AnnotationModel.Position));
                     UpdateProxyPortsPosition();
                     break;
+                case nameof(IsExpanded):
+                    ManageAnnotationMVExpansionAndCollapse();
+                    break;
+
             }
         }
 
@@ -1222,10 +1251,13 @@ namespace Dynamo.ViewModels
         {
             using (NestedGroupsGeometries.DeferCollectionReset())
             {
-                ViewModelBases
-                    .OfType<AnnotationViewModel>()
-                    .ToList()
-                    .ForEach(x => UpdateGroupCutGeometry(x));
+                if (ViewModelBases != null)
+                {        
+                    ViewModelBases
+                        .OfType<AnnotationViewModel>()
+                        .ToList()
+                        .ForEach(x => UpdateGroupCutGeometry(x));
+                }
             }
         }
 

@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ImportGroup Label="PropertySheets">
+		<Import Project="$(SolutionDir)Config\CS_SDK.props" />
+  </ImportGroup>
+  <PropertyGroup>
+	<ProjectGuid>{5DF79F45-5F2C-41C1-BACC-890AE514CDA8}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<RootNamespace>DynamoMLDataPipeline</RootNamespace>
+	<AssemblyName>DynamoMLDataPipeline</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="RestSharp" Version="112.0.0" />
+        <PackageReference Include="Greg" Version="3.0.2.6533" />
+  </ItemGroup>
+  <ItemGroup>
+	<ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+	  <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+	  <Name>DynamoCore</Name>
+	</ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+	<None Include="App.config" />
+  </ItemGroup>
+  <Target Name="GenerateExtension" AfterTargets="Build">
+    <ItemGroup>
+      <ExtensionDefinition Include="DynamoMLDataPipeline_ExtensionDefinition.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\extensions\" />
+  </Target>
+</Project>

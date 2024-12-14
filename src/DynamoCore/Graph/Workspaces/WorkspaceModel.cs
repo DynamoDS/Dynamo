@@ -70,7 +70,7 @@ namespace Dynamo.Graph.Workspaces
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture
             };
@@ -236,6 +236,11 @@ namespace Dynamo.Graph.Workspaces
         /// This is true only if the workspace contains legacy SOAP formatted binding data.
         /// </summary>
         internal bool ContainsLegacyTraceData { get; set; }
+
+        /// <summary>
+        /// Denotes if the current workspace was created from a template.
+        /// </summary>
+        internal bool IsTemplate { get; set; }
 
         internal bool ScaleFactorChanged = false;
 
@@ -2002,7 +2007,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal bool HasInfos
         {
-            get { return Nodes.Any(n => n.State == ElementState.Info); }
+            get { return Nodes.Any(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo); }
         }
 
         /// <summary>
@@ -2169,7 +2174,7 @@ namespace Dynamo.Graph.Workspaces
                         throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
                             "Only PackageManagerExtension should subscribe to this event.");
                     }
-                    var assemblyName = GetNameOfAssemblyReferencedByNode(node);
+                    var assemblyName = node.GetNameOfAssemblyReferencedByNode();
                     if (assemblyName != null)
                     {
                         return CollectingNodePackageDependencies(assemblyName);
@@ -2284,7 +2289,7 @@ namespace Dynamo.Graph.Workspaces
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
@@ -2321,7 +2326,7 @@ namespace Dynamo.Graph.Workspaces
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
