@@ -54,8 +54,13 @@ namespace Dynamo.Utilities
         {
             // Register app wide new debug modes here.
             AddDebugMode("DumpByteCode", "Dumps bytecode to a log file in a folder called ByteCodeLogs located in the current working dirrectory.", false);
-            AddDebugMode("BindingNotificationCounter", "Counts binding notification events (UI wpf binding PropertyChanged, model Notifications PropertyChanged and ObservableCollection CollectionChanged)" +
-                " at Dynamo startup and logs them periodically to a notificationCounter.log file in the current working directory", false);
+            AddDebugMode("LoadNotificationCounter", "Loads the Notification counter assembly and initializes it. The 0Harmony.dll dependency is required.", false);
+            AddDebugMode("EnableNotificationCounter", "Enables/Disables a notification counter for events (model Notifications PropertyChanged and ObservableCollection CollectionChanged)" +
+                " at Dynamo startup and logs them periodically to a notification_counter.log file in the current working directory." +
+                "The log format is NumberOfNotifications-IdentifierOfNotifierObject-NumberOfNotifierInstances" + 
+                "The log file can be deleted at any time (even while Dynamo is running)." +
+                "Notification logs will always try to be merged/added back to existing logs in the notifications.log folder." +
+                "Deleting the notifications.log basically allow you to do a fresh count of notifications (should wait 5 seconds after deleting to make sure no cached notifications are added)", false);
             AddDebugMode("CrashOnNewNodeModel", "Crash when creating a new NodeModel. Works only on Debug builds", false);
         }
 

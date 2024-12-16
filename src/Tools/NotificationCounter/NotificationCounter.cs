@@ -1,12 +1,9 @@
-﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
+using HarmonyLib;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace Dynamo.Utilities
 {
@@ -31,25 +28,6 @@ namespace Dynamo.Utilities
         /// Tries to initialize the NotificationCounter class.
         /// </summary>
         /// <returns>true if debug mode 'NotificationCounter' is turned on and if Harmony.dll was successfully loaded. Returns false otherwise</returns>
-        internal static bool Initialize()
-        {
-            if (!DebugModes.IsEnabled("BindingNotificationCounter"))
-                return false;
-
-            string harmonyLocation = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "0Harmony.dll");
-            if (!File.Exists(harmonyLocation))
-                return false;
-
-            try
-            {
-                return Assembly.LoadFrom(harmonyLocation) != null;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         internal static void StartCounting()
         {
             try
@@ -68,7 +46,7 @@ namespace Dynamo.Utilities
                 timer.Interval = timerInterval;
                 timer.Start();
                 
-                harmonyIntance = new Harmony("BindingNotificationCounter");
+                harmonyIntance = new Harmony("NotificationCounter");
 
                 AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => PatchFromAssmebly(args.LoadedAssembly));
 
@@ -161,7 +139,7 @@ namespace Dynamo.Utilities
 
         private static void Log(object sender, string property)
         {
-            if (!DebugModes.IsEnabled("BindingNotificationCounter"))
+            if (!DebugModes.IsEnabled("EnableNotificationCounter"))
                 return;
 
             try

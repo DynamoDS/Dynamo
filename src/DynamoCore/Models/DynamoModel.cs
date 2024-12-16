@@ -626,10 +626,11 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
-            if (NotificationCounter.Initialize())
+            if (DebugModes.IsEnabled("LoadNotificationCounter"))
             {
-                NotificationCounter.StartCounting();
+                NotificationCounterEntrypoint.Initialize();
             }
+
             DynamoModel.IsCrashing = false;
 
             if (config is DefaultStartConfiguration defaultStartConfig)

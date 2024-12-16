@@ -29,3 +29,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
 [assembly: InternalsVisibleTo("Notifications")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
+[assembly: InternalsVisibleTo("NotificationCounter")]
