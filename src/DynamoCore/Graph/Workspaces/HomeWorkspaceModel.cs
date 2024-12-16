@@ -897,7 +897,7 @@ namespace Dynamo.Graph.Workspaces
 
                 if (Nodes.All(n => n.GUID != nodeGuid))
                 {
-                    orphans.AddRange(nodeData.Value.SelectMany(CallSite.GetAllSerializablesFromSingleRunTraceData).ToList());
+                    orphans.AddRange(nodeData.Value.SelectMany(CallSite.GetAllSerializablesFromSingleRunTraceData));
                 }
             }
 
