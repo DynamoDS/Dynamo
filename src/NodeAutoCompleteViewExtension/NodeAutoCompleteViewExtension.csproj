@@ -11,6 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.NodeAutoComplete</RootNamespace>
     <AssemblyName>NodeAutoCompleteViewExtension</AssemblyName>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -23,6 +24,22 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
+          <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+          <Name>DynamoServices</Name>
+          <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+          <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+          <Name>DynamoUtilities</Name>
+          <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="NodeAutoCompleteView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Content Include="NodeAutoComplete_ViewExtensionDefinition.xml" />
