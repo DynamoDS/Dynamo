@@ -32,15 +32,16 @@
             <!--<RowDefinition Height="30"/>                --><!-- resize thumb -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="*" MinWidth="100"/>
+            <ColumnDefinition Width="30"/>              <!-- y values & y label -->
+            <ColumnDefinition Width="*" MinWidth="100"/><!-- graph canvas-->
+            <ColumnDefinition Width="16"/>              <!-- reset button -->
         </Grid.ColumnDefinitions>
 
         <!-- Graph canvas -->
         <Canvas x:Name="GraphCanvas" Background="Transparent" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
         <!-- X values -->
-        <Grid Grid.Row="1" Grid.Column="2">
+        <Grid Grid.Row="1" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -103,11 +104,9 @@
             </TextBlock>
         </Grid>
 
-
-
         <!-- Graph type dropdown -->
         <StackPanel Grid.Row="2"
-                    Grid.Column="2"
+                    Grid.Column="1"
                     Orientation="Horizontal" VerticalAlignment="Center">
             <TextBlock Text="Curve Type" Height="29" Margin="0,12,0,0"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -124,7 +123,15 @@
             
         </StackPanel>
 
-        <StackPanel Grid.Row="3"
+        <!-- Reset button -->
+        <Button Grid.Column="2" Height="16" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0">
+            <Image Source="/DynamoCoreWpf;component/UI/Images/reset.png" Height="16" Width="16" />
+        </Button>
+
+
+
+        <!-- Resize thumb-->
+            <StackPanel Grid.Row="3"
                     Grid.Column="2"
                     Orientation="Horizontal" HorizontalAlignment="Right">
             <Thumb Name ="resizeThumb"
@@ -134,7 +141,6 @@
                     <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}" Style="{StaticResource GenericToolTipLight}"/>
                 </Thumb.ToolTip>
             </Thumb>
-
         </StackPanel>
 
         

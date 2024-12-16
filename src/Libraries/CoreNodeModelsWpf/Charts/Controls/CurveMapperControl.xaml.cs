@@ -26,8 +26,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private double dynamicCanvasWidth = 180;
         private double dynamicCanvasHeight = 180;
-        private readonly double minCanvasWidth = 180;
-        private readonly double minCanvasHeight = 180;
+        private readonly double minCanvasSize = 250; // also initial width and height
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -120,7 +119,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
             var c1 = GraphCanvas;
 
 
-            double xStep = canvasWidth / xRange;
+            8double xStep = canvasWidth / xRange;
             double yStep = canvasHeight / yRange;
 
             // Draw verticals
@@ -193,7 +192,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 if (columnDefinition.Width.IsStar)
                 {
                     //columnDefinition.Width = new GridLength(xAdjust - 60, GridUnitType.Pixel);
-                    GraphCanvas.Width = Math.Max(minCanvasWidth, xAdjust - 60);
+                    GraphCanvas.Width = Math.Max(minCanvasSize, xAdjust - 60);
                     dynamicCanvasWidth = xAdjust - 60;
                 }
 
