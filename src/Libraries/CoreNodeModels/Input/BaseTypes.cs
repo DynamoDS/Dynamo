@@ -36,15 +36,40 @@ namespace CoreNodeModels.Input
             }
         }
 
+
+        private double _serializedWidth;
         /// <summary>
         /// The serialized Width property of the text input; Width is taken and JsonIgnore applied to
         /// </summary>
-        public double SerializedWidth { get; set; }
+        public double SerializedWidth
+        {
+            get => _serializedWidth;
+            set
+            {
+                if (_serializedWidth != value)
+                {
+                    _serializedWidth = value;
+                    RaisePropertyChanged(nameof(SerializedWidth)); // Notify change
+                }
+            }
+        }
 
+        private double _serializedHeight;
         /// <summary>
         /// The serialized Height property of the text input; Height is taken and JsonIgnore applied to
         /// </summary>
-        public double SerializedHeight { get; set; }
+        public double SerializedHeight
+        {
+            get => _serializedHeight;
+            set
+            {
+                if (_serializedHeight != value)
+                {
+                    _serializedHeight = value;
+                    RaisePropertyChanged(nameof(SerializedHeight)); // Notify change
+                }
+            }
+        }
 
         [JsonConstructor]
         private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -70,6 +95,16 @@ namespace CoreNodeModels.Input
                 Value = value; 
                 return true; // UpdateValueCore handled.
             }
+            if (name == "SerializedWidth" && double.TryParse(value, out double width))
+            {
+                SerializedWidth = width;
+                return true; // UpdateValueCore handled
+            }
+            if (name == "SerializedHeight" && double.TryParse(value, out double height))
+            {
+                SerializedHeight = height;
+                return true; // UpdateValueCore handled
+            }
 
             // There's another 'UpdateValueCore' method in 'String' base class,
             // since they are both bound to the same property, 'StringInput' 
@@ -85,6 +120,8 @@ namespace CoreNodeModels.Input
 
             var helper = new XmlElementHelper(outEl);
             helper.SetAttribute("value", SerializeValue());
+            helper.SetAttribute("serializedWidth", SerializedWidth.ToString(CultureInfo.InvariantCulture));
+            helper.SetAttribute("serializedHeight", SerializedHeight.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
@@ -100,6 +137,14 @@ namespace CoreNodeModels.Input
                         if (attr.Name.Equals("value"))
                         {
                             Value = DeserializeValue(attr.Value);
+                        }
+                        if (attr.Name.Equals("serializedWidth") && double.TryParse(attr.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double width))
+                        {
+                            SerializedWidth = width;
+                        }
+                        if (attr.Name.Equals("serializedHeight") && double.TryParse(attr.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double height))
+                        {
+                            SerializedHeight = height;
                         }
                     }
                 }

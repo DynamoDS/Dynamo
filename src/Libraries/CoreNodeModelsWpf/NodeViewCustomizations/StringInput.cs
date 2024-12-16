@@ -8,6 +8,7 @@ using System.Windows.Media;
 using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
@@ -23,6 +24,7 @@ namespace CoreNodeModelsWpf.Nodes
         private WorkspaceModel workspace;
         private StringInput nodeModel;
         private MenuItem editWindowItem;
+        private NodeView nodeView;
         private readonly int minWidthSize = 100;
         private readonly int minHeightSize = 34;
         private readonly int defMaxWidthSize = 200;
@@ -30,6 +32,7 @@ namespace CoreNodeModelsWpf.Nodes
         public void CustomizeView(StringInput stringInput, NodeView nodeView)
         {
             this.nodeModel = stringInput;
+            this.nodeView = nodeView;
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             this.workspace = this.dynamoViewModel.CurrentSpace;
 
@@ -92,6 +95,15 @@ namespace CoreNodeModelsWpf.Nodes
             var resizeThumb = CreateResizeThumb();
             inputGrid.Children.Add(resizeThumb);
 
+            resizeThumb.DragStarted += (s, e) =>
+            {
+                // Set the binding to the Serialized Width/Height values here
+                SetNodeWidthHeightBinding(tb, stringInput);                
+
+                // Record the undo/redo action prior to setting the new width/height values
+                RecordToUndoRedoStack(stringInput.SerializedWidth.ToString(), stringInput.SerializedHeight.ToString());
+            };
+
             // Handle resizing logic in the resize thumb
             resizeThumb.DragDelta += (s, e) =>
             {
@@ -109,13 +121,48 @@ namespace CoreNodeModelsWpf.Nodes
                 stringInput.Width = tb.ActualWidth;
                 stringInput.Height = tb.ActualHeight;
 
-                stringInput.SerializedWidth = tb.ActualWidth;
-                stringInput.SerializedHeight = tb.ActualHeight;
-
-                // Mark the node as modified
+                // Mark the graph as modified
                 if(!this.workspace.HasUnsavedChanges)
                     this.workspace.HasUnsavedChanges = true;
             };
+        }
+
+        private void SetNodeWidthHeightBinding(StringTextBox tb, StringInput stringInput)
+        {
+            // Only set the binding if it hasn't been set already
+            var bindingExpression = tb.GetBindingExpression(FrameworkElement.WidthProperty);
+            if (bindingExpression == null)
+            {
+                // Bind Width property to SerializedWidth
+                BindingOperations.SetBinding(tb, FrameworkElement.WidthProperty, new Binding("SerializedWidth")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Source = stringInput,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                });
+
+                // Bind Height property to SerializedHeight
+                BindingOperations.SetBinding(tb, FrameworkElement.HeightProperty, new Binding("SerializedHeight")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Source = stringInput,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                });
+            }
+        }
+
+        private void RecordToUndoRedoStack(string v1, string v2)
+        {
+            this.dynamoViewModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(
+                    this.nodeView.ViewModel.WorkspaceViewModel.Model.Guid,
+                    this.nodeModel.GUID, "SerializedWidth", v1));
+
+
+            this.dynamoViewModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(
+                    this.nodeView.ViewModel.WorkspaceViewModel.Model.Guid,
+                    this.nodeModel.GUID, "SerializedHeight", v2));
         }
 
         public void editWindowItem_Click(object sender, RoutedEventArgs e)
