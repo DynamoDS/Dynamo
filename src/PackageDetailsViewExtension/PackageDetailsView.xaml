@@ -186,7 +186,7 @@
         </DockPanel>
         <ScrollViewer Name="MainScrollViewer"
                       Grid.Row="1"
-                      Margin="17,17,20,17"
+                      Margin="17,17,5,17"
                       DataContextChanged="FrameworkElement_OnDataContextChanged"
                       VerticalScrollBarVisibility="Visible">
 
