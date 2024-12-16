@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using CoreNodeModelsWpf.Charts.Utilities;
+using Dynamo.Wpf.UI.GuidedTour;
 using GraphLayout;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
@@ -23,12 +24,27 @@ namespace CoreNodeModelsWpf.Charts.Controls
     {
         private readonly CurveMapperNodeModel model;
         public event PropertyChangedEventHandler PropertyChanged;
+                
+        public double DynamicCanvasSize
+        {
+            get => dynamicCanvasSize;
+            set
+            {
+                if (dynamicCanvasSize != value)
+                {
+                    dynamicCanvasSize = Math.Max(value, canvasMinSize);
+                    OnPropertyChanged(nameof(DynamicCanvasSize));
+                }
+            }
+        }
+        private double dynamicCanvasSize = 240;
 
-        private double dynamicCanvasWidth = 180;
-        private double dynamicCanvasHeight = 180;
-        private readonly double minCanvasSize = 250; // also initial width and height
+        private readonly double canvasMinSize = 240; // also initial width and height
+        private readonly double mainGridMinWidth = 300;
+        private readonly double mainGridMinHeigth = 340;
+        private int gridSize = 10;
 
-        private void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged(string propertyName) // RaisePropertyChanged
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -57,7 +73,10 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     e.PropertyName == nameof(model.MinLimitY) ||
                     e.PropertyName == nameof(model.MaxLimitY))
                 {
-                    DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
+                    Dispatcher.Invoke(() =>
+                    {
+                        DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
+                    });
                 }
             };
 
@@ -77,25 +96,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 var nodeModel = sender as CurveMapperNodeModel;
 
-                // ip comment : build this ? do we need SkiaSharpView/libSkiaSharp ?
-                //// Invoke on UI thread
-                //this.Dispatcher.Invoke(() =>
-                //{
-                //    PieChart.Series = Enumerable.Empty<ISeries>();
-
-                //    if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
-                //    {
-                //        var seriesRange = DefaultSeries();
-
-                //        PieChart.Series = PieChart.Series.Concat(seriesRange);
-                //    }
-                //    else
-                //    {
-                //        var seriesRange = UpdateSeries(model);
-
-                //        PieChart.Series = PieChart.Series.Concat(seriesRange);
-                //    }
-                //});
+                // ip comment : build this ? do we need SkiaSharpView/libSkiaSharp ?               
             }
         }
 
@@ -103,107 +104,80 @@ namespace CoreNodeModelsWpf.Charts.Controls
         {
             GraphCanvas.Children.Clear();
 
+            double canvasSize = DynamicCanvasSize; // Square Canvas
+            double[] stepSizes = { 1, 2, 5, 10, 20, 50, 100, 500, 1000, 10000 };
+
             double xRange = xMax - xMin;
             double yRange = yMax - yMin;
 
-            // find a way to calculate size by using ActualWidth and ActualHeigh
-            //double canvasWidth = GraphCanvas.Width;
-            //double canvasHeight = GraphCanvas.Height;
-            double canvasWidth = this.dynamicCanvasWidth;
-            double canvasHeight = this.dynamicCanvasHeight;
-            double canvasWidth1 = GraphCanvas.ActualWidth;
-            double canvasHeight1 = GraphCanvas.ActualHeight;
+            double xStepSize = FindOptimalStepSize(xRange, canvasSize, stepSizes);
+            double yStepSize = FindOptimalStepSize(yRange, canvasSize, stepSizes);
 
+            double xPixelsPerUnit = canvasSize / xRange;
+            double yPixelsPerUnit = canvasSize / yRange;
 
-            var c = MainGrid;
-            var c1 = GraphCanvas;
+            double xStart = Math.Floor(xMin / xStepSize) * xStepSize;
+            double yStart = Math.Floor(yMin / yStepSize) * yStepSize;
 
-
-            8double xStep = canvasWidth / xRange;
-            double yStep = canvasHeight / yRange;
-
-            // Draw verticals
-            for (double x = xMin; x <= xMax; x += 1)
+            // Draw vertical grid lines (X-axis)
+            for (double x = xStart; x <= xMax; x += xStepSize)
             {
-                double xPos = (x - xMin) * xStep;
-                var line = new System.Windows.Shapes.Line
+                if (x < xMin || x > xMax) continue;
+
+                double xPos = (x - xMin) * xPixelsPerUnit;
+                if (xPos >= 0 && xPos <= canvasSize)
                 {
-                    X1 = xPos,
-                    Y1 = 0,
-                    X2 = xPos,
-                    Y2 = canvasHeight,
-                    Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5e5e5e")), // adjust colors
-                    StrokeThickness = 0.4 // adjust thickness
-                };
-                GraphCanvas.Children.Add(line);
+                    DrawLine(xPos, 0, xPos, canvasSize);
+                }                    
             }
 
-            // Draw horizontals
-            for (double y = yMin; y <= yMax; y += 1)
+            // Draw horizontal grid lines (Y-axis)
+            for (double y = yStart; y <= yMax; y += yStepSize)
             {
-                double yPos = canvasHeight - (y - yMin) * yStep; // Flip Y-axis
-                var line = new System.Windows.Shapes.Line
+                if (y < yMin || y > yMax) continue;
+
+                double yPos = canvasSize - (y - yMin) * yPixelsPerUnit; // Flip Y-axis
+                if (yPos >= 0 && yPos <= canvasSize)
                 {
-                    X1 = 0,
-                    Y1 = yPos,
-                    X2 = canvasWidth,
-                    Y2 = yPos,
-                    Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5e5e5e")), // adjust colors
-                StrokeThickness = 0.4 // adjust thickness
-                };
-                GraphCanvas.Children.Add(line);
+                    DrawLine(0, yPos, canvasSize, yPos);
+                }                
             }
+
+            // Draw border
+            DrawBorder(canvasSize, canvasSize);
         }
+
+        private void DrawBorder(double width, double height)
+        {
+            var border = new System.Windows.Shapes.Rectangle
+            {
+                Width = width,
+                Height = height,
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5e5e5e")),
+                StrokeThickness = 0.6
+            };
+
+            Panel.SetZIndex(border, -1); // Send it behind other elements
+            GraphCanvas.Children.Add(border);
+        }
+
+
 
         private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
         {
-            var yAdjust = ActualHeight + e.VerticalChange;
-            var xAdjust = ActualWidth + e.HorizontalChange;
+            var sizeChange = Math.Min(e.VerticalChange, e.HorizontalChange);
+            var yAdjust = ActualHeight + sizeChange;
+            var xAdjust = ActualWidth + sizeChange;
 
-            // Adjust the size of CurveMapperControl
-            if (this.Parent.GetType() == typeof(Grid))
-            {
-                var inputGrid = this.Parent as Grid;
+            // Ensure the node doesn't resize below its minimum size
+            if (xAdjust < mainGridMinWidth) xAdjust = mainGridMinWidth;
+            if (yAdjust < mainGridMinHeigth) yAdjust = mainGridMinHeigth;
 
-                if (xAdjust >= inputGrid.MinWidth && xAdjust >= ChartStyle.CHART_MIN_WIDTH)
-                {
-                    Width = xAdjust;
-                }
+            Width = xAdjust;
+            Height = yAdjust;
 
-                if (yAdjust >= inputGrid.MinHeight && xAdjust >= ChartStyle.CHART_MIN_HEIGHT)
-                {
-                    Height = yAdjust;
-                }
-            }
-
-            // Adjust the size of the GraphCanvas
-            if (MainGrid != null)
-            {
-                var columnDefinition = MainGrid.ColumnDefinitions[1]; // Grid.Column="2"
-                var rowDefinition = MainGrid.RowDefinitions[0]; // Grid.Row="0"
-
-                //GraphCanvas.Width = xAdjust - 60;                
-                //GraphCanvas.Height = yAdjust - 120;
-
-                
-                
-
-                // Update the column width (GraphCanvas width)
-                if (columnDefinition.Width.IsStar)
-                {
-                    //columnDefinition.Width = new GridLength(xAdjust - 60, GridUnitType.Pixel);
-                    GraphCanvas.Width = Math.Max(minCanvasSize, xAdjust - 60);
-                    dynamicCanvasWidth = xAdjust - 60;
-                }
-
-                // Update the row height (GraphCanvas height)
-                if (rowDefinition.Height.IsStar)
-                {
-                    //rowDefinition.Height = new GridLength(yAdjust - 120, GridUnitType.Pixel);
-                    GraphCanvas.Height = Math.Max(minCanvasHeight, yAdjust - 120);
-                    dynamicCanvasHeight = yAdjust - 120;
-                }
-            }
+            // Adjust the size of the GraphCanvas dynamically
+            DynamicCanvasSize = Math.Max(xAdjust - 60, canvasMinSize);
         }
 
 
@@ -217,5 +191,60 @@ namespace CoreNodeModelsWpf.Charts.Controls
             this.model.PropertyChanged -= NodeModel_PropertyChanged;
             Unloaded -= Unload;
         }
+
+        #region Helpers
+
+        // Helper function to find the optimal step size
+        private double FindOptimalStepSize(double range, double canvasSize, double[] stepSizes)
+        {
+            foreach(var step in stepSizes)
+            {
+                if (range / step <= 10) // maximum 10 columns/rows
+                {
+                    return step;
+                }
+            }
+            return stepSizes.Last(); // Default to the largest step size
+        }
+
+        private double CalculateStepSize(double range, double canvasSize, double minSpacing, double maxSpacing)
+        {
+            /// Determine the ideal step size in pixels
+            double pixelStep = canvasSize / range;
+
+            // Adjust step size to ensure spacing is within minSpacing and maxSpacing
+            if (pixelStep < minSpacing)
+            {
+                // Too fine: merge steps to ensure minimum spacing
+                double factor = Math.Ceiling(minSpacing / pixelStep);
+                return range / Math.Ceiling(range / factor);
+            }
+            else if (pixelStep > maxSpacing)
+            {
+                // Too coarse: split steps to ensure maximum spacing
+                double factor = Math.Floor(pixelStep / maxSpacing);
+                return range / Math.Floor(range * factor / range);
+            }
+
+            // If within bounds, show 1 unit per step
+            return 1;
+        }
+
+        // Helper function to draw lines on the canvas
+        private void DrawLine(double x1, double y1, double x2, double y2)
+        {
+            var line = new System.Windows.Shapes.Line
+            {
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2,
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5e5e5e")), // Adjust color
+                StrokeThickness = 0.6 // Slightly thicker for borders
+            };
+            GraphCanvas.Children.Add(line);
+        }
+
+        #endregion
     }
 }

@@ -11,8 +11,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"             
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="500" 
-             Height="300" Width="300"
+             Width="300" Height="340" MinWidth="300" MinHeight="340"
              d:DataContext="{d:DesignInstance local:CurveMapperControl}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,22 +22,25 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid x:Name="MainGrid">
+    <Grid x:Name="MainGrid" MinWidth="300" MinHeight="340">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" MinHeight="100"/> <!-- graph canvas -->
-            <RowDefinition Height="50"/>                <!-- x values & x label-->
-            <RowDefinition Height="30"/>                <!-- x label -->
+            <RowDefinition Height="*"/> <!-- graph canvas -->
+            <RowDefinition Height="48"/>                <!-- x values & x label-->
             <RowDefinition Height="30"/>                <!-- graph types dropdown -->
-            <!--<RowDefinition Height="30"/>                --><!-- resize thumb -->
+            <RowDefinition Height="12"/>                <!-- resize thumb -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>              <!-- y values & y label -->
-            <ColumnDefinition Width="*" MinWidth="100"/><!-- graph canvas-->
-            <ColumnDefinition Width="16"/>              <!-- reset button -->
+            <ColumnDefinition Width="*"/><!-- graph canvas-->
+            <ColumnDefinition Width="20"/>              <!-- reset button -->
         </Grid.ColumnDefinitions>
 
         <!-- Graph canvas -->
-        <Canvas x:Name="GraphCanvas" Background="Transparent" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Canvas x:Name="GraphCanvas" Background="Transparent" 
+                Grid.Row="0" Grid.Column="1" Margin="10,0,0,0"
+                MinWidth="240" MinHeight="240"
+                Width="{Binding DynamicCanvasSize, Mode=TwoWay}"
+                Height="{Binding DynamicCanvasSize, Mode=TwoWay}"/>
 
         <!-- X values -->
         <Grid Grid.Row="1" Grid.Column="1">
@@ -48,19 +50,19 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="15"/>
+                <RowDefinition Height="20"/>
                 <RowDefinition Height="15"/>
             </Grid.RowDefinitions>
                 
-            <TextBlock x:Name="minLimitXLabel" Text="0" FontSize="11"
+            <TextBlock x:Name="minLimitXLabel" Text="{Binding MinLimitX}" FontSize="11" Margin="10,0,0,0"
                        FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
                        HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0"/>
 
-            <TextBlock x:Name="midXLabel" Text="5" FontSize="11"
-                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+            <TextBlock x:Name="midXLabel" Text="{Binding MidValueX}" FontSize="11"
+                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797" Margin="5,0,0,0"
                        HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" Grid.Row="0"/>
-                    
-            <TextBlock x:Name="maxLimitXLabel" Text="10" FontSize="11"
+
+            <TextBlock x:Name="maxLimitXLabel" Text="{Binding MaxLimitX}" FontSize="11"
                        FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
                        HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" Grid.Row="0"/>
                     
@@ -82,22 +84,28 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="minLimitYLabel" Text="0" FontSize="11"
-               FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
-               HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2"/>
+            <TextBlock x:Name="minLimitYLabel" Text="{Binding MinLimitY}" FontSize="11"
+                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797" Margin="0,0,0,5"
+                       HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                       Grid.Column="0" Grid.ColumnSpan="2"
+                       Grid.Row="2"/>
 
-            <TextBlock x:Name="midYLabel" Text="5" FontSize="11"
-               FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
-               HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+            <TextBlock x:Name="midYLabel" Text="{Binding MidValueY}" FontSize="11"
+                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                       Grid.Column="0" Grid.ColumnSpan="2"
+                       Grid.Row="1"/>
 
-            <TextBlock x:Name="maxLimitYLabel" Text="10" FontSize="11"
-               FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
-               HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="1" Grid.Row="0"/>
+            <TextBlock x:Name="maxLimitYLabel" Text="{Binding MaxLimitY}" FontSize="11"
+                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+                       HorizontalAlignment="Right" VerticalAlignment="Top"
+                       Grid.Column="0" Grid.ColumnSpan="2"
+                       Grid.Row="0"/>
 
             <TextBlock Text="y" FontSize="12"
-               FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
-               HorizontalAlignment="Center" VerticalAlignment="Center"
-               Grid.Column="0" Grid.Row="1">
+                       FontFamily="{StaticResource ArtifaktElementRegular}" Foreground="#979797"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Grid.Column="0" Grid.Row="1">
                 <TextBlock.RenderTransform>
                     <RotateTransform Angle="-90" />
                 </TextBlock.RenderTransform>
@@ -105,38 +113,67 @@
         </Grid>
 
         <!-- Graph type dropdown -->
-        <StackPanel Grid.Row="2"
-                    Grid.Column="1"
-                    Orientation="Horizontal" VerticalAlignment="Center">
-            <TextBlock Text="Curve Type" Height="29" Margin="0,12,0,0"
+        <!-- TODO: Text for localization -->
+        <Grid Grid.Row="2"
+              Grid.Column="1"
+              HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="Curve Type"
+                       FontSize="14px"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
-                       FontSize="12px"
                        Foreground="{StaticResource DefaultFontColorBrush}"
-                       />
-            <!--FontFamily="{StaticResource ArtifaktElementRegular}"/>-->
+                       VerticalAlignment="Center"/>
+            <ComboBox Grid.Column="1"
+                      Margin="10,0,0,0"
+                      HorizontalAlignment="Stretch"
+                      MinWidth="160"
+                      VerticalAlignment="Bottom"
+                      Style="{StaticResource RefreshComboBox}"
+                      ItemsSource="{converters:EnumBindingSource charts:GraphTypes}"
+                      SelectedItem="{Binding SelectedGraphType}" />
+
+        </Grid>
+        <!--<StackPanel Grid.Row="2"
+                    Grid.Column="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Stretch">
+            <TextBlock x:Name ="CurveTypeLabel"
+                       Text="Curve Type"
+                       FontSize="14px"
+                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                       Foreground="{StaticResource DefaultFontColorBrush}"
+                       VerticalAlignment="Center"/>
             <ComboBox Margin="10,0,0,0"                      
-                      HorizontalAlignment="Left" MinWidth="100"
+                      HorizontalAlignment="Stretch"
+                      MinWidth="160"
+                      VerticalAlignment="Bottom"
                       Style="{StaticResource RefreshComboBox}"
                       ItemsSource="{converters:EnumBindingSource charts:GraphTypes}"
                       SelectedItem="{Binding SelectedGraphType}" >
-            </ComboBox>
-            
-        </StackPanel>
+            </ComboBox>            
+        </StackPanel>-->
 
         <!-- Reset button -->
-        <Button Grid.Column="2" Height="16" VerticalAlignment="Bottom" Background="Transparent" BorderThickness="0">
+        <Button Grid.Column="2" Height="16" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                Background="Transparent" BorderThickness="0" Margin="0,0,0,15">
             <Image Source="/DynamoCoreWpf;component/UI/Images/reset.png" Height="16" Width="16" />
         </Button>
 
 
 
-        <!-- Resize thumb-->
+        <!-- Resize thumb -->
             <StackPanel Grid.Row="3"
                     Grid.Column="2"
                     Orientation="Horizontal" HorizontalAlignment="Right">
             <Thumb Name ="resizeThumb"
                    Style="{StaticResource ChartsThumb}"
-                   DragDelta="ThumbResizeThumbOnDragDeltaHandler" Margin="10,0,0,0">
+                   DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+                   Margin="10,0,0,0"
+                   Panel.ZIndex="100">
                 <Thumb.ToolTip>
                     <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}" Style="{StaticResource GenericToolTipLight}"/>
                 </Thumb.ToolTip>

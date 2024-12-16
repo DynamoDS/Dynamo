@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System;
 using CoreNodeModelsWpf.Converters;
 using System.ComponentModel;
+using System.Collections;
+using System.Windows.Forms.VisualStyles;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -49,6 +51,7 @@ namespace CoreNodeModelsWpf.Charts
         private double minLimitY = 0;
         private double maxLimitY = 10;
 
+        [JsonProperty(PropertyName = "MinLimitX")]
         public double MinLimitX
         {
             get => minLimitX;
@@ -56,9 +59,12 @@ namespace CoreNodeModelsWpf.Charts
             {
                 minLimitX = value;
                 RaisePropertyChanged(nameof(MinLimitX));
+                RaisePropertyChanged(nameof(MidValueX));
+                OnNodeModified();
             }
         }
 
+        [JsonProperty(PropertyName = "MaxLimitX")]
         public double MaxLimitX
         {
             get => maxLimitX;
@@ -66,9 +72,11 @@ namespace CoreNodeModelsWpf.Charts
             {
                 maxLimitX = value;
                 RaisePropertyChanged(nameof(MaxLimitX));
+                RaisePropertyChanged(nameof(MidValueX));
+                OnNodeModified();
             }
         }
-
+        [JsonProperty(PropertyName = "MinLimitY")]
         public double MinLimitY
         {
             get => minLimitY;
@@ -76,9 +84,11 @@ namespace CoreNodeModelsWpf.Charts
             {
                 minLimitY = value;
                 RaisePropertyChanged(nameof(MinLimitY));
+                RaisePropertyChanged(nameof(MidValueY));
+                OnNodeModified();
             }
         }
-
+        [JsonProperty(PropertyName = "MaxLimitY")]
         public double MaxLimitY
         {
             get => maxLimitY;
@@ -86,17 +96,31 @@ namespace CoreNodeModelsWpf.Charts
             {
                 maxLimitY = value;
                 RaisePropertyChanged(nameof(MaxLimitY));
+                RaisePropertyChanged(nameof(MidValueY));
+                OnNodeModified();
             }
         }
+        public double MidValueX
+        {
+            get => (MaxLimitX + MinLimitX) * 0.5;
+        }
+        public double MidValueY
+        {
+            get => (MaxLimitY + MinLimitY) * 0.5;
+        }
+
         public List<double> Values { get; set; }
+
         /// <summary>
         /// Triggers when port is connected or disconnected
         /// </summary>
         public event EventHandler PortUpdated;
+
         protected virtual void OnPortUpdated(EventArgs args)
         {
             PortUpdated?.Invoke(this, args);
         }
+
         private GraphTypes selectedGraphType;
         public GraphTypes SelectedGraphType
         {
@@ -117,6 +141,8 @@ namespace CoreNodeModelsWpf.Charts
             RegisterAllPorts();
 
             SelectedGraphType = GraphTypes.Linear;
+            //MinLimitX = 0;
+            //MaxLimitX = 10;
 
             //PortConnected += CurveMapperNodeModel_PortConnected;
             //PortDisconnected += CurveMapperNodeModel_PortDisconnected;
@@ -124,7 +150,7 @@ namespace CoreNodeModelsWpf.Charts
         [JsonConstructor]
         public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            //PortDisconnected += GraphMapNodeModel_PortDisconnected;
+            PortDisconnected += GraphMapNodeModel_PortDisconnected;
             //PropertyChanged += GraphMapNodeModel_PropertyChanged;
 
             ArgumentLacing = LacingStrategy.Disabled;
@@ -132,7 +158,101 @@ namespace CoreNodeModelsWpf.Charts
 
         #endregion
 
+        #region DataBridge
+        /// <summary>
+        /// Register the data bridge callback.
+        /// </summary>
+        protected override void OnBuilt()
+        {
+            base.OnBuilt();
+            VMDataBridge.DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
+        }
+        private void DataBridgeCallback(object data)
+        {
+            // Grab input data which always returned as an ArrayList
+            var inputs = data as ArrayList;
+
+            var minValueX = double.TryParse(inputs[0]?.ToString(), out var minX) ? minX : MinLimitX;
+            var maxValueX = double.TryParse(inputs[1]?.ToString(), out var maxX) ? maxX : MaxLimitX;
+            var minValueY = double.TryParse(inputs[2]?.ToString(), out var minY) ? minY : MinLimitY;
+            var maxValueY = double.TryParse(inputs[3]?.ToString(), out var maxY) ? maxY : MaxLimitY;
+            //var listValue = int.Parse(inputs[4].ToString());
+
+            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected &&
+                !InPorts[2].IsConnected && !InPorts[3].IsConnected)
+            {
+                return;
+            }
+
+            // Check port connectivity
+            if (InPorts[0].IsConnected) MinLimitX = minValueX;
+            if (InPorts[1].IsConnected) MaxLimitX = maxValueX;
+            if (InPorts[2].IsConnected) MinLimitY = minValueY;
+            if (InPorts[3].IsConnected) MaxLimitY = maxValueY;
+
+            // Notify property changes to update UI
+            RaisePropertyChanged(nameof(MinLimitX));
+            RaisePropertyChanged(nameof(MaxLimitX));
+            RaisePropertyChanged(nameof(MinLimitY));
+            RaisePropertyChanged(nameof(MaxLimitY));
+
+
+            // Trigger additional UI updates if necessary
+            RaisePropertyChanged("DataUpdated");
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            if (!InPorts[0].IsConnected || !InPorts[1].IsConnected)
+            {
+                return new[]
+                {
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
+                };
+            }
+
+            var minLimitX = inputAstNodes[0]; // x-MinLimit
+            var maxLimitX = inputAstNodes[1]; // x-MaxLimit
+            var minLimitY = inputAstNodes[2]; // y-MinLimit
+            var maxLimitY = inputAstNodes[3]; // y-MaxLimit
+
+            // Function call for the computational logic of CurveMapper
+            var functionCall = AstFactory.BuildFunctionCall(
+                new Func<double, double, double, double, List<double>>(CurveMapperFunctions.GenerateCurve),
+                new List<AssociativeNode>
+                {
+                    minLimitX,
+                    maxLimitX,
+                    minLimitY,
+                    maxLimitY
+                }
+            );
+
+            // Add the DataBridge call to trigger the callback
+            var dataBridgeCall = AstFactory.BuildAssignment(
+                AstFactory.BuildIdentifier(AstIdentifierBase + "_dataBridge"),
+                VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes))
+            );
+
+            // Return both the function call and the DataBridge call
+            return new[]
+            {
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall),
+                dataBridgeCall
+            };
+        }
+
+        #endregion
+
         #region Events
+        private void GraphMapNodeModel_PortDisconnected(PortModel obj)
+        {
+            if (obj.PortType == PortType.Input && this.State == ElementState.Active)
+            {
+                RaisePropertyChanged("DataUpdated");
+            }
+        }
         // ip comment: modify this
         private void CurveMapperNodeModel_PortConnected(PortModel port, ConnectorModel arg2)
         {
@@ -160,6 +280,10 @@ namespace CoreNodeModelsWpf.Charts
                 RaisePropertyChanged("DataUpdated");
             }
         }
+
+
+
+        
 
         #endregion
     }
