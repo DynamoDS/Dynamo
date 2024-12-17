@@ -54,30 +54,37 @@ namespace CoreNodeModelsWpf.Charts.Controls
             InitializeComponent();
 
             this.model = model;
-            DataContext = model;
-
+            DataContext = model;            
 
             // ip comment : build this
             //this.model.PropertyChanged += NodeModel_PropertyChanged;
-            this.Unloaded += Unload;
-
-
-            // ip comment : build this
-            //BuildUI(model);
+            this.Unloaded += Unload;            
 
             // Redraw canvas when the input changes
             model.PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName == nameof(model.MinLimitX) ||
+                // Ensure all ports are connected
+                // ip : do we need this anymore?
+                var inPorts = model.InPorts;
+                var allPortsConnected = inPorts[0].IsConnected &&
+                    inPorts[1].IsConnected &&
+                    inPorts[2].IsConnected &&
+                    inPorts[3].IsConnected;
+
+                if (allPortsConnected)
+                {
+                    if (e.PropertyName == nameof(model.MinLimitX) ||
                     e.PropertyName == nameof(model.MaxLimitX) ||
                     e.PropertyName == nameof(model.MinLimitY) ||
                     e.PropertyName == nameof(model.MaxLimitY))
-                {
-                    Dispatcher.Invoke(() =>
                     {
-                        DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
-                    });
-                }
+                        Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
+                            UpdateLabels();
+                        }), System.Windows.Threading.DispatcherPriority.Background);
+                    }
+                }                
             };
 
             // Redraw canvas when the node is resized. Do we need this?
@@ -88,15 +95,14 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
             // Initial draw canvas
             DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
+            UpdateLabels();
         }
 
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "DataUpdated")
             {
-                var nodeModel = sender as CurveMapperNodeModel;
-
-                // ip comment : build this ? do we need SkiaSharpView/libSkiaSharp ?               
+                var nodeModel = sender as CurveMapperNodeModel;             
             }
         }
 
@@ -161,6 +167,36 @@ namespace CoreNodeModelsWpf.Charts.Controls
             GraphCanvas.Children.Add(border);
         }
 
+        private void UpdateLabels()
+        {
+            // Condition to display "x-min" and "x-max" if both are 0
+            if (model.MinLimitX == 0 && model.MaxLimitX == 0)
+            {
+                minLimitXLabel.Text = "x-min";
+                midXLabel.Text = "";
+                maxLimitXLabel.Text = "x-max";
+            }
+            else
+            {
+                minLimitXLabel.Text = model.MinLimitX.ToString("0.##");
+                midXLabel.Text = model.MidValueX.ToString("0.##");
+                maxLimitXLabel.Text = model.MaxLimitX.ToString("0.##");
+            }
+
+            // Similarly for Y-axis
+            if (model.MinLimitY == 0 && model.MaxLimitY == 0)
+            {
+                minLimitYLabel.Text = "y-min";
+                midYLabel.Text = "";
+                maxLimitYLabel.Text = "y-max";
+            }
+            else
+            {
+                minLimitYLabel.Text = model.MinLimitY.ToString("0.##");
+                midYLabel.Text = model.MidValueY.ToString("0.##");
+                maxLimitYLabel.Text = model.MaxLimitY.ToString("0.##");
+            }
+        }
 
 
         private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)

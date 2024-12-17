@@ -46,10 +46,10 @@ namespace CoreNodeModelsWpf.Charts
     public class CurveMapperNodeModel : NodeModel
     {
         #region Properties
-        private double minLimitX = 0;
-        private double maxLimitX = 10;
-        private double minLimitY = 0;
-        private double maxLimitY = 10;
+        private double minLimitX;
+        private double maxLimitX;
+        private double minLimitY;
+        private double maxLimitY;
 
         [JsonProperty(PropertyName = "MinLimitX")]
         public double MinLimitX
@@ -58,8 +58,7 @@ namespace CoreNodeModelsWpf.Charts
             set
             {
                 minLimitX = value;
-                RaisePropertyChanged(nameof(MinLimitX));
-                RaisePropertyChanged(nameof(MidValueX));
+                this.RaisePropertyChanged(nameof(MinLimitX));
                 OnNodeModified();
             }
         }
@@ -71,8 +70,7 @@ namespace CoreNodeModelsWpf.Charts
             set
             {
                 maxLimitX = value;
-                RaisePropertyChanged(nameof(MaxLimitX));
-                RaisePropertyChanged(nameof(MidValueX));
+                this.RaisePropertyChanged(nameof(MaxLimitX));
                 OnNodeModified();
             }
         }
@@ -83,8 +81,7 @@ namespace CoreNodeModelsWpf.Charts
             set
             {
                 minLimitY = value;
-                RaisePropertyChanged(nameof(MinLimitY));
-                RaisePropertyChanged(nameof(MidValueY));
+                this.RaisePropertyChanged(nameof(MinLimitY));
                 OnNodeModified();
             }
         }
@@ -95,19 +92,12 @@ namespace CoreNodeModelsWpf.Charts
             set
             {
                 maxLimitY = value;
-                RaisePropertyChanged(nameof(MaxLimitY));
-                RaisePropertyChanged(nameof(MidValueY));
+                this.RaisePropertyChanged(nameof(MaxLimitY));
                 OnNodeModified();
             }
         }
-        public double MidValueX
-        {
-            get => (MaxLimitX + MinLimitX) * 0.5;
-        }
-        public double MidValueY
-        {
-            get => (MaxLimitY + MinLimitY) * 0.5;
-        }
+        public double MidValueX => (MaxLimitX + MinLimitX) * 0.5;
+        public double MidValueY => (MaxLimitY + MinLimitY) * 0.5;
 
         public List<double> Values { get; set; }
 
@@ -140,17 +130,22 @@ namespace CoreNodeModelsWpf.Charts
         {
             RegisterAllPorts();
 
-            SelectedGraphType = GraphTypes.Linear;
-            //MinLimitX = 0;
-            //MaxLimitX = 10;
-
             //PortConnected += CurveMapperNodeModel_PortConnected;
             //PortDisconnected += CurveMapperNodeModel_PortDisconnected;
+            //this.PropertyChanged += ColorRange_PropertyChanged;
+
+            foreach (var port in InPorts)
+            {
+                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
+            }
+
+            SelectedGraphType = GraphTypes.Linear;
+            ArgumentLacing = LacingStrategy.Disabled;
         }
         [JsonConstructor]
         public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            PortDisconnected += GraphMapNodeModel_PortDisconnected;
+            //PortDisconnected += GraphMapNodeModel_PortDisconnected;
             //PropertyChanged += GraphMapNodeModel_PropertyChanged;
 
             ArgumentLacing = LacingStrategy.Disabled;
@@ -246,44 +241,27 @@ namespace CoreNodeModelsWpf.Charts
         #endregion
 
         #region Events
-        private void GraphMapNodeModel_PortDisconnected(PortModel obj)
+        //private void GraphMapNodeModel_PortDisconnected(PortModel obj)
+        //{
+        //    if (obj.PortType == PortType.Input && this.State == ElementState.Active)
+        //    {
+        //        RaisePropertyChanged("DataUpdated");
+        //    }
+        //}
+
+        private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (obj.PortType == PortType.Input && this.State == ElementState.Active)
-            {
-                RaisePropertyChanged("DataUpdated");
-            }
+            OnNodeModified(); // This will ensure the node is re-executed
         }
-        // ip comment: modify this
-        private void CurveMapperNodeModel_PortConnected(PortModel port, ConnectorModel arg2)
-        {
-            // Reset an info states if any
-            //if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.PersistentInfo)))
-            //{
-            //    this.ClearInfoMessages();
-            //}
-
-            OnPortUpdated(null);
-            RaisePropertyChanged("DataUpdated");
-        }
-        private void CurveMapperNodeModel_PortDisconnected(PortModel port)
-        {
-            OnPortUpdated(null);
-            // Clear UI when a input port is disconnected
-            if (port.PortType == PortType.Input)
-            {
-                //MinLimitX?.Clear();
-                //MaxLimitX?.Clear();
-                //MinLimitY?.Clear();
-                //MaxLimitY?.Clear();
-                Values?.Clear();
-
-                RaisePropertyChanged("DataUpdated");
-            }
-        }
+        //private void UpdateGraph()
+        //{
+        //    // Logic to redraw grid or handle input updates
+        //    OnNodeModified(); // This will ensure the node is re-executed
+        //}
 
 
 
-        
+
 
         #endregion
     }
