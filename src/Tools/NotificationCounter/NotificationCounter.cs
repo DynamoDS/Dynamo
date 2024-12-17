@@ -124,6 +124,7 @@ namespace Dynamo.Utilities
                 {
                     patchedCoreNotifications = true;
                     PatchCoreNotifications(assembly.GetType("Dynamo.Core.NotificationObject"));
+                    PatchDynamoModelNotifications(assembly.GetType("Dynamo.Models.DynamoModel"));
                 }
                 if (name == "Microsoft.Practices.Prism" && !patchUINotifications)
                 {
@@ -176,6 +177,16 @@ namespace Dynamo.Utilities
         }
 
         private static void PatchCoreNotifications(Type classType)
+        {
+            var notificationChanged = classType.GetMethod("OnPropertyChanged", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(string) }, null);
+            var postfix = typeof(NotificationCounter).GetMethod(nameof(CountCoreNotifications), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            if (postfix != null && notificationChanged != null)
+            {
+                harmonyIntance.Patch(notificationChanged, null, new HarmonyMethod(postfix));
+            }
+        }
+
+        private static void PatchDynamoModelNotifications(Type classType)
         {
             var notificationChanged = classType.GetMethod("OnPropertyChanged", BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(string) }, null);
             var postfix = typeof(NotificationCounter).GetMethod(nameof(CountCoreNotifications), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
