@@ -502,7 +502,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of values to generate..
+        ///   Looks up a localized string similar to Number of values to generate.
+        ///
+        ///double.
         /// </summary>
         public static string CurveMapperListDataPortToolTip {
             get {
@@ -511,7 +513,18 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Values derived from the curve..
+        ///   Looks up a localized string similar to Generates a list of values mapped from a curve..
+        /// </summary>
+        public static string CurveMapperNodeDescription {
+            get {
+                return ResourceManager.GetString("CurveMapperNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Values derived from the curve.
+        ///
+        ///double.
         /// </summary>
         public static string CurveMapperOutputDataPortToolTip {
             get {
@@ -529,7 +542,18 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maximum value for the X-axis domain..
+        ///   Looks up a localized string similar to graph;curve;mapper;math.
+        /// </summary>
+        public static string CurveMapperSearchTags {
+            get {
+                return ResourceManager.GetString("CurveMapperSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum value for the X-axis domain.
+        ///
+        ///double.
         /// </summary>
         public static string CurveMapperXMaxLimitDataPortToolTip {
             get {
@@ -538,7 +562,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimum value for the X-axis domain..
+        ///   Looks up a localized string similar to Minimum value for the X-axis domain.
+        ///
+        ///double.
         /// </summary>
         public static string CurveMapperXMinLimitDataPortToolTip {
             get {
@@ -547,7 +573,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maximum value for the Y-axis domain..
+        ///   Looks up a localized string similar to Maximum value for the Y-axis domain.
+        ///
+        ///double.
         /// </summary>
         public static string CurveMapperYMaxLimitDataPortToolTip {
             get {
@@ -556,7 +584,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimum value for the Y-axis domain..
+        ///   Looks up a localized string similar to Minimum value for the Y-axis domain.
+        ///
+        ///double.
         /// </summary>
         public static string CurveMapperYMinLimitDataPortToolTip {
             get {

@@ -1,79 +1,82 @@
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
 using CoreNodes.ChartHelpers;
 using CoreNodeModelsWpf.Charts.Controls;
-using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
-using DynamoServices;
 using Dynamo.Wpf.Properties;
-using Xceed.Wpf.Toolkit;
-using Dynamo.Graph.Connectors;
 using Dynamo.ViewModels;
 using System.Collections.Generic;
 using System;
 using CoreNodeModelsWpf.Converters;
 using System.ComponentModel;
 using System.Collections;
-using System.Windows.Forms.VisualStyles;
+using Dynamo.Graph.Connectors;
 
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("Math.CurveMapper")]
-    [NodeCategory("Math.Graph")]
-    //[NodeDescription("ChartsCurveMapperDescription", typeof(CoreNodeModelWpfResources))]
-    //[NodeSearchTags("ChartsCurveMapperSearchTags", typeof(CoreNodeModelWpfResources))]
-    [InPortNames("x-MinLimit", "x-MaxLimit", "y-MinLimit", "y-MaxLimit", "list")]
-    [InPortTypes("List<double>", "List<double>", "List<double>", "List<double>", "List<double>")]
-    [InPortDescriptions(typeof(CoreNodeModelWpfResources),
-        "CurveMapperXMinLimitDataPortToolTip",
-        "CurveMapperXMaxLimitDataPortToolTip",
-        "CurveMapperYMinLimitDataPortToolTip",
-        "CurveMapperYMaxLimitDataPortToolTip",
-        "CurveMapperListDataPortToolTip")]
-    [OutPortNames("list")]
-    [OutPortTypes("List<double>")]
-    [OutPortDescriptions(typeof(CoreNodeModelWpfResources),
-        "CurveMapperOutputDataPortToolTip")]
+    [NodeCategory("Math.Graph.Curve")]
+    [NodeDescription("CurveMapperNodeDescription", typeof(CoreNodeModelWpfResources))]
+    [NodeSearchTags("CurveMapperSearchTags", typeof(CoreNodeModelWpfResources))]
+    //[InPortNames("x-MinLimit", "x-MaxLimit", "y-MinLimit", "y-MaxLimit", "count")]
+    //[InPortTypes("double", "double", "double", "double", "double")]
+    //[InPortDescriptions(typeof(CoreNodeModelWpfResources),
+    //    "CurveMapperXMinLimitDataPortToolTip",
+    //    "CurveMapperXMaxLimitDataPortToolTip",
+    //    "CurveMapperYMinLimitDataPortToolTip",
+    //    "CurveMapperYMaxLimitDataPortToolTip",
+    //    "CurveMapperListDataPortToolTip")]
+    //[OutPortNames("numbers")]
+    //[OutPortTypes("List<double>")]
+    //[OutPortDescriptions(typeof(CoreNodeModelWpfResources),
+    //    "CurveMapperOutputDataPortToolTip")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.CurveMapper")] // move to Math
     public class CurveMapperNodeModel : NodeModel
     {
         #region Properties
         private double minLimitX;
-        private double maxLimitX;
+        private double maxLimitX = 1;
         private double minLimitY;
-        private double maxLimitY;
+        private double maxLimitY = 1;
+        private double pointsCount = 10;
+        private readonly IntNode minLimitXDefaultValue = new IntNode(0);
+        private readonly IntNode maxLimitXDefaultValue = new IntNode(1);
+        private readonly IntNode minLimitYDefaultValue = new IntNode(0);
+        private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
+        private readonly IntNode pointsCountDefaultValue = new IntNode(10);
 
+        // Should those properties be serialized ???
         [JsonProperty(PropertyName = "MinLimitX")]
         public double MinLimitX
         {
             get => minLimitX;
             set
             {
-                minLimitX = value;
-                this.RaisePropertyChanged(nameof(MinLimitX));
-                OnNodeModified();
+                if (minLimitX != value)
+                {
+                    minLimitX = value;
+                    this.RaisePropertyChanged(nameof(MinLimitX));
+                    OnNodeModified();
+                }                
             }
         }
-
         [JsonProperty(PropertyName = "MaxLimitX")]
         public double MaxLimitX
         {
             get => maxLimitX;
             set
             {
-                maxLimitX = value;
-                this.RaisePropertyChanged(nameof(MaxLimitX));
-                OnNodeModified();
+                if (maxLimitX != value)
+                {
+                    maxLimitX = value;
+                    this.RaisePropertyChanged(nameof(MaxLimitX));
+                    OnNodeModified();
+                }
             }
         }
         [JsonProperty(PropertyName = "MinLimitY")]
@@ -82,9 +85,12 @@ namespace CoreNodeModelsWpf.Charts
             get => minLimitY;
             set
             {
-                minLimitY = value;
-                this.RaisePropertyChanged(nameof(MinLimitY));
-                OnNodeModified();
+                if (minLimitY != value)
+                {
+                    minLimitY = value;
+                    this.RaisePropertyChanged(nameof(MinLimitY));
+                    OnNodeModified();
+                }                
             }
         }
         [JsonProperty(PropertyName = "MaxLimitY")]
@@ -93,15 +99,30 @@ namespace CoreNodeModelsWpf.Charts
             get => maxLimitY;
             set
             {
-                maxLimitY = value;
-                this.RaisePropertyChanged(nameof(MaxLimitY));
-                OnNodeModified();
+                if (maxLimitY != value)
+                {
+                    maxLimitY = value;
+                    this.RaisePropertyChanged(nameof(MaxLimitY));
+                    OnNodeModified();
+                }                
             }
         }
         public double MidValueX => (MaxLimitX + MinLimitX) * 0.5;
         public double MidValueY => (MaxLimitY + MinLimitY) * 0.5;
-
-        public List<double> Values { get; set; }
+        [JsonProperty(PropertyName = "PointsCount")]
+        public double PointsCount
+        {
+            get => pointsCount;
+            set
+            {
+                if (pointsCount != value)
+                {
+                    pointsCount = value;
+                    this.RaisePropertyChanged(nameof(PointsCount));
+                    OnNodeModified();
+                }
+            }
+        }
 
         /// <summary>
         /// Triggers when port is connected or disconnected
@@ -130,11 +151,28 @@ namespace CoreNodeModelsWpf.Charts
 
         public CurveMapperNodeModel()
         {
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-MinLimit",
+                CoreNodeModelWpfResources.CurveMapperXMinLimitDataPortToolTip,
+                minLimitXDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-MaxLimit",
+                CoreNodeModelWpfResources.CurveMapperXMaxLimitDataPortToolTip,
+                maxLimitXDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("y-MinLimit",
+                CoreNodeModelWpfResources.CurveMapperYMinLimitDataPortToolTip,
+                minLimitYDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("y-MaxLimit",
+                CoreNodeModelWpfResources.CurveMapperYMaxLimitDataPortToolTip,
+                maxLimitYDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("count",
+                CoreNodeModelWpfResources.CurveMapperListDataPortToolTip,
+                pointsCountDefaultValue)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("numbers",
+                CoreNodeModelWpfResources.CurveMapperOutputDataPortToolTip)));
+
             RegisterAllPorts();
 
             //PortConnected += CurveMapperNodeModel_PortConnected;
             //PortDisconnected += CurveMapperNodeModel_PortDisconnected;
-            //this.PropertyChanged += ColorRange_PropertyChanged;
 
             foreach (var port in InPorts)
             {
@@ -243,27 +281,11 @@ namespace CoreNodeModelsWpf.Charts
         #endregion
 
         #region Events
-        //private void GraphMapNodeModel_PortDisconnected(PortModel obj)
-        //{
-        //    if (obj.PortType == PortType.Input && this.State == ElementState.Active)
-        //    {
-        //        RaisePropertyChanged("DataUpdated");
-        //    }
-        //}
 
         private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnNodeModified(); // This will ensure the node is re-executed
         }
-        //private void UpdateGraph()
-        //{
-        //    // Logic to redraw grid or handle input updates
-        //    OnNodeModified(); // This will ensure the node is re-executed
-        //}
-
-
-
-
 
         #endregion
     }
@@ -284,12 +306,45 @@ namespace CoreNodeModelsWpf.Charts
         {
             this.model = model;
             this.view = nodeView;
+
             curveMapperControl = new CurveMapperControl(model);
             nodeView.inputGrid.Children.Add(curveMapperControl);
 
-            UpdateDefaultInPortValues();
+            //// Call this method to set the initial state of ports
+            //UpdatePortDefaultValueMarkers();
+            // Subscribe to port update events
+            model.PortUpdated += (s, e) => UpdatePortDefaultValueMarkers();
+            // Subscribe to port connection events
+            foreach (var port in model.InPorts)
+            {
+                port.Connectors.CollectionChanged += (s, e) => UpdatePortDefaultValueMarkers();
+            }
 
             model.PortUpdated += ModelOnPortUpdated;
+        }
+
+        // I think this runs for all ports... can it run only for the port that has changed?
+        private void UpdatePortDefaultValueMarkers()
+        {
+            if (view == null || view.ViewModel == null || view.ViewModel.InPorts.Count == 0)
+                return;
+
+            var inPorts = view.ViewModel.InPorts;
+
+            // If the inPort is really connected, turn off the UsingDefaultValue indicator
+            // For some reason if inPort is registered with default value IsConnected returns true
+            // even if the inPort is not really connected. See Range node for example
+            if (model == null || model.InPorts.Count == 0) return;
+
+            for (int i = 0; i < model.InPorts.Count; i++)
+            {
+                var c1 = model.InPorts[i].Connectors.Any();
+                if (model.InPorts[i].Connectors.Any())
+                {
+                    inPorts[i].UsingDefaultValue = false;
+                }
+            }
+
         }
 
         private void ModelOnPortUpdated(object sender, EventArgs e)
@@ -297,6 +352,8 @@ namespace CoreNodeModelsWpf.Charts
             UpdateDefaultInPortValues();
         }
 
+        // Needed only if the inPorts have default value??
+        // Does this work correctly? 
         private void UpdateDefaultInPortValues()
         {
             if (!this.view.ViewModel.InPorts.Any()) return;
@@ -308,12 +365,14 @@ namespace CoreNodeModelsWpf.Charts
                     !inPorts[0].IsConnected &&
                     !inPorts[1].IsConnected &&
                     !inPorts[2].IsConnected &&
-                    !inPorts[3].IsConnected)
+                    !inPorts[3].IsConnected &&
+                    !inPorts[4].IsConnected)
             {
                 ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = true;
                 ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = true;
                 ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = true;
                 ((InPortViewModel)inPorts[3]).PortDefaultValueMarkerVisible = true;
+                ((InPortViewModel)inPorts[5]).PortDefaultValueMarkerVisible = true;
             }
             else
             {
@@ -321,6 +380,7 @@ namespace CoreNodeModelsWpf.Charts
                 ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = false;
                 ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = false;
                 ((InPortViewModel)inPorts[3]).PortDefaultValueMarkerVisible = false;
+                ((InPortViewModel)inPorts[4]).PortDefaultValueMarkerVisible = false;
             }
 
             var allPortsConnected = inPorts[0].IsConnected && inPorts[1].IsConnected && inPorts[2].IsConnected && inPorts[3].IsConnected && model.State != ElementState.Warning;

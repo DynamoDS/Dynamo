@@ -81,7 +81,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                         Dispatcher.BeginInvoke(new Action(() =>
                         {
                             DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
-                            UpdateLabels();
+                            //UpdateLabels();
                         }), System.Windows.Threading.DispatcherPriority.Background);
                     }
                 }                
@@ -95,7 +95,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
             // Initial draw canvas
             DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
-            UpdateLabels();
+            //UpdateLabels();
         }
 
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -111,60 +111,28 @@ namespace CoreNodeModelsWpf.Charts.Controls
             GraphCanvas.Children.Clear();
 
             double canvasSize = DynamicCanvasSize; // Square Canvas
-            double[] stepSizes = { 1, 2, 5, 10, 20, 50, 100, 500, 1000, 10000 };
 
-            double xRange = xMax - xMin;
-            double yRange = yMax - yMin;
+            // Ensure grid is always 10x10
+            int gridCount = 10; // Number of divisions along both axes
+            double xStepSize = (xMax - xMin) / gridCount;
+            double yStepSize = (yMax - yMin) / gridCount;
 
-            double xStepSize = FindOptimalStepSize(xRange, canvasSize, stepSizes);
-            double yStepSize = FindOptimalStepSize(yRange, canvasSize, stepSizes);
-
-            double xPixelsPerUnit = canvasSize / xRange;
-            double yPixelsPerUnit = canvasSize / yRange;
-
-            double xStart = Math.Floor(xMin / xStepSize) * xStepSize;
-            double yStart = Math.Floor(yMin / yStepSize) * yStepSize;
+            double xPixelsPerStep = canvasSize / gridCount;
+            double yPixelsPerStep = canvasSize / gridCount;
 
             // Draw vertical grid lines (X-axis)
-            for (double x = xStart; x <= xMax; x += xStepSize)
+            for (int i = 0; i <= gridCount; i++)
             {
-                if (x < xMin || x > xMax) continue;
-
-                double xPos = (x - xMin) * xPixelsPerUnit;
-                if (xPos >= 0 && xPos <= canvasSize)
-                {
-                    DrawLine(xPos, 0, xPos, canvasSize);
-                }                    
+                double xPos = i * xPixelsPerStep;
+                DrawLine(xPos, 0, xPos, canvasSize);
             }
 
             // Draw horizontal grid lines (Y-axis)
-            for (double y = yStart; y <= yMax; y += yStepSize)
+            for (int i = 0; i <= gridCount; i++)
             {
-                if (y < yMin || y > yMax) continue;
-
-                double yPos = canvasSize - (y - yMin) * yPixelsPerUnit; // Flip Y-axis
-                if (yPos >= 0 && yPos <= canvasSize)
-                {
-                    DrawLine(0, yPos, canvasSize, yPos);
-                }                
+                double yPos = i * yPixelsPerStep;
+                DrawLine(0, yPos, canvasSize, yPos);
             }
-
-            // Draw border
-            DrawBorder(canvasSize, canvasSize);
-        }
-
-        private void DrawBorder(double width, double height)
-        {
-            var border = new System.Windows.Shapes.Rectangle
-            {
-                Width = width,
-                Height = height,
-                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5e5e5e")),
-                StrokeThickness = 0.6
-            };
-
-            Panel.SetZIndex(border, -1); // Send it behind other elements
-            GraphCanvas.Children.Add(border);
         }
 
         private void UpdateLabels()

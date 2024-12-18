@@ -322,24 +322,42 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
     <value>Open</value>
   </data>
   <data name="CurveMapperListDataPortToolTip" xml:space="preserve">
-    <value>Number of values to generate.</value>
+    <value>Number of values to generate.
+
+double</value>
   </data>
   <data name="CurveMapperXMaxLimitDataPortToolTip" xml:space="preserve">
-    <value>Maximum value for the X-axis domain.</value>
+    <value>Maximum value for the X-axis domain.
+
+double</value>
   </data>
   <data name="CurveMapperXMinLimitDataPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.</value>
+    <value>Minimum value for the X-axis domain.
+
+double</value>
   </data>
   <data name="CurveMapperYMaxLimitDataPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.</value>
+    <value>Maximum value for the Y-axis domain.
+
+double</value>
   </data>
   <data name="CurveMapperYMinLimitDataPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.</value>
+    <value>Minimum value for the Y-axis domain.
+
+double</value>
   </data>
   <data name="CurveMapperOutputDataPortToolTip" xml:space="preserve">
-    <value>Values derived from the curve.</value>
+    <value>Values derived from the curve.
+
+List&lt;double&gt;</value>
   </data>
   <data name="CurveMapperResetButtonToolTip" xml:space="preserve">
     <value>Reset curve to default state.</value>
+  </data>
+  <data name="CurveMapperNodeDescription" xml:space="preserve">
+    <value>Generates a list of values mapped from a curve.</value>
+  </data>
+  <data name="CurveMapperSearchTags" xml:space="preserve">
+    <value>graph;curve;mapper;math</value>
   </data>
 </root>

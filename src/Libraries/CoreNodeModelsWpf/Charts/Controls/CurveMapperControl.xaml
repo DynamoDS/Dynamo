@@ -167,8 +167,6 @@
                              Style="{StaticResource GenericToolTipLight}"/>
                 </Button.ToolTip>
                 <Button.Resources>
-                    <!--<Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/reset.png" Height="16" Width="16"/>
-                    <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/reset_hover.png" Height="16" Width="16"/>-->
                     <Image x:Key="Shape" Source="/DynamoCoreWpf;component/UI/Images/reset.png" Height="16" Width="16"/>
                     <Image x:Key="HighlightShape" Source="/DynamoCoreWpf;component/UI/Images/reset_hover.png" Height="16" Width="16"/>
                 </Button.Resources>
@@ -180,7 +178,8 @@
                DragDelta="ThumbResizeThumbOnDragDeltaHandler"
                HorizontalAlignment="Right"
                VerticalAlignment="Bottom"
-               Margin="0,0,-30,-25">
+               Margin="0,0,-60,-25"
+               Cursor="SizeNWSE">
             <Thumb.ToolTip>
                 <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}"
                          Style="{StaticResource GenericToolTipLight}"/>
