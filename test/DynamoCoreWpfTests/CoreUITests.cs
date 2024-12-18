@@ -966,12 +966,53 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             int count = 0;
-            (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
+            var vm = searchControl.DataContext as SearchViewModel;
+            Assert.IsNotNull(vm);
+            vm.SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
+
+            // run without debouncer
+            vm.searchDelayTimeout = -1;
             searchControl.SearchTextBox.Text = "dsfdf";
             DispatcherUtil.DoEvents();
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
-            Assert.AreEqual(count, 1);
+            Assert.AreEqual(1, count, "changing the text once should cause a single update");
+
+            // prepare debounce tests
+            var debounceTime = 10;
+            vm.searchDelayTimeout = debounceTime;
+
+            // run with debouncer
+            count = 0;
+            searchControl.SearchTextBox.Text = "dsfdfdsfdf";
+            Thread.Sleep(vm.searchDelayTimeout * 2);
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(1, count, "changing the text once should cause a single update after timeout expires");
+
+            // multiple updates with debouncer
+            count = 0;
+            searchControl.SearchTextBox.Text = "dsfdf";
+            searchControl.SearchTextBox.Text = "dsfdfdsfdf";
+            searchControl.SearchTextBox.Text = "";
+            searchControl.SearchTextBox.Text = "dsfdf";
+            Thread.Sleep(vm.searchDelayTimeout * 2);
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(1, count, "changing the text multiple times in quick succession should cause a single update once timeout expires");
+
+            // run with debouncer, then without
+            count = 0;
+            searchControl.SearchTextBox.Text = "dsfdfdsfdf";
+            vm.searchDelayTimeout = -1; // disable debounce
+            searchControl.SearchTextBox.Text = "dsfdf";
+            Thread.Sleep(debounceTime * 2); // give the debounce time to finish, in case cancelling didn't work
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(1, count, "the debounced update should have been cancelled by the immediate set");
         }
 
         [Test]
