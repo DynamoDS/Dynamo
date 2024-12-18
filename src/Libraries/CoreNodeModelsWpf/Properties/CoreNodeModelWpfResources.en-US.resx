@@ -190,129 +190,129 @@ List&lt;string&gt;</value>
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
     <value>A list of colors for each bar chart category.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
+  <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
   </data>
-    <data name="ChartsPieChartDescription" xml:space="preserve">
+  <data name="ChartsPieChartDescription" xml:space="preserve">
     <value>Create a new Pie Chart</value>
   </data>
-    <data name="ChartsPieChartSearchTags" xml:space="preserve">
+  <data name="ChartsPieChartSearchTags" xml:space="preserve">
     <value>pie;piechart</value>
   </data>
-    <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of string labels for each segment in the pie chart.
 
 List&lt;string&gt;</value>
   </data>
-    <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
+  <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
     <value>A list of double values to supply a value for each segment of the pie chart.
 
 List&lt;double&gt;</value>
   </data>
-    <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
     <value>A list of colors for each segment of the pie chart.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
+  <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, double&gt;</value>
   </data>
-    <data name="ChartsScatterPlotDescription" xml:space="preserve">
+  <data name="ChartsScatterPlotDescription" xml:space="preserve">
     <value>Create a scatter plot</value>
   </data>
-    <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
+  <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
     <value>scatter;scatterplot</value>
   </data>
-    <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of string labels for each group of points to be plotted.
 
 List&lt;string&gt;</value>
   </data>
-    <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of lists each containing double values representing x-coordinates.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of lists each containing double values representing y-coordinates.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
     <value>A list of colors for each group of points.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
+  <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartDescription" xml:space="preserve">
+  <data name="ChartsXYLineChartDescription" xml:space="preserve">
     <value>Create a new XY line plot</value>
   </data>
-    <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
+  <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
     <value>lineplot;xylineplot</value>
   </data>
-    <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of string labels for each line to be plotted
 
 List&lt;string&gt;</value>
   </data>
-    <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of lists each containing double values representing x-coordinates for each point in a line.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of lists each containing double values representing x-coordinates for each point in a line.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
+  <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
     <value>A list of colors for each line in the line plot.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
+  <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-    <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
     <value>Advanced</value>
   </data>
-    <data name="ColorPaletteUIRecentColors" xml:space="preserve">
+  <data name="ColorPaletteUIRecentColors" xml:space="preserve">
     <value>Recent Colors</value>
   </data>
-    <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
+  <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
     <value>Standard</value>
   </data>
-    <data name="ColorPaletteUIStandardColors" xml:space="preserve">
+  <data name="ColorPaletteUIStandardColors" xml:space="preserve">
     <value>Standard Colors</value>
   </data>
-    <data name="DateTimeInputToolTip" xml:space="preserve">
+  <data name="DateTimeInputToolTip" xml:space="preserve">
     <value>Enter time and date in the format 'MMMM dd, yyyy h:mm tt'</value>
   </data>
-    <data name="LblDisplay" xml:space="preserve">
+  <data name="LblDisplay" xml:space="preserve">
     <value>Display</value>
   </data>
-    <data name="LblValue" xml:space="preserve">
+  <data name="LblValue" xml:space="preserve">
     <value>Value</value>
   </data>
-    <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
+  <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
     <value>Default colors are used. To define custom colors, provide an equal number of colors and labels inputs.</value>
   </data>
-    <data name="ResizeThumbToolTip" xml:space="preserve">
+  <data name="ResizeThumbToolTip" xml:space="preserve">
     <value>Drag to modify the size of the chart</value>
   </data>
   <data name="GateClose" xml:space="preserve">
@@ -320,5 +320,26 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
   <data name="GateOpen" xml:space="preserve">
     <value>Open</value>
+  </data>
+  <data name="CurveMapperListDataPortToolTip" xml:space="preserve">
+    <value>Number of values to generate.</value>
+  </data>
+  <data name="CurveMapperXMaxLimitDataPortToolTip" xml:space="preserve">
+    <value>Maximum value for the X-axis domain.</value>
+  </data>
+  <data name="CurveMapperXMinLimitDataPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.</value>
+  </data>
+  <data name="CurveMapperYMaxLimitDataPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.</value>
+  </data>
+  <data name="CurveMapperYMinLimitDataPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.</value>
+  </data>
+  <data name="CurveMapperOutputDataPortToolTip" xml:space="preserve">
+    <value>Values derived from the curve.</value>
+  </data>
+  <data name="CurveMapperResetButtonToolTip" xml:space="preserve">
+    <value>Reset curve to default state.</value>
   </data>
 </root>

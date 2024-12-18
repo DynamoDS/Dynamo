@@ -40,7 +40,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
         private double dynamicCanvasSize = 240;
 
         private readonly double canvasMinSize = 240; // also initial width and height
-        private readonly double mainGridMinWidth = 300;
+        private readonly double mainGridMinWidth = 310;
         private readonly double mainGridMinHeigth = 340;
         private int gridSize = 10;
 
@@ -213,7 +213,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
             Height = yAdjust;
 
             // Adjust the size of the GraphCanvas dynamically
-            DynamicCanvasSize = Math.Max(xAdjust - 60, canvasMinSize);
+            DynamicCanvasSize = Math.Max(xAdjust - 70, canvasMinSize);
         }
 
 

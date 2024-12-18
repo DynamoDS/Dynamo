@@ -11,7 +11,7 @@
                  xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                  xmlns:p="clr-namespace:Dynamo.Wpf.Properties"             
                  mc:Ignorable="d"
-                 Width="300" Height="340" MinWidth="300" MinHeight="340"
+                 Width="300" Height="340" MinWidth="310" MinHeight="340"
                  d:DataContext="{d:DesignInstance local:CurveMapperControl}">
         <UserControl.Resources>
             <ResourceDictionary>
@@ -31,7 +31,7 @@
                 <RowDefinition Height="55"/>               <!-- graph types dropdown -->
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30"/>             <!-- y values & y label -->
+                <ColumnDefinition Width="40"/>             <!-- y values & y label -->
                 <ColumnDefinition Width="*"/>              <!-- graph canvas-->
                 <ColumnDefinition Width="20"/>             <!-- reset button -->
             </Grid.ColumnDefinitions>
@@ -81,7 +81,7 @@
             <Grid Grid.Row="0" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="15"/>
-                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="25"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -137,10 +137,20 @@
                           HorizontalAlignment="Stretch"
                           MinWidth="160"
                           VerticalAlignment="Center"
-                          Style="{StaticResource RefreshComboBox}"
                           ItemsSource="{converters:EnumBindingSource charts:GraphTypes}"
-                          SelectedItem="{Binding SelectedGraphType}" />
-
+                          SelectedItem="{Binding SelectedGraphType}">
+                    <!-- Custom Style with DataTrigger -->
+                    <ComboBox.Style>
+                        <Style TargetType="ComboBox" BasedOn="{StaticResource RefreshComboBox}">
+                            <Style.Triggers>
+                                <!-- Trigger to check if SelectedItem is 'Empty' -->
+                                <DataTrigger Binding="{Binding SelectedItem, RelativeSource={RelativeSource Self}}" Value="Empty">
+                                    <Setter Property="Foreground" Value="#AFAFAF"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.Style>
+                </ComboBox>
             </Grid>
             <!-- Reset button -->
             <Button Grid.Column="2" Height="16"

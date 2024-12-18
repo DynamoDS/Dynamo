@@ -28,21 +28,23 @@ using System.Windows.Forms.VisualStyles;
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
-    [NodeName("Curve Mapper")]
-    //[NodeCategory("Display.Charts.Create")]
+    [NodeName("Math.CurveMapper")]
+    [NodeCategory("Math.Graph")]
     //[NodeDescription("ChartsCurveMapperDescription", typeof(CoreNodeModelWpfResources))]
     //[NodeSearchTags("ChartsCurveMapperSearchTags", typeof(CoreNodeModelWpfResources))]
     [InPortNames("x-MinLimit", "x-MaxLimit", "y-MinLimit", "y-MaxLimit", "list")]
     [InPortTypes("List<double>", "List<double>", "List<double>", "List<double>", "List<double>")]
-    //[InPortDescriptions(typeof(CoreNodeModelWpfResources),
-    //    "ChartsCurveMapperLabelsDataPortToolTip",
-    //    "ChartsCurveMapperValuesDataPortToolTip",
-    //    "ChartsCurveMapperColorsDataPortToolTip")]
+    [InPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "CurveMapperXMinLimitDataPortToolTip",
+        "CurveMapperXMaxLimitDataPortToolTip",
+        "CurveMapperYMinLimitDataPortToolTip",
+        "CurveMapperYMaxLimitDataPortToolTip",
+        "CurveMapperListDataPortToolTip")]
     [OutPortNames("list")]
     [OutPortTypes("List<double>")]
-    //[OutPortDescriptions(typeof(CoreNodeModelWpfResources),
-    //    "ChartsCurveMapperLabelsValuesDataPortToolTip")]
-    [AlsoKnownAs("CoreNodeModelsWpf.Charts.CurveMapper")]
+    [OutPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "CurveMapperOutputDataPortToolTip")]
+    [AlsoKnownAs("CoreNodeModelsWpf.Charts.CurveMapper")] // move to Math
     public class CurveMapperNodeModel : NodeModel
     {
         #region Properties
@@ -139,7 +141,7 @@ namespace CoreNodeModelsWpf.Charts
                 port.Connectors.CollectionChanged += Connectors_CollectionChanged;
             }
 
-            SelectedGraphType = GraphTypes.Linear;
+            SelectedGraphType = GraphTypes.Empty;
             ArgumentLacing = LacingStrategy.Disabled;
         }
         [JsonConstructor]
@@ -346,22 +348,24 @@ namespace CoreNodeModelsWpf.Charts
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum GraphTypes
     {
+        [Description("Select type")]
+        Empty = 0,
         [Description("Linear Curve")]
-        Linear = 0,
+        Linear = 1,
         [Description("Bezier Curve")]
-        Bezier = 1,
+        Bezier = 2,
         [Description("Sine Wave")]
-        SineWave = 2,
+        SineWave = 3,
         [Description("Cosine Wave")]
-        CosineWave = 3,
+        CosineWave = 4,
         [Description("Tangent Wave")]
-        TangentWave = 4,
+        TangentWave = 5,
         [Description("Gaussian Wave")]
-        GaussianWave = 5,
+        GaussianWave = 6,
         [Description("Parabolic Curve")]
-        Parabola = 6,
+        Parabola = 7,
         [Description("Perlin Noise")]
-        PerlinNoise = 7
+        PerlinNoise = 8
     }
 
     #endregion
