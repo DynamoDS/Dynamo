@@ -977,6 +977,29 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(1, count, "changing the text once should cause a single update");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InCanvasSearchTextChangeTriggersOneSearchCommandDebounced()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            Assert.IsNotNull(searchControl);
+
+            DispatcherUtil.DoEvents();
+
+            int count = 0;
+            var vm = searchControl.DataContext as SearchViewModel;
+            Assert.IsNotNull(vm);
+            vm.SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
 
             // prepare debounce tests
             var debounceTime = 10;
