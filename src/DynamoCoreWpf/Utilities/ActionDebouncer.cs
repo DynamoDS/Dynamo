@@ -6,22 +6,33 @@ namespace Dynamo.Wpf.Utilities
 {
     internal class ActionDebouncer
     {
-        Dispatcher _dispatcher;
-        CancellationTokenSource _cts;
+        private readonly Dispatcher dispatcher;
+        private CancellationTokenSource cts;
+
         public ActionDebouncer(Dispatcher dispatcher)
         {
-            _dispatcher = dispatcher;
+            this.dispatcher = dispatcher;
+        }
+
+        public void Cancel()
+        {
+            if (cts != null)
+            {
+                cts.Cancel();
+                cts.Dispose();
+            }
         }
 
         public void Debounce(int timeout, Action action)
         {
-            if (_cts != null)
-                _cts.Cancel();
-            _cts = new CancellationTokenSource();
-            System.Threading.Tasks.Task.Delay(timeout, _cts.Token).ContinueWith(t =>
+            Cancel();
+            cts = new CancellationTokenSource();
+            System.Threading.Tasks.Task.Delay(timeout, cts.Token).ContinueWith(t =>
             {
                 if (t.IsCompletedSuccessfully)
-                    _dispatcher.Invoke(action);
+                {
+                    dispatcher.BeginInvoke(action);
+                }
             });
         }
     }

@@ -75,10 +75,12 @@ namespace Dynamo.ViewModels
             set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
-        private int PotentiallyConfigurableSearchDelayTimeout = 150;
-        private ActionDebouncer SearchDebouncer = null;
+        internal int searchDelayTimeout = 150;
+        private bool useDebouncer = true; // replace with feature flag check
+        private ActionDebouncer searchDebouncer = new ActionDebouncer(Dispatcher.CurrentDispatcher);
+        private bool searchInitialized = false;
 
-        private string searchText;
+        private string searchText = string.Empty;
         /// <summary>
         ///     SearchText property
         /// </summary>
@@ -90,16 +92,29 @@ namespace Dynamo.ViewModels
             get { return searchText; }
             set
             {
-                if (SearchDebouncer == null)
-                    SearchDebouncer = new ActionDebouncer(Dispatcher.CurrentDispatcher);
                 searchText = value;
+                // The searchText is set multiple times before the control becomes visible and interactable.
+                // To prevent any debounces from triggering at some unexpected point before or after the control
+                // becomes visible, this flag is only set once the searchText value is set by the user
+                // (unless it somehow gets set somewhere else)
+                searchInitialized = searchInitialized || !string.IsNullOrEmpty(searchText);
+
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("BrowserRootCategories");
                 RaisePropertyChanged("CurrentMode");
-                SearchDebouncer.Debounce(PotentiallyConfigurableSearchDelayTimeout, () =>
+                if (searchInitialized && useDebouncer && searchDelayTimeout > 0)
                 {
+                    searchDebouncer.Debounce(searchDelayTimeout, () =>
+                    {
+                        OnSearchTextChanged(this, EventArgs.Empty);
+                    });
+                }
+                else
+                {
+                    // Make sure previosly triggered debounces are cancelled
+                    searchDebouncer.Cancel();
                     OnSearchTextChanged(this, EventArgs.Empty);
-                });
+                }
             }
         }
 
