@@ -20,7 +20,7 @@
                     <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                     <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
                 </ResourceDictionary.MergedDictionaries>
-            </ResourceDictionary>
+        </ResourceDictionary>
         </UserControl.Resources>
         <Grid>
         <!-- Main content of CurveMapper -->
@@ -153,23 +153,37 @@
                 </ComboBox>
             </Grid>
             <!-- Reset button -->
-            <Button Grid.Column="2" Height="16"
-                    VerticalAlignment="Bottom" HorizontalAlignment="Right"
+            <Button Style="{StaticResource SButtonWithShapeIcon}"
+                    Name="ResetButton"
+                    Click="ResetButton_Click"
+                    Grid.Column="2"
+                    Height="20" Width="20"
                     Margin="0,0,0,15"
-                    Background="Transparent"
-                    BorderThickness="0" >
-                <Image Source="/DynamoCoreWpf;component/UI/Images/reset.png" Height="16" Width="16" />
+                    VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                    SnapsToDevicePixels="True"
+                    UseLayoutRounding="True">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.CurveMapperResetButtonToolTip}"
+                             Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
+                <Button.Resources>
+                    <!--<Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/reset.png" Height="16" Width="16"/>
+                    <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/reset_hover.png" Height="16" Width="16"/>-->
+                    <Image x:Key="Shape" Source="/DynamoCoreWpf;component/UI/Images/reset.png" Height="16" Width="16"/>
+                    <Image x:Key="HighlightShape" Source="/DynamoCoreWpf;component/UI/Images/reset_hover.png" Height="16" Width="16"/>
+                </Button.Resources>
             </Button>
         </Grid>
         <Thumb Name ="resizeThumb"
                Grid.Row="1"
                Style="{StaticResource ChartsThumb}"
-            DragDelta="ThumbResizeThumbOnDragDeltaHandler"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Margin="0,0,-30,-25">
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+               Margin="0,0,-30,-25">
             <Thumb.ToolTip>
-                <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}"
+                         Style="{StaticResource GenericToolTipLight}"/>
             </Thumb.ToolTip>
         </Thumb>
     </Grid>    

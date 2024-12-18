@@ -1,122 +1,109 @@
-<dww:ModelessChildWindow x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
-                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                         xmlns:fa="http://schemas.fontawesome.com/icons/"
-                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-                         xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
-                         xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
-                         xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
-                         xmlns:pw="clr-namespace:PythonNodeModelsWpf"
-                         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                         Title="{Binding NodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                         Height="560"
-                         Width="600"
-                         MinWidth="500"
-                         MinHeight="450"
-                         ResizeMode="CanResizeWithGrip"
-                         Style="{DynamicResource DynamoWindowStyle}"
-                         AllowsTransparency="True"
-                         Background="Transparent"
-                         WindowStyle="None">
+<dww:ModelessChildWindow
+    x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
+    xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
+    xmlns:fa="http://schemas.fontawesome.com/icons/"
+    xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
+    xmlns:pw="clr-namespace:PythonNodeModelsWpf"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+    Title="{Binding NodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+    Width="600"
+    Height="560"
+    MinWidth="500"
+    MinHeight="450"
+    AllowsTransparency="True"
+    Background="Transparent"
+    ResizeMode="CanResizeWithGrip"
+    Style="{DynamicResource DynamoWindowStyle}"
+    WindowStyle="None">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="IconButton"
-                   TargetType="{x:Type Button}"
-                   BasedOn="{StaticResource ResourceKey=SButtonWithShapeIcon}">
+            <Style
+                x:Key="IconButton"
+                BasedOn="{StaticResource ResourceKey=SButtonWithShapeIcon}"
+                TargetType="{x:Type Button}">
                 <Setter Property="Margin" Value="1,2,1,2" />
-                <Setter Property="Width" Value="40"/>
-                <Setter Property="Height" Value="40"/>
-                <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <Setter Property="UseLayoutRounding" Value="True"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Width" Value="40" />
+                <Setter Property="Height" Value="40" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="UseLayoutRounding" Value="True" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
-            <Style x:Key="IconTextButton"
-                   TargetType="{x:Type Button}"
-                   BasedOn="{StaticResource ResourceKey=STextButtonWithShapeIcon}">
-                <Setter Property="Margin"
-                        Value="1,2,1,2" />
+            <Style
+                x:Key="IconTextButton"
+                BasedOn="{StaticResource ResourceKey=STextButtonWithShapeIcon}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="1,2,1,2" />
             </Style>
-            <Style x:Key="DropDown"
-                   TargetType="{x:Type ComboBox}"
-                   BasedOn="{StaticResource SComboBox_Update}">
+            <Style
+                x:Key="DropDown"
+                BasedOn="{StaticResource SComboBox_Update}"
+                TargetType="{x:Type ComboBox}">
                 <Setter Property="Margin" Value="1,2,1,2" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="HorizontalContentAlignment" Value="Left" />
                 <Setter Property="FontSize" Value="14px" />
-                <Setter Property="Height" Value="40"/>
+                <Setter Property="Height" Value="40" />
                 <Setter Property="Foreground" Value="{StaticResource TextColorBrush}" />
             </Style>
-            <Style x:Key="ImageAwesomeIcons"
-                   TargetType="{x:Type fa:ImageAwesome}">
+            <Style x:Key="ImageAwesomeIcons" TargetType="{x:Type fa:ImageAwesome}">
                 <Setter Property="Margin" Value="13,0,13,0" />
                 <Setter Property="Height" Value="17" />
                 <Setter Property="Margin" Value="13,0,13,0" />
                 <Setter Property="Foreground" Value="#bbbbbb" />
             </Style>
 
-            <Style x:Key="UnSaveButtonStyle"
-                   TargetType="{x:Type Button}"
-                   BasedOn="{StaticResource CtaButtonStyle}">
-                <Setter Property="Height" Value="35"></Setter>
-                <Setter Property="Width" Value="120"></Setter>
-                <Setter Property="Margin" Value="15 5 20 5"></Setter>
+            <Style
+                x:Key="UnSaveButtonStyle"
+                BasedOn="{StaticResource CtaButtonStyle}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Height" Value="35" />
+                <Setter Property="Width" Value="120" />
+                <Setter Property="Margin" Value="15,5,20,5" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate>
-                            <Border x:Name="container"
-                                    Background="Transparent"
-                                    BorderBrush="#B8ABA1"
-                                    CornerRadius="2"
-                                    BorderThickness="1">
-                                <Grid x:Name="inner"
-                                      Background="Transparent">
-                                    <TextBlock x:Name="text"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontSize="14px"
-                                               Foreground="{StaticResource WorkspaceTabBorderSelectedFalse}"
-                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                            <Border
+                                x:Name="container"
+                                Background="Transparent"
+                                BorderBrush="#B8ABA1"
+                                BorderThickness="1"
+                                CornerRadius="2">
+                                <Grid x:Name="inner" Background="Transparent">
+                                    <TextBlock
+                                        x:Name="text"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="14px"
+                                        Foreground="{StaticResource WorkspaceTabBorderSelectedFalse}"
+                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                                 </Grid>
                             </Border>
 
                             <ControlTemplate.Triggers>
 
-                                <Trigger Property="Button.IsMouseOver"
-                                         Value="true">
-                                    <Setter TargetName="container"
-                                            Property="BorderBrush"
-                                            Value="#26808080" />
-                                    <Setter TargetName="container"
-                                            Property="BorderThickness"
-                                            Value="2" />
+                                <Trigger Property="Button.IsMouseOver" Value="true">
+                                    <Setter TargetName="container" Property="BorderBrush" Value="#26808080" />
+                                    <Setter TargetName="container" Property="BorderThickness" Value="2" />
                                 </Trigger>
 
-                                <Trigger Property="Button.IsPressed"
-                                         Value="true">
-                                    <Setter TargetName="container"
-                                            Property="BorderBrush"
-                                            Value="#40808080" />
-                                    <Setter TargetName="container"
-                                            Property="BorderThickness"
-                                            Value="4" />
+                                <Trigger Property="Button.IsPressed" Value="true">
+                                    <Setter TargetName="container" Property="BorderBrush" Value="#40808080" />
+                                    <Setter TargetName="container" Property="BorderThickness" Value="4" />
                                 </Trigger>
 
-                                <Trigger Property="Button.IsEnabled"
-                                         Value="false">
-                                    <Setter TargetName="inner"
-                                            Property="Background"
-                                            Value="#218d81" />
-                                    <Setter TargetName="text"
-                                            Property="Foreground"
-                                            Value="#bebebe" />
-                                    <Setter TargetName="container"
-                                            Property="BorderBrush"
-                                            Value="#218d81" />
+                                <Trigger Property="Button.IsEnabled" Value="false">
+                                    <Setter TargetName="inner" Property="Background" Value="#218d81" />
+                                    <Setter TargetName="text" Property="Foreground" Value="#bebebe" />
+                                    <Setter TargetName="container" Property="BorderBrush" Value="#218d81" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
 
@@ -132,11 +119,14 @@
         <CommandBinding Command="Close" Executed="OnCloseExecuted" />
     </Window.CommandBindings>
     <Window.InputBindings>
-        <KeyBinding Command="Close" Key="Esc"/>
+        <KeyBinding Key="Esc" Command="Close" />
     </Window.InputBindings>
 
     <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
-        <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}" Background="#535353">
+        <Border
+            Name="MainBorder"
+            Background="#535353"
+            Style="{StaticResource NoStyleWindowBorderStyle}">
             <Grid Margin="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -148,246 +138,254 @@
 
 
                 <!--  Title Bar + Close Button  -->
-                <DockPanel Grid.Row="0" Name="TitleBar" Height="68" 
-                           VerticalAlignment="Stretch"
-                           HorizontalAlignment="Stretch">
-                    <DockPanel DockPanel.Dock="Right" 
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                Width="150"
-                                Margin="0 0 20 0">
+                <DockPanel
+                    Name="TitleBar"
+                    Grid.Row="0"
+                    Height="68"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+                    <DockPanel
+                        Width="150"
+                        Margin="0,0,20,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Right">
 
-                        <Button Name="CloseButton"
-                                Click="CloseButton_OnClick"
-                                Margin="25 0 0 0"
-                                DockPanel.Dock="Right"
-                                Style="{StaticResource CloseButtonDarkStyle}" />
+                        <Button
+                            Name="CloseButton"
+                            Margin="25,0,0,0"
+                            Click="CloseButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource CloseButtonDarkStyle}" />
 
-                        <Button Name="MaximizeButton"
-                                Click="MaximizeButton_OnClick"
-                                DockPanel.Dock="Right"
-                                Style="{StaticResource MaximizeButtonDarkStyle}" />
+                        <Button
+                            Name="MaximizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MaximizeButtonDarkStyle}" />
 
-                        <Button Name="NormalizeButton"
-                                Click="MaximizeButton_OnClick"
-                                DockPanel.Dock="Right"
-                                Visibility="Collapsed"
-                                Style="{StaticResource RestoreButtonDarkStyle}" />
+                        <Button
+                            Name="NormalizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource RestoreButtonDarkStyle}"
+                            Visibility="Collapsed" />
 
-                        <Button Name="UndockButton"
-                                Click="OnDockButtonClicked" 
-                                Margin="0 0 20 0"
-                                DockPanel.Dock="Right"
-                                Style="{StaticResource DockButtonDarkStyle}" >
-                        </Button>
-                        
-                        <Button Name="MinimizeButton"
-                                Click="MinimizeButton_OnClick"
-                                DockPanel.Dock="Right"
-                                Style="{StaticResource MinimizeButtonDarkStyle}" />
+                        <Button
+                            Name="UndockButton"
+                            Margin="0,0,20,0"
+                            Click="OnDockButtonClicked"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource DockButtonDarkStyle}" />
+
+                        <Button
+                            Name="MinimizeButton"
+                            Click="MinimizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MinimizeButtonDarkStyle}" />
                     </DockPanel>
 
-                    <TextBlock Name="TitleTextBlock"
-                               VerticalAlignment="Center"
-                               DockPanel.Dock="Left"
-                               Margin="25 0 0 0"
-                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                               FontSize="20px"
-                               Foreground="{StaticResource DarkThemeBodyMediumBrush}"
-                               Text="{Binding NodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dww:ModelessChildWindow}}}" 
-                               TextWrapping="Wrap" />
+                    <TextBlock
+                        Name="TitleTextBlock"
+                        Margin="25,0,0,0"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Left"
+                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                        FontSize="20px"
+                        Foreground="{StaticResource DarkThemeBodyMediumBrush}"
+                        Text="{Binding NodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dww:ModelessChildWindow}}}"
+                        TextWrapping="Wrap" />
 
                 </DockPanel>
 
-                <Rectangle Style="{StaticResource DividerRectangleStyle}"
-                           Fill="{StaticResource NodeContextMenuBackgroundHighlight}"
-                           Grid.Row="0"
-                           Margin="0 1 0 0"/>
+                <Rectangle
+                    Grid.Row="0"
+                    Margin="0,1,0,0"
+                    Fill="{StaticResource NodeContextMenuBackgroundHighlight}"
+                    Style="{StaticResource DividerRectangleStyle}" />
 
 
-                <!-- Upper Button Toolbar -->
-                <StackPanel Orientation="Horizontal"
-                            Grid.Row="1"
-                            Margin="19 0 0 0">
+                <!--  Upper Button Toolbar  -->
+                <StackPanel
+                    Grid.Row="1"
+                    Margin="19,0,0,0"
+                    Orientation="Horizontal">
 
-                    <Button Style="{StaticResource IconButton}"
-                            Name="SaveScriptChangesButton"
-                            Click="OnSaveClicked">
+                    <Button
+                        Name="SaveScriptChangesButton"
+                        Click="OnSaveClicked"
+                        Style="{StaticResource IconButton}">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Image x:Key="Shape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/save.png" />
-                            <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/save_hover.png" />
+                            <Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/save.png" />
+                            <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/save_hover.png" />
                         </Button.Resources>
                     </Button>
-                    <Button Style="{StaticResource IconButton}"
-                            Name="RevertScriptChangesButton"
-                            Click="OnRevertClicked">
+                    <Button
+                        Name="RevertScriptChangesButton"
+                        Click="OnRevertClicked"
+                        Style="{StaticResource IconButton}">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRevertButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRevertButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Image x:Key="Shape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/reset.png" />
-                            <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/reset_hover.png" />
+                            <Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/reset.png" />
+                            <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/reset_hover.png" />
                         </Button.Resources>
                     </Button>
-                    <Button Style="{StaticResource IconButton}"
-                            Name="UndoButton"
-                            Click="OnUndoClicked">
+                    <Button
+                        Name="UndoButton"
+                        Click="OnUndoClicked"
+                        Style="{StaticResource IconButton}">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorUndoButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorUndoButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Image x:Key="Shape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/undo.png" />
-                            <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/undo_hover.png" />
+                            <Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/undo.png" />
+                            <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/undo_hover.png" />
                         </Button.Resources>
                     </Button>
-                    <Button Style="{StaticResource IconButton}"
-                            Name="RedoButton"
-                            Click="OnRedoClicked">
+                    <Button
+                        Name="RedoButton"
+                        Click="OnRedoClicked"
+                        Style="{StaticResource IconButton}">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRedoButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRedoButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Image x:Key="Shape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/redo.png" />
-                            <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/redo_hover.png" />
+                            <Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/redo.png" />
+                            <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/redo_hover.png" />
                         </Button.Resources>
                     </Button>
-                    <Button Style="{StaticResource IconButton}"
-                            Name="ZoomInButton"
-                            Click="OnZoomInClicked">
+                    <Button
+                        Name="ZoomInButton"
+                        Click="OnZoomInClicked"
+                        Style="{StaticResource IconButton}">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorZoomInButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorZoomInButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Image x:Key="Shape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-in.png" />
-                            <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-in_hover.png" />
+                            <Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/zoom-in.png" />
+                            <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/zoom-in_hover.png" />
                         </Button.Resources>
                     </Button>
-                    <Button Style="{StaticResource IconButton}"
-                            Name="ZoomOutButton"
-                            Click="OnZoomOutClicked">
+                    <Button
+                        Name="ZoomOutButton"
+                        Click="OnZoomOutClicked"
+                        Style="{StaticResource IconButton}">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorZoomOutButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorZoomOutButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Image x:Key="Shape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-out.png" />
-                            <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-out_hover.png" />
+                            <Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/zoom-out.png" />
+                            <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/zoom-out_hover.png" />
                         </Button.Resources>
                     </Button>
-                    <ComboBox SelectedItem="{Binding CachedEngine, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}, Mode=TwoWay}"
-                              ItemsSource="{Binding AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
-                              SelectionChanged="OnEngineChanged"
-                              Style="{StaticResource DropDown}"
-                              Name="EngineSelectorComboBox"
-                              Visibility="Collapsed">
+                    <ComboBox
+                        Name="EngineSelectorComboBox"
+                        ItemsSource="{Binding AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
+                        SelectedItem="{Binding CachedEngine, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}, Mode=TwoWay}"
+                        SelectionChanged="OnEngineChanged"
+                        Style="{StaticResource DropDown}"
+                        Visibility="Collapsed">
                         <ComboBox.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorEngineDropdownTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorEngineDropdownTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </ComboBox.ToolTip>
                     </ComboBox>
-                    <Button Style="{StaticResource IconButton}"
-                            Name="MigrationAssistantButton"
-                            Click="OnMigrationAssistantClicked"
-                            ToolTipService.ShowOnDisabled="True"
-                            ToolTipService.IsEnabled="True"
-                            IsEnabled="True">
+                    <Button
+                        Name="MigrationAssistantButton"
+                        Click="OnMigrationAssistantClicked"
+                        IsEnabled="True"
+                        Style="{StaticResource IconButton}"
+                        ToolTipService.IsEnabled="True"
+                        ToolTipService.ShowOnDisabled="True">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Image x:Key="Shape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/convert.png" />
-                            <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/convert_hover.png" />
+                            <Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/convert.png" />
+                            <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/convert_hover.png" />
                         </Button.Resources>
                     </Button>
-                    <Button Style="{StaticResource IconButton}"
-                            Name="ConvertTabsToSpacesButton"
-                            Click="OnConvertTabsToSpacesClicked"
-                            ToolTipService.ShowOnDisabled="True"
-                            ToolTipService.IsEnabled="True"
-                            IsEnabled="True">
+                    <Button
+                        Name="ConvertTabsToSpacesButton"
+                        Click="OnConvertTabsToSpacesClicked"
+                        IsEnabled="True"
+                        Style="{StaticResource IconButton}"
+                        ToolTipService.IsEnabled="True"
+                        ToolTipService.ShowOnDisabled="True">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorConvertTabsToSpacesButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorConvertTabsToSpacesButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Image x:Key="Shape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/tabs.png" />
-                            <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/tabs_hover.png" />
+                            <Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/tabs.png" />
+                            <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/tabs_hover.png" />
                         </Button.Resources>
                     </Button>
-                    <Button Style="{StaticResource IconButton}"
-                            Name="MoreInfoButton"
-                            Click="OnMoreInfoClicked">
+                    <Button
+                        Name="MoreInfoButton"
+                        Click="OnMoreInfoClicked"
+                        Style="{StaticResource IconButton}">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorMoreInfoButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorMoreInfoButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Image x:Key="Shape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/question-filled.png" />
-                            <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/question-filled_hover.png" />
+                            <Image x:Key="Shape" Source="/PythonNodeModelsWpf;component/Resources/question-filled.png" />
+                            <Image x:Key="HighlightShape" Source="/PythonNodeModelsWpf;component/Resources/question-filled_hover.png" />
                         </Button.Resources>
                     </Button>
                 </StackPanel>
 
-                <!-- Avalon Editor --> 
-                <Border Margin="0,0,0,0"
-                        Padding="20 0 20 10"
-                        BorderThickness="0"
-                        Background="{StaticResource PreferencesWindowBackgroundColor}"
-                        Grid.Row="2">
-                    <avalonedit:TextEditor Name="editText"
-                                           IsEnabled="True"
-                                           FontFamily="{StaticResource SourceCodePro}"
-                                           FontSize="10pt"
-                                           ShowLineNumbers="True"
-                                           Background="{StaticResource TextEditorBrush}"
-                                           Foreground="{StaticResource AutocompletionWindowFontColor}"
-                                           Padding="5"
-                                           HorizontalScrollBarVisibility="Disabled"
-                                           PreviewMouseWheel="EditorBox_PreviewMouseWheel"
-                                           PreviewKeyDown="EditText_OnPreviewKeyDown"/>
+                <!--  Avalon Editor  -->
+                <Border
+                    Grid.Row="2"
+                    Margin="0,0,0,0"
+                    Padding="20,0,20,10"
+                    Background="{StaticResource PreferencesWindowBackgroundColor}"
+                    BorderThickness="0">
+                    <avalonedit:TextEditor
+                        Name="editText"
+                        Padding="5"
+                        Background="{StaticResource TextEditorBrush}"
+                        FontFamily="{StaticResource SourceCodePro}"
+                        FontSize="10pt"
+                        Foreground="{StaticResource AutocompletionWindowFontColor}"
+                        HorizontalScrollBarVisibility="Disabled"
+                        IsEnabled="True"
+                        PreviewKeyDown="EditText_OnPreviewKeyDown"
+                        PreviewMouseWheel="EditorBox_PreviewMouseWheel"
+                        ShowLineNumbers="True" />
                 </Border>
- 
-                <!-- Run and Close Button -->
-                <StackPanel x:Name="SaveButtonBar"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            Height="60"
-                            Visibility="Visible"
-                            Grid.Row="3">
 
-                    <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}"
-                            Margin="11 0 20 15"
-                            Padding="15 0"
-                            MinWidth="90"
-                            Width="140"
-                            Height="45"
-                            Style="{StaticResource RunButtonStyle}" 
-                            Name="RunPythonScriptButton"
-                            Click="OnRunClicked">
+                <!--  Run and Close Button  -->
+                <StackPanel
+                    x:Name="SaveButtonBar"
+                    Grid.Row="3"
+                    Height="60"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Visibility="Visible">
+
+                    <Button
+                        Name="RunPythonScriptButton"
+                        Width="140"
+                        Height="45"
+                        MinWidth="90"
+                        Margin="11,0,20,15"
+                        Padding="15,0"
+                        Click="OnRunClicked"
+                        Content="{x:Static p:Resources.PythonScriptEditorRunButton}"
+                        Style="{StaticResource RunButtonStyle}">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRunButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRunButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
                         </Button.ToolTip>
                         <Button.Resources>
-                            <Polygon x:Key="Shape"
-                                     Points="5,0 12,7 5,14 5,0"
-                                     Height="14">
+                            <Polygon
+                                x:Key="Shape"
+                                Height="14"
+                                Points="5,0 12,7 5,14 5,0">
                                 <Polygon.Fill>
                                     <SolidColorBrush Color="DarkSeaGreen" />
                                 </Polygon.Fill>
@@ -396,30 +394,55 @@
                     </Button>
                 </StackPanel>
 
-                <!-- The Warning Bar - activates on Esc if unsaved changes -->
-                <Grid Name="UnsavedChangesStatusBar"
-                        Grid.Row="4"
-                        Margin="0 -20 0 5"
-                        Height="95"
-                        Background="#EFD5C1"
-                        Visibility="Collapsed">
+                <!--  The Warning Bar - activates on Esc if unsaved changes  -->
+                <Grid
+                    Name="UnsavedChangesStatusBar"
+                    Grid.Row="4"
+                    Height="95"
+                    Margin="0,-20,0,5"
+                    Background="#EFD5C1"
+                    Visibility="Collapsed">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="44"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="44" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="180" />
                     </Grid.ColumnDefinitions>
-                    <Border Background="{StaticResource YellowOrange500Brush}" Grid.Column="0"> 
-                            <Image Source="/PythonNodeModelsWpf;component/Resources/alert.png" Width="24" Height="24"/>
-                        </Border>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="1">
-                        <TextBlock Margin="15 5" FontSize="14" Foreground="Black" FontFamily="{StaticResource ArtifaktElementBold}" Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptTitle}"/>
-                        <TextBlock Margin="15 5" FontSize="14" Foreground="Black" FontFamily="{StaticResource ArtifaktElementRegular}" TextWrapping="WrapWithOverflow" Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptText}"/>
+                    <Border Grid.Column="0" Background="{StaticResource YellowOrange500Brush}">
+                        <Image
+                            Width="24"
+                            Height="24"
+                            Source="/PythonNodeModelsWpf;component/Resources/alert.png" />
+                    </Border>
+                    <StackPanel
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical">
+                        <TextBlock
+                            Margin="15,5"
+                            FontFamily="{StaticResource ArtifaktElementBold}"
+                            FontSize="14"
+                            Foreground="Black"
+                            Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptTitle}" />
+                        <TextBlock
+                            Margin="15,5"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            FontSize="14"
+                            Foreground="Black"
+                            Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptText}"
+                            TextWrapping="WrapWithOverflow" />
                     </StackPanel>
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2">
-                        <Button 
-                            Style="{StaticResource UnSaveButtonStyle}" Content="Keep editing" Click="ResumeButton_OnClick"></Button>
-                        <Button 
-                            Style="{StaticResource UnSaveButtonStyle}" Content="Close" Click="CloseWarningBarButton_OnClick"></Button>
+                    <StackPanel
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical">
+                        <Button
+                            Click="ResumeButton_OnClick"
+                            Content="Keep editing"
+                            Style="{StaticResource UnSaveButtonStyle}" />
+                        <Button
+                            Click="CloseWarningBarButton_OnClick"
+                            Content="Close"
+                            Style="{StaticResource UnSaveButtonStyle}" />
                     </StackPanel>
                 </Grid>
             </Grid>

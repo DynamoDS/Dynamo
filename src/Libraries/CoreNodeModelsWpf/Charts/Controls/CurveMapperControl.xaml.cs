@@ -282,5 +282,10 @@ namespace CoreNodeModelsWpf.Charts.Controls
         }
 
         #endregion
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Add logic to reset the curve
+        }
     }
 }
