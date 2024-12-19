@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
@@ -18,6 +19,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.ViewModels
@@ -861,14 +863,16 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SearchAndUpdateResults()
         {
-            searchResults.Clear();
+            //Unit tests don't have an Application.Current
+            (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() =>
+            {
+                searchResults.Clear();
+            });
 
             if (!String.IsNullOrEmpty(SearchText.Trim()))
             {
                 SearchAndUpdateResults(SearchText);
             }
-
-            RaisePropertyChanged("IsAnySearchResult");
         }
 
         /// <summary>
@@ -886,13 +890,20 @@ namespace Dynamo.ViewModels
 
             //Passing the second parameter as true will search using Lucene.NET
             var foundNodes = Search(query);
-            searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
-            FilteredResults = searchResults;
+            //Unit tests don't have an Application.Current
+            (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() =>
+            {
+                searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
-            UpdateSearchCategories();
+                FilteredResults = searchResults;
 
-            RaisePropertyChanged("FilteredResults");
+                UpdateSearchCategories();
+
+                RaisePropertyChanged("FilteredResults");
+
+                RaisePropertyChanged("IsAnySearchResult");
+            });
         }
 
         /// <summary>
@@ -1164,9 +1175,10 @@ namespace Dynamo.ViewModels
 
         #region Commands
 
+        private static readonly JobDebouncer.DebounceQueueToken DebounceQueueToken = new();
         public void Search(object parameter)
         {
-            SearchAndUpdateResults();
+            JobDebouncer.EnqueueJobAsync(SearchAndUpdateResults, DebounceQueueToken);
         }
 
         internal bool CanSearch(object parameter)
