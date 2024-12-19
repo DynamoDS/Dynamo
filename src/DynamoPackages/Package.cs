@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -228,6 +229,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal bool RequiresSignedEntryPoints { get; set; }
 
+        internal AssemblyLoadContext AssemblyLoadContext { get; set; } = AssemblyLoadContext.Default;
         #endregion
 
         public Package(string directory, string name, string versionName, string license)
@@ -374,7 +376,7 @@ namespace Dynamo.PackageManager
                 if (shouldLoadFile)
                 {
                     // dll files may be un-managed, skip those
-                    var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                    var result = PackageLoader.TryLoadFrom(AssemblyLoadContext, assemFile.FullName, out assem);
                     if (result)
                     {
                         // IsNodeLibrary may fail, we store the warnings here and then show
@@ -586,7 +588,7 @@ namespace Dynamo.PackageManager
                 if (BuiltInPackage)
                 {
                     LoadState.SetAsUnloaded();
-                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} set unloaded");
+                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name} {versionName} set unloaded");
 
                     RaisePropertyChanged(nameof(LoadState));
 
