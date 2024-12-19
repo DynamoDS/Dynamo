@@ -13,6 +13,7 @@ using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -76,8 +77,8 @@ namespace Dynamo.ViewModels
         }
 
         internal int searchDelayTimeout = 150;
-        private bool useDebouncer = true; // replace with feature flag check
-        private ActionDebouncer searchDebouncer = new ActionDebouncer(Dispatcher.CurrentDispatcher);
+        internal bool useDebouncer;
+        private ActionDebouncer searchDebouncer;
         private bool searchInitialized = false;
 
         private string searchText = string.Empty;
@@ -99,20 +100,39 @@ namespace Dynamo.ViewModels
                 // (unless it somehow gets set somewhere else)
                 searchInitialized = searchInitialized || !string.IsNullOrEmpty(searchText);
 
+                if (searchDebouncer == null && dynamoViewModel?.UIDispatcher is Dispatcher dispatcher)
+                {
+                    // Dipatcher.CurrentDispatcher has a chance of returning the wrong dispatcher, so we need to
+                    // use the dynamoViewModel.UIDispatcher. The UIDispatcher is set after the SearchViewModel
+                    // constructor runs, otherwise the debouncer could be initalized there
+                    searchDebouncer = new ActionDebouncer(dispatcher);
+                }
+
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("BrowserRootCategories");
                 RaisePropertyChanged("CurrentMode");
-                if (searchInitialized && useDebouncer && searchDelayTimeout > 0)
+                if (useDebouncer && searchInitialized && searchDebouncer != null && searchDelayTimeout > 0)
                 {
                     searchDebouncer.Debounce(searchDelayTimeout, () =>
                     {
-                        OnSearchTextChanged(this, EventArgs.Empty);
+                        try
+                        {
+                            OnSearchTextChanged(this, EventArgs.Empty);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (dynamoViewModel?.Model?.Logger is ILogger logger)
+                            {
+                                logger.Log("Failed to set search text using the debouncer");
+                                logger.Log(ex.ToString());
+                            }
+                        }
                     });
                 }
                 else
                 {
-                    // Make sure previosly triggered debounces are cancelled
-                    searchDebouncer.Cancel();
+                    // Make sure any previously scheduled debounces are cancelled
+                    searchDebouncer?.Cancel();
                     OnSearchTextChanged(this, EventArgs.Empty);
                 }
             }
@@ -432,6 +452,8 @@ namespace Dynamo.ViewModels
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
+            searchDebouncer?.Dispose();
+
             base.Dispose();
         }
 
@@ -459,6 +481,8 @@ namespace Dynamo.ViewModels
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
+
+            useDebouncer = DynamoModel.FeatureFlags?.CheckFeatureFlag("searchbar_debounce", false) ?? false;
         }
 
         private void AddEntry(NodeSearchElement entry)
