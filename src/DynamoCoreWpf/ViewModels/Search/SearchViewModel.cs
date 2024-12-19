@@ -7,17 +7,20 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.ViewModels
@@ -73,7 +76,12 @@ namespace Dynamo.ViewModels
             set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
-        private string searchText;
+        internal int searchDelayTimeout = 150;
+        internal bool useDebouncer;
+        internal ActionDebouncer searchDebouncer;
+        private bool searchInitialized = false;
+
+        private string searchText = string.Empty;
         /// <summary>
         ///     SearchText property
         /// </summary>
@@ -86,10 +94,47 @@ namespace Dynamo.ViewModels
             set
             {
                 searchText = value;
-                OnSearchTextChanged(this, EventArgs.Empty);
+                // The searchText is set multiple times before the control becomes visible and interactable.
+                // To prevent any debounces from triggering at some unexpected point before or after the control
+                // becomes visible, this flag is only set once the searchText value is set by the user
+                // (unless it somehow gets set somewhere else)
+                searchInitialized = searchInitialized || !string.IsNullOrEmpty(searchText);
+
+                if (searchDebouncer == null && dynamoViewModel?.UIDispatcher is Dispatcher dispatcher)
+                {
+                    // Dipatcher.CurrentDispatcher has a chance of returning the wrong dispatcher, so we need to
+                    // use the dynamoViewModel.UIDispatcher. The UIDispatcher is set after the SearchViewModel
+                    // constructor runs, otherwise the debouncer could be initalized there
+                    searchDebouncer = new ActionDebouncer(dispatcher);
+                }
+
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("BrowserRootCategories");
                 RaisePropertyChanged("CurrentMode");
+                if (useDebouncer && searchInitialized && searchDebouncer != null && searchDelayTimeout > 0)
+                {
+                    searchDebouncer.Debounce(searchDelayTimeout, () =>
+                    {
+                        try
+                        {
+                            OnSearchTextChanged(this, EventArgs.Empty);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (dynamoViewModel?.Model?.Logger is ILogger logger)
+                            {
+                                logger.Log("Failed to set search text using the debouncer");
+                                logger.Log(ex.ToString());
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    // Make sure any previously scheduled debounces are cancelled
+                    searchDebouncer?.Cancel();
+                    OnSearchTextChanged(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -407,6 +452,8 @@ namespace Dynamo.ViewModels
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
+            searchDebouncer?.Dispose();
+
             base.Dispose();
         }
 
@@ -434,6 +481,8 @@ namespace Dynamo.ViewModels
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
+
+            useDebouncer = DynamoModel.FeatureFlags?.CheckFeatureFlag("searchbar_debounce", false) ?? false;
         }
 
         private void AddEntry(NodeSearchElement entry)
