@@ -78,7 +78,7 @@ namespace Dynamo.ViewModels
 
         internal int searchDelayTimeout = 150;
         internal bool useDebouncer;
-        private ActionDebouncer searchDebouncer;
+        internal ActionDebouncer searchDebouncer;
         private bool searchInitialized = false;
 
         private string searchText = string.Empty;
