@@ -4,7 +4,7 @@ using System.Windows.Threading;
 
 namespace Dynamo.Wpf.Utilities
 {
-    internal class ActionDebouncer
+    internal class ActionDebouncer : IDisposable
     {
         private readonly Dispatcher dispatcher;
         private CancellationTokenSource cts;
@@ -20,6 +20,7 @@ namespace Dynamo.Wpf.Utilities
             {
                 cts.Cancel();
                 cts.Dispose();
+                cts = null;
             }
         }
 
@@ -34,6 +35,11 @@ namespace Dynamo.Wpf.Utilities
                     dispatcher.BeginInvoke(action);
                 }
             });
+        }
+
+        public void Dispose()
+        {
+            Cancel();
         }
     }
 }
