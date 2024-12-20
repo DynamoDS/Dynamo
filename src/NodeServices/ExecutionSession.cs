@@ -81,6 +81,10 @@ namespace Dynamo.Session
         /// The return value is an ILogger
         /// </summary>
         public static readonly string Logger = nameof(Logger);
-        
+
+        /// <summary>
+        /// The path to the preference file that is being used by Dynamo.
+        /// </summary>
+        public static readonly string PreferenceFilePath = nameof(PreferenceFilePath);
     }
 }
