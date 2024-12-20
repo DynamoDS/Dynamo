@@ -170,6 +170,42 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Returns Visibility.Visible if the collection is empty, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class NullOrEmptyListToVisibilityVisibleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Visible;
+
+            return collection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Returns Visible if the collection is not empty, otherwise returns Collapsed
+    /// </summary>
+    public class InverseEmptyListToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            return collection.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageSearchStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -569,6 +605,24 @@ namespace Dynamo.Controls
         {
             double height = (double)value;
             return new System.Windows.Thickness(0, -1 * height - 3, 0, 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// A custom converter to 'pin' the location of the Home button in place when the slider goes under a certain value
+    /// Do not use for other purposes, and please, do not change
+    /// </summary>
+    public class LeftMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double offset = (double)value;
+            return new System.Windows.Thickness(offset * 1, 0, offset * -1, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1541,6 +1595,40 @@ namespace Dynamo.Controls
                 return difference.TotalDays >= 30 ? "" : Resources.PackageManagerPackageUpdated;
             }
             return Resources.PackageManagerPackageNew;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Used to determine the tooltip which appears next to a package when it's either
+    /// brand new, recently updated, or deprecated.
+    /// If the package was updated in the last 30 days it says 'Updated'.
+    /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
+    /// </summary>
+    public class DateToPackageTooltipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is Dynamo.PackageManager.PackageManagerSearchElement packageManagerSearchElement)) return String.Empty;
+            if (packageManagerSearchElement.IsDeprecated) return Resources.PackageDeprecatedTooltip;
+
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
+
+            // For testing purposes
+            var test = DateTime.TryParse((string)parameter, out DateTime testDate);
+            TimeSpan difference = test ? testDate - dateLastUpdated : DateTime.Now - dateLastUpdated;
+
+            int numberVersions = packageManagerSearchElement.Header.num_versions;
+
+            if (numberVersions > 1)
+            {
+                return difference.TotalDays >= 30 ? "" : Resources.PackageFilterUpdatedTooltip;
+            }
+            return Resources.PackageFilterNewTooltip;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -3959,4 +4047,80 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Returns "2019.10.x" from "2019.10.*" input
+    /// </summary>
+    public class VersionStringAsteriskToXConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string version && !string.IsNullOrEmpty(version))
+            {
+                return version.Replace("*", "x");
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string version && !string.IsNullOrEmpty(version))
+            {
+                return version.Replace("x", "*");
+            }
+
+            return value;
+        }
+    }
+
+    /// <summary>
+    /// Evaluates whether the contrast ratio of a background color against a predefined dark color is sufficient (>= 4.5).
+    /// Returns true if the contrast is below the threshold, otherwise false.
+    /// </summary>
+    public class BackgroundConditionEvaluator : IValueConverter
+    {
+        private const double ContrastRatioThreshold = 4.5;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var darkColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkerGrey"];
+
+            var backgroundColor = (System.Windows.Media.Color)value;
+
+            var contrastRatio = GetContrastRatio(darkColor, backgroundColor);
+
+            var c1 = contrastRatio;
+            var c2 = ContrastRatioThreshold;
+            var result = contrastRatio < ContrastRatioThreshold;
+
+            return contrastRatio < ContrastRatioThreshold;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+        private double GetContrastRatio(System.Windows.Media.Color foreground, System.Windows.Media.Color background)
+        {
+            double L1 = GetRelativeLuminance(foreground);
+            double L2 = GetRelativeLuminance(background);
+
+            return L1 > L2 ? (L1 + 0.05) / (L2 + 0.05) : (L2 + 0.05) / (L1 + 0.05);
+        }
+
+        private double GetRelativeLuminance(System.Windows.Media.Color color)
+        {
+            var R = color.R / 255.0;
+            var G = color.G / 255.0;
+            var B = color.B / 255.0;
+
+            // Apply luminance formula
+            R = R < 0.03928 ? R / 12.92 : Math.Pow((R + 0.055) / 1.055, 2.4);
+            G = G < 0.03928 ? G / 12.92 : Math.Pow((G + 0.055) / 1.055, 2.4);
+            B = B < 0.03928 ? B / 12.92 : Math.Pow((B + 0.055) / 1.055, 2.4);
+
+            return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+        }
+    }
 }

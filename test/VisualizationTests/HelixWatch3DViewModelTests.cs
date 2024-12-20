@@ -859,12 +859,12 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
             Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
-            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
             Assert.IsFalse((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).dataCore.IsFrozenData);
             // Freeze the ByGeometryColor node and check the frozen flag.
             Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
-            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             Assert.IsTrue((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).dataCore.IsFrozenData);
         }
 

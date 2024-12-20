@@ -28,13 +28,13 @@
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
         <PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
-        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.1.4086">
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.1.6685">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Greg" Version="3.0.2.5756">
+        <PackageReference Include="Greg" Version="3.0.2.6533">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -45,7 +45,7 @@
 
         <PackageReference Include="JUnitTestLogger" Version="1.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="RestSharp" Version="108.0.1">
+        <PackageReference Include="RestSharp" Version="112.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -135,6 +135,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\TestResource.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NodesJsonDatasets\" />
   </ItemGroup>
 <Target Name="CopyDisableADPTestDeps">
     <!--ms diag runtime + deps -->

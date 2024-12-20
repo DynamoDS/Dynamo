@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
 using CoreNodeModels;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Graph;
@@ -1801,6 +1803,22 @@ var06 = g;
         }
 
         [Test]
+        public void ImportStatementInCodeBlock_DoesNotLoadAssemblyIntoProcess()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            var guid = codeBlockNode.GUID.ToString();
+
+            string assemblyName = "TestCodeBlockNodeSecurityIssue";
+            UpdateCodeBlockNodeContent(codeBlockNode, $"import(\"{assemblyName}.dll\")");
+
+            var loadedAssemblies = AssemblyLoadContext.All.SelectMany(context => context.Assemblies);
+
+            var asm = loadedAssemblies.Any(assembly => assembly.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
+
+            Assert.False(asm);
+        }
+
+        [Test]
         public void TypedIdentifier_AssignedToDifferentType_ThrowsWarning2()
         {
             string openPath = Path.Combine(TestDirectory,
@@ -2458,10 +2476,13 @@ var06 = g;
             string code = "im";
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
-            // Expected 3 completion items
-            Assert.AreEqual(3, completions.Count());
+            Assert.AreEqual(5, completions.Count());
 
-            string[] expected = { "Imperative", "Minimal", "MinimalTracedClass" };
+            string[] expected = { "ClassWithExperimentalMethod",
+                "ExperimentalClass",
+                "Imperative",
+                "Minimal",
+                "MinimalTracedClass" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

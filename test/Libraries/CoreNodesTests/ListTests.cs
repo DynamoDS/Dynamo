@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 using List = DSCore.List;
 
@@ -180,7 +179,7 @@ namespace DSCoreNodesTests
         public static void ListIndexOf()
         {
             Assert.AreEqual(1, List.IndexOf(new ArrayList { "x", "y", 1 }, "y"));
-            Assert.AreEqual(-1, List.IndexOf(new ArrayList { 3, 4, 6, 8 }, 9));
+            Assert.AreEqual(null, List.IndexOf(new ArrayList { 3, 4, 6, 8 }, 9));
         }
 
         [Test]

@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
+using CoreNodeModels;
 using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.Utilities;
@@ -7,11 +12,6 @@ using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using TestUINodes;
 using UnitsUI;
-using System.Linq;
-using CoreNodeModels;
-using System.Collections.Generic;
-using System;
-using Dynamo.Graph.Nodes;
 
 namespace DynamoCoreWpfTests
 {
@@ -199,7 +199,7 @@ namespace DynamoCoreWpfTests
             //we've changed both index and name, so a new item is selected.
             Assert.AreNotEqual(DynamoUnits.Quantity.ByTypeID("autodesk.unit.quantity:force-1.0.2"), node3.CachedValue.Data);
             Assert.AreEqual(DynamoUnits.Symbol.ByTypeID("autodesk.unit.symbol:mm-1.0.1"), node4.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:millimeters-1.0.1"), node5.CachedValue.Data);
+            Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:microarcseconds-1.0.1"), node5.CachedValue.Data);
             Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:meters-1.0.1"), node6.CachedValue.Data);
             Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:millimeters-1.0.1"), node7.CachedValue.Data);
             Assert.AreEqual(3, node8.CachedValue.GetElements().Count());

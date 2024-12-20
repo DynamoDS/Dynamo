@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
@@ -18,22 +18,25 @@ namespace WpfVisualizationTests
         public void TestInvalidGeometryIsFilteredOut()
         {
             OpenVisualizationTest("NaN.dyn");
+            RunCurrentModel();
 
             // Only the default scene items should be present
             Assert.AreEqual(3, BackgroundPreviewGeometry.Count());
 
-            // Nodes should be set to warning status with an appropriate message
+            // Nodes should be set to active status without any warning message
             var nanNode = Model.CurrentWorkspace.Nodes.First(n => n.Name == "NaN");
-            Assert.AreEqual(ElementState.Warning, nanNode.State);
-            Assert.True(nanNode.Infos.Any(x => x.Message.Contains("'NaN' is being cast to 'Double'") && x.State == ElementState.Warning));
+            Assert.AreEqual(ElementState.Active, nanNode.State);
+
+            var objtype = Model.CurrentWorkspace.Nodes.First(n => n.Name == "Object.Type");
+            Assert.AreEqual(ElementState.Active, objtype.State);
+            var result = GetPreviewValue("243b31d9b3f14cc49768689864a57986").ToString();
+            Assert.AreEqual("System.Double", result);
 
             var negInfNode = Model.CurrentWorkspace.Nodes.First(n => n.Name == "NegativeInfinity");
-            Assert.AreEqual(ElementState.Warning, negInfNode.State);
-            Assert.True(negInfNode.Infos.Any(x => x.Message.Contains("'-∞' is being cast to 'Double'") && x.State == ElementState.Warning));
+            Assert.AreEqual(ElementState.Active, negInfNode.State);
 
             var posInfNode = Model.CurrentWorkspace.Nodes.First(n => n.Name == "PositiveInfinity");
-            Assert.AreEqual(ElementState.Warning, posInfNode.State);
-            Assert.True(posInfNode.Infos.Any(x => x.Message.Contains("'∞' is being cast to 'Double'") && x.State == ElementState.Warning));
+            Assert.AreEqual(ElementState.Active, posInfNode.State);
         }
     }
 }

@@ -98,10 +98,14 @@ namespace Dynamo.Models
     /// </summary>
     public struct HostAnalyticsInfo
     {
-        // Dynamo variation identified by host.
+        // Dynamo variation identified by host, e.g. Dynamo Revit
         public string HostName;
         // Dynamo variation version specific to host
         public Version HostVersion;
+        // Dynamo host application name, e.g. Revit
+        public string HostProductName;
+        // Dynamo host application version, e.g. 2025.2.0
+        public Version HostProductVersion;
         // Dynamo host parent id for analytics purpose.
         public string ParentId;
         // Dynamo host session id for analytics purpose.
@@ -926,6 +930,7 @@ namespace Dynamo.Models
 
             if (extensions.Any())
             {
+                Logger.Log("\nLoading Dynamo extensions:");
                 var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
@@ -1467,11 +1472,18 @@ namespace Dynamo.Models
             var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
+                //just bail in service mode.
+                if (IsServiceMode)
+                {
+                    return;
+                }
+
                 if (customNodeSearchRegistry.Contains(info.FunctionId)
                         || !info.IsVisibleInDynamoLibrary)
                     return;
 
-                var elements = SearchModel.Entries.OfType<CustomNodeSearchElement>().
+               
+                var elements = SearchModel?.Entries.OfType<CustomNodeSearchElement>().
                                 Where(x =>
                                 {
                                     // Search for common paths and get rid of empty paths.
@@ -1489,6 +1501,7 @@ namespace Dynamo.Models
                     }
                     return;
                 }
+                
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -1525,6 +1538,7 @@ namespace Dynamo.Models
                     }
                 };
             };
+
             CustomNodeManager.DefinitionUpdated += UpdateCustomNodeDefinition;
         }
 
@@ -1774,6 +1788,22 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
             }
+            var supportedLocales = Configurations.SupportedLocaleDic.Values.ToList<string>();
+
+            //Get the last part of the template path e.f. if the path is C:\ProgramData\Dynamo\Dynamo Core\templates\en-US then currentPathLocale = en-US
+            var pathParts = PreferenceSettings.TemplateFilePath.Split("\\");
+            var currentPathLocale = pathParts.Last();
+
+            //Check if the locale is found inside the supported locales 
+            if (supportedLocales.Contains(currentPathLocale))
+            {
+                //If the CurrentUICulture is different than the locale in the TemplateFilePath then needs to be updated         
+                if (CultureInfo.CurrentUICulture.Name != currentPathLocale)
+                {
+                    PreferenceSettings.TemplateFilePath= PreferenceSettings.TemplateFilePath.Replace(currentPathLocale, CultureInfo.CurrentUICulture.Name);
+                }
+            }
+
 
             UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
             UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
@@ -2728,8 +2758,12 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
+                                if (model is ConnectorPinModel pinModel)
+                                {
+                                    annotation.MarkPinAsRemoved(pinModel);
+                                }
                                 annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();
+                                annotation.UpdateBoundaryFromSelection();                               
                             }
                         }
                         else
@@ -2798,7 +2832,7 @@ namespace Dynamo.Models
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(pathManager.LogDirectory, fileName);
 
-            SearchModel.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
+            SearchModel?.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
 
             Logger.Log(string.Format(Resources.LibraryIsDumped, fullFileName));
         }
@@ -2941,6 +2975,26 @@ namespace Dynamo.Models
                 }
 
                 CurrentWorkspace = customNodeWorkspace;
+                return true;
+            }
+
+            return false;
+        }
+        /// <summary>
+        ///     Opens an existing custom node workspace.
+        /// </summary>
+        /// <param name="guid">Identifier of the workspace to open</param>
+        /// <returns>True if workspace was found and open</returns>
+        internal bool OpenCustomNodeWorkspaceSilent(Guid guid)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
+            {
+                if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
+                {
+                    AddWorkspace(customNodeWorkspace);
+                }
+
                 return true;
             }
 
@@ -3360,6 +3414,11 @@ namespace Dynamo.Models
                 }))
             {
                 return null;
+            }
+                if(PreferenceSettings.InitialExperimentalLib_Namespaces.
+                Select(x => x.Split(":").LastOrDefault()).Any(x => x.Contains(typeLoadData.Category))){
+                //TODO safer way to set this?
+                typeLoadData.IsExperimental = true;
             }
 
             var node = new NodeModelSearchElement(typeLoadData);

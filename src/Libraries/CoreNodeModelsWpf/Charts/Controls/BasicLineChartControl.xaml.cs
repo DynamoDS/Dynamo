@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using CoreNodeModelsWpf.Charts.Utilities;
+using Dynamo.Utilities;
 using LiveChartsCore;
 using LiveChartsCore.Drawing;
 using LiveChartsCore.SkiaSharpView;
@@ -97,9 +98,9 @@ namespace CoreNodeModelsWpf.Charts
         {
             BasicLineChart.Series = new List<ISeries>()
             {
-                    new LineSeries<double> { Name = "Series 1", Values = ChartStyle.GetRandomList(5), DataPadding = new LvcPoint(0, 0), },
-                    new LineSeries<double> { Name = "Series 2", Values = ChartStyle.GetRandomList(5), DataPadding = new LvcPoint(0, 0), },
-                    new LineSeries<double> { Name = "Series 3", Values = ChartStyle.GetRandomList(5), DataPadding = new LvcPoint(0, 0), }
+                    new LineSeries<double> { Name = "Series 1", Values = ChartStyle.GetRandomList(5).ToObservableCollection(), DataPadding = new LvcPoint(0, 0), },
+                    new LineSeries<double> { Name = "Series 2", Values = ChartStyle.GetRandomList(5).ToObservableCollection(), DataPadding = new LvcPoint(0, 0), },
+                    new LineSeries<double> { Name = "Series 3", Values = ChartStyle.GetRandomList(5).ToObservableCollection(), DataPadding = new LvcPoint(0, 0), }
             };
         }
 

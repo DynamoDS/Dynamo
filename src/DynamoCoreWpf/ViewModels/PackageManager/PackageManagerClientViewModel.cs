@@ -20,6 +20,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using DynamoServices;
 using Greg.AuthProviders;
@@ -34,6 +35,7 @@ namespace Dynamo.ViewModels
         internal PackageManagerClient PackageManagerClient { get; set; }
         internal AuthenticationManager AuthenticationManager { get; set; }
         internal Action AcceptanceCallback { get; set; }
+        internal Window Parent { get; set; }
     }
 
     /// <summary>
@@ -47,7 +49,7 @@ namespace Dynamo.ViewModels
         private readonly Action callbackAction;
         private readonly PackageManagerClient packageManagerClient;
         private readonly AuthenticationManager authenticationManager;
-
+        private readonly Window parent;
         private static bool isTermsOfUseCreated;
 
         public TermsOfUseHelper(TermsOfUseHelperParams touParams)
@@ -67,6 +69,7 @@ namespace Dynamo.ViewModels
             packageManagerClient = touParams.PackageManagerClient;
             callbackAction = touParams.AcceptanceCallback;
             authenticationManager = touParams.AuthenticationManager;
+            parent = touParams.Parent;
         }
 
         internal void Execute(bool preventReentrant)
@@ -122,13 +125,16 @@ namespace Dynamo.ViewModels
             var termsOfUseView = new TermsOfUseView(touFilePath);
             termsOfUseView.Closed += TermsOfUseView_Closed;
             isTermsOfUseCreated = true;
+            termsOfUseView.Owner = parent;
 
-            if (parent == null)
+            //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
+            if (!GuideFlowEvents.IsAnyGuideActive)
+            {
                 termsOfUseView.ShowDialog();
+            }
             else
             {
-                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
-                termsOfUseView.Owner = parent;
+                //When a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
                 termsOfUseView.Show();
             }
 
@@ -316,7 +322,8 @@ namespace Dynamo.ViewModels
                         AcceptanceCallback = () => ShowNodePublishInfo(new[]
                         {
                             Tuple.Create(currentFunInfo, currentFunDef)
-                        })
+                        }),
+                        Parent = ViewModelOwner ?? DynamoViewModel.Owner,
                     };
 
                     var termsOfUseCheck = new TermsOfUseHelper(touParams);
@@ -344,7 +351,8 @@ namespace Dynamo.ViewModels
                 PackageManagerClient = Model,
                 AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
-                AcceptanceCallback = ShowNodePublishInfo
+                AcceptanceCallback = ShowNodePublishInfo,
+                Parent = ViewModelOwner ?? DynamoViewModel.Owner,
             });
 
             termsOfUseCheck.Execute(true);
@@ -370,7 +378,9 @@ namespace Dynamo.ViewModels
                     AcceptanceCallback = () => ShowNodePublishInfo(new[]
                     {
                         Tuple.Create(currentFunInfo, m.Definition)
-                    })
+                    }),
+                    Parent = ViewModelOwner ?? DynamoViewModel.Owner,
+
                 });
 
                 termsOfUseCheck.Execute(true);
@@ -428,7 +438,8 @@ namespace Dynamo.ViewModels
                 PackageManagerClient = Model,
                 AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
-                AcceptanceCallback = () => ShowNodePublishInfo(defs)
+                AcceptanceCallback = () => ShowNodePublishInfo(defs),
+                Parent = ViewModelOwner ?? DynamoViewModel.Owner,
             });
 
             termsOfUseCheck.Execute(true);
@@ -530,7 +541,7 @@ namespace Dynamo.ViewModels
             var touAccepted = prefSettings.PackageDownloadTouAccepted;
             if (!touAccepted)
             {
-                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null);
+                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, ViewModelOwner);
                 prefSettings.PackageDownloadTouAccepted = touAccepted;
                 if (!touAccepted)
                 {
@@ -737,11 +748,28 @@ namespace Dynamo.ViewModels
 
         internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
-            string msg = String.IsNullOrEmpty(installPath) ?
+            string msg;
+            MessageBoxResult result;
+
+            var compatible = PackageManagerSearchElement.CalculateCompatibility(package.compatibility_matrix); 
+            if (compatible == false && !DynamoModel.IsTestMode)
+            {
+                msg = Resources.PackageManagerIncompatibleVersionDownloadMsg;
+                result = MessageBoxService.Show(ViewModelOwner, msg,
+                    Resources.PackageManagerIncompatibleVersionDownloadTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (result != MessageBoxResult.OK)
+                {
+                    return;
+                }
+            }
+
+            msg = String.IsNullOrEmpty(installPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
 
-            var result = MessageBoxService.Show(ViewModelOwner, msg,
+            result = MessageBoxService.Show(ViewModelOwner, msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
@@ -1087,6 +1115,7 @@ namespace Dynamo.ViewModels
                 Process.Start(sInfo);
             }
         }
+
     }
 
 }

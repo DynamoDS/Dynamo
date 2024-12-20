@@ -1,15 +1,11 @@
-
-
-using Dynamo.Configuration;
-using Dynamo.Models;
-using DynamoCoreWpfTests.Utility;
-using DynamoUtilities;
-using NUnit.Framework;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using DynamoUtilities;
+using DynamoCoreWpfTests.Utility;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
@@ -95,12 +91,13 @@ namespace DynamoCoreWpfTests
         public void SplashScreen_MultipleCloseMessages()
         {
             var ss = new Dynamo.UI.Views.SplashScreen();
+            ss.Title = "Dynamo SplashScreen Test";
 
             void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
             {
                 ss.webView.NavigationCompleted -= WebView_NavigationCompleted;
 
-                IntPtr WindowToFind = FindWindow(null, "Dynamo SplashScreen");
+                IntPtr WindowToFind = FindWindow(null, "Dynamo SplashScreen Test");
                 Debug.Assert(WindowToFind != IntPtr.Zero);
 
                 // Simulate clicking on the close button several times while the main thread is stuck waiting.
@@ -124,14 +121,15 @@ namespace DynamoCoreWpfTests
             void WindowClosed(object sender, EventArgs e)
             {
                 windowClosed = true;
-                ss.Closed -= WindowClosed;
             }
 
             ss.Closed += WindowClosed;
 
             ss.Show();
 
-            DispatcherUtil.DoEventsLoop(() => windowClosed);
+            DispatcherUtil.DoEventsLoop(() => windowClosed, 50);
+
+            ss.Closed -= WindowClosed;
 
             Assert.IsNull(ss.webView);// Make sure webview2 was disposed
             Assert.IsTrue(windowClosed);// Make sure the window was closed
