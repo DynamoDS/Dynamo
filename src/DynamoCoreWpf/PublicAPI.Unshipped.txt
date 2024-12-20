@@ -3672,19 +3672,10 @@ Dynamo.Wpf.Utilities.DynamoWebView2
 Dynamo.Wpf.Utilities.DynamoWebView2.DynamoWebView2() -> void
 Dynamo.Wpf.Utilities.GroupStyleItemSelector
 Dynamo.Wpf.Utilities.GroupStyleItemSelector.GroupStyleItemSelector() -> void
-Dynamo.Wpf.Utilities.JobDebouncer
-Dynamo.Wpf.Utilities.JobDebouncer.DebounceQueueToken
-Dynamo.Wpf.Utilities.JobDebouncer.DebounceQueueToken.DebounceQueueToken() -> void
-Dynamo.Wpf.Utilities.JobDebouncer.DebounceQueueToken.LastExecutionId -> long
-Dynamo.Wpf.Utilities.JobDebouncer.DebounceQueueToken.SerialQueue -> Dynamo.Wpf.Utilities.SerialQueue
 Dynamo.Wpf.Utilities.LibraryDragAndDrop
 Dynamo.Wpf.Utilities.LibraryDragAndDrop.LibraryDragAndDrop() -> void
 Dynamo.Wpf.Utilities.MessageBoxService
 Dynamo.Wpf.Utilities.MessageBoxService.MessageBoxService() -> void
-Dynamo.Wpf.Utilities.SerialQueue
-Dynamo.Wpf.Utilities.SerialQueue.DispatchAsync(System.Action action) -> void
-Dynamo.Wpf.Utilities.SerialQueue.SerialQueue() -> void
-Dynamo.Wpf.Utilities.SerialQueue.UnhandledException -> System.Action<System.Action, System.Exception>
 Dynamo.Wpf.Utilities.WebView2Utilities
 Dynamo.Wpf.VariableInputNodeViewCustomization
 Dynamo.Wpf.VariableInputNodeViewCustomization.Dispose() -> void
@@ -5624,8 +5615,6 @@ static Dynamo.Wpf.UI.VisualConfigurations.ErrorTextFontWeight -> System.Windows.
 static Dynamo.Wpf.UI.VisualConfigurations.LibraryTooltipTextFontWeight -> System.Windows.FontWeight
 static Dynamo.Wpf.UI.VisualConfigurations.NodeTooltipTextFontWeight -> System.Windows.FontWeight
 static Dynamo.Wpf.Utilities.CompactBubbleHandler.Process(ProtoCore.Mirror.MirrorData value) -> Dynamo.ViewModels.CompactBubbleViewModel
-static Dynamo.Wpf.Utilities.JobDebouncer.EnqueueMandatoryJobAsync(System.Action job, Dynamo.Wpf.Utilities.JobDebouncer.DebounceQueueToken token) -> void
-static Dynamo.Wpf.Utilities.JobDebouncer.EnqueueOptionalJobAsync(System.Action job, Dynamo.Wpf.Utilities.JobDebouncer.DebounceQueueToken token) -> void
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult
 static Dynamo.Wpf.Utilities.MessageBoxService.Show(string msg, string title, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage img) -> System.Windows.MessageBoxResult

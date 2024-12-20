@@ -204,7 +204,7 @@ namespace Dynamo.UI.Controls
                                 ExecuteSearchElement(searchElement);
                                 OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
                             }
-                        });
+                        }, DispatcherPriority.Input);
                     });
                     break;
                 case Key.Up:

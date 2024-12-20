@@ -2,11 +2,16 @@ using System;
 
 namespace Dynamo.Wpf.Utilities
 {
-    public static class JobDebouncer
+    /// <summary>
+    /// Thread-safe utility class to enqueue jobs into a serial queue of tasks executed in a background thread.
+    /// No debouncing delay by executing jobs as soon as possible.
+    /// At any moment, any optional job has to wait for at most one pending optional job to finish.
+    /// </summary>
+    internal static class JobDebouncer
     {
-        public class DebounceQueueToken
+        internal class DebounceQueueToken
         {
-            public long LastExecutionId = 0;
+            public long LastOptionalExecutionId = 0;
             public SerialQueue SerialQueue = new();
         };
         /// <summary>
@@ -16,20 +21,20 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="job"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static void EnqueueOptionalJobAsync(Action job, DebounceQueueToken token)
+        internal static void EnqueueOptionalJobAsync(Action job, DebounceQueueToken token)
         {
             lock (token)
             {
-                token.LastExecutionId++;
-                var myExecutionId = token.LastExecutionId;
+                token.LastOptionalExecutionId++;
+                var myExecutionId = token.LastOptionalExecutionId;
                 token.SerialQueue.DispatchAsync(() =>
                 {
-                    if (myExecutionId < token.LastExecutionId) return;
+                    if (myExecutionId < token.LastOptionalExecutionId) return;
                     job();
                 });
             }
         }
-        public static void EnqueueMandatoryJobAsync(Action job, DebounceQueueToken token)
+        internal static void EnqueueMandatoryJobAsync(Action job, DebounceQueueToken token)
         {
             lock (token)
             {
