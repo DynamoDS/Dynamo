@@ -1000,19 +1000,19 @@ namespace DynamoCoreWpfTests
             for (var i = 1; i <= fullNodeName.Length; ++i)
             {
                 vm.SearchText = fullNodeName[..i];
-                vm.SearchCommand.Execute(null);
                 if (keyStrokeDelayMs > 0)
                 {
                     Thread.Sleep(keyStrokeDelayMs);
                 }
             }
-            var tcs = new TaskCompletionSource();
+            var mre = new ManualResetEvent(false);
             //we should only get the "Number Slider" node if we process up to the very last "r".
             //otherwise ("Number Slide") we should get "Number". This wasn't added to the test because it would be fragile to future Lucene weight updates.
             vm.AfterLastPendingSearch(() => {
-                tcs.SetResult();
+                mre.Set();
             });
-            await tcs.Task;
+            mre.WaitOne(1000);
+
             Assert.AreEqual(fullNodeName, vm.FilteredResults?.FirstOrDefault()?.Name);
         }
 
