@@ -863,12 +863,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SearchAndUpdateResults()
         {
-            //Unit tests don't have an Application.Current
-            (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() =>
-            {
-                searchResults.Clear();
-            });
-
             if (!String.IsNullOrEmpty(SearchText.Trim()))
             {
                 SearchAndUpdateResults(SearchText);
@@ -1178,7 +1172,12 @@ namespace Dynamo.ViewModels
         private static readonly JobDebouncer.DebounceQueueToken DebounceQueueToken = new();
         public void Search(object parameter)
         {
-            JobDebouncer.EnqueueJobAsync(SearchAndUpdateResults, DebounceQueueToken);
+            JobDebouncer.EnqueueOptionalJobAsync(SearchAndUpdateResults, DebounceQueueToken);
+        }
+
+        public void AfterLastPendingSearch(Action action)
+        {
+            JobDebouncer.EnqueueMandatoryJobAsync(action, DebounceQueueToken);
         }
 
         internal bool CanSearch(object parameter)

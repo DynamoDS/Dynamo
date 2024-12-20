@@ -70,15 +70,18 @@ namespace Dynamo.UI.Controls
         private void ExecuteSearchElement(ListBoxItem listBoxItem)
         {
             var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
-            if (searchElement != null)
-            {
-                searchElement.Position = ViewModel.InCanvasSearchPosition;
-                searchElement.ClickedCommand?.Execute(null);
-                Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Select,
-                Dynamo.Logging.Categories.InCanvasSearchOperations,
-                searchElement.FullName);
-            }
+            ExecuteSearchElement(searchElement);
+        }
+
+        private void ExecuteSearchElement(NodeSearchElementViewModel searchElement)
+        {
+            if (searchElement == null) return;
+            searchElement.Position = ViewModel.InCanvasSearchPosition;
+            searchElement.ClickedCommand?.Execute(null);
+            Analytics.TrackEvent(
+            Dynamo.Logging.Actions.Select,
+            Dynamo.Logging.Categories.InCanvasSearchOperations,
+            searchElement.FullName);
         }
 
         private void OnMouseEnter(object sender, MouseEventArgs e)
@@ -183,15 +186,26 @@ namespace Dynamo.UI.Controls
 
             switch (key)
             {
-                case Key.Escape:
+                case Key.Escape:    
                     OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
                     break;
                 case Key.Enter:
-                    if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+                    ViewModel.AfterLastPendingSearch(() =>
                     {
-                        ExecuteSearchElement(HighlightedItem);
-                        OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
-                    }
+                        Dispatcher.BeginInvoke(() =>
+                        {
+                            var searchElement = HighlightedItem?.DataContext as NodeSearchElementViewModel;
+
+                            //if dropdown hasn't yet fully loaded lets assume the user wants the first element
+                            searchElement ??= ViewModel.FilteredResults.FirstOrDefault();
+
+                            if (searchElement != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+                            {
+                                ExecuteSearchElement(searchElement);
+                                OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                            }
+                        });
+                    });
                     break;
                 case Key.Up:
                     index = MoveToNextMember(false, members, highlightedMember);

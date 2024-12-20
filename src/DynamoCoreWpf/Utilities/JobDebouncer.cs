@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -7,30 +6,38 @@ namespace Dynamo.Wpf.Utilities
     {
         public class DebounceQueueToken
         {
-            public bool IsDirty = false;
-            public readonly object JobLock = new();
+            public long LastExecutionId = 0;
+            public SerialQueue SerialQueue = new();
         };
         /// <summary>
         /// Action <paramref name="job"/> is guaranteed to run at most once for every call, and exactly once after the last call.
-        /// Execution is sequential, and jobs that share a <see cref="DebounceQueueToken"/> with a newer job will be ignored.
+        /// Execution is sequential, and optional jobs that share a <see cref="DebounceQueueToken"/> with a newer optional job will be ignored.
         /// </summary>
         /// <param name="job"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static Task EnqueueJobAsync(Action job, DebounceQueueToken token)
+        public static void EnqueueOptionalJobAsync(Action job, DebounceQueueToken token)
         {
-            token.IsDirty = true;
-            return Task.Run(() =>
+            lock (token)
             {
-                lock (token.JobLock)
+                token.LastExecutionId++;
+                var myExecutionId = token.LastExecutionId;
+                token.SerialQueue.DispatchAsync(() =>
                 {
-                    while (token.IsDirty)
-                    {
-                        token.IsDirty = false;
-                        job();
-                    }
-                }
-            });
+                    if (myExecutionId < token.LastExecutionId) return;
+                    job();
+                });
+            }
+        }
+        public static void EnqueueMandatoryJobAsync(Action job, DebounceQueueToken token)
+        {
+            lock (token)
+            {
+                token.SerialQueue.DispatchAsync(() =>
+                {
+                    job();
+                });
+            }
         }
     }
 }

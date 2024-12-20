@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Threading;
+using Dynamo.Wpf.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static Dynamo.Wpf.Utilities.JobDebouncer;
 
 namespace Dynamo.LibraryViewExtensionWebView2
 {
@@ -45,6 +49,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
             //send back result.
             return $"data:image/{ext};base64, {iconAsBase64}";
         }
+
+        private static readonly JobDebouncer.DebounceQueueToken DebounceQueueToken = new();
 
         /// <summary>
         /// This method will receive any message sent from javascript and execute a specific code according to the message
@@ -98,12 +104,19 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 {
                     var data = simpleRPCPayload["data"] as string;
                     var extension = string.Empty;
-                    var searchStream = controller.searchResultDataProvider.GetResource(data, out extension);
-                    var searchReader = new StreamReader(searchStream);
-                    var results = searchReader.ReadToEnd();
-                    //send back results to librarie.js
-                    LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeSearch", results);
-                    searchReader.Dispose();
+
+                    var dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+                    JobDebouncer.EnqueueOptionalJobAsync(() => {
+                        var searchStream = controller.searchResultDataProvider.GetResource(data, out extension);
+                        var searchReader = new StreamReader(searchStream);
+                        var results = searchReader.ReadToEnd();
+                        dispatcher.Invoke(() =>
+                        {
+                            //send back results to librarie.js
+                            LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeSearch", results);
+                            searchReader.Dispose();
+                        });
+                    }, DebounceQueueToken);
                 }
                 //When the html <div> that contains the sample package is clicked then we will be moved to the next Step in the Guide
                 else if (funcName == "NextStep")

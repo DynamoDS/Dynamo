@@ -461,9 +461,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
             var synteticEventData = new Dictionary<string, string>
             {
-                [Enum.GetName(typeof(ModifiersJS), e.KeyboardDevice.Modifiers)] = "true",
                 ["key"] = e.Key.ToString()
             };
+
+            foreach(ModifiersJS modifier in Enum.GetValues(typeof(ModifiersJS)))
+            {
+                if (((int)e.KeyboardDevice.Modifiers & (int)modifier) != 0)
+                {
+                    synteticEventData[Enum.GetName(typeof(ModifiersJS), modifier)] = "true";
+                }
+            }
 
             _ = ExecuteScriptFunctionAsync(browser, "eventDispatcher", synteticEventData);
         }
