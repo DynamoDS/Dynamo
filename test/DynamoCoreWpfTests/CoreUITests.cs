@@ -26,7 +26,6 @@ using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
-using Dynamo.Wpf.Utilities;
 using DynamoCoreWpfTests.Utility;
 using Moq;
 using Moq.Protected;
