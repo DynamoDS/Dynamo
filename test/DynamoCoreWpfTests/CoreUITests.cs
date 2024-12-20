@@ -975,6 +975,48 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [TestCase(0)]
+        [TestCase(50)]
+        [TestCase(100)]
+        [Category("UnitTests")]
+        public async Task InCanvasSearchTextChangedBurst(int keyStrokeDelayMs)
+        {
+            string fullNodeName = "Number Slider";
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => x?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            Assert.IsNotNull(searchControl);
+
+            DispatcherUtil.DoEvents();
+
+            var vm = searchControl.DataContext as SearchViewModel;
+
+            for (var i = 1; i <= fullNodeName.Length; ++i)
+            {
+                vm.SearchText = fullNodeName[..i];
+                if (keyStrokeDelayMs > 0)
+                {
+                    Thread.Sleep(keyStrokeDelayMs);
+                }
+            }
+            var mre = new ManualResetEvent(false);
+            //we should only get the "Number Slider" node if we process up to the very last "r".
+            //otherwise ("Number Slide") we should get "Number". This wasn't added to the test because it would be fragile to future Lucene weight updates.
+            vm.AfterLastPendingSearch(() => {
+                mre.Set();
+            });
+            mre.WaitOne(1000);
+
+            Assert.AreEqual(fullNodeName, vm.FilteredResults?.FirstOrDefault()?.Name);
+        }
+
+        [Test]
         public void WarningShowsWhenSavingWithLinterWarningsOrErrors()
         {
             // Arrange

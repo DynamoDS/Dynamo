@@ -233,8 +233,8 @@ namespace Dynamo.Search
 
         internal IEnumerable<NodeSearchElement> Search(string search, LuceneSearchUtility luceneSearchUtility)
         {
-            
-            if (luceneSearchUtility != null)
+            if (luceneSearchUtility == null) return null;
+            lock (luceneSearchUtility)
             {
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
                 luceneSearchUtility.dirReader = luceneSearchUtility.writer != null ? luceneSearchUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(luceneSearchUtility.indexDir);
@@ -277,7 +277,6 @@ namespace Dynamo.Search
                 }
                 return candidates;
             }
-            return null;
         }
 
         internal NodeSearchElement FindModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)

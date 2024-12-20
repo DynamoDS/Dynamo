@@ -2867,6 +2867,7 @@ Dynamo.ViewModels.RequestBitmapSourceHandler
 Dynamo.ViewModels.RequestOpenDocumentationLinkHandler
 Dynamo.ViewModels.RequestPackagePublishDialogHandler
 Dynamo.ViewModels.SearchViewModel
+Dynamo.ViewModels.SearchViewModel.AfterLastPendingSearch(System.Action action) -> void
 Dynamo.ViewModels.SearchViewModel.BrowserRootCategories.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Wpf.ViewModels.NodeCategoryViewModel>
 Dynamo.ViewModels.SearchViewModel.BrowserVisibility.get -> bool
 Dynamo.ViewModels.SearchViewModel.BrowserVisibility.set -> void
