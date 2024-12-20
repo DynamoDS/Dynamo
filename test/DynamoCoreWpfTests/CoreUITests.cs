@@ -1008,7 +1008,7 @@ namespace DynamoCoreWpfTests
             }
             var tcs = new TaskCompletionSource();
             //we should only get the "Number Slider" node if we process up to the very last "r".
-            //otherwise ("Number Slide") we should get "Number". This wasn't added to the test because it would fragile to future Lucene weight updates.
+            //otherwise ("Number Slide") we should get "Number". This wasn't added to the test because it would be fragile to future Lucene weight updates.
             vm.AfterLastPendingSearch(() => {
                 tcs.SetResult();
             });

@@ -186,7 +186,7 @@ namespace Dynamo.UI.Controls
 
             switch (key)
             {
-                case Key.Escape:    
+                case Key.Escape:
                     OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
                     break;
                 case Key.Enter:
