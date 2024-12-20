@@ -2,18 +2,18 @@
 //#define ENABLE_INC_DEC_FIX
 using System;
 using System.Collections.Generic;
+using System.IO;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
-using ProtoCore.Properties;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
-namespace ProtoCore.DesignScriptParser
-{
+namespace ProtoCore.DesignScriptParser {
 
 
 
-    public class Parser {
+public class Parser {
 	public const int _EOF = 0;
 	public const int _ident = 1;
 	public const int _number = 2;
@@ -791,7 +791,7 @@ public Node root { get; set; }
 	void DesignScriptParser() {
 		Node node = null; 
 		Hydrogen(out node);
-		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode && !builtinMethodsLoaded)
+		if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode && !builtinMethodsLoaded && !core.IsParsingInTestMode)
 		{
 		   CoreUtils.InsertPredefinedAndBuiltinMethods(core, node as CodeBlockNode);
 		   root = node;
@@ -890,6 +890,11 @@ public Node root { get; set; }
 	}
 
 	void Import_Statement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
+		if (core.IsParsingCodeBlockNode)
+		{
+		   core.BuildStatus.LogSemanticError(Resources.ImportStatementNotSupported);
+		}
+		
 		while (!(la.kind == 0 || la.kind == 34)) {SynErr(66); Get();}
 		string moduleName = "", typeName = "", alias = "";
 		

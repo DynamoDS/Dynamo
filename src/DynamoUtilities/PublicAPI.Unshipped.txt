@@ -1,4 +1,4 @@
-﻿Dynamo.Scheduler.Disposable
+Dynamo.Scheduler.Disposable
 Dynamo.Utilities.AssemblyConfiguration
 Dynamo.Utilities.AssemblyConfiguration.GetAppSetting(string key) -> string
 Dynamo.Utilities.AssemblyHelper
@@ -144,6 +144,8 @@ DynamoUtilities.CertificateVerification.UnTrustedAssemblyException
 DynamoUtilities.CertificateVerification.UnTrustedAssemblyException.UnTrustedAssemblyException(string assemblyPath) -> void
 DynamoUtilities.PathHelper
 DynamoUtilities.PathHelper.PathHelper() -> void
+DynamoUtilities.StringUtilities
+DynamoUtilities.StringUtilities.StringUtilities() -> void
 DynamoUtilities.SmartObservableCollection<T>
 DynamoUtilities.SmartObservableCollection<T>.SmartObservableCollection() -> void
 DynamoUtilities.SmartObservableCollection<T>.SmartObservableCollection(System.Collections.Generic.IEnumerable<T> collection) -> void
@@ -211,7 +213,9 @@ static Dynamo.Utilities.TypeExtensions.GetInstance<TArg1, TArg2, TArg3>(this Sys
 static Dynamo.Utilities.TypeExtensions.GetInstance<TArg1, TArg2>(this System.Type type, TArg1 argument1, TArg2 argument2) -> object
 static Dynamo.Utilities.TypeExtensions.GetInstance<TArg>(this System.Type type, TArg argument) -> object
 static Dynamo.Utilities.TypeExtensions.ImplementsGeneric(System.Type generic, System.Type toCheck) -> bool
+static Dynamo.Utilities.VersionUtilities.Parse(string version) -> System.Version
 static Dynamo.Utilities.VersionUtilities.PartialParse(string versionString, int numberOfFields = 3) -> System.Version
+static Dynamo.Utilities.VersionUtilities.WildCardParse(string version) -> System.Version
 static DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(string assemblyPath) -> bool
 static DynamoUtilities.PathHelper.CreateFolderIfNotExist(string folderPath) -> System.Exception
 static DynamoUtilities.PathHelper.ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, System.Reflection.Assembly assembly) -> void
@@ -229,6 +233,7 @@ static DynamoUtilities.PathHelper.isValidJson(string path, out string fileConten
 static DynamoUtilities.PathHelper.IsValidPath(string filePath) -> bool
 static DynamoUtilities.PathHelper.isValidXML(string path, out System.Xml.XmlDocument xmlDoc, out System.Exception ex) -> bool
 static DynamoUtilities.PathHelper.LoadEmbeddedResourceAsString(string resourcePath, System.Reflection.Assembly assembly) -> string
+static DynamoUtilities.StringUtilities.CapitalizeFirstLetter(string word) -> string
 static DynamoUtilities.TypeSwitch.Case<T>(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo
 static DynamoUtilities.TypeSwitch.Case<T>(System.Action<T> action) -> DynamoUtilities.TypeSwitch.CaseInfo
 static DynamoUtilities.TypeSwitch.Default(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo

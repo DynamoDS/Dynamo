@@ -39,6 +39,7 @@ namespace Dynamo.Search.SearchElements
             {
                 ElementType |= ElementTypes.BuiltIn;
             }
+            IsExperimental = typeLoadData.IsExperimental;
         }
     }
 }

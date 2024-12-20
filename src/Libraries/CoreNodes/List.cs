@@ -161,16 +161,17 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Returns the index of the element in the given list. Match between given list and target element must be a strict match (i.e. int to int, double to double, string to string, object to object etc.)
+        ///     Returns the index of the element in the given list. Match between given list and target element must be a strict match (i.e. int to int, double to double, string to string, object to object etc.).
         /// </summary>
         /// <param name="list">The list to find the element in.</param>
         /// <param name="element">The element whose index is to be returned.</param>
         /// <returns name="int">The index of the element in the list. Invalid index -1 will be returned if strict match not found.</returns>
         /// <search>index,indexof</search>
         [IsVisibleInDynamoLibrary(true)]
-        public static int IndexOf(IList list, object element)
+        public static int? IndexOf(IList list, object element)
         {
-            return list.IndexOf(element);
+            var index = list.IndexOf(element);
+            return index < 0 ? null : index;
         }
 
         /// <summary>

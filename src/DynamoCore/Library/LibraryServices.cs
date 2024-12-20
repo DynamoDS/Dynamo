@@ -1083,9 +1083,9 @@ namespace Dynamo.Engine
                 IsBuiltIn = pathManager.PreloadedLibraries.Contains(library)
                     || library.StartsWith(PathManager.BuiltinPackagesDirectory),
                 IsPackageMember = packagedLibraries.Contains(library),
-                IsLacingDisabled = isLacingDisabled
+                IsLacingDisabled = isLacingDisabled,
+                IsExperimental = (methodAttribute?.IsExperimental).GetValueOrDefault()|| (classAttribute?.IsExperimental).GetValueOrDefault()
             });
-
             AddImportedFunctions(library, new[] { function });
         }
 

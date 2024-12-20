@@ -962,7 +962,7 @@ namespace Dynamo.Tests
         public void ForgeQuantityContainsMultipleUnits()
         {
             var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.5");
-            Assert.GreaterOrEqual(16,quantityType.Units.Count());
+            Assert.GreaterOrEqual(17,quantityType.Units.Count());
         }
         [Test, Category("UnitTests")]
         public void ForgeQuantityEquality()

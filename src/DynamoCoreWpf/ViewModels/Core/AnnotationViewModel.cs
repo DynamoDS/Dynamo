@@ -27,7 +27,7 @@ namespace Dynamo.ViewModels
         private IEnumerable<PortModel> originalOutPorts;
         private Dictionary<Guid, Geometry> GroupIdToCutGeometry = new Dictionary<Guid, Geometry>();
         // vertical offset accounts for the port margins
-        private const int verticalOffset = 20;
+        private const int verticalOffset = 17;
         private const int portVerticalMidPoint = 17;
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;

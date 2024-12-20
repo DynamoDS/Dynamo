@@ -1164,12 +1164,13 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Controls if the TSpline nodes experiment toggle is visible from feature flag
+        /// TODO: remove this public property in Dynamo 4.0 and archive the feature flag
         /// </summary>
         public bool IsTSplineNodesExperimentToggleVisible
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsTSplineNodesExperimentToggleVisible", false) ?? false;
+                return false;
             }
         }
 

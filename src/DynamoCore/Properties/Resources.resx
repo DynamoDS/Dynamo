@@ -923,4 +923,7 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="InputNodeRenameHint" xml:space="preserve">
     <value>default input name, rename me!</value>
   </data>
+  <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
+    <value>This node is currently experimental. Its behavior, name, and signature are subject to change.</value>
+  </data>
 </root>

@@ -759,7 +759,7 @@ namespace DynamoCoreWpfTests
             //we somehow need use single threaded sync context to force webview2 async initalization on this thread.
             //unfortunately it passes locally but then still fails on master-15.
             var testDirectory = GetTestDirectory(ExecutingDirectory);
-            var tempDynDirectory = Path.Combine(testDirectory, "Temp Test Path");
+            var tempDynDirectory = Path.Combine(TempFolder, "Temp Test Path");
             var dynFileName = Path.Combine(testDirectory, @"UI\BasicAddition.dyn");
             var insertDynFilePath = Path.Combine(tempDynDirectory, @"BasicAddition.dyn");
 
@@ -829,7 +829,7 @@ namespace DynamoCoreWpfTests
             var dynFileName = Path.GetFileNameWithoutExtension(docsViewModel.Link.AbsolutePath) + ".dyn";
 
             //This will return a path with the pkg doc + dyn file name
-            var sharedFilesPath = Path.Combine(DocumentationBrowserView.SharedDocsDirectoryName, dynFileName);
+            var sharedFilesPath = Path.Combine(Configurations.DynamoNodeHelpDocs, dynFileName);
 
             Assert.IsNotNull(graphPathValue);
             Assert.IsTrue(!string.IsNullOrEmpty(graphPathValue.ToString()));

@@ -159,9 +159,6 @@ namespace Dynamo.PackageManager.UI
             if (e.ChangedButton == MouseButton.Left)
             {
                 this.DragMove();
-                Dynamo.Logging.Analytics.TrackEvent(
-                    Actions.Move,
-                    Categories.PackageManagerOperations);
             }
         }
 

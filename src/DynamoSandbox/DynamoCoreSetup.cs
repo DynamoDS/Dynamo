@@ -50,6 +50,14 @@ namespace DynamoSandbox
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             analyticsInfo = cmdLineArgs.AnalyticsInfo;
+            // Uncomment the following block to test Sandbox with different host and host version
+            //analyticsInfo = new HostAnalyticsInfo
+            //{
+            //    HostName = "Dynamo Revit",
+            //    HostProductName = "Revit",
+            //    HostProductVersion = new Version(2025, 0, 0),
+            //    HostVersion = new Version(3, 3, 0),
+            //};
             noNetworkMode = cmdLineArgs.NoNetworkMode;
         }
 

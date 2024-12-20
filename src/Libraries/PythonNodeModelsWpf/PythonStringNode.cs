@@ -1,9 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.PythonServices;
@@ -33,8 +32,8 @@ namespace PythonNodeModelsWpf
             pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
 
-            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => PythonNodeViewCustomization.AddPythonEngineToMenuItems(
-                pythonStringNodeModel, pythonEngineVersionMenu, UpdateEngine, engineName));
+            PythonNodeUtils.GetEngineNames(nodeModel).ForEach(engineName => dynamoViewModel.AddPythonEngineToMenuItems(
+                new List<PythonNodeBase>() { pythonStringNodeModel }, pythonEngineVersionMenu, UpdateEngine, engineName, true));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
@@ -106,8 +105,8 @@ namespace PythonNodeModelsWpf
                 {
                     if (item is PythonEngine newEngine)
                     {
-                        PythonNodeViewCustomization.AddPythonEngineToMenuItems(
-                            pythonStringNodeModel,pythonEngineVersionMenu,UpdateEngine,newEngine.Name);
+                        dynamoViewModel.AddPythonEngineToMenuItems(
+                            new List<PythonNodeBase>() { pythonStringNodeModel }, pythonEngineVersionMenu,UpdateEngine,newEngine.Name);
                     }
                 }
         }

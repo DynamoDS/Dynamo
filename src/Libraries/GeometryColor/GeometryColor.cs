@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Analysis;
@@ -16,11 +16,12 @@ namespace Modifiers
     {
         #region private members
 
-        private readonly Point[] vertices;
+        private readonly Point[] vertexPositions;
+        private readonly Vector[] vertexNormals;
         private readonly Geometry geometry;
         private readonly Color singleColor;
         private readonly Color[][] colorMap;
-        private readonly Color[] meshVertexColors;
+        private readonly Color[] vertexColors;
 
         #endregion
 
@@ -55,14 +56,17 @@ namespace Modifiers
                 {
                     colorMap[j][i] = colors[i][j];
                 }
-            } 
+            }
         }
 
-        private GeometryColor(Point[] vertices, Color[] colors)
+
+        private GeometryColor(Point[] vertexPositions, Color[] vertexColors, Vector[] vertexNormals = null)
         {
-            this.vertices = vertices;
-            meshVertexColors = colors;
+            this.vertexPositions = vertexPositions;
+            this.vertexColors = vertexColors;
+            this.vertexNormals = vertexNormals;
         }
+
 
         #endregion
 
@@ -91,14 +95,14 @@ namespace Modifiers
 
         /// <summary>
         /// Display color values on a surface.
-        /// 
+        ///
         /// The colors provided are converted internally to an image texture which is
-        /// mapped to the surface. 
+        /// mapped to the surface.
         /// </summary>
         /// <param name="surface">The surface on which to apply the colors.
         /// </param>
         /// <param name="colors">A two dimensional list of Colors.
-        /// 
+        ///
         /// The list of colors must be square. Attempting to pass a jagged array
         /// will result in an exception. </param>
         /// <returns>A Display object.</returns>
@@ -139,17 +143,17 @@ namespace Modifiers
 
         /// <summary>
         /// Create a colored mesh using points and colors.
-        /// 
+        ///
         /// The list of points supplied is used to construct a triangulated mesh, with
         /// non-joined vertices.
         /// </summary>
-        /// <param name="points">A list of Points. 
-        /// 
-        /// Only triangular meshes are currently supported. Each triplet of points in the list will form one 
-        /// triangle in the mesh. Points should be ordered CCW. 
+        /// <param name="points">A list of Points.
+        ///
+        /// Only triangular meshes are currently supported. Each triplet of points in the list will form one
+        /// triangle in the mesh. Points should be ordered CCW.
         /// Attempting to pass a list of vertices whose count is not divisble by 3 will throw an exception.</param>
-        /// <param name="colors">A list of colors. 
-        /// 
+        /// <param name="colors">A list of colors.
+        ///
         /// The number of colors must match the number of vertices. Attempting pass a list of colors which does not
         /// have the same number of Colors as the list of points will throw an exception.</param>
         /// <returns>A Display object.</returns>
@@ -189,6 +193,209 @@ namespace Modifiers
             return new GeometryColor(points, colors);
         }
 
+        /// <summary>
+        /// Display mesh by single color, per-face colors, per-vertex colors, or per-face-vertex colors.
+        /// </summary>
+        /// <param name="mesh"></param>The Mesh on which to apply the colors
+        /// <param name="colors">The color count must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color)</param>
+        /// <param name="smoothShading">If true, shading will look smooth instead of faceted, useful for visualizing smooth continuous surfaces</param>
+        /// <returns>A Display object.</returns>
+        public static GeometryColor ByMeshColors(
+            [KeepReferenceAttribute] Mesh mesh,
+            Color[] colors,
+            bool smoothShading = false)
+        {
+            if (mesh == null)
+            {
+                throw new ArgumentNullException("mesh");
+            }
+
+            if (colors == null)
+            {
+                throw new ArgumentNullException(Resources.NoColorsExceptionMessage);
+            }
+
+            if (!colors.Any())
+            {
+                throw new ArgumentException(Resources.NoColorsExceptionMessage);
+            }
+
+            Point[] meshVertexPositions = mesh.VertexPositions;
+            IndexGroup[] meshFaceIndices = mesh.FaceIndices;
+
+            int meshFaceCount = mesh.FaceIndices.Length;
+            int meshTriangleCount = mesh.TriangleCount;
+            int meshVertexCount = meshVertexPositions.Length;
+
+            // Flattened vertex data arrays that can be fed directly one-by-one to GPU
+            Point[] vertexPositionsByTriangle = new Point[meshTriangleCount * 3];
+            Vector[] vertexNormalsByTriangle = new Vector[meshTriangleCount * 3];
+            Color[] vertexColorsByTriangle = new Color[meshTriangleCount * 3];
+
+            if (smoothShading)
+            {
+                Vector[] meshVertexNormals = mesh.VertexNormals;
+                int triIndex = 0;
+                for (int i = 0; i < meshFaceCount; i++)
+                {
+                    IndexGroup indexGroup = meshFaceIndices[i];
+
+                    uint iA = indexGroup.A;
+                    uint iB = indexGroup.B;
+                    uint iC = indexGroup.C;
+
+                    vertexPositionsByTriangle[triIndex * 3] = meshVertexPositions[iA];
+                    vertexPositionsByTriangle[triIndex * 3 + 1] = meshVertexPositions[iB];
+                    vertexPositionsByTriangle[triIndex * 3 + 2] = meshVertexPositions[iC];
+
+                    vertexNormalsByTriangle[triIndex * 3] = meshVertexNormals[iA];
+                    vertexNormalsByTriangle[triIndex * 3 + 1] = meshVertexNormals[iB];
+                    vertexNormalsByTriangle[triIndex * 3 + 2] = meshVertexNormals[iC];
+
+                    triIndex++;
+
+                    if (indexGroup.Count == 4)
+                    {
+                        uint iD = indexGroup.D;
+
+                        vertexPositionsByTriangle[triIndex * 3] = meshVertexPositions[iC];
+                        vertexPositionsByTriangle[triIndex * 3 + 1] = meshVertexPositions[iD];
+                        vertexPositionsByTriangle[triIndex * 3 + 2] = meshVertexPositions[iA];
+
+                        vertexNormalsByTriangle[triIndex * 3] = meshVertexNormals[iC];
+                        vertexNormalsByTriangle[triIndex * 3 + 1] = meshVertexNormals[iD];
+                        vertexNormalsByTriangle[triIndex * 3 + 2] = meshVertexNormals[iA];
+
+                        triIndex++;
+                    }
+                }
+            }
+            else
+            {
+                Vector[] meshTriangleNormals = mesh.TriangleNormals();
+                int triIndex = 0;
+                for (int i = 0; i < meshFaceCount; i++)
+                {
+                    IndexGroup indexGroup = meshFaceIndices[i];
+
+                    uint iA = indexGroup.A;
+                    uint iB = indexGroup.B;
+                    uint iC = indexGroup.C;
+
+                    vertexPositionsByTriangle[triIndex * 3] = meshVertexPositions[iA];
+                    vertexPositionsByTriangle[triIndex * 3 + 1] = meshVertexPositions[iB];
+                    vertexPositionsByTriangle[triIndex * 3 + 2] = meshVertexPositions[iC];
+
+                    vertexNormalsByTriangle[triIndex * 3] = meshTriangleNormals[triIndex];
+                    vertexNormalsByTriangle[triIndex * 3 + 1] = meshTriangleNormals[triIndex];
+                    vertexNormalsByTriangle[triIndex * 3 + 2] = meshTriangleNormals[triIndex];
+
+                    triIndex++;
+
+                    if (indexGroup.Count == 4)
+                    {
+                        uint iD = indexGroup.D;
+
+                        vertexPositionsByTriangle[triIndex * 3] = meshVertexPositions[iC];
+                        vertexPositionsByTriangle[triIndex * 3 + 1] = meshVertexPositions[iD];
+                        vertexPositionsByTriangle[triIndex * 3 + 2] = meshVertexPositions[iA];
+
+                        vertexNormalsByTriangle[triIndex * 3] = meshTriangleNormals[triIndex];
+                        vertexNormalsByTriangle[triIndex * 3 + 1] = meshTriangleNormals[triIndex];
+                        vertexNormalsByTriangle[triIndex * 3 + 2] = meshTriangleNormals[triIndex];
+
+                        triIndex++;
+                    }
+                }
+            }
+
+
+            //====================================
+            // Fill in data for colors array
+            //====================================
+
+            //Color entire mesh a single color
+            if (colors.Length == 1)
+            {
+                for (int i = 0; i < vertexColorsByTriangle.Length; i++)
+                {
+                    vertexColorsByTriangle[i] = colors[0];
+                }
+            }
+
+            //Color by vertex (each vertex color is shared by surrounding triangles)
+            else if (colors.Length == meshVertexCount)
+            {
+                var triIndex = 0;
+                for (int i = 0; i < meshFaceCount; i++)
+                {
+                    IndexGroup indexGroup = meshFaceIndices[i];
+
+                    uint iA = indexGroup.A;
+                    uint iB = indexGroup.B;
+                    uint iC = indexGroup.C;
+
+                    vertexColorsByTriangle[triIndex * 3]     = colors[iA];
+                    vertexColorsByTriangle[triIndex * 3 + 1] = colors[iB];
+                    vertexColorsByTriangle[triIndex * 3 + 2] = colors[iC];
+
+                    triIndex++;
+
+                    if (indexGroup.Count == 4)
+                    {
+                        uint iD = indexGroup.D;
+
+                        vertexColorsByTriangle[triIndex * 3] = colors[iC];
+                        vertexColorsByTriangle[triIndex * 3 + 1] = colors[iD];
+                        vertexColorsByTriangle[triIndex * 3 + 2] = colors[iA];
+
+                        triIndex++;
+                    }
+                }
+            }
+
+            //Color by face
+            else if (colors.Length == meshFaceCount)
+            {
+                var triIndex = 0;
+                for (int i = 0; i < meshFaceCount; i++)
+                {
+                    IndexGroup indexGroup = meshFaceIndices[i];
+
+                    vertexColorsByTriangle[triIndex * 3] = colors[i];
+                    vertexColorsByTriangle[triIndex * 3 + 1] = colors[i];
+                    vertexColorsByTriangle[triIndex * 3 + 2] = colors[i];
+
+                    triIndex++;
+
+                    if (indexGroup.Count == 4)
+                    {
+                        vertexColorsByTriangle[triIndex * 3] = colors[i];
+                        vertexColorsByTriangle[triIndex * 3 + 1] = colors[i];
+                        vertexColorsByTriangle[triIndex * 3 + 2] = colors[i];
+
+                        triIndex++;
+                    }
+                }
+            }
+
+            //Color by unique vertex per triangle (each vertex has a different color for each surrounding face)
+            else if (colors.Length == meshTriangleCount * 3)
+            {
+                for (int i = 0; i < colors.Length; i++)
+                {
+                    vertexColorsByTriangle[i] = colors[i];
+                }
+            }
+
+            else
+            {
+                throw new ArgumentException(Resources.ByMeshColorsInvalidColorCountMessage);
+            }
+
+            return new GeometryColor(vertexPositionsByTriangle, vertexColorsByTriangle, vertexNormalsByTriangle);
+        }
+
         #endregion
 
         #region public methods
@@ -196,10 +403,17 @@ namespace Modifiers
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            if(vertices != null)
+            if(vertexPositions != null)
             {
-                CreateVertexColoredMesh(vertices, meshVertexColors, package, parameters);
-                return;
+                if (vertexNormals == null)
+                {
+                    CreateVertexColoredTriangles(vertexPositions, vertexColors, package, parameters);
+                    return;
+                }
+                else
+                {
+                    CreateCustomColoredMesh(vertexPositions, vertexColors, vertexNormals, package, parameters);
+                }
             }
 
             if (singleColor != null)
@@ -219,6 +433,8 @@ namespace Modifiers
                 return;
             }
         }
+
+
 
         public override string ToString()
         {
@@ -284,13 +500,13 @@ namespace Modifiers
             package.RequiresPerVertexColoration = true;
 
             // As you add more data to the render package, you need
-            // to keep track of the index where this coloration will 
+            // to keep track of the index where this coloration will
             // start from.
 
             geometry.Tessellate(package, parameters);
 
             TessellateEdges(package, parameters);
-            
+
             //Update colors in render package
             if (package is IRenderPackageSupplement packageSupplement)
             {
@@ -314,9 +530,9 @@ namespace Modifiers
             }
             else
             {
-                //todo support 
+                //todo support
             }
-            
+
         }
 
         private void TessellateEdges(IRenderPackage package, TessellationParameters parameters)
@@ -370,7 +586,7 @@ namespace Modifiers
             return finalExp;
         }
 
-        private static void CreateVertexColoredMesh(Point[] vertices, Color[] colors, IRenderPackage package, TessellationParameters parameters)
+        private void CreateVertexColoredTriangles(Point[] vertices, Color[] colors, IRenderPackage package, TessellationParameters parameters)
         {
             package.RequiresPerVertexColoration = true;
 
@@ -417,6 +633,47 @@ namespace Modifiers
 
                 package.AddTriangleVertex(ptC.X, ptC.Y, ptC.Z);
                 package.AddTriangleVertexNormal(n.X, n.Y, n.Z);
+                package.AddTriangleVertexColor(cC.Red, cC.Green, cC.Blue, cC.Alpha);
+                package.AddTriangleVertexUV(0, 0);
+            }
+        }
+
+
+        private static void  CreateCustomColoredMesh(
+            Point[] vertexPositions,
+            Color[] vertexColors,
+            Vector[] vertexNormals,
+            IRenderPackage package,
+            TessellationParameters parameters)
+        {
+            package.RequiresPerVertexColoration = true;
+
+            for (var i = 0; i <= vertexPositions.Count() - 3; i += 3)
+            {
+                var vA = vertexPositions[i];
+                var vB = vertexPositions[i + 1];
+                var vC = vertexPositions[i + 2];
+
+                var cA = vertexColors[i];
+                var cB = vertexColors[i + 1];
+                var cC = vertexColors[i + 2];
+
+                var nA = vertexNormals[i];
+                var nB = vertexNormals[i + 1];
+                var nC = vertexNormals[i + 2];
+
+                package.AddTriangleVertex(vA.X, vA.Y, vA.Z);
+                package.AddTriangleVertexNormal(nA.X, nA.Y, nA.Z);
+                package.AddTriangleVertexColor(cA.Red, cA.Green, cA.Blue, cA.Alpha);
+                package.AddTriangleVertexUV(0, 0);
+
+                package.AddTriangleVertex(vB.X, vB.Y, vB.Z);
+                package.AddTriangleVertexNormal(nB.X, nB.Y, nB.Z);
+                package.AddTriangleVertexColor(cB.Red, cB.Green, cB.Blue, cB.Alpha);
+                package.AddTriangleVertexUV(0, 0);
+
+                package.AddTriangleVertex(vC.X, vC.Y, vC.Z);
+                package.AddTriangleVertexNormal(nC.X, nC.Y, nC.Z);
                 package.AddTriangleVertexColor(cC.Red, cC.Green, cC.Blue, cC.Alpha);
                 package.AddTriangleVertexUV(0, 0);
             }
