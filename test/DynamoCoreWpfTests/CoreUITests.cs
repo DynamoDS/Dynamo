@@ -26,6 +26,7 @@ using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
+using Dynamo.Wpf.Utilities;
 using DynamoCoreWpfTests.Utility;
 using Moq;
 using Moq.Protected;
@@ -949,9 +950,13 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [TestCase(0)]
+        [TestCase(50)]
+        [TestCase(100)]
         [Category("UnitTests")]
-        public void InCanvasSearchTextChangeTriggersOneSearchCommand()
+        public async Task InCanvasSearchTextChangedBurst(int keyStrokeDelayMs)
         {
+            string fullNodeName = "Number Slider";
             var currentWs = View.ChildOfType<WorkspaceView>();
 
             // open context menu
@@ -960,18 +965,30 @@ namespace DynamoCoreWpfTests
             // show in-canvas search
             ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
 
-            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => x?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
             Assert.IsNotNull(searchControl);
 
             DispatcherUtil.DoEvents();
 
-            int count = 0;
-            (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
-            searchControl.SearchTextBox.Text = "dsfdf";
-            DispatcherUtil.DoEvents();
+            var vm = searchControl.DataContext as SearchViewModel;
 
-            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
-            Assert.AreEqual(count, 1);
+            for (var i = 1; i <= fullNodeName.Length; ++i)
+            {
+                vm.SearchText = fullNodeName[..i];
+                vm.SearchCommand.Execute(null);
+                if (keyStrokeDelayMs > 0)
+                {
+                    Thread.Sleep(keyStrokeDelayMs);
+                }
+            }
+            var tcs = new TaskCompletionSource();
+            //we should only get the "Number Slider" node if we process up to the very last "r".
+            //otherwise ("Number Slide") we should get "Number". This wasn't added to the test because it would fragile to future Lucene weight updates.
+            vm.AfterLastPendingSearch(() => {
+                tcs.SetResult();
+            });
+            await tcs.Task;
+            Assert.AreEqual(fullNodeName, vm.FilteredResults?.FirstOrDefault()?.Name);
         }
 
         [Test]
