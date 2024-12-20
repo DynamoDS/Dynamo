@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Dynamo.Wpf.Utilities
 {
-    public class SerialQueue
+    internal class SerialQueue
     {
         class LinkedListNode(Action action)
         {
