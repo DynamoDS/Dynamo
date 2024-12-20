@@ -950,6 +950,32 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("UnitTests")]
+        public void InCanvasSearchTextChangeTriggersOneSearchCommand()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            Assert.IsNotNull(searchControl);
+
+            DispatcherUtil.DoEvents();
+
+            int count = 0;
+            (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
+            searchControl.SearchTextBox.Text = "dsfdf";
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(count, 1);
+        }
+
+        [Test]
         [TestCase(0)]
         [TestCase(50)]
         [TestCase(100)]
