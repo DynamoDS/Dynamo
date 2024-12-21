@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace DynamoCoreWpfTests.Utility
@@ -26,23 +27,29 @@ namespace DynamoCoreWpfTests.Utility
         /// <param name="check">When check returns true, the even loop is stopped.</param>
         public static void DoEventsLoop(Func<bool> check = null, int timeoutSeconds = 20)
         {
-            int max_count = timeoutSeconds * 10;
+            var cts = new CancellationTokenSource();
+            var token = cts.Token;
 
-            int count = 0;
+            Task.Delay(timeoutSeconds * 1000).ContinueWith(t =>
+            {
+                cts.Cancel();
+                cts.Dispose();
+            });
+
             while (true)
             {
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
+
                 if (check != null && check())
                 {
                     return;
                 }
-                if (count >= max_count)
-                {
-                    return;
-                }
 
-                DispatcherUtil.DoEvents();
+                DoEvents();
                 Thread.Sleep(100);
-                count++;
             }
         }
 
