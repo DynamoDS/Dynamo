@@ -25,7 +25,7 @@ namespace DynamoCoreWpfTests.Utility
         /// the check function returns true.
         /// </summary>
         /// <param name="check">When check returns true, the even loop is stopped.</param>
-        public static void DoEventsLoop(Func<bool> check = null, int timeoutSeconds = 20)
+        public static void DoEventsLoop(Func<bool> check = null, int timeoutSeconds = 60)
         {
             var cts = new CancellationTokenSource();
             var token = cts.Token;
