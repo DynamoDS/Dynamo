@@ -536,9 +536,14 @@ namespace Dynamo.Tests
             AssertPreviewCount(lineNodeID, 65);
 
             // Killing excel process if there is any after running the graph.
-            Process[] procs = Process.GetProcessesByName("excel");
-            foreach (Process proc in procs)
-                proc.Kill();
+            foreach (var process in Process.GetProcessesByName("EXCEL"))
+            {
+                if (process.MainWindowTitle.Equals("ImportExport_Data To Excel - Excel"))
+                {
+                    process.Kill();
+                    break;
+                }
+            }
 
         }
 
@@ -570,9 +575,14 @@ namespace Dynamo.Tests
             }
 
             // Killing excel process if there is any after running the graph.
-            Process[] procs = Process.GetProcessesByName("excel");
-            foreach (Process proc in procs)
-                proc.Kill();
+            foreach (var process in Process.GetProcessesByName("EXCEL"))
+            {
+                if (process.MainWindowTitle.Equals("ImportExport_Excel to Dynamo - Excel"))
+                {
+                    process.Kill();
+                    break;
+                }
+            }
         }
     }
 }
