@@ -167,21 +167,36 @@ namespace Dynamo.Applications
             geometryFactoryPath = preloader.GeometryFactoryPath;
             preloaderLocation = preloader.PreloaderLocation;
         }
-
-        /// <summary>
-        /// Use this overload to construct a DynamoModel in CLI context when the location of ASM to use is known, host analytics info is known and you want to set data paths.
-        /// </summary>
-        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
-        /// <param name="userDataFolder">Path to be used by PathResolver for UserDataFolder</param>
-        /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>
-        /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
-        /// <returns></returns>
-        public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo())
+        public static DynamoModel PrepareModel(
+            string cliLocale,
+            string asmPath,
+            bool noNetworkMode,
+            HostAnalyticsInfo analyticsInfo,
+            bool cliMode = true,
+            string userDataFolder = "",
+            string commonDataFolder = "",
+            bool serviceMode = false)
         {
+            var normalizedCLILocale = string.IsNullOrEmpty(cliLocale) ? null : cliLocale;
+            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
+            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
+            DynamoModel.SetUICulture(normalizedCLILocale ?? PreferenceSettings.Instance.Locale);
+            DynamoModel.OnDetectLanguage();
+
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(true, userDataFolder, commonDataFolder, geometryFactoryPath, preloaderLocation, false, info);
+            var model = StartDynamoWithDefaultConfig(
+                CLImode: cliMode,
+                userDataFolder: userDataFolder,
+                commonDataFolder: commonDataFolder,
+                geometryFactoryPath: geometryFactoryPath,
+                preloaderLocation: preloaderLocation,
+                noNetworkMode: noNetworkMode,
+                info: analyticsInfo,
+                isServiceMode: serviceMode,
+                cliLocale: normalizedCLILocale
+            );
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -193,18 +208,15 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(CommandLineArguments cmdLineArgs)
         {
-            var asmPath = String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath;
-            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
-            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
-            DynamoModel.SetUICulture(PreferenceSettings.Instance.Locale);
-            DynamoModel.OnDetectLanguage();
-
-            // Preload ASM and display corresponding message on splash screen
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
-            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(true, cmdLineArgs.UserDataFolder, cmdLineArgs.CommonDataFolder,
-                geometryFactoryPath, preloaderLocation, cmdLineArgs.NoNetworkMode, cmdLineArgs.AnalyticsInfo, cmdLineArgs.ServiceMode);
-            model.IsASMLoaded = isASMloaded;
+            var asmPath = string.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath;
+            var model = PrepareModel(
+                cliLocale: cmdLineArgs.Locale,
+                asmPath: asmPath,
+                noNetworkMode: cmdLineArgs.NoNetworkMode,
+                analyticsInfo: cmdLineArgs.AnalyticsInfo,
+                userDataFolder: cmdLineArgs.UserDataFolder,
+                commonDataFolder: cmdLineArgs.CommonDataFolder,
+                serviceMode: cmdLineArgs.ServiceMode);
             return model;
         }
 
@@ -228,23 +240,19 @@ namespace Dynamo.Applications
         /// Use this overload to construct a DynamoModel when the location of ASM to use is known and host analytics info is known.
         /// </summary>
         /// <param name="CLImode">CLI mode starts the model in test mode and uses a separate path resolver.</param>
+        /// <param name="CLIlocale">CLI argument to force dynamo locale</param>
         /// <param name="noNetworkMode">Option to initialize Dynamo in no-network mode</param>
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
         /// <returns></returns>
-        public static DynamoModel MakeModel(bool CLImode, bool noNetworkMode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
+        public static DynamoModel MakeModel(bool CLImode, string CLIlocale, bool noNetworkMode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
-            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
-            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
-            DynamoModel.SetUICulture(PreferenceSettings.Instance.Locale);
-            DynamoModel.OnDetectLanguage();
-
-            // Preload ASM and display corresponding message on splash screen
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
-            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty, geometryFactoryPath,
-                preloaderLocation, noNetworkMode, info);
-            model.IsASMLoaded = isASMloaded;
+            var model = PrepareModel(
+                cliLocale: CLIlocale,
+                asmPath: asmPath,
+                noNetworkMode: noNetworkMode,
+                analyticsInfo: info,
+                cliMode: CLImode);
             return model;
         }
 
@@ -322,7 +330,8 @@ namespace Dynamo.Applications
             string preloaderLocation,
             bool noNetworkMode,
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
-            bool isServiceMode = false)
+            bool isServiceMode = false,
+            string cliLocale = null)
         {
 
             var config = new DynamoModel.DefaultStartConfiguration
@@ -337,6 +346,7 @@ namespace Dynamo.Applications
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance,
                 NoNetworkMode = noNetworkMode,
+                CLILocale = cliLocale,
                 //Breaks all Lucene calls. TI enable this would require a lot of refactoring around Lucene usage in Dynamo.
                 //IsHeadless = CLImode
             };
