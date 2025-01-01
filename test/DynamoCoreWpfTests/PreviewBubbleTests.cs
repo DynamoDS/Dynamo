@@ -629,7 +629,7 @@ namespace DynamoCoreWpfTests
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
             // open preview bubble
-            RaiseMouseEnterOnNode(nodeView, () => nodeView.PreviewControl.IsHidden);
+            RaiseMouseEnterOnNode(nodeView, () => !nodeView.PreviewControl.IsHidden);
             Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
         }
 
