@@ -167,6 +167,25 @@ namespace Dynamo.Applications
             geometryFactoryPath = preloader.GeometryFactoryPath;
             preloaderLocation = preloader.PreloaderLocation;
         }
+
+        /// <summary>
+        /// Use this overload to construct a DynamoModel in CLI context when the location of ASM to use is known, host analytics info is known and you want to set data paths.
+        /// </summary>
+        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
+        /// <param name="userDataFolder">Path to be used by PathResolver for UserDataFolder</param>
+        /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>
+        /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
+        /// <returns></returns>
+        public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo())
+        {
+            // Preload ASM and display corresponding message on splash screen
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
+            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(true, userDataFolder, commonDataFolder, geometryFactoryPath, preloaderLocation, false, info);
+            model.IsASMLoaded = isASMloaded;
+            return model;
+        }
+
         public static DynamoModel PrepareModel(
             string cliLocale,
             string asmPath,
@@ -233,6 +252,25 @@ namespace Dynamo.Applications
             var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty,
                 geometryFactoryPath, preloaderLocation, false, new HostAnalyticsInfo() { HostName = hostName });
             model.IsASMLoaded = isASMloaded;
+            return model;
+        }
+
+        /// <summary>
+        /// Use this overload to construct a DynamoModel when the location of ASM to use is known and host analytics info is known.
+        /// </summary>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a separate path resolver.</param>
+        /// <param name="noNetworkMode">Option to initialize Dynamo in no-network mode</param>
+        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
+        /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
+        /// <returns></returns>
+        public static DynamoModel MakeModel(bool CLImode, bool noNetworkMode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
+        {
+            var model = PrepareModel(
+                cliLocale: string.Empty,
+                asmPath: asmPath,
+                noNetworkMode: noNetworkMode,
+                analyticsInfo: info,
+                cliMode: CLImode);
             return model;
         }
 
