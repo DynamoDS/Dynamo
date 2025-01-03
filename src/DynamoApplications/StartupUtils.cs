@@ -186,7 +186,7 @@ namespace Dynamo.Applications
             return model;
         }
 
-        public static DynamoModel PrepareModel(
+        private static DynamoModel PrepareModel(
             string cliLocale,
             string asmPath,
             bool noNetworkMode,
