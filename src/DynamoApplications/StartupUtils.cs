@@ -248,10 +248,12 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", string hostName ="")
         {
-            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty,
-                geometryFactoryPath, preloaderLocation, false, new HostAnalyticsInfo() { HostName = hostName });
-            model.IsASMLoaded = isASMloaded;
+            var model = PrepareModel(
+                cliLocale: string.Empty,
+                asmPath: asmPath,
+                noNetworkMode: false,
+                analyticsInfo: new HostAnalyticsInfo() { HostName = hostName },
+                cliMode: CLImode);
             return model;
         }
 
