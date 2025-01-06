@@ -16,12 +16,14 @@ namespace DSOffice
         /// <param name="file"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static WorkBook ReadExcelFile(FileInfo file)
         {
             return WorkBook.ReadExcelFile(file.FullName);
         }
 
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static WorkBook ReadExcelFile(string file)
         {
             return WorkBook.ReadExcelFile(file);
@@ -33,6 +35,7 @@ namespace DSOffice
         /// <param name="workbook"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static WorkSheet[] GetWorksheetsFromExcelWorkbook(WorkBook workbook)
         {
             return workbook.WorkSheets;
@@ -45,6 +48,7 @@ namespace DSOffice
         /// <param name="name"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static WorkSheet GetExcelWorksheetByName(WorkBook workbook, string name)
         {
             return workbook.GetWorksheetByName(name);
@@ -56,6 +60,7 @@ namespace DSOffice
         /// <param name="worksheet"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] GetDataFromExcelWorksheet(WorkSheet worksheet)
         {
             return worksheet.Data;
@@ -71,6 +76,7 @@ namespace DSOffice
         /// <param name="data"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static WorkSheet WriteDataToExcelWorksheet(
             WorkSheet worksheet, int startRow = 0, int startColumn = 0, object[][] data = null)
         {
@@ -87,6 +93,7 @@ namespace DSOffice
         /// <param name="name"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static WorkSheet AddExcelWorksheetToWorkbook(WorkBook workbook, string name)
         {
             return new WorkSheet(workbook, name);
@@ -97,6 +104,7 @@ namespace DSOffice
         /// </summary>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static WorkBook NewExcelWorkbook()
         {
             return new WorkBook("");
@@ -109,6 +117,7 @@ namespace DSOffice
         /// <param name="filename"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static WorkBook SaveAsExcelWorkbook(WorkBook workbook, string filename)
         {
             return new WorkBook(workbook, filename);
@@ -127,6 +136,7 @@ namespace DSOffice
         /// <returns name="data">Rows of data from the Excel worksheet.</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
             object[][] data;
@@ -178,6 +188,7 @@ namespace DSOffice
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
         [IsVisibleInDynamoLibrary(false)]
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
         {
             return ExcelWriteUtils.WriteData(filePath, sheetName, startRow, startCol, data, overWrite);
@@ -201,6 +212,7 @@ namespace DSOffice
         /// <param name="showExcel">Toggle to show excel's main window</param>
         /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
             return Excel.ReadFromFile(file, sheetName, readAsStrings, showExcel);
@@ -223,7 +235,8 @@ namespace DSOffice
         /// <param name="overWrite">True to overwrite file, false not to overwrite</param>
         /// <returns name="data">Data written to the spreadsheet</returns>
         /// <search>office,excel,spreadsheet</search>
-        [Obsolete("Use ExportToExcel instead.")] 
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
+        [Obsolete("Use ExportToExcel instead.")]
         public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false)
         {
             return ExcelWriteUtils.WriteData(filePath, sheetName, startRow, startColumn, data, overWrite);
@@ -247,6 +260,7 @@ namespace DSOffice
         /// <param name="writeAsString">Toggle to switch between writing Excel file as strings</param>
         /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet</search>
+        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] ExportToExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false, bool writeAsString = false)
         {
             return ExcelWriteUtils.WriteData(filePath, sheetName, startRow, startColumn, data, overWrite, writeAsString);
