@@ -57,11 +57,13 @@ namespace Dynamo.Tests.Loggings
                     {
                         Assert.Fail("ADP module was loaded");
                     }
+                    module.Dispose();
                 }
             }
             finally
             {
                 dynamoCLI?.Kill();
+                dynamoCLI?.Dispose();
             }
         }
 
@@ -114,13 +116,14 @@ namespace Dynamo.Tests.Loggings
                         {
                             Assert.Fail("ADP module was loaded");
                         }
+                        module.Dispose();
                     }
                 });
             }
             finally
             {
-
                 dynamoCLI?.Kill();
+                dynamoCLI?.Dispose();
             }
         }
     }
