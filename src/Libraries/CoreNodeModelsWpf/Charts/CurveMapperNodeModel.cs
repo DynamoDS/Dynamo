@@ -15,6 +15,9 @@ using CoreNodeModelsWpf.Converters;
 using System.ComponentModel;
 using System.Collections;
 using Dynamo.Graph.Connectors;
+using Dynamo.Wpf.Controls.SubControls;
+using Dynamo.Wpf.Controls;
+using Dynamo.Engine;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -39,6 +42,7 @@ namespace CoreNodeModelsWpf.Charts
     public class CurveMapperNodeModel : NodeModel
     {
         #region Properties
+        #region Input Properties
         private double minLimitX;
         private double maxLimitX = 1;
         private double minLimitY;
@@ -50,8 +54,11 @@ namespace CoreNodeModelsWpf.Charts
         private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
         private readonly IntNode pointsCountDefaultValue = new IntNode(10);
 
+        [JsonIgnore]
+        internal EngineController EngineController { get; set; }
+
         // Should those properties be serialized ???
-        [JsonProperty(PropertyName = "MinLimitX")]
+        //[JsonProperty(PropertyName = "MinLimitX")]
         public double MinLimitX
         {
             get => minLimitX;
@@ -61,11 +68,12 @@ namespace CoreNodeModelsWpf.Charts
                 {
                     minLimitX = value;
                     this.RaisePropertyChanged(nameof(MinLimitX));
+                    this.RaisePropertyChanged(nameof(MidValueX));
                     OnNodeModified();
                 }                
             }
         }
-        [JsonProperty(PropertyName = "MaxLimitX")]
+        //[JsonProperty(PropertyName = "MaxLimitX")]
         public double MaxLimitX
         {
             get => maxLimitX;
@@ -75,11 +83,12 @@ namespace CoreNodeModelsWpf.Charts
                 {
                     maxLimitX = value;
                     this.RaisePropertyChanged(nameof(MaxLimitX));
+                    this.RaisePropertyChanged(nameof(MidValueX));
                     OnNodeModified();
                 }
             }
         }
-        [JsonProperty(PropertyName = "MinLimitY")]
+        //[JsonProperty(PropertyName = "MinLimitY")]
         public double MinLimitY
         {
             get => minLimitY;
@@ -89,11 +98,12 @@ namespace CoreNodeModelsWpf.Charts
                 {
                     minLimitY = value;
                     this.RaisePropertyChanged(nameof(MinLimitY));
+                    this.RaisePropertyChanged(nameof(MidValueY));
                     OnNodeModified();
                 }                
             }
         }
-        [JsonProperty(PropertyName = "MaxLimitY")]
+        //[JsonProperty(PropertyName = "MaxLimitY")]
         public double MaxLimitY
         {
             get => maxLimitY;
@@ -103,6 +113,7 @@ namespace CoreNodeModelsWpf.Charts
                 {
                     maxLimitY = value;
                     this.RaisePropertyChanged(nameof(MaxLimitY));
+                    this.RaisePropertyChanged(nameof(MidValueY));
                     OnNodeModified();
                 }                
             }
@@ -124,16 +135,6 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
 
-        /// <summary>
-        /// Triggers when port is connected or disconnected
-        /// </summary>
-        public event EventHandler PortUpdated;
-
-        protected virtual void OnPortUpdated(EventArgs args)
-        {
-            PortUpdated?.Invoke(this, args);
-        }
-
         private GraphTypes selectedGraphType;
         public GraphTypes SelectedGraphType
         {
@@ -145,6 +146,31 @@ namespace CoreNodeModelsWpf.Charts
                 OnNodeModified();
             }
         }
+        #endregion
+
+        /// <summary>
+        /// Triggers when port is connected or disconnected
+        /// </summary>
+        public event EventHandler PortUpdated;
+
+        protected virtual void OnPortUpdated(EventArgs args)
+        {
+            PortUpdated?.Invoke(this, args);
+        }
+
+        #region Linear Points
+
+        //[JsonConverter(typeof(StringToPointThumbConverter))]
+        [JsonIgnore]
+        public CurveMapperControlPoint PointLinearStart { get; set; }
+        //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint PointLinearEnd { get; set; }
+        [JsonIgnore]
+        public CurveLinear LinearCurve { get; set; }
+        public CurveMapperControl CurveMapperControl { get; set; }
+
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -181,6 +207,11 @@ namespace CoreNodeModelsWpf.Charts
 
             SelectedGraphType = GraphTypes.Empty;
             ArgumentLacing = LacingStrategy.Disabled;
+
+            // Initialize the CurveMapperControl and other elements -> now created in CustomizeView
+            //CurveMapperControl = new CurveMapperControl(this);
+            PointLinearStart = new CurveMapperControlPoint(new System.Windows.Point(10, 230), 240, 240);
+            PointLinearEnd = new CurveMapperControlPoint(new System.Windows.Point(230, 10), 240, 240);
         }
         [JsonConstructor]
         public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -288,119 +319,6 @@ namespace CoreNodeModelsWpf.Charts
         }
 
         #endregion
-    }
-
-    public class CurveMapperNodeView : INodeViewCustomization<CurveMapperNodeModel>
-    {
-        private CurveMapperControl curveMapperControl;
-        private NodeView view;
-        private CurveMapperNodeModel model;
-
-        /// <summary>
-        /// At run-time, this method is called during the node 
-        /// creation. Add custom UI element to the node view.
-        /// </summary>
-        /// <param name="model">The NodeModel representing the node's core logic.</param>
-        /// <param name="nodeView">The NodeView representing the node in the graph.</param>
-        public void CustomizeView(CurveMapperNodeModel model, NodeView nodeView)
-        {
-            this.model = model;
-            this.view = nodeView;
-
-            curveMapperControl = new CurveMapperControl(model);
-            nodeView.inputGrid.Children.Add(curveMapperControl);
-
-            //// Call this method to set the initial state of ports
-            //UpdatePortDefaultValueMarkers();
-            // Subscribe to port update events
-            model.PortUpdated += (s, e) => UpdatePortDefaultValueMarkers();
-            // Subscribe to port connection events
-            foreach (var port in model.InPorts)
-            {
-                port.Connectors.CollectionChanged += (s, e) => UpdatePortDefaultValueMarkers();
-            }
-
-            model.PortUpdated += ModelOnPortUpdated;
-        }
-
-        // I think this runs for all ports... can it run only for the port that has changed?
-        private void UpdatePortDefaultValueMarkers()
-        {
-            if (view == null || view.ViewModel == null || view.ViewModel.InPorts.Count == 0)
-                return;
-
-            var inPorts = view.ViewModel.InPorts;
-
-            // If the inPort is really connected, turn off the UsingDefaultValue indicator
-            // For some reason if inPort is registered with default value IsConnected returns true
-            // even if the inPort is not really connected. See Range node for example
-            if (model == null || model.InPorts.Count == 0) return;
-
-            for (int i = 0; i < model.InPorts.Count; i++)
-            {
-                var c1 = model.InPorts[i].Connectors.Any();
-                if (model.InPorts[i].Connectors.Any())
-                {
-                    inPorts[i].UsingDefaultValue = false;
-                }
-            }
-
-        }
-
-        private void ModelOnPortUpdated(object sender, EventArgs e)
-        {
-            UpdateDefaultInPortValues();
-        }
-
-        // Needed only if the inPorts have default value??
-        // Does this work correctly? 
-        private void UpdateDefaultInPortValues()
-        {
-            if (!this.view.ViewModel.InPorts.Any()) return;
-            var inPorts = this.view.ViewModel.InPorts;
-
-            // Only apply default values if all ports are disconnected
-            if (!model.IsInErrorState &&
-                    model.State != ElementState.Active &&
-                    !inPorts[0].IsConnected &&
-                    !inPorts[1].IsConnected &&
-                    !inPorts[2].IsConnected &&
-                    !inPorts[3].IsConnected &&
-                    !inPorts[4].IsConnected)
-            {
-                ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = true;
-                ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = true;
-                ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = true;
-                ((InPortViewModel)inPorts[3]).PortDefaultValueMarkerVisible = true;
-                ((InPortViewModel)inPorts[5]).PortDefaultValueMarkerVisible = true;
-            }
-            else
-            {
-                ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = false;
-                ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = false;
-                ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = false;
-                ((InPortViewModel)inPorts[3]).PortDefaultValueMarkerVisible = false;
-                ((InPortViewModel)inPorts[4]).PortDefaultValueMarkerVisible = false;
-            }
-
-            var allPortsConnected = inPorts[0].IsConnected && inPorts[1].IsConnected && inPorts[2].IsConnected && inPorts[3].IsConnected && model.State != ElementState.Warning;
-            var noPortsConnected = !inPorts[0].IsConnected && !inPorts[1].IsConnected && !inPorts[2].IsConnected && !inPorts[3].IsConnected;
-
-            // The color input uses default values if it's not connected
-            if (!inPorts[4].IsConnected && (allPortsConnected || noPortsConnected))
-            {
-                ((InPortViewModel)inPorts[4]).PortDefaultValueMarkerVisible = true;
-            }
-            else
-            {
-                ((InPortViewModel)inPorts[4]).PortDefaultValueMarkerVisible = false;
-            }
-        }
-
-        public void Dispose()
-        {
-            model.PortUpdated -= ModelOnPortUpdated;
-        }
     }
 
     #region GraphTypes

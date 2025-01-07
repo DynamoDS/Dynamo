@@ -93,6 +93,7 @@
     </Target>
 
     <ItemGroup>
+    <None Remove="Controls\CurveMapperControlPoint.xaml" />
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
@@ -223,6 +224,7 @@
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CurveMapperControlPoint.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
@@ -255,6 +257,11 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Controls\SubControls\CrossHair.cs" />
+    <Compile Include="Controls\SubControls\CurveBase.cs" />
+    <Compile Include="Controls\SubControls\CurveLinear.cs" />
+    <Compile Include="Controls\SubControls\TextBase.cs" />
+    <Compile Include="Controls\SubControls\UVCoordText.cs" />
     <Compile Include="Controls\UseLevelPopup.cs" />
     <Compile Include="Controls\UseLevelSpinner.cs" />
     <Compile Include="Extensions\ViewModelCommandExecutive.cs" />
@@ -622,6 +629,9 @@
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\CurveMapperControlPoint.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\InstalledPackagesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
