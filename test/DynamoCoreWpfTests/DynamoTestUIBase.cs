@@ -170,7 +170,7 @@ namespace DynamoCoreWpfTests
             }
 
             TestUtilities.WebView2Tag = string.Empty;
-            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name} with DispatcherOpsCounter = {DispatcherOpsCounter}");
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)

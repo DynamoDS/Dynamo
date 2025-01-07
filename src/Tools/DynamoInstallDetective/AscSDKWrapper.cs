@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.Win32;
 
@@ -156,9 +157,29 @@ namespace DynamoInstallDetective
                 return ASC_STATUS.INITIALIZE_FAILED;
             }
 
-            var status = ReadASCVersionFromEnv() == ASC_STATUS.SUCCESS ? ASC_STATUS.SUCCESS : ReadASCInstallPathFromRegistry(majorRelease);
-            installedPath = installPath;
+            if (!string.IsNullOrEmpty(installPath))
+            {
+                installedPath = installPath;
+                return ASC_STATUS.SUCCESS;
+            }
 
+            var status = ReadASCVersionFromEnv() == ASC_STATUS.SUCCESS ? ASC_STATUS.SUCCESS : ReadASCInstallPathFromRegistry(majorRelease);
+            if (status == ASC_STATUS.SUCCESS)
+            {
+                try
+                {
+                    string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
+                    string updatedPath = currentPath + ";" + installPath;
+                    Environment.SetEnvironmentVariable("PATH", updatedPath, EnvironmentVariableTarget.Process);
+                }
+                catch
+                {
+                    Trace.WriteLine("Failed to update path for ASC component");
+                }
+
+            }
+
+            installedPath = installPath;
             return status;
         }
 

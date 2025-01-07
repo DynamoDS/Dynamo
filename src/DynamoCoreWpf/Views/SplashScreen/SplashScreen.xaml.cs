@@ -41,6 +41,10 @@ namespace Dynamo.UI.Views
         // Used to ensure that OnClosing is called only once.
         private bool IsClosing = false;
 
+        internal enum CloseMode { ByStartingDynamo, ByCloseButton, ByOther };
+
+        internal CloseMode currentCloseMode = CloseMode.ByOther;
+
         // Timer used for Splash Screen loading
         internal Stopwatch loadingTimer;
 
@@ -162,6 +166,7 @@ namespace Dynamo.UI.Views
             RequestSignIn = SignIn;
             RequestSignOut = SignOut;
             this.enableSignInButton = enableSignInButton;
+            currentCloseMode = CloseMode.ByOther;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -172,6 +177,11 @@ namespace Dynamo.UI.Views
             // webview2.Dispose => webview2.Visible.Set receives windows message => crash because object got disposed. 
             if (!IsClosing)
             {
+                //Means that the SplashScreen was closed by other way for example by using the Windows Task Bar
+                if(currentCloseMode == CloseMode.ByOther)
+                {
+                    CloseWasExplicit = true;
+                }
                 // First call to OnClosing
                 IsClosing = true;
             }
@@ -283,6 +293,7 @@ namespace Dynamo.UI.Views
             {
                 viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
             }
+            currentCloseMode = CloseMode.ByStartingDynamo;
             Close();
             dynamoView?.Show();
             dynamoView?.Activate();
@@ -574,6 +585,8 @@ namespace Dynamo.UI.Views
         internal void CloseWindow(bool isCheckboxChecked = false)
         {
             CloseWasExplicit = true;
+            currentCloseMode = CloseMode.ByCloseButton;
+
             if (viewModel != null && isCheckboxChecked)
             {
                 viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
