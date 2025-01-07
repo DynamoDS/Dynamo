@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -38,7 +39,7 @@ namespace Dynamo.Wpf.Controls.SubControls
             PathCurve = new Path
             {
                 Data = pathGeometry,
-                Stroke = new SolidColorBrush(Color.FromRgb(0xB3, 0x85, 0xF2)), // Centalize the color
+                Stroke = new SolidColorBrush(Color.FromRgb(0xB3, 0x85, 0xF2)), // Centralize the color
                 StrokeThickness = 3
             };
         }
@@ -74,7 +75,7 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// <summary>
         /// Regenerates the curve based on the updated positions of control points.
         /// </summary>
-        public void Regenerate(CurveMapperControlPoint controlPoint)
+        public void Regenerate()
         {
             double yStart = LineEquation(0);
             double yEnd = LineEquation(MaxWidth);

@@ -1,23 +1,18 @@
-using System.Linq;
 using Autodesk.DesignScript.Runtime;
-using CoreNodes.ChartHelpers;
 using CoreNodeModelsWpf.Charts.Controls;
-using Dynamo.Controls;
+using CoreNodeModelsWpf.Converters;
+using CoreNodes.ChartHelpers;
+using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
-using Dynamo.Wpf;
+using Dynamo.Wpf.Controls;
+using Dynamo.Wpf.Controls.SubControls;
+using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.Wpf.Properties;
-using Dynamo.ViewModels;
-using System.Collections.Generic;
 using System;
-using CoreNodeModelsWpf.Converters;
-using System.ComponentModel;
 using System.Collections;
-using Dynamo.Graph.Connectors;
-using Dynamo.Wpf.Controls.SubControls;
-using Dynamo.Wpf.Controls;
-using Dynamo.Engine;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace CoreNodeModelsWpf.Charts
 {

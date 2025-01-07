@@ -1,6 +1,5 @@
 using Dynamo.Wpf.Controls.SubControls;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -96,7 +95,7 @@ namespace Dynamo.Wpf.Controls
             // Regenerate associated linear curve if applicable
             if (CurveLinear != null)
             {
-                CurveLinear.Regenerate(this);
+                CurveLinear.Regenerate();
             }
 
             //// Additional regenerations (commented out for now)

@@ -1,22 +1,12 @@
+using Dynamo.Wpf.Controls;
+using Dynamo.Wpf.Controls.SubControls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using CoreNodeModelsWpf.Charts.Utilities;
-using Dynamo.Wpf.Controls;
-using Dynamo.Wpf.Controls.SubControls;
-using Dynamo.Wpf.UI.GuidedTour;
-using GraphLayout;
-using HelixToolkit.Wpf.SharpDX.Elements2D;
-using LiveChartsCore;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
-using SkiaSharp;
-using SkiaSharp.Views.WPF;
 
 namespace CoreNodeModelsWpf.Charts.Controls
 {
@@ -97,7 +87,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
             // Redraw canvas when the node is resized
             GraphCanvas.SizeChanged += (s, e) =>
             {
-                //double newCanvasSize = Math.Min(GraphCanvas.ActualHeight, GraphCanvas.ActualWidth);
                 double newCanvasSize = DynamicCanvasSize;
 
                 if (model.PointLinearStart != null && model.PointLinearEnd != null)
@@ -122,7 +111,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     {
                         model.LinearCurve.MaxWidth = newCanvasSize;
                         model.LinearCurve.MaxHeight = newCanvasSize;
-                        model.LinearCurve.Regenerate(model.PointLinearStart);
+                        model.LinearCurve.Regenerate();
+                        Canvas.SetZIndex(model.LinearCurve.PathCurve, 10);
                     }
                 }
                 previousCanvasSize = newCanvasSize;
@@ -132,7 +122,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
             // Initial draw canvas
             DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
-            //UpdateLabels();
         }
 
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -300,7 +289,19 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            // Add logic to reset the curve
+            // Check if the GraphType is Linear Curve
+            if (model.SelectedGraphType == GraphTypes.Linear)
+            {
+                // Reset the control points to their original positions
+                model.PointLinearStart.Point = new Point(0, DynamicCanvasSize);
+                model.PointLinearEnd.Point = new Point(DynamicCanvasSize, 0);
+
+                // Update the linear curve's bounds
+                if (model.LinearCurve != null)
+                {                    
+                    model.LinearCurve.Regenerate();
+                }
+            }
         }
     }
 }
