@@ -82,20 +82,6 @@ namespace Dynamo.Wpf.Charts
                 BindVisibility(model);
             };
 
-            
-            
-
-            // Subscribe to PropertyChanged event to track changes in DynamicCanvasSize
-            //curveMapperControl.PropertyChanged += (s, e) =>
-            //{
-            //    if (e.PropertyName == nameof(curveMapperControl.DynamicCanvasSize))
-            //    {
-            //        // Update control points' positions
-            //        UpdateControlPoints(curveMapperControl.DynamicCanvasSize);
-            //    }
-            //};
-
-            
 
             
         }

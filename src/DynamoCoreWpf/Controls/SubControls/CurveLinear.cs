@@ -74,55 +74,8 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// <summary>
         /// Regenerates the curve based on the updated positions of control points.
         /// </summary>
-        public void Regenerate(CurveMapperControlPoint f)
+        public void Regenerate(CurveMapperControlPoint controlPoint)
         {
-            //if (StartPoint == f)
-            //{
-            //    StartPoint = f;
-            //}
-            //else if (EndPoint == f)
-            //{
-            //    EndPoint = f;
-            //}
-
-            //double y01 = LineEquation(0);
-            //double y02 = LineEquation(MaxWidth);
-            //if (double.IsNaN(y01) || double.IsNaN(y02))
-            //{
-
-            //}
-            //else
-            //{
-            //    Point p;
-            //    if (y01 < 0)
-            //    {
-            //        p = new Point(SolveForXGivenY(0), 0);
-            //    }
-            //    else if (y01 > MaxHeight)
-            //    {
-            //        p = new Point(SolveForXGivenY(MaxHeight), MaxHeight);
-            //    }
-            //    else
-            //    {
-            //        p = new Point(0, y01);
-            //    }
-            //    PathFigure.StartPoint = p;
-
-            //    Point q;
-            //    if (y02 < 0)
-            //    {
-            //        q = new Point(SolveForXGivenY(0), 0);
-            //    }
-            //    else if (y02 > MaxHeight)
-            //    {
-            //        q = new Point(SolveForXGivenY(MaxHeight), MaxHeight);
-            //    }
-            //    else
-            //    {
-            //        q = new Point(MaxWidth, y02);
-            //    }
-            //    lineSegment.Point = q;
-            //}
             double yStart = LineEquation(0);
             double yEnd = LineEquation(MaxWidth);
 

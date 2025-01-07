@@ -1,5 +1,6 @@
 using Dynamo.Wpf.Controls.SubControls;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -34,7 +35,6 @@ namespace Dynamo.Wpf.Controls
                 }
             }
         }
-        private bool isUpdatingPosition = false;
 
         public CurveLinear CurveLinear { get; set; }
         // add Bezier here...

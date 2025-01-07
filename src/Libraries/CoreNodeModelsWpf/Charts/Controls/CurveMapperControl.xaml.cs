@@ -7,9 +7,11 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using CoreNodeModelsWpf.Charts.Utilities;
+using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Controls.SubControls;
 using Dynamo.Wpf.UI.GuidedTour;
 using GraphLayout;
+using HelixToolkit.Wpf.SharpDX.Elements2D;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -40,11 +42,12 @@ namespace CoreNodeModelsWpf.Charts.Controls
             }
         }
         private double dynamicCanvasSize = 240;
+        private double previousCanvasSize = 240;
 
         private readonly double canvasMinSize = 240; // also initial width and height
         private readonly double mainGridMinWidth = 310;
         private readonly double mainGridMinHeigth = 340;
-        //private int gridSize = 10;
+        private int gridSize = 10;
 
         private void OnPropertyChanged(string propertyName) // RaisePropertyChanged
         {
@@ -91,9 +94,39 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 }
             };
 
-            // Redraw canvas when the node is resized. Do we need this?
+            // Redraw canvas when the node is resized
             GraphCanvas.SizeChanged += (s, e) =>
             {
+                //double newCanvasSize = Math.Min(GraphCanvas.ActualHeight, GraphCanvas.ActualWidth);
+                double newCanvasSize = DynamicCanvasSize;
+
+                if (model.PointLinearStart != null && model.PointLinearEnd != null)
+                {
+                    // Update the bounds for movement
+                    model.PointLinearStart.LimitWidth = newCanvasSize;
+                    model.PointLinearStart.LimitHeight = newCanvasSize;
+                    model.PointLinearEnd.LimitWidth = newCanvasSize;
+                    model.PointLinearEnd.LimitHeight = newCanvasSize;
+
+                    // Adjust the control points to stay proportional to the canvas size
+                    double xRatioStart = model.PointLinearStart.Point.X / previousCanvasSize;
+                    double yRatioStart = model.PointLinearStart.Point.Y / previousCanvasSize;
+                    double xRatioEnd = model.PointLinearEnd.Point.X / previousCanvasSize;
+                    double yRatioEnd = model.PointLinearEnd.Point.Y / previousCanvasSize;
+
+                    model.PointLinearStart.Point = new Point(xRatioStart * newCanvasSize, yRatioStart * newCanvasSize);
+                    model.PointLinearEnd.Point = new Point(xRatioEnd * newCanvasSize, yRatioEnd * newCanvasSize);
+
+                    // Update the linear curve's bounds
+                    if (model.LinearCurve != null)
+                    {
+                        model.LinearCurve.MaxWidth = newCanvasSize;
+                        model.LinearCurve.MaxHeight = newCanvasSize;
+                        model.LinearCurve.Regenerate(model.PointLinearStart);
+                    }
+                }
+                previousCanvasSize = newCanvasSize;
+
                 DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
             };
 
@@ -110,36 +143,42 @@ namespace CoreNodeModelsWpf.Charts.Controls
             }
         }
 
+        /// <summary>
+        /// Redraws the grid on the canvas by removing old grid lines and drawing new ones based.
+        /// </summary>
         private void DrawGrid(double xMin, double xMax, double yMin, double yMax)
         {
-            GraphCanvas.Children.Clear();
+            // Remove current grid lines
+            var gridLines = GraphCanvas.Children
+                .OfType<UIElement>()
+                .Where(child => (child as FrameworkElement)?.Tag?.ToString() == "GridLine")
+                .ToList();
 
-            double canvasSize = DynamicCanvasSize; // Square Canvas
-
-            // Ensure grid is always 10x10
-            int gridCount = 10; // Number of divisions along both axes
-            double xStepSize = (xMax - xMin) / gridCount;
-            double yStepSize = (yMax - yMin) / gridCount;
-
-            double xPixelsPerStep = canvasSize / gridCount;
-            double yPixelsPerStep = canvasSize / gridCount;
-
-            // Draw vertical grid lines (X-axis)
-            for (int i = 0; i <= gridCount; i++)
+            foreach (var line in gridLines)
             {
-                double xPos = i * xPixelsPerStep;
-                DrawLine(xPos, 0, xPos, canvasSize);
+                GraphCanvas.Children.Remove(line);
             }
 
-            // Draw horizontal grid lines (Y-axis)
-            for (int i = 0; i <= gridCount; i++)
+            // Draw grid lines
+            double xPixelsPerStep = DynamicCanvasSize / gridSize;
+            double yPixelsPerStep = DynamicCanvasSize / gridSize;
+
+            for (int i = 0; i <= gridSize; i++)
+            {
+                double xPos = i * xPixelsPerStep;
+                DrawLine(xPos, 0, xPos, DynamicCanvasSize);
+            }
+
+            for (int i = 0; i <= gridSize; i++)
             {
                 double yPos = i * yPixelsPerStep;
-                DrawLine(0, yPos, canvasSize, yPos);
+                DrawLine(0, yPos, DynamicCanvasSize, yPos);
             }
         }
 
-        // Helper function to draw lines on the canvas
+        /// <summary>
+        /// Helper function to draw lines on the canvas
+        /// </summary>
         private void DrawLine(double x1, double y1, double x2, double y2)
         {
             var line = new System.Windows.Shapes.Line
@@ -148,8 +187,9 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 Y1 = y1,
                 X2 = x2,
                 Y2 = y2,
-                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5e5e5e")), // Adjust color
-                StrokeThickness = 0.6 // Slightly thicker for borders
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5e5e5e")), // TODO : Adjust color
+                StrokeThickness = 0.6, // TODO : Slightly thicker for borders
+                Tag = "GridLine"
             };
             Canvas.SetZIndex(line, 0);
             GraphCanvas.Children.Add(line);

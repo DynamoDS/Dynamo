@@ -210,8 +210,8 @@ namespace CoreNodeModelsWpf.Charts
 
             // Initialize the CurveMapperControl and other elements -> now created in CustomizeView
             //CurveMapperControl = new CurveMapperControl(this);
-            PointLinearStart = new CurveMapperControlPoint(new System.Windows.Point(10, 230), 240, 240);
-            PointLinearEnd = new CurveMapperControlPoint(new System.Windows.Point(230, 10), 240, 240);
+            //PointLinearStart = new CurveMapperControlPoint(new System.Windows.Point(10, 230), 240, 240);
+            //PointLinearEnd = new CurveMapperControlPoint(new System.Windows.Point(230, 10), 240, 240);
         }
         [JsonConstructor]
         public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
