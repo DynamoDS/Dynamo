@@ -18,7 +18,7 @@ namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("CurveMapper")]
-    [NodeCategory("Math.Graph")]
+    [NodeCategory("Display.Charts.Create")]
     [NodeDescription("CurveMapperNodeDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("CurveMapperSearchTags", typeof(CoreNodeModelWpfResources))]
     //[InPortNames("x-MinLimit", "x-MaxLimit", "y-MinLimit", "y-MaxLimit", "count")]
@@ -33,7 +33,7 @@ namespace CoreNodeModelsWpf.Charts
     //[OutPortTypes("List<double>")]
     //[OutPortDescriptions(typeof(CoreNodeModelWpfResources),
     //    "CurveMapperOutputDataPortToolTip")]
-    [AlsoKnownAs("CoreNodeModelsWpf.Charts.CurveMapper")] // move to Math
+    [AlsoKnownAs("CoreNodeModelsWpf.Charts.CurveMapper")]
     public class CurveMapperNodeModel : NodeModel
     {
         #region Properties

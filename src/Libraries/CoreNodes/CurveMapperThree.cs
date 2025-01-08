@@ -7,20 +7,17 @@ using System.Threading.Tasks;
 
 namespace DSCore
 {
-    /// <summary>
-    /// Some description
-    /// </summary>
-    /// <search>curve, mapper</search>
+    [IsDesignScriptCompatible]
+    [NodeName("CurveMapperThree")]
+    [NodeCategory("Math.Graph")]
+    [NodeDescription("CurveMapperNodeDescription")]
+    [NodeSearchTags("CurveMapperSearchTags")]
     public class CurveMapperThree : NodeModel
-    {
-        /// <summary>
-        /// Some description
-        /// </summary>
-        /// <search>curve, mapper</search>
+    {        
         public CurveMapperThree()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-MinLimit",
-                "a",)));
+                "a")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-MaxLimit",
                 "b")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("y-MinLimit",
