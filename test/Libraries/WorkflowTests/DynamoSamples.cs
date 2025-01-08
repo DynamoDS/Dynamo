@@ -517,7 +517,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, Category("ExcelTestInterop")]
+        [Test, Category("ExcelTest"), Category("ExcelTestInterop")]
         public void ImportExport_Data_To_Excel()
         {
             OpenSampleModel(@"en-US\ImportExport\ImportExport_Data To Excel.dyn");

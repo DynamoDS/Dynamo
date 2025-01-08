@@ -236,7 +236,6 @@ namespace DSOffice
         /// <returns name="data">Data written to the spreadsheet</returns>
         /// <search>office,excel,spreadsheet</search>
         [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
-        [Obsolete("Use ExportToExcel instead.")]
         public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false)
         {
             return ExcelWriteUtils.WriteData(filePath, sheetName, startRow, startColumn, data, overWrite);
