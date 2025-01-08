@@ -16,6 +16,16 @@ namespace DSCore
     public static class Math
     {
         /// <summary>
+        /// Some description
+        /// </summary>
+        /// <param name="inputNumber"></param>
+        /// <returns></returns>
+        public static double CurveMapperTwo(double inputNumber)
+        {
+            return inputNumber * 2.0;
+        }
+
+        /// <summary>
         ///     Generates a random double in the range of [0, 1).
         /// </summary>
         /// <param name="seed">Seed value for the random number generator.</param>

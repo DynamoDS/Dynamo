@@ -17,8 +17,8 @@ using System.ComponentModel;
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
-    [NodeName("Curve Mapper")]
-    [NodeCategory("Display.Charts.Create")]
+    [NodeName("CurveMapper")]
+    [NodeCategory("Math.Graph")]
     [NodeDescription("CurveMapperNodeDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("CurveMapperSearchTags", typeof(CoreNodeModelWpfResources))]
     //[InPortNames("x-MinLimit", "x-MaxLimit", "y-MinLimit", "y-MaxLimit", "count")]
