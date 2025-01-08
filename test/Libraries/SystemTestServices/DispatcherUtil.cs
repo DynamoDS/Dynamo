@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Security.Permissions;
-using System.Windows.Threading;
 using System.Threading;
-using NUnit.Framework;
+using System.Windows.Threading;
 
 namespace DynamoCoreWpfTests.Utility
 {
@@ -25,13 +20,13 @@ namespace DynamoCoreWpfTests.Utility
         }
 
         /// <summary>
-        /// Force the Dispatcher to empty it's queue every 100 ms for a maximum 20 seconds or until
+        /// Force the Dispatcher to empty it's queue every 100 ms for a maximum of timeoutSeconds seconds or until
         /// the check function returns true.
         /// </summary>
         /// <param name="check">When check returns true, the even loop is stopped.</param>
-        public static void DoEventsLoop(Func<bool> check = null)
+        public static void DoEventsLoop(Func<bool> check = null, int timeoutSeconds = 20)
         {
-            const int max_count = 200;
+            int max_count = timeoutSeconds * 10;
 
             int count = 0;
             while (true)

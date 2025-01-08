@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using DynamoUtilities.Properties;
 using Newtonsoft.Json.Linq;
@@ -62,9 +63,13 @@ namespace Dynamo.Utilities
 
             try
             {
+                //Encode the info to base64 and send it to the Md2Html tool for Converting
+                var plainTextBytes = Encoding.UTF8.GetBytes(mdString);
+                var base64MDString = Convert.ToBase64String(plainTextBytes);
+
                 process.StandardInput.WriteLine(@"<<<<<Convert>>>>>");
                 process.StandardInput.WriteLine(mdPath);
-                process.StandardInput.WriteLine(mdString);
+                process.StandardInput.WriteLine(base64MDString);
                 process.StandardInput.WriteLine(@"<<<<<Eod>>>>>");
             }
             catch (Exception e) when (e is IOException || e is ObjectDisposedException)
@@ -73,7 +78,7 @@ namespace Dynamo.Utilities
                 return GetCantCommunicateErrorMessage();
             }
 
-            return GetData(processCommunicationTimeoutms);
+            return GetData(processCommunicationTimeoutms,null,true);
         }
 
         /// <summary>
@@ -90,8 +95,12 @@ namespace Dynamo.Utilities
 
             try
             {
+                //Encode the info to base64 and send it to the Md2Html tool for Sanitizing
+                var plainTextBytes = Encoding.UTF8.GetBytes(content);
+                var base64MDString = Convert.ToBase64String(plainTextBytes);
+
                 process.StandardInput.WriteLine(@"<<<<<Sanitize>>>>>");
-                process.StandardInput.WriteLine(content);
+                process.StandardInput.WriteLine(base64MDString);
                 process.StandardInput.WriteLine(@"<<<<<Eod>>>>>");
             }
             catch (Exception e) when (e is IOException || e is ObjectDisposedException)
@@ -100,7 +109,7 @@ namespace Dynamo.Utilities
                 return GetCantCommunicateErrorMessage();
             }
 
-            return GetData(processCommunicationTimeoutms);
+            return GetData(processCommunicationTimeoutms, null, true);
         }
 
         /// <summary>

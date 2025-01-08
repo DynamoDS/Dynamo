@@ -118,7 +118,7 @@ namespace Dynamo.PackageManager.UI
                 this.DragMove();
                 Dynamo.Logging.Analytics.TrackEvent(
                     Actions.Move,
-                    Categories.Preferences);
+                    Categories.PackageManagerOperations);
             }
         }
 
@@ -130,8 +130,9 @@ namespace Dynamo.PackageManager.UI
         /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Analytics.TrackEvent(Actions.Close, Categories.PackageManager);           
-
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Close,
+                Categories.PackageManagerOperations);
             Close();
         }
 

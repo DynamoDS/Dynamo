@@ -362,9 +362,9 @@
                                 <MultiBinding Converter="{StaticResource ObjectTypeConverter}">
                                     <Binding Path="ValueType" />
                                     <Binding Path="NodeLabel" />
-                                    </MultiBinding>
+                                </MultiBinding>
                             </TextBlock.Foreground>
-                            </TextBlock>
+                        </TextBlock>
 
                         <Button Margin="10,2,2,2"
                                 Padding="4,0,4,0"

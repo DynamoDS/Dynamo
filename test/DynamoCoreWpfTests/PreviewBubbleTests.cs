@@ -22,7 +22,7 @@ namespace DynamoCoreWpfTests
         {
             base.Open(path);
 
-            DispatcherUtil.DoEvents();
+            Utility.DispatcherUtil.DoEvents();
         }
 
         public override void Run()

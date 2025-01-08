@@ -57,6 +57,7 @@ using System.Windows;
 [assembly: InternalsVisibleTo("UnitsUI")]
 [assembly: InternalsVisibleTo("DynamoPlayer")]
 [assembly: InternalsVisibleTo("DynamoConnector")]
+[assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
 
 // Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
 #pragma warning disable RS0016 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -138,7 +138,7 @@ namespace DSCoreNodesTests
             //Checks ToString result for the selected element
             toStringResult = selection.ToString();
             string nodeType = testNode.GetType().ToString();
-            string expected = $"testPrefix : {nodeType}";
+            string expected = $"testPrefix: {nodeType}";
             Assert.AreEqual(expected, toStringResult);
 
             selectionHelperMock.VerifyAll();

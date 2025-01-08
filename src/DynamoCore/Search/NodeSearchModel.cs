@@ -283,7 +283,7 @@ namespace Dynamo.Search
         internal NodeSearchElement FindModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
         {
             var result = Entries.Where(e => {
-                if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
+                if (e.Name.Replace(" ", string.Empty).Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
                     //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
                     //Then in this case when searching if e.Parameters is null we need to check against empty space

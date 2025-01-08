@@ -65,6 +65,8 @@ $excludedFiles = @(
     "testcentric.engine.metadata.dll",
     "testhost.dll",
     "testhost.exe",
+    "TuneUp.dll",
+    "TuneUp.resources.dll",
     "Units.dll",
     "Webview2Loader.dll"
 )

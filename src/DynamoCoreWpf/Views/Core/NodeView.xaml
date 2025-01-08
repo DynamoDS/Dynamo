@@ -5,7 +5,9 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:dp="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:controls="clr-namespace:Dynamo.Views"
+             xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net" xmlns:dp1="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -575,6 +577,19 @@
             Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
             FlowDirection="LeftToRight"
             Orientation="Horizontal">
+            <Grid x:Name="ExperimentalGlyph" 
+                  Visibility="{Binding Path=IsExperimental, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <fa:ImageAwesome Icon="Solid_Flask"
+                                 Width="16px"
+                                 Height="16px"
+                 Foreground="{StaticResource Blue400Brush}"
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Center">
+                      <fa:ImageAwesome.ToolTip>
+                        <ToolTip Content="{x:Static dp:Resources.DocsExperimentalPrefixMessage}" Style="{StaticResource GenericToolTipLight}"/>
+                    </fa:ImageAwesome.ToolTip>
+                </fa:ImageAwesome>
+            </Grid>
             <Grid
                 x:Name="FrozenGlyph"
                 Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
