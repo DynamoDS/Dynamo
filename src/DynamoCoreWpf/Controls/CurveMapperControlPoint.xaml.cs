@@ -1,8 +1,11 @@
 using Dynamo.Wpf.Controls.SubControls;
 using Newtonsoft.Json;
+using System.Globalization;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 
 namespace Dynamo.Wpf.Controls
 {
@@ -136,6 +139,23 @@ namespace Dynamo.Wpf.Controls
         public override string ToString()
         {
             return Point.X.ToString() + "," + Point.Y.ToString();
+        }
+    }
+
+    public class HalfWidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double width)
+            {
+                return -width / 2; // Negative to offset correctly
+            }
+            return DependencyProperty.UnsetValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
