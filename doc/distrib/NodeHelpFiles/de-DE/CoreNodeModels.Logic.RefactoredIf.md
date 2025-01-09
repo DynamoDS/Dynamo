@@ -1,0 +1,9 @@
+## Im Detail
+If fungiert als Block für die Bedingungskontrolle. Bei der Eingabe test wird ein boolescher Wert verwendet, während bei den Eingaben true und false alle Datentypen akzeptiert werden. Wenn der Testwert True lautet, gibt der Block das Element aus der Eingabe true zurück. Wenn der Testwert False lautet, gibt der Block das Element aus der Eingabe false zurück. Im folgenden Beispiel wird zunächst eine Liste mit Zufallszahlen zwischen null und 99 generiert. Die Zahl der Elemente in der Liste wird durch einen Ganzzahlen-Schieberegler gesteuert. Verwenden Sie einen Codeblock mit der Formel 'x%a==0', um die Teilbarkeit durch eine zweite Zahl zu prüfen, die durch einen zweiten Zahlen-Schieberegler bestimmt wird. Dadurch wird eine Liste mit booleschen Werten erstellt, die sich danach richtet, ob die Elemente in der Zufallsliste durch die vom zweiten Ganzzahlen-Schieberegler bestimmte Zahl teilbar sind. Diese Liste mit booleschen Werten wird als Eingabe test für einen If-Block verwendet. Es werden eine vorgegebene Kugel als Eingabe true und ein vorgegebener Quader als Eingabe false verwendet. Das Ergebnis des If-Blocks ist eine Liste mit Kugeln oder Quadern. Schließlich verwenden Sie einen Translate-Block, um die Liste der Geometrien zu erweitern.
+
+IF wird auf allen Blöcken so repliziert, ALS WÄRE DER WERT AUF KÜRZESTE FESTGELEGT. Der Grund dafür wird in den angehängten Beispielen deutlich, insbesondere wenn Sie sich die Ergebnisse ansehen, die sich ergeben, wenn LÄNGSTE auf einen Formula-Block angewendet wird und die kurze Abzweigung der Bedingung durchlaufen wird. Diese Änderungen wurden u. a. vorgenommen, um vorhersagbares Verhalten bei der Verwendung einzelner boolescher Eingaben oder einer Liste boolescher Werte zu ermöglichen.
+___
+## Beispieldatei
+
+![If](./CoreNodeModels.Logic.RefactoredIf_img.jpg)
+
