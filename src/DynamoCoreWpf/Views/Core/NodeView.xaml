@@ -8,6 +8,7 @@
              xmlns:dp="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:controls="clr-namespace:Dynamo.Views"
              xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net" xmlns:dp1="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
+             xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -18,6 +19,14 @@
              MouseRightButtonDown="DisplayNodeContextMenu"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove">
+
+    <UserControl.Resources>
+        <BitmapImage
+            po:Freeze="true"
+            RenderOptions.BitmapScalingMode="LowQuality"
+            x:Key="defaultIcon"
+            UriSource="/DynamoCoreWpf;component/UI/Images/default-node-icon.png" />
+    </UserControl.Resources>
 
     <Grid Name="grid"
           HorizontalAlignment="Left"
@@ -315,28 +324,16 @@
                    Panel.ZIndex="3"
                    FlowDirection="LeftToRight">
             <!--  The Icon for this Node  -->
-            <Rectangle Name="nodeIcon"
-                     Width="34"
-                     Height="34">
-                <Rectangle.Style>
-                    <Style TargetType="Rectangle">
-                        <Setter Property="Fill">
-                            <Setter.Value>
-                                <ImageBrush ImageSource="{Binding ImageSource}" Stretch="UniformToFill" />
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <!--  If no icon can be found, use default icon  -->
-                            <DataTrigger Binding="{Binding ImageSource, UpdateSourceTrigger=PropertyChanged}" Value="{x:Null}">
-                                <Setter Property="Fill">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/default-node-icon.png" Stretch="UniformToFill" />
-                                    </Setter.Value>
-                                </Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Rectangle.Style>
+            <Rectangle
+                Name="nodeIcon"
+                Width="34"
+                Height="34">
+                <Rectangle.Fill>
+                    <ImageBrush
+                        RenderOptions.BitmapScalingMode="LowQuality"
+                        ImageSource="{Binding ImageSource, FallbackValue={StaticResource defaultIcon}, TargetNullValue={StaticResource defaultIcon}}"
+                        Stretch="UniformToFill" />
+                </Rectangle.Fill>
             </Rectangle>
 
             <TextBlock Name="NameBlock"
@@ -348,7 +345,7 @@
                        FontWeight="Medium"
                        Foreground="{StaticResource PrimaryCharcoal200Brush}"
                        IsHitTestVisible="False"
-                       Style="{StaticResource SZoomFadeText}"
+                       Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                        Visibility="Visible"
                        TextAlignment="Center" />
@@ -448,7 +445,7 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Canvas.ZIndex="4"
-                    Style="{StaticResource SZoomFadeOutFrameworkElement}"
+                    Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                     FlowDirection="LeftToRight"
                     Orientation="Horizontal">
             <Grid x:Name="ExperimentalGlyph" 
@@ -467,6 +464,8 @@
             <Grid x:Name="FrozenGlyph" 
                   Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
                 <Image x:Name="FrozenImage"
+                       po:Freeze="true"
+                       RenderOptions.BitmapScalingMode="LowQuality"
                        Width="16px"
                        Height="16px"
                        HorizontalAlignment="Center"
@@ -477,6 +476,8 @@
             <Grid x:Name="HiddenEyeGlyph" 
                   Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, Mode=OneWay}">
                 <Image x:Name="HiddenEyeImage"
+                       po:Freeze="true"
+                       RenderOptions.BitmapScalingMode="LowQuality"
                        Width="16px"
                        Height="16px"
                        HorizontalAlignment="Center"
@@ -492,7 +493,7 @@
                    FontFamily="{StaticResource ArtifaktElementRegular}"
                    FontSize="10px"
                    Foreground="{StaticResource NodeLacingGlyphBackground}"
-                   Style="{StaticResource SZoomFadeLabel}"
+                   Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                    ToolTipService.ShowDuration="30000"
                    Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
                 <Label.ToolTip>
@@ -512,7 +513,7 @@
                            FontFamily="{StaticResource ArtifaktElementRegular}"
                            FontSize="10px"
                            Foreground="Black"
-                           Style="{StaticResource SZoomFadeLabel}" />
+                           Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}" />
                 </Border>
                 <Grid.Style>
                     <Style TargetType="Grid">
@@ -546,6 +547,7 @@
                                                 Background="Transparent"
                                                 CornerRadius="2" />
                                         <Image x:Name="DotsImage"
+                                               RenderOptions.BitmapScalingMode="LowQuality"
                                                Width="16px"
                                                Height="16px"
                                                Margin="1.5,0,0,0"
@@ -609,7 +611,7 @@
                                   RelativeSource={RelativeSource FindAncestor, 
                                   AncestorType={x:Type controls:WorkspaceView}}, 
                                   Converter={StaticResource ZoomToOpacityConverter}}"
-                Style="{StaticResource SZoomFadeOutPreview}"
+                Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeOutPreview}}"
                 Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is below 0.4 -->
@@ -623,7 +625,7 @@
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
                 Opacity="0.5"
-                Style="{StaticResource SZoomFadeInPreview}"
+                Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeInPreview}}"
                 Visibility="{Binding Path=DataContext.Zoom, 
                                      RelativeSource={RelativeSource FindAncestor, 
                                      AncestorType={x:Type controls:WorkspaceView}}, 
@@ -638,8 +640,8 @@
                     Canvas.ZIndex="7" 
                     IsHitTestVisible="False"
                     Margin="0 5 0 0"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                    Style="{StaticResource SZoomFadeInFrameworkElement}"                    
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    Style="{Binding Path=DataContext.StopAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeInControl}}"
                     Visibility="{Binding Path=DataContext.Zoom, 
                                          RelativeSource={RelativeSource FindAncestor, 
                                          AncestorType={x:Type controls:WorkspaceView}}, 
@@ -654,7 +656,8 @@
                           Columns="1" Rows="1" Name="ZoomGlyphRowZero" 
                           HorizontalAlignment="Center" VerticalAlignment="Bottom"
                           Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
-                <Image Stretch="Uniform"  HorizontalAlignment="Center" VerticalAlignment="Bottom" 
+                <Image Stretch="Uniform"  HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                       RenderOptions.BitmapScalingMode="LowQuality"
                        x:Name="ZoomStateImgOne"
                        Width="64"
                        Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
@@ -670,7 +673,8 @@
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0"
                        x:Name="ZoomStateImgTwo"
-                       Stretch="Uniform" 
+                       Stretch="Uniform"
+                       RenderOptions.BitmapScalingMode="LowQuality"
                        HorizontalAlignment="Left" VerticalAlignment="Center"
                        Margin="5 0 "
                        Width="64"
@@ -678,7 +682,8 @@
                        Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                 <Image Grid.Column="1"
                        x:Name="ZoomStateImgThree"
-                       Stretch="Uniform"  
+                       Stretch="Uniform"
+                       RenderOptions.BitmapScalingMode="LowQuality"
                        HorizontalAlignment="Right" VerticalAlignment="Center" 
                        Margin="5 0"
                        Width="64"

@@ -480,6 +480,10 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
+        public bool StopAnimations { get => stopAnimations; set { stopAnimations = value; RaisePropertyChanged(nameof(StopAnimations)); } }
+        private bool stopAnimations = false;
+
+        [JsonIgnore]
         public bool CanZoomIn
         {
             get { return CanZoom(Configurations.ZoomIncrement); }
@@ -886,6 +890,8 @@ namespace Dynamo.ViewModels
             nodeViewModel.NodeLogic.Modified -= OnNodeModified;
         }
 
+        private const int MaxNodesBeforeAnimationStops = 150;
+
         void Model_NodeRemoved(NodeModel node)
         {
             NodeViewModel nodeViewModel;
@@ -901,6 +907,8 @@ namespace Dynamo.ViewModels
             nodeViewModel.Dispose();
 
             PostNodeChangeActions();
+
+            StopAnimations = Nodes.Count > MaxNodesBeforeAnimationStops;
         }
 
         void Model_NodeAdded(NodeModel node)
@@ -916,6 +924,8 @@ namespace Dynamo.ViewModels
                 Errors.Add(nodeViewModel.ErrorBubble);
 
             PostNodeChangeActions();
+
+            StopAnimations = Nodes.Count > MaxNodesBeforeAnimationStops;
         }
 
         void PostNodeChangeActions()

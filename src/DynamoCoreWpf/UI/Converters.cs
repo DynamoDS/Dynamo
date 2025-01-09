@@ -34,6 +34,27 @@ using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Controls
 {
+    public class BooleanStyleConverter : IValueConverter
+    {
+        public Style TrueStyle { get; set; }
+        public Style FalseStyle { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is bool v && v)
+            {
+                return TrueStyle;
+            }
+
+            return FalseStyle;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return false;
+        }
+    }
+
     public class ToolTipFirstLineOnly : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
