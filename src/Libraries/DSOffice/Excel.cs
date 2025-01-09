@@ -212,7 +212,6 @@ namespace DSOffice
         /// <param name="showExcel">Toggle to show excel's main window</param>
         /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
-        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
             return Excel.ReadFromFile(file, sheetName, readAsStrings, showExcel);
@@ -259,7 +258,6 @@ namespace DSOffice
         /// <param name="writeAsString">Toggle to switch between writing Excel file as strings</param>
         /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet</search>
-        [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] ExportToExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false, bool writeAsString = false)
         {
             return ExcelWriteUtils.WriteData(filePath, sheetName, startRow, startColumn, data, overWrite, writeAsString);
