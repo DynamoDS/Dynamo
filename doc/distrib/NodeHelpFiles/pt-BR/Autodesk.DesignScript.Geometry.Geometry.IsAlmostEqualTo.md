@@ -1,7 +1,8 @@
 ## Em profundidade
-IsAlmostEqualTo retornará um valor booleano baseado em se um vetor tem os mesmos valores que outro. No exemplo abaixo, um valor True é retornado ao comparar um vetor no eixo Z do WCS com um vetor com coordenadas de (0,0,1). Ajustar o controle deslizante de direção do vetor alterará os valores de coordenadas do vetor tornando-o desigual. Os vetores são representados como linhas.
+`Geometry.IsAlmostEqualTo` returns a boolean value indication whether the two given geometries have the same geometrical representations or numerical values.
+
+In the example below, a cylinder is created two ways. The two cylinders are then compared with `Geometry.IsAlmostEqualTo`.
 ___
 ## Arquivo de exemplo
 
-![IsAlmostEqualTo](./Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo_img.jpg)
-
+![Geometry.IsAlmostEqualTo](./Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo_img.jpg)

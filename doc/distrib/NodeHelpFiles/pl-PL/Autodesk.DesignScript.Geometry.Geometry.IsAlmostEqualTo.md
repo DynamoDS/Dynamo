@@ -1,7 +1,8 @@
 ## Informacje szczegółowe
-Węzeł IsAlmostEqualTo zwraca wartość logiczną na podstawie tego, czy wektor ma te same wartości co inny wektor. W poniższym przykładzie zwracana jest wartość prawda (true) w wyniku porównania wektora na osi Z GUW z wektorem o współrzędnych (0,0,1). Dostosowanie suwaka Vector Direction spowoduje zmianę wartości współrzędnych wektora, wskutek czego wektory nie będą równe. Wektory są reprezentowane za pomocą linii.
+`Geometry.IsAlmostEqualTo` returns a boolean value indication whether the two given geometries have the same geometrical representations or numerical values.
+
+In the example below, a cylinder is created two ways. The two cylinders are then compared with `Geometry.IsAlmostEqualTo`.
 ___
 ## Plik przykładowy
 
-![IsAlmostEqualTo](./Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo_img.jpg)
-
+![Geometry.IsAlmostEqualTo](./Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo_img.jpg)
