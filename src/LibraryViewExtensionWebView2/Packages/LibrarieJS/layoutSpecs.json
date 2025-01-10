@@ -1013,6 +1013,9 @@
                         },
                         {
                             "path": "Display.Charts.Bar Chart"
+                        },
+                        {
+                            "path": "Display.Charts.CurveMapper"
                         }
                     ],
                     "childElements": []
