@@ -710,21 +710,32 @@
               "childElements": []
             },
             {
-              "text": "Logic",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "Core.Math.And"
-                },
-                {
-                  "path": "Core.Math.Or"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Math.Xor"
-                }
-              ],
-              "childElements": []
+                "text": "Logic",
+                "iconUrl": "",
+                "elementType": "group",
+                "include": [
+                    {
+                        "path": "Core.Math.And"
+                    },
+                    {
+                        "path": "Core.Math.Or"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.Math.Xor"
+                    }
+                ],
+                "childElements": []
+            },
+            {
+                "text": "Graph",
+                "iconUrl": "",
+                "elementType": "group",
+                "include": [
+                    {
+                        "path": "Core.Math.Graph.Curve Mapper"
+                    }
+                ],
+                "childElements": []
             }
           ]
         },
@@ -1013,9 +1024,6 @@
                         },
                         {
                             "path": "Display.Charts.Bar Chart"
-                        },
-                        {
-                            "path": "Display.Charts.CurveMapper"
                         }
                     ],
                     "childElements": []
