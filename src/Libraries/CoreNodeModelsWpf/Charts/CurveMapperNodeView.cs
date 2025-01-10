@@ -30,8 +30,6 @@ namespace Dynamo.Wpf.Charts
             // Add the control to the NodeView's inputGrid
             nodeView.inputGrid.Children.Add(curveMapperControl);
 
-            //model.EngineController = nodeView.ViewModel.DynamoViewModel.EngineController; // check where this is used and if it is needed
-
             // Defer adding elements until the canvas is loaded
             curveMapperControl.GraphCanvas.Loaded += (s, e) =>
             {
@@ -39,13 +37,19 @@ namespace Dynamo.Wpf.Charts
                 model.PointLinearStart = startControlPoint = new CurveMapperControlPoint(
                     new Point(0, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
                 model.PointLinearEnd = endControlPoint = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize, 0),
                     curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
+                // Bind properties for startControlPoint and endControlPoint
+                ApplyBindingsToControlPoints(startControlPoint, model, curveMapperControl);
+                ApplyBindingsToControlPoints(endControlPoint, model, curveMapperControl);
+                // Add the control points to the canvas
                 curveMapperControl.GraphCanvas.Children.Add(startControlPoint);
                 curveMapperControl.GraphCanvas.Children.Add(endControlPoint);
                 Canvas.SetZIndex(startControlPoint, 20);
@@ -61,14 +65,9 @@ namespace Dynamo.Wpf.Charts
                 linearCurve = model.LinearCurve;
                 Canvas.SetZIndex(model.LinearCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.LinearCurve.PathCurve);
-
                 // Assign curves to control points
                 model.PointLinearStart.CurveLinear = model.LinearCurve;
                 model.PointLinearEnd.CurveLinear = model.LinearCurve;
-
-                // Optional: Attach event handlers for control points to regenerate the curve
-                //startControlPoint.PointMoved += (s, e) => linearCurve?.Regenerate(startControlPoint, endControlPoint);
-                //endControlPoint.PointMoved += (s, e) => linearCurve?.Regenerate(startControlPoint, endControlPoint);
 
                 // Add visibility binding if needed
                 BindVisibility(model);
@@ -95,9 +94,29 @@ namespace Dynamo.Wpf.Charts
                 linearCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, visibilityBinding);
         }
 
+        /// <summary> Helper method to bind a dependency property of a control point to a model or control.</summary>
+        private void BindControlPoint(CurveMapperControlPoint controlPoint, DependencyProperty property, object source, string path)
+        {
+            controlPoint.SetBinding(property, new Binding(path)
+            {
+                Source = source,
+                Mode = BindingMode.OneWay
+            });
+        }
+
+        /// <summary> Applies bindings for both control points (startControlPoint and endControlPoint) </summary>
+        private void ApplyBindingsToControlPoints(CurveMapperControlPoint controlPoint, CurveMapperNodeModel model, CurveMapperControl curveMapperControl)
+        {
+            BindControlPoint(controlPoint, CurveMapperControlPoint.MinLimitXProperty, model, nameof(model.MinLimitX));
+            BindControlPoint(controlPoint, CurveMapperControlPoint.MaxLimitXProperty, model, nameof(model.MaxLimitX));
+            BindControlPoint(controlPoint, CurveMapperControlPoint.MinLimitYProperty, model, nameof(model.MinLimitY));
+            BindControlPoint(controlPoint, CurveMapperControlPoint.MaxLimitYProperty, model, nameof(model.MaxLimitY));
+            BindControlPoint(controlPoint, CurveMapperControlPoint.DynamicCanvasSizeProperty, curveMapperControl, nameof(curveMapperControl.DynamicCanvasSize));
+        }
+
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 

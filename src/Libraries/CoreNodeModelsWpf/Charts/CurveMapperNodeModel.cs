@@ -17,7 +17,7 @@ using System.ComponentModel;
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
-    [NodeName("CurveMapper")]
+    [NodeName("Curve Mapper")]
     [NodeCategory("Math.Graph")]
     [NodeDescription("CurveMapperNodeDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("CurveMapperSearchTags", typeof(CoreNodeModelWpfResources))]
