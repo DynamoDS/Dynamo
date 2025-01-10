@@ -1,7 +1,8 @@
 ## Подробности
-IsAnomeloveEqualTo возвращает логическое значение, показывающее, совпадают ли значения вектора со значениями другого вектора. В примере ниже при сравнении вектора на оси Z МСК с вектором с координатами (0,0,1) возвращается значение True. При перемещении регулятора направления вектора значения координат вектора меняются, и векторы начинают отличаться. Векторы представлены в виде прямых.
+`Geometry.IsAlmostEqualTo` returns a boolean value indication whether the two given geometries have the same geometrical representations or numerical values.
+
+In the example below, a cylinder is created two ways. The two cylinders are then compared with `Geometry.IsAlmostEqualTo`.
 ___
 ## Файл примера
 
-![IsAlmostEqualTo](./Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo_img.jpg)
-
+![Geometry.IsAlmostEqualTo](./Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo_img.jpg)
