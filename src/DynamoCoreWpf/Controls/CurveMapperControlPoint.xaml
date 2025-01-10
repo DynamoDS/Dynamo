@@ -15,7 +15,7 @@
         <local:HalfWidthConverter x:Key="HalfWidthConverter" />
         <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
             <Setter Property="OverridesDefaultStyle" Value="true" />
-            <Setter Property="MinWidth" Value="200" />
+            <Setter Property="MaxWidth" Value="300" />
             <Setter Property="HorizontalOffset"
                     Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth, Converter={StaticResource HalfWidthConverter}}" />
             <Setter Property="Template">
@@ -71,7 +71,8 @@
                     <ToolTip Style="{StaticResource GenericToolTipLight}">
                         <StackPanel>
                             <TextBlock FontWeight="Bold">Control Point (10, 10)</TextBlock>
-                            <TextBlock>Drag to modify the curve</TextBlock>
+                            <!-- Show the actual values (scaled to inputs)-->
+                            <TextBlock>Drag to modify the curve.</TextBlock>
                         </StackPanel>
                     </ToolTip>
                 </Ellipse.ToolTip>
