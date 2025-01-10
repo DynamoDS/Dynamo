@@ -1,15 +1,18 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Forms;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
+using Newtonsoft.Json.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
+using static Lucene.Net.Queries.Function.ValueSources.MultiFunction;
 
 namespace Dynamo.Interfaces
 {
@@ -83,7 +86,18 @@ namespace Dynamo.Interfaces
 
                 return node;
             }
+            if (value is JObject obj)
+            {
+                var dict = ConvertJObjectToDictionary(obj);
+                var node = new WatchViewModel(dict.Keys.Any() ? WatchViewModel.DICTIONARY : WatchViewModel.EMPTY_DICTIONARY, tag, RequestSelectGeometry, true);
 
+                foreach (var e in dict.Keys.Zip(dict.Values, (key, val) => new { key, val }))
+                {
+                    node.Children.Add(ProcessThing(e.val, runtimeCore, tag + ":" + e.key, showRawData, callback));
+                }
+
+                return node;
+            }
             if (!(value is string) && value is IEnumerable)
             {
                 var list = (value as IEnumerable).Cast<dynamic>().ToList();
@@ -120,6 +134,28 @@ namespace Dynamo.Interfaces
             }
 
             return new WatchViewModel(value, tag, RequestSelectGeometry);
+        }
+
+        private static Dictionary<string, object> ConvertJObjectToDictionary(JObject jObject)
+        {
+            var dictionary = new Dictionary<string, object>();
+
+            foreach (var property in jObject.Properties())
+            {
+                if (property.Value is JObject nestedObject)
+                {
+                    dictionary[property.Name] = ConvertJObjectToDictionary(nestedObject);
+                }
+                else if (property.Value is JArray nestedArray)
+                {
+                    dictionary[property.Name] = nestedArray.ToObject<List<object>>();
+                }
+                else
+                {
+                    dictionary[property.Name] = property.Value.ToObject<object>();
+                }
+            }
+            return dictionary;
         }
 
         private WatchViewModel ProcessThing(double value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
