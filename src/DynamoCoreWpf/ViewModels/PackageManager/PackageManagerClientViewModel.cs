@@ -762,7 +762,7 @@ namespace Dynamo.ViewModels
             // Unknown package compatibility with current Dynamo env, this is expected to be the most popular case for now
             if (compatible == null && !DynamoModel.IsTestMode)
             {
-                msg = msg + "/n" + Resources.PackageManagerUnknownCompatibilityVersionDownloadMsg;
+                msg = msg + "\n\n" + Resources.PackageUnknownCompatibilityVersionDownloadMsg;
                 result = MessageBoxService.Show(ViewModelOwner, msg,
                     Resources.PackageDownloadConfirmMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Question);
@@ -775,7 +775,7 @@ namespace Dynamo.ViewModels
             // Package incompatible with current Dynamo env
             else if (compatible == false && !DynamoModel.IsTestMode)
             {
-                msg = msg + "/n" + Resources.PackageManagerIncompatibleVersionDownloadMsg;
+                msg = msg + "\n\n" + Resources.PackageManagerIncompatibleVersionDownloadMsg;
                 result = MessageBoxService.Show(ViewModelOwner, msg,
                     Resources.PackageManagerIncompatibleVersionDownloadTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Warning);

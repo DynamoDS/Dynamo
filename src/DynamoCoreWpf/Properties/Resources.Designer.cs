@@ -6395,15 +6395,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Bold&gt;The compatibility of this version with your setup has not been verified.&lt;/Bold&gt; It may or may not work as expected. .
-        /// </summary>
-        public static string PackageManagerUnknownCompatibilityVersionDownloadMsg {
-            get {
-                return ResourceManager.GetString("PackageManagerUnknownCompatibilityVersionDownloadMsg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Once signed in, you can find your published packages here..
         /// </summary>
         public static string PackageManagerUserNotSignedPackagesSubMessage {
@@ -7389,6 +7380,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageUnknownCompatibilityFilterTooltip {
             get {
                 return ResourceManager.GetString("PackageUnknownCompatibilityFilterTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The compatibility of this version with your setup has not been verified. It may or may not work as expected. .
+        /// </summary>
+        public static string PackageUnknownCompatibilityVersionDownloadMsg {
+            get {
+                return ResourceManager.GetString("PackageUnknownCompatibilityVersionDownloadMsg", resourceCulture);
             }
         }
         

@@ -4102,7 +4102,7 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PackageVersionTooltip" xml:space="preserve">
     <value>Versions marked with .x include all versions in the specified major or minor release</value>
   </data>
-  <data name="PackageManagerUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
-    <value>&lt;Bold&gt;The compatibility of this version with your setup has not been verified.&lt;/Bold&gt; It may or may not work as expected.</value>
+  <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
+    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
   </data>
 </root>
