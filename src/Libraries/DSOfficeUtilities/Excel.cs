@@ -151,7 +151,7 @@ namespace DSOffice
         [DllImport("user32.dll")]
         static extern int GetWindowThreadProcessId(int hWnd, out int lpdwProcessId);
 
-        public static Process GetExcelProcess(Application excelApp)
+        internal static Process GetExcelProcess(Application excelApp)
         {
             int id;
             GetWindowThreadProcessId(excelApp.Hwnd, out id);

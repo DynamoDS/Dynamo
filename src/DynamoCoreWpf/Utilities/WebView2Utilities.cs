@@ -1,6 +1,5 @@
 using System;
-using System.IO;
-using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Models;
@@ -37,18 +36,6 @@ namespace Dynamo.Wpf.Utilities
         /// <returns></returns>
         internal async Task Initialize(Action<string> logFn = null)
         {
-            if (DynamoModel.IsTestMode && !string.IsNullOrEmpty(CreationProperties?.UserDataFolder))
-            {
-                var newPath = Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "Webview2Data", $"{Environment.ProcessId}", tag);
-                if (Directory.Exists(newPath))
-                {
-                    Directory.CreateDirectory(newPath);
-                }
-
-                // Override the userData folder during tests.
-                CreationProperties.UserDataFolder = newPath;
-            }
-
             logger = logFn ?? logger;
             initTask = EnsureCoreWebView2Async();
             await initTask;
@@ -72,8 +59,10 @@ namespace Dynamo.Wpf.Utilities
 
                 // Wait for EnsureCoreWebView2Async to finish before we continue with dispose.
                 // This way we avoid EnsureCoreWebView2Async resuming execution while webview2 is disposed.
-                // This continuation runs even if initTask has been cancelled
-                initTask.ContinueWith((t) => base.Dispose(disposing));
+                initTask.ContinueWith((t) => {
+                    // This continuation runs even if initTask has been cancelled
+                    Dispatcher.Invoke(() => base.Dispose(disposing));
+                });
             }
             else
             {
