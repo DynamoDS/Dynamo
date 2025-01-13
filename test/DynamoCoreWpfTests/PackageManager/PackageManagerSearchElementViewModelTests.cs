@@ -1146,12 +1146,12 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
 
         [Test]
-        [TestCase("2.9.9", false)] // Incompatible Dynamo version
-        [TestCase("3.0.0", true)]  // Compatible Dynamo version
-        [TestCase("3.1.0", true)]  // Compatible Dynamo version
-        [TestCase("3.2.2", true)]  // Compatible Dynamo version
-        [TestCase("3.3.0", false)] // Incompatible Dynamo version
-        [TestCase("3.4.0", false)] // Incompatible Dynamo version
+        [TestCase("2.9.9.2114", false)] // Incompatible Dynamo version
+        [TestCase("3.0.0.2114", true)]  // Compatible Dynamo version
+        [TestCase("3.1.0.2114", true)]  // Compatible Dynamo version
+        [TestCase("3.2.2.2114", true)]  // Compatible Dynamo version
+        [TestCase("3.3.0.2114", false)] // Incompatible Dynamo version
+        [TestCase("3.4.0.2114", false)] // Incompatible Dynamo version
         public void TestComputeMultipleSingleCompatibility(string dynamoVersion, bool expectedCompatibility)
         {
             // Arrange
@@ -1171,21 +1171,21 @@ namespace Dynamo.PackageManager.Wpf.Tests
         }
 
         [Test]
-        [TestCase("2.19", true)] // Compatible Dynamo version
-        [TestCase("2.19.1", false)] // Incompatible Dynamo version
-        [TestCase("2.19.5", true)] // Compatible Dynamo version
-        [TestCase("2.19.6", true)] // Compatible Dynamo version
-        [TestCase("3.0.0", true)]  // Compatible Dynamo version
-        [TestCase("3.1.0", true)]  // Compatible Dynamo version
-        [TestCase("3.2.2", true)]  // Compatible Dynamo version
-        [TestCase("3.3.0", false)] // Incompatible Dynamo version
+        [TestCase("2.19.0.2114", true)] // Compatible Dynamo version
+        [TestCase("2.19.1.2114", false)] // Incompatible Dynamo version
+        [TestCase("2.19.5.2114", true)] // Compatible Dynamo version
+        [TestCase("2.19.6.2114", true)] // Compatible Dynamo version
+        [TestCase("3.0.0.2114", true)]  // Compatible Dynamo version
+        [TestCase("3.1.0.2114", true)]  // Compatible Dynamo version
+        [TestCase("3.2.2.2114", true)]  // Compatible Dynamo version
+        [TestCase("3.3.0.1232", false)] // Incompatible Dynamo version
         [TestCase("3.4.0.6825", true)] // Compatible Dynamo version
         public void TestComputeMinMaxMultipleSingleCompatibility(string dynamoVersion, bool expectedCompatibility)
         {
             // Arrange
             var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
             {
-                new Greg.Responses.Compatibility { name = "dynamo", min = "2.19.5", max = "3.2.2", versions = new List<string> { "2.19", "3.4.0.6825" } }
+                new Greg.Responses.Compatibility { name = "dynamo", min = "2.19.5", max = "3.2.2", versions = new List<string> { "2.19", "3.4.0" } }
             };
 
             var versionToTest = new Version(dynamoVersion);
@@ -1198,16 +1198,16 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.AreEqual(expectedCompatibility, result, $"Expected compatibility to be {expectedCompatibility} for version {dynamoVersion}.");
         }
 
-        [TestCase("3.1", true)]  // Compatible Dynamo version
-        [TestCase("3.1.0", false)]  // Incompatible Dynamo version
-        [TestCase("3.4.0", false)] // Incompatible Dynamo version
+        [TestCase("3.1.0.2123", true)]  // Compatible Dynamo version
         [TestCase("3.4.0.6825", true)] // Compatible Dynamo version
+        [TestCase("2.19.0.6825", false)] // Incompatible Dynamo version
+        [TestCase("2.0.0.6825", true)] // Compatible Dynamo version
         public void TestPreciseSingleCompatibility(string dynamoVersion, bool expectedCompatibility)
         {
             // Arrange
             var hostOnlyCompatibilityMatrix = new List<Greg.Responses.Compatibility>
             {
-                new Greg.Responses.Compatibility { name = "dynamo", versions = new List<string> { "3.1", "3.4.0.6825" } }
+                new Greg.Responses.Compatibility { name = "dynamo", versions = new List<string> { "3.1", "3.4.0", "2" } }
             };
 
             var versionToTest = new Version(dynamoVersion);
@@ -1591,6 +1591,28 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
             Assert.IsTrue(PackageManagerSearchElement.IsVersionCompatible(compatibility, version),
                           "Expected compatibility to be true when major version is greater than Max major version and there is an invalid max range.");
+        }
+
+        [Test]
+        public void NormalizeAndCompareVersionStringList_ShouldSucceed()
+        {
+
+            var versions = new List<string> { "2.1.0", "2.3.0", "2", "2.4.*", "afs" };
+            var version = new Version(2,1,0,1252);
+
+            var isListedInVersions = PackageManagerSearchElement.NormalizeAndContain(versions, version);
+            Assert.IsTrue(isListedInVersions);
+        }
+
+        [Test]
+        public void NormalizeAndCompareVersionStringList_ShouldFail()
+        {
+
+            var versions = new List<string> { "2.19" };
+            var version = new Version(2, 19, 1, 1252);
+
+            var isListedInVersions = PackageManagerSearchElement.NormalizeAndContain(versions, version);
+            Assert.IsFalse(isListedInVersions);
         }
 
         #endregion

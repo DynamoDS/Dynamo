@@ -806,6 +806,8 @@
                                                             <Button Name="HomeButton"
                                                                     Width="42"
                                                                     Height="42"
+                                                                    Margin="{Binding MinLeftMarginOffset, Converter={StaticResource LeftMarginConverter}}"
+                                                                    Panel.ZIndex="1"
                                                                     BorderThickness="0"
                                                                     Click="HomeButton_Click"
                                                                     Cursor="Hand">
