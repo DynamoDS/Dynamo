@@ -3179,6 +3179,7 @@ Dynamo.Wpf.CodeBlockNodeViewCustomization.CustomizeView(Dynamo.Graph.Nodes.CodeB
 Dynamo.Wpf.CodeBlockNodeViewCustomization.Dispose() -> void
 Dynamo.Wpf.Controls.CurveMapperControlPoint
 Dynamo.Wpf.Controls.CurveMapperControlPoint.CurveMapperControlPoint(System.Windows.Point position, double limitWidth, double limitHeight) -> void
+Dynamo.Wpf.Controls.CurveMapperControlPointOrtho
 Dynamo.Wpf.Controls.InstalledPackagesControl
 Dynamo.Wpf.Controls.InstalledPackagesControl.InitializeComponent() -> void
 Dynamo.Wpf.Controls.InstalledPackagesControl.InstalledPackagesControl() -> void

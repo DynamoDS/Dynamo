@@ -143,6 +143,88 @@ namespace CoreNodeModelsWpf.Charts
         }
         #endregion
 
+        
+
+        #region Linear Points
+        //[JsonConverter(typeof(StringToPointThumbConverter))]
+        [JsonIgnore]
+        public CurveMapperControlPoint PointLinearStart { get; set; }
+        //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint PointLinearEnd { get; set; }
+        [JsonIgnore]
+        public CurveLinear LinearCurve { get; set; }
+        public CurveMapperControl CurveMapperControl { get; set; }
+        #endregion
+
+        #region Bezier Points
+        // represent fixed control points of a Bezier curve
+        // likely the non-draggable control points of the curve that define ends or anchors
+        private double fixed1X;
+        private double fixed1Y;
+        private double fixed2X;
+        private double fixed2Y;
+
+        public double Fixed1X
+        {
+            get => fixed1X;
+            set => fixed1X = value;
+        }
+        public double Fixed1Y
+        {
+            get => fixed1Y;
+            set => fixed1Y = value;
+        }
+        public double Fixed2X
+        {
+            get => fixed2X;
+            set => fixed2X = value;
+        }
+        public double Fixed2Y
+        {
+            get => fixed2Y;
+            set => fixed2Y = value;
+        }
+
+        private double free1X;
+        private double free1Y;
+        private double free2X;
+        private double free2Y;
+
+        public double Free1X
+        {
+            get => free1X;
+            set => free1X = value;
+        }
+        public double Free1Y
+        {
+            get => free1Y;
+            set => free1Y = value;
+        }
+        public double Free2X
+        {
+            get => free2X;
+            set => free2X = value;
+        }
+        public double Free2Y
+        {
+            get => free2Y;
+            set => free2Y = value;
+        }
+
+        public CurveMapperControlPoint PointBezierControl1 { get; set; }
+        public CurveMapperControlPoint PointBezierControl2 { get; set; }
+        public CurveMapperControlPointOrtho PointBezierFix1 { get; set; }
+        public CurveMapperControlPointOrtho PointBezierFix2 { get; set; }
+
+
+        public ControlLine CurveBezierControlLine1 { get; set; }
+        public ControlLine CurveBezierControlLine2 { get; set; }
+
+
+        public CurveBezier CurveBezier {  get; set; }
+
+        #endregion
+
         /// <summary>
         /// Triggers when port is connected or disconnected
         /// </summary>
@@ -152,19 +234,6 @@ namespace CoreNodeModelsWpf.Charts
         {
             PortUpdated?.Invoke(this, args);
         }
-
-        #region Linear Points
-
-        //[JsonConverter(typeof(StringToPointThumbConverter))]
-        [JsonIgnore]
-        public CurveMapperControlPoint PointLinearStart { get; set; }
-        //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint PointLinearEnd { get; set; }
-        [JsonIgnore]
-        public CurveLinear LinearCurve { get; set; }
-        public CurveMapperControl CurveMapperControl { get; set; }
-
-        #endregion
 
         #endregion
 
@@ -187,7 +256,9 @@ namespace CoreNodeModelsWpf.Charts
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("count",
                 CoreNodeModelWpfResources.CurveMapperListDataPortToolTip,
                 pointsCountDefaultValue)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("numbers",
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("y-Values",
+                CoreNodeModelWpfResources.CurveMapperOutputDataPortToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("x-Values",
                 CoreNodeModelWpfResources.CurveMapperOutputDataPortToolTip)));
 
             RegisterAllPorts();

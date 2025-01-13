@@ -94,6 +94,7 @@
 
     <ItemGroup>
     <None Remove="Controls\CurveMapperControlPoint.xaml" />
+    <None Remove="Controls\CurveMapperControlPointOrtho.xaml" />
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
@@ -225,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\CurveMapperControlPoint.xaml.cs" />
+    <Compile Include="Controls\CurveMapperControlPointOrtho.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
@@ -257,8 +259,10 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Controls\SubControls\ControlLine.cs" />
     <Compile Include="Controls\SubControls\CrossHair.cs" />
     <Compile Include="Controls\SubControls\CurveBase.cs" />
+    <Compile Include="Controls\SubControls\CurveBezier.cs" />
     <Compile Include="Controls\SubControls\CurveLinear.cs" />
     <Compile Include="Controls\SubControls\TextBase.cs" />
     <Compile Include="Controls\SubControls\UVCoordText.cs" />
@@ -630,6 +634,9 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\CurveMapperControlPoint.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CurveMapperControlPointOrtho.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\InstalledPackagesControl.xaml">
