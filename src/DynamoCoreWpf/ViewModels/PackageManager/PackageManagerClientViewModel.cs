@@ -918,8 +918,8 @@ namespace Dynamo.ViewModels
 
                 var containsPackagesThatTargetOtherHosts = PackageManagerExtension.CheckIfPackagesTargetOtherHosts(newPackageHeaders);
 
-                // if any do, notify user and allow cancellation
-                if (containsPackagesThatTargetOtherHosts)
+                // if unknown compatibility, and package target other hosts, notify user and allow cancellation
+                if (compatible == null && containsPackagesThatTargetOtherHosts)
                 {
                     var res = MessageBoxService.Show(ViewModelOwner,
                         Resources.MessagePackageTargetOtherHosts,
