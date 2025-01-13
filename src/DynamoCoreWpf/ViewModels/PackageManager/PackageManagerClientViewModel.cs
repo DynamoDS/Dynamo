@@ -751,10 +751,31 @@ namespace Dynamo.ViewModels
             string msg;
             MessageBoxResult result;
 
-            var compatible = PackageManagerSearchElement.CalculateCompatibility(package.compatibility_matrix); 
-            if (compatible == false && !DynamoModel.IsTestMode)
+            // initialize default download consent message
+            msg = String.IsNullOrEmpty(installPath) ?
+                    String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
+                    String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
+
+            // Calculate compatibility and display a single download consent across cases
+            var compatible = PackageManagerSearchElement.CalculateCompatibility(package.compatibility_matrix);
+
+            // Unknown package compatibility with current Dynamo env, this is expected to be the most popular case for now
+            if (compatible == null && !DynamoModel.IsTestMode)
             {
-                msg = Resources.PackageManagerIncompatibleVersionDownloadMsg;
+                msg = msg + "/n" + Resources.PackageManagerUnknownCompatibilityVersionDownloadMsg;
+                result = MessageBoxService.Show(ViewModelOwner, msg,
+                    Resources.PackageDownloadConfirmMessageBoxTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+                if (result != MessageBoxResult.OK)
+                {
+                    return;
+                }
+            }
+            // Package incompatible with current Dynamo env
+            else if (compatible == false && !DynamoModel.IsTestMode)
+            {
+                msg = msg + "/n" + Resources.PackageManagerIncompatibleVersionDownloadMsg;
                 result = MessageBoxService.Show(ViewModelOwner, msg,
                     Resources.PackageManagerIncompatibleVersionDownloadTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Warning);
@@ -764,14 +785,13 @@ namespace Dynamo.ViewModels
                     return;
                 }
             }
-
-            msg = String.IsNullOrEmpty(installPath) ?
-                String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
-                String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
-
-            result = MessageBoxService.Show(ViewModelOwner, msg,
-                Resources.PackageDownloadConfirmMessageBoxTitle,
-                MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            // Package compatible with current Dynamo env
+            else
+            {
+                result = MessageBoxService.Show(ViewModelOwner, msg,
+                    Resources.PackageDownloadConfirmMessageBoxTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            }
 
             var pmExt = DynamoViewModel.Model.GetPackageManagerExtension();
             if (result == MessageBoxResult.OK)
@@ -957,11 +977,11 @@ namespace Dynamo.ViewModels
                         }
                     }
                 }
-                catch(ArgumentException ex)
+                catch (ArgumentException ex)
                 {
                     DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
                 }
-                catch(FormatException ex)
+                catch (FormatException ex)
                 {
                     DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
                 }
