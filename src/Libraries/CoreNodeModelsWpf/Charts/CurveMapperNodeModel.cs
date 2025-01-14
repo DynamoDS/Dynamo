@@ -18,7 +18,7 @@ namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("Curve Mapper")]
-    [NodeCategory("Math.Graph")]
+    [NodeCategory("Math.Graph.Create")]
     [NodeDescription("CurveMapperNodeDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("CurveMapperSearchTags", typeof(CoreNodeModelWpfResources))]
     //[InPortNames("x-MinLimit", "x-MaxLimit", "y-MinLimit", "y-MaxLimit", "count")]
@@ -213,14 +213,10 @@ namespace CoreNodeModelsWpf.Charts
 
         public CurveMapperControlPoint PointBezierControl1 { get; set; }
         public CurveMapperControlPoint PointBezierControl2 { get; set; }
-        public CurveMapperControlPointOrtho PointBezierFix1 { get; set; }
-        public CurveMapperControlPointOrtho PointBezierFix2 { get; set; }
-
-
+        public CurveMapperControlPoint PointBezierFix1 { get; set; }
+        public CurveMapperControlPoint PointBezierFix2 { get; set; }
         public ControlLine CurveBezierControlLine1 { get; set; }
         public ControlLine CurveBezierControlLine2 { get; set; }
-
-
         public CurveBezier CurveBezier {  get; set; }
 
         #endregion

@@ -732,7 +732,7 @@
                 "elementType": "group",
                 "include": [
                     {
-                        "path": "Core.Math.Graph.Curve Mapper"
+                        "path": "Math.Graph.Curve Mapper"
                     }
                 ],
                 "childElements": []

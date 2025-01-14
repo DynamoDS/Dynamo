@@ -1,60 +1,67 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
 namespace Dynamo.Wpf.Controls.SubControls
 {
+    /// <summary>
+    /// Represents a bezier curve connecting two fixed points and controlled by two control points.
+    /// </summary>
     public class CurveBezier : CurveBase
     {
-        CurveMapperControlPoint tcp1 = null;
-        CurveMapperControlPoint tcp2 = null;
-        CurveMapperControlPointOrtho tco1 = null;
-        CurveMapperControlPointOrtho tco2 = null;
+        private CurveMapperControlPoint controlPoint1;
+        private CurveMapperControlPoint controlPoint2;
+        private CurveMapperControlPoint fixedPoint1;
+        private CurveMapperControlPoint fixedPoint2;
+        private BezierSegment bezierSegment;
+        private Dictionary<double, double> xToYMap = new Dictionary<double, double>();
 
-        BezierSegment bezierSegment = null;
+        private double maxWidth;
+        private double maxHeight;
+        private double tFactor;
 
-        List<LineSegment> lineSegments = new List<LineSegment>();
-        Dictionary<double, double> dictXY = new Dictionary<double, double>();
-        double tFactor = 0.01;
-
-        double maxWidth = double.PositiveInfinity;
-        double maxHeight = double.PositiveInfinity;
-
-        public CurveBezier(CurveMapperControlPointOrtho o1, CurveMapperControlPointOrtho o2, CurveMapperControlPoint c1, CurveMapperControlPoint c2, double maxW, double maxH)
+        /// <summary>
+        /// Initializes a new instance of the CurveBezier class with the given control points and limits.
+        /// </summary>
+        public CurveBezier(CurveMapperControlPoint fixedPointStart,
+            CurveMapperControlPoint fixedPointEnd,
+            CurveMapperControlPoint controlPoint1,
+            CurveMapperControlPoint controlPoint2,
+            double maxWidth,
+            double maxHeight)
         {
-            tco1 = o1;
-            tco2 = o2;
-            tcp1 = c1;
-            tcp2 = c2;
-            maxHeight = maxH;
-            maxWidth = maxW;
-
-            tFactor = 1.0 / maxWidth;
-
-            bezierSegment = new BezierSegment(tcp1.Point, tcp2.Point, tco2.Point, true);
+            this.fixedPoint1 = fixedPointStart;
+            this.fixedPoint2 = fixedPointEnd;
+            this.controlPoint1 = controlPoint1;
+            this.controlPoint2 = controlPoint2;
+            this.maxWidth = maxWidth;
+            this.maxHeight = maxHeight;
+            this.tFactor = 1.0 / this.maxWidth;
+            this.bezierSegment = new BezierSegment(this.controlPoint1.Point, this.controlPoint2.Point, fixedPoint2.Point, true);
 
             PathFigure = new PathFigure()
             {
-                StartPoint = tco1.Point
+                StartPoint = fixedPoint1.Point,
+                Segments = { bezierSegment }
             };
-            PathFigure.Segments.Add(bezierSegment);
-            PathGeometry = new PathGeometry();
-            PathGeometry.Figures.Add(PathFigure);
 
-            PathCurve = new System.Windows.Shapes.Path()
+            PathGeometry = new PathGeometry
+            {
+                Figures = { PathFigure }
+            };
+
+            PathCurve = new System.Windows.Shapes.Path
             {
                 Data = PathGeometry,
-                Stroke = new SolidColorBrush(Color.FromRgb(0xB3, 0x85, 0xF2)), // Centralize the color
+                Stroke = new SolidColorBrush(Color.FromRgb(0xB3, 0x85, 0xF2)), // Purple color
                 StrokeThickness = 3
             };
         }
 
-
-
+        /// <summary>
+        /// Calculates the X and Y coordinates at a specific T parameter on the bezier curve.
+        /// </summary>
         public void GetValueAtT(double t, out double x, out double y)
         {
             Point p1 = PathFigure.StartPoint;
@@ -73,142 +80,112 @@ namespace Dynamo.Wpf.Controls.SubControls
                 t * t * t * p4.Y;
         }
 
-        public void GetMaximumMinimumOrdinates(double maxValue, out double min, out double max)
+        /// <summary>
+        /// Computes the minimum and maximum ordinates (Y values) for the bezier curve.
+        /// </summary>
+        public void GetMaximumMinimumOrdinates(double samplingResolution, out double min, out double max)
         {
             min = double.PositiveInfinity;
-            max = 0.0;
+            max = double.NegativeInfinity;
 
-            double xx = 0.0;
-            double yy = 0.0;
-
-            double val = double.NaN;
-            for (double i = 0; i < maxValue; i += 1)
+            for (double i = 0; i <= samplingResolution; i++)
             {
-                GetValueAtT(i / maxValue, out xx, out yy);
-                val = Math.Round(maxValue - yy, 2);
-                if (max < val)
-                {
-                    max = val;
-                }
-                if (min > val)
-                {
-                    min = val;
-                }
-            }
-
-            GetValueAtT(1.0, out xx, out yy);
-            val = Math.Round(maxValue - yy, 2);
-            if (max < val)
-            {
-                max = val;
-            }
-            if (min > val)
-            {
-                min = val;
+                GetValueAtT(i / samplingResolution, out _, out double y);
+                y = Math.Round(maxHeight - y, 2);
+                min = Math.Min(min, y);
+                max = Math.Max(max, y);
             }
         }
 
         private void GenerateXYPairs()
         {
-            if (dictXY == null)
-            {
-                dictXY = new Dictionary<double, double>();
-            }
-            else
-            {
-                dictXY.Clear();
-            }
+            xToYMap.Clear();
 
-            double xx = 0.0;
-            double yy = 0.0;
-            double tacqfac = maxWidth * 5.0;
-            for (double t = 0.0; t <= 1.0; t += 1.0 / tacqfac)
+            for (double t = 0; t <= 1.0; t += 1.0 / (maxWidth * 5.0))
             {
-                GetValueAtT(t, out xx, out yy);
-                xx = Math.Round(xx, 0);
-                if (!dictXY.ContainsKey(xx))
+                GetValueAtT(t, out double x, out double y);
+                x = Math.Round(x, 0);
+                if (!xToYMap.ContainsKey(x))
                 {
-                    dictXY.Add(xx, yy);
+                    xToYMap.Add(x, y);
                 }
             }
+            //if (xToYMap == null)
+            //{
+            //    xToYMap = new Dictionary<double, double>();
+            //}
+            //else
+            //{
+            //    xToYMap.Clear();
+            //}
 
-            GetValueAtT(1.0, out xx, out yy);
-            if (dictXY.ContainsKey(xx))
-            {
-                dictXY.Remove(xx);
-            }
-            dictXY.Add(xx, yy);
+            //double xx = 0.0;
+            //double yy = 0.0;
+            //double tacqfac = maxWidth * 5.0;
+            //for (double t = 0.0; t <= 1.0; t += 1.0 / tacqfac)
+            //{
+            //    GetValueAtT(t, out xx, out yy);
+            //    xx = Math.Round(xx, 0);
+            //    if (!xToYMap.ContainsKey(xx))
+            //    {
+            //        xToYMap.Add(xx, yy);
+            //    }
+            //}
+
+            //GetValueAtT(1.0, out xx, out yy);
+            //if (xToYMap.ContainsKey(xx))
+            //{
+            //    xToYMap.Remove(xx);
+            //}
+            //xToYMap.Add(xx, yy);
         }
 
+        /// <summary>
+        /// Gets interpolated Y values based on the assigned parameters and limits.
+        /// </summary>
         public override List<double> GetValuesFromAssignedParameters(double lowLimit, double highLimit, int count)
         {
-            if (count < 1)
-                return null;
+            if (count < 1) return null;
 
             GenerateXYPairs();
 
-            List<double> livalues = new List<double>();
+            var interpolatedValues = new List<double>();
 
             for (int i = 0; i < count; i++)
             {
-                double xx = 0.0;
-                double yy = 0.0;
-                xx = (int)((maxWidth / (count - 1.0)) * i);
-                yy = dictXY[xx];
-
-                double md = maxHeight - yy;
-                double rd = (highLimit - lowLimit) * md / maxHeight;
-                rd += lowLimit;
-                livalues.Add(rd);
+                double x = Math.Round((maxWidth / (count - 1.0)) * i);
+                if (xToYMap.TryGetValue(x, out double y))
+                {
+                    double normalizedY = maxHeight - y;
+                    double scaledY = lowLimit + ((highLimit - lowLimit) * normalizedY / maxHeight);
+                    interpolatedValues.Add(scaledY);
+                }
             }
 
-            return livalues;
+            return interpolatedValues;
         }
 
-        public void Regenerate(CurveMapperControlPointOrtho tco)
+        /// <summary>
+        /// Regenerates the bezier curve when a control point is updated.
+        /// </summary>
+        public void Regenerate(CurveMapperControlPoint updatedControlPoint)
         {
-            if (tco1 == tco)
+            if (updatedControlPoint == fixedPoint1)
             {
-                tco1 = tco;
-                PathFigure.StartPoint = tco.Point;
+                PathFigure.StartPoint = updatedControlPoint.Point;
             }
-            else if (tco2 == tco)
+            else if (updatedControlPoint == fixedPoint2)
             {
-                tco2 = tco;
-                bezierSegment.Point3 = tco.Point;
+                bezierSegment.Point3 = updatedControlPoint.Point;
             }
-        }
-
-        public void Regenerate(CurveMapperControlPoint tcp)
-        {
-            if (tcp1 == tcp)
+            else if (updatedControlPoint == controlPoint1)
             {
-                tcp1 = tcp;
-                bezierSegment.Point1 = tcp.Point;
+                bezierSegment.Point1 = updatedControlPoint.Point;
             }
-            else if (tcp2 == tcp)
+            else if (updatedControlPoint == controlPoint2)
             {
-                tcp2 = tcp;
-                bezierSegment.Point2 = tcp.Point;
+                bezierSegment.Point2 = updatedControlPoint.Point;
             }
         }
-
-        //public List<Point> GetPointsFromParameters(double maxValue, List<double> ts)
-        //{
-        //    List<Point> retvals = new List<Point>();
-
-        //    foreach (double o in ts)
-        //    {
-        //        double x = 0.0;
-        //        double y = 0.0;
-        //        GetValueAtT(o, out x, out y);
-
-        //        Point p = new Point(x, y);
-        //        retvals.Add(p);
-        //    }
-
-        //    return retvals;
-        //}
-
     }
 }

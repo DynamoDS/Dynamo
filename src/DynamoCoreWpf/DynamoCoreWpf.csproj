@@ -94,7 +94,6 @@
 
     <ItemGroup>
     <None Remove="Controls\CurveMapperControlPoint.xaml" />
-    <None Remove="Controls\CurveMapperControlPointOrtho.xaml" />
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
@@ -226,7 +225,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\CurveMapperControlPoint.xaml.cs" />
-    <Compile Include="Controls\CurveMapperControlPointOrtho.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
@@ -634,9 +632,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\CurveMapperControlPoint.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\CurveMapperControlPointOrtho.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\InstalledPackagesControl.xaml">

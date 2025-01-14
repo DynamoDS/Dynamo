@@ -18,6 +18,9 @@ namespace Dynamo.Wpf.Controls
         private const double offsetValue = 6; // thumb size * 0.5
         private Point point;
 
+        public bool IsOrthogonal { get; set; }
+        public bool IsVertical { get; set; }
+
         public CrossHair CrossHairHorizontal { get; set; }
         public CrossHair CrossHairVertical { get; set; }
         public UVCoordText uvText { get; set; }
@@ -127,7 +130,7 @@ namespace Dynamo.Wpf.Controls
         /// Initializes a control point with a specific position, movement boundaries, and a high z-index for canvas rendering.
         /// </summary>
         public CurveMapperControlPoint(Point position, double limitWidth, double limitHeight,
-            double minLimitX, double maxLimitX, double minLimitY, double maxLimitY, double canvasSize)
+            double minLimitX, double maxLimitX, double minLimitY, double maxLimitY, double canvasSize, bool isOrthogonal = false, bool isVertical = false)
         {
             InitializeComponent();
             DataContext = this;
@@ -140,6 +143,8 @@ namespace Dynamo.Wpf.Controls
             MinLimitY = minLimitY;
             MaxLimitY = maxLimitY;
             CanvasSize = canvasSize;
+            IsOrthogonal = isOrthogonal;
+            IsVertical = isVertical;
 
             Canvas.SetLeft(this, position.X - offsetValue);
             Canvas.SetTop(this, position.Y - offsetValue);
@@ -177,8 +182,9 @@ namespace Dynamo.Wpf.Controls
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             // Calculate new positions for X and Y based on drag changes
-            double newX = Canvas.GetLeft(this) + e.HorizontalChange + offsetValue;
-            double newY = Canvas.GetTop(this) + e.VerticalChange + offsetValue;
+            double newX = Canvas.GetLeft(this) + (IsOrthogonal && IsVertical ? 0.0 : e.HorizontalChange) + offsetValue;
+            double newY = Canvas.GetTop(this) + (IsOrthogonal && !IsVertical ? 0.0 : e.VerticalChange) + offsetValue;
+
 
             // Clamp within canvas boundaries
             newX = Math.Max(0, Math.Min(newX, LimitWidth));
@@ -214,12 +220,6 @@ namespace Dynamo.Wpf.Controls
             {
                 CrossHairVertical.Regenerate(this);
             }
-
-            //// Regenerate associated UV text display
-            //if (uvText != null)
-            //{
-            //    uvText.Regenerate(Point);
-            //}
         }
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)

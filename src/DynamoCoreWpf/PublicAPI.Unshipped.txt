@@ -3178,7 +3178,7 @@ Dynamo.Wpf.CodeBlockNodeViewCustomization.CodeBlockNodeViewCustomization() -> vo
 Dynamo.Wpf.CodeBlockNodeViewCustomization.CustomizeView(Dynamo.Graph.Nodes.CodeBlockNodeModel model, Dynamo.Controls.NodeView nodeView) -> void
 Dynamo.Wpf.CodeBlockNodeViewCustomization.Dispose() -> void
 Dynamo.Wpf.Controls.CurveMapperControlPoint
-Dynamo.Wpf.Controls.CurveMapperControlPoint.CurveMapperControlPoint(System.Windows.Point position, double limitWidth, double limitHeight) -> void
+Dynamo.Wpf.Controls.CurveMapperControlPoint.CurveMapperControlPoint(System.Windows.Point position, double limitWidth, double limitHeight, double minLimitX, double maxLimitX, double minLimitY, double maxLimitY, double canvasSize, bool isOrthogonal = false) -> void
 Dynamo.Wpf.Controls.CurveMapperControlPointOrtho
 Dynamo.Wpf.Controls.InstalledPackagesControl
 Dynamo.Wpf.Controls.InstalledPackagesControl.InitializeComponent() -> void
@@ -3190,6 +3190,9 @@ Dynamo.Wpf.Controls.RunSettingsControl
 Dynamo.Wpf.Controls.RunSettingsControl.debugCheckBox -> System.Windows.Controls.CheckBox
 Dynamo.Wpf.Controls.RunSettingsControl.InitializeComponent() -> void
 Dynamo.Wpf.Controls.RunSettingsControl.RunSettingsControl() -> void
+Dynamo.Wpf.Controls.SubControls.ControlLine.ControlLine(System.Windows.Point controlPoint, System.Windows.Point fixPoint) -> void
+Dynamo.Wpf.Controls.SubControls.CurveBezier
+Dynamo.Wpf.Controls.SubControls.CurveBezier.CurveBezier(Dynamo.Wpf.Controls.CurveMapperControlPoint fixPoint1, Dynamo.Wpf.Controls.CurveMapperControlPoint fixPoint2, Dynamo.Wpf.Controls.CurveMapperControlPoint controlPoint1, Dynamo.Wpf.Controls.CurveMapperControlPoint controlPoint2, double maxW, double maxH) -> void
 Dynamo.Wpf.CoreNodeViewCustomizations
 Dynamo.Wpf.CoreNodeViewCustomizations.CoreNodeViewCustomizations() -> void
 Dynamo.Wpf.Extensions.IViewExtension

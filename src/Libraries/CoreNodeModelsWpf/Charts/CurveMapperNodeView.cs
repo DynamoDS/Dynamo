@@ -25,9 +25,11 @@ namespace Dynamo.Wpf.Charts
         private ControlLine curveBezierControlLine2;
         private CurveMapperControlPoint pointBezierControl1;
         private CurveMapperControlPoint pointBezierControl2;
-        private CurveMapperControlPointOrtho pointBezierFix1;
-        private CurveMapperControlPointOrtho pointBezierFix2;
-        
+        //private CurveMapperControlPointOrtho pointBezierFix1;
+        //private CurveMapperControlPointOrtho pointBezierFix2;
+        private CurveMapperControlPoint pointBezierFix1;
+        private CurveMapperControlPoint pointBezierFix2;
+
 
 
         public void CustomizeView(CurveMapperNodeModel model, NodeView nodeView)
@@ -97,19 +99,19 @@ namespace Dynamo.Wpf.Charts
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
 
-                model.PointBezierFix1 = pointBezierFix1 = new CurveMapperControlPointOrtho(
+                model.PointBezierFix1 = pointBezierFix1 = new CurveMapperControlPoint(
                     new Point(0, curveMapperControl.DynamicCanvasSize),
-                    true,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    true, true
                 );
-                model.PointBezierFix2 = pointBezierFix2 = new CurveMapperControlPointOrtho(
+                model.PointBezierFix2 = pointBezierFix2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize),
-                    true,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    true, true
                 );
                 curveMapperControl.GraphCanvas.Children.Add(pointBezierControl1);
                 curveMapperControl.GraphCanvas.Children.Add(pointBezierControl2);
@@ -131,8 +133,8 @@ namespace Dynamo.Wpf.Charts
                 );
                 curveMapperControl.GraphCanvas.Children.Add(curveBezierControlLine1.PathCurve);
                 curveMapperControl.GraphCanvas.Children.Add(curveBezierControlLine2.PathCurve);
-                Canvas.SetZIndex(curveBezierControlLine1, 9);
-                Canvas.SetZIndex(curveBezierControlLine2, 9);
+                Canvas.SetZIndex(curveBezierControlLine1.PathCurve, 9);
+                Canvas.SetZIndex(curveBezierControlLine2.PathCurve, 9);
 
                 // Create the bezier curve and add to the canvas
                 model.CurveBezier = new CurveBezier(
@@ -158,8 +160,8 @@ namespace Dynamo.Wpf.Charts
                 model.PointBezierControl2.ControlLineBezier = model.CurveBezierControlLine2;
 
                 // Bind properties for startControlPoint and endControlPoint
-                ApplyBindingsToControlPointsOrtho(pointBezierFix1, model, curveMapperControl);
-                ApplyBindingsToControlPointsOrtho(pointBezierFix2, model, curveMapperControl);
+                ApplyBindingsToControlPoints(pointBezierFix1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(pointBezierFix2, model, curveMapperControl);
 
                 #endregion
 
@@ -225,14 +227,6 @@ namespace Dynamo.Wpf.Charts
                 Mode = BindingMode.OneWay
             });
         }
-        private void BindControlPointOrtho(CurveMapperControlPointOrtho controlPoint, DependencyProperty property, object source, string path)
-        {
-            controlPoint.SetBinding(property, new Binding(path)
-            {
-                Source = source,
-                Mode = BindingMode.OneWay
-            });
-        }
 
         /// <summary> Applies bindings for both control points (startControlPoint and endControlPoint) </summary>
         private void ApplyBindingsToControlPoints(CurveMapperControlPoint controlPoint, CurveMapperNodeModel model, CurveMapperControl curveMapperControl)
@@ -242,14 +236,6 @@ namespace Dynamo.Wpf.Charts
             BindControlPoint(controlPoint, CurveMapperControlPoint.MinLimitYProperty, model, nameof(model.MinLimitY));
             BindControlPoint(controlPoint, CurveMapperControlPoint.MaxLimitYProperty, model, nameof(model.MaxLimitY));
             BindControlPoint(controlPoint, CurveMapperControlPoint.DynamicCanvasSizeProperty, curveMapperControl, nameof(curveMapperControl.DynamicCanvasSize));
-        }
-        private void ApplyBindingsToControlPointsOrtho(CurveMapperControlPointOrtho controlPoint, CurveMapperNodeModel model, CurveMapperControl curveMapperControl)
-        {
-            BindControlPointOrtho(controlPoint, CurveMapperControlPointOrtho.MinLimitXPropertyOrtho, model, nameof(model.MinLimitX));
-            BindControlPointOrtho(controlPoint, CurveMapperControlPointOrtho.MaxLimitXPropertyOrtho, model, nameof(model.MaxLimitX));
-            BindControlPointOrtho(controlPoint, CurveMapperControlPointOrtho.MinLimitYPropertyOrtho, model, nameof(model.MinLimitY));
-            BindControlPointOrtho(controlPoint, CurveMapperControlPointOrtho.MaxLimitYPropertyOrtho, model, nameof(model.MaxLimitY));
-            BindControlPointOrtho(controlPoint, CurveMapperControlPointOrtho.DynamicCanvasSizeProperty, curveMapperControl, nameof(curveMapperControl.DynamicCanvasSize));
         }
 
         public void Dispose()

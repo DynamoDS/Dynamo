@@ -302,6 +302,33 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     model.LinearCurve.Regenerate();
                 }
             }
+            else if (model.SelectedGraphType == GraphTypes.Bezier)
+            {
+                model.PointBezierControl1.Point = new Point(DynamicCanvasSize * 0.2, DynamicCanvasSize * 0.2);
+                model.PointBezierControl2.Point = new Point(DynamicCanvasSize * 0.8, DynamicCanvasSize * 0.2);
+                model.PointBezierFix1.Point = new Point(0, DynamicCanvasSize);
+                model.PointBezierFix2.Point = new Point(DynamicCanvasSize, DynamicCanvasSize);
+
+                // Regenerate control lines
+                if (model.CurveBezierControlLine1 != null)
+                {
+                    model.CurveBezierControlLine1.Regenerate(model.PointBezierControl1, model.PointBezierFix1);
+                }
+                if (model.CurveBezierControlLine2 != null)
+                {
+                    model.CurveBezierControlLine2.Regenerate(model.PointBezierControl2, model.PointBezierFix2);
+                }
+
+                // Regenerate the bezier curve
+                if (model.CurveBezier != null)
+                {
+                    model.CurveBezier.Regenerate(model.PointBezierControl1);
+                    model.CurveBezier.Regenerate(model.PointBezierControl2);
+                    model.CurveBezier.Regenerate(model.PointBezierFix1);
+                    model.CurveBezier.Regenerate(model.PointBezierFix2);
+                    
+                }
+            }
         }
     }
 }

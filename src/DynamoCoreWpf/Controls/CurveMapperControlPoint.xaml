@@ -10,7 +10,8 @@
        DragCompleted="Thumb_DragCompleted"
        DragDelta="Thumb_DragDelta"
        DragStarted="Thumb_DragStarted"
-       mc:Ignorable="d">
+       mc:Ignorable="d"
+       Cursor="Hand">
     <Thumb.Resources>
         <local:HalfWidthConverter x:Key="HalfWidthConverter" />
         <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
