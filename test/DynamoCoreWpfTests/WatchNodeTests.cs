@@ -405,7 +405,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("UInt32", children[0].ValueType);
             Assert.AreEqual("3", children[2].NodeLabel);
 
-            var uint64node = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("DummyZeroTouchClass.DecodeToUint64Dictionary");
+            var uint64node = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("DummyZeroTouchClass.PreviewUint64Dictionary");
             var vm = ViewModel.WatchHandler.GenerateWatchViewModelForData(
                 uint64node.CachedValue, watchNode.OutPorts.Select(p => p.Name),
                 ViewModel.Model.EngineController.LiveRunnerRuntimeCore,

@@ -19,7 +19,7 @@ namespace FFITarget
             return 0;
         }
 
-        public static Dictionary<string, object> DecodeToByteDictionary()
+        public static Dictionary<string, object> PreviewByteDictionary()
         {
             // Example base64 encoded string
             string encodedString = "SGVsbG8gV29ybGQh";
@@ -31,7 +31,7 @@ namespace FFITarget
             return result;
         }
 
-        public static Dictionary<string, object> DecodeToUint32Dictionary()
+        public static Dictionary<string, object> PreviewUint32Dictionary()
         {
             var uintArray = new uint[] { 1, 2, 3, 4, 5 };
             var result = new Dictionary<string, object>();
@@ -40,7 +40,7 @@ namespace FFITarget
             return result;
         }
 
-        public static Dictionary<string, object> DecodeToUint64Dictionary()
+        public static Dictionary<string, object> PreviewUint64Dictionary()
         {
             var uintArray = new ulong[] { 1, 2, 3, 4, 5 };
             var result = new Dictionary<string, object>();
@@ -49,7 +49,7 @@ namespace FFITarget
             return result;
         }
 
-        public static Dictionary<string, object> DecodeToJSONDictionary()
+        public static Dictionary<string, object> PreviewJSONDictionary()
         {
             var json = new JObject();
             json.Add("key1", "value1");

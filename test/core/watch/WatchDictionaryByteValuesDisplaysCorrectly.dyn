@@ -42,12 +42,12 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "1590b6b5eec749978ede96d3e3f794e6",
+      "Id": "95889388fba84e11bc8905dcf80c10ea",
       "NodeType": "FunctionNode",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "661d3132a5df4bbaae2dc74ccdbd562f",
+          "Id": "19ff13f87d5d4ac28736af66e0a80e0b",
           "Name": "var[]..[]",
           "Description": "var[]..[]",
           "UsingDefaultValue": false,
@@ -56,16 +56,16 @@
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "FFITarget.DummyZeroTouchClass.DecodeToByteDictionary",
+      "FunctionSignature": "FFITarget.DummyZeroTouchClass.PreviewByteDictionary",
       "Replication": "Auto",
-      "Description": "DummyZeroTouchClass.DecodeToByteDictionary ( ): var[]..[]"
+      "Description": "DummyZeroTouchClass.PreviewByteDictionary ( ): var[]..[]"
     }
   ],
   "Connectors": [
     {
-      "Start": "661d3132a5df4bbaae2dc74ccdbd562f",
+      "Start": "19ff13f87d5d4ac28736af66e0a80e0b",
       "End": "3f76a802ad484a90b7a466783baad45a",
-      "Id": "0a3e7eb777b243b3819acbdb41346e7b",
+      "Id": "35653deefde54d4297e35836f25c4282",
       "IsHidden": "False"
     }
   ],
@@ -75,7 +75,7 @@
       "Name": "FFITarget.dll",
       "ReferenceType": "ZeroTouch",
       "Nodes": [
-        "1590b6b5eec749978ede96d3e3f794e6"
+        "95889388fba84e11bc8905dcf80c10ea"
       ]
     }
   ],
@@ -132,14 +132,14 @@
         "Y": 134.0
       },
       {
-        "Id": "1590b6b5eec749978ede96d3e3f794e6",
-        "Name": "DummyZeroTouchClass.DecodeToByteDictionary",
+        "Id": "95889388fba84e11bc8905dcf80c10ea",
+        "Name": "DummyZeroTouchClass.PreviewByteDictionary",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 70.40000000000003,
-        "Y": 416.00000000000006
+        "X": 78.00000000000006,
+        "Y": 363.2
       }
     ],
     "Annotations": [],

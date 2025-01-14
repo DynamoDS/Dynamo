@@ -10,14 +10,34 @@
   "Outputs": [],
   "Nodes": [
     {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "8246737ac9fe4734bec2dc1e03edf5b3",
+      "NodeType": "FunctionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "466559bf56254b1dbd8eabbb0e268a3b",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "FFITarget.DummyZeroTouchClass.PreviewJSONDictionary",
+      "Replication": "Auto",
+      "Description": "DummyZeroTouchClass.PreviewJSONDictionary ( ): var[]..[]"
+    },
+    {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
       "WatchWidth": 200.0,
       "WatchHeight": 200.0,
-      "Id": "7e16a76e05f140f2b3c9f105a402eba5",
+      "Id": "4b9d2903cc064ae3a06f7acc38be558e",
       "NodeType": "ExtensionNode",
       "Inputs": [
         {
-          "Id": "5edfedb097ba41f4b91a3e7d9c200403",
+          "Id": "5000cb01edf64754a616d5df4daea236",
           "Name": "",
           "Description": "Node to show output from",
           "UsingDefaultValue": false,
@@ -28,7 +48,7 @@
       ],
       "Outputs": [
         {
-          "Id": "b03dcd8f66234e4a8c9b4f0a425c1215",
+          "Id": "3270aefb6c6a4b85b4d478681db49a9b",
           "Name": "",
           "Description": "Node output",
           "UsingDefaultValue": false,
@@ -39,33 +59,13 @@
       ],
       "Replication": "Disabled",
       "Description": "Visualizes a node's output"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "4f6e6a98bbce4e299b5a464f7d6f4a0d",
-      "NodeType": "FunctionNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "081f421cf35c446d8286198718fdec57",
-          "Name": "var[]..[]",
-          "Description": "var[]..[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "FFITarget.DummyZeroTouchClass.DecodeToJSONDictionary",
-      "Replication": "Auto",
-      "Description": "DummyZeroTouchClass.DecodeToJSONDictionary ( ): var[]..[]"
     }
   ],
   "Connectors": [
     {
-      "Start": "081f421cf35c446d8286198718fdec57",
-      "End": "5edfedb097ba41f4b91a3e7d9c200403",
-      "Id": "61c671a95e28452684392e434b501af8",
+      "Start": "466559bf56254b1dbd8eabbb0e268a3b",
+      "End": "5000cb01edf64754a616d5df4daea236",
+      "Id": "5dbe3adc97154ee0a5118b5bc835bd01",
       "IsHidden": "False"
     }
   ],
@@ -75,7 +75,7 @@
       "Name": "FFITarget.dll",
       "ReferenceType": "ZeroTouch",
       "Nodes": [
-        "4f6e6a98bbce4e299b5a464f7d6f4a0d"
+        "8246737ac9fe4734bec2dc1e03edf5b3"
       ]
     }
   ],
@@ -122,24 +122,24 @@
     "ConnectorPins": [],
     "NodeViews": [
       {
-        "Id": "7e16a76e05f140f2b3c9f105a402eba5",
+        "Id": "8246737ac9fe4734bec2dc1e03edf5b3",
+        "Name": "DummyZeroTouchClass.PreviewJSONDictionary",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 49.200000000000045,
+        "Y": 378.40000000000003
+      },
+      {
+        "Id": "4b9d2903cc064ae3a06f7acc38be558e",
         "Name": "Watch",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 558.0000000000003,
-        "Y": 134.0
-      },
-      {
-        "Id": "4f6e6a98bbce4e299b5a464f7d6f4a0d",
-        "Name": "DummyZeroTouchClass.DecodeToJSONDictionary",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 46.39999999999998,
-        "Y": 149.2
+        "X": 596.4000000000001,
+        "Y": 298.40000000000003
       }
     ],
     "Annotations": [],
