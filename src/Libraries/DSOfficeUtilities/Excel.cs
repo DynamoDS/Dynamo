@@ -105,7 +105,7 @@ namespace DSOffice
         {
             get
             {
-                return GetExcelProcess(App) != null;
+                return GetExcelProcess(_app) != null;
             }
         }
 

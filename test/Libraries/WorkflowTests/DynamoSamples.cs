@@ -5,6 +5,7 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -520,7 +521,7 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void ImportExport_Data_To_Excel()
         {
-            OpenSampleModel(@"en-US\ImportExport\ImportExport_Data To Excel.dyn");
+            OpenSampleModel(@"en-US\ImportExport\ImportExport_Data To Excel.dyn", true);
 
             var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
 
@@ -538,31 +539,28 @@ namespace Dynamo.Tests
             // Killing excel process if there is any after running the graph.
             foreach (var process in Process.GetProcessesByName("EXCEL"))
             {
-                if (process.MainWindowTitle.Equals("ImportExport_Data To Excel - Excel"))
+                if (process.MainWindowTitle.Equals("icosohedron_points - Excel"))
                 {
                     process.Kill();
                     break;
                 }
             }
-
         }
 
-        [Test, Category("ExcelTest"), Category("Failure")]
-            //Todo Ritesh: Locally passing but failing on CI.
-            //After fixing issue with this test case add Smoke Test Category.
+        [Test, Category("ExcelTest"), Category("SmokeTests")]
         public void ImportExport_Excel_to_Dynamo()
         {
-            OpenSampleModel(@"en-US\ImportExport\ImportExport_Excel to Dynamo.dyn");
+            OpenSampleModel(@"en-US\ImportExport\ImportExport_Excel to Dynamo.dyn", true);
 
             var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
 
-            string resultPath = SampleDirectory + "Data\\helix.xlsx";
+            string inputFile = Path.Combine(SampleDirectory, "Data\\helix.xlsx");
 
             //we cannot count on this path never changing as the samples path
             //must be updated to match dynamo version number
-            filename.Value = resultPath;
+            filename.Value = inputFile;
 
-            //RunCurrentModel();
+            RunCurrentModel();
 
             const string lineNodeID = "d538c147-b79f-4f11-9c00-1efd7f9b3c09";
             AssertPreviewCount(lineNodeID, 201);
@@ -577,7 +575,7 @@ namespace Dynamo.Tests
             // Killing excel process if there is any after running the graph.
             foreach (var process in Process.GetProcessesByName("EXCEL"))
             {
-                if (process.MainWindowTitle.Equals("ImportExport_Excel to Dynamo - Excel"))
+                if (process.MainWindowTitle.Equals("helix - Excel"))
                 {
                     process.Kill();
                     break;
