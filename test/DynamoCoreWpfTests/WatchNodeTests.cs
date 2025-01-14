@@ -446,6 +446,28 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void WatchDictionaryJSONValuesDisplaysCorrectly()
+        {
+
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchDictionaryJSONValuesDisplaysCorrectly.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name, true);
+
+            var list = watchVM.Children;
+            Assert.AreEqual(1, list.Count);
+            var children = list[0].Children;
+            Assert.AreEqual(2, children.Count);
+            Assert.AreEqual("String", children[0].ValueType);
+            Assert.AreEqual("value1", children[0].NodeLabel);
+        }
+
+        [Test]
         public void WatchNestedDictionaryPreviewFromMlutiReturnNode()
         {
             string openPath = Path.Combine(TestDirectory, @"core\watch\MultiReturnWatchNestedDictionary.dyn");
