@@ -23,6 +23,7 @@ namespace DynamoCoreWpfTests
             libraries.Add("VMDataBridge.dll");
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
@@ -361,6 +362,87 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("Dictionary", children[1].NodeLabel);
             Assert.AreEqual("2", children[2].NodeLabel);
             Assert.AreEqual("1", children[3].NodeLabel);
+        }
+
+        [Test]
+        public void WatchJSONObjectDisplaysCorrectly()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchJSONObjectDisplaysCorrectly.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name, true);
+
+            var list = watchVM.Children;
+            Assert.AreEqual(1, list.Count);
+            var children = list[0].Children;
+            Assert.AreEqual("Dictionary", list[0].NodeLabel);
+            Assert.AreEqual(3, children.Count);
+            Assert.AreEqual("Dictionary", children[2].NodeLabel);
+
+            children = children[2].Children;
+            Assert.AreEqual(7, children.Count);
+            Assert.AreEqual(" author ", children[2].ViewPath);
+            Assert.AreEqual("KBJ6N6Z8R2W3", children[2].NodeLabel);
+        }
+
+        [Test]
+        public void WatchDictionaryByteValuesDisplaysCorrectly()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchDictionaryByteValuesDisplaysCorrectly.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name, true);
+
+            var list = watchVM.Children;
+            Assert.AreEqual(1, list.Count);
+            var children = list[0].Children;
+            Assert.AreEqual(12, children.Count);
+            Assert.AreEqual("Byte", children[0].ValueType);
+            Assert.AreEqual("72", children[0].NodeLabel);
+        }
+
+        [Test]
+        public void WatchDictionaryUintValuesDisplaysCorrectly()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchDictionaryUintValuesDisplaysCorrectly.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                watchNode.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name, true);
+
+            var list = watchVM.Children;
+            Assert.AreEqual(1, list.Count);
+            var children = list[0].Children;
+            Assert.AreEqual(5, children.Count);
+            Assert.AreEqual("UInt32", children[0].ValueType);
+            Assert.AreEqual("3", children[2].NodeLabel);
+
+            var uint64node = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("DummyZeroTouchClass.DecodeToUint64Dictionary");
+            var vm = ViewModel.WatchHandler.GenerateWatchViewModelForData(
+                uint64node.CachedValue, watchNode.OutPorts.Select(p => p.Name),
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                watchNode.AstIdentifierForPreview.Name, true);
+
+            list = vm.Children;
+            Assert.AreEqual(1, list.Count);
+            children = list[0].Children;
+            Assert.AreEqual(5, children.Count);
+            Assert.AreEqual("UInt64", children[0].ValueType);
+            Assert.AreEqual("3", children[2].NodeLabel);
         }
 
         [Test]

@@ -272,8 +272,6 @@ namespace Dynamo.ViewModels
                 case TypeCode.DateTime:
                     return ((DateTime)obj).ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture);
                 case TypeCode.Object:
-                    if (obj is byte[] byteArray)
-                        return Encoding.UTF8.GetString(byteArray);
                     return ObjectToLabelString(obj);
                 case TypeCode.Byte:
                     return ((byte)obj).ToString(CultureInfo.InvariantCulture);

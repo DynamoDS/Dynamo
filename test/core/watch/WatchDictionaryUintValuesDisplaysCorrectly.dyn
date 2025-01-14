@@ -1,0 +1,181 @@
+{
+  "Uuid": "44be9033-1237-4074-b64a-04f5e4fbee18",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "WatchDictionaryUintValuesDisplaysCorrectly",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "323e1fa982d44e28994147ca1d3ab92a",
+      "NodeType": "FunctionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "652af580d4e54c67ab6b77e33a615c89",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "FFITarget.DummyZeroTouchClass.DecodeToUint32Dictionary",
+      "Replication": "Auto",
+      "Description": "DummyZeroTouchClass.DecodeToUint32Dictionary ( ): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "9b8b6b2f0d7043389c77e60936da1153",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a28f58656c4e48e395d218f370d104ec",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a4d6f3613d34421ca298fe5ebca40062",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "1c54f75b46ed441d8e2cb39d68e6ba06",
+      "NodeType": "FunctionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c1cb61dc2b4e48e99f6ee50e710ea411",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "FFITarget.DummyZeroTouchClass.DecodeToUint64Dictionary",
+      "Replication": "Auto",
+      "Description": "DummyZeroTouchClass.DecodeToUint64Dictionary ( ): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "652af580d4e54c67ab6b77e33a615c89",
+      "End": "a28f58656c4e48e395d218f370d104ec",
+      "Id": "029069936ad54e278817548aa765b156",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "FFITarget.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "323e1fa982d44e28994147ca1d3ab92a",
+        "1c54f75b46ed441d8e2cb39d68e6ba06"
+      ]
+    }
+  ],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.5",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.5.0.6885",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "323e1fa982d44e28994147ca1d3ab92a",
+        "Name": "DummyZeroTouchClass.DecodeToUint32Dictionary",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 38.799999999999955,
+        "Y": 73.60000000000007
+      },
+      {
+        "Id": "9b8b6b2f0d7043389c77e60936da1153",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 657.6000000000001,
+        "Y": 39.20000000000003
+      },
+      {
+        "Id": "1c54f75b46ed441d8e2cb39d68e6ba06",
+        "Name": "DummyZeroTouchClass.DecodeToUint64Dictionary",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 49.19999999999982,
+        "Y": 352.80000000000007
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
