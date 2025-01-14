@@ -25,10 +25,12 @@ namespace Dynamo.Wpf.Charts
         private ControlLine curveBezierControlLine2;
         private CurveMapperControlPoint pointBezierControl1;
         private CurveMapperControlPoint pointBezierControl2;
-        //private CurveMapperControlPointOrtho pointBezierFix1;
-        //private CurveMapperControlPointOrtho pointBezierFix2;
         private CurveMapperControlPoint pointBezierFix1;
         private CurveMapperControlPoint pointBezierFix2;
+
+        private CurveMapperControlPoint controlPointSine1;
+        private CurveMapperControlPoint controlPointSine2;
+        private SineCurve sineCurve;
 
 
 
@@ -165,6 +167,45 @@ namespace Dynamo.Wpf.Charts
 
                 #endregion
 
+                #region Sine
+                // Create control points and add to the canvas
+                model.ControlPointSine1 = controlPointSine1 = new CurveMapperControlPoint(
+                    new Point(0, 0),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                model.ControlPointSine2 = controlPointSine2 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                curveMapperControl.GraphCanvas.Children.Add(controlPointSine1);
+                curveMapperControl.GraphCanvas.Children.Add(controlPointSine2);
+                Canvas.SetZIndex(controlPointSine1, 20);
+                Canvas.SetZIndex(controlPointSine2, 20);
+
+                // Create the sine curve and add to the canvas
+                model.CurveSine = new SineCurve(
+                    model.ControlPointSine1,
+                    model.ControlPointSine2,
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize);
+                sineCurve = model.CurveSine;
+                Canvas.SetZIndex(model.CurveSine, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.CurveSine.PathCurve);
+
+                ////// Assign curves to control points
+                model.ControlPointSine1.CurveSine = model.CurveSine;
+                model.ControlPointSine2.CurveSine = model.CurveSine;
+
+                // Bind properties for startControlPoint and endControlPoint
+                ApplyBindingsToControlPoints(controlPointSine1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(controlPointSine2, model, curveMapperControl);
+
+                #endregion
+
 
 
                 // Add visibility binding if needed
@@ -183,15 +224,12 @@ namespace Dynamo.Wpf.Charts
                 ConverterParameter = GraphTypes.Linear, // Only show for Linear GraphType
                 Mode = BindingMode.OneWay
             };
-            // Bind visibility for the controls
             if (startControlPointLinear != null)
                 startControlPointLinear.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
             if (endControlPointLinear != null)
                 endControlPointLinear.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
             if (linearCurve != null)
                 linearCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
-
-
 
             // Visibility binding for Bezier GraphType
             var bezierVisibilityBinding = new Binding("SelectedGraphType")
@@ -201,7 +239,6 @@ namespace Dynamo.Wpf.Charts
                 ConverterParameter = GraphTypes.Bezier, // Only show for Bezier GraphType
                 Mode = BindingMode.OneWay
             };
-            // Bind visibility for bezier controls
             if (pointBezierControl1 != null)
                 pointBezierControl1.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
             if (pointBezierControl2 != null)
@@ -216,6 +253,21 @@ namespace Dynamo.Wpf.Charts
                 curveBezierControlLine2.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
             if (model.CurveBezier != null)
                 model.CurveBezier.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+
+            // Visibility binding for Sine GraphType
+            var sineVisibilityBinding = new Binding("SelectedGraphType")
+            {
+                Source = model,
+                Converter = new GraphTypeToVisibilityConverter(),
+                ConverterParameter = GraphTypes.SineWave, // Only show for Sine GraphType
+                Mode = BindingMode.OneWay
+            };
+            if (controlPointSine1 != null)
+                controlPointSine1.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            if (controlPointSine2 != null)
+                controlPointSine2.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            if (model.CurveSine != null)
+                model.CurveSine.PathCurve.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
         }
 
         /// <summary> Helper method to bind a dependency property of a control point to a model or control.</summary>

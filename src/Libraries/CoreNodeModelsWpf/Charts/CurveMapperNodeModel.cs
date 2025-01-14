@@ -42,18 +42,19 @@ namespace CoreNodeModelsWpf.Charts
         private double maxLimitX = 1;
         private double minLimitY;
         private double maxLimitY = 1;
-        private double pointsCount = 10;
+        private int pointsCount = 10;
         private readonly IntNode minLimitXDefaultValue = new IntNode(0);
         private readonly IntNode maxLimitXDefaultValue = new IntNode(1);
         private readonly IntNode minLimitYDefaultValue = new IntNode(0);
         private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
         private readonly IntNode pointsCountDefaultValue = new IntNode(10);
+        private GraphTypes selectedGraphType;
 
         [JsonIgnore]
         internal EngineController EngineController { get; set; }
 
         // Should those properties be serialized ???
-        //[JsonProperty(PropertyName = "MinLimitX")]
+        [JsonIgnore]
         public double MinLimitX
         {
             get => minLimitX;
@@ -68,7 +69,7 @@ namespace CoreNodeModelsWpf.Charts
                 }                
             }
         }
-        //[JsonProperty(PropertyName = "MaxLimitX")]
+        [JsonIgnore]
         public double MaxLimitX
         {
             get => maxLimitX;
@@ -83,7 +84,7 @@ namespace CoreNodeModelsWpf.Charts
                 }
             }
         }
-        //[JsonProperty(PropertyName = "MinLimitY")]
+        [JsonIgnore]
         public double MinLimitY
         {
             get => minLimitY;
@@ -98,7 +99,7 @@ namespace CoreNodeModelsWpf.Charts
                 }                
             }
         }
-        //[JsonProperty(PropertyName = "MaxLimitY")]
+        [JsonIgnore]
         public double MaxLimitY
         {
             get => maxLimitY;
@@ -113,10 +114,12 @@ namespace CoreNodeModelsWpf.Charts
                 }                
             }
         }
+        [JsonIgnore]
         public double MidValueX => (MaxLimitX + MinLimitX) * 0.5;
+        [JsonIgnore]
         public double MidValueY => (MaxLimitY + MinLimitY) * 0.5;
-        [JsonProperty(PropertyName = "PointsCount")]
-        public double PointsCount
+        [JsonIgnore]
+        public int PointsCount
         {
             get => pointsCount;
             set
@@ -128,9 +131,8 @@ namespace CoreNodeModelsWpf.Charts
                     OnNodeModified();
                 }
             }
-        }
-
-        private GraphTypes selectedGraphType;
+        }        
+        [JsonIgnore] // [JsonConverter(typeof(StringEnumConverter))]
         public GraphTypes SelectedGraphType
         {
             get => selectedGraphType;
@@ -145,81 +147,66 @@ namespace CoreNodeModelsWpf.Charts
 
         
 
-        #region Linear Points
-        //[JsonConverter(typeof(StringToPointThumbConverter))]
+        #region Linear Curve
         [JsonIgnore]
         public CurveMapperControlPoint PointLinearStart { get; set; }
-        //[JsonConverter(typeof(StringToPointThumbConverter))]
+        [JsonIgnore]
         public CurveMapperControlPoint PointLinearEnd { get; set; }
         [JsonIgnore]
         public CurveLinear LinearCurve { get; set; }
+        [JsonIgnore]
         public CurveMapperControl CurveMapperControl { get; set; }
         #endregion
 
-        #region Bezier Points
+        #region Bezier Curve
         // represent fixed control points of a Bezier curve
         // likely the non-draggable control points of the curve that define ends or anchors
-        private double fixed1X;
-        private double fixed1Y;
-        private double fixed2X;
-        private double fixed2Y;
-
-        public double Fixed1X
-        {
-            get => fixed1X;
-            set => fixed1X = value;
-        }
-        public double Fixed1Y
-        {
-            get => fixed1Y;
-            set => fixed1Y = value;
-        }
-        public double Fixed2X
-        {
-            get => fixed2X;
-            set => fixed2X = value;
-        }
-        public double Fixed2Y
-        {
-            get => fixed2Y;
-            set => fixed2Y = value;
-        }
-
-        private double free1X;
-        private double free1Y;
-        private double free2X;
-        private double free2Y;
-
-        public double Free1X
-        {
-            get => free1X;
-            set => free1X = value;
-        }
-        public double Free1Y
-        {
-            get => free1Y;
-            set => free1Y = value;
-        }
-        public double Free2X
-        {
-            get => free2X;
-            set => free2X = value;
-        }
-        public double Free2Y
-        {
-            get => free2Y;
-            set => free2Y = value;
-        }
-
+        [JsonIgnore]
         public CurveMapperControlPoint PointBezierControl1 { get; set; }
+        [JsonIgnore]
         public CurveMapperControlPoint PointBezierControl2 { get; set; }
+        [JsonIgnore]
         public CurveMapperControlPoint PointBezierFix1 { get; set; }
+        [JsonIgnore]
         public CurveMapperControlPoint PointBezierFix2 { get; set; }
+        [JsonIgnore]
         public ControlLine CurveBezierControlLine1 { get; set; }
+        [JsonIgnore]
         public ControlLine CurveBezierControlLine2 { get; set; }
+        [JsonIgnore]
         public CurveBezier CurveBezier {  get; set; }
+        #endregion
+
+        #region Sine Curve
+        private CurveMapperControlPoint controlPointSine1;
+        private CurveMapperControlPoint controlPointSine2;
+
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint ControlPointSine1
+        {
+            get => controlPointSine1;
+            set
+            {
+                controlPointSine1 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint ControlPointSine2
+        {
+            get => controlPointSine2;
+            set
+            {
+                controlPointSine2 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore]
+        public SineCurve CurveSine { get; set; }
 
         #endregion
+
+
 
         /// <summary>
         /// Triggers when port is connected or disconnected
@@ -332,44 +319,54 @@ namespace CoreNodeModelsWpf.Charts
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (!InPorts[0].IsConnected || !InPorts[1].IsConnected)
+            if (!InPorts[0].IsConnected || !InPorts[1].IsConnected ||
+                !InPorts[2].IsConnected || !InPorts[3].IsConnected ||
+                !InPorts[4].IsConnected)
             {
                 return new[]
                 {
                     AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildNullNode())
                 };
             }
 
-            var minLimitX = inputAstNodes[0]; // x-MinLimit
-            var maxLimitX = inputAstNodes[1]; // x-MaxLimit
-            var minLimitY = inputAstNodes[2]; // y-MinLimit
-            var maxLimitY = inputAstNodes[3]; // y-MaxLimit
+            var minLimitXNode = inputAstNodes[0];
+            var maxLimitXNode = inputAstNodes[1];
+            var minLimitYNode = inputAstNodes[2];
+            var maxLimitYNode = inputAstNodes[3];
+            var pointCountNode = inputAstNodes[4];
 
-            // Function call for the computational logic of CurveMapper
-            var functionCall = AstFactory.BuildFunctionCall(
-                new Func<double, double, double, double, List<double>>(CurveMapperFunctions.GenerateCurve),
-                new List<AssociativeNode>
-                {
-                    minLimitX,
-                    maxLimitX,
-                    minLimitY,
-                    maxLimitY
-                }
+            // Function calls for X and Y values
+            var generateXValuesCall = AstFactory.BuildFunctionCall(
+                new Func<double, double, int, List<double>>(CurveMapperFunctions.GenerateXValues),
+                new List<AssociativeNode> { minLimitXNode, maxLimitXNode, pointCountNode }
             );
 
-            // Add the DataBridge call to trigger the callback
+            var generateYValuesCall = AstFactory.BuildFunctionCall(
+                new Func<double, double, double, double, int, List<double>>(CurveMapperFunctions.GenerateYValues),
+                new List<AssociativeNode> { minLimitXNode, maxLimitXNode, minLimitYNode, maxLimitYNode, pointCountNode }
+            );
+
+            // Assign to output ports
+            var xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), generateXValuesCall);
+            var yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), generateYValuesCall);
+
+            // DataBridge call
             var dataBridgeCall = AstFactory.BuildAssignment(
                 AstFactory.BuildIdentifier(AstIdentifierBase + "_dataBridge"),
                 VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes))
             );
 
-            // Return both the function call and the DataBridge call
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall),
+                yValuesAssignment,
+                xValuesAssignment,
                 dataBridgeCall
             };
         }
+
+
+
 
         #endregion
 

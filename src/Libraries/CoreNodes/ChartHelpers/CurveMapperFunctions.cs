@@ -8,19 +8,22 @@ namespace CoreNodes.ChartHelpers
 {
     public class CurveMapperFunctions
     {
-        public static List<double> GenerateCurve(
-            double limitMinX,
-            double limitMaxX,
-            double limitMinY,
-            double limitMaxY)
-        {
-            return null;
-        }
         //public static List<double> GenerateCurve(
-        //    int graphType,
-        //    int count,
         //    double limitMinX,
         //    double limitMaxX,
+        //    double limitMinY,
+        //    double limitMaxY,
+        //    double count)
+        //{
+        //    return new List<double> { 1,2,3};
+        //}
+
+
+        //public static List<double> GenerateValues(
+        //    int graphType,
+        //    int count,
+        //    double limitMin,
+        //    double limitMax,
         //    double maxX,
         //    double maxy,
         //    List<double> fixed1,
@@ -30,7 +33,7 @@ namespace CoreNodes.ChartHelpers
         //{
         //    List<double> retval = new List<double>();
 
-        //    double diffx = limitMaxX - limitMinX;
+        //    double diffx = limitMax - limitMin;
         //    double diffy = maxy;
         //    double quotx = diffx / (count - 1);
         //    double quoty = diffy / (count - 1);
@@ -48,11 +51,11 @@ namespace CoreNodes.ChartHelpers
         //    switch (graphType)
         //    {
         //        case 0: //  LINEAR
-        //            for (double d = limitMinX; d < limitMaxX; d += quotx)
+        //            for (double d = limitMin; d < limitMax; d += quotx)
         //            {
         //                retval.Add(SolveLinear(d, free1[0], free1[1], free2[0], free2[1]));
         //            }
-        //            retval.Add(SolveLinear(limitMaxX, free1[0], free1[1], free2[0], free2[1]));
+        //            retval.Add(SolveLinear(limitMax, free1[0], free1[1], free2[0], free2[1]));
         //            break;
         //        default:
         //            break;
@@ -61,14 +64,48 @@ namespace CoreNodes.ChartHelpers
         //    return retval;
         //}
 
-        //private static double SolveLinear(double xVal, double pt1X, double pt1Y, double pt2X, double pt2Y)
-        //{
-        //    return xVal * (pt2Y - pt1Y) / (pt2X - pt1X);
-        //}
 
-        //private static double SolveParabolic(double xVal, double pt1X, double pt1Y, double pt2X, double pt2Y)
-        //{
-        //    return 0;
-        //}
+
+        public static List<double> GenerateXValues(double limitMinX, double limitMaxX, int count)
+        {
+            List<double> xValues = new List<double>();
+            double step = (limitMaxX - limitMinX) / (count - 1);
+
+            for (int i = 0; i < count; i++)
+            {
+                xValues.Add(limitMinX + i * step);
+            }
+
+            return xValues;
+        }
+
+        public static List<double> GenerateYValues(double limitMinX, double limitMaxX, double limitMinY, double limitMaxY, int count)
+        {
+            List<double> yValues = new List<double>();
+            double step = (limitMaxX - limitMinX) / (count - 1);
+            double rangeY = limitMaxY - limitMinY;
+
+            for (int i = 0; i < count; i++)
+            {
+                double x = limitMinX + i * step;
+                yValues.Add(limitMinY + (rangeY * (x - limitMinX) / (limitMaxX - limitMinX)));
+            }
+
+            return yValues;
+        }
+
+
+
+
+
+        private static double SolveLinear(double xVal, double pt1X, double pt1Y, double pt2X, double pt2Y)
+        {
+            return xVal * (pt2Y - pt1Y) / (pt2X - pt1X);
+        }
+
+        private static double SolveParabolic(double xVal, double pt1X, double pt1Y, double pt2X, double pt2Y)
+        {
+            return 0;
+        }
     }
 }

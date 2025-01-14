@@ -329,6 +329,16 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     
                 }
             }
+            else if (model.SelectedGraphType == GraphTypes.SineWave)
+            {
+                model.ControlPointSine1.Point = new Point(0, 0);
+                model.ControlPointSine2.Point = new Point(DynamicCanvasSize, DynamicCanvasSize);
+                if (model.CurveSine != null)
+                {
+                    model.CurveSine.Regenerate(model.ControlPointSine1);
+                    model.CurveSine.Regenerate(model.ControlPointSine2);
+                }
+            }
         }
     }
 }

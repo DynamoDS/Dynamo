@@ -262,6 +262,7 @@
     <Compile Include="Controls\SubControls\CurveBase.cs" />
     <Compile Include="Controls\SubControls\CurveBezier.cs" />
     <Compile Include="Controls\SubControls\CurveLinear.cs" />
+    <Compile Include="Controls\SubControls\SineCurve.cs" />
     <Compile Include="Controls\SubControls\TextBase.cs" />
     <Compile Include="Controls\SubControls\UVCoordText.cs" />
     <Compile Include="Controls\UseLevelPopup.cs" />

@@ -122,6 +122,11 @@ namespace Dynamo.Wpf.Controls
         public CurveBezier CurveBezier { get; set; }
 
         /// <summary>
+        /// Gets or sets the associated sine curve for the control point.
+        /// </summary>
+        public SineCurve CurveSine { get; set; }
+
+        /// <summary>
         /// Gets or sets the associated control curve for the control point.
         /// </summary>
         public ControlLine ControlLineBezier { get; set; }
@@ -209,6 +214,10 @@ namespace Dynamo.Wpf.Controls
             if (CurveBezier != null)
             {
                 CurveBezier.Regenerate(this);
+            }
+            if (CurveSine != null)
+            {
+                CurveSine.Regenerate(this);
             }
 
             // Regenerate associated horizontal and vertical crossHairs
