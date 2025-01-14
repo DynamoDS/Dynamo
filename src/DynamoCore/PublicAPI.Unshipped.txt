@@ -1813,6 +1813,8 @@ Dynamo.Models.DynamoModel.CurrentWorkspace.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.AuthProvider.get -> Greg.IAuthProvider
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.AuthProvider.set -> void
+Dynamo.Models.DynamoModel.DefaultStartConfiguration.CLILocale.get -> string
+Dynamo.Models.DynamoModel.DefaultStartConfiguration.CLILocale.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.CLIMode.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.CLIMode.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.Context.get -> string

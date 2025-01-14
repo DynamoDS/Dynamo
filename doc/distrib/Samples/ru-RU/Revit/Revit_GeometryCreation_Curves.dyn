@@ -1,0 +1,1510 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "Этот график иллюстрирует несколько способов создания кривых в Dynamo и их использование для создания элементов Revit (линий модели)",
+  "Name": "Revit_GeometryCreation_Curves",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "918f7dc4e6d04d6b9b51c329d02db2b2",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "7e4ecb613da44ca096e01392bc76cb9a",
+          "Name": "x",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "71d831bf6e164d7ba43a8a5e620956e9",
+          "Name": "y",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "643d9297ac474b36affa5bf4a97000ce",
+          "Name": "z",
+          "Description": "Координата Z\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "84830109d30f46f19ae4ee0abf993f6f",
+          "Name": "Point",
+          "Description": "Точка, созданная по координатам",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Построение точки на основе трех заданных декартовых координат\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "fb265a3222b04d2ab4f726b28bc90c10",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "792a8e92696d4784ba634c5c58445feb",
+          "Name": "x",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2c87aff610e94f9fb20e0bb9a0f40e35",
+          "Name": "y",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "81f82d1becc84afda4aae302076ef4ed",
+          "Name": "z",
+          "Description": "Координата Z\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6b94b48be9fc4c8c851a52aa9565b0cf",
+          "Name": "Point",
+          "Description": "Точка, созданная по координатам",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Построение точки на основе трех заданных декартовых координат\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "e594468a412344b4870884b31915b703",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "bc23b06d3147480693728d866bfd3102",
+          "Name": "x",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7b010d41d65a49e685d54a57366419ba",
+          "Name": "y",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0ccd412574e94dc6936d1649ffc21811",
+          "Name": "z",
+          "Description": "Координата Z\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d55937f018e744279d94882a59fb8409",
+          "Name": "Point",
+          "Description": "Точка, созданная по координатам",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Построение точки на основе трех заданных декартовых координат\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "64155f51080847f8be8d0fb57485b1e3",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c919e25fda2943c7bd5c704caa87cc90",
+          "Name": "x",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2d77c81d684845dcaea3eea68c1aa545",
+          "Name": "y",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cfeaf1818800471a9fe122fd398d366e",
+          "Name": "z",
+          "Description": "Координата Z\n\ndouble\nЗначение по умолчанию: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fa1c20952f814e918726af8d7a24b380",
+          "Name": "Point",
+          "Description": "Точка, созданная по координатам",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Построение точки на основе трех заданных декартовых координат\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "d200379e5c8c4f8b968d2f0887223d68",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "609698e1619f46078fbb750b1d926960",
+          "Name": "points",
+          "Description": "Точки для NURBS-кривой\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "72d79541a1fb4ee49ac85053f914fe10",
+          "Name": "NurbsCurve",
+          "Description": "NURBS-кривая, созданная по точкам",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Replication": "Auto",
+      "Description": "Создание объекта BSplineCurve путем интерполяции между точками.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "835b1ec252ca4b639a1f2a0dde80b497",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "048ff454c3374fcab7b871d07c3e04ff",
+          "Name": "points",
+          "Description": "Точки для создания сложной кривой\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e30de962998a472a91c08689973f18de",
+          "Name": "connectLastToFirst",
+          "Description": "Значение true — соединение последней точки с первой, false — без замыкания\n\nbool\nЗначение по умолчанию: false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ca9bee947bd14dd892b213bec464fd0d",
+          "Name": "PolyCurve",
+          "Description": "Сложная кривая, созданная по точкам",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
+      "Replication": "Auto",
+      "Description": "Создание сложной кривой путем соединения точек. Чтобы замкнуть сложную кривую, задайте для параметра connectLastToFirst значение true.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "6e4f5b2b2389451b95459dea13431b8b",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f144a3b531ca4fbbb6d657c5b82159dc",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Возможность выбора между значениями True и False",
+      "InputValue": false
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "8ba3309a6ded4059a074fa0c2b291919",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "bf9fb50678ac44aebbb9bd32cafa6887",
+          "Name": "points",
+          "Description": "Точки для NURBS-кривой\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2bcfcb568a974392ab2d7ee0b8fd296f",
+          "Name": "degree",
+          "Description": "int\nЗначение по умолчанию: 3",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4a2381071b1541c8b27a188890efb64f",
+          "Name": "closeCurve",
+          "Description": "bool\nЗначение по умолчанию: False",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "689da248fa3e452797be31dedccbb9b5",
+          "Name": "NurbsCurve",
+          "Description": "NURBS-кривая, созданная по точкам",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[],int,bool",
+      "Replication": "Auto",
+      "Description": "Создание элемента BSplineCurve с помощью точных управляющих точек. ПРИМЕЧАНИЕ 1. В элементах BSplineCurve со значением кривизны 1 имеются точки разрыва G1, приводящие к проблемам при выдавливании, сдвиге и выполнении других операций. Их следует избегать. Используйте вместо них сложную кривую. ПРИМЕЧАНИЕ 2. Если кривая является периодической (замкнутой), первая и последняя точки ДОЛЖНЫ совпадать.\n\nNurbsCurve.ByControlPoints (points: Point[], degree: int = 3, closeCurve: bool = false): NurbsCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "f4ef10a11aed49d5847439cdbdf5fea6",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "1bdd3a63c00f4233a6d2499ee275950c",
+          "Name": "curve",
+          "Description": "Кривая",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "30b0aa4fee394e21a04f6e2ff7351ad8",
+          "Name": "ModelCurve",
+          "Description": "ModelCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
+      "Replication": "Auto",
+      "Description": "Построение элемента Revit ModelCurve на основе кривой\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "e21f9bb6cb724a3cb7ea68caf7ace5f3",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "061cbf0da0034a44aa950c40c1c2a166",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Создание числа",
+      "InputValue": -35.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "0c469019fb6d423bb4119230f11458f1",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0402107e20824d23b1a6a3c95cb3dad6",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Создание числа",
+      "InputValue": -55.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "a0fbeaadfce64458bb914b09cdce4c57",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "95e19d6de2ba436383b68df02a631e36",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Создание числа",
+      "InputValue": -40.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "58815d96f9b34ab3a996598d317495f6",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "000e5288237c4f7fa9ab794c1fa0d89d",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Создание числа",
+      "InputValue": -10.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "be32eeb6f2ce4fe1a1833f91a11e5f55",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4bbcefc7290b4308b7b8e96d70546c7e",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Создание числа",
+      "InputValue": -17.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "95cfcdbfad6d40f2af2b5d26afd9a6f7",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4231cfc89e3f4dcd8f565c62421c353a",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Создание числа",
+      "InputValue": -60.0
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "5b9b35e9843f44de89bf6768b8524e10",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8ea19848e60e45bdbcc6a8a628f7ac1e",
+          "Name": "curve",
+          "Description": "Кривая",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "91820991b18647cebe61a255a33ab079",
+          "Name": "ModelCurve",
+          "Description": "ModelCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
+      "Replication": "Auto",
+      "Description": "Построение элемента Revit ModelCurve на основе кривой\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "21fbd443af1b4b1c986595f890530407",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "60860dacac804d3aaa17161da6aa08b3",
+          "Name": "curve",
+          "Description": "Кривая",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4ae43f5653804ba0b9b7b3bf77d9e549",
+          "Name": "ModelCurve",
+          "Description": "ModelCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
+      "Replication": "Auto",
+      "Description": "Построение элемента Revit ModelCurve на основе кривой\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "39da11a151dd4cd6b3b7acdabfe60710",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "3c0f72267bbb45448639405a75a4f2e2",
+          "Name": "polyCurve",
+          "Description": "Autodesk.DesignScript.Geometry.PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cc3d8b6406964e18bfd85febaadbe731",
+          "Name": "Curve[]",
+          "Description": "Curve[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.Curves",
+      "Replication": "Auto",
+      "Description": "Получение кривых в составе сложной кривой\n\nPolyCurve.Curves ( ): Curve[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "be175c3deb294a31ade406037f4ef443",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "1fec333f911b4421a609b95ca863b26e",
+          "Name": "item0",
+          "Description": "Индекс элемента #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a56b23a7028d44d28c6565a8edd7cb8f",
+          "Name": "item1",
+          "Description": "Индекс элемента #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "763d3a3082b2427f83cfbd38e78857de",
+          "Name": "item2",
+          "Description": "Индекс элемента #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0d995ca540f04223aed4736375b1a43c",
+          "Name": "item3",
+          "Description": "Индекс элемента #3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8219e933de2b430bb2334819919e7833",
+          "Name": "list",
+          "Description": "Список (тип: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Создание списка из заданных входных значений"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "08523ffd63c142bc9436fcaa1246ece6",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "30f82abbafe94e50829423cb82292293",
+          "Name": "curve",
+          "Description": "Кривая",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7d9777295bc14813817133e65e2cf36c",
+          "Name": "ModelCurve",
+          "Description": "ModelCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
+      "Replication": "Auto",
+      "Description": "Построение элемента Revit ModelCurve на основе кривой\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "7979f6ce63b64cfb98729d05812a111c",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8f8c49ed861741c4a07075dd69a5f9a9",
+          "Name": "startPoint",
+          "Description": "Начальная точка отрезка\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4d978a6e8c514419b8a015d8215629ab",
+          "Name": "endPoint",
+          "Description": "Конечная точка отрезка\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bd5e5c4ee3e54c44b9b29729da58b223",
+          "Name": "Line",
+          "Description": "Линия по начальной и конечной точкам",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Построение прямой линии между двумя точками ввода.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "84830109d30f46f19ae4ee0abf993f6f",
+      "End": "1fec333f911b4421a609b95ca863b26e",
+      "Id": "96ce49c4905248f2893353956b3b2360",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "84830109d30f46f19ae4ee0abf993f6f",
+      "End": "8f8c49ed861741c4a07075dd69a5f9a9",
+      "Id": "dd4af268735e44d6800b6490c372df65",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6b94b48be9fc4c8c851a52aa9565b0cf",
+      "End": "763d3a3082b2427f83cfbd38e78857de",
+      "Id": "bbef2b811939461ab87fc85bfaa23fa7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d55937f018e744279d94882a59fb8409",
+      "End": "a56b23a7028d44d28c6565a8edd7cb8f",
+      "Id": "ff51316d8fdd45a7a11c21609374493f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d55937f018e744279d94882a59fb8409",
+      "End": "4d978a6e8c514419b8a015d8215629ab",
+      "Id": "759ee3e354664180b2523c6f3655af79",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fa1c20952f814e918726af8d7a24b380",
+      "End": "0d995ca540f04223aed4736375b1a43c",
+      "Id": "3377a9cc7c2c4dc3beb6cdaabb25cdd4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "72d79541a1fb4ee49ac85053f914fe10",
+      "End": "1bdd3a63c00f4233a6d2499ee275950c",
+      "Id": "d998dfab4d0a4250a7e2bc46acf348a7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ca9bee947bd14dd892b213bec464fd0d",
+      "End": "3c0f72267bbb45448639405a75a4f2e2",
+      "Id": "3552730b658e411d99aa6bcd9d64800e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f144a3b531ca4fbbb6d657c5b82159dc",
+      "End": "4a2381071b1541c8b27a188890efb64f",
+      "Id": "cf22c20d031c4eddaad5301957e47d5c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "689da248fa3e452797be31dedccbb9b5",
+      "End": "8ea19848e60e45bdbcc6a8a628f7ac1e",
+      "Id": "6d628353d71e47c4a1e7bdf8c3a91c4a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "061cbf0da0034a44aa950c40c1c2a166",
+      "End": "7e4ecb613da44ca096e01392bc76cb9a",
+      "Id": "13d4eded763540c2b64f68bc6e056942",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "061cbf0da0034a44aa950c40c1c2a166",
+      "End": "bc23b06d3147480693728d866bfd3102",
+      "Id": "286b524026ec405f9f11943a6572d32c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0402107e20824d23b1a6a3c95cb3dad6",
+      "End": "71d831bf6e164d7ba43a8a5e620956e9",
+      "Id": "b6919ac91b884edfa305dd28d767ab17",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "95e19d6de2ba436383b68df02a631e36",
+      "End": "7b010d41d65a49e685d54a57366419ba",
+      "Id": "a3b232f6edc242069f7fd437a6be5f25",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "95e19d6de2ba436383b68df02a631e36",
+      "End": "2c87aff610e94f9fb20e0bb9a0f40e35",
+      "Id": "d4d5bae3464643078429b6609bbbb030",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "000e5288237c4f7fa9ab794c1fa0d89d",
+      "End": "792a8e92696d4784ba634c5c58445feb",
+      "Id": "f81554d3768c454081dcb8fe0b8adbd7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4bbcefc7290b4308b7b8e96d70546c7e",
+      "End": "c919e25fda2943c7bd5c704caa87cc90",
+      "Id": "b038b34811a842d8805c6b6199adb90a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4231cfc89e3f4dcd8f565c62421c353a",
+      "End": "2d77c81d684845dcaea3eea68c1aa545",
+      "Id": "6be041875be04d87802d67a3262f7d6e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cc3d8b6406964e18bfd85febaadbe731",
+      "End": "60860dacac804d3aaa17161da6aa08b3",
+      "Id": "4859da5fceb6447297191e7b28868db8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8219e933de2b430bb2334819919e7833",
+      "End": "048ff454c3374fcab7b871d07c3e04ff",
+      "Id": "86b6d59630054b3a8a32d6869988f760",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8219e933de2b430bb2334819919e7833",
+      "End": "bf9fb50678ac44aebbb9bd32cafa6887",
+      "Id": "fb1ad98429a545c082c30fbba0ba15ea",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8219e933de2b430bb2334819919e7833",
+      "End": "609698e1619f46078fbb750b1d926960",
+      "Id": "960d426e38324a5ea55153c11fe0fa24",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "bd5e5c4ee3e54c44b9b29729da58b223",
+      "End": "30f82abbafe94e50829423cb82292293",
+      "Id": "c0ba22056ffc4e7e945dd7269d178a63",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAGLAlkDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKxPEnjbw74PhEuva7pujRk4DX93HDk+g3EZPsKTaWrJlK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",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Свойства",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "7.0",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [
+    {
+      "NodeId": "f4ef10a1-1aed-49d5-8474-39cdbdf5fea6",
+      "Binding": {
+        "ByCurve_InClassDecl-1_InFunctionScope-1_Instance0_f4ef10a1-1aed-49d5-8474-39cdbdf5fea6": "H4sIAAAAAAAACh3LrQ6AIBQG0Hf5snfjHzFbyEavARScxeBozHd38/SzdhypJUzojKU9133GmTExipC6BOcop6rJ2N1Q9l6SUaMqQdQj+52EUKMvNTAGRrzbf5WzOhj74t0+AzzCSV8AAAA="
+      }
+    },
+    {
+      "NodeId": "5b9b35e9-843f-44de-89bf-6768b8524e10",
+      "Binding": {
+        "ByCurve_InClassDecl-1_InFunctionScope-1_Instance0_5b9b35e9-843f-44de-89bf-6768b8524e10": "H4sIAAAAAAAACh3LoQ6AIBQF0H+52bchIE/MFrPRZwAEZzE4muPf3Tz9bC+OUAMmvIK1Ptd9LrNgEmTVm+ydoxiKITskS5G5J6tHnb0qR+RESumRc4mCTrDc9b/aDcZbbmj7BxD23slfAAAA"
+      }
+    },
+    {
+      "NodeId": "21fbd443-af1b-4b1c-9865-95f890530407",
+      "Binding": {
+        "ByCurve_InClassDecl-1_InFunctionScope-1_Instance0_21fbd443-af1b-4b1c-9865-95f890530407": "H4sIAAAAAAAACq3MrRKEIBRA4Xe5WWYu/2K2mDeKAeSys4WwS2N4d3esGm2nnG9tUOhXKc2hBpjWBukMaB5e9fsp72X2MHkg5JKcMSyGLJnSu2LRWs6UGAU5zCnanSGK0VJOHgYPS6nnK4yWTrkOfXhEz1dd84f0jPxGl39969sBUDDiZCwBAAA="
+      }
+    },
+    {
+      "NodeId": "08523ffd-63c1-42bc-9436-fcaa1246ece6",
+      "Binding": {
+        "ByCurve_InClassDecl-1_InFunctionScope-1_Instance0_08523ffd-63c1-42bc-9436-fcaa1246ece6": "H4sIAAAAAAAACh3LoQ6AIBQF0H+52bchIE/MFrPRZwAEZzE4muPf3Tz9bC+OUAMmvIK1Ptd9LrNgEmTVm+ydoxiKITskS5G5J6tHnb0qR+RESumRc2FBJ1ju+l/tBuOtaWj7B7I2UoFfAAAA"
+      }
+    }
+  ],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.4.0.6752",
+      "RunType": "Manual",
+      "RunPeriod": "100"
+    },
+    "Camera": {
+      "Name": "_Фоновый просмотр",
+      "EyeX": -27.014995574951172,
+      "EyeY": 87.88890838623047,
+      "EyeZ": 104.05896759033203,
+      "LookX": 32.92137908935547,
+      "LookY": -57.38566207885742,
+      "LookZ": -52.299659729003906,
+      "UpX": 0.2703762650489807,
+      "UpY": 0.8616290092468262,
+      "UpZ": -0.4295254349708557
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "918f7dc4e6d04d6b9b51c329d02db2b2",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -24806.7969194039,
+        "Y": -20465.711596960136
+      },
+      {
+        "Id": "fb265a3222b04d2ab4f726b28bc90c10",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -24803.3920327492,
+        "Y": -20061.711596960136
+      },
+      {
+        "Id": "e594468a412344b4870884b31915b703",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -24803.3920327492,
+        "Y": -20263.711596960136
+      },
+      {
+        "Id": "64155f51080847f8be8d0fb57485b1e3",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -24803.3920327492,
+        "Y": -19859.711596960136
+      },
+      {
+        "Id": "d200379e5c8c4f8b968d2f0887223d68",
+        "Name": "NurbsCurve.ByPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23913.9443991488,
+        "Y": -19539.1004371845
+      },
+      {
+        "Id": "835b1ec252ca4b639a1f2a0dde80b497",
+        "Name": "PolyCurve.ByPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23913.9443991488,
+        "Y": -20359.6591499023
+      },
+      {
+        "Id": "6e4f5b2b2389451b95459dea13431b8b",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23913.9443991488,
+        "Y": -19897.7928788507
+      },
+      {
+        "Id": "8ba3309a6ded4059a074fa0c2b291919",
+        "Name": "NurbsCurve.ByControlPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23643.237098097106,
+        "Y": -19998.63562273814
+      },
+      {
+        "Id": "f4ef10a11aed49d5847439cdbdf5fea6",
+        "Name": "ModelCurve.ByCurve",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23197.958643140893,
+        "Y": -19550.341697588123
+      },
+      {
+        "Id": "e21f9bb6cb724a3cb7ea68caf7ace5f3",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -25040.853249538002,
+        "Y": -20464.323452367127
+      },
+      {
+        "Id": "0c469019fb6d423bb4119230f11458f1",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -25040.853249538002,
+        "Y": -20334.794090569627
+      },
+      {
+        "Id": "a0fbeaadfce64458bb914b09cdce4c57",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -25040.853249538002,
+        "Y": -20205.26472877223
+      },
+      {
+        "Id": "58815d96f9b34ab3a996598d317495f6",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -25040.853249538002,
+        "Y": -20075.735366974826
+      },
+      {
+        "Id": "be32eeb6f2ce4fe1a1833f91a11e5f55",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -25040.853249538002,
+        "Y": -19946.206005177326
+      },
+      {
+        "Id": "95cfcdbfad6d40f2af2b5d26afd9a6f7",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -25040.853249538002,
+        "Y": -19816.676643379928
+      },
+      {
+        "Id": "5b9b35e9843f44de89bf6768b8524e10",
+        "Name": "ModelCurve.ByCurve",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23205.549207142605,
+        "Y": -20007.30778496124
+      },
+      {
+        "Id": "21fbd443af1b4b1c986595f890530407",
+        "Name": "ModelCurve.ByCurve",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23204.658249934382,
+        "Y": -20371.057379157148
+      },
+      {
+        "Id": "39da11a151dd4cd6b3b7acdabfe60710",
+        "Name": "PolyCurve.Curves",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23516.12377124698,
+        "Y": -20357.25200167895
+      },
+      {
+        "Id": "be175c3deb294a31ade406037f4ef443",
+        "Name": "List Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -24295.512177566772,
+        "Y": -20214.606524202416
+      },
+      {
+        "Id": "08523ffd63c142bc9436fcaa1246ece6",
+        "Name": "ModelCurve.ByCurve",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23224.368735724554,
+        "Y": -20711.88696315728
+      },
+      {
+        "Id": "7979f6ce63b64cfb98729d05812a111c",
+        "Name": "Line.ByStartPointEndPoint",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -23913.9443991488,
+        "Y": -20722.0987274803
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "5e90b28dbc0145089e1a1852045835c3",
+        "Title": "Четыре точки",
+        "DescriptionText": "Описание <Дважды нажмите здесь, чтобы изменить описание группы>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "918f7dc4e6d04d6b9b51c329d02db2b2",
+          "fb265a3222b04d2ab4f726b28bc90c10",
+          "e594468a412344b4870884b31915b703",
+          "64155f51080847f8be8d0fb57485b1e3",
+          "e21f9bb6cb724a3cb7ea68caf7ace5f3",
+          "0c469019fb6d423bb4119230f11458f1",
+          "a0fbeaadfce64458bb914b09cdce4c57",
+          "58815d96f9b34ab3a996598d317495f6",
+          "be32eeb6f2ce4fe1a1833f91a11e5f55",
+          "95cfcdbfad6d40f2af2b5d26afd9a6f7"
+        ],
+        "HasNestedGroups": false,
+        "Left": -25050.853249538002,
+        "Top": -20538.711596960136,
+        "Width": 482.4612167888008,
+        "Height": 876.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
+        "InitialTop": -20465.711596960136,
+        "InitialHeight": 794.0349535802088,
+        "TextblockHeight": 63.0,
+        "Background": "#FFB9F9E1"
+      },
+      {
+        "Id": "754293e1c9b8403898dbe88dbbec3a89",
+        "Title": "Создание кривой модели из NURBS-кривой (по контрольным точкам)",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "6e4f5b2b2389451b95459dea13431b8b",
+          "8ba3309a6ded4059a074fa0c2b291919",
+          "5b9b35e9843f44de89bf6768b8524e10",
+          "1c013dad3a7a499e8ed1a444326bf468",
+          "93c96f09176641af8f507429c0b27fb1"
+        ],
+        "HasNestedGroups": false,
+        "Left": -23923.9443991488,
+        "Top": -20144.63562273814,
+        "Width": 987.8951920061954,
+        "Height": 378.8427438874387,
+        "FontSize": 36.0,
+        "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
+        "InitialTop": -20071.63562273814,
+        "InitialHeight": 318.8427438874387,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "d465195cc97a40fe8b20783380d40465",
+        "Title": "Создание кривой модели из сложной кривой",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "835b1ec252ca4b639a1f2a0dde80b497",
+          "21fbd443af1b4b1c986595f890530407",
+          "39da11a151dd4cd6b3b7acdabfe60710",
+          "84ce0e9f989a4de09fdfae91d4653bb0",
+          "0ab3afeffe014dc886ec156fea29a981"
+        ],
+        "HasNestedGroups": false,
+        "Left": -23923.9443991488,
+        "Top": -20517.057379157148,
+        "Width": 990.7861492144184,
+        "Height": 319.3982292548462,
+        "FontSize": 36.0,
+        "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
+        "InitialTop": -20444.057379157148,
+        "InitialHeight": 231.80537747819835,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "9290c5ad95244f35a4ea127083f91ac9",
+        "Title": "Создание кривой модели из NURBS-кривой (по точкам)",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "d200379e5c8c4f8b968d2f0887223d68",
+          "f4ef10a11aed49d5847439cdbdf5fea6",
+          "6d21a2a5a44848f2a110aec8699a34ff",
+          "3c428901ff2c42fdb360b8a00cb98750"
+        ],
+        "HasNestedGroups": false,
+        "Left": -23929.9443991488,
+        "Top": -19681.341697588123,
+        "Width": 1001.4857560079072,
+        "Height": 274.2412604036217,
+        "FontSize": 36.0,
+        "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
+        "InitialTop": -19608.341697588123,
+        "InitialHeight": 214.2412604036217,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "5786a5408bfa4c15a97506bfab370dce",
+        "Title": "Сведения",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "58be9dea44e7499eadfbdeeb8890e65d",
+          "b23101b8849c4528bb5e1791681bc40f"
+        ],
+        "HasNestedGroups": false,
+        "Left": -25054.146652315132,
+        "Top": -20828.386901570164,
+        "Width": 315.0,
+        "Height": 242.98634431051323,
+        "FontSize": 36.0,
+        "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
+        "InitialTop": -20755.386901570164,
+        "InitialHeight": 250.98634431051323,
+        "TextblockHeight": 63.0,
+        "Background": "#FFA4E1FF"
+      },
+      {
+        "Id": "62d1d9e4be3c4a43bfd7299ec51e04a5",
+        "Title": "Создание кривой модели из линии",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "7979f6ce63b64cfb98729d05812a111c",
+          "08523ffd63c142bc9436fcaa1246ece6",
+          "724635231cea4135b320176e240209a5",
+          "03f41a5110794238a607dd48ffa350bb"
+        ],
+        "HasNestedGroups": false,
+        "Left": -23923.9443991488,
+        "Top": -20853.0987274803,
+        "Width": 970.0756634242462,
+        "Height": 293.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
+        "InitialTop": -20780.0987274803,
+        "InitialHeight": 213.21176432301945,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "6d21a2a5a44848f2a110aec8699a34ff",
+        "Title": "Использование NURBS-кривой для создания линии модели Revit",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -23226.458643140893,
+        "Top": -19600.341697588123,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "f4ef10a11aed49d5847439cdbdf5fea6"
+      },
+      {
+        "Id": "1c013dad3a7a499e8ed1a444326bf468",
+        "Title": "Использование NURBS-кривой для создания линии модели Revit",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -23234.049207142605,
+        "Top": -20057.30778496124,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "5b9b35e9843f44de89bf6768b8524e10"
+      },
+      {
+        "Id": "b23101b8849c4528bb5e1791681bc40f",
+        "Title": "В этом графике используется несколько методов создания кривых, которые будут использоваться в качестве входных данных для создания кривых модели Revit",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -25044.146652315132,
+        "Top": -20641.40055725965,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "58be9dea44e7499eadfbdeeb8890e65d",
+        "Title": "Запустите этот график из файла Snowdon Towers Sample Architectural.rvt, который находится в папке Samples, расположенной в папке установки Revit\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -25043.019431026543,
+        "Top": -20747.386901570164,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "03f41a5110794238a607dd48ffa350bb",
+        "Title": "Использование линии (кривой) для создания кривой модели Revit",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -23253.868735724554,
+        "Top": -20761.88696315728,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "08523ffd63c142bc9436fcaa1246ece6"
+      },
+      {
+        "Id": "724635231cea4135b320176e240209a5",
+        "Title": "Создание кривой по двум точкам",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -23871.9443991488,
+        "Top": -20772.0987274803,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "7979f6ce63b64cfb98729d05812a111c"
+      },
+      {
+        "Id": "84ce0e9f989a4de09fdfae91d4653bb0",
+        "Title": "Создание сложной кривой из списка точек",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -23879.9443991488,
+        "Top": -20409.6591499023,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "835b1ec252ca4b639a1f2a0dde80b497"
+      },
+      {
+        "Id": "0ab3afeffe014dc886ec156fea29a981",
+        "Title": "Использование списка кривых для создания набора линий модели Revit",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -23235.158249934382,
+        "Top": -20436.057379157148,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "21fbd443af1b4b1c986595f890530407"
+      },
+      {
+        "Id": "93c96f09176641af8f507429c0b27fb1",
+        "Title": "Создание NURBS-кривой из списка точек, используемых в качестве контрольных точек",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -23631.237098097106,
+        "Top": -20063.63562273814,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "8ba3309a6ded4059a074fa0c2b291919"
+      },
+      {
+        "Id": "3c428901ff2c42fdb360b8a00cb98750",
+        "Title": "Создание NURBS-кривой из списка точек",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": -23919.9443991488,
+        "Top": -19589.1004371845,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "d200379e5c8c4f8b968d2f0887223d68"
+      }
+    ],
+    "X": 9560.209283467644,
+    "Y": 7960.520162643914,
+    "Zoom": 0.3793149558615596
+  }
+}
