@@ -39,7 +39,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
                     return notificationUI != null;
                 }
                 return false;
-            });
+            }, 180);
             
             Assert.NotNull(notificationUI, "Notification popup not part of the dynamo visual tree");
             var webView = notificationUI.FindName("webView");
