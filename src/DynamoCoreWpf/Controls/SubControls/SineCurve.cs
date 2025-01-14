@@ -10,13 +10,13 @@ namespace Dynamo.Wpf.Controls.SubControls
     {
         private CurveMapperControlPoint controlPoint1;
         private CurveMapperControlPoint controlPoint2;
-        private PolyLineSegment polySegment ;
+        private PolyLineSegment polySegment;
 
         private readonly double maxWidth;
         private readonly double maxHeight;
         public bool isCosine = false;
 
-        //  coefficients;
+        // Coefficients
         private double coefA;   // Amplitude
         private double coefB;   // 2*PI/period
         private double coefC;   // Phase shift

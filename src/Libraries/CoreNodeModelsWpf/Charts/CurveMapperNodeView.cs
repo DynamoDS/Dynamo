@@ -32,6 +32,9 @@ namespace Dynamo.Wpf.Charts
         private CurveMapperControlPoint controlPointSine2;
         private SineCurve sineCurve;
 
+        private CurveMapperControlPoint controlPointParabolic1;
+        private CurveMapperControlPoint controlPointParabolic2;
+        private ParabolicCurve parabolicCurve;
 
 
         public void CustomizeView(CurveMapperNodeModel model, NodeView nodeView)
@@ -203,7 +206,44 @@ namespace Dynamo.Wpf.Charts
                 // Bind properties for startControlPoint and endControlPoint
                 ApplyBindingsToControlPoints(controlPointSine1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(controlPointSine2, model, curveMapperControl);
+                #endregion
 
+                #region Parabolic
+                // Create control points and add to the canvas
+                model.ControlPointParabolic1 = controlPointParabolic1 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.1),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                model.ControlPointParabolic2 = controlPointParabolic2 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                curveMapperControl.GraphCanvas.Children.Add(controlPointParabolic1);
+                curveMapperControl.GraphCanvas.Children.Add(controlPointParabolic2);
+                Canvas.SetZIndex(controlPointSine1, 20);
+                Canvas.SetZIndex(controlPointSine2, 20);
+
+                // Create the sine curve and add to the canvas
+                model.CurveParabolic = new ParabolicCurve(
+                    model.ControlPointParabolic1,
+                    model.ControlPointParabolic2,
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize);
+                parabolicCurve = model.CurveParabolic;
+                Canvas.SetZIndex(model.CurveParabolic, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.CurveParabolic.PathCurve);
+
+                ////// Assign curves to control points
+                model.ControlPointParabolic1.CurveParabolic = model.CurveParabolic;
+                model.ControlPointParabolic2.CurveParabolic = model.CurveParabolic;
+
+                // Bind properties for startControlPoint and endControlPoint
+                ApplyBindingsToControlPoints(controlPointSine1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(controlPointSine2, model, curveMapperControl);
                 #endregion
 
 
@@ -268,6 +308,21 @@ namespace Dynamo.Wpf.Charts
                 controlPointSine2.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
             if (model.CurveSine != null)
                 model.CurveSine.PathCurve.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+
+            // Visibility binding for Sine GraphType
+            var parabolicVisibilityBinding = new Binding("SelectedGraphType")
+            {
+                Source = model,
+                Converter = new GraphTypeToVisibilityConverter(),
+                ConverterParameter = GraphTypes.Parabola, // Only show for Parabolic GraphType
+                Mode = BindingMode.OneWay
+            };
+            if (controlPointParabolic1 != null)
+                controlPointParabolic1.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+            if (controlPointParabolic2 != null)
+                controlPointParabolic2.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+            if (model.CurveSine != null)
+                model.CurveParabolic.PathCurve.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
         }
 
         /// <summary> Helper method to bind a dependency property of a control point to a model or control.</summary>

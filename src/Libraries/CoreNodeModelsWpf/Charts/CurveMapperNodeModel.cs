@@ -203,7 +203,34 @@ namespace CoreNodeModelsWpf.Charts
         }
         [JsonIgnore]
         public SineCurve CurveSine { get; set; }
+        #endregion
 
+        #region Parabolic Curve
+        private CurveMapperControlPoint controlPointParabolic1;
+        private CurveMapperControlPoint controlPointParabolic2;
+
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint ControlPointParabolic1
+        {
+            get => controlPointParabolic1;
+            set
+            {
+                controlPointParabolic1 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint ControlPointParabolic2
+        {
+            get => controlPointParabolic2;
+            set
+            {
+                controlPointParabolic2 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore]
+        public ParabolicCurve CurveParabolic { get; set; }
         #endregion
 
 

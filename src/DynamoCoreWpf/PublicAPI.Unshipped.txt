@@ -3193,6 +3193,8 @@ Dynamo.Wpf.Controls.RunSettingsControl.RunSettingsControl() -> void
 Dynamo.Wpf.Controls.SubControls.ControlLine.ControlLine(System.Windows.Point controlPoint, System.Windows.Point fixPoint) -> void
 Dynamo.Wpf.Controls.SubControls.CurveBezier
 Dynamo.Wpf.Controls.SubControls.CurveBezier.CurveBezier(Dynamo.Wpf.Controls.CurveMapperControlPoint fixPoint1, Dynamo.Wpf.Controls.CurveMapperControlPoint fixPoint2, Dynamo.Wpf.Controls.CurveMapperControlPoint controlPoint1, Dynamo.Wpf.Controls.CurveMapperControlPoint controlPoint2, double maxW, double maxH) -> void
+Dynamo.Wpf.Controls.SubControls.ParabolicCurve
+Dynamo.Wpf.Controls.SubControls.ParabolicCurve.ParabolicCurve(Dynamo.Wpf.Controls.CurveMapperControlPoint controlPoint1, Dynamo.Wpf.Controls.CurveMapperControlPoint controlPoint2, double maxWidth, double maxHeight) -> void
 Dynamo.Wpf.CoreNodeViewCustomizations
 Dynamo.Wpf.CoreNodeViewCustomizations.CoreNodeViewCustomizations() -> void
 Dynamo.Wpf.Extensions.IViewExtension

@@ -339,6 +339,16 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     model.CurveSine.Regenerate(model.ControlPointSine2);
                 }
             }
+            else if (model.SelectedGraphType == GraphTypes.Parabola)
+            {
+                model.ControlPointParabolic1.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.1);
+                model.ControlPointParabolic2.Point = new Point(DynamicCanvasSize, DynamicCanvasSize);
+                if (model.CurveSine != null)
+                {
+                    model.CurveParabolic.Regenerate(model.ControlPointParabolic1);
+                    model.CurveParabolic.Regenerate(model.ControlPointParabolic2);
+                }
+            }
         }
     }
 }

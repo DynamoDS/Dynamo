@@ -127,6 +127,11 @@ namespace Dynamo.Wpf.Controls
         public SineCurve CurveSine { get; set; }
 
         /// <summary>
+        /// Gets or sets the associated parabolic curve for the control point.
+        /// </summary>
+        public ParabolicCurve CurveParabolic { get; set; }
+
+        /// <summary>
         /// Gets or sets the associated control curve for the control point.
         /// </summary>
         public ControlLine ControlLineBezier { get; set; }
@@ -218,6 +223,10 @@ namespace Dynamo.Wpf.Controls
             if (CurveSine != null)
             {
                 CurveSine.Regenerate(this);
+            }
+            if (CurveParabolic != null)
+            {
+                CurveParabolic.Regenerate(this);
             }
 
             // Regenerate associated horizontal and vertical crossHairs
