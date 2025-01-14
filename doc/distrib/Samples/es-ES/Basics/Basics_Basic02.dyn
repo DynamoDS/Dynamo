@@ -1,0 +1,556 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "Crear una línea mediante la conexión de dos puntos",
+  "Name": "Basics_Basic02",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "a8d28be45b934b68a1826e7d09b6147e",
+      "Name": "Number",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "2",
+      "NumberType": "Double",
+      "Description": "Crea un número.",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "07b702282be848b2a8f7f7d66eb0ed16",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "4.43",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "Genera valores numéricos.",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "a8d28be45b934b68a1826e7d09b6147e",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6c7b08d863dd4613bbb08bf12ccae37b",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Crea un número.",
+      "InputValue": 2.0
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "adfb6a7d3ae84747a50d6446b0575438",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "41c1b67f4cae42c1870e8067222198ec",
+          "Name": "x",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6cbfc4f53c594e3198398a1eacc2c904",
+          "Name": "y",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2838b00ffa0e463bbe0eacaf548f6687",
+          "Name": "z",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c28c4e4b0ff14ea6875ab92a2c5a7430",
+          "Name": "Point",
+          "Description": "Punto creado por coordenadas",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "Id": "07b702282be848b2a8f7f7d66eb0ed16",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "89353ce28afb42858938fa6b02ec8c3b",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Genera valores numéricos.",
+      "InputValue": 4.43
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 305.0,
+      "WatchHeight": 38.0,
+      "Id": "e444c8932cb6489389b09a3ed1900d69",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "debf79aebc1e4347bb91586ea619e5fd",
+          "Name": "",
+          "Description": "Nodo que se va a evaluar.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0f723b58ceb04f309f2237a3ee62ecf5",
+          "Name": "",
+          "Description": "Permite visualizar el contenido.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Muestra la salida de un nodo."
+    },
+    {
+      "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "WasExecuted": true,
+      "Camera": {
+        "Name": "751b37a0-8c55-46b3-90a9-f6b644af185b Vista preliminar",
+        "EyeX": -14.447713851928711,
+        "EyeY": 12.851463317871094,
+        "EyeZ": 53.02691650390625,
+        "LookX": 12.0,
+        "LookY": -13.0,
+        "LookZ": -58.0,
+        "UpX": 0.0,
+        "UpY": 1.0,
+        "UpZ": 0.0
+      },
+      "VariableInputPorts": true,
+      "Id": "751b37a08c5546b390a9f6b644af185b",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "0562171b3ea441739fd8bcbb8b1ce264",
+          "Name": "",
+          "Description": "Objetos entrantes de geometría",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "995b3cc9453a46cd9c1f2415df95d8a2",
+          "Name": "",
+          "Description": "Objetos entrantes de geometría",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Muestra una vista preliminar dinámica de la geometría."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b8d01157d3a347b18c2c440b20da9d54",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "b20a4566cb77456b99433ca54bdee33e",
+          "Name": "x",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "651a5cb660d0480d8adbaaabeb2fb137",
+          "Name": "y",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e148b06564cd45eba7b392e7d044e9e7",
+          "Name": "z",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "801cc949e08f47abb8050552a053d445",
+          "Name": "Point",
+          "Description": "Punto creado por coordenadas",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "d060080d17f141e4897d79c511029919",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ca7dcb578ad642088e0b5b4c383f9d46",
+          "Name": "startPoint",
+          "Description": "Punto inicial de la línea\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b587d6b05d3a41e28ebc7e7ec92f91cc",
+          "Name": "endPoint",
+          "Description": "Punto final de la línea\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e7dd2b37cda04f239b3dcd22561316e1",
+          "Name": "Line",
+          "Description": "Línea desde punto inicial y final",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Crea una línea recta entre dos puntos de entrada.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6c7b08d863dd4613bbb08bf12ccae37b",
+      "End": "41c1b67f4cae42c1870e8067222198ec",
+      "Id": "7b890e7e306742c18e8a5390fb078914",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c28c4e4b0ff14ea6875ab92a2c5a7430",
+      "End": "ca7dcb578ad642088e0b5b4c383f9d46",
+      "Id": "6f755328683b44538dd95f958a0d5a86",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "89353ce28afb42858938fa6b02ec8c3b",
+      "End": "2838b00ffa0e463bbe0eacaf548f6687",
+      "Id": "3837bfa66c1649cba430dda5e9a41533",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "801cc949e08f47abb8050552a053d445",
+      "End": "b587d6b05d3a41e28ebc7e7ec92f91cc",
+      "Id": "89543b7ed04b499c8dc846fb34f68d68",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "801cc949e08f47abb8050552a053d445",
+      "End": "debf79aebc1e4347bb91586ea619e5fd",
+      "Id": "b764093764404c6398c535a570d7c73e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e7dd2b37cda04f239b3dcd22561316e1",
+      "End": "0562171b3ea441739fd8bcbb8b1ce264",
+      "Id": "23392ea01c76432cbdd5cdc0b448f786",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAJFAjQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9Q6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACisNtcnh8bx6PKqfZrnTmu7dgPm3xSqkoJzyMTQ44455OeNytJ03C1+qv/AF+QgooorMYUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAch4qxY+OfBV8oG+4nutKY7SSEkt2uDznj5rOP8xXX1x3xSZbXw7ZaixCHT9W0+4MxJAij+1RpMxx28p5c+xNdjXdW96hSn2vH7nzf+3ErdhRRRXCUFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAGB4/0efxF4E8R6Vaki6vtNuLaEqQCHeJlUgnockc1o6Hq8HiDRNP1S2Oba+t47mI5z8rqGH6EVerlPhaBB4H0+xCFE0t59JTcoXctrM9urYHQERA/jXavewrv9mSt/28nf/wBJRP2jq6KKK4igooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK5PwSTba14xsAojig1YSwR4x8kttBKzdeczNOfrkdq6yuRtV+w/FfUt7YXUtGtmhTceTbzTCU47cXUAz3x7V24f3qdWP938mvyV/lcl7o66iiiuIoKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiub1/XLu4vv7D0IodVZQ1xdOu6OwjPR2H8Tn+FO/U/KDUykoq7IlJQV2Jr3xI8N+GdQNjqWqx292qh2iCO5UHpnaDg98HnBB70VqaDoNp4dsBa2isQzGSWaVt0k0h+9I7fxMfX6AYAAorK1V9Uvl/wTK1Z63S+Tf6o0aKKK3OgKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK5LxJix8feDr7dzcG80naWwP3kQuc47kfYvyJrra5L4lE2uk6VqCAmWx1iwdWAHyrJcJBK3PQCKaTPtmu3B61lH+a8fnJNL8yZbHW0UUVxFBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUV84/sw/tSQfHT4nfF3w350ckfh/V86SyYxLYhRCSuByPNhZyT/z8KOgr6Or1czyzE5RiXhMXHlmlF2/xRUl+D18yITjUXNHYKKKK8osKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKK57X/EFyL5NG0ZEn1iVQ8kknMVlESR5snqTg7U6uR2UMyzKSirsmUlFXY/XNauTdDSdICSarIoZ5HG6O0jP/LRx3PB2r1YjsASL2h6HbeH7H7NbBmLMZZZpTuknkP3pHbux/wAwAAE0PQ7fQbMwwl5ZJGMs9zMcyzyHq7nuTgewAAAAAFaNTGLvzS3IjF35pb/AJBRRRWhqFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABXNfEzS5ta+HfiaxtkEl3NptwtupXd+98tvLIHqG2ke4rpaK1o1HRq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C+HdS1Bdb+H2ov4O1mJ/NS1lBuLNn68AktHznpuHYKK+raK48Xg6GOhyYiPMj2srznHZO5/U6lozVpxaUoTjqmpwd4yVm1Zp7vufnf4b8c/Gj9iuObTdc8Kwav4Pe7a5luEizDJJK2XdbuMZV3P/AD1BP+zX038L/wBs74afEq1RZdYTwxqe0mSx1plhAwMkrLnYw4PcH2Fe5TQx3MMkM0ayxSKUeN1BVlIwQQeoIr5N/aY/Ym0TxVocurfDrQINO8VG4RntbecW9tNGch8I3yIRkH5do4PU15danj8LerRqOqu0ruXye7+Z+l4bNOGOKakcPnGGWErS09rStGF+84S0S7ta+iPpjwb440H4haIur+G9Vt9Y01pGi+0WzZAdTgqR1B6HBHQg9CK3a/PL4G/Cn9oT9nXxZ/aVh4Nk1HRrgquo6WmpWrR3MY7gCUlZFydrY45HIJB+89D8X6dr0gt43ktNRCeZJpt6hhuoxxkmNuSoJxvXKkg4Y12YHGSxMP30HCfZpr7rnyvFPDlDJcU/7NxMcTh3qpQlGTXlNRbs130T6a3S2qKKK9Q+ECiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAqjq2h6frkUcd/Zw3QjbfE0igtE2Mb0bqjDsykEdjV6ik0mrMuM5U5c0HZnLjR9d8PKTpN/wD2xaAHbYavKfMX0CXIBbA/6aK5P98Vas/GVlJdw2V/HNomozYEdrqACGQn+GOQExyH2RmIyMgVvVXv9PtdVs5bS9toby1lG2SC4jDo49Cp4IrPlcfhf9f1/wAMdf1iFX+PG77rR/Po/uTf8xYormV8L32indoOqSRQA5/s7US1xbkccIxPmRcAAYZkXqIzSR+OI9NbyvEVnJ4fkyQLmZ/Msn91uAAq54wJRGxJ4U0e0t8en5feH1V1NcO+fy+1/wCA9fldLudPRSKwZQykEEZBHelrU4QooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKa6LIrKyhlYYKsMgj0p1FAHMyeCU09hL4dvJNAdRgWsSCSxb2a3JAUZySYjGxzyxo/4Si/0feNf0p7aBMf8AEx08m5tz7soHmR9ySVKKOr101FZclvg0/L+vQ7vrTqaYhc/n9r7+v/b10uiK9jf22qWkV1Z3EN3ayjMc0Dh0ceoYcGrFc/feC7KW8lvtPln0PUZW3yXWnME81sYzLGQY5TjjLqSOxHWoG1nXNAKjVNOGrWYB3ahpEbb056vbElsY4/dtISRnaoOAczj8a/r+v+HD6vCr/Ald9no/l0flrd/ynT0VQ0fXtP8AEFqZ9OvIruNTtfy2+aNsZKOvVGGeVYAjuKv1ommro5JwlTk4zVmu4UUUUyAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAxtX8I6ZrFwbp4WtdR2hF1Czcw3KqOQvmLglc87GypxyDVEP4m0AhWjTxRZ5A8xClteqPcHEUh9SDFgDhSa6eis3TV7rRnZHFTUVCaUo9n09Ho18mvMydH8U6Zrk8tva3OL2EbpbKdGhuIxnAZonAYKezYwexNa1Z2s+HdO8QRxLf2qTtC2+GYEpLC396ORSGRvdSDWR/Z/iLw+pOn3ia/Zovy2epHy7gAdAtwow2AMASISSctJS5pR+JX9P8i/Z0K38KXK+0v0lt96il3Z1FFYOl+NNP1C8WwuBNpOqNwLDUU8qRzjJ8s5KSgDqYmcDua3quMlLVHNVo1KL5akbf1uu68woooqjEKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAKmp6TY61ZtaahZ29/asQWguolkQkHIJVgRWF/wjeq6G7SaFqrzQFtx03WJHniPqI5jmSMn38xR2QV1FFRKClr1OmniKlJcid49nqvu7+a18zmovG8Fl5UWv20nh24kO1WumDWztnACzj5Mk/dVirn+7XS0yaFLiF4pUWSJ1KsjjKsDwQR3Fc1/whb6T83hvUZNEAGBYuhuLH6CEsDGBk8RNGM9c1Pvx8/z/AMvyNv8AZ63/AE7fzcf1kv8Aya/dHUUVy58ZT6K+zxHpsmmR5wNRtibizPuzhQ0QHcyKqD++a6O1uob63iuLaaO4t5VDxyxMGV1PQgjgiqjNS0RhVw9SilKS0fVap/NaEtFFFWc4UUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFc5deB7NZjc6PPN4evC5kZ9OwsUrHqZYSDG5PGWK7+OGFdHRUyipbm9KtUou9N2v9z9Vs/mcwuu63ojbNa0z7dbKCTqWjRtIP8AgVtkyKegAQy9ycVtaRrVhr9mLvTbyG+tiSvmQOGAYdVOOhHcHkd6u1h6t4O07VLxr9Fl07VWUL/aNg/kzkD7ocjiRR2WQMvtUWnHZ3/rv/XqdHPQrfxI8j7rb5x6fJ2XSJuUVy5uvEnh7H2m3TxLZA486zVYLtF9WjZtknTJKMh54jNaeh+J9M8RLJ9guhJNFjzbaVGinhznAkicB0JxxuUZHNNTTdnozOphakI+0j70e61Xz6r5pXNWiiitDkCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigArK1rwvpfiBo3vrRZLiIFYbqNmiuIc9fLlQh0JHBKsK1aKTSkrNGlOpOlLnptp91ocr9l8SeG1/0WdfE9io/1F4yw3qj/AGZQBHJxwFdUPcyGr+l+MNO1K+Gns8lhqu3d/Z98himIA5KA8SKO7Rll9626pavothr9mbXUrOG+t9wcRzoGAYdGGejDsRyO1Z8so/C/v/r/ADOv29Kt/Hjr3jo/mtn8uVvqy7RXLroGtaExbRtVN9bZz/Z+tO8v4Jc8yL3OXEvoMCpLPxzafaIrPV7efw/qEhCrDqAAilYnAWOYExuT2UNvxyVFHtEtJaCeFlJc1B868t16x39WrrzOkooorU4QooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKhvLO31C1ltrqCO5tpVKSQzIHR1PUEHgiiigabi7rc5a+8Lz+G7W4vPDupSabHFGXOm3KG5stqjokZZWi4GAI3VB1KmrPw58Z/8LA8I2eufY/sH2guPI83zNu1iv3sDPT0oork+CsoR2af5o99pYjLKmIq6zjOCT62cZt377Le7XQ6aiiius+fCiiigAooooAKKKKACiiigD//Z",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Propiedades",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.3.6543",
+      "RunType": "Automatic",
+      "RunPeriod": "100"
+    },
+    "Camera": {
+      "Name": "_Vista preliminar en segundo plano",
+      "EyeX": 3.3328166007995605,
+      "EyeY": 7.523900032043457,
+      "EyeZ": 6.0789551734924316,
+      "LookX": -3.22818660736084,
+      "LookY": -5.2777609825134277,
+      "LookZ": -5.5913920402526855,
+      "UpX": -0.034878388047218323,
+      "UpY": 0.99756413698196411,
+      "UpZ": -0.060410916805267334
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "a8d28be45b934b68a1826e7d09b6147e",
+        "Name": "Number",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2896.1301408964446,
+        "Y": 831.65294292667272
+      },
+      {
+        "Id": "adfb6a7d3ae84747a50d6446b0575438",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3172.4486311020269,
+        "Y": 837.875724754357
+      },
+      {
+        "Id": "07b702282be848b2a8f7f7d66eb0ed16",
+        "Name": "Number Slider",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2683.3306553085849,
+        "Y": 1072.5839274647551
+      },
+      {
+        "Id": "e444c8932cb6489389b09a3ed1900d69",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3573.8497389574668,
+        "Y": 1148.685892351964
+      },
+      {
+        "Id": "751b37a08c5546b390a9f6b644af185b",
+        "Name": "Watch 3D",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 4062.9200365293377,
+        "Y": 835.07695808166534
+      },
+      {
+        "Id": "b8d01157d3a347b18c2c440b20da9d54",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3150.24843938238,
+        "Y": 1155.4733297148539
+      },
+      {
+        "Id": "d060080d17f141e4897d79c511029919",
+        "Name": "Line.ByStartPointEndPoint",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3530.3182530706945,
+        "Y": 836.0992601540006
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "cf9b8b8561ac4de3b503117cefdbe6d4",
+        "Title": "Los datos geométricos se pueden visualizar como información textual o en un espacio 3D.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 3621.3497389574668,
+        "Top": 1083.685892351964,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "e444c8932cb6489389b09a3ed1900d69"
+      },
+      {
+        "Id": "0509d30fc04240b590de0da5b395bb04",
+        "Title": "Puede alternar entre la navegación 3D en segundo plano y en una vista gráfica con los botones situados en la esquina superior derecha de la pantalla (método abreviado Ctrl + B). La vista preliminar en segundo plano también puede activarse y desactivarse en el menú Vista de Dynamo y Revit.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 3134.9486311020269,
+        "Top": 729.875724754357,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "adfb6a7d3ae84747a50d6446b0575438"
+      },
+      {
+        "Id": "93e20e77387a4ebd82e07f149ec9b3b3",
+        "Title": "Utilizar el nodo Watch 3D para visualizar el elemento 3D de forma aislada",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 4057.4200365293382,
+        "Top": 770.07695808166534,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "751b37a08c5546b390a9f6b644af185b"
+      },
+      {
+        "Id": "ef4fa7ff06444acb85225b99b9205e51",
+        "Title": "Manipule la posición del punto en el entorno de Dynamo: seleccione el nodo Point.ByCoordinates y cambie a la vista preliminar en segundo plano para tirar del punto a lo largo de sus tres ejes.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 3114.24843938238,
+        "Top": 1061.4733297148539,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "b8d01157d3a347b18c2c440b20da9d54"
+      },
+      {
+        "Id": "3c577d42b1334e37a7a3a383774b1152",
+        "Title": "Utilice los nodos Number Slider o Integer Slider para introducir de forma dinámica un valor dentro de un rango especificado. Haga clic en la flecha azul desplegable para abrir la configuración del rango numérico.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2712.8306553085849,
+        "Top": 978.58392746475511,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "07b702282be848b2a8f7f7d66eb0ed16"
+      }
+    ],
+    "X": -1397.0755263091851,
+    "Y": -298.40117493815706,
+    "Zoom": 0.65490676444259044
+  }
+}

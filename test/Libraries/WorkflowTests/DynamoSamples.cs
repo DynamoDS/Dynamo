@@ -517,7 +517,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, Category("SmokeTests")]
+        [Test, Category("ExcelTest"), Category("ExcelTestInterop")]
         public void ImportExport_Data_To_Excel()
         {
             OpenSampleModel(@"en-US\ImportExport\ImportExport_Data To Excel.dyn");
@@ -542,7 +542,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("ExcelTest"), Category("Failure")]
+        [Test, Category("ExcelTestInterop"), Category("Failure")]
             //Todo Ritesh: Locally passing but failing on CI.
             //After fixing issue with this test case add Smoke Test Category.
         public void ImportExport_Excel_to_Dynamo()
