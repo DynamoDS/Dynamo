@@ -12,6 +12,7 @@ using Dynamo.Wpf.Properties;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
+using Newtonsoft.Json;
 
 namespace Dynamo.Interfaces
 {
@@ -137,25 +138,20 @@ namespace Dynamo.Interfaces
 
         private static Dictionary<string, object> ConvertJObjectToDictionary(JObject jObject)
         {
-            var dictionary = new Dictionary<string, object>();
-
-            foreach (var property in jObject.Properties())
+            var settings = new JsonSerializerSettings
             {
-                if (property.Value is JObject nestedObject)
-                {
-                    dictionary[property.Name] = ConvertJObjectToDictionary(nestedObject);
-                }
-                else if (property.Value is JArray nestedArray)
-                {
-                    dictionary[property.Name] = nestedArray.ToObject<List<object>>();
-                }
-                else
-                {
-                    dictionary[property.Name] = property.Value.ToObject<object>();
-                }
-            }
+                // Add any specific settings you need here
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.None
+            };
+
+            var json = jObject.ToString();
+            var dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(json, settings);
+
             return dictionary;
         }
+
 
         private WatchViewModel ProcessThing(double value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
