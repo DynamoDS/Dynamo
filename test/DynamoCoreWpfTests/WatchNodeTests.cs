@@ -393,6 +393,19 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void WatchNodeWithBadSize()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchNodeBadSize.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("355685ad-754c-400f-ac75-53a56c7d5423") as Watch;
+
+            Assert.AreEqual(100, watchNode.Width);
+            Assert.AreEqual(100, watchNode.Height);
+        }
+
+        [Test]  
         public void GetNodeLabelTree()
         {
             // Arrange
