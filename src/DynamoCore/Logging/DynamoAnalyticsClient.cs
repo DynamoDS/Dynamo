@@ -469,7 +469,13 @@ namespace Dynamo.Logging
             // If the Analytics Client was initialized, shut it down.
             // Otherwise skip this step because it would cause an exception.
             if (Service.IsInitialized)
-                Service.ShutDown();
+            {
+                // Lock shutdown sequence in case other tracking calls might be executing concurently.
+                lock(trackEventLockObj)
+                {
+                    Service.ShutDown();
+                }
+            }
 
             if (Session != null)
             {
