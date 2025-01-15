@@ -273,6 +273,12 @@ namespace Dynamo.ViewModels
                     return ((DateTime)obj).ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture);
                 case TypeCode.Object:
                     return ObjectToLabelString(obj);
+                case TypeCode.Byte:
+                    return ((byte)obj).ToString(CultureInfo.InvariantCulture);
+                case TypeCode.UInt32:
+                    return ((uint)obj).ToString(CultureInfo.InvariantCulture);
+                case TypeCode.UInt64:
+                    return ((ulong)obj).ToString(CultureInfo.InvariantCulture);
                 default:
                     return (string)obj;
             };
@@ -313,6 +319,12 @@ namespace Dynamo.ViewModels
                     return nameof(TypeCode.Object);
                 case TypeCode.String:
                     return nameof(TypeCode.String);
+                case TypeCode.Byte:
+                    return nameof(TypeCode.Byte);
+                case TypeCode.UInt32:
+                    return nameof(TypeCode.UInt32);
+                case TypeCode.UInt64:
+                    return nameof(TypeCode.UInt64);
                 case TypeCode.Empty:
                     return String.Empty;
                 default:
