@@ -969,7 +969,7 @@ namespace DynamoCoreWpfTests
             int count = 0;
             (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
             searchControl.SearchTextBox.Text = "dsfdf";
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop(() => count == 1);
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(count, 1);
@@ -1011,7 +1011,7 @@ namespace DynamoCoreWpfTests
             var debouncer = new ActionDebouncer(null);
 
             int dbCount = 0;
-            _ = debouncer.Debounce(100, () =>
+            debouncer.Debounce(100, () =>
             {
                 dbCount++;
                 debouncerThreadId = Environment.CurrentManagedThreadId;
@@ -1115,7 +1115,7 @@ namespace DynamoCoreWpfTests
             count = 0;
             searchControl.SearchTextBox.Text = "dsfdfdsfdf";
             Thread.Sleep(sleepTime);
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop(() => count == 1);
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(1, count, "changing the text once should cause a single update after timeout expires");
@@ -1124,13 +1124,22 @@ namespace DynamoCoreWpfTests
             count = 0;
             searchControl.SearchTextBox.Text = "dsfdf";
             searchControl.SearchTextBox.Text = "dsfdfdsfdf";
-            searchControl.SearchTextBox.Text = "";
+            searchControl.SearchTextBox.Text = "wer";
             searchControl.SearchTextBox.Text = "dsfdf";
-            Thread.Sleep(sleepTime);
-            DispatcherUtil.DoEvents();
-
+            DispatcherUtil.DoEventsLoop(() => count == 1);
+            // Do another events loop to make sure no other debouncer actions are triggered
+            DispatcherUtil.DoEventsLoop(null, 10);
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(1, count, "changing the text multiple times in quick succession should cause a single update once timeout expires");
+
+            // multiple updates with empty string debouncer
+            count = 0;
+            searchControl.SearchTextBox.Text = "dsfdf";
+            searchControl.SearchTextBox.Text = "";
+            searchControl.SearchTextBox.Text = "dsfdf";
+            DispatcherUtil.DoEventsLoop(() => count == 2);
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(2, count, "changing the text to empty should not trigger the debouncer");
 
             // test timeout expiration
             count = 0;
@@ -1138,7 +1147,7 @@ namespace DynamoCoreWpfTests
             Thread.Sleep(sleepTime);
             searchControl.SearchTextBox.Text = "dsfdf";
             Thread.Sleep(sleepTime);
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop(() => count == 2);
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(2, count, "2 timeout expirations should cause 2 updates");
@@ -1146,10 +1155,12 @@ namespace DynamoCoreWpfTests
             // run with debouncer, then without
             count = 0;
             searchControl.SearchTextBox.Text = "dsfdfdsfdf";
-            vm.searchDelayTimeout = -1; // disable debounce by setting an invalid timeout
+            vm.searchDebouncer.Dispose();
+            vm.searchDebouncer = null; // disable debounce
             searchControl.SearchTextBox.Text = "dsfdf";
-            Thread.Sleep(sleepTime); // give the debounce time to finish, in case cancelling didn't work
-            DispatcherUtil.DoEvents();
+       
+            DispatcherUtil.DoEventsLoop(() => count == 1);
+            DispatcherUtil.DoEventsLoop(null, 10);
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(1, count, "the debounced update should have been cancelled by the immediate set");

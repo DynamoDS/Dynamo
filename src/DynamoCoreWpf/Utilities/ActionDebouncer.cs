@@ -31,20 +31,23 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="timeout">Number of milliseconds to wait</param>
         /// <param name="action">The action to execute after the timeout runs out.</param>
         /// <returns>A task that finishes when the deboucing is cancelled or the input action has completed (successfully or not). Should be discarded in most scenarios.</returns>
-        public async Task Debounce(int timeout, Action action)
+        public void Debounce(int timeout, Action action)
         {
             Cancel();
             cts = new CancellationTokenSource();
-            try
+
+            Task.Delay(timeout, cts.Token).ContinueWith((t) =>
             {
-                await Task.Delay(timeout, cts.Token);
-                action();
-            }
-            catch (Exception ex) when (ex is not TaskCanceledException)
-            {
-                logger?.Log("Failed to run debounce action with the following error:");
-                logger?.Log(ex.ToString());
-            }
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    logger?.Log("Failed to run debounce action with the following error:");
+                    logger?.Log(ex.ToString());
+                }
+            }, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.NotOnCanceled);
         }
 
         public void Dispose()

@@ -106,7 +106,7 @@ namespace Dynamo.ViewModels
                 // if we get a non-empty value.
                 if (!string.IsNullOrEmpty(searchText) && searchDebouncer != null)
                 {
-                    _ = searchDebouncer.Debounce(searchDelayTimeout, () => OnSearchTextChanged(this, EventArgs.Empty));
+                    searchDebouncer.Debounce(searchDelayTimeout, () => OnSearchTextChanged(this, EventArgs.Empty));
                 }
                 else
                 {
