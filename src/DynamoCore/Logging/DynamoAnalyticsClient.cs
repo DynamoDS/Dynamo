@@ -193,7 +193,7 @@ namespace Dynamo.Logging
             {
                 serviceInitialized.Wait();
 
-                lock(trackEventLockObj)
+                lock (trackEventLockObj)
                 {
                     if (!ReportingAnalytics) return;
 
@@ -403,7 +403,7 @@ namespace Dynamo.Logging
 
             Task.Run(() =>
             {
-                lock(trackEventLockObj)
+                lock (trackEventLockObj)
                 {
                     taskToEnd.Wait();
                     taskToEnd.Result.Dispose();
@@ -417,7 +417,7 @@ namespace Dynamo.Logging
             serviceInitialized.Wait();
             if (!ReportingAnalytics) return Disposable;
 
-            lock(trackEventLockObj)
+            lock (trackEventLockObj)
             {
                 var e = new FileOperationEvent()
                 {
@@ -471,7 +471,7 @@ namespace Dynamo.Logging
             if (Service.IsInitialized)
             {
                 // Lock shutdown sequence in case other tracking calls might be executing concurently.
-                lock(trackEventLockObj)
+                lock (trackEventLockObj)
                 {
                     Service.ShutDown();
                 }

@@ -6,6 +6,7 @@ using Autodesk.DesignScript.Geometry;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -521,7 +522,9 @@ namespace Dynamo.Tests
         [Test, Category("ExcelTest"), Category("ExcelTestInterop")]
         public void ImportExport_Data_To_Excel()
         {
-            OpenSampleModel(@"en-US\ImportExport\ImportExport_Data To Excel.dyn", true);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(
+                Path.Combine(SampleDirectory, @"en-US\ImportExport\ImportExport_Data To Excel.dyn"),
+                true));
 
             var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
 
@@ -552,7 +555,9 @@ namespace Dynamo.Tests
         //After fixing issue with this test case add Smoke Test Category.
         public void ImportExport_Excel_to_Dynamo()
         {
-            OpenSampleModel(@"en-US\ImportExport\ImportExport_Excel to Dynamo.dyn", true);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(
+                Path.Combine(SampleDirectory, @"en-US\ImportExport\ImportExport_Excel to Dynamo.dyn"),
+                true));
 
             var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
 
