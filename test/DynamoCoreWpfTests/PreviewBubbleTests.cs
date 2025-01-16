@@ -582,12 +582,12 @@ namespace DynamoCoreWpfTests
             previewBubble.bubbleTools.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
             // open preview bubble
-            RaiseMouseEnterOnNode(nodeView);
+            RaiseMouseEnterOnNode(nodeView, () => previewBubble.IsCondensed);
             Assert.IsTrue(previewBubble.IsCondensed, "Compact preview bubble should be shown");
             Assert.AreEqual(Visibility.Collapsed, previewBubble.bubbleTools.Visibility, "Pin icon should not be shown");
 
             // hover preview bubble to see pin icon
-            RaiseMouseEnterOnNode(previewBubble);
+            RaiseMouseEnterOnNode(previewBubble, () => previewBubble.bubbleTools.Visibility == Visibility.Visible);
             Assert.AreEqual(Visibility.Visible, previewBubble.bubbleTools.Visibility, "Pin icon should be shown");
 
             // expand preview bubble
