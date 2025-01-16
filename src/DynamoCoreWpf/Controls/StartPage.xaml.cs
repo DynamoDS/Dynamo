@@ -465,51 +465,50 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private Dictionary<string, object> DeserializeJsonFile(string filePath)
+        private static string[] jsonKeys = { "Description", "Thumbnail", "Author" };
+        private Dictionary<string, string> DeserializeJsonFile(string filePath)
         {
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string jsonString, out Exception ex))
+            try
             {
-                return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+                var data = new Dictionary<string, string>();
+                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                using (var jr = new JsonTextReader(new StreamReader(fs))) //will dispose of the stream reader
+                {
+                    while(jr.Read())
+                    {
+                        if (data.Count == jsonKeys.Length)
+                        {
+                            break;
+                        }
+
+                        if (jr.TokenType == JsonToken.PropertyName)
+                        {
+                            var key = jr.Value?.ToString();
+                            if (jsonKeys.Contains(jr.Value))
+                            {
+                                jr.Read();
+                                data[key] = jr.Value?.ToString() ?? "";
+                            }
+                        }
+                    }
+                    
+                }
+
+                return data;
             }
-            else
+            catch
             {
-                if(ex is JsonReaderException)
-                {
-                    DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
-                }
-                else
-                {
-                    DynamoViewModel.Model.Logger.Log("File is not valid: " + ex.StackTrace);
-                }
+                DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
                 return null;
             }
         }
 
         private const string BASE64PREFIX = "data:image/png;base64,";
 
-        private string GetGraphThumbnail(Dictionary<string, object> jsonObject)
+        private string GetGraphThumbnail(Dictionary<string, string> jsonObject)
         {
-            jsonObject.TryGetValue("Thumbnail", out object thumbnail);
-
-            if (string.IsNullOrEmpty(thumbnail as string)) return string.Empty;
-
-            var base64 = String.Format("{0}{1}", BASE64PREFIX, thumbnail as string);
-
-            return base64;
-        }
-
-        private string GetGraphDescription(Dictionary<string, object> jsonObject)
-        {
-            jsonObject.TryGetValue("Description", out object description);
-
-            return description as string;
-        }
-
-        private string GetGraphAuthor(Dictionary<string, object> jsonObject)
-        {
-            jsonObject.TryGetValue("Author", out object author);
-
-            return author as string;
+            jsonObject.TryGetValue("Thumbnail", out var thumbnail);
+            return string.IsNullOrEmpty(thumbnail) ? string.Empty : $"{BASE64PREFIX}{thumbnail}";
         }
 
         private void HandleRegularCommand(StartPageListItem item)
@@ -559,9 +558,11 @@ namespace Dynamo.UI.Controls
             try
             {
                 var jsonObject = DeserializeJsonFile(filePath);
-                var description = jsonObject != null ? GetGraphDescription(jsonObject) : string.Empty;
+                var description = jsonObject?.TryGetValue("Description", out var description_) == true ?
+                    description_ : string.Empty;
+                var author = jsonObject?.TryGetValue("Author", out var author_) == true ?
+                    author_ : Resources.DynamoXmlFileFormat;
                 var thumbnail = jsonObject != null ? GetGraphThumbnail(jsonObject) : string.Empty;
-                var author = jsonObject != null ? GetGraphAuthor(jsonObject) : Resources.DynamoXmlFileFormat;
                 var date = DynamoUtilities.PathHelper.GetDateModified(filePath);
 
                 return (description, thumbnail, author, date);
