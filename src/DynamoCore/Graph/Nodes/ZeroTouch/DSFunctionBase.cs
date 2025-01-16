@@ -82,17 +82,18 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         /// Only if the node was added from a package
         /// </summary>
         /// <returns>Assembly Name</returns>
-        internal override AssemblyName GetNameOfAssemblyReferencedByNode()
+        internal override string GetNameOfAssemblyReferencedByNode()
         {
-            AssemblyName assemblyName = null;
-
-            var descriptor = this.Controller.Definition;
-            if (descriptor.IsPackageMember)
+            if (string.IsNullOrEmpty(cachedAsmName))
             {
-                assemblyName = AssemblyName.GetAssemblyName(descriptor.Assembly);
+                var descriptor = this.Controller.Definition;
+                if (descriptor.IsPackageMember)
+                {
+                    cachedAsmName = AssemblyName.GetAssemblyName(descriptor.Assembly).FullName;
+                }
             }
 
-            return assemblyName;
+            return cachedAsmName;
         }
 
         /// <summary>

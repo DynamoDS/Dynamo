@@ -591,7 +591,7 @@ namespace Dynamo.Graph.Workspaces
         /// Event that is fired when the workspace is collecting node package dependencies.
         /// This event should only be subscribed to by the package manager.
         /// </summary>
-        internal event Func<AssemblyName, PackageInfo> CollectingNodePackageDependencies;
+        internal event Func<string, PackageInfo> CollectingNodePackageDependencies;
 
         /// <summary>
         /// This handler handles the workspaceModel's request to populate a JSON with view data.
