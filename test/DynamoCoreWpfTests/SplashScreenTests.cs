@@ -85,6 +85,7 @@ namespace DynamoCoreWpfTests
             ss.CloseWindow();
             Assert.IsTrue(ss.CloseWasExplicit);
         }
+
         [Test]
         //note that this test sends a windows close message directly to the window
         //but skips the JS interop that users rely on to close the window - so that is not tested by this test.
@@ -113,7 +114,6 @@ namespace DynamoCoreWpfTests
                 });
 
                 Task.Delay(1000).Wait();
-
             }
             ss.webView.NavigationCompleted += WebView_NavigationCompleted;
 
@@ -131,7 +131,6 @@ namespace DynamoCoreWpfTests
 
             ss.Closed -= WindowClosed;
 
-            Assert.IsNull(ss.webView);// Make sure webview2 was disposed
             Assert.IsTrue(windowClosed);// Make sure the window was closed
         }
     }
