@@ -1,18 +1,18 @@
+using Dynamo.Logging;
 using System;
 using System.Threading;
-using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace Dynamo.Wpf.Utilities
 {
-    internal class ActionDebouncer : IDisposable
+    /// <summary>
+    /// The ActionDebouncer class offers a means to redunce the number of UI notifications for a specified time.
+    /// It is meant to be used in UI elements where too many UI updates can cause perfomance issues.
+    /// </summary>
+    internal class ActionDebouncer(ILogger logger) : IDisposable
     {
-        private readonly Dispatcher dispatcher;
+        private readonly ILogger logger = logger;
         private CancellationTokenSource cts;
-
-        public ActionDebouncer(Dispatcher dispatcher)
-        {
-            this.dispatcher = dispatcher;
-        }
 
         public void Cancel()
         {
@@ -24,17 +24,27 @@ namespace Dynamo.Wpf.Utilities
             }
         }
 
-        public void Debounce(int timeout, Action action)
+        /// <summary>
+        /// Delays the "action" for a "timeout" number of milliseconds
+        /// The input Action will run on same syncronization context as the Debounce method call.
+        /// </summary>
+        /// <param name="timeout">Number of milliseconds to wait</param>
+        /// <param name="action">The action to execute after the timeout runs out.</param>
+        /// <returns>A task that finishes when the deboucing is cancelled or the input action has completed (successfully or not). Should be discarded in most scenarios.</returns>
+        public async Task Debounce(int timeout, Action action)
         {
             Cancel();
             cts = new CancellationTokenSource();
-            System.Threading.Tasks.Task.Delay(timeout, cts.Token).ContinueWith(t =>
+            try
             {
-                if (t.IsCompletedSuccessfully)
-                {
-                    dispatcher.BeginInvoke(action);
-                }
-            });
+                await Task.Delay(timeout, cts.Token);
+                action();
+            }
+            catch (Exception ex) when (ex is not TaskCanceledException)
+            {
+                logger?.Log("Failed to run debounce action with the following error:");
+                logger?.Log(ex.ToString());
+            }
         }
 
         public void Dispose()

@@ -972,17 +972,42 @@ namespace DynamoCoreWpfTests
             vm.SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
 
             // run without debouncer
-            vm.useDebouncer = false; // override feature flags
+            vm.searchDebouncer.Dispose();
+            vm.searchDebouncer = null; // disable the debouncer
             searchControl.SearchTextBox.Text = "dsfdf";
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop(() => count == 1);
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(1, count, "changing the text once should cause a single update");
+
+            int currThreadId = Environment.CurrentManagedThreadId;
+            int debouncerThreadId = -1;
+            var debouncer = new ActionDebouncer(null);
+
+            int dbCount = 0;
+            _ = debouncer.Debounce(100, () =>
+            {
+                dbCount++;
+                debouncerThreadId = Environment.CurrentManagedThreadId;
+            });
+
+            DispatcherUtil.DoEventsLoop(() => debouncerThreadId != -1);
+            Assert.AreEqual(currThreadId, debouncerThreadId);
+
+            vm.searchDebouncer = debouncer;
+            searchControl.SearchTextBox.Text = "dsfdf";
+            DispatcherUtil.DoEventsLoop(() => dbCount == 1);
+            Assert.AreEqual(1, dbCount);
+
+            // Empty strings should not hit the debounce action
+            searchControl.SearchTextBox.Text = "";
+            Assert.AreEqual(1, dbCount);
+            DispatcherUtil.DoEventsLoop(() => count == 2);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void InCanvasSearchTextChangedThreading()
+        public void InCanvasSearchTextWithDebouncer()
         {
             var currentWs = View.ChildOfType<WorkspaceView>();
 
@@ -997,79 +1022,45 @@ namespace DynamoCoreWpfTests
 
             DispatcherUtil.DoEvents();
 
-            int waitTimeout = 500;
             int count = 0;
             var vm = searchControl.DataContext as SearchViewModel;
             Assert.IsNotNull(vm);
-            var oldCommand = vm.SearchCommand;
 
-            Action<object> searchAction = ob =>
+            // Check that the default debouncer is setup.
+            Assert.IsNotNull(vm.searchDebouncer);
+
+            void Vm_SearchTextChanged(object sender, EventArgs e)
             {
-                oldCommand.Execute(ob);
                 count++;
                 throw new Exception("Failure that should be logged");
-            };
+            }
 
-            vm.SearchCommand = new Dynamo.UI.Commands.DelegateCommand(searchAction);
+            vm.searchDelayTimeout = 50;
+            vm.SearchTextChanged += Vm_SearchTextChanged;
 
-            var mainWait = new ManualResetEventSlim(false);
-            var threadWait = new ManualResetEventSlim(false);
-            Assert.NotNull(ViewModel.UIDispatcher);
-            var thread = new Thread(() =>
-            {
-                var threadDispatcher = Dispatcher.CurrentDispatcher;
-                Assert.NotNull(threadDispatcher);
-                var threadDebouncer = new ActionDebouncer(threadDispatcher);
+            vm.SearchText = "point";
+            DispatcherUtil.DoEventsLoop(() => count == 1);
+            Assert.AreEqual(1, count, "Search updates were sent out");
 
-                Assert.IsFalse(ReferenceEquals(ViewModel.UIDispatcher, threadDispatcher));
-                threadDebouncer.Debounce(0, () => count++);
-                Thread.Sleep(10);
-                DispatcherUtil.DoEvents();
-                Assert.AreEqual(1, count, "thread sees updated count");
 
-                vm.useDebouncer = true; // override feature flags
-                vm.searchDebouncer = threadDebouncer;
-                vm.searchDelayTimeout = 50;
+            vm.SearchText = "point.by";
+            DispatcherUtil.DoEventsLoop(() => count == 2);
+            Assert.AreEqual(2, count, "thread sees updated count");
 
-                var sleepTime = vm.searchDelayTimeout * 2;
-                mainWait.Set();
-                Thread.Sleep(sleepTime);
-                threadWait.Wait(waitTimeout);
+            vm.SearchText = "abcde";
+            DispatcherUtil.DoEventsLoop(() => count == 3);
+            Assert.AreEqual(3, count, "thread sees updated count");
 
-                DispatcherUtil.DoEvents();
-                mainWait.Set();
-                Assert.AreEqual(2, count, "thread sees updated count");
+            searchControl.SearchTextBox.Text = "";
+            DispatcherUtil.DoEventsLoop(() => currentWs.InCanvasSearchBar.IsOpen);
 
-                vm.SearchText = "abcde";
-                Thread.Sleep(sleepTime);
-                DispatcherUtil.DoEvents();
-                Assert.AreEqual(3, count, "thread sees updated count");
-
-                Assert.Throws(typeof(InvalidOperationException), () =>
-                {
-                    count++;
-                    searchControl.SearchTextBox.Text = "dsfdf";
-                });
-            });
-
-            thread.Start();
-
-            mainWait.Wait(waitTimeout);
-            mainWait.Reset();
-
-            threadWait.Set();
-            searchControl.SearchTextBox.Text = "dsfdf";
-            mainWait.Wait(waitTimeout);
-            DispatcherUtil.DoEvents();
-
-            thread.Join();
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(4, count, "main sees updated count");
         }
 
         [Test]
         [Category("UnitTests")]
-        public void InCanvasSearchTextChangeTriggersOneSearchCommandDebounced()
+        public void InCanvasSearchTextChangeTriggersDebouncer()
         {
             var currentWs = View.ChildOfType<WorkspaceView>();
 
@@ -1092,7 +1083,7 @@ namespace DynamoCoreWpfTests
             // prepare debounce tests
             vm.searchDelayTimeout = 50;
             var sleepTime = vm.searchDelayTimeout * 2;
-            vm.useDebouncer = true; // override feature flags
+            Assert.NotNull(vm.searchDebouncer);
 
             // run with debouncer
             count = 0;
