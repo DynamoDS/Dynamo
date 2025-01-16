@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Utilities
             base.OnCollectionChanged(e);
         }
 
-        public void Shout()
+        internal void Shout()
         {
             OnCollectionChanged(new System.Collections.Specialized.NotifyCollectionChangedEventArgs(System.Collections.Specialized.NotifyCollectionChangedAction.Reset));
         }

@@ -1814,6 +1814,7 @@ namespace Dynamo.ViewModels
         {
 
             if (path == null) return;
+
             using(RecentFiles.Quietly())
             {
                 if (RecentFiles.Contains(path))
