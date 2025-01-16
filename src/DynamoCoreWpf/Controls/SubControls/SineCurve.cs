@@ -124,38 +124,52 @@ namespace Dynamo.Wpf.Controls.SubControls
         }
 
         /// <summary>
-        /// Generates a list of values mapped to a sine curve within the specified range and count.
+        /// Calculates the Y-axis values for the curve based on input limits and count.
         /// </summary>
-        public override List<double> GetValuesFromAssignedParameters(double lowLimit, double highLimit, int count)
+        public override List<double> GetCurveYValues(double minY, double maxY, int pointCount)
         {
-            if (count < 1)
-                return null;
+            if (pointCount < 1) return null;
 
-            List<double> livalues = new List<double>();
+            List<double> yValues = new List<double>();
 
-            if (controlPoint1.Point.X == controlPoint2.Point.X)
+            if (controlPoint1.Point.X == controlPoint2.Point.X) return null;
+
+            int step = pointCount - 1;
+            for (double xPos = 0.0; xPos < maxWidth; xPos += (maxWidth / step))
             {
-                return null;
+                double normalizedY = maxHeight - ConvertTrigoToY(CosineEquation(ConvertXToTrigo(xPos)));
+                double scaledY = (maxY - minY) * normalizedY / maxHeight;
+                scaledY += minY;
+                yValues.Add(scaledY);
             }
 
-            int incount = count - 1;
-            for (double d = 0.0; d < maxWidth; d += (maxWidth / incount))
+            if (yValues.Count < pointCount)
             {
-                double md = maxHeight - ConvertTrigoToY(CosineEquation(ConvertXToTrigo(d)));
-                double rd = (highLimit - lowLimit) * md / maxHeight;
-                rd += lowLimit;
-                livalues.Add(rd);
+                double normalizedY = maxHeight - ConvertTrigoToY(CosineEquation(ConvertXToTrigo(maxWidth)));
+                double scaledY = (maxY - minY) * normalizedY / maxHeight;
+                scaledY += minY;
+                yValues.Add(scaledY);
             }
 
-            if (livalues.Count < count)
+            return yValues;
+        }
+
+        /// <summary>
+        /// Calculates the Y-axis values for the curve based on input limits and count.
+        /// </summary>
+        public List<double> GetSineWaveXValues(double minX, double maxX, int pointCount)
+        {
+            if (pointCount < 1) return null;
+
+            List<double> xValues = new List<double>();
+            double step = (maxX - minX) / (pointCount - 1);
+
+            for (int i = 0; i < pointCount; i++)
             {
-                double mdx = maxHeight - ConvertTrigoToY(CosineEquation(ConvertXToTrigo(maxWidth)));
-                double rdx = (highLimit - lowLimit) * mdx / maxHeight;
-                rdx += lowLimit;
-                livalues.Add(rdx);
+                xValues.Add(minX + i * step);
             }
 
-            return livalues;
+            return xValues;
         }
     }
 }

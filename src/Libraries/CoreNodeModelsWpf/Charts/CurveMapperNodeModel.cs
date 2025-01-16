@@ -1,7 +1,6 @@
 using Autodesk.DesignScript.Runtime;
 using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Converters;
-using CoreNodes.ChartHelpers;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.Controls;
@@ -13,7 +12,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using static System.Security.Cryptography.ECCurve;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -430,7 +428,7 @@ namespace CoreNodeModelsWpf.Charts
                     if (LinearCurve != null)
                     {
                         OutputValuesY = new List<double> { 5, 9, 1984};
-                        c1 = OutputValuesY;
+                        OutputValuesY = new List<double> { 4, 8, 1984 };
                     }
                     break;
 
@@ -438,15 +436,15 @@ namespace CoreNodeModelsWpf.Charts
                 case GraphTypes.Linear:
                     if (LinearCurve != null)
                     {
-                        OutputValuesY = LinearCurve.GetValuesFromAssignedParameters(minLimitX, maxLimitX, pointsCount);
-                        c1 = OutputValuesY;
+                        OutputValuesY = LinearCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                        OutputValuesX = LinearCurve.GetCurveYValues(minLimitX, maxLimitX, pointsCount);
                     }
                     break;
                 case GraphTypes.SineWave:
                     if (SineCurve != null)
                     {
-                        OutputValuesY = SineCurve.GetValuesFromAssignedParameters(minLimitX, maxLimitX, pointsCount);
-                        c1 = OutputValuesY;
+                        OutputValuesY = SineCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                        OutputValuesX = SineCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
                     }
                     break;
             }
@@ -546,9 +544,7 @@ namespace CoreNodeModelsWpf.Charts
                     doubListX.Add(AstFactory.BuildDoubleNode(dVal));
                 }
                 xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildExprList(doubListY));
-            }
-
-            
+            }         
 
 
 

@@ -396,8 +396,15 @@ namespace Dynamo.Wpf.Charts
 
                 // Add visibility binding if needed
                 BindVisibility(model);
-            };               
-           
+
+                // Subscribe to LinearCurve's event
+                model.LinearCurve.CurveUpdated += () => model.OnNodeModified();
+
+            };
+
+
+            
+
         }
 
         private void BindVisibility(CurveMapperNodeModel model)

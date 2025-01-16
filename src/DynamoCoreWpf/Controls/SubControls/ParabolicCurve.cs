@@ -137,7 +137,7 @@ namespace Dynamo.Wpf.Controls.SubControls
             GenerateParabola();
         }
 
-        public override List<double> GetValuesFromAssignedParameters(double lowLimit, double highLimit, int count)
+        public override List<double> GetCurveYValues(double lowLimit, double highLimit, int count)
         {
             if (count < 1)
                 return null;

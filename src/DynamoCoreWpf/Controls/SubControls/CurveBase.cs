@@ -37,7 +37,18 @@ namespace Dynamo.Wpf.Controls.SubControls
             pathFigure = new PathFigure();
         }
 
-        public virtual List<double> GetValuesFromAssignedParameters(double lowLimit, double highLimit, int count)
+        /// <summary>
+        /// Calculates the Y-axis values for the curve based on input limits and count.
+        /// </summary>
+        public virtual List<double> GetCurveYValues(double minLimitY, double maxLimitY, int count)
+        {
+            return new List<double>();
+        }
+
+        /// <summary>
+        /// Calculates the X-axis values for the curve based on input limits and count.
+        /// </summary>
+        public virtual List<double> GetCurveXValues(double minLimitX, double maxLimitX, int count)
         {
             return new List<double>();
         }

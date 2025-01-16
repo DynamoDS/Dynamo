@@ -140,7 +140,7 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// <summary>
         /// Gets interpolated Y values based on the assigned parameters and limits.
         /// </summary>
-        public override List<double> GetValuesFromAssignedParameters(double lowLimit, double highLimit, int count)
+        public override List<double> GetCurveYValues(double lowLimit, double highLimit, int count)
         {
             if (count < 1) return null;
 

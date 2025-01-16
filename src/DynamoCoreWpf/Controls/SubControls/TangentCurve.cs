@@ -154,7 +154,7 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// Generates a list of values mapped to a sine curve within the specified range and count.
         /// NOT UPDATED
         /// </summary>
-        public override List<double> GetValuesFromAssignedParameters(double lowLimit, double highLimit, int count)
+        public override List<double> GetCurveYValues(double lowLimit, double highLimit, int count)
         {
             if (count < 1)
                 return null;

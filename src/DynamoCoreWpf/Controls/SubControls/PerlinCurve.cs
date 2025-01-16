@@ -163,7 +163,7 @@ namespace Dynamo.Wpf.Controls.SubControls
             GeneratePerlinCurve();
         }
 
-        public override List<double> GetValuesFromAssignedParameters(double lowLimit, double highLimit, int count)
+        public override List<double> GetCurveYValues(double lowLimit, double highLimit, int count)
         {
             if (count < 1)
                 return null;

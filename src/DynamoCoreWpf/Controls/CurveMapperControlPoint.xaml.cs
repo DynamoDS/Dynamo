@@ -241,15 +241,15 @@ namespace Dynamo.Wpf.Controls
             if (CurvePerlin != null)
                 CurvePerlin.Regenerate(this);
 
-            // Regenerate associated horizontal and vertical crossHairs
-            if (CrossHairHorizontal != null)
-            {
-                CrossHairHorizontal.Regenerate(this);
-            }
-            if (CrossHairVertical != null)
-            {
-                CrossHairVertical.Regenerate(this);
-            }
+            //// Regenerate associated horizontal and vertical crossHairs
+            //if (CrossHairHorizontal != null)
+            //{
+            //    CrossHairHorizontal.Regenerate(this);
+            //}
+            //if (CrossHairVertical != null)
+            //{
+            //    CrossHairVertical.Regenerate(this);
+            //}
         }
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)

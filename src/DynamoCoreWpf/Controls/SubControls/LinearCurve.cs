@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -44,6 +44,9 @@ namespace Dynamo.Wpf.Controls.SubControls
             };
         }
 
+        public Action CurveUpdated;
+
+
         /// <summary>
         /// Calculates the Y value for a given X using the linear equation.
         /// </summary>
@@ -85,6 +88,9 @@ namespace Dynamo.Wpf.Controls.SubControls
 
             pathFigure.StartPoint = p1;
             lineSegment.Point = p2;
+
+            // Raise event to notify listeners (CurveMapperNodeModel)
+            CurveUpdated?.Invoke();
         }
 
         /// <summary>
@@ -100,64 +106,32 @@ namespace Dynamo.Wpf.Controls.SubControls
         }
 
         /// <summary>
-        /// Generates values between the limits based on the curve.
+        /// Calculates the Y-axis values for the curve based on input limits and count.
         /// </summary>
-        public override List<double> GetValuesFromAssignedParameters(double lowLimit, double highLimit, int count)
+        public override List<double> GetCurveYValues(double minY, double maxY, int pointCount)
         {
-            if (count < 1 || Math.Abs(StartPoint.Point.X - EndPoint.Point.X) < double.Epsilon)
-                return null;
+            if (pointCount < 1 || Math.Abs(StartPoint.Point.X - EndPoint.Point.X) < double.Epsilon) return null;
 
             var values = new List<double>();
-            double step = MaxWidth / (count - 1);
+            double step = MaxWidth / (pointCount - 1);
 
             for (double x = 0; x <= MaxWidth; x += step)
             {
                 double yCanvas = LineEquation(x);
-                double yMapped = MapCanvasToRange(yCanvas, lowLimit, highLimit);
+                double yMapped = MapCanvasToRange(yCanvas, minY, maxY);
                 values.Add(yMapped);
             }
 
             return values;
-
-            //List<double> livalues = new List<double>();
-
-            ////  Test if vertical
-            //if (StartPoint.Point.X == EndPoint.Point.X)
-            //{
-            //    return null;
-            //}
-            //if (double.IsNaN(LineEquation(0.0)))
-            //{
-            //    return null;
-            //}
-
-            //double inCount = (double)(count - 1);
-            //for (double d = 0.0; d < MaxWidth; d += (MaxWidth / inCount))
-            //{
-            //    double md = MaxHeight - LineEquation(d);
-            //    double rd = (highLimit - lowLimit) * md / MaxHeight;
-            //    rd += lowLimit;
-            //    livalues.Add(rd);
-            //}
-
-            //if (livalues.Count < count)
-            //{
-            //    double mdx = MaxHeight - LineEquation(MaxWidth);
-            //    double rdx = (highLimit - lowLimit) * mdx / MaxHeight;
-            //    rdx += lowLimit;
-            //    livalues.Add(rdx);
-            //}
-
-            //return livalues;
         }
 
-        /// <summary>
-        /// Maps canvas Y values to the range defined by the limits.
-        /// </summary>
+
         private double MapCanvasToRange(double canvasY, double lowLimit, double highLimit)
         {
             double normalizedY = MaxHeight - canvasY;
             return lowLimit + (normalizedY / MaxHeight) * (highLimit - lowLimit);
         }
+
+        
     }
 }
