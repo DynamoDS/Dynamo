@@ -153,10 +153,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     model.CurveBezierControlLine1.Regenerate(model.BezierControlPoint1, model.BezierFixedPoint1);
                     model.CurveBezierControlLine2.Regenerate(model.BezierControlPoint2, model.BezierFixedPoint2);
                 }
-
-
-
-
                 // Sine wave
                 if (model.ControlPointSine1 != null && model.ControlPointSine2 != null)
                 {
@@ -182,6 +178,60 @@ namespace CoreNodeModelsWpf.Charts.Controls
                         model.SineCurve.Regenerate(model.ControlPointSine1);
                         model.SineCurve.Regenerate(model.ControlPointSine2);
                         Canvas.SetZIndex(model.SineCurve.PathCurve, 10);
+                    }
+                }
+                // Cosine wave
+                if (model.ControlPointSine1 != null && model.ControlPointSine2 != null)
+                {
+                    // Update the bounds for movement - CAN WE UPDATE ALL POINTS AT THE SAME TIME ???
+                    model.ControlPointCosine1.LimitWidth = newCanvasSize;
+                    model.ControlPointCosine1.LimitHeight = newCanvasSize;
+                    model.ControlPointCosine2.LimitWidth = newCanvasSize;
+                    model.ControlPointCosine2.LimitHeight = newCanvasSize;
+                    // Update control points proportionally
+                    double xRatioCosine1 = model.ControlPointCosine1.Point.X / previousCanvasSize;
+                    double yRatioCosine1 = model.ControlPointCosine1.Point.Y / previousCanvasSize;
+                    double xRatioCosine2 = model.ControlPointCosine2.Point.X / previousCanvasSize;
+                    double yRatioCosine2 = model.ControlPointCosine2.Point.Y / previousCanvasSize;
+
+                    model.ControlPointCosine1.Point = new Point(xRatioCosine1 * newCanvasSize, yRatioCosine1 * newCanvasSize);
+                    model.ControlPointCosine2.Point = new Point(xRatioCosine2 * newCanvasSize, yRatioCosine2 * newCanvasSize);
+
+                    // Update sine curve bounds and regenerate
+                    if (model.CosineCurve != null)
+                    {
+                        model.CosineCurve.MaxWidth = newCanvasSize;
+                        model.CosineCurve.MaxHeight = newCanvasSize;
+                        model.CosineCurve.Regenerate(model.ControlPointCosine1);
+                        model.CosineCurve.Regenerate(model.ControlPointCosine2);
+                        Canvas.SetZIndex(model.CosineCurve.PathCurve, 10);
+                    }
+                }
+                // Tangent wave
+                if (model.ControlPointTangent1 != null && model.ControlPointTangent2 != null)
+                {
+                    // Update the bounds for movement - CAN WE UPDATE ALL POINTS AT THE SAME TIME ???
+                    model.ControlPointTangent1.LimitWidth = newCanvasSize;
+                    model.ControlPointTangent1.LimitHeight = newCanvasSize;
+                    model.ControlPointTangent2.LimitWidth = newCanvasSize;
+                    model.ControlPointTangent2.LimitHeight = newCanvasSize;
+                    // Update control points proportionally
+                    double xRatioTangent1 = model.ControlPointTangent1.Point.X / previousCanvasSize;
+                    double yRatioTangent1 = model.ControlPointTangent1.Point.Y / previousCanvasSize;
+                    double xRatioTangent2 = model.ControlPointTangent2.Point.X / previousCanvasSize;
+                    double yRatioTangent2 = model.ControlPointTangent2.Point.Y / previousCanvasSize;
+
+                    model.ControlPointTangent1.Point = new Point(xRatioTangent1 * newCanvasSize, yRatioTangent1 * newCanvasSize);
+                    model.ControlPointTangent2.Point = new Point(xRatioTangent2 * newCanvasSize, yRatioTangent2 * newCanvasSize);
+
+                    // Update sine curve bounds and regenerate
+                    if (model.TangentCurve != null)
+                    {
+                        model.TangentCurve.MaxWidth = newCanvasSize;
+                        model.TangentCurve.MaxHeight = newCanvasSize;
+                        model.TangentCurve.Regenerate(model.ControlPointTangent1);
+                        model.TangentCurve.Regenerate(model.ControlPointTangent2);
+                        Canvas.SetZIndex(model.TangentCurve.PathCurve, 10);
                     }
                 }
                 // Parabolic curve
@@ -391,14 +441,34 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     
                 }
             }
-            else if (model.SelectedGraphType == GraphTypes.SineWave)
+            else if (model.SelectedGraphType == GraphTypes.SineWave) // make the coordinate properties
             {
-                model.ControlPointSine1.Point = new Point(0, 0);
-                model.ControlPointSine2.Point = new Point(DynamicCanvasSize, DynamicCanvasSize);
+                model.ControlPointSine1.Point = new Point(DynamicCanvasSize * 0.25, 0);
+                model.ControlPointSine2.Point = new Point(DynamicCanvasSize * 0.75, DynamicCanvasSize);
                 if (model.SineCurve != null)
                 {
                     model.SineCurve.Regenerate(model.ControlPointSine1);
                     model.SineCurve.Regenerate(model.ControlPointSine2);
+                }
+            }
+            else if (model.SelectedGraphType == GraphTypes.CosineWave) // make the coordinate properties
+            {
+                model.ControlPointCosine1.Point = new Point(0, 0);
+                model.ControlPointCosine2.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize);
+                if (model.CosineCurve != null)
+                {
+                    model.CosineCurve.Regenerate(model.ControlPointCosine1);
+                    model.CosineCurve.Regenerate(model.ControlPointCosine2);
+                }
+            }
+            else if (model.SelectedGraphType == GraphTypes.TangentWave)
+            {
+                model.ControlPointTangent1.Point = new Point(0, DynamicCanvasSize * 0.5);
+                model.ControlPointTangent2.Point = new Point(DynamicCanvasSize, DynamicCanvasSize * 0.5);
+                if (model.TangentCurve != null)
+                {
+                    model.TangentCurve.Regenerate(model.ControlPointTangent1);
+                    model.TangentCurve.Regenerate(model.ControlPointTangent2);
                 }
             }
             else if (model.SelectedGraphType == GraphTypes.Parabola)

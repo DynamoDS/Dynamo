@@ -13,6 +13,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using static System.Security.Cryptography.ECCurve;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -37,24 +38,26 @@ namespace CoreNodeModelsWpf.Charts
     public class CurveMapperNodeModel : NodeModel
     {
         #region Properties
+
+        [JsonIgnore]
+        internal EngineController EngineController { get; set; }
+
         #region Input Properties
         private double minLimitX;
         private double maxLimitX = 1;
         private double minLimitY;
         private double maxLimitY = 1;
         private int pointsCount = 10;
+        private List<double> outputValuesY;
+        private List<double> outputValuesX;
         private readonly IntNode minLimitXDefaultValue = new IntNode(0);
         private readonly IntNode maxLimitXDefaultValue = new IntNode(1);
         private readonly IntNode minLimitYDefaultValue = new IntNode(0);
         private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
         private readonly IntNode pointsCountDefaultValue = new IntNode(10);
         private GraphTypes selectedGraphType;
-
-        [JsonIgnore]
-        internal EngineController EngineController { get; set; }
-
-        // Should those properties be serialized ???
-        [JsonIgnore]
+        
+        [JsonIgnore]  // Should those properties be serialized ???
         public double MinLimitX
         {
             get => minLimitX;
@@ -63,6 +66,7 @@ namespace CoreNodeModelsWpf.Charts
                 if (minLimitX != value)
                 {
                     minLimitX = value;
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(MinLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
                     OnNodeModified();
@@ -78,6 +82,7 @@ namespace CoreNodeModelsWpf.Charts
                 if (maxLimitX != value)
                 {
                     maxLimitX = value;
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(MaxLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
                     OnNodeModified();
@@ -93,6 +98,7 @@ namespace CoreNodeModelsWpf.Charts
                 if (minLimitY != value)
                 {
                     minLimitY = value;
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(MinLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
                     OnNodeModified();
@@ -108,6 +114,7 @@ namespace CoreNodeModelsWpf.Charts
                 if (maxLimitY != value)
                 {
                     maxLimitY = value;
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(MaxLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
                     OnNodeModified();
@@ -127,11 +134,13 @@ namespace CoreNodeModelsWpf.Charts
                 if (pointsCount != value)
                 {
                     pointsCount = value;
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(PointsCount));
                     OnNodeModified();
                 }
             }
-        }        
+        }
+        
         [JsonIgnore] // [JsonConverter(typeof(StringEnumConverter))]
         public GraphTypes SelectedGraphType
         {
@@ -139,13 +148,35 @@ namespace CoreNodeModelsWpf.Charts
             set
             {
                 selectedGraphType = value;
+                GenerateOutputValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
                 OnNodeModified();
             }
         }
         #endregion
 
-        
+        #region Output properties
+        [JsonIgnore]
+        public List<double> OutputValuesY
+        {
+            get => outputValuesY;
+            set
+            {
+                outputValuesY = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore]
+        public List<double> OutputValuesX
+        {
+            get => outputValuesX;
+            set
+            {
+                outputValuesX = value;
+                OnNodeModified();
+            }
+        }
+        #endregion
 
         #region Linear Curve
         [JsonIgnore]
@@ -203,6 +234,62 @@ namespace CoreNodeModelsWpf.Charts
         }
         [JsonIgnore]
         public SineCurve SineCurve { get; set; }
+        #endregion
+
+        #region Cosine Curve
+        private CurveMapperControlPoint controlPointCosine1;
+        private CurveMapperControlPoint controlPointCosine2;
+
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint ControlPointCosine1
+        {
+            get => controlPointCosine1;
+            set
+            {
+                controlPointCosine1 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint ControlPointCosine2
+        {
+            get => controlPointCosine2;
+            set
+            {
+                controlPointCosine2 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore]
+        public SineCurve CosineCurve { get; set; }
+        #endregion
+
+        #region Tangent Curve
+        private CurveMapperControlPoint controlPointTangent1;
+        private CurveMapperControlPoint controlPointTangent2;
+
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint ControlPointTangent1
+        {
+            get => controlPointTangent1;
+            set
+            {
+                controlPointTangent1 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint ControlPointTangent2
+        {
+            get => controlPointTangent2;
+            set
+            {
+                controlPointTangent2 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore]
+        public TangentCurve TangentCurve { get; set; }
         #endregion
 
         #region Parabolic Curve
@@ -272,8 +359,6 @@ namespace CoreNodeModelsWpf.Charts
         public PerlinCurve PerlinCurve { get; set; }
         #endregion
 
-
-
         /// <summary>
         /// Triggers when port is connected or disconnected
         /// </summary>
@@ -322,11 +407,6 @@ namespace CoreNodeModelsWpf.Charts
 
             SelectedGraphType = GraphTypes.Empty;
             ArgumentLacing = LacingStrategy.Disabled;
-
-            // Initialize the CurveMapperControl and other elements -> now created in CustomizeView
-            //CurveMapperControl = new CurveMapperControl(this);
-            //PointLinearStart = new CurveMapperControlPoint(new System.Windows.Point(10, 230), 240, 240);
-            //PointLinearEnd = new CurveMapperControlPoint(new System.Windows.Point(230, 10), 240, 240);
         }
         [JsonConstructor]
         public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -336,8 +416,53 @@ namespace CoreNodeModelsWpf.Charts
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
-
         #endregion
+
+
+
+
+        private void GenerateOutputValues()
+        {
+            var c1 = new List<double>();
+            switch (SelectedGraphType)
+            {
+                case GraphTypes.Empty:
+                    if (LinearCurve != null)
+                    {
+                        OutputValuesY = new List<double> { 5, 9, 1984};
+                        c1 = OutputValuesY;
+                    }
+                    break;
+
+
+                case GraphTypes.Linear:
+                    if (LinearCurve != null)
+                    {
+                        OutputValuesY = LinearCurve.GetValuesFromAssignedParameters(minLimitX, maxLimitX, pointsCount);
+                        c1 = OutputValuesY;
+                    }
+                    break;
+                case GraphTypes.SineWave:
+                    if (SineCurve != null)
+                    {
+                        OutputValuesY = SineCurve.GetValuesFromAssignedParameters(minLimitX, maxLimitX, pointsCount);
+                        c1 = OutputValuesY;
+                    }
+                    break;
+            }
+            var c2 = c1;
+        }
+
+
+
+
+
+
+
+
+
+
+
 
         #region DataBridge
         /// <summary>
@@ -357,9 +482,9 @@ namespace CoreNodeModelsWpf.Charts
             var maxValueX = double.TryParse(inputs[1]?.ToString(), out var maxX) ? maxX : MaxLimitX;
             var minValueY = double.TryParse(inputs[2]?.ToString(), out var minY) ? minY : MinLimitY;
             var maxValueY = double.TryParse(inputs[3]?.ToString(), out var maxY) ? maxY : MaxLimitY;
-            //var listValue = int.Parse(inputs[4].ToString());
+            var listValue = int.TryParse(inputs[4]?.ToString(), out var parsedCount) ? parsedCount : PointsCount;
 
-            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected &&
+            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected && // do we need this id we are using default values?
                 !InPorts[2].IsConnected && !InPorts[3].IsConnected)
             {
                 return;
@@ -370,12 +495,14 @@ namespace CoreNodeModelsWpf.Charts
             if (InPorts[1].IsConnected) MaxLimitX = maxValueX;
             if (InPorts[2].IsConnected) MinLimitY = minValueY;
             if (InPorts[3].IsConnected) MaxLimitY = maxValueY;
+            if (InPorts[4].IsConnected) PointsCount = listValue;
 
             // Notify property changes to update UI
             RaisePropertyChanged(nameof(MinLimitX));
             RaisePropertyChanged(nameof(MaxLimitX));
             RaisePropertyChanged(nameof(MinLimitY));
             RaisePropertyChanged(nameof(MaxLimitY));
+            RaisePropertyChanged(nameof(PointsCount));
 
 
             // Trigger additional UI updates if necessary
@@ -385,37 +512,48 @@ namespace CoreNodeModelsWpf.Charts
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (!InPorts[0].IsConnected || !InPorts[1].IsConnected ||
-                !InPorts[2].IsConnected || !InPorts[3].IsConnected ||
-                !InPorts[4].IsConnected)
-            {
-                return new[]
-                {
-                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
-                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildNullNode())
-                };
-            }
+            //if (!InPorts[0].IsConnected || !InPorts[1].IsConnected ||
+            //    !InPorts[2].IsConnected || !InPorts[3].IsConnected ||
+            //    !InPorts[4].IsConnected)
+            //{
+            //    return new[]
+            //    {
+            //        AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
+            //        //AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildNullNode())
+            //    };
+            //}
 
-            var minLimitXNode = inputAstNodes[0];
-            var maxLimitXNode = inputAstNodes[1];
-            var minLimitYNode = inputAstNodes[2];
-            var maxLimitYNode = inputAstNodes[3];
-            var pointCountNode = inputAstNodes[4];
 
-            // Function calls for X and Y values
-            var generateXValuesCall = AstFactory.BuildFunctionCall(
-                new Func<double, double, int, List<double>>(CurveMapperFunctions.GenerateXValues),
-                new List<AssociativeNode> { minLimitXNode, maxLimitXNode, pointCountNode }
-            );
 
-            var generateYValuesCall = AstFactory.BuildFunctionCall(
-                new Func<double, double, double, double, int, List<double>>(CurveMapperFunctions.GenerateYValues),
-                new List<AssociativeNode> { minLimitXNode, maxLimitXNode, minLimitYNode, maxLimitYNode, pointCountNode }
-            );
+
 
             // Assign to output ports
-            var xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), generateXValuesCall);
-            var yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), generateYValuesCall);
+            var xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode());
+            var yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildNullNode());
+            
+            if (OutputValuesY != null)
+            {
+                var doubListY = new List<AssociativeNode>();
+                foreach (double dVal in OutputValuesY)
+                {
+                    doubListY.Add(AstFactory.BuildDoubleNode(dVal));
+                }
+                yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildExprList(doubListY));
+
+                var doubListX = new List<AssociativeNode>();
+                foreach (double dVal in OutputValuesY)
+                {
+                    doubListX.Add(AstFactory.BuildDoubleNode(dVal));
+                }
+                xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildExprList(doubListY));
+            }
+
+            
+
+
+
+
+
 
             // DataBridge call
             var dataBridgeCall = AstFactory.BuildAssignment(

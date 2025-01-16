@@ -6,7 +6,7 @@ using System.Windows.Shapes;
 
 namespace Dynamo.Wpf.Controls.SubControls
 {
-    public class SineCurve : CurveBase
+    public class TangentCurve : CurveBase
     {
         private CurveMapperControlPoint controlPoint1;
         private CurveMapperControlPoint controlPoint2;
@@ -49,7 +49,7 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// <summary>
         /// Initializes a sine curve with control points, dimensions, and visual properties.
         /// </summary>
-        public SineCurve(CurveMapperControlPoint controlPoint1, CurveMapperControlPoint controlPoint2, double maxWidth, double maxHeight)
+        public TangentCurve(CurveMapperControlPoint controlPoint1, CurveMapperControlPoint controlPoint2, double maxWidth, double maxHeight)
         {
             this.controlPoint1 = controlPoint1;
             this.controlPoint2 = controlPoint2;
@@ -60,15 +60,11 @@ namespace Dynamo.Wpf.Controls.SubControls
 
             // Initialize coefficients and generate sine wave
             GetEquationCoefficients();
-            GenerateSineWave();
+            GenerateTangentWave();
 
             PathFigure.Segments.Add(polySegment);
 
-            PathGeometry = new PathGeometry
-            {
-                Figures = { PathFigure }
-            };
-
+            PathGeometry = new PathGeometry { Figures = { PathFigure } };
             PathCurve = new Path
             {
                 Data = PathGeometry,
@@ -79,52 +75,84 @@ namespace Dynamo.Wpf.Controls.SubControls
 
         private double ConvertXToTrigo(double x) => Math.PI * x / maxWidth;
         private double ConvertYToTrigo(double y) => 2.0 * y / maxHeight - 1.0;
-        private double ConvertTrigoToX(double unitX) => unitX * maxWidth / Math.PI;
-        private double ConvertTrigoToY(double unitY) => (unitY + 1.0) * maxHeight / (2.0);
+        private double ConvertTrigoToX(double trix) => trix * maxWidth / Math.PI;
+        private double ConvertTrigoToY(double triy) => (triy + 1.0) * maxHeight / (2.0);
         private double CosineEquation(double x) => -(coefA * Math.Cos(coefB * x - coefC)) + coefD;
 
         private void GetEquationCoefficients()
         {
-            coefA = (ConvertYToTrigo(controlPoint2.Point.Y) - ConvertYToTrigo(controlPoint1.Point.Y)) / 2.0;
-            coefB = Math.PI / (ConvertXToTrigo(controlPoint2.Point.X) - ConvertXToTrigo(controlPoint1.Point.X));
-            coefC = coefB * ConvertXToTrigo(controlPoint1.Point.X);
-            coefD = (ConvertYToTrigo(controlPoint1.Point.Y) + ConvertYToTrigo(controlPoint2.Point.Y)) / 2.0;
+            //Point p1 = controlPoint1.Point;
+            //Point p2 = controlPoint2.Point;
+            //double p1x = ConvertXToTrigo(p1.X);
+            //double p2x = ConvertXToTrigo(p2.X);
+            //double p1y = ConvertYToTrigo(p1.Y);
+            //double p2y = ConvertYToTrigo(p2.Y);
+
+            //coefA = (p2y - p1y) / 2.0;
+            //coefB = Math.PI / (p2x - p1x);
+            //coefC = coefB * p1x;
+            //coefD = (p1y + p2y) / 2.0;
+
+            Point p1 = controlPoint1.Point;
+            Point p2 = controlPoint2.Point;
+            coefA = (p2.Y - p1.Y) / 2.0;
+            coefB = Math.PI / (p2.X - p1.X);
+            coefC = coefB * p1.X;
+            coefD = (p1.Y + p2.Y) / 2.0;
         }
 
-        private void GenerateSineWave()
+        private void GenerateTangentWave()
         {
-            polySegment ??= new PolyLineSegment { IsStroked = true, IsSmoothJoin = true };
+            //polySegment ??= new PolyLineSegment { IsStroked = true, IsSmoothJoin = true };
+            //polySegment.Points.Clear();
+
+            //double ud = ConvertXToTrigo(0.0);
+            //double udd = CosineEquation(ud);
+            //PathFigure.StartPoint = new Point(ConvertTrigoToX(ud), ConvertTrigoToY(udd));
+
+            //for (double d = 1.0; d < maxWidth; d += 2.0)
+            //{
+            //    double vd = ConvertXToTrigo(d);
+            //    double dd = CosineEquation(vd);
+            //    polySegment.Points.Add(new Point(ConvertTrigoToX(vd), ConvertTrigoToY(dd)));
+            //}
+            //double vx = ConvertXToTrigo(maxWidth);
+            //double dy = CosineEquation(vx);
+            //polySegment.Points.Add(new Point(ConvertTrigoToX(vx), ConvertTrigoToY(dy)));
+
+            polySegment = new PolyLineSegment { IsStroked = true, IsSmoothJoin = true };
             polySegment.Points.Clear();
 
-            double ud = ConvertXToTrigo(0.0);
-            double udd = CosineEquation(ud);
-            PathFigure.StartPoint = new Point(ConvertTrigoToX(ud), ConvertTrigoToY(udd));
-
-            for (double d = 1.0; d < maxWidth; d += 2.0)
+            for (double d = 0.0; d < maxWidth; d += 2.0)
             {
-                double vd = ConvertXToTrigo(d);
-                double dd = CosineEquation(vd);
-                polySegment.Points.Add(new Point(ConvertTrigoToX(vd), ConvertTrigoToY(dd)));
+                double x = d;
+                double y = TangentEquation(x);
+                if (!double.IsNaN(y)) // Skip undefined points
+                    polySegment.Points.Add(new Point(x, y));
             }
-            double vx = ConvertXToTrigo(maxWidth);
-            double dy = CosineEquation(vx);
-            polySegment.Points.Add(new Point(ConvertTrigoToX(vx), ConvertTrigoToY(dy)));
+        }
+        private double TangentEquation(double x)
+        {
+            double value = coefA * Math.Tan(coefB * x - coefC) + coefD;
+            return double.IsInfinity(value) ? double.NaN : value; // Avoid vertical asymptotes
         }
 
         /// <summary>
         /// Regenerates the sine wave when a control point is updated.
+        /// NOT UPDATED
         /// </summary>
         public void Regenerate(CurveMapperControlPoint updatedControlPoint)
         {
             if (controlPoint1 == updatedControlPoint || controlPoint2 == updatedControlPoint)
             {
                 GetEquationCoefficients();
-                GenerateSineWave();
+                GenerateTangentWave();
             }
         }
 
         /// <summary>
         /// Generates a list of values mapped to a sine curve within the specified range and count.
+        /// NOT UPDATED
         /// </summary>
         public override List<double> GetValuesFromAssignedParameters(double lowLimit, double highLimit, int count)
         {

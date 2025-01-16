@@ -127,6 +127,17 @@ namespace Dynamo.Wpf.Controls
         public SineCurve CurveSine { get; set; }
 
         /// <summary>
+        /// Gets or sets the associated cosine curve for the control point.
+        /// </summary>
+         // TODO: check if we should have separate Cosine Curve class
+        public SineCurve CurveCosine { get; set; }
+
+        /// <summary>
+        /// Gets or sets the associated tangent curve for the control point.
+        /// </summary>
+        public TangentCurve CurveTangent { get; set; }
+
+        /// <summary>
         /// Gets or sets the associated parabolic curve for the control point.
         /// </summary>
         public ParabolicCurve CurveParabolic { get; set; }
@@ -214,29 +225,21 @@ namespace Dynamo.Wpf.Controls
 
             // Regenerate associated elements
             if (CurveLinear != null)
-            {
                 CurveLinear.Regenerate();
-            }
             if (ControlLineBezier != null)
-            {
-                ControlLineBezier.Regenerate(this);
-            }
+                ControlLineBezier.Regenerate(this); 
             if (CurveBezier != null)
-            {
                 CurveBezier.Regenerate(this);
-            }
             if (CurveSine != null)
-            {
                 CurveSine.Regenerate(this);
-            }
+            if (CurveCosine != null)
+                CurveCosine.Regenerate(this);
+            if (CurveTangent != null)
+                CurveTangent.Regenerate(this);
             if (CurveParabolic != null)
-            {
                 CurveParabolic.Regenerate(this);
-            }
             if (CurvePerlin != null)
-            {
                 CurvePerlin.Regenerate(this);
-            }
 
             // Regenerate associated horizontal and vertical crossHairs
             if (CrossHairHorizontal != null)

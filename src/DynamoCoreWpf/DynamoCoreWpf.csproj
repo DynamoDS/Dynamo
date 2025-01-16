@@ -258,6 +258,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Controls\SubControls\ControlLine.cs" />
+    <Compile Include="Controls\SubControls\TangentCurve.cs" />
     <Compile Include="Controls\SubControls\CrossHair.cs" />
     <Compile Include="Controls\SubControls\CurveBase.cs" />
     <Compile Include="Controls\SubControls\BezierCurve.cs" />

@@ -32,6 +32,15 @@ namespace Dynamo.Wpf.Charts
         private CurveMapperControlPoint controlPointSine2;
         private SineCurve sineCurve;
 
+        // TODO: check if we should have separate Cosine Curve class
+        private CurveMapperControlPoint controlPointCosine1;
+        private CurveMapperControlPoint controlPointCosine2;
+        private SineCurve cosineCurve;
+
+        private CurveMapperControlPoint controlPointTangent1;
+        private CurveMapperControlPoint controlPointTangent2;
+        private TangentCurve tangentCurve;
+
         private CurveMapperControlPoint controlPointParabolic1;
         private CurveMapperControlPoint controlPointParabolic2;
         private ParabolicCurve parabolicCurve;
@@ -178,13 +187,13 @@ namespace Dynamo.Wpf.Charts
                 #region Sine
                 // Create control points and add to the canvas
                 model.ControlPointSine1 = controlPointSine1 = new CurveMapperControlPoint(
-                    new Point(0, 0),
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.25, 0),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
                 model.ControlPointSine2 = controlPointSine2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize),
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.75, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
@@ -211,6 +220,83 @@ namespace Dynamo.Wpf.Charts
                 // Bind properties for startControlPoint and endControlPoint
                 ApplyBindingsToControlPoints(controlPointSine1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(controlPointSine2, model, curveMapperControl);
+                #endregion
+
+                #region Cosine
+                // TODO: check if we should have separate Cosine Curve class
+                // Create control points and add to the canvas
+                model.ControlPointCosine1 = controlPointCosine1 = new CurveMapperControlPoint(
+                    new Point(0, 0),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                model.ControlPointCosine2 = controlPointCosine2 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                curveMapperControl.GraphCanvas.Children.Add(controlPointCosine1);
+                curveMapperControl.GraphCanvas.Children.Add(controlPointCosine2);
+                Canvas.SetZIndex(controlPointCosine1, 20);
+                Canvas.SetZIndex(controlPointCosine2, 20);
+
+                // Create the sine curve and add to the canvas
+                model.CosineCurve = new SineCurve(
+                    model.ControlPointCosine1,
+                    model.ControlPointCosine2,
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize);
+                cosineCurve = model.CosineCurve;
+                Canvas.SetZIndex(model.CosineCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.CosineCurve.PathCurve);
+
+                ////// Assign curves to control points
+                model.ControlPointCosine1.CurveCosine = model.CosineCurve;
+                model.ControlPointCosine2.CurveCosine = model.CosineCurve;
+
+                // Bind properties for startControlPoint and endControlPoint
+                ApplyBindingsToControlPoints(controlPointCosine1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(controlPointCosine2, model, curveMapperControl);
+                #endregion
+
+                #region Tangent
+                // Create control points and add to the canvas
+                model.ControlPointTangent1 = controlPointTangent1 = new CurveMapperControlPoint(
+                    new Point(0, curveMapperControl.DynamicCanvasSize * 0.5),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                model.ControlPointTangent2 = controlPointTangent2 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize * 0.5),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                curveMapperControl.GraphCanvas.Children.Add(controlPointTangent1);
+                curveMapperControl.GraphCanvas.Children.Add(controlPointTangent2);
+                Canvas.SetZIndex(controlPointTangent1, 20);
+                Canvas.SetZIndex(controlPointTangent2, 20);
+
+                // Create the sine curve and add to the canvas
+                model.TangentCurve = new TangentCurve(
+                    model.ControlPointTangent1,
+                    model.ControlPointTangent2,
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize);
+                tangentCurve = model.TangentCurve;
+                Canvas.SetZIndex(model.TangentCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.TangentCurve.PathCurve);
+
+                ////// Assign curves to control points
+                model.ControlPointTangent1.CurveTangent = model.TangentCurve;
+                model.ControlPointTangent2.CurveTangent = model.TangentCurve;
+
+                // Bind properties for startControlPoint and endControlPoint
+                ApplyBindingsToControlPoints(controlPointTangent1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(controlPointTangent2, model, curveMapperControl);
                 #endregion
 
                 #region Parabolic
@@ -368,6 +454,36 @@ namespace Dynamo.Wpf.Charts
                 controlPointSine2.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
             if (model.SineCurve != null)
                 model.SineCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+
+            // Visibility binding for Cosine GraphType
+            var cosineVisibilityBinding = new Binding("SelectedGraphType")
+            {
+                Source = model,
+                Converter = new GraphTypeToVisibilityConverter(),
+                ConverterParameter = GraphTypes.CosineWave, // Only show for Cosine GraphType
+                Mode = BindingMode.OneWay
+            };
+            if (controlPointCosine1 != null)
+                controlPointCosine1.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+            if (controlPointCosine2 != null)
+                controlPointCosine2.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+            if (model.CosineCurve != null)
+                model.CosineCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+
+            // Visibility binding for Tangent GraphType
+            var tangentVisibilityBinding = new Binding("SelectedGraphType")
+            {
+                Source = model,
+                Converter = new GraphTypeToVisibilityConverter(),
+                ConverterParameter = GraphTypes.TangentWave, // Only show for Cosine GraphType
+                Mode = BindingMode.OneWay
+            };
+            if (controlPointTangent1 != null)
+                controlPointTangent1.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
+            if (controlPointTangent2 != null)
+                controlPointTangent2.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
+            if (model.TangentCurve != null)
+                model.TangentCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
 
             // Visibility binding for Parabolic GraphType
             var parabolicVisibilityBinding = new Binding("SelectedGraphType")
