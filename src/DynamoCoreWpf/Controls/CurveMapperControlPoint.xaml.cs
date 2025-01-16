@@ -114,12 +114,12 @@ namespace Dynamo.Wpf.Controls
         /// <summary>
         /// Gets or sets the associated linear curve for the control point.
         /// </summary>
-        public CurveLinear CurveLinear { get; set; }
+        public LinearCurve CurveLinear { get; set; }
 
         /// <summary>
         /// Gets or sets the associated bezier curve for the control point.
         /// </summary>
-        public CurveBezier CurveBezier { get; set; }
+        public BezierCurve CurveBezier { get; set; }
 
         /// <summary>
         /// Gets or sets the associated sine curve for the control point.
@@ -130,6 +130,11 @@ namespace Dynamo.Wpf.Controls
         /// Gets or sets the associated parabolic curve for the control point.
         /// </summary>
         public ParabolicCurve CurveParabolic { get; set; }
+
+        /// <summary>
+        /// Gets or sets the associated parabolic curve for the control point.
+        /// </summary>
+        public PerlinCurve CurvePerlin { get; set; }
 
         /// <summary>
         /// Gets or sets the associated control curve for the control point.
@@ -227,6 +232,10 @@ namespace Dynamo.Wpf.Controls
             if (CurveParabolic != null)
             {
                 CurveParabolic.Regenerate(this);
+            }
+            if (CurvePerlin != null)
+            {
+                CurvePerlin.Regenerate(this);
             }
 
             // Regenerate associated horizontal and vertical crossHairs

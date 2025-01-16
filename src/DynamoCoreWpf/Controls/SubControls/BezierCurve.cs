@@ -8,7 +8,7 @@ namespace Dynamo.Wpf.Controls.SubControls
     /// <summary>
     /// Represents a bezier curve connecting two fixed points and controlled by two control points.
     /// </summary>
-    public class CurveBezier : CurveBase
+    public class BezierCurve : CurveBase
     {
         private CurveMapperControlPoint controlPoint1;
         private CurveMapperControlPoint controlPoint2;
@@ -21,10 +21,35 @@ namespace Dynamo.Wpf.Controls.SubControls
         private double maxHeight;
         private double tFactor;
 
+        public double MaxWidth
+        {
+            get => maxWidth;
+            set
+            {
+                if (maxWidth != value)
+                {
+                    maxWidth = value;
+                    Regenerate(controlPoint1); // Ensure the curve regenerates if needed
+                }
+            }
+        }
+        public double MaxHeight
+        {
+            get => maxHeight;
+            set
+            {
+                if (maxHeight != value)
+                {
+                    maxHeight = value;
+                    Regenerate(controlPoint1); // Ensure the curve regenerates if needed
+                }
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the CurveBezier class with the given control points and limits.
         /// </summary>
-        public CurveBezier(CurveMapperControlPoint fixedPointStart,
+        public BezierCurve(CurveMapperControlPoint fixedPointStart,
             CurveMapperControlPoint fixedPointEnd,
             CurveMapperControlPoint controlPoint1,
             CurveMapperControlPoint controlPoint2,
@@ -110,34 +135,6 @@ namespace Dynamo.Wpf.Controls.SubControls
                     xToYMap.Add(x, y);
                 }
             }
-            //if (xToYMap == null)
-            //{
-            //    xToYMap = new Dictionary<double, double>();
-            //}
-            //else
-            //{
-            //    xToYMap.Clear();
-            //}
-
-            //double xx = 0.0;
-            //double yy = 0.0;
-            //double tacqfac = maxWidth * 5.0;
-            //for (double t = 0.0; t <= 1.0; t += 1.0 / tacqfac)
-            //{
-            //    GetValueAtT(t, out xx, out yy);
-            //    xx = Math.Round(xx, 0);
-            //    if (!xToYMap.ContainsKey(xx))
-            //    {
-            //        xToYMap.Add(xx, yy);
-            //    }
-            //}
-
-            //GetValueAtT(1.0, out xx, out yy);
-            //if (xToYMap.ContainsKey(xx))
-            //{
-            //    xToYMap.Remove(xx);
-            //}
-            //xToYMap.Add(xx, yy);
         }
 
         /// <summary>

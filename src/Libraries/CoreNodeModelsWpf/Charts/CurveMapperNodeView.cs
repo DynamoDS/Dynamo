@@ -16,11 +16,11 @@ namespace Dynamo.Wpf.Charts
     public class CurveMapperNodeView : INodeViewCustomization<CurveMapperNodeModel>
     {
         private CurveMapperControl curveMapperControl;
-        private CurveLinear linearCurve;
+        private LinearCurve linearCurve;
         private CurveMapperControlPoint startControlPointLinear;
         private CurveMapperControlPoint endControlPointLinear;
 
-        private CurveBezier bezierCurve;
+        private BezierCurve bezierCurve;
         private ControlLine curveBezierControlLine1;
         private ControlLine curveBezierControlLine2;
         private CurveMapperControlPoint pointBezierControl1;
@@ -35,6 +35,11 @@ namespace Dynamo.Wpf.Charts
         private CurveMapperControlPoint controlPointParabolic1;
         private CurveMapperControlPoint controlPointParabolic2;
         private ParabolicCurve parabolicCurve;
+
+        private CurveMapperControlPoint fixedPointPerlin1;
+        private CurveMapperControlPoint fixedPointPerlin2;
+        private CurveMapperControlPoint controlPointPerlin;
+        private PerlinCurve perlinCurve;
 
 
         public void CustomizeView(CurveMapperNodeModel model, NodeView nodeView)
@@ -73,7 +78,7 @@ namespace Dynamo.Wpf.Charts
                 Canvas.SetZIndex(endControlPointLinear, 20);
 
                 // Add the linear curve
-                model.LinearCurve = new CurveLinear(
+                model.LinearCurve = new LinearCurve(
                     startControlPointLinear,
                     endControlPointLinear,
                     curveMapperControl.DynamicCanvasSize,
@@ -91,27 +96,27 @@ namespace Dynamo.Wpf.Charts
                 #region Bezier
 
                 // Create control points and add to the canvas
-                model.PointBezierControl1 = pointBezierControl1 = new CurveMapperControlPoint(
+                model.BezierControlPoint1 = pointBezierControl1 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.2, curveMapperControl.DynamicCanvasSize * 0.2),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                model.PointBezierControl2 = pointBezierControl2 = new CurveMapperControlPoint(
+                model.BezierControlPoint2 = pointBezierControl2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.8, curveMapperControl.DynamicCanvasSize * 0.2),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
 
-                model.PointBezierFix1 = pointBezierFix1 = new CurveMapperControlPoint(
+                model.BezierFixedPoint1 = pointBezierFix1 = new CurveMapperControlPoint(
                     new Point(0, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
                     true, true
                 );
-                model.PointBezierFix2 = pointBezierFix2 = new CurveMapperControlPoint(
+                model.BezierFixedPoint2 = pointBezierFix2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
@@ -129,12 +134,12 @@ namespace Dynamo.Wpf.Charts
 
                 // Create the control lines add to the canvas
                 model.CurveBezierControlLine1 = curveBezierControlLine1 = new ControlLine(
-                    model.PointBezierControl1.Point,
-                    model.PointBezierFix1.Point
+                    model.BezierControlPoint1.Point,
+                    model.BezierFixedPoint1.Point
                 );
                 model.CurveBezierControlLine2 = curveBezierControlLine2 = new ControlLine(
-                    model.PointBezierControl2.Point,
-                    model.PointBezierFix2.Point
+                    model.BezierControlPoint2.Point,
+                    model.BezierFixedPoint2.Point
                 );
                 curveMapperControl.GraphCanvas.Children.Add(curveBezierControlLine1.PathCurve);
                 curveMapperControl.GraphCanvas.Children.Add(curveBezierControlLine2.PathCurve);
@@ -142,27 +147,27 @@ namespace Dynamo.Wpf.Charts
                 Canvas.SetZIndex(curveBezierControlLine2.PathCurve, 9);
 
                 // Create the bezier curve and add to the canvas
-                model.CurveBezier = new CurveBezier(
-                    model.PointBezierFix1,
-                    model.PointBezierFix2,
-                    model.PointBezierControl1,
-                    model.PointBezierControl2,
+                model.BezierCurve = new BezierCurve(
+                    model.BezierFixedPoint1,
+                    model.BezierFixedPoint2,
+                    model.BezierControlPoint1,
+                    model.BezierControlPoint2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                bezierCurve = model.CurveBezier;
-                Canvas.SetZIndex(model.CurveBezier, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.CurveBezier.PathCurve);
+                bezierCurve = model.BezierCurve;
+                Canvas.SetZIndex(model.BezierCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.BezierCurve.PathCurve);
 
 
                 // Assign curves to control points
-                model.PointBezierFix1.CurveBezier = model.CurveBezier;
-                model.PointBezierFix2.CurveBezier = model.CurveBezier;
-                model.PointBezierFix1.ControlLineBezier = model.CurveBezierControlLine1;
-                model.PointBezierFix2.ControlLineBezier = model.CurveBezierControlLine2;
-                model.PointBezierControl1.CurveBezier = model.CurveBezier;
-                model.PointBezierControl2.CurveBezier = model.CurveBezier;
-                model.PointBezierControl1.ControlLineBezier = model.CurveBezierControlLine1;
-                model.PointBezierControl2.ControlLineBezier = model.CurveBezierControlLine2;
+                model.BezierFixedPoint1.CurveBezier = model.BezierCurve;
+                model.BezierFixedPoint2.CurveBezier = model.BezierCurve;
+                model.BezierFixedPoint1.ControlLineBezier = model.CurveBezierControlLine1;
+                model.BezierFixedPoint2.ControlLineBezier = model.CurveBezierControlLine2;
+                model.BezierControlPoint1.CurveBezier = model.BezierCurve;
+                model.BezierControlPoint2.CurveBezier = model.BezierCurve;
+                model.BezierControlPoint1.ControlLineBezier = model.CurveBezierControlLine1;
+                model.BezierControlPoint2.ControlLineBezier = model.CurveBezierControlLine2;
 
                 // Bind properties for startControlPoint and endControlPoint
                 ApplyBindingsToControlPoints(pointBezierFix1, model, curveMapperControl);
@@ -190,18 +195,18 @@ namespace Dynamo.Wpf.Charts
                 Canvas.SetZIndex(controlPointSine2, 20);
 
                 // Create the sine curve and add to the canvas
-                model.CurveSine = new SineCurve(
+                model.SineCurve = new SineCurve(
                     model.ControlPointSine1,
                     model.ControlPointSine2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                sineCurve = model.CurveSine;
-                Canvas.SetZIndex(model.CurveSine, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.CurveSine.PathCurve);
+                sineCurve = model.SineCurve;
+                Canvas.SetZIndex(model.SineCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.SineCurve.PathCurve);
 
                 ////// Assign curves to control points
-                model.ControlPointSine1.CurveSine = model.CurveSine;
-                model.ControlPointSine2.CurveSine = model.CurveSine;
+                model.ControlPointSine1.CurveSine = model.SineCurve;
+                model.ControlPointSine2.CurveSine = model.SineCurve;
 
                 // Bind properties for startControlPoint and endControlPoint
                 ApplyBindingsToControlPoints(controlPointSine1, model, curveMapperControl);
@@ -228,23 +233,78 @@ namespace Dynamo.Wpf.Charts
                 Canvas.SetZIndex(controlPointSine2, 20);
 
                 // Create the sine curve and add to the canvas
-                model.CurveParabolic = new ParabolicCurve(
+                model.ParabolicCurve = new ParabolicCurve(
                     model.ControlPointParabolic1,
                     model.ControlPointParabolic2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                parabolicCurve = model.CurveParabolic;
-                Canvas.SetZIndex(model.CurveParabolic, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.CurveParabolic.PathCurve);
+                parabolicCurve = model.ParabolicCurve;
+                Canvas.SetZIndex(model.ParabolicCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.ParabolicCurve.PathCurve);
 
                 ////// Assign curves to control points
-                model.ControlPointParabolic1.CurveParabolic = model.CurveParabolic;
-                model.ControlPointParabolic2.CurveParabolic = model.CurveParabolic;
+                model.ControlPointParabolic1.CurveParabolic = model.ParabolicCurve;
+                model.ControlPointParabolic2.CurveParabolic = model.ParabolicCurve;
 
                 // Bind properties for startControlPoint and endControlPoint
-                ApplyBindingsToControlPoints(controlPointSine1, model, curveMapperControl);
-                ApplyBindingsToControlPoints(controlPointSine2, model, curveMapperControl);
+                ApplyBindingsToControlPoints(controlPointParabolic1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(controlPointParabolic2, model, curveMapperControl);
                 #endregion
+
+                #region Perlin
+                // Create control points and add to the canvas
+                model.FixedPointPerlin1 = fixedPointPerlin1 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, 0),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    true, false
+                );
+                model.FixedPointPerlin2 = fixedPointPerlin2 = new CurveMapperControlPoint(
+                    new Point(0, curveMapperControl.DynamicCanvasSize),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    true, true
+                );                
+                model.ControlPointPerlin = controlPointPerlin = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.5),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                curveMapperControl.GraphCanvas.Children.Add(fixedPointPerlin1);
+                curveMapperControl.GraphCanvas.Children.Add(fixedPointPerlin2);
+                curveMapperControl.GraphCanvas.Children.Add(controlPointPerlin);
+                Canvas.SetZIndex(fixedPointPerlin1, 20);
+                Canvas.SetZIndex(fixedPointPerlin2, 20);
+                Canvas.SetZIndex(controlPointPerlin, 20);
+
+                // Create the sine curve and add to the canvas
+                model.PerlinCurve = new PerlinCurve(
+                    model.FixedPointPerlin1,
+                    model.FixedPointPerlin2,
+                    model.ControlPointPerlin,
+                    1,
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize);
+                perlinCurve = model.PerlinCurve;
+                Canvas.SetZIndex(model.PerlinCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.PerlinCurve.PathCurve);
+
+                ////// Assign curves to control points
+                model.FixedPointPerlin1.CurvePerlin = model.PerlinCurve;
+                model.FixedPointPerlin2.CurvePerlin = model.PerlinCurve;
+                model.ControlPointPerlin.CurvePerlin = model.PerlinCurve;
+
+                // Bind properties for startControlPoint and endControlPoint
+                ApplyBindingsToControlPoints(fixedPointPerlin1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(fixedPointPerlin2, model, curveMapperControl);
+                ApplyBindingsToControlPoints(controlPointPerlin, model, curveMapperControl);
+                #endregion
+
+
+
 
 
 
@@ -291,8 +351,8 @@ namespace Dynamo.Wpf.Charts
                 curveBezierControlLine1.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
             if (curveBezierControlLine2 != null)
                 curveBezierControlLine2.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (model.CurveBezier != null)
-                model.CurveBezier.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            if (model.BezierCurve != null)
+                model.BezierCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
 
             // Visibility binding for Sine GraphType
             var sineVisibilityBinding = new Binding("SelectedGraphType")
@@ -306,10 +366,10 @@ namespace Dynamo.Wpf.Charts
                 controlPointSine1.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
             if (controlPointSine2 != null)
                 controlPointSine2.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
-            if (model.CurveSine != null)
-                model.CurveSine.PathCurve.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            if (model.SineCurve != null)
+                model.SineCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
 
-            // Visibility binding for Sine GraphType
+            // Visibility binding for Parabolic GraphType
             var parabolicVisibilityBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
@@ -321,8 +381,25 @@ namespace Dynamo.Wpf.Charts
                 controlPointParabolic1.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
             if (controlPointParabolic2 != null)
                 controlPointParabolic2.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
-            if (model.CurveSine != null)
-                model.CurveParabolic.PathCurve.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+            if (model.ParabolicCurve != null)
+                model.ParabolicCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+
+            // Visibility binding for Perlin GraphType
+            var perlinVisibilityBinding = new Binding("SelectedGraphType")
+            {
+                Source = model,
+                Converter = new GraphTypeToVisibilityConverter(),
+                ConverterParameter = GraphTypes.PerlinNoise, // Only show for Parabolic GraphType
+                Mode = BindingMode.OneWay
+            };
+            if (fixedPointPerlin1 != null)
+                fixedPointPerlin1.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            if (fixedPointPerlin2 != null)
+                fixedPointPerlin2.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            if (controlPointPerlin != null)
+                controlPointPerlin.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            if (model.PerlinCurve != null)
+                model.PerlinCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
         }
 
         /// <summary> Helper method to bind a dependency property of a control point to a model or control.</summary>

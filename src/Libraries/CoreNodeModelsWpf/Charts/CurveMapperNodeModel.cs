@@ -153,7 +153,7 @@ namespace CoreNodeModelsWpf.Charts
         [JsonIgnore]
         public CurveMapperControlPoint PointLinearEnd { get; set; }
         [JsonIgnore]
-        public CurveLinear LinearCurve { get; set; }
+        public LinearCurve LinearCurve { get; set; }
         [JsonIgnore]
         public CurveMapperControl CurveMapperControl { get; set; }
         #endregion
@@ -162,19 +162,19 @@ namespace CoreNodeModelsWpf.Charts
         // represent fixed control points of a Bezier curve
         // likely the non-draggable control points of the curve that define ends or anchors
         [JsonIgnore]
-        public CurveMapperControlPoint PointBezierControl1 { get; set; }
+        public CurveMapperControlPoint BezierControlPoint1 { get; set; }
         [JsonIgnore]
-        public CurveMapperControlPoint PointBezierControl2 { get; set; }
+        public CurveMapperControlPoint BezierControlPoint2 { get; set; }
         [JsonIgnore]
-        public CurveMapperControlPoint PointBezierFix1 { get; set; }
+        public CurveMapperControlPoint BezierFixedPoint1 { get; set; }
         [JsonIgnore]
-        public CurveMapperControlPoint PointBezierFix2 { get; set; }
+        public CurveMapperControlPoint BezierFixedPoint2 { get; set; }
         [JsonIgnore]
         public ControlLine CurveBezierControlLine1 { get; set; }
         [JsonIgnore]
         public ControlLine CurveBezierControlLine2 { get; set; }
         [JsonIgnore]
-        public CurveBezier CurveBezier {  get; set; }
+        public BezierCurve BezierCurve {  get; set; }
         #endregion
 
         #region Sine Curve
@@ -202,7 +202,7 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
         [JsonIgnore]
-        public SineCurve CurveSine { get; set; }
+        public SineCurve SineCurve { get; set; }
         #endregion
 
         #region Parabolic Curve
@@ -230,7 +230,46 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
         [JsonIgnore]
-        public ParabolicCurve CurveParabolic { get; set; }
+        public ParabolicCurve ParabolicCurve { get; set; }
+        #endregion
+
+        #region Perlin Curve
+        private CurveMapperControlPoint fixedPointPerlin1;
+        private CurveMapperControlPoint fixedPointPerlin2;
+        private CurveMapperControlPoint controlPointPerlin;
+
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint FixedPointPerlin1
+        {
+            get => fixedPointPerlin1;
+            set
+            {
+                fixedPointPerlin1 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint FixedPointPerlin2
+        {
+            get => fixedPointPerlin2;
+            set
+            {
+                fixedPointPerlin2 = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
+        public CurveMapperControlPoint ControlPointPerlin
+        {
+            get => controlPointPerlin;
+            set
+            {
+                controlPointPerlin = value;
+                OnNodeModified();
+            }
+        }
+        [JsonIgnore]
+        public PerlinCurve PerlinCurve { get; set; }
         #endregion
 
 

@@ -10,7 +10,7 @@ namespace Dynamo.Wpf.Controls.SubControls
     /// <summary>
     /// Represents a linear curve rendered on the canvas, updated dynamically with control points.
     /// </summary>
-    public class CurveLinear : CurveBase
+    public class LinearCurve : CurveBase
     {
         private readonly LineSegment lineSegment;
         private readonly PathFigure pathFigure;
@@ -18,11 +18,11 @@ namespace Dynamo.Wpf.Controls.SubControls
 
         public CurveMapperControlPoint StartPoint { get; set; }
         public CurveMapperControlPoint EndPoint { get; set; }
-        public double MaxWidth { get; set; }
+        public double MaxWidth { get; set; } // Needs to be public to update curve when the canvas is resized
         public double MaxHeight { get; set; }
         public Path PathCurve { get; set; }
 
-        public CurveLinear(CurveMapperControlPoint startPoint, CurveMapperControlPoint endPoint, double maxWidth, double maxHeight)
+        public LinearCurve(CurveMapperControlPoint startPoint, CurveMapperControlPoint endPoint, double maxWidth, double maxHeight)
         {
             StartPoint = startPoint;
             EndPoint = endPoint;

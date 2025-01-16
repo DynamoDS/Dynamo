@@ -12,8 +12,8 @@ namespace Dynamo.Wpf.Controls.SubControls
         private CurveMapperControlPoint controlPoint2;
         private PolyLineSegment polySegment;
 
-        private readonly double maxWidth;
-        private readonly double maxHeight;
+        private double maxWidth;
+        private double maxHeight;
         public bool isCosine = false;
 
         // Coefficients
@@ -21,6 +21,31 @@ namespace Dynamo.Wpf.Controls.SubControls
         private double coefB;   // 2*PI/period
         private double coefC;   // Phase shift
         private double coefD;   // Vertical shift
+
+        public double MaxWidth
+        {
+            get => maxWidth;
+            set
+            {
+                if (maxWidth != value)
+                {
+                    maxWidth = value;
+                    Regenerate(controlPoint1); // Ensure the curve regenerates if needed
+                }
+            }
+        }
+        public double MaxHeight
+        {
+            get => maxHeight;
+            set
+            {
+                if (maxHeight != value)
+                {
+                    maxHeight = value;
+                    Regenerate(controlPoint1); // Ensure the curve regenerates if needed
+                }
+            }
+        }
 
         /// <summary>
         /// Initializes a sine curve with control points, dimensions, and visual properties.
