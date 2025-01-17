@@ -2378,6 +2378,8 @@ namespace Dynamo.Controls
 
             var cmd = Analytics.TrackCommandEvent("PackageManager");
             cmd.Dispose();
+
+            this.Activate();
         }
 
         /// <summary>

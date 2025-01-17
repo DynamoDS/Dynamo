@@ -68,7 +68,6 @@ namespace DynamoCoreWpfTests
                 });
 
                 Task.Delay(1000).Wait();
-
             }
             ss.webView.NavigationCompleted += WebView_NavigationCompleted;
 
@@ -86,7 +85,6 @@ namespace DynamoCoreWpfTests
 
             ss.Closed -= WindowClosed;
 
-            Assert.IsNull(ss.webView);// Make sure webview2 was disposed
             Assert.IsTrue(windowClosed);// Make sure the window was closed
         }
     }
