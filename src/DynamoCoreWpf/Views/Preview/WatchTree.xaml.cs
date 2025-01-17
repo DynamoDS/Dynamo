@@ -22,7 +22,7 @@ namespace Dynamo.Controls
         private readonly double widthPerCharacter = 7.5;
         private static readonly int defaultHeightSize = 200;
         private readonly int minWidthSize = 100;
-        private readonly int minHeightSize = 38;
+        private readonly int minHeightSize = 40;
         private readonly int minHeightForList = 83;
 
         public WatchTree(WatchViewModel vm)
