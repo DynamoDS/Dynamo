@@ -40,14 +40,17 @@ namespace Dynamo.Wpf.Utilities
             {
                 try
                 {
-                    action();
+                    if (t.Status == TaskStatus.RanToCompletion)
+                    {
+                        action();
+                    }
                 }
                 catch (Exception ex)
                 {
                     logger?.Log("Failed to run debounce action with the following error:");
                     logger?.Log(ex.ToString());
                 }
-            }, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.NotOnCanceled);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void Dispose()
