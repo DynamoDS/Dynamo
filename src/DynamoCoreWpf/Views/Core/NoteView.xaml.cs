@@ -23,7 +23,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Special keys definition in note
         /// </summary>
-        internal Key[] specialKeys = { Key.OemMinus, Key.Tab, Key.Enter };
+        internal Key[] specialKeys = { Key.OemMinus, Key.Subtract, Key.Tab, Key.Enter };
 
         public NoteViewModel ViewModel { get; private set; }
 
@@ -230,6 +230,9 @@ namespace Dynamo.Nodes
                     switch (e.Key)
                     {
                         case Key.OemMinus:
+                            textBox.Text = BulletDashHandler(text, caretIndex);
+                            break;
+                        case Key.Subtract:
                             textBox.Text = BulletDashHandler(text, caretIndex);
                             break;
                         case Key.Tab:
