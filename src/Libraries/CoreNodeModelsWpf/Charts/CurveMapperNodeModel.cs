@@ -430,20 +430,18 @@ namespace CoreNodeModelsWpf.Charts
                         OutputValuesY = new List<double> { 4, 8, 1984 };
                     }
                     break;
-
-
                 case GraphTypes.Linear:
                     if (LinearCurve != null)
                     {
                         OutputValuesY = LinearCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                        OutputValuesX = LinearCurve.GetCurveYValues(minLimitX, maxLimitX, pointsCount);
+                        OutputValuesX = LinearCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
                     }
                     break;
-                case GraphTypes.SineWave:
-                    if (SineCurve != null)
+                case GraphTypes.Bezier:
+                    if (BezierCurve != null)
                     {
-                        OutputValuesY = SineCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                        OutputValuesX = SineCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+                        OutputValuesY = BezierCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                        OutputValuesX = BezierCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
                     }
                     break;
             }
@@ -530,18 +528,24 @@ namespace CoreNodeModelsWpf.Charts
             if (OutputValuesY != null)
             {
                 var doubListY = new List<AssociativeNode>();
-                foreach (double dVal in OutputValuesY)
+                if (OutputValuesY != null)
                 {
-                    doubListY.Add(AstFactory.BuildDoubleNode(dVal));
-                }
-                yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildExprList(doubListY));
+                    foreach (double yVal in OutputValuesY)
+                    {
+                        doubListY.Add(AstFactory.BuildDoubleNode(yVal));
+                    }
+                    yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildExprList(doubListY));
+                }                
 
                 var doubListX = new List<AssociativeNode>();
-                foreach (double dVal in OutputValuesY)
+                if (OutputValuesX != null)
                 {
-                    doubListX.Add(AstFactory.BuildDoubleNode(dVal));
-                }
-                xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildExprList(doubListY));
+                    foreach (double xVal in OutputValuesX)
+                    {
+                        doubListX.Add(AstFactory.BuildDoubleNode(xVal));
+                    }
+                    xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildExprList(doubListX));
+                }                
             }         
 
 

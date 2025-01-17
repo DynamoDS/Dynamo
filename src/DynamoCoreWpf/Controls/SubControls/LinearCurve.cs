@@ -15,17 +15,18 @@ namespace Dynamo.Wpf.Controls.SubControls
         private readonly LineSegment lineSegment;
         private readonly PathFigure pathFigure;
         private readonly PathGeometry pathGeometry;
+        private const int rounding = 10;
 
-        public CurveMapperControlPoint StartPoint { get; set; }
-        public CurveMapperControlPoint EndPoint { get; set; }
+        public CurveMapperControlPoint controlPoint1 { get; set; }
+        public CurveMapperControlPoint controlPoint2 { get; set; }
         public double MaxWidth { get; set; } // Needs to be public to update curve when the canvas is resized
         public double MaxHeight { get; set; }
         public Path PathCurve { get; set; }
 
         public LinearCurve(CurveMapperControlPoint startPoint, CurveMapperControlPoint endPoint, double maxWidth, double maxHeight)
         {
-            StartPoint = startPoint;
-            EndPoint = endPoint;
+            controlPoint1 = startPoint;
+            controlPoint2 = endPoint;
             MaxWidth = maxWidth;
             MaxHeight = maxHeight;
 
@@ -52,13 +53,13 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// </summary>
         private double LineEquation(double x)
         {
-            double slope = (EndPoint.Point.Y - StartPoint.Point.Y) / (EndPoint.Point.X - StartPoint.Point.X);
+            double slope = (controlPoint2.Point.Y - controlPoint1.Point.Y) / (controlPoint2.Point.X - controlPoint1.Point.X);
             if (double.IsNaN(slope))
             {
                 return double.NaN;
             }
 
-            return slope * (x - StartPoint.Point.X) + (StartPoint.Point.Y);
+            return slope * (x - controlPoint1.Point.X) + (controlPoint1.Point.Y);
         }
 
         /// <summary>
@@ -66,13 +67,13 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// </summary>
         private double SolveForXGivenY(double y)
         {
-            double slope = (EndPoint.Point.Y - StartPoint.Point.Y) / (EndPoint.Point.X - StartPoint.Point.X);
+            double slope = (controlPoint2.Point.Y - controlPoint1.Point.Y) / (controlPoint2.Point.X - controlPoint1.Point.X);
             if (double.IsNaN(slope))
             {
                 return double.NaN;
             }
 
-            return ((y - StartPoint.Point.Y) / slope) + StartPoint.Point.X;
+            return ((y - controlPoint1.Point.Y) / slope) + controlPoint1.Point.X;
         }
 
         /// <summary>
@@ -89,8 +90,8 @@ namespace Dynamo.Wpf.Controls.SubControls
             pathFigure.StartPoint = p1;
             lineSegment.Point = p2;
 
-            //// Raise event to notify listeners (CurveMapperNodeModel)
-            CurveUpdated?.Invoke();
+            ////// Raise event to notify listeners (CurveMapperNodeModel)
+            //CurveUpdated?.Invoke();
         }
 
         /// <summary>
@@ -110,7 +111,8 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// </summary>
         public override List<double> GetCurveYValues(double minY, double maxY, int pointCount)
         {
-            if (pointCount < 1 || Math.Abs(StartPoint.Point.X - EndPoint.Point.X) < double.Epsilon) return null;
+            // this version of the code matches GraphMap. It returns values outside of the given MaxY/MinY values
+            if (pointCount < 1 || Math.Abs(controlPoint1.Point.X - controlPoint2.Point.X) < double.Epsilon) return null;
 
             var values = new List<double>();
             double step = MaxWidth / (pointCount - 1);
@@ -118,13 +120,32 @@ namespace Dynamo.Wpf.Controls.SubControls
             for (double x = 0; x <= MaxWidth; x += step)
             {
                 double yCanvas = LineEquation(x);
-                double yMapped = MapCanvasToRange(yCanvas, minY, maxY);
+                double yMapped = Math.Round(MapCanvasToRange(yCanvas, minY, maxY), rounding);
                 values.Add(yMapped);
             }
 
             return values;
         }
+        /// <summary>
+        /// Calculates the X-axis values for the curve based on input limits and count.
+        /// </summary>
+        public override List<double> GetCurveXValues(double minX, double maxX, int pointCount)
+        {
+            // This version of the code returns values outside of the given MaxX/MinX values
+            if (pointCount < 1 || Math.Abs(controlPoint1.Point.X - controlPoint2.Point.X) < double.Epsilon)
+                return null;
 
+            var values = new List<double>();
+            double step = (maxX - minX) / (pointCount - 1);
+
+            for (int i = 0; i < pointCount; i++)
+            {
+                double xMapped = Math.Round(minX + i * step, rounding); // Ensure correct order and round to 10 decimal places
+                values.Add(xMapped);
+            }
+
+            return values;
+        }
 
         private double MapCanvasToRange(double canvasY, double lowLimit, double highLimit)
         {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Windows;
 using System.Windows.Media;
 
@@ -12,14 +13,15 @@ namespace Dynamo.Wpf.Controls.SubControls
     {
         private CurveMapperControlPoint controlPoint1;
         private CurveMapperControlPoint controlPoint2;
-        private CurveMapperControlPoint fixedPoint1;
-        private CurveMapperControlPoint fixedPoint2;
+        private CurveMapperControlPoint othoPoint1;
+        private CurveMapperControlPoint orthoPoint2;
         private BezierSegment bezierSegment;
         private Dictionary<double, double> xToYMap = new Dictionary<double, double>();
 
         private double maxWidth;
         private double maxHeight;
         private double tFactor;
+        private const int rounding = 10;
 
         public double MaxWidth
         {
@@ -56,18 +58,18 @@ namespace Dynamo.Wpf.Controls.SubControls
             double maxWidth,
             double maxHeight)
         {
-            this.fixedPoint1 = fixedPointStart;
-            this.fixedPoint2 = fixedPointEnd;
+            this.othoPoint1 = fixedPointStart;
+            this.orthoPoint2 = fixedPointEnd;
             this.controlPoint1 = controlPoint1;
             this.controlPoint2 = controlPoint2;
             this.maxWidth = maxWidth;
             this.maxHeight = maxHeight;
             this.tFactor = 1.0 / this.maxWidth;
-            this.bezierSegment = new BezierSegment(this.controlPoint1.Point, this.controlPoint2.Point, fixedPoint2.Point, true);
+            this.bezierSegment = new BezierSegment(this.controlPoint1.Point, this.controlPoint2.Point, orthoPoint2.Point, true);
 
             PathFigure = new PathFigure()
             {
-                StartPoint = fixedPoint1.Point,
+                StartPoint = othoPoint1.Point,
                 Segments = { bezierSegment }
             };
 
@@ -89,10 +91,19 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// </summary>
         public void GetValueAtT(double t, out double x, out double y)
         {
-            Point p1 = PathFigure.StartPoint;
-            Point p2 = bezierSegment.Point1;
-            Point p3 = bezierSegment.Point2;
-            Point p4 = bezierSegment.Point3;
+            Point p1 = new Point();
+            Point p2 = new Point();
+            Point p3 = new Point();
+            Point p4 = new Point();
+
+            // Ensure we access UI elements on the UI thread
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                p1 = PathFigure.StartPoint;
+                p2 = bezierSegment.Point1;
+                p3 = bezierSegment.Point2;
+                p4 = bezierSegment.Point3;
+            }); ;
 
             x = Math.Pow(1 - t, 3) * p1.X +
                 3 * Math.Pow(1 - t, 2) * t * p2.X +
@@ -146,7 +157,7 @@ namespace Dynamo.Wpf.Controls.SubControls
 
             GenerateXYPairs();
 
-            var interpolatedValues = new List<double>();
+            var values = new List<double>();
 
             for (int i = 0; i < count; i++)
             {
@@ -155,23 +166,42 @@ namespace Dynamo.Wpf.Controls.SubControls
                 {
                     double normalizedY = maxHeight - y;
                     double scaledY = lowLimit + ((highLimit - lowLimit) * normalizedY / maxHeight);
-                    interpolatedValues.Add(scaledY);
+                    values.Add(scaledY);
                 }
             }
-
-            return interpolatedValues;
+            return values;
         }
+        /// <summary>
+        /// Calculates the X-axis values for the curve based on input limits and count.
+        /// </summary>
+        public override List<double> GetCurveXValues(double minX, double maxX, int pointCount)
+        {            
+            if (pointCount < 1 || Math.Abs(othoPoint1.Point.X - orthoPoint2.Point.X) < double.Epsilon)
+                return null;
+
+            var values = new List<double>();
+            double step = (maxX - minX) / (pointCount - 1);
+
+            for (int i = 0; i < pointCount; i++)
+            {
+                double xMapped = Math.Round(minX + i * step, rounding);
+                values.Add(xMapped);
+            }
+
+            return values;
+        }
+
 
         /// <summary>
         /// Regenerates the bezier curve when a control point is updated.
         /// </summary>
         public void Regenerate(CurveMapperControlPoint updatedControlPoint)
         {
-            if (updatedControlPoint == fixedPoint1)
+            if (updatedControlPoint == othoPoint1)
             {
                 PathFigure.StartPoint = updatedControlPoint.Point;
             }
-            else if (updatedControlPoint == fixedPoint2)
+            else if (updatedControlPoint == orthoPoint2)
             {
                 bezierSegment.Point3 = updatedControlPoint.Point;
             }
