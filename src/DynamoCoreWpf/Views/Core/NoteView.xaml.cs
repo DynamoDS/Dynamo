@@ -23,7 +23,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Special keys definition in note
         /// </summary>
-        internal Key[] specialKeys = { Key.OemMinus, Key.Subtract, Key.Tab, Key.Enter };
+        internal Key[] specialKeys = { Key.OemMinus, Key.Tab, Key.Enter };
 
         public NoteViewModel ViewModel { get; private set; }
 
@@ -35,10 +35,10 @@ namespace Dynamo.Nodes
 
             // update the size of the element when the text changes
             noteText.SizeChanged += (sender, args) =>
-                {
-                    if (ViewModel != null)
-                        ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
-                };
+            {
+                if (ViewModel != null)
+                    ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
+            };
             noteText.PreviewMouseDown += OnNoteTextPreviewMouseDown;
 
             Loaded += OnNoteViewLoaded;
@@ -92,12 +92,12 @@ namespace Dynamo.Nodes
         {
             System.Guid noteGuid = this.ViewModel.Model.GUID;
 
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers.AsDynamoType()));
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers.AsDynamoType()));
 
-           if (this.ViewModel.Model.PinnedNode != null)
+            if (this.ViewModel.Model.PinnedNode != null)
             {
-            var nodeGuid = this.ViewModel.Model.PinnedNode.GUID;
+                var nodeGuid = this.ViewModel.Model.PinnedNode.GUID;
                 //We have to use AddUnique due that otherwise the node will be added several times when we click right over the note
                 DynamoSelection.Instance.Selection.AddUnique(ViewModel.Model.PinnedNode);
             }
@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
             editWindow.ShowDialog();
 
         }
-       
+
         private void EditWindow_Closed(object sender, EventArgs e)
         {
             editWindow.EditTextBoxPreviewKeyDown -= noteTextBox_PreviewKeyDown;
@@ -170,7 +170,7 @@ namespace Dynamo.Nodes
             {
                 PrepareZIndex();
             }
-            
+
             ViewModel.ZIndex = ++NoteViewModel.StaticZIndex;
         }
 
@@ -190,9 +190,9 @@ namespace Dynamo.Nodes
             {
                 child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
             }
-            
+
             // reset the ZIndex for all Nodes
-            foreach(var child in parent.ChildrenOfType<Controls.NodeView>())
+            foreach (var child in parent.ChildrenOfType<Controls.NodeView>())
             {
                 child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
             }
@@ -202,7 +202,7 @@ namespace Dynamo.Nodes
         {
             Panel.SetZIndex(noteTextBox, 0);
             ViewModel.IsOnEditMode = false;
-            
+
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
                     System.Guid.Empty, ViewModel.Model.GUID, nameof(NoteModel.Text), noteTextBox.Text));
@@ -214,8 +214,6 @@ namespace Dynamo.Nodes
             {
                 return;
             }
-
-            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) return;
             e.Handled = true;
 
             if (sender is TextBox textBox)
@@ -232,9 +230,6 @@ namespace Dynamo.Nodes
                     switch (e.Key)
                     {
                         case Key.OemMinus:
-                            textBox.Text = BulletDashHandler(text, caretIndex);
-                            break;
-                        case Key.Subtract:
                             textBox.Text = BulletDashHandler(text, caretIndex);
                             break;
                         case Key.Tab:
@@ -283,7 +278,7 @@ namespace Dynamo.Nodes
         /// <param name="text"> text before typing DASH </param>
         /// <param name="caretIndex"> caret index where user typed DASH </param>
         /// <returns></returns>
-        private string BulletDashHandler( string text, int caretIndex)
+        private string BulletDashHandler(string text, int caretIndex)
         {
             // Get the line where DASH was typed 
             var lineNumber = GetLineNumberAtCaretsIndex(text, caretIndex);
@@ -321,7 +316,7 @@ namespace Dynamo.Nodes
         {
             // Get the line where TAB was typed 
             var lineNumber = GetLineNumberAtCaretsIndex(text, caretIndex);
-            var line =  GetLineTextAtCaretsIndex(text,caretIndex);
+            var line = GetLineTextAtCaretsIndex(text, caretIndex);
             var caretAtLine = GetCaretIndexRelativeToLine(text, caretIndex);
 
             // If TAB was pressed just after a bullet insert it before the bullet
@@ -332,7 +327,7 @@ namespace Dynamo.Nodes
             {
                 line = line.Insert(caretAtLine - distanceFromBulletToCaret, "\t");
             }
-                
+
             else
             {
                 line = line.Insert(caretAtLine, "\t");
@@ -344,7 +339,7 @@ namespace Dynamo.Nodes
             {
                 line = UpdateBulletAccordingToIndentation(line);
             }
-                
+
             return StringUtils.ReplaceLineOfText(text, lineNumber, line);
         }
 
@@ -367,22 +362,22 @@ namespace Dynamo.Nodes
             {
                 return text = text.Insert(caretIndex, "\n");
             }
-            
+
             text = text.Insert(caretIndex, "\n");
             caretIndex++;
 
-            var tabsBeforeBullet = line.Split(BULLETS_CHARS)[0].Count(c => c=='\t');
+            var tabsBeforeBullet = line.Split(BULLETS_CHARS)[0].Count(c => c == '\t');
             for (int i = 0; i < tabsBeforeBullet; i++)
             {
                 text = text.Insert(caretIndex, "\t");
                 caretIndex++;
             }
-            return text.Insert(caretIndex, bulletsInLine.First()+ new String(' ', SPACING_AFTER_BULLET));
+            return text.Insert(caretIndex, bulletsInLine.First() + new String(' ', SPACING_AFTER_BULLET));
         }
 
         private bool IsCaretRightAfterBullet(string text, int caretIndex, int distanceFromBulletToCaret)
         {
-           
+
             if (caretIndex < distanceFromBulletToCaret)
             {
                 return false;
@@ -394,8 +389,8 @@ namespace Dynamo.Nodes
 
         private bool IsCaretBeforeABullet(string text, int caretIndex)
         {
-           var charactersBeforeBullet = text.Split(BULLETS_CHARS).FirstOrDefault();
-           return caretIndex <= charactersBeforeBullet.Length;
+            var charactersBeforeBullet = text.Split(BULLETS_CHARS).FirstOrDefault();
+            return caretIndex <= charactersBeforeBullet.Length;
         }
 
         private int GetCaretIndexRelativeToLine(string text, int caretIndex)
@@ -410,12 +405,12 @@ namespace Dynamo.Nodes
             var caretRelativeToLine = textInLines.Last().Length;
             return caretRelativeToLine;
         }
-        
+
         private int GetLineNumberAtCaretsIndex(string text, int caretIndex)
         {
             var textBeforeCaret = text.Substring(0, caretIndex);
             var textInLines = StringUtils.BreakTextIntoLines(textBeforeCaret);
-            return textInLines.Length-1;
+            return textInLines.Length - 1;
         }
         private string GetLineTextAtCaretsIndex(string text, int caretIndex)
         {
