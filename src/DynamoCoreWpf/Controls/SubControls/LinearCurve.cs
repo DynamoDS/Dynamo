@@ -89,7 +89,7 @@ namespace Dynamo.Wpf.Controls.SubControls
             pathFigure.StartPoint = p1;
             lineSegment.Point = p2;
 
-            // Raise event to notify listeners (CurveMapperNodeModel)
+            //// Raise event to notify listeners (CurveMapperNodeModel)
             CurveUpdated?.Invoke();
         }
 

@@ -494,5 +494,9 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 }
             }
         }
+
+        private void GraphCanvas_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+        }
     }
 }

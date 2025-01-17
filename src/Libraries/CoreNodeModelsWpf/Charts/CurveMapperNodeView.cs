@@ -15,6 +15,7 @@ namespace Dynamo.Wpf.Charts
 {
     public class CurveMapperNodeView : INodeViewCustomization<CurveMapperNodeModel>
     {
+        private CurveMapperNodeModel curveMapperNodeModel;
         private CurveMapperControl curveMapperControl;
         private LinearCurve linearCurve;
         private CurveMapperControlPoint startControlPointLinear;
@@ -56,6 +57,7 @@ namespace Dynamo.Wpf.Charts
             // Initialize the CurveMapperControl
             curveMapperControl = new CurveMapperControl(model);
             curveMapperControl.DataContext = model;
+            curveMapperNodeModel = model;
 
             // Add the control to the NodeView's inputGrid
             nodeView.inputGrid.Children.Add(curveMapperControl);
@@ -389,22 +391,47 @@ namespace Dynamo.Wpf.Charts
                 ApplyBindingsToControlPoints(controlPointPerlin, model, curveMapperControl);
                 #endregion
 
-
-
-
-
-
                 // Add visibility binding if needed
                 BindVisibility(model);
 
-                // Subscribe to LinearCurve's event
-                model.LinearCurve.CurveUpdated += () => model.OnNodeModified();
+                // Attach event handlers to detect when control points are released,
+                // to trigger curve updates and re-computation.
+                model.PointLinearStart.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.PointLinearEnd.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
 
+                model.BezierControlPoint1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.BezierControlPoint2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.BezierFixedPoint1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.BezierFixedPoint2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+
+                model.ControlPointSine1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.ControlPointSine1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+
+                model.ControlPointCosine1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.ControlPointCosine2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+
+                model.FixedPointPerlin1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.FixedPointPerlin2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.ControlPointPerlin.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+
+                model.ControlPointTangent1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.ControlPointTangent2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+
+                model.ControlPointParabolic1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.ControlPointParabolic2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
             };
+        }
 
+        private void CanvasPreviewMouseLeftUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Find the associated CurveMapperNodeModel
+            var nodeModel = curveMapperNodeModel;
+            if (nodeModel == null)
+                return;
 
-            
-
+            // Update outputs and notify Dynamo that the node has been modified
+            nodeModel.GenerateOutputValues();
+            nodeModel.OnNodeModified();
         }
 
         private void BindVisibility(CurveMapperNodeModel model)
@@ -525,7 +552,9 @@ namespace Dynamo.Wpf.Charts
                 model.PerlinCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
         }
 
-        /// <summary> Helper method to bind a dependency property of a control point to a model or control.</summary>
+        /// <summary>
+        /// Helper method to bind a dependency property of a control point to a model or control.
+        /// </summary>
         private void BindControlPoint(CurveMapperControlPoint controlPoint, DependencyProperty property, object source, string path)
         {
             controlPoint.SetBinding(property, new Binding(path)
@@ -535,7 +564,9 @@ namespace Dynamo.Wpf.Charts
             });
         }
 
-        /// <summary> Applies bindings for both control points (startControlPoint and endControlPoint) </summary>
+        /// <summary>
+        /// Applies bindings for both control points (startControlPoint and endControlPoint).
+        /// </summary>
         private void ApplyBindingsToControlPoints(CurveMapperControlPoint controlPoint, CurveMapperNodeModel model, CurveMapperControl curveMapperControl)
         {
             BindControlPoint(controlPoint, CurveMapperControlPoint.MinLimitXProperty, model, nameof(model.MinLimitX));

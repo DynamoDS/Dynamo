@@ -419,9 +419,8 @@ namespace CoreNodeModelsWpf.Charts
 
 
 
-        private void GenerateOutputValues()
-        {
-            var c1 = new List<double>();
+        internal void GenerateOutputValues()
+        {           
             switch (SelectedGraphType)
             {
                 case GraphTypes.Empty:
@@ -448,7 +447,6 @@ namespace CoreNodeModelsWpf.Charts
                     }
                     break;
             }
-            var c2 = c1;
         }
 
 
