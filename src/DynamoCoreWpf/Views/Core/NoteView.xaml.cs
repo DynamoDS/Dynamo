@@ -13,7 +13,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 using ProtoCore.Utils;
-using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.Nodes
 {
@@ -211,7 +210,7 @@ namespace Dynamo.Nodes
 
         private void noteTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (!specialKeys.Contains(e.Key) || Keyboard.Modifiers == ModifierKeys.Shift)
+            if (!specialKeys.Contains(e.Key) || Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift)
             {
                 return;
             }
