@@ -1,4 +1,4 @@
-<UserControl x:Class="Dynamo.Nodes.NoteView"
+﻿<UserControl x:Class="Dynamo.Nodes.NoteView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -49,15 +49,15 @@
             </Style.Triggers>
         </Style>
     </UserControl.Style>
-
+    
     <Grid Name="BaseGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="{Binding Path=PinnedNode, Converter={StaticResource nullToPinWidthConverter }, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
-            <ContextMenu Style="{StaticResource ContextMenuStyle}" Width="200">
-                <MenuItem Name="deleteItem" Header="{x:Static p:Resources.NoteViewContextMenuDelete}" Click="OnDeleteItemClick"  />
+            <ContextMenu Style="{StaticResource ContextMenuStyle}" Width="200">               
+                <MenuItem Name="deleteItem" Header="{x:Static p:Resources.NoteViewContextMenuDelete}" Click="OnDeleteItemClick"  />               
                 <MenuItem Name="editItem" Header="{x:Static p:Resources.NoteViewContextMenuEdit}" Click="OnEditItemClick" />
                 <MenuItem Name="createGroup_cm"
                           Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
