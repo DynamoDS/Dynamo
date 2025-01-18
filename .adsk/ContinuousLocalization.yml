@@ -28,4 +28,4 @@ common:
       file_rules:
         - doc\distrib\NodeHelpFiles\en-US\*.md, doc\distrib\NodeHelpFiles\%langMsNet%\*.md
         - doc\distrib\Samples\en-US\**.dyn, doc\distrib\Samples\%langMsNet%\**.dyn
-        # - src\**en-US.resx, src\**%langMsNet%.resx
+        - src\**en-US.resx, src\**%langMsNet%.resx
