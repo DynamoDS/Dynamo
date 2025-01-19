@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DynamoUtilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using System.Windows.Threading;
 
 namespace DynamoCoreWpfTests
 {
@@ -32,6 +33,8 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     internal class SplashScreenTests
     {
+        protected int DispatcherOpsCounter = 0;
+
         public enum WindowsMessage
         {
             WM_CLOSE = 0x0010
@@ -46,18 +49,33 @@ namespace DynamoCoreWpfTests
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         static extern uint RegisterWindowMessage(string lpString);
 
+        private void Hooks_OperationPosted(object sender, DispatcherHookEventArgs e)
+        {
+            e.Operation.Task.ContinueWith((t) => Interlocked.Decrement(ref DispatcherOpsCounter));
+            Interlocked.Increment(ref DispatcherOpsCounter);
+        }
 
         [SetUp]
         public void SetUp()
         {
             TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
         }
 
         [TearDown]
         public void CleanUp()
         {
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
+            DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
+
+            var name = TestContext.CurrentContext.Test.Name;
+            using (var currentProc = Process.GetCurrentProcess())
+            {
+                System.Console.WriteLine($"PID {currentProc.Id} Finished test: {name} with DispatcherOpsCounter = {DispatcherOpsCounter}");
+            }
             TestUtilities.WebView2Tag = string.Empty;
         }
+
 
         [Test]
         public void SplashScreen_CloseExplicitPropIsCorrect1()

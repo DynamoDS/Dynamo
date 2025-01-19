@@ -20,12 +20,14 @@ using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoShapeManager;
 using NUnit.Framework;
 using ProtoCore;
 using PythonNodeModels;
 using SystemTestServices;
-using TestServices;
+using System.Windows.Threading;
+using DynamoCoreWpfTests.Utility;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace DynamoCoreWpfTests
 {
@@ -48,17 +50,34 @@ namespace DynamoCoreWpfTests
         protected WorkspaceViewModel workspaceViewModel = null;
         protected double tolerance = 1e-6;
         protected double codeBlockPortHeight = Configurations.PortHeightInPixels;
+        protected int DispatcherOpsCounter = 0;
+
+        private void Hooks_OperationPosted(object sender, DispatcherHookEventArgs e)
+        {
+            e.Operation.Task.ContinueWith((t) => Interlocked.Decrement(ref DispatcherOpsCounter));
+            Interlocked.Increment(ref DispatcherOpsCounter);
+        }
 
         public override void Setup()
         {
             base.Setup();
 
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
         }
 
         public override void Cleanup()
         {
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
+            DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
+
+            var name = TestContext.CurrentContext.Test.Name;
+            using (var currentProc = Process.GetCurrentProcess())
+            {
+                System.Console.WriteLine($"PID {currentProc.Id} Finished test: {name} with DispatcherOpsCounter = {DispatcherOpsCounter}");
+            }
+
             commandCallback = null;
             base.Cleanup();
         }
