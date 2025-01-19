@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Dynamo.Wpf.Utilities
 {
     /// <summary>
-    /// The ActionDebouncer class offers a means to redunce the number of UI notifications for a specified time.
+    /// The ActionDebouncer class offers a means to reduce the number of UI notifications for a specified time.
     /// It is meant to be used in UI elements where too many UI updates can cause perfomance issues.
     /// </summary>
     internal class ActionDebouncer(ILogger logger) : IDisposable
