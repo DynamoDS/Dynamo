@@ -451,7 +451,8 @@ namespace CoreNodeModelsWpf.Charts
                 case GraphTypes.Bezier:
                     if (BezierCurve != null)
                     {
-                        OutputValuesY = BezierCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                        OutputValuesY = BezierCurve.GetBezierCurveYValues(minLimitY, maxLimitY,
+                            pointsCount, CurveMapperControl.DynamicCanvasSize);
                         OutputValuesX = BezierCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
                     }
                     break;
