@@ -11,8 +11,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ResourceDictionary
+                    Source="UI/Themes/Modern_Combined.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="Button" x:Key="TransparentButton">
                 <Setter Property="Template">

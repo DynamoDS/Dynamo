@@ -20,6 +20,13 @@
              Drop="OnWorkspaceDrop">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="UI/Themes/Modern_Combined.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
         <Style TargetType="{x:Type ItemsControl}"
                x:Key="WorkspaceContextMenuStyle">
             <Setter Property="SnapsToDevicePixels"

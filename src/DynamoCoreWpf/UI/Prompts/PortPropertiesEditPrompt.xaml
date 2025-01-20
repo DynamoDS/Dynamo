@@ -18,9 +18,8 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ResourceDictionary
+                    Source="UI/Themes/Modern_Combined.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="HintingInputStyle" TargetType="TextBox">
                 <Setter Property="Margin" Value="0,0,0,12" />

@@ -16,9 +16,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ResourceDictionary
+                    Source="UI/Themes/Modern_Combined.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter" />
             <controls:ReadyToPublishToVisibilityCollapsedConverter x:Key="ReadyToPublishToVisibilityCollapsedConverter" />            

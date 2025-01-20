@@ -1,10 +1,11 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
-                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+                    xmlns:controls="clr-namespace:Dynamo.Controls"
+                    xmlns:ui="clr-namespace:Dynamo.UI">
 
     <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+        <ResourceDictionary
+            Source="UI/Themes/Modern_Combined.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <controls:ToolTipFirstLineOnly x:Key="ToolTipFirstLine" />
@@ -81,7 +82,6 @@
     <controls:NodeWarningConverter x:Key="NodeWarningConverter" />
     <controls:NodeOriginalNameToMarginConverter x:Key="NodeOriginalNameToMarginConverter" />
     <controls:BoolToFAIconNameConverter x:Key="BoolToFAIconNameConverter" />
-    <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
     <controls:EmptyToVisibilityCollapsedConverter x:Key="EmptyToVisibilityCollapsedConverter" />

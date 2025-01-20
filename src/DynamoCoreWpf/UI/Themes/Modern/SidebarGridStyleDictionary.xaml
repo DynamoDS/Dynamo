@@ -1,11 +1,14 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+                    xmlns:ui="clr-namespace:Dynamo.UI">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
+
+    <BooleanToVisibilityConverter
+        x:Key="BooleanToVisibilityConverter" />
 
     <!-- Region Control Templates-->
 
@@ -409,5 +412,4 @@
     <!--EndRegion-->
 
     <!--EndRegion-->
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 </ResourceDictionary>

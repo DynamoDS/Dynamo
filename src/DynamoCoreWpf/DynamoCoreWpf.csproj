@@ -21,7 +21,16 @@
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
 
-  <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+    <Target Name="CombineXamlDictionaries" BeforeTargets="BeforeBuild">
+        <ItemGroup>
+            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml">
+                <TargetFile>UI\Themes\Modern_Combined.xaml</TargetFile>
+                <Visible>False</Visible>
+            </XAMLCombineItems>
+        </ItemGroup>
+    </Target>
+
+    <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <PropertyGroup>
           <PackageVersion>1.0.26</PackageVersion>
           <PackageName>SplashScreen</PackageName>
@@ -185,11 +194,13 @@
   </ItemGroup>
 
   <ItemGroup>
+      <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc3.3" />
       <PackageReference Include="HelixToolkit" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
       <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3546"/>
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3231" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.6533" />
@@ -209,6 +220,10 @@
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
 	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="8.0.0" />
+	<PackageReference Include="XAMLTools.MSBuild" Version="1.0.0-alpha0167">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\net6.0-windows\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference> 
