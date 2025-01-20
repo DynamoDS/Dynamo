@@ -166,5 +166,10 @@ namespace Dynamo.Wpf.Controls.SubControls
 
             return values;
         }
+
+        public override List<double> GetCurveXValues(double lowLimit, double highLimit, int count)
+        {
+            return null;
+        }
     }
 }

@@ -8,43 +8,13 @@ namespace Dynamo.Wpf.Controls.SubControls
 {
     public class SineCurve : CurveBase
     {
-        private CurveMapperControlPoint controlPoint1;
-        private CurveMapperControlPoint controlPoint2;
         private PolyLineSegment polySegment;
-
-        private double maxWidth;
-        private double maxHeight;
 
         // Coefficients
         private double coefA;   // Amplitude
         private double coefB;   // 2*PI/period
         private double coefC;   // Phase shift
         private double coefD;   // Vertical shift
-
-        public double MaxWidth
-        {
-            get => maxWidth;
-            set
-            {
-                if (maxWidth != value)
-                {
-                    maxWidth = value;
-                    Regenerate(controlPoint1); // Ensure the curve regenerates if needed
-                }
-            }
-        }
-        public double MaxHeight
-        {
-            get => maxHeight;
-            set
-            {
-                if (maxHeight != value)
-                {
-                    maxHeight = value;
-                    Regenerate(controlPoint1); // Ensure the curve regenerates if needed
-                }
-            }
-        }
 
         /// <summary>
         /// Initializes a sine curve with control points, dimensions, and visual properties.
@@ -53,8 +23,8 @@ namespace Dynamo.Wpf.Controls.SubControls
         {
             this.controlPoint1 = controlPoint1;
             this.controlPoint2 = controlPoint2;
-            this.maxWidth = maxWidth;
-            this.maxHeight = maxHeight;
+            MaxWidth = maxWidth;
+            MaxHeight = maxHeight;
 
             PathFigure = new PathFigure();
 
@@ -72,15 +42,15 @@ namespace Dynamo.Wpf.Controls.SubControls
             PathCurve = new Path
             {
                 Data = PathGeometry,
-                Stroke = new SolidColorBrush(Color.FromRgb(0xB3, 0x85, 0xF2)), // Purple color
-                StrokeThickness = 3,
+                Stroke = CurveColor,
+                StrokeThickness = CurveThickness
             };
         }
 
-        private double ConvertXToTrigo(double x) => Math.PI * x / maxWidth;
-        private double ConvertYToTrigo(double y) => 2.0 * y / maxHeight - 1.0;
-        private double ConvertTrigoToX(double unitX) => unitX * maxWidth / Math.PI;
-        private double ConvertTrigoToY(double unitY) => (unitY + 1.0) * maxHeight / (2.0);
+        private double ConvertXToTrigo(double x) => Math.PI * x / MaxWidth;
+        private double ConvertYToTrigo(double y) => 2.0 * y / MaxHeight - 1.0;
+        private double ConvertTrigoToX(double unitX) => unitX * MaxWidth / Math.PI;
+        private double ConvertTrigoToY(double unitY) => (unitY + 1.0) * MaxHeight / (2.0);
         private double CosineEquation(double x) => -(coefA * Math.Cos(coefB * x - coefC)) + coefD;
 
         private void GetEquationCoefficients()
@@ -100,13 +70,13 @@ namespace Dynamo.Wpf.Controls.SubControls
             double udd = CosineEquation(ud);
             PathFigure.StartPoint = new Point(ConvertTrigoToX(ud), ConvertTrigoToY(udd));
 
-            for (double d = 1.0; d < maxWidth; d += 2.0)
+            for (double d = 1.0; d < MaxWidth; d += 2.0)
             {
                 double vd = ConvertXToTrigo(d);
                 double dd = CosineEquation(vd);
                 polySegment.Points.Add(new Point(ConvertTrigoToX(vd), ConvertTrigoToY(dd)));
             }
-            double vx = ConvertXToTrigo(maxWidth);
+            double vx = ConvertXToTrigo(MaxWidth);
             double dy = CosineEquation(vx);
             polySegment.Points.Add(new Point(ConvertTrigoToX(vx), ConvertTrigoToY(dy)));
         }
@@ -135,41 +105,25 @@ namespace Dynamo.Wpf.Controls.SubControls
             if (controlPoint1.Point.X == controlPoint2.Point.X) return null;
 
             int step = pointCount - 1;
-            for (double xPos = 0.0; xPos < maxWidth; xPos += (maxWidth / step))
+            for (double xPos = 0.0; xPos < MaxWidth; xPos += (MaxWidth / step))
             {
-                double normalizedY = maxHeight - ConvertTrigoToY(CosineEquation(ConvertXToTrigo(xPos)));
-                double scaledY = (maxY - minY) * normalizedY / maxHeight;
+                double normalizedY = MaxHeight - ConvertTrigoToY(CosineEquation(ConvertXToTrigo(xPos)));
+                double scaledY = (maxY - minY) * normalizedY / MaxHeight;
                 scaledY += minY;
+                scaledY = Math.Round(scaledY, rounding);
                 yValues.Add(scaledY);
             }
 
             if (yValues.Count < pointCount)
             {
-                double normalizedY = maxHeight - ConvertTrigoToY(CosineEquation(ConvertXToTrigo(maxWidth)));
-                double scaledY = (maxY - minY) * normalizedY / maxHeight;
+                double normalizedY = MaxHeight - ConvertTrigoToY(CosineEquation(ConvertXToTrigo(MaxWidth)));
+                double scaledY = (maxY - minY) * normalizedY / MaxHeight;
                 scaledY += minY;
+                scaledY = Math.Round(scaledY, rounding);
                 yValues.Add(scaledY);
             }
 
             return yValues;
-        }
-
-        /// <summary>
-        /// Calculates the Y-axis values for the curve based on input limits and count.
-        /// </summary>
-        public List<double> GetSineWaveXValues(double minX, double maxX, int pointCount)
-        {
-            if (pointCount < 1) return null;
-
-            List<double> xValues = new List<double>();
-            double step = (maxX - minX) / (pointCount - 1);
-
-            for (int i = 0; i < pointCount; i++)
-            {
-                xValues.Add(minX + i * step);
-            }
-
-            return xValues;
         }
     }
 }

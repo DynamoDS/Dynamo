@@ -231,7 +231,7 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
         [JsonIgnore]
-        public SineCurve SineCurve { get; set; }
+        public SineCurve SineWave { get; set; }
         #endregion
 
         #region Cosine Curve
@@ -259,7 +259,7 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
         [JsonIgnore]
-        public SineCurve CosineCurve { get; set; }
+        public SineCurve CosineWave { get; set; }
         #endregion
 
         #region Tangent Curve
@@ -354,7 +354,7 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
         [JsonIgnore]
-        public PerlinCurve PerlinCurve { get; set; }
+        public PerlinCurve PerlinNoiseCurve { get; set; }
         #endregion
 
         /// <summary>
@@ -420,7 +420,12 @@ namespace CoreNodeModelsWpf.Charts
 
 
         internal void GenerateOutputValues()
-        {           
+        {
+            if (CurveMapperControl == null)
+            {
+                return;
+            }
+
             switch (SelectedGraphType)
             {
                 case GraphTypes.Empty:
@@ -433,8 +438,14 @@ namespace CoreNodeModelsWpf.Charts
                 case GraphTypes.Linear:
                     if (LinearCurve != null)
                     {
-                        OutputValuesY = LinearCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                        OutputValuesX = LinearCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+                        OutputValuesY = LinearCurve.GetLinearCurveYValues(
+                            minLimitX, maxLimitX,
+                            minLimitY, maxLimitY,
+                            pointsCount, CurveMapperControl.DynamicCanvasSize);
+                        OutputValuesX = LinearCurve.GetLinearCurveXValues(
+                            minLimitX, maxLimitX,
+                            minLimitY, maxLimitY,
+                            pointsCount, CurveMapperControl.DynamicCanvasSize);
                     }
                     break;
                 case GraphTypes.Bezier:
@@ -442,6 +453,34 @@ namespace CoreNodeModelsWpf.Charts
                     {
                         OutputValuesY = BezierCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
                         OutputValuesX = BezierCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+                    }
+                    break;
+                case GraphTypes.SineWave:
+                    if (SineWave != null)
+                    {
+                        OutputValuesY = SineWave.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                        OutputValuesX = SineWave.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+                    }
+                    break;
+                case GraphTypes.CosineWave:
+                    if (CosineWave != null)
+                    {
+                        OutputValuesY = CosineWave.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                        OutputValuesX = CosineWave.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+                    }
+                    break;
+                case GraphTypes.ParabolicCurve:
+                    if (ParabolicCurve != null)
+                    {
+                        OutputValuesY = ParabolicCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                        OutputValuesX = ParabolicCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+                    }
+                    break;
+                case GraphTypes.PerlinNoiseCurve:
+                    if (PerlinNoiseCurve != null)
+                    {
+                        OutputValuesY = PerlinNoiseCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                        OutputValuesX = PerlinNoiseCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
                     }
                     break;
             }
@@ -602,9 +641,9 @@ namespace CoreNodeModelsWpf.Charts
         [Description("Gaussian Wave")]
         GaussianWave = 6,
         [Description("Parabolic Curve")]
-        Parabola = 7,
+        ParabolicCurve = 7,
         [Description("Perlin Noise")]
-        PerlinNoise = 8
+        PerlinNoiseCurve = 8
     }
 
     #endregion

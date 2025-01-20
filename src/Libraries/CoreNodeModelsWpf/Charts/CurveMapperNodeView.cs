@@ -58,6 +58,7 @@ namespace Dynamo.Wpf.Charts
             curveMapperControl = new CurveMapperControl(model);
             curveMapperControl.DataContext = model;
             curveMapperNodeModel = model;
+            model.CurveMapperControl = curveMapperControl;
 
             // Add the control to the NodeView's inputGrid
             nodeView.inputGrid.Children.Add(curveMapperControl);
@@ -206,18 +207,18 @@ namespace Dynamo.Wpf.Charts
                 Canvas.SetZIndex(controlPointSine2, 20);
 
                 // Create the sine curve and add to the canvas
-                model.SineCurve = new SineCurve(
+                model.SineWave = new SineCurve(
                     model.ControlPointSine1,
                     model.ControlPointSine2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                sineCurve = model.SineCurve;
-                Canvas.SetZIndex(model.SineCurve, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.SineCurve.PathCurve);
+                sineCurve = model.SineWave;
+                Canvas.SetZIndex(model.SineWave, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.SineWave.PathCurve);
 
                 ////// Assign curves to control points
-                model.ControlPointSine1.CurveSine = model.SineCurve;
-                model.ControlPointSine2.CurveSine = model.SineCurve;
+                model.ControlPointSine1.CurveSine = model.SineWave;
+                model.ControlPointSine2.CurveSine = model.SineWave;
 
                 // Bind properties for startControlPoint and endControlPoint
                 ApplyBindingsToControlPoints(controlPointSine1, model, curveMapperControl);
@@ -245,18 +246,18 @@ namespace Dynamo.Wpf.Charts
                 Canvas.SetZIndex(controlPointCosine2, 20);
 
                 // Create the sine curve and add to the canvas
-                model.CosineCurve = new SineCurve(
+                model.CosineWave = new SineCurve(
                     model.ControlPointCosine1,
                     model.ControlPointCosine2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                cosineCurve = model.CosineCurve;
-                Canvas.SetZIndex(model.CosineCurve, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.CosineCurve.PathCurve);
+                cosineCurve = model.CosineWave;
+                Canvas.SetZIndex(model.CosineWave, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.CosineWave.PathCurve);
 
                 ////// Assign curves to control points
-                model.ControlPointCosine1.CurveCosine = model.CosineCurve;
-                model.ControlPointCosine2.CurveCosine = model.CosineCurve;
+                model.ControlPointCosine1.CurveCosine = model.CosineWave;
+                model.ControlPointCosine2.CurveCosine = model.CosineWave;
 
                 // Bind properties for startControlPoint and endControlPoint
                 ApplyBindingsToControlPoints(controlPointCosine1, model, curveMapperControl);
@@ -369,21 +370,21 @@ namespace Dynamo.Wpf.Charts
                 Canvas.SetZIndex(controlPointPerlin, 20);
 
                 // Create the sine curve and add to the canvas
-                model.PerlinCurve = new PerlinCurve(
+                model.PerlinNoiseCurve = new PerlinCurve(
                     model.FixedPointPerlin1,
                     model.FixedPointPerlin2,
                     model.ControlPointPerlin,
                     1,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                perlinCurve = model.PerlinCurve;
-                Canvas.SetZIndex(model.PerlinCurve, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.PerlinCurve.PathCurve);
+                perlinCurve = model.PerlinNoiseCurve;
+                Canvas.SetZIndex(model.PerlinNoiseCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.PerlinNoiseCurve.PathCurve);
 
                 ////// Assign curves to control points
-                model.FixedPointPerlin1.CurvePerlin = model.PerlinCurve;
-                model.FixedPointPerlin2.CurvePerlin = model.PerlinCurve;
-                model.ControlPointPerlin.CurvePerlin = model.PerlinCurve;
+                model.FixedPointPerlin1.CurvePerlin = model.PerlinNoiseCurve;
+                model.FixedPointPerlin2.CurvePerlin = model.PerlinNoiseCurve;
+                model.ControlPointPerlin.CurvePerlin = model.PerlinNoiseCurve;
 
                 // Bind properties for startControlPoint and endControlPoint
                 ApplyBindingsToControlPoints(fixedPointPerlin1, model, curveMapperControl);
@@ -405,7 +406,7 @@ namespace Dynamo.Wpf.Charts
                 model.BezierFixedPoint2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
 
                 model.ControlPointSine1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.ControlPointSine1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                model.ControlPointSine2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
 
                 model.ControlPointCosine1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
                 model.ControlPointCosine2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
@@ -486,8 +487,8 @@ namespace Dynamo.Wpf.Charts
                 controlPointSine1.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
             if (controlPointSine2 != null)
                 controlPointSine2.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
-            if (model.SineCurve != null)
-                model.SineCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            if (model.SineWave != null)
+                model.SineWave.PathCurve.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
 
             // Visibility binding for Cosine GraphType
             var cosineVisibilityBinding = new Binding("SelectedGraphType")
@@ -501,8 +502,8 @@ namespace Dynamo.Wpf.Charts
                 controlPointCosine1.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
             if (controlPointCosine2 != null)
                 controlPointCosine2.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
-            if (model.CosineCurve != null)
-                model.CosineCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+            if (model.CosineWave != null)
+                model.CosineWave.PathCurve.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
 
             // Visibility binding for Tangent GraphType
             var tangentVisibilityBinding = new Binding("SelectedGraphType")
@@ -524,7 +525,7 @@ namespace Dynamo.Wpf.Charts
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.Parabola, // Only show for Parabolic GraphType
+                ConverterParameter = GraphTypes.ParabolicCurve, // Only show for Parabolic GraphType
                 Mode = BindingMode.OneWay
             };
             if (controlPointParabolic1 != null)
@@ -539,7 +540,7 @@ namespace Dynamo.Wpf.Charts
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.PerlinNoise, // Only show for Parabolic GraphType
+                ConverterParameter = GraphTypes.PerlinNoiseCurve, // Only show for Parabolic GraphType
                 Mode = BindingMode.OneWay
             };
             if (fixedPointPerlin1 != null)
@@ -548,8 +549,8 @@ namespace Dynamo.Wpf.Charts
                 fixedPointPerlin2.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
             if (controlPointPerlin != null)
                 controlPointPerlin.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
-            if (model.PerlinCurve != null)
-                model.PerlinCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            if (model.PerlinNoiseCurve != null)
+                model.PerlinNoiseCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
         }
 
         /// <summary>

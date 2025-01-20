@@ -171,13 +171,13 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     model.ControlPointSine2.Point = new Point(xRatioSine2 * newCanvasSize, yRatioSine2 * newCanvasSize);
 
                     // Update sine curve bounds and regenerate
-                    if (model.SineCurve != null)
+                    if (model.SineWave != null)
                     {
-                        model.SineCurve.MaxWidth = newCanvasSize;
-                        model.SineCurve.MaxHeight = newCanvasSize;
-                        model.SineCurve.Regenerate(model.ControlPointSine1);
-                        model.SineCurve.Regenerate(model.ControlPointSine2);
-                        Canvas.SetZIndex(model.SineCurve.PathCurve, 10);
+                        model.SineWave.MaxWidth = newCanvasSize;
+                        model.SineWave.MaxHeight = newCanvasSize;
+                        model.SineWave.Regenerate(model.ControlPointSine1);
+                        model.SineWave.Regenerate(model.ControlPointSine2);
+                        Canvas.SetZIndex(model.SineWave.PathCurve, 10);
                     }
                 }
                 // Cosine wave
@@ -198,13 +198,13 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     model.ControlPointCosine2.Point = new Point(xRatioCosine2 * newCanvasSize, yRatioCosine2 * newCanvasSize);
 
                     // Update sine curve bounds and regenerate
-                    if (model.CosineCurve != null)
+                    if (model.CosineWave != null)
                     {
-                        model.CosineCurve.MaxWidth = newCanvasSize;
-                        model.CosineCurve.MaxHeight = newCanvasSize;
-                        model.CosineCurve.Regenerate(model.ControlPointCosine1);
-                        model.CosineCurve.Regenerate(model.ControlPointCosine2);
-                        Canvas.SetZIndex(model.CosineCurve.PathCurve, 10);
+                        model.CosineWave.MaxWidth = newCanvasSize;
+                        model.CosineWave.MaxHeight = newCanvasSize;
+                        model.CosineWave.Regenerate(model.ControlPointCosine1);
+                        model.CosineWave.Regenerate(model.ControlPointCosine2);
+                        Canvas.SetZIndex(model.CosineWave.PathCurve, 10);
                     }
                 }
                 // Tangent wave
@@ -286,12 +286,12 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     // Update sine curve bounds and regenerate
                     if (model.ParabolicCurve != null)
                     {
-                        model.PerlinCurve.MaxWidth = newCanvasSize;
-                        model.PerlinCurve.MaxHeight = newCanvasSize;
-                        model.PerlinCurve.Regenerate(model.FixedPointPerlin1);
-                        model.PerlinCurve.Regenerate(model.FixedPointPerlin2);
-                        model.PerlinCurve.Regenerate(model.ControlPointPerlin);
-                        Canvas.SetZIndex(model.PerlinCurve.PathCurve, 10);
+                        model.PerlinNoiseCurve.MaxWidth = newCanvasSize;
+                        model.PerlinNoiseCurve.MaxHeight = newCanvasSize;
+                        model.PerlinNoiseCurve.Regenerate(model.FixedPointPerlin1);
+                        model.PerlinNoiseCurve.Regenerate(model.FixedPointPerlin2);
+                        model.PerlinNoiseCurve.Regenerate(model.ControlPointPerlin);
+                        Canvas.SetZIndex(model.PerlinNoiseCurve.PathCurve, 10);
                     }
                 }
 
@@ -445,20 +445,20 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 model.ControlPointSine1.Point = new Point(DynamicCanvasSize * 0.25, 0);
                 model.ControlPointSine2.Point = new Point(DynamicCanvasSize * 0.75, DynamicCanvasSize);
-                if (model.SineCurve != null)
+                if (model.SineWave != null)
                 {
-                    model.SineCurve.Regenerate(model.ControlPointSine1);
-                    model.SineCurve.Regenerate(model.ControlPointSine2);
+                    model.SineWave.Regenerate(model.ControlPointSine1);
+                    model.SineWave.Regenerate(model.ControlPointSine2);
                 }
             }
             else if (model.SelectedGraphType == GraphTypes.CosineWave) // make the coordinate properties
             {
                 model.ControlPointCosine1.Point = new Point(0, 0);
                 model.ControlPointCosine2.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize);
-                if (model.CosineCurve != null)
+                if (model.CosineWave != null)
                 {
-                    model.CosineCurve.Regenerate(model.ControlPointCosine1);
-                    model.CosineCurve.Regenerate(model.ControlPointCosine2);
+                    model.CosineWave.Regenerate(model.ControlPointCosine1);
+                    model.CosineWave.Regenerate(model.ControlPointCosine2);
                 }
             }
             else if (model.SelectedGraphType == GraphTypes.TangentWave)
@@ -471,28 +471,32 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     model.TangentCurve.Regenerate(model.ControlPointTangent2);
                 }
             }
-            else if (model.SelectedGraphType == GraphTypes.Parabola)
+            else if (model.SelectedGraphType == GraphTypes.ParabolicCurve)
             {
                 model.ControlPointParabolic1.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.1);
                 model.ControlPointParabolic2.Point = new Point(DynamicCanvasSize, DynamicCanvasSize);
-                if (model.SineCurve != null)
+                if (model.SineWave != null)
                 {
                     model.ParabolicCurve.Regenerate(model.ControlPointParabolic1);
                     model.ParabolicCurve.Regenerate(model.ControlPointParabolic2);
                 }
             }
-            else if (model.SelectedGraphType == GraphTypes.PerlinNoise)
+            else if (model.SelectedGraphType == GraphTypes.PerlinNoiseCurve)
             {
                 model.FixedPointPerlin1.Point = new Point(DynamicCanvasSize * 0.5, 0);
                 model.FixedPointPerlin2.Point = new Point(0, DynamicCanvasSize);
                 model.ControlPointPerlin.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
-                if (model.SineCurve != null)
+                if (model.SineWave != null)
                 {
-                    model.PerlinCurve.Regenerate(model.FixedPointPerlin1);
-                    model.PerlinCurve.Regenerate(model.FixedPointPerlin1);
-                    model.PerlinCurve.Regenerate(model.ControlPointPerlin);
+                    model.PerlinNoiseCurve.Regenerate(model.FixedPointPerlin1);
+                    model.PerlinNoiseCurve.Regenerate(model.FixedPointPerlin1);
+                    model.PerlinNoiseCurve.Regenerate(model.ControlPointPerlin);
                 }
             }
+
+            // Force Output Recalculation
+            model.GenerateOutputValues();
+            model.OnNodeModified();
         }
 
         private void GraphCanvas_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
