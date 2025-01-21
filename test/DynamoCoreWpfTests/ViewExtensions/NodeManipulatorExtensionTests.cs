@@ -28,7 +28,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
     public class NodeManipulatorExtensionTests : DynamoTestUIBase
     {
         [SetUp]
-        public virtual void Start()
+        public override void Start()
         {
             // Forcing the dispatcher to execute all of its tasks within these tests causes crashes in Helix.
             // For now just skip it.
