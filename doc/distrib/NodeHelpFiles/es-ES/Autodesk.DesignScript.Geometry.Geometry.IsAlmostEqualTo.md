@@ -1,7 +1,8 @@
 ## En detalle:
-IsAlmostEqualTo devolverá un valor booleano en función de si un vector tiene los mismos valores que otro. En el siguiente ejemplo, se devuelve un valor "true" (verdadero) al comparar un vector del eje Z del SCU con un vector con las coordenadas (0,0,1). Al ajustar el control deslizante de dirección del vector, se cambiarán los valores de coordenadas del vector, por lo que será desigual. Los vectores se representan como líneas.
+`Geometry.IsAlmostEqualTo` returns a boolean value indication whether the two given geometries have the same geometrical representations or numerical values.
+
+In the example below, a cylinder is created two ways. The two cylinders are then compared with `Geometry.IsAlmostEqualTo`.
 ___
 ## Archivo de ejemplo
 
-![IsAlmostEqualTo](./Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo_img.jpg)
-
+![Geometry.IsAlmostEqualTo](./Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo_img.jpg)

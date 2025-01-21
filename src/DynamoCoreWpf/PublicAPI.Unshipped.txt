@@ -5224,6 +5224,7 @@ static Dynamo.Wpf.Properties.Resources.PackageUploadStateError.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateReady.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateUploaded.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateUploading.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageUnknownCompatibilityVersionDownloadMsg.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUseNewerDynamoMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUseOlderDynamoMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageViewContextMenuLoadText.get -> string

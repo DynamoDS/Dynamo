@@ -105,7 +105,7 @@ namespace DSOffice
         {
             get
             {
-                return Process.GetProcessesByName("EXCEL").Length != 0;
+                return GetExcelProcess(_app) != null;
             }
         }
 
@@ -123,21 +123,39 @@ namespace DSOffice
         /// </summary>
         private static void TryQuitAndCleanup(bool saveWorkbooks)
         {
-            if (HasValidExcelReference)
+            try
             {
-                if (ExcelProcessRunning)
+                if (HasValidExcelReference)
                 {
-                    App.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(saveWorkbooks));
-                    App.Quit();
+                    if (ExcelProcessRunning)
+                    {
+                        App.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(saveWorkbooks));
+                        App.Quit();
+                    }
+
+                    while (Marshal.ReleaseComObject(_app) > 0)
+                    {
+
+                    }
+
+                    GetExcelProcess(App).Kill();
                 }
-
-                while (Marshal.ReleaseComObject(_app) > 0)
-                {
-
-                }
-
-                _app = null;
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            _app = null;
+        }
+
+        [DllImport("user32.dll")]
+        static extern int GetWindowThreadProcessId(int hWnd, out int lpdwProcessId);
+
+        internal static Process GetExcelProcess(Application excelApp)
+        {
+            int id;
+            GetWindowThreadProcessId(excelApp.Hwnd, out id);
+            return Process.GetProcessById(id);
         }
 
         internal static void OnProcessExit(object sender, EventArgs eventArgs)

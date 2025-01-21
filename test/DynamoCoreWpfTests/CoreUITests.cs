@@ -26,6 +26,7 @@ using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
+using Dynamo.Wpf.Utilities;
 using DynamoCoreWpfTests.Utility;
 using Moq;
 using Moq.Protected;
@@ -968,10 +969,201 @@ namespace DynamoCoreWpfTests
             int count = 0;
             (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
             searchControl.SearchTextBox.Text = "dsfdf";
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop(() => count == 1);
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
             Assert.AreEqual(count, 1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InCanvasSearchTextChangeTriggersOneSearchCommandWithDebounce()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            Assert.IsNotNull(searchControl);
+
+            DispatcherUtil.DoEvents();
+
+            int count = 0;
+            var vm = searchControl.DataContext as SearchViewModel;
+            Assert.IsNotNull(vm);
+            vm.SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
+
+            // run without debouncer
+            vm.searchDebouncer.Dispose();
+            vm.searchDebouncer = null; // disable the debouncer
+            searchControl.SearchTextBox.Text = "dsfdf";
+            DispatcherUtil.DoEventsLoop(() => count == 1);
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(1, count, "changing the text once should cause a single update");
+
+            int currThreadId = Environment.CurrentManagedThreadId;
+            int debouncerThreadId = -1;
+            var debouncer = new ActionDebouncer(null);
+
+            int dbCount = 0;
+            debouncer.Debounce(100, () =>
+            {
+                dbCount++;
+                debouncerThreadId = Environment.CurrentManagedThreadId;
+            });
+
+            DispatcherUtil.DoEventsLoop(() => debouncerThreadId != -1);
+            Assert.AreEqual(currThreadId, debouncerThreadId);
+
+            vm.searchDebouncer = debouncer;
+            searchControl.SearchTextBox.Text = "dsfdf";
+            DispatcherUtil.DoEventsLoop(() => dbCount == 1);
+            Assert.AreEqual(1, dbCount);
+
+            // Empty strings should not hit the debounce action
+            searchControl.SearchTextBox.Text = "";
+            Assert.AreEqual(1, dbCount);
+            DispatcherUtil.DoEventsLoop(() => count == 2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InCanvasSearchTextWithDebouncer()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            Assert.IsNotNull(searchControl);
+
+            DispatcherUtil.DoEvents();
+
+            int count = 0;
+            var vm = searchControl.DataContext as SearchViewModel;
+            Assert.IsNotNull(vm);
+
+            // Check that the default debouncer is setup.
+            Assert.IsNotNull(vm.searchDebouncer);
+
+            void Vm_SearchTextChanged(object sender, EventArgs e)
+            {
+                count++;
+                throw new Exception("Failure that should be logged");
+            }
+
+            vm.searchDelayTimeout = 50;
+            vm.SearchTextChanged += Vm_SearchTextChanged;
+
+            vm.SearchText = "point";
+            DispatcherUtil.DoEventsLoop(() => count == 1);
+            Assert.AreEqual(1, count, "Search updates were sent out");
+
+
+            vm.SearchText = "point.by";
+            DispatcherUtil.DoEventsLoop(() => count == 2);
+            Assert.AreEqual(2, count, "thread sees updated count");
+
+            vm.SearchText = "abcde";
+            DispatcherUtil.DoEventsLoop(() => count == 3);
+            Assert.AreEqual(3, count, "thread sees updated count");
+
+            searchControl.SearchTextBox.Text = "";
+            DispatcherUtil.DoEventsLoop(() => currentWs.InCanvasSearchBar.IsOpen);
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(4, count, "main sees updated count");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InCanvasSearchTextChangeTriggersDebouncer()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            Assert.IsNotNull(searchControl);
+
+            DispatcherUtil.DoEvents();
+
+            int count = 0;
+            var vm = searchControl.DataContext as SearchViewModel;
+            Assert.IsNotNull(vm);
+            vm.SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
+
+            // prepare debounce tests
+            vm.searchDelayTimeout = 50;
+            var sleepTime = vm.searchDelayTimeout * 2;
+            Assert.NotNull(vm.searchDebouncer);
+
+            // run with debouncer
+            count = 0;
+            searchControl.SearchTextBox.Text = "dsfdfdsfdf";
+            Thread.Sleep(sleepTime);
+            DispatcherUtil.DoEventsLoop(() => count == 1);
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(1, count, "changing the text once should cause a single update after timeout expires");
+
+            // multiple updates with debouncer
+            count = 0;
+            searchControl.SearchTextBox.Text = "dsfdf";
+            searchControl.SearchTextBox.Text = "dsfdfdsfdf";
+            searchControl.SearchTextBox.Text = "wer";
+            searchControl.SearchTextBox.Text = "dsfdf";
+            DispatcherUtil.DoEventsLoop(() => count == 1);
+            // Do another events loop to make sure no other debouncer actions are triggered
+            DispatcherUtil.DoEventsLoop(null, 10);
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(1, count, "changing the text multiple times in quick succession should cause a single update once timeout expires");
+
+            // multiple updates with empty string debouncer
+            count = 0;
+            searchControl.SearchTextBox.Text = "dsfdf";
+            searchControl.SearchTextBox.Text = "";
+            searchControl.SearchTextBox.Text = "dsfdf";
+            DispatcherUtil.DoEventsLoop(() => count == 2);
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(2, count, "changing the text to empty should not trigger the debouncer");
+
+            // test timeout expiration
+            count = 0;
+            searchControl.SearchTextBox.Text = "dsfdfdsfdf";
+            Thread.Sleep(sleepTime);
+            searchControl.SearchTextBox.Text = "dsfdf";
+            Thread.Sleep(sleepTime);
+            DispatcherUtil.DoEventsLoop(() => count == 2);
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(2, count, "2 timeout expirations should cause 2 updates");
+
+            // run with debouncer, then without
+            count = 0;
+            searchControl.SearchTextBox.Text = "dsfdfdsfdf";
+            vm.searchDebouncer.Dispose();
+            vm.searchDebouncer = null; // disable debounce
+            searchControl.SearchTextBox.Text = "dsfdf";
+       
+            DispatcherUtil.DoEventsLoop(() => count == 1);
+            DispatcherUtil.DoEventsLoop(null, 10);
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(1, count, "the debounced update should have been cancelled by the immediate set");
         }
 
         [Test]
