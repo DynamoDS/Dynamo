@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,207 +118,207 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ChartsBarChartDescription" xml:space="preserve">
-    <value>新しい棒グラフを作成します</value>
+    <value>Create a new Bar Chart</value>
   </data>
   <data name="ChartsBarChartSearchTags" xml:space="preserve">
     <value>bar;barchart</value>
   </data>
   <data name="ChartsBarChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>棒グラフのカテゴリのラベルのリスト。
+    <value>A list of labels for the bar chart categories.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBarChartValuesDataPortToolTip" xml:space="preserve">
-    <value>各カテゴリの棒の値を指定する(リストの)リスト。
+    <value>A list (of lists) to supply values for the bars in each category.
 
 List&lt;var&gt;</value>
   </data>
   <data name="ChartsBarChartColorsDataPortToolTip" xml:space="preserve">
-    <value>各棒グラフのカテゴリの色のリスト。
+    <value>A list of colors for each bar chart category.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBarChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>ラベルと値のキーペアを含むディクショナリ
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, double&gt;</value>
   </data>
   <data name="ChartsBasicLineChartDescription" xml:space="preserve">
-    <value>新しい基本折れ線グラフを作成します</value>
+    <value>Create a new Basic Line Chart</value>
   </data>
   <data name="ChartsBasicLineChartSearchTags" xml:space="preserve">
     <value>index;indexvalue;indexvaluelineplot</value>
   </data>
   <data name="ChartsBasicLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>出力される各折れ線の文字ラベルのリスト。
+    <value>A list of string labels for each line to be plotted.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBasicLineChartValuesDataPortToolTip" xml:space="preserve">
-    <value>X 軸の値に対して出力される倍精度値をそれぞれ含むリストのリスト。
+    <value>List of lists each containing double values to be plotted against X-Axis values.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsBasicLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>各折れ線の色のリスト。
+    <value>A list of colors for each line.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBasicLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>ラベルと値のキーペアを含むディクショナリ
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsHeatSeriesDescription" xml:space="preserve">
-    <value>熱系列プロットを作成します</value>
+    <value>Create a heat series plot</value>
   </data>
   <data name="ChartsHeatSeriesSearchTags" xml:space="preserve">
     <value>heat;heatseries;heatseriesplot</value>
   </data>
   <data name="ChartsHeatSeriesXLabelsDataPortToolTip" xml:space="preserve">
-    <value>X 軸の文字ラベルのリスト。
+    <value>A list of string labels for the x-axis.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesYLabelsDataPortToolTip" xml:space="preserve">
-    <value>Y 軸の文字ラベルのリスト。
+    <value>A list of string labels for the y-axis.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesValuesDataPortToolTip" xml:space="preserve">
-    <value>列の項目を表す倍精度値をそれぞれ含むリストのリスト。
+    <value>A list of lists each containing double values representing items in a column. 
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
-    <value>各棒グラフのカテゴリの色のリスト。
+    <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each bar chart category.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>ラベルと値のキーペアを含むディクショナリ
+    <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
   </data>
-  <data name="ChartsPieChartDescription" xml:space="preserve">
-    <value>新しい円グラフを作成します</value>
+    <data name="ChartsPieChartDescription" xml:space="preserve">
+    <value>Create a new Pie Chart</value>
   </data>
-  <data name="ChartsPieChartSearchTags" xml:space="preserve">
+    <data name="ChartsPieChartSearchTags" xml:space="preserve">
     <value>pie;piechart</value>
   </data>
-  <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>円グラフの各セグメントの文字ラベルのリスト。
+    <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of string labels for each segment in the pie chart.
 
 List&lt;string&gt;</value>
   </data>
-  <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
-    <value>円グラフの各セグメントの値を指定する倍精度値のリスト。
+    <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
+    <value>A list of double values to supply a value for each segment of the pie chart.
 
 List&lt;double&gt;</value>
   </data>
-  <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
-    <value>円グラフの各セグメントの色のリスト。
+    <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each segment of the pie chart.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>ラベルと値のキーペアを含むディクショナリ
+    <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, double&gt;</value>
   </data>
-  <data name="ChartsScatterPlotDescription" xml:space="preserve">
-    <value>散布図を作成します</value>
+    <data name="ChartsScatterPlotDescription" xml:space="preserve">
+    <value>Create a scatter plot</value>
   </data>
-  <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
+    <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
     <value>scatter;scatterplot</value>
   </data>
-  <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
-    <value>出力される点の各グループの文字ラベルのリスト。
+    <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of string labels for each group of points to be plotted.
 
 List&lt;string&gt;</value>
   </data>
-  <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
-    <value>X 座標を表す倍精度値をそれぞれ含むリストのリスト。
+    <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing x-coordinates.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
-    <value>Y 座標を表す倍精度値をそれぞれ含むリストのリスト。
+    <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing y-coordinates.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
-    <value>点の各グループの色のリスト。
+    <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each group of points.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>ラベルと値のキーペアを含むディクショナリ
+    <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-  <data name="ChartsXYLineChartDescription" xml:space="preserve">
-    <value>新しい XY ライン プロットを作成します</value>
+    <data name="ChartsXYLineChartDescription" xml:space="preserve">
+    <value>Create a new XY line plot</value>
   </data>
-  <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
+    <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
     <value>lineplot;xylineplot</value>
   </data>
-  <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>出力される各折れ線の文字ラベルのリスト
+    <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of string labels for each line to be plotted
 
 List&lt;string&gt;</value>
   </data>
-  <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
-    <value>折れ線の各点の X 座標を表す倍精度値をそれぞれ含むリストのリスト。
+    <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
-    <value>折れ線の各点の X 座標を表す倍精度値をそれぞれ含むリストのリスト。
+    <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>折れ線グラフの各線の色のリスト。
+    <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each line in the line plot.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>ラベルと値のキーペアを含むディクショナリ
+    <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
-    <value>アドバンスド</value>
+    <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+    <value>Advanced</value>
   </data>
-  <data name="ColorPaletteUIRecentColors" xml:space="preserve">
-    <value>最近使用した色</value>
+    <data name="ColorPaletteUIRecentColors" xml:space="preserve">
+    <value>Recent Colors</value>
   </data>
-  <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
-    <value>標準</value>
+    <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
+    <value>Standard</value>
   </data>
-  <data name="ColorPaletteUIStandardColors" xml:space="preserve">
-    <value>標準色</value>
+    <data name="ColorPaletteUIStandardColors" xml:space="preserve">
+    <value>Standard Colors</value>
   </data>
-  <data name="DateTimeInputToolTip" xml:space="preserve">
-    <value>'MMMM dd, yyyy h:mm tt' 形式で時刻と日付を入力します</value>
+    <data name="DateTimeInputToolTip" xml:space="preserve">
+    <value>Enter time and date in the format 'MMMM dd, yyyy h:mm tt'</value>
   </data>
-  <data name="LblDisplay" xml:space="preserve">
-    <value>表示</value>
+    <data name="LblDisplay" xml:space="preserve">
+    <value>Display</value>
   </data>
-  <data name="LblValue" xml:space="preserve">
-    <value>値</value>
+    <data name="LblValue" xml:space="preserve">
+    <value>Value</value>
   </data>
-  <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
-    <value>既定の色が使用されます。カスタム色を定義するには、色と等しい番号とラベルを入力します。</value>
+    <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
+    <value>Default colors are used. To define custom colors, provide an equal number of colors and labels inputs.</value>
   </data>
-  <data name="ResizeThumbToolTip" xml:space="preserve">
-    <value>グラフのサイズをドラッグして変更します</value>
+    <data name="ResizeThumbToolTip" xml:space="preserve">
+    <value>Drag to modify the size of the chart</value>
   </data>
   <data name="GateClose" xml:space="preserve">
-    <value>閉じる</value>
+    <value>Close</value>
   </data>
   <data name="GateOpen" xml:space="preserve">
-    <value>開く</value>
+    <value>Open</value>
   </data>
 </root>

@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IndexOutOfRangeExceptionMessage" xml:space="preserve">
-    <value>Индекс вне диапазона. Если число не отрицательное, оно должно быть меньше размера списка. href=kIndexOutOfRange.html</value>
+    <value>Index was out of range. If non-negative must be less than the size of the list. href=kIndexOutOfRange.html</value>
   </data>
   <data name="StringOverIndexingExceptionMessage" xml:space="preserve">
-    <value>Индекс вне диапазона. Если число не отрицательное, оно должно быть меньше размера строки. href=kIndexOutOfRange.html</value>
+    <value>Index was out of range. If non-negative must be less than the size of the string. href=kIndexOutOfRange.html</value>
   </data>
   <data name="NullReferenceExceptionMessage" xml:space="preserve">
-    <value>Не удается создать индекс в пустом списке, словаре или строке.</value>
+    <value>Cannot index into a null list, dictionary or string.</value>
   </data>
 </root>

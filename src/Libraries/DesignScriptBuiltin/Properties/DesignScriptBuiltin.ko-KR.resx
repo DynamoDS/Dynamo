@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IndexOutOfRangeExceptionMessage" xml:space="preserve">
-    <value>색인이 범위를 벗어났습니다. 음수가 아닌 경우 리스트 크기보다 작아야 합니다. href=kIndexOutOfRange.html</value>
+    <value>Index was out of range. If non-negative must be less than the size of the list. href=kIndexOutOfRange.html</value>
   </data>
   <data name="StringOverIndexingExceptionMessage" xml:space="preserve">
-    <value>색인이 범위를 벗어났습니다. 음수가 아닌 경우 문자열 크기보다 작아야 합니다. href=kIndexOutOfRange.html</value>
+    <value>Index was out of range. If non-negative must be less than the size of the string. href=kIndexOutOfRange.html</value>
   </data>
   <data name="NullReferenceExceptionMessage" xml:space="preserve">
-    <value>null 리스트, 사전 또는 문자열로 색인 처리할 수 없습니다.</value>
+    <value>Cannot index into a null list, dictionary or string.</value>
   </data>
 </root>
