@@ -7,7 +7,7 @@
                     xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
                     xmlns:uiViews="clr-namespace:Dynamo.UI.Views">
 
-    <DataTemplate x:Name="outPortViewModel" DataType="{x:Type viewModels:OutPortViewModel}">
+    <DataTemplate x:Key="outPortViewModel" DataType="{x:Type viewModels:OutPortViewModel}">
         
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"

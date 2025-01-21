@@ -7,19 +7,19 @@
                       xmlns:sys="clr-namespace:System;assembly=mscorlib"
                       xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore">
 
-    <DataTemplate x:Name="nodeViewModel"  DataType="{x:Type viewModels:NodeViewModel}">
+    <DataTemplate x:Key="nodeViewModel"  DataType="{x:Type viewModels:NodeViewModel}">
         <controls:NodeView></controls:NodeView>
     </DataTemplate>
 
-    <DataTemplate x:Name="noteViewModel" DataType="{x:Type viewModels:NoteViewModel}">
+    <DataTemplate x:Key="noteViewModel" DataType="{x:Type viewModels:NoteViewModel}">
         <nodes:NoteView></nodes:NoteView>
     </DataTemplate>
 
-    <DataTemplate x:Name="infoBubbleViewModel" DataType="{x:Type viewModels:InfoBubbleViewModel}">
+    <DataTemplate x:Key="infoBubbleViewModel" DataType="{x:Type viewModels:InfoBubbleViewModel}">
         <controls:InfoBubbleView></controls:InfoBubbleView>
     </DataTemplate>
 
-    <DataTemplate x:Name="annotationViewModel" DataType="{x:Type viewModels:AnnotationViewModel}">
+    <DataTemplate x:Key="annotationViewModel" DataType="{x:Type viewModels:AnnotationViewModel}">
         <nodes:AnnotationView></nodes:AnnotationView>
     </DataTemplate>
 

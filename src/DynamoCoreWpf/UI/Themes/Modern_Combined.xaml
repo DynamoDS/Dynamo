@@ -19,13 +19,13 @@ UI\Themes\Modern\SidebarGridStyleDictionary.xaml
 UI\Themes\Modern\ToolbarStyleDictionary.xaml
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:viewModels="clr-namespace:Dynamo.ViewModels" xmlns:ui="clr-namespace:Dynamo.UI" xmlns:i="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors" xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:nodes="clr-namespace:Dynamo.Nodes" xmlns:mouse="clr-namespace:Dynamo.Wpf.UI" xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore" xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit" xmlns:clr="clr-namespace:System;assembly=mscorlib" xmlns:views="clr-namespace:Dynamo.Views" xmlns:dynui="clr-namespace:Dynamo.UI.Controls" xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net" xmlns:p="clr-namespace:Dynamo.Wpf.Properties" xmlns:interactivity="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors" xmlns:uiViews="clr-namespace:Dynamo.UI.Views" xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF" xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase" xmlns:fai="http://schemas.fontawesome.io/icons/" xmlns:graphNodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore">
-  <DataTemplate x:Name="connectorContextMenuViewModel" DataType="{x:Type viewModels:ConnectorContextMenuViewModel}">
+  <DataTemplate x:Key="connectorContextMenuViewModel" DataType="{x:Type viewModels:ConnectorContextMenuViewModel}">
     <controls:ConnectorContextMenuView DataContext="{Binding}" />
   </DataTemplate>
-  <DataTemplate x:Name="connectorAnchorViewModel" DataType="{x:Type viewModels:ConnectorAnchorViewModel}">
+  <DataTemplate x:Key="connectorAnchorViewModel" DataType="{x:Type viewModels:ConnectorAnchorViewModel}">
     <controls:ConnectorAnchorView DataContext="{Binding}" />
   </DataTemplate>
-  <DataTemplate x:Name="connectorPinViewModel" DataType="{x:Type viewModels:ConnectorPinViewModel}">
+  <DataTemplate x:Key="connectorPinViewModel" DataType="{x:Type viewModels:ConnectorPinViewModel}">
     <nodes:ConnectorPinView DataContext="{Binding}" />
   </DataTemplate>
   <DataTemplate x:Key="ShowPinCollection">
@@ -108,16 +108,16 @@ UI\Themes\Modern\ToolbarStyleDictionary.xaml
       </DataTrigger>
     </Style.Triggers>
   </Style>
-  <DataTemplate x:Name="nodeViewModel" DataType="{x:Type viewModels:NodeViewModel}">
+  <DataTemplate x:Key="nodeViewModel" DataType="{x:Type viewModels:NodeViewModel}">
     <controls:NodeView />
   </DataTemplate>
-  <DataTemplate x:Name="noteViewModel" DataType="{x:Type viewModels:NoteViewModel}">
+  <DataTemplate x:Key="noteViewModel" DataType="{x:Type viewModels:NoteViewModel}">
     <nodes:NoteView />
   </DataTemplate>
-  <DataTemplate x:Name="infoBubbleViewModel" DataType="{x:Type viewModels:InfoBubbleViewModel}">
+  <DataTemplate x:Key="infoBubbleViewModel" DataType="{x:Type viewModels:InfoBubbleViewModel}">
     <controls:InfoBubbleView />
   </DataTemplate>
-  <DataTemplate x:Name="annotationViewModel" DataType="{x:Type viewModels:AnnotationViewModel}">
+  <DataTemplate x:Key="annotationViewModel" DataType="{x:Type viewModels:AnnotationViewModel}">
     <nodes:AnnotationView />
   </DataTemplate>
   <SolidColorBrush x:Key="DynamoStandardLabelTextBrush" Color="#BBBBBB" />
@@ -1451,7 +1451,7 @@ UI\Themes\Modern\ToolbarStyleDictionary.xaml
       </Setter.Value>
     </Setter>
   </Style>
-  <DataTemplate x:Name="connectorViewModel" DataType="{x:Type viewModels:ConnectorViewModel}">
+  <DataTemplate x:Key="connectorViewModel" DataType="{x:Type viewModels:ConnectorViewModel}">
     <Grid x:Name="MainGrid" Visibility="Visible">
       <interactivity:Interaction.Triggers>
         <interactivity:EventTrigger EventName="MouseRightButtonDown">
@@ -4907,7 +4907,7 @@ UI\Themes\Modern\ToolbarStyleDictionary.xaml
       </Trigger>
     </Style.Triggers>
   </Style>
-  <DataTemplate x:Name="inPortViewModel" DataType="{x:Type viewModels:InPortViewModel}">
+  <DataTemplate x:Key="inPortViewModel" DataType="{x:Type viewModels:InPortViewModel}">
     <!--  Grid that contains the entire port  -->
     <Grid Name="MainGrid" Height="34px" Background="Transparent" IsHitTestVisible="True">
       <Grid.ColumnDefinitions>
@@ -5268,7 +5268,7 @@ UI\Themes\Modern\ToolbarStyleDictionary.xaml
       </Trigger>
     </Style.Triggers>
   </Style>
-  <DataTemplate x:Name="outPortViewModel" DataType="{x:Type viewModels:OutPortViewModel}">
+  <DataTemplate x:Key="outPortViewModel" DataType="{x:Type viewModels:OutPortViewModel}">
     <!--  Grid that contains the entire port  -->
     <Grid Name="MainGrid" Background="Transparent" HorizontalAlignment="Right" IsHitTestVisible="True">
       <Grid.ColumnDefinitions>
@@ -5410,7 +5410,7 @@ UI\Themes\Modern\ToolbarStyleDictionary.xaml
       </Border>
     </Grid>
   </DataTemplate>
-  <DataTemplate x:Name="portViewModel" DataType="{x:Type viewModels:PortViewModel}">
+  <DataTemplate x:Key="portViewModel" DataType="{x:Type viewModels:PortViewModel}">
     <!--  Grid that contains the entire port  -->
     <Grid Name="mainGrid" HorizontalAlignment="Stretch">
       <!--

@@ -28,7 +28,7 @@
 
     <!--  Add your resources here  -->
 
-    <DataTemplate x:Name="portViewModel" DataType="{x:Type viewModels:PortViewModel}">
+    <DataTemplate x:Key="portViewModel" DataType="{x:Type viewModels:PortViewModel}">
         <!--  Grid that contains the entire port  -->
         <Grid Name="mainGrid" HorizontalAlignment="Stretch">
             <!--

@@ -1880,5 +1880,7 @@
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
+
+     <Copy SourceFiles="UI\Themes\Modern_Combined.xaml" DestinationFiles="$(OutputPath)\UI\Themes\Modern_Combined.xaml"/>
   </Target>
 </Project>
