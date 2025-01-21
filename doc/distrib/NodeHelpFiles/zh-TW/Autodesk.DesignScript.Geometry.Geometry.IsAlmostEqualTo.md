@@ -1,7 +1,7 @@
 ## 深入資訊
-`Geometry.IsAlmostEqualTo` returns a boolean value indication whether the two given geometries have the same geometrical representations or numerical values.
+`Geometry.IsAlmostEqualTo` 會傳回布林值，指出兩個給定的幾何圖形是否有相同的幾何表現法或數值。
 
-In the example below, a cylinder is created two ways. The two cylinders are then compared with `Geometry.IsAlmostEqualTo`.
+以下範例以兩種方式各建立一個圓柱，然後使用 `Geometry.IsAlmostEqualTo` 比較兩個圓柱。
 ___
 ## 範例檔案
 
