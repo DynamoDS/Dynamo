@@ -19,7 +19,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
-                    Source="UI/Themes/Modern_Combined.xaml" />
+                    Source="../Themes/Modern_Combined.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="HintingInputStyle" TargetType="TextBox">
                 <Setter Property="Margin" Value="0,0,0,12" />

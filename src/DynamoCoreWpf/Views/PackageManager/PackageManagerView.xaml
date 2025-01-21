@@ -26,7 +26,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
-                    Source="UI/Themes/Modern_Combined.xaml" />
+                    Source="../../UI/Themes/Modern_Combined.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
             <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />

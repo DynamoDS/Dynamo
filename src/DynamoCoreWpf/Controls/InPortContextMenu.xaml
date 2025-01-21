@@ -11,7 +11,7 @@
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
                     <ResourceDictionary
-                        Source="UI/Themes/Modern_Combined.xaml" />
+                        Source="../UI/Themes/Modern_Combined.xaml" />
                 </ResourceDictionary.MergedDictionaries>
                 <Style TargetType="CheckBox">
                     <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />

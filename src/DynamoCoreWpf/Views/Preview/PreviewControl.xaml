@@ -20,7 +20,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
-                    Source="UI/Themes/Modern_Combined.xaml" />
+                    Source="../../UI/Themes/Modern_Combined.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <clr:Double x:Key="MinPreviewControlWidth">33.0</clr:Double>
