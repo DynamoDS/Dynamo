@@ -34,12 +34,12 @@ using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Controls
 {
-    public class BooleanStyleConverter : IValueConverter
+    public class BooleanToStyleConverter : IValueConverter
     {
         public Style TrueStyle { get; set; }
         public Style FalseStyle { get; set; }
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter,CultureInfo culture)
         {
             if (value is bool v && v)
             {
@@ -49,9 +49,9 @@ namespace Dynamo.Controls
             return FalseStyle;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return false;
+            throw new NotSupportedException();
         }
     }
 
@@ -66,7 +66,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 
@@ -81,7 +81,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 

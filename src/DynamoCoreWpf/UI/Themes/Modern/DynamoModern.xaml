@@ -914,12 +914,12 @@
         </Style.Triggers>
     </Style>
 
-    <conv:BooleanStyleConverter
+    <conv:BooleanToStyleConverter
         x:Key="SZoomFadeControl"
         TrueStyle="{StaticResource SZoomFadeBase_Basic}"
         FalseStyle="{StaticResource SZoomFadeBase_Animation}" />
 
-    <!--  Zoom fade preview  -->
+    <!--  Zoom fade animation style  -->
     <Style
         x:Key="SZoomFadePreview_Animation"
         TargetType="{x:Type FrameworkElement}">
@@ -966,7 +966,7 @@
         </Style.Triggers>
     </Style>
 
-    <conv:BooleanStyleConverter
+    <conv:BooleanToStyleConverter
         x:Key="SZoomFadePreview"
         TrueStyle="{StaticResource SZoomFadePreview_Basic}"
         FalseStyle="{StaticResource SZoomFadePreview_Animation}" />
@@ -1018,7 +1018,7 @@
         </Style.Triggers>
     </Style>
 
-    <conv:BooleanStyleConverter
+    <conv:BooleanToStyleConverter
         x:Key="SZoomFadeInPreview"
         TrueStyle="{StaticResource SZoomFadeInPreview_Basic}"
         FalseStyle="{StaticResource SZoomFadeInPreview_Animation}" />
@@ -1070,7 +1070,7 @@
         </Style.Triggers>
     </Style>
 
-    <conv:BooleanStyleConverter
+    <conv:BooleanToStyleConverter
         x:Key="SZoomFadeOutPreview"
         TrueStyle="{StaticResource SZoomFadeOutPreview_Basic}"
         FalseStyle="{StaticResource SZoomFadeOutPreview_Animation}" />
@@ -1122,7 +1122,7 @@
         </Style.Triggers>
     </Style>
 
-    <conv:BooleanStyleConverter
+    <conv:BooleanToStyleConverter
         x:Key="SZoomFadeInControl"
         TrueStyle="{StaticResource SZoomFadeInControl_Basic}"
         FalseStyle="{StaticResource SZoomFadeInControl_Animation}" />

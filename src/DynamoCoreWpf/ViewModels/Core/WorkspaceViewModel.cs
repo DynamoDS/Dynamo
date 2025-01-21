@@ -480,8 +480,22 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
-        public bool StopAnimations { get => stopAnimations; set { stopAnimations = value; RaisePropertyChanged(nameof(StopAnimations)); } }
-        private bool stopAnimations = false;
+        public bool StopAnimations
+        {
+            get => stopAnimations;
+            set
+            {
+                if (stopAnimations != value)
+                {
+                    stopAnimations = value;
+                    RaisePropertyChanged(nameof(StopAnimations));
+                }
+            }
+        }
+        private  bool stopAnimations = false;
+
+
+
 
         [JsonIgnore]
         public bool CanZoomIn
@@ -890,7 +904,7 @@ namespace Dynamo.ViewModels
             nodeViewModel.NodeLogic.Modified -= OnNodeModified;
         }
 
-        private const int MaxNodesBeforeAnimationStops = 150;
+        private const int MaxNodesBeforeAnimationStops = 10;
 
         void Model_NodeRemoved(NodeModel node)
         {
@@ -908,6 +922,8 @@ namespace Dynamo.ViewModels
 
             PostNodeChangeActions();
 
+            //TODO might also need to set this when switching current workspace if we make it static.
+            //profile and decide if it's worth it to get rid of the wpf ancestor look up.
             StopAnimations = Nodes.Count > MaxNodesBeforeAnimationStops;
         }
 
