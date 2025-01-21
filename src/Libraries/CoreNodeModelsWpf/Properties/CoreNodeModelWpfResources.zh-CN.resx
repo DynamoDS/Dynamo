@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,207 +118,207 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ChartsBarChartDescription" xml:space="preserve">
-    <value>创建新的条形图</value>
+    <value>Create a new Bar Chart</value>
   </data>
   <data name="ChartsBarChartSearchTags" xml:space="preserve">
     <value>bar;barchart</value>
   </data>
   <data name="ChartsBarChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>条形图类别的标签列表。
+    <value>A list of labels for the bar chart categories.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBarChartValuesDataPortToolTip" xml:space="preserve">
-    <value>用于为每个类别中的条形提供值的列表。
+    <value>A list (of lists) to supply values for the bars in each category.
 
 List&lt;var&gt;</value>
   </data>
   <data name="ChartsBarChartColorsDataPortToolTip" xml:space="preserve">
-    <value>每个条形图类别的颜色列表。
+    <value>A list of colors for each bar chart category.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBarChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>包含 label:value 值对的词典
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, double&gt;</value>
   </data>
   <data name="ChartsBasicLineChartDescription" xml:space="preserve">
-    <value>创建新的基本折线图</value>
+    <value>Create a new Basic Line Chart</value>
   </data>
   <data name="ChartsBasicLineChartSearchTags" xml:space="preserve">
     <value>index;indexvalue;indexvaluelineplot</value>
   </data>
   <data name="ChartsBasicLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>每行要打印的字符串标签列表。
+    <value>A list of string labels for each line to be plotted.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBasicLineChartValuesDataPortToolTip" xml:space="preserve">
-    <value>一列列表，每个列表都包含要相对于 X 轴值打印的双精度值。
+    <value>List of lists each containing double values to be plotted against X-Axis values.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsBasicLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>每行的颜色列表。
+    <value>A list of colors for each line.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBasicLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>包含 label:value 键对的词典
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsHeatSeriesDescription" xml:space="preserve">
-    <value>创建热序列图</value>
+    <value>Create a heat series plot</value>
   </data>
   <data name="ChartsHeatSeriesSearchTags" xml:space="preserve">
     <value>heat;heatseries;heatseriesplot</value>
   </data>
   <data name="ChartsHeatSeriesXLabelsDataPortToolTip" xml:space="preserve">
-    <value>X 轴的字符串标签列表。
+    <value>A list of string labels for the x-axis.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesYLabelsDataPortToolTip" xml:space="preserve">
-    <value>Y 轴的字符串标签列表。
+    <value>A list of string labels for the y-axis.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesValuesDataPortToolTip" xml:space="preserve">
-    <value>一列列表，每个列表都包含表示列中项目的双精度值。
+    <value>A list of lists each containing double values representing items in a column. 
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
-    <value>每个条形图类别的颜色列表。
+    <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each bar chart category.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>包含 label:value 键对的词典
+    <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
   </data>
-  <data name="ChartsPieChartDescription" xml:space="preserve">
-    <value>创建新的饼图</value>
+    <data name="ChartsPieChartDescription" xml:space="preserve">
+    <value>Create a new Pie Chart</value>
   </data>
-  <data name="ChartsPieChartSearchTags" xml:space="preserve">
+    <data name="ChartsPieChartSearchTags" xml:space="preserve">
     <value>pie;piechart</value>
   </data>
-  <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>饼图中每个分段的字符串标签列表。
+    <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of string labels for each segment in the pie chart.
 
 List&lt;string&gt;</value>
   </data>
-  <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
-    <value>双精度值列表，用于为饼图的每个分段提供值。
+    <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
+    <value>A list of double values to supply a value for each segment of the pie chart.
 
 List&lt;double&gt;</value>
   </data>
-  <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
-    <value>饼图每个分段的颜色列表。
+    <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each segment of the pie chart.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>包含 label:value 键对的词典
+    <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, double&gt;</value>
   </data>
-  <data name="ChartsScatterPlotDescription" xml:space="preserve">
-    <value>创建散点图</value>
+    <data name="ChartsScatterPlotDescription" xml:space="preserve">
+    <value>Create a scatter plot</value>
   </data>
-  <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
+    <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
     <value>scatter;scatterplot</value>
   </data>
-  <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
-    <value>要打印的每组点的字符串标签列表。
+    <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of string labels for each group of points to be plotted.
 
 List&lt;string&gt;</value>
   </data>
-  <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
-    <value>每个列表都包含表示 x 坐标的双精度值。
+    <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing x-coordinates.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
-    <value>一列列表，每个列表都包含表示 y 坐标的双精度值。
+    <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing y-coordinates.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
-    <value>每组点的颜色列表。
+    <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each group of points.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>包含 label:value 键对的词典
+    <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-  <data name="ChartsXYLineChartDescription" xml:space="preserve">
-    <value>创建新的 XY 线图</value>
+    <data name="ChartsXYLineChartDescription" xml:space="preserve">
+    <value>Create a new XY line plot</value>
   </data>
-  <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
+    <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
     <value>lineplot;xylineplot</value>
   </data>
-  <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>每行要打印的字符串标签列表
+    <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of string labels for each line to be plotted
 
 List&lt;string&gt;</value>
   </data>
-  <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
-    <value>一列列表，每个列表都包含表示直线中每个点的 x 坐标的双精度值。
+    <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
-    <value>一列列表，每个列表都包含表示直线中每个点的 x 坐标的双精度值。
+    <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>线条图中每行的颜色列表。
+    <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each line in the line plot.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>包含 label:value 键对的词典
+    <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
-    <value>高级</value>
+    <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+    <value>Advanced</value>
   </data>
-  <data name="ColorPaletteUIRecentColors" xml:space="preserve">
-    <value>最近使用的颜色</value>
+    <data name="ColorPaletteUIRecentColors" xml:space="preserve">
+    <value>Recent Colors</value>
   </data>
-  <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
-    <value>标准</value>
+    <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
+    <value>Standard</value>
   </data>
-  <data name="ColorPaletteUIStandardColors" xml:space="preserve">
-    <value>标准颜色</value>
+    <data name="ColorPaletteUIStandardColors" xml:space="preserve">
+    <value>Standard Colors</value>
   </data>
-  <data name="DateTimeInputToolTip" xml:space="preserve">
-    <value>输入时间和日期格式 'MMMM dd, yyyy h:mm tt'</value>
+    <data name="DateTimeInputToolTip" xml:space="preserve">
+    <value>Enter time and date in the format 'MMMM dd, yyyy h:mm tt'</value>
   </data>
-  <data name="LblDisplay" xml:space="preserve">
-    <value>显示</value>
+    <data name="LblDisplay" xml:space="preserve">
+    <value>Display</value>
   </data>
-  <data name="LblValue" xml:space="preserve">
-    <value>值</value>
+    <data name="LblValue" xml:space="preserve">
+    <value>Value</value>
   </data>
-  <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
-    <value>使用默认颜色。要定义自定义颜色，请提供相同数量的颜色和标签输入。</value>
+    <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
+    <value>Default colors are used. To define custom colors, provide an equal number of colors and labels inputs.</value>
   </data>
-  <data name="ResizeThumbToolTip" xml:space="preserve">
-    <value>拖动以修改图表的大小</value>
+    <data name="ResizeThumbToolTip" xml:space="preserve">
+    <value>Drag to modify the size of the chart</value>
   </data>
   <data name="GateClose" xml:space="preserve">
-    <value>关闭</value>
+    <value>Close</value>
   </data>
   <data name="GateOpen" xml:space="preserve">
-    <value>打开</value>
+    <value>Open</value>
   </data>
 </root>

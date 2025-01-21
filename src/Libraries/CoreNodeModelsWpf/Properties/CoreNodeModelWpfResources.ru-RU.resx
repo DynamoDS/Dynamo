@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,207 +118,207 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ChartsBarChartDescription" xml:space="preserve">
-    <value>Создание линейчатой диаграммы</value>
+    <value>Create a new Bar Chart</value>
   </data>
   <data name="ChartsBarChartSearchTags" xml:space="preserve">
     <value>bar;barchart</value>
   </data>
   <data name="ChartsBarChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список меток для категорий столбчатой диаграммы.
+    <value>A list of labels for the bar chart categories.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBarChartValuesDataPortToolTip" xml:space="preserve">
-    <value>Список (списков) для ввода значений для столбцов в каждой категории.
+    <value>A list (of lists) to supply values for the bars in each category.
 
 List&lt;var&gt;</value>
   </data>
   <data name="ChartsBarChartColorsDataPortToolTip" xml:space="preserve">
-    <value>Список цветов для каждой категории столбчатой диаграммы.
+    <value>A list of colors for each bar chart category.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBarChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Словарь, содержащий пары «метка:значение»
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, double&gt;</value>
   </data>
   <data name="ChartsBasicLineChartDescription" xml:space="preserve">
-    <value>Создание базового линейного графика</value>
+    <value>Create a new Basic Line Chart</value>
   </data>
   <data name="ChartsBasicLineChartSearchTags" xml:space="preserve">
     <value>index;indexvalue;indexvaluelineplot</value>
   </data>
   <data name="ChartsBasicLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список меток строк для каждой линии, выводимой на печать.
+    <value>A list of string labels for each line to be plotted.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBasicLineChartValuesDataPortToolTip" xml:space="preserve">
-    <value>Список списков, содержащих значения типа double для вывода на печать по значениям оси x.
+    <value>List of lists each containing double values to be plotted against X-Axis values.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsBasicLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>Список цветов для каждой линии.
+    <value>A list of colors for each line.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBasicLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Словарь, содержащий пары «метка:значение»
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsHeatSeriesDescription" xml:space="preserve">
-    <value>Создание тепловой карты</value>
+    <value>Create a heat series plot</value>
   </data>
   <data name="ChartsHeatSeriesSearchTags" xml:space="preserve">
     <value>heat;heatseries;heatseriesplot</value>
   </data>
   <data name="ChartsHeatSeriesXLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список меток строк для оси x.
+    <value>A list of string labels for the x-axis.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesYLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список меток строк для оси y.
+    <value>A list of string labels for the y-axis.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesValuesDataPortToolTip" xml:space="preserve">
-    <value>Список списков, содержащих значения типа double, представляющие элементы в столбце. 
+    <value>A list of lists each containing double values representing items in a column. 
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
-    <value>Список цветов для каждой категории столбчатой диаграммы.
+    <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each bar chart category.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Словарь, содержащий пары «метка:значение»
+    <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
   </data>
-  <data name="ChartsPieChartDescription" xml:space="preserve">
-    <value>Создание круговой диаграммы</value>
+    <data name="ChartsPieChartDescription" xml:space="preserve">
+    <value>Create a new Pie Chart</value>
   </data>
-  <data name="ChartsPieChartSearchTags" xml:space="preserve">
+    <data name="ChartsPieChartSearchTags" xml:space="preserve">
     <value>pie;piechart</value>
   </data>
-  <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список меток строк для каждого сегмента круговой диаграммы.
+    <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of string labels for each segment in the pie chart.
 
 List&lt;string&gt;</value>
   </data>
-  <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
-    <value>Список значений типа double, которые можно использовать для каждого сегмента круговой диаграммы.
+    <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
+    <value>A list of double values to supply a value for each segment of the pie chart.
 
 List&lt;double&gt;</value>
   </data>
-  <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
-    <value>Список цветов для каждого сегмента круговой диаграммы.
+    <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each segment of the pie chart.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Словарь, содержащий пары «метка:значение»
+    <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, double&gt;</value>
   </data>
-  <data name="ChartsScatterPlotDescription" xml:space="preserve">
-    <value>Создание точечной диаграммы</value>
+    <data name="ChartsScatterPlotDescription" xml:space="preserve">
+    <value>Create a scatter plot</value>
   </data>
-  <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
+    <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
     <value>scatter;scatterplot</value>
   </data>
-  <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список меток строк для каждой группы точек, выводимых на печать.
+    <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of string labels for each group of points to be plotted.
 
 List&lt;string&gt;</value>
   </data>
-  <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список списков, в каждом из которых содержатся значения типа double, представляющие координаты x.
+    <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing x-coordinates.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список списков, каждый из которых содержит значения типа double, представляющие координаты x.
+    <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing y-coordinates.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
-    <value>Список цветов для каждой группы точек.
+    <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each group of points.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Словарь, содержащий пары «метка:значение»
+    <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-  <data name="ChartsXYLineChartDescription" xml:space="preserve">
-    <value>Создание линейного графика XY</value>
+    <data name="ChartsXYLineChartDescription" xml:space="preserve">
+    <value>Create a new XY line plot</value>
   </data>
-  <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
+    <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
     <value>lineplot;xylineplot</value>
   </data>
-  <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список меток строк для каждой линии, выводимой на печать
+    <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of string labels for each line to be plotted
 
 List&lt;string&gt;</value>
   </data>
-  <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список списков, каждый из которых содержит значения типа double, представляющие координаты x для каждой точки на линии.
+    <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
-    <value>Список списков, каждый из которых содержит значения типа double, представляющие координаты x для каждой точки на линии.
+    <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
+    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-  <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>Список цветов для каждой линии в линейном графике.
+    <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
+    <value>A list of colors for each line in the line plot.
 
 List&lt;color&gt;</value>
   </data>
-  <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Словарь, содержащий пары «метка:значение»
+    <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Dictionary containing label:value key-pairs
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
-    <value>Расширенная</value>
+    <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+    <value>Advanced</value>
   </data>
-  <data name="ColorPaletteUIRecentColors" xml:space="preserve">
-    <value>Последние цвета</value>
+    <data name="ColorPaletteUIRecentColors" xml:space="preserve">
+    <value>Recent Colors</value>
   </data>
-  <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
-    <value>Стандартная</value>
+    <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
+    <value>Standard</value>
   </data>
-  <data name="ColorPaletteUIStandardColors" xml:space="preserve">
-    <value>Стандартные цвета</value>
+    <data name="ColorPaletteUIStandardColors" xml:space="preserve">
+    <value>Standard Colors</value>
   </data>
-  <data name="DateTimeInputToolTip" xml:space="preserve">
-    <value>Введите время и дату в формате «ММММ дд, гггг ч:мм AM/PM»</value>
+    <data name="DateTimeInputToolTip" xml:space="preserve">
+    <value>Enter time and date in the format 'MMMM dd, yyyy h:mm tt'</value>
   </data>
-  <data name="LblDisplay" xml:space="preserve">
-    <value>Отображение</value>
+    <data name="LblDisplay" xml:space="preserve">
+    <value>Display</value>
   </data>
-  <data name="LblValue" xml:space="preserve">
-    <value>Значение</value>
+    <data name="LblValue" xml:space="preserve">
+    <value>Value</value>
   </data>
-  <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
-    <value>Используются цвета по умолчанию. Для определения пользовательских цветов задайте равное количество цветов и входных данных меток.</value>
+    <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
+    <value>Default colors are used. To define custom colors, provide an equal number of colors and labels inputs.</value>
   </data>
-  <data name="ResizeThumbToolTip" xml:space="preserve">
-    <value>Перетащите для изменения размера диаграммы</value>
+    <data name="ResizeThumbToolTip" xml:space="preserve">
+    <value>Drag to modify the size of the chart</value>
   </data>
   <data name="GateClose" xml:space="preserve">
-    <value>Закрыть</value>
+    <value>Close</value>
   </data>
   <data name="GateOpen" xml:space="preserve">
-    <value>Открыть</value>
+    <value>Open</value>
   </data>
 </root>

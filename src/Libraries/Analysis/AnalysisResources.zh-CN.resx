@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmptyColorsMessage" xml:space="preserve">
-    <value>未指定颜色。</value>
+    <value>There are no colors specified.</value>
   </data>
   <data name="EmptyPointsMessage" xml:space="preserve">
-    <value>未指定点。</value>
+    <value>There are no points specified.</value>
   </data>
   <data name="EmptyUVsMessage" xml:space="preserve">
-    <value>未指定 UV。</value>
+    <value>There are no UVs specified.</value>
   </data>
   <data name="EmptyValuesMessage" xml:space="preserve">
-    <value>未指定值。</value>
+    <value>There are no values specified.</value>
   </data>
   <data name="InputsNotEquivalentMessage" xml:space="preserve">
-    <value>您必须提供等效点数和值。</value>
+    <value>You must supply an equivalent number of points and values.</value>
   </data>
 </root>

@@ -1,7 +1,7 @@
 ## 詳細
-`Geometry.IsAlmostEqualTo` returns a boolean value indication whether the two given geometries have the same geometrical representations or numerical values.
+`Geometry.IsAlmostEqualTo` は、指定された 2 つのジオメトリが同じジオメトリ表記または数値であるかどうかを示すブール値を返します。
 
-In the example below, a cylinder is created two ways. The two cylinders are then compared with `Geometry.IsAlmostEqualTo`.
+次の例では、円柱が 2 つの方法で作成されます。次に、2 つの円柱が `Geometry.IsAlmostEqualTo` を使用して比較されます。
 ___
 ## サンプル ファイル
 
