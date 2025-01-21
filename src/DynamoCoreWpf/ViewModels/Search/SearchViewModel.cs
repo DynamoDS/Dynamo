@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
@@ -78,6 +80,7 @@ namespace Dynamo.ViewModels
         internal int searchDelayTimeout = 150;
         // Feature flags activated debouncer for the search UI.
         internal ActionDebouncer searchDebouncer = null;
+        internal CancellationTokenSource searchCancelTooken;
 
         private string searchText = string.Empty;
         /// <summary>
@@ -925,14 +928,20 @@ namespace Dynamo.ViewModels
                 return;
 
             //Passing the second parameter as true will search using Lucene.NET
-            var foundNodes = Search(query);
-            searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
-            FilteredResults = searchResults;
+            searchCancelTooken?.Cancel();
+            searchCancelTooken?.Dispose();
+            searchCancelTooken = new();
 
-            UpdateSearchCategories();
-
-            RaisePropertyChanged("FilteredResults");
+            Task.Run(() =>
+            {
+                return Search(query, searchCancelTooken.Token);
+ 
+            }, searchCancelTooken.Token).ContinueWith((t, o) =>
+            {
+                FilteredResults = t.Result;
+                UpdateSearchCategories();
+            }, TaskScheduler.FromCurrentSynchronizationContext(), TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         /// <summary>
@@ -972,11 +981,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal IEnumerable<NodeSearchElementViewModel> Search(string search)
+        internal IEnumerable<NodeSearchElementViewModel> Search(string search, CancellationToken ctk = default)
         {
             if (LuceneUtility != null)
             {
-                var searchElements = Model.Search(search, LuceneUtility);
+                var searchElements = Model.Search(search, LuceneUtility, ctk);
                 if (searchElements != null)
                 {
                     return searchElements.Select(MakeNodeSearchElementVM);

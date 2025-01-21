@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
@@ -23,7 +24,6 @@ using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
-using Newtonsoft.Json;
 
 namespace Dynamo.Utilities
 {
@@ -190,6 +190,12 @@ namespace Dynamo.Utilities
             }
         }
 
+        private void InitializeIndexSearcher()
+        {
+            dirReader = writer != null ? writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(indexDir);
+            Searcher = new(dirReader);
+        }
+
         /// <summary>
         /// Initialize Lucene index document object for reuse
         /// </summary>
@@ -256,7 +262,8 @@ namespace Dynamo.Utilities
                 {
                     var iDoc = InitializeIndexDocumentForNodes();
                     AddNodeTypeToSearchIndex(node, iDoc);
-                }             
+                }
+                InitializeIndexSearcher();
             }         
         }
 
@@ -322,7 +329,7 @@ namespace Dynamo.Utilities
         /// <param name="SearchTerm">Search key to be searched for.</param>
         /// <param name="IsPackageContext">Set this to true if the search context is packages instead of nodes.</param>
         /// <returns></returns>
-        internal string CreateSearchQuery(string[] fields, string SearchTerm, bool IsPackageContext = false)
+        internal string CreateSearchQuery(string[] fields, string SearchTerm, bool IsPackageContext = false, CancellationToken ctk = default)
         {
             //By Default the search will be normal
             SearchType searchType = SearchType.Normal;
@@ -353,6 +360,7 @@ namespace Dynamo.Utilities
             foreach (string f in fields)
             {
                 Occur occurQuery = Occur.SHOULD;
+                ctk.ThrowIfCancellationRequested();
 
                 searchTerm = QueryParser.Escape(SearchTerm);
                 if (searchType == SearchType.ByDotCategory)
@@ -383,7 +391,7 @@ namespace Dynamo.Utilities
                     continue;
 
                 //Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions), with the normal weights
-                AddQueries(searchTerm, f, searchType, booleanQuery, occurQuery, fuzzyLogicMaxEdits);
+                AddQueries(searchTerm, f, searchType, booleanQuery, occurQuery, fuzzyLogicMaxEdits, ctk);
 
                 if (searchType == SearchType.ByEmptySpace)
                 {
@@ -396,7 +404,7 @@ namespace Dynamo.Utilities
                         if (string.IsNullOrEmpty(s)) continue;
 
                         //Adds the FuzzyQuery and 4 WildcardQueries (3 of them contain regular expressions), with the weights for Queries with RegularExpressions
-                        AddQueries(s, f, searchType, booleanQuery, occurQuery, LuceneConfig.FuzzySearchMinEdits, true);
+                        AddQueries(s, f, searchType, booleanQuery, occurQuery, LuceneConfig.FuzzySearchMinEdits, ctk, true);
                     }
                 }
             }
@@ -413,8 +421,10 @@ namespace Dynamo.Utilities
         /// <param name="occurQuery">Occur type can be Should or Must</param>
         /// <param name="fuzzyLogicMaxEdits">Max edit lenght for Fuzzy queries</param>
         /// <param name="termSplit">Indicates if the SearchTerm has been split by empty space or not</param>
-        private void AddQueries(string searchTerm, string field, SearchType searchType, BooleanQuery booleanQuery, Occur occurQuery, int fuzzyLogicMaxEdits, bool termSplit = false)
+        private void AddQueries(string searchTerm, string field, SearchType searchType, BooleanQuery booleanQuery, Occur occurQuery, int fuzzyLogicMaxEdits, CancellationToken ctk = default, bool termSplit = false)
         {
+            ctk.ThrowIfCancellationRequested();
+
             string querySearchTerm = searchTerm.Replace(" ", string.Empty);
 
             FuzzyQuery fuzzyQuery;
@@ -582,6 +592,8 @@ namespace Dynamo.Utilities
         {
             //Commit the info indexed if index writer exists
             writer?.Commit();
+
+            InitializeIndexSearcher();
         }
 
         /// <summary>
@@ -627,6 +639,7 @@ namespace Dynamo.Utilities
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
             writer?.AddDocument(doc);
+            InitializeIndexSearcher();
         }
     }
 
