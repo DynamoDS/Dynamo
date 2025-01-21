@@ -445,7 +445,7 @@
                                 <Button Margin="0,3"
                                         HorizontalAlignment="Left"
                                         Command="{Binding Path=BreakConnectionsCommand}"
-                                        Content="{x:Static p:Resources.BreakConnectionPopupMenuItem}"
+                                        Content="{x:Static p:Resources.BreakConnectionsPopupMenuItem}"
                                         IsEnabled="{Binding OutputPortBreakConnectionsButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource PopupButtonStyle}"
                                         Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
