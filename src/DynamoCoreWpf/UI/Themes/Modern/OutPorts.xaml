@@ -6,13 +6,8 @@
                     xmlns:ui="clr-namespace:Dynamo.UI"
                     xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
                     xmlns:uiViews="clr-namespace:Dynamo.UI.Views">
-    <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-        
-    <DataTemplate DataType="{x:Type viewModels:OutPortViewModel}">
+
+    <DataTemplate x:Name="outPortViewModel" DataType="{x:Type viewModels:OutPortViewModel}">
         
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"

@@ -8,16 +8,13 @@
                       xmlns:mouse="clr-namespace:Dynamo.Wpf.UI"
                       xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore">
 
-    <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-    <DataTemplate DataType="{x:Type viewModels:ConnectorContextMenuViewModel}">
+    <DataTemplate x:Name="connectorContextMenuViewModel" DataType="{x:Type viewModels:ConnectorContextMenuViewModel}">
         <controls:ConnectorContextMenuView DataContext="{Binding}" />
     </DataTemplate>
-    <DataTemplate DataType="{x:Type viewModels:ConnectorAnchorViewModel}">
+    <DataTemplate x:Name="connectorAnchorViewModel" DataType="{x:Type viewModels:ConnectorAnchorViewModel}">
         <controls:ConnectorAnchorView DataContext="{Binding}" />
     </DataTemplate>
-    <DataTemplate DataType="{x:Type viewModels:ConnectorPinViewModel}">
+    <DataTemplate x:Name="connectorPinViewModel" DataType="{x:Type viewModels:ConnectorPinViewModel}">
         <nodes:ConnectorPinView DataContext="{Binding}" />
     </DataTemplate>
     <!--Template used for displaying connectorPins on canvas-->
@@ -103,7 +100,7 @@
         </Style.Triggers>
     </Style>
 
-    <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
+    <DataTemplate x:Name="connectorViewModel" DataType="{x:Type viewModels:ConnectorViewModel}">
         <Grid x:Name="MainGrid"
               Visibility="Visible">
             <i:Interaction.Triggers>

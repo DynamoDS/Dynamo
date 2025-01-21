@@ -3,12 +3,6 @@
                     xmlns:ui="clr-namespace:Dynamo.UI"
                     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
-
-    <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-
     <!-- Dynamo fonts -->
     <FontFamily x:Key="ArtifaktElementRegular">../../Fonts/Autodesk/#Artifakt Element Regular</FontFamily>
     <FontFamily x:Key="ArtifaktElementBold">../../Fonts/Autodesk/#Artifakt Element Bold</FontFamily>

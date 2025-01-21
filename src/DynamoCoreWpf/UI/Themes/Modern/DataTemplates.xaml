@@ -7,23 +7,19 @@
                       xmlns:sys="clr-namespace:System;assembly=mscorlib"
                       xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore">
 
-    <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-
-    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
+    <DataTemplate x:Name="nodeViewModel"  DataType="{x:Type viewModels:NodeViewModel}">
         <controls:NodeView></controls:NodeView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
+    <DataTemplate x:Name="noteViewModel" DataType="{x:Type viewModels:NoteViewModel}">
         <nodes:NoteView></nodes:NoteView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:InfoBubbleViewModel}">
+    <DataTemplate x:Name="infoBubbleViewModel" DataType="{x:Type viewModels:InfoBubbleViewModel}">
         <controls:InfoBubbleView></controls:InfoBubbleView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:AnnotationViewModel}">
+    <DataTemplate x:Name="annotationViewModel" DataType="{x:Type viewModels:AnnotationViewModel}">
         <nodes:AnnotationView></nodes:AnnotationView>
     </DataTemplate>
 

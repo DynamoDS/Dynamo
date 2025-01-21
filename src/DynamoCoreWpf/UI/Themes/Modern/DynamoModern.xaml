@@ -9,11 +9,7 @@
                     xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
                     xmlns:ui="clr-namespace:Dynamo.UI">
 
-    <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-
+    
     <!--  Control colors.  -->
     <Color x:Key="WindowColor">#FFE8EDF9</Color>
     <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>

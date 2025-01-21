@@ -28,12 +28,7 @@
 
     <!--  Add your resources here  -->
 
-    <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-    <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
+    <DataTemplate x:Name="portViewModel" DataType="{x:Type viewModels:PortViewModel}">
         <!--  Grid that contains the entire port  -->
         <Grid Name="mainGrid" HorizontalAlignment="Stretch">
             <!--
