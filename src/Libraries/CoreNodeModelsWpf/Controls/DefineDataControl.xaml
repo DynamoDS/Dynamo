@@ -12,9 +12,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary
+                    Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="StrokeBrush" Color="#999999" />
             <PathGeometry x:Key="QuestionIcon" Figures="M8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 5.87827 15.1571 3.84344 13.6569 2.34315C12.1566 0.842855 10.1217 0 8 0ZM9 14H7V12H9V14ZM10 8.45C9.38 8.74 9 8.95 9 9.45V11H7V8.92C6.97651 8.37388 7.19188 7.84457 7.59 7.47C8.05 7.06 9.75 6.56 9.75 5.59C9.75 5 9.45 4.33 8.23 4.33C6.75 4.33 6.23 6.66 6.23 6.66L4.45 6.25C4.45 6.25 4.86 2.39 8.25 2.39C9.13189 2.33809 9.99827 2.63874 10.6584 3.22576C11.3186 3.81279 11.7185 4.63809 11.77 5.52C11.8034 6.75866 11.1119 7.90321 10 8.45Z"/>

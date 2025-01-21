@@ -2,7 +2,6 @@
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
 
     <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 

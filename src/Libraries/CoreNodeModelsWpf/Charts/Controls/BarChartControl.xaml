@@ -15,7 +15,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
