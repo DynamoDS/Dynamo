@@ -328,6 +328,7 @@ namespace Dynamo.Utilities
         /// <param name="fields">All fields to be searched in.</param>
         /// <param name="SearchTerm">Search key to be searched for.</param>
         /// <param name="IsPackageContext">Set this to true if the search context is packages instead of nodes.</param>
+        /// <param name="ctk">Cancellation token to short circuit the search.</param>
         /// <returns></returns>
         internal string CreateSearchQuery(string[] fields, string SearchTerm, bool IsPackageContext = false, CancellationToken ctk = default)
         {
@@ -420,6 +421,7 @@ namespace Dynamo.Utilities
         /// <param name="booleanQuery">The Boolean query in which the Wildcard queries will be added</param>
         /// <param name="occurQuery">Occur type can be Should or Must</param>
         /// <param name="fuzzyLogicMaxEdits">Max edit lenght for Fuzzy queries</param>
+        /// <param name="ctk">Cancellation token to short circuit the operation.</param>
         /// <param name="termSplit">Indicates if the SearchTerm has been split by empty space or not</param>
         private void AddQueries(string searchTerm, string field, SearchType searchType, BooleanQuery booleanQuery, Occur occurQuery, int fuzzyLogicMaxEdits, CancellationToken ctk = default, bool termSplit = false)
         {

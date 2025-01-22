@@ -231,6 +231,14 @@ namespace Dynamo.Search
             return category.Substring(0, index);
         }
 
+        /// <summary>
+        /// Search for nodes by using a search key.
+        /// </summary>
+        /// <param name="search"></param>
+        /// <param name="luceneSearchUtility"></param>
+        /// <param name="ctk">Cancellation token to short circuit the search.</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         internal IEnumerable<NodeSearchElement> Search(string search, LuceneSearchUtility luceneSearchUtility, CancellationToken ctk = default)
         {
             ctk.ThrowIfCancellationRequested();
@@ -285,6 +293,14 @@ namespace Dynamo.Search
             return null;
         }
 
+        /// <summary>
+        /// Finds the node model that corresponds to the input nodeName, nodeCategory and parameters.
+        /// </summary>
+        /// <param name="nodeName"></param>
+        /// <param name="nodeCategory"></param>
+        /// <param name="parameters"></param>
+        /// <param name="ctk">Cancellation token to short circuit the operation.</param>
+        /// <returns></returns>
         internal NodeSearchElement FindModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters, CancellationToken ctk = default)
         {
             var result = Entries.Where(e => {

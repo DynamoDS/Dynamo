@@ -80,6 +80,7 @@ namespace Dynamo.ViewModels
         internal int searchDelayTimeout = 150;
         // Feature flags activated debouncer for the search UI.
         internal ActionDebouncer searchDebouncer = null;
+        // Cancel token source used for the node search operations.
         internal CancellationTokenSource searchCancelTooken;
 
         private string searchText = string.Empty;
@@ -927,18 +928,19 @@ namespace Dynamo.ViewModels
             if (string.IsNullOrEmpty(query))
                 return;
 
-            //Passing the second parameter as true will search using Lucene.NET
-
+            // A new search should cancel any existring seraches.
             searchCancelTooken?.Cancel();
             searchCancelTooken?.Dispose();
             searchCancelTooken = new();
 
+            // We run the searches on the thread pool to reduce the impact on the UI thread.
             Task.Run(() =>
             {
                 return Search(query, searchCancelTooken.Token);
  
             }, searchCancelTooken.Token).ContinueWith((t, o) =>
             {
+                // This continuation will execute on the UI thread (forced by using FromCurrentSynchronizationContext())
                 FilteredResults = t.Result;
                 UpdateSearchCategories();
             }, TaskScheduler.FromCurrentSynchronizationContext(), TaskContinuationOptions.OnlyOnRanToCompletion);
