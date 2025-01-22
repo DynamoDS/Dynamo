@@ -42,7 +42,7 @@ namespace Dynamo.UI
                     {
                         // Load and cache the dictionary
                         base.Source = value;
-                        _sharedDictionaries.Add(value, this);
+                        _sharedDictionaries[value] = this;
                     }
                     else
                     {
