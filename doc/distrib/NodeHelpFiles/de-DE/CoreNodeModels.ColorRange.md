@@ -1,0 +1,7 @@
+## Im Detail
+Color Range erstellt einen Farbverlauf zwischen mehreren Eingabefarben und ermöglicht die Auswahl von Farben aus diesem Farbverlauf über eine Liste von Eingabewerten. Die erste Eingabe, colors, ist eine Liste mit Farben, die im Farbverlauf verwendet werden können. Die zweite Eingabe, indices, bestimmt die relative Position der Eingabefarben im Farbverlauf. Diese Liste sollte der Liste mit Farben entsprechen, wobei jeder Wert im Bereich 0 bis 1 liegt. Der genaue Wert ist nicht wichtig, nur die relative Position der Werte. Die Farbe, die dem niedrigsten Wert entspricht, wird links vom Farbverlauf angezeigt, die Farbe, die dem höchsten Wert entspricht, wird rechts vom Farbverlauf angezeigt. Die endgültige Werteingabe ermöglicht es dem Benutzer, Punkte entlang des Farbverlaufs im Bereich 0 bis 1 für die Ausgabe auszuwählen. Im folgenden Beispiel erstellen wir zuerst zwei Farben: Rot und Grün. Die Reihenfolge dieser Farben im Farbverlauf wird durch eine Liste bestimmt, die wir mit einem Codeblock erstellen. Ein dritter Codeblock wird zum Erstellen eines Zahlenbereichs zwischen 0 und 1 verwendet, der die Ausgabefarben des Farbverlaufs bestimmt. Entlang der X-Achse wird ein Satz von Würfeln erstellt, und diese Würfel werden schließlich mithilfe eines Display.ByGeometryColor-Blocks entsprechend dem Farbverlauf eingefärbt.
+___
+## Beispieldatei
+
+![Color Range](./CoreNodeModels.ColorRange_img.jpg)
+

@@ -118,20 +118,21 @@ namespace Dynamo.Wpf.Extensions
 
             if (added)
             {
-                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAdded);
+                dynamoViewModel.Model.Logger.Log($"{viewExtension.Name} : {Wpf.Properties.Resources.ExtensionAdded}");
             }
             else
             {
-                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAlreadyPresent);
+                dynamoViewModel.Model.Logger.Log($"{viewExtension.Name} : {Wpf.Properties.Resources.ExtensionAlreadyPresent}");
+
             }
         }
 
-        /// <summary>
-        /// Close the tab for extension UI control element in the extensions side bar.
-        /// </summary>
-        /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
-        /// <returns></returns>
-        public void CloseExtensioninInSideBar(IViewExtension viewExtension)
+            /// <summary>
+            /// Close the tab for extension UI control element in the extensions side bar.
+            /// </summary>
+            /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
+            /// <returns></returns>
+            public void CloseExtensioninInSideBar(IViewExtension viewExtension)
         {
             dynamoView.CloseExtensionControl(viewExtension);
         }

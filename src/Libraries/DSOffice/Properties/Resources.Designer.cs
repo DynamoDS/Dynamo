@@ -61,6 +61,24 @@ namespace DSOffice.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This node is obsolete and will be removed in a future version of Dynamo, please use the corresponding one that is OpenXML based..
+        /// </summary>
+        internal static string ExcelInteropObsoleteNode {
+            get {
+                return ResourceManager.GetString("ExcelInteropObsoleteNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use File.FromPath -&gt; Excel.ReadFromFile node instead..
+        /// </summary>
+        internal static string ReadObsolete {
+            get {
+                return ResourceManager.GetString("ReadObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file or directory cannot be found.
         /// </summary>
         internal static string StreamWriterNotFoundException {
