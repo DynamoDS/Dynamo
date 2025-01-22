@@ -276,51 +276,52 @@ for modname,mod in sys.modules.copy().items():
             using (Py.GIL())
             {
                 globalScope ??= CreateGlobalScope();
-                using PyScope scope = Py.CreateScope();
-
-                if (path is not null)
+                using (PyScope scope = Py.CreateScope())
                 {
-                    // Reset the 'sys.path' value to the default python paths on node evaluation. See https://github.com/DynamoDS/Dynamo/pull/10977. 
-                    var pythonNodeSetupCode = "import sys" + Environment.NewLine + $"sys.path = {path}";
-                    scope.Exec(pythonNodeSetupCode);
-                }
-
-                ProcessAdditionalBindings(scope, bindingNames, bindingValues);
-
-                int amt = Math.Min(bindingNames.Count, bindingValues.Count);
-
-                for (int i = 0; i < amt; i++)
-                {
-                    scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
-                }
-
-                try
-                {
-                    OnEvaluationBegin(scope, code, bindingValues);
-                    scope.Exec(code);
-                    var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
-
-                    return OutputMarshaler.Marshal(result);
-                }
-                catch (Exception e)
-                {
-                    evaluationSuccess = false;
-                    var traceBack = GetTraceBack(e);
-                    if (!string.IsNullOrEmpty(traceBack))
+                    if (path is not null)
                     {
-                        // Throw a new error including trace back info added to the message
-                        throw new InvalidOperationException($"{e.Message} {traceBack}", e);
+                        // Reset the 'sys.path' value to the default python paths on node evaluation. See https://github.com/DynamoDS/Dynamo/pull/10977. 
+                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + $"sys.path = {path}";
+                        scope.Exec(pythonNodeSetupCode);
                     }
-                    else
+
+                    ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+
+                    int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+
+                    for (int i = 0; i < amt; i++)
                     {
+                        scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                    }
+
+                    try
+                    {
+                        OnEvaluationBegin(scope, code, bindingValues);
+                        scope.Exec(code);
+                        var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
+
+                        return OutputMarshaler.Marshal(result);
+                    }
+                    catch (Exception e)
+                    {
+                        evaluationSuccess = false;
+                        var traceBack = GetTraceBack(e);
+                        if (!string.IsNullOrEmpty(traceBack))
+                        {
+                            // Throw a new error including trace back info added to the message
+                            throw new InvalidOperationException($"{e.Message} {traceBack}", e);
+                        }
+                        else
+                        {
 #pragma warning disable CA2200 // Rethrow to preserve stack details
-                        throw e;
+                            throw e;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
+                        }
                     }
-                }
-                finally
-                {
-                    OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
+                    finally
+                    {
+                        OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
+                    }
                 }
             }
         }
@@ -470,16 +471,18 @@ sys.stdout = DynamoStdOut({0})
                     {
                         if (PyDict.IsDictType(pyObj))
                         {
-                            using var pyDict = new PyDict(pyObj);
-                            var dict = new PyDict();
-                            foreach (PyObject item in pyDict.Items())
+                            using (var pyDict = new PyDict(pyObj))
                             {
-                                dict.SetItem(
-                                    ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(0))),
-                                    ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(1)))
-                                );
+                                var dict = new PyDict();
+                                foreach (PyObject item in pyDict.Items())
+                                {
+                                    dict.SetItem(
+                                        ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(0))),
+                                        ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(1)))
+                                    );
+                                }
+                                return dict;
                             }
-                            return dict;
                         }
                         var unmarshalled = pyObj.AsManagedObject(typeof(object));
 
